@@ -30,3 +30,4 @@
 /[bB]uild
 /*.user
 /nuget.exe
+/Debug.zip
