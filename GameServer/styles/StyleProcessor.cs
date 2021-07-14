@@ -434,7 +434,9 @@ namespace DOL.GS.Styles
 					}
 
 					//Increase regular damage by styledamage ... like on live servers
-					attackData.Damage += attackData.StyleDamage;
+					//and we disable it on Atlas
+
+					// attackData.Damage += attackData.StyleDamage;
 
 
 					if (player != null)
