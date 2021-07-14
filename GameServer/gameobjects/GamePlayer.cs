@@ -10749,16 +10749,18 @@ namespace DOL.GS
 				return 0;
 			if (this.Client.Account.PrivLevel == 1)
 			{
-				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-				if (CurrentRegion.Time - m_beginDrowningTick > 15000) // 15 sec
-				{
-					TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
-					Out.SendCloseTimerWindow();
+				//Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				//Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				//if (CurrentRegion.Time - m_beginDrowningTick > 15000) // 15 sec
+				//{
+					//TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
+					//Out.SendCloseTimerWindow();
+					MoveTo(CurrentRegion.ID, X, Y, Z + 1, Heading);
+					IsDiving = false;
 					return 0;
-				}
-				else
-					TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
+				//}
+				//else
+					//TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
 			}
 			return 3000;
 		}
@@ -10786,10 +10788,11 @@ namespace DOL.GS
 			set
 			{
 				if (m_diving != value)
-					if (value && !CanBreathUnderWater)
-						Diving(waterBreath.Holding);
-					else
-						Diving(waterBreath.Normal);
+					Diving(waterBreath.Drowning);
+					//if (value && !CanBreathUnderWater)
+						//Diving(waterBreath.Holding);
+					//else
+						//Diving(waterBreath.Normal);
 				m_diving = value;
 			}
 		}
@@ -10844,7 +10847,7 @@ namespace DOL.GS
 					m_beginDrowningTick = CurrentRegion.Time;
 					if (m_drowningTimer == null)
 					{
-						Out.SendTimerWindow("Drowning", 15);
+						//Out.SendTimerWindow("Drowning", 15);
 						m_drowningTimer = new RegionTimer(this);
 						m_drowningTimer.Callback = new RegionTimerCallback(DrowningTimerCallback);
 						m_drowningTimer.Start(1);
