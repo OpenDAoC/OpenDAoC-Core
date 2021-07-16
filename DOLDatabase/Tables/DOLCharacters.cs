@@ -194,11 +194,15 @@ namespace DOL.Database
 		private byte m_notDisplayedInHerald = 0;
 
 		private byte m_activeSaddleBags = 0;
-		
-		/// <summary>
-		/// Create the character row in table
-		/// </summary>
-		public DOLCharacters()
+
+        private DateTime m_lastLevelUp;
+
+        private long m_playedTimeSinceLevel;
+
+        /// <summary>
+        /// Create the character row in table
+        /// </summary>
+        public DOLCharacters()
 		{
 			m_creationDate = DateTime.Now;
 			m_concentration = 100;
@@ -228,7 +232,9 @@ namespace DOL.Database
 			m_showGuildLogins = false;
 			m_roleplay = false;
 			m_ignoreStatistics = false;
-		}
+            m_lastLevelUp = DateTime.Now;
+            m_playedTimeSinceLevel = 0;
+        }
 
 		/// <summary>
 		/// Gets/sets if this character has xp in a gravestone
@@ -2246,11 +2252,39 @@ namespace DOL.Database
 				m_activeSaddleBags = value;
 			}
 		}
-		
-		/// <summary>
-		/// List of Custom Params for this Character
+
+        [DataElement(AllowDbNull = false)]
+        public DateTime LastLevelUp
+        {
+            get { return m_lastLevelUp; }
+            set
+            {
+                Dirty = true;
+                m_lastLevelUp = value;
+            }
+        }
+
+        /// <summary>
+		/// Gets/sets the characters /played level time
 		/// </summary>
-		[Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
+		[DataElement(AllowDbNull = false)]
+        public long PlayedTimeSinceLevel
+        {
+            get
+            {
+                return m_playedTimeSinceLevel;
+            }
+            set
+            {
+                Dirty = true;
+                m_playedTimeSinceLevel = value;
+            }
+        }
+
+        /// <summary>
+        /// List of Custom Params for this Character
+        /// </summary>
+        [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
 		public DOLCharactersXCustomParam[] CustomParams;
 	}
 	
