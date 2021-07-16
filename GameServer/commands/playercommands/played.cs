@@ -37,25 +37,52 @@ namespace DOL.GS.Commands
 		{
 			if (IsSpammingCommand(client.Player, "played"))
 				return;
+            if (args.Length > 1)
+            {
+                if (args[1].Equals("level"))
+                {
+                    //int yearsPlayed = 0;
+                    //int monthsPlayed = 0;
+                    TimeSpan showPlayed = TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel);
+                    int daysPlayed = showPlayed.Days;
+                    // Figure Years
+                    //if (showPlayed.Days >= 365)
+                    //{
+                    //    yearsPlayed = daysPlayed / 365;
+                    //    daysPlayed -= yearsPlayed * 365;
+                    //}
+                    // Figure Months (roughly)
+                    //if (showPlayed.Days >= 30)
+                    //{
+                    //    monthsPlayed = daysPlayed / 30;
+                    //    daysPlayed -= monthsPlayed * 30;
+                    //}
 
-			int yearsPlayed = 0;
-			int monthsPlayed = 0;
-			TimeSpan showPlayed = TimeSpan.FromSeconds(client.Player.PlayedTime);
-			int daysPlayed = showPlayed.Days;
-			// Figure Years
-			if (showPlayed.Days >= 365)
-			{
-				yearsPlayed = daysPlayed/365;
-				daysPlayed -= yearsPlayed*365;
-			}
-			// Figure Months (roughly)
-			if (showPlayed.Days >= 30)
-			{
-				monthsPlayed = daysPlayed/30;
-				daysPlayed -= monthsPlayed*30;
-			}
+                    client.Out.SendMessage("You have played for " /*+ yearsPlayed + " Years, " + monthsPlayed + " Months, "*/ + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes this level.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+            }
+            else
+            {
 
-			client.Out.SendMessage("You have played for " + yearsPlayed + " Years, " + monthsPlayed + " Months, " + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                //int yearsPlayed = 0;
+                //int monthsPlayed = 0;
+                TimeSpan showPlayed = TimeSpan.FromSeconds(client.Player.PlayedTime);
+                int daysPlayed = showPlayed.Days;
+                //// Figure Years
+                //if (showPlayed.Days >= 365)
+                //{
+                //    yearsPlayed = daysPlayed / 365;
+                //    daysPlayed -= yearsPlayed * 365;
+                //}
+                //// Figure Months (roughly)
+                //if (showPlayed.Days >= 30)
+                //{
+                //    monthsPlayed = daysPlayed / 30;
+                //    daysPlayed -= monthsPlayed * 30;
+                //}
+
+                client.Out.SendMessage("You have played for " /*+ yearsPlayed + " Years, " + monthsPlayed + " Months, "*/ + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
 		}
 	}
 }
