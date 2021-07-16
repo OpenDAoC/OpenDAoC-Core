@@ -30,7 +30,7 @@ namespace DOL.GS.PlayerClass
 			: base()
 		{
 			m_profession = "PlayerClass.Profession.ChurchofAlbion";
-			m_specializationMultiplier = 20;
+			m_specializationMultiplier = 25; //atlas increased from 20
 			m_primaryStat = eStat.CON;
 			m_secondaryStat = eStat.PIE;
 			m_tertiaryStat = eStat.STR;
@@ -56,7 +56,7 @@ namespace DOL.GS.PlayerClass
 
 		public override ushort MaxPulsingSpells
 		{
-			get { return 2; }
+			get { return 1; } //atlas reduced from 2
 		}
 
 		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
