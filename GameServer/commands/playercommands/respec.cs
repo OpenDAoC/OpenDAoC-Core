@@ -35,6 +35,7 @@
  */
 
 
+using System;
 using System.Collections;
 using DOL.GS.PacketHandler;
 
@@ -58,13 +59,13 @@ namespace DOL.GS.Commands
 		{
 			if (args.Length < 2)
 			{
-				if (ServerProperties.Properties.FREE_RESPEC)
+				if (ServerProperties.Properties.FREE_RESPEC || client.Player.Level < 50)
 				{
 					DisplayMessage(client, "Target any trainer and use:");
-					DisplayMessage(client, "/respec ALL or /respec DOL to respec all skills");
+					DisplayMessage(client, "/respec ALL to respec all skills");
 					DisplayMessage(client, "/respec <line name> to respec a single skill line");
 					DisplayMessage(client, "/respec REALM to respec realm abilities");
-					DisplayMessage(client, "/respec CHAMPION to respec champion abilities");
+					//DisplayMessage(client, "/respec CHAMPION to respec champion abilities");
 					return;
 				}
 				
@@ -96,8 +97,8 @@ namespace DOL.GS.Commands
 				}
 				if (client.Player.RespecAmountDOL > 0)
 				{
-					DisplayMessage(client, "You have " + client.Player.RespecAmountDOL + " DOL ( full skill ) respecs available.");
-					DisplayMessage(client, "Target any trainer and use /respec DOL");
+					DisplayMessage(client, "You have " + client.Player.RespecAmountDOL + " Atlas ( full skill ) respecs available.");
+					DisplayMessage(client, "Target any trainer and use /respec all");
 				}
 				DisplayMessage(client, "Use /respec buy to buy an single-line respec.");
 				return;
@@ -113,79 +114,85 @@ namespace DOL.GS.Commands
 
 			switch (args[1].ToLower())
 			{
-				case "buy":
-					{
-						if (ServerProperties.Properties.FREE_RESPEC)
-							return;
+				//case "buy":
+				//	{
+				//		if (ServerProperties.Properties.FREE_RESPEC)
+				//			return;
 
-						// Buy respec
-						if (client.Player.CanBuyRespec == false || client.Player.RespecCost < 0)
-						{
-							DisplayMessage(client, "You can't buy a respec on this level again.");
-							return;
-						}
+				//		// Buy respec
+				//		if (client.Player.CanBuyRespec == false || client.Player.RespecCost < 0)
+				//		{
+				//			DisplayMessage(client, "You can't buy a respec on this level again.");
+				//			return;
+				//		}
 
-						long mgold = client.Player.RespecCost;
-						if ((client.Player.Gold + 1000 * client.Player.Platinum) < mgold)
-						{
-							DisplayMessage(client, "You don't have enough money! You need " + mgold + " gold!");
-							return;
-						}
-						client.Out.SendCustomDialog("It costs " + mgold + " gold. Want you really buy?", new CustomDialogResponse(RespecDialogResponse));
-						client.Player.TempProperties.setProperty(BUY_RESPEC, true);
-						break;
-					}
+				//		long mgold = client.Player.RespecCost;
+				//		if ((client.Player.Gold + 1000 * client.Player.Platinum) < mgold)
+				//		{
+				//			DisplayMessage(client, "You don't have enough money! You need " + mgold + " gold!");
+				//			return;
+				//		}
+				//		client.Out.SendCustomDialog("It costs " + mgold + " gold. Want you really buy?", new CustomDialogResponse(RespecDialogResponse));
+				//		client.Player.TempProperties.setProperty(BUY_RESPEC, true);
+				//		break;
+				//	}
 				case "all":
 					{
-						// Check for full respecs.
-						if (client.Player.RespecAmountAllSkill < 1
-							&& !ServerProperties.Properties.FREE_RESPEC)
-						{
-							DisplayMessage(client, "You don't seem to have any full skill respecs available.");
-							return;
-						}
+                        if (client.Player.Level >= 50 || TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
+                        {
+                            // Check for full respecs.
+                            if ( client.Player.RespecAmountAllSkill < 1
+                                && !ServerProperties.Properties.FREE_RESPEC)
+                            {
+                                DisplayMessage(client, "You don't seem to have any full skill respecs available.");
+                                return;
+                            }
+                        }
 
-						client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
-						client.Player.TempProperties.setProperty(ALL_RESPEC, true);
+                        client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
+                        client.Player.TempProperties.setProperty(ALL_RESPEC, true);
+
 						break;
 					}
-				case "dol":
-					{
-						// Check for DOL respecs.
-						if (client.Player.RespecAmountDOL < 1
-							&& !ServerProperties.Properties.FREE_RESPEC)
-						{
-							DisplayMessage(client, "You don't seem to have any DOL respecs available.");
-							return;
-						}
+				//case "dol":
+				//	{
+				//		// Check for DOL respecs.
+				//		if (client.Player.RespecAmountDOL < 1
+				//			&& !ServerProperties.Properties.FREE_RESPEC)
+				//		{
+				//			DisplayMessage(client, "You don't seem to have any DOL respecs available.");
+				//			return;
+				//		}
 
-						client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
-						client.Player.TempProperties.setProperty(DOL_RESPEC, true);
-						break;
-					}
+				//		client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
+				//		client.Player.TempProperties.setProperty(DOL_RESPEC, true);
+				//		break;
+				//	}
 				case "realm":
 					{
-						if (client.Player.RespecAmountRealmSkill < 1
-							&& !ServerProperties.Properties.FREE_RESPEC)
-						{
-							DisplayMessage(client, "You don't seem to have any realm skill respecs available.");
-							return;
-						}
-
+                        if (client.Player.Level >= 50 || TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
+                        {
+                            if (client.Player.RespecAmountRealmSkill < 1
+                                && !ServerProperties.Properties.FREE_RESPEC)
+                            {
+                                DisplayMessage(client, "You don't seem to have any realm skill respecs available.");
+                                return;
+                            }
+                        }
 						client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
 						client.Player.TempProperties.setProperty(RA_RESPEC, true);
 						break;
 					}
-				case "champion":
-					{
-						if (ServerProperties.Properties.FREE_RESPEC)
-						{
-							client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
-							client.Player.TempProperties.setProperty(CHAMP_RESPEC, true);
-							break;
-						}
-						return;
-					}
+				//case "champion":
+				//	{
+				//		if (ServerProperties.Properties.FREE_RESPEC)
+				//		{
+				//			client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
+				//			client.Player.TempProperties.setProperty(CHAMP_RESPEC, true);
+				//			break;
+				//		}
+				//		return;
+				//	}
 				default:
 					{
 						// Check for single-line respecs.
