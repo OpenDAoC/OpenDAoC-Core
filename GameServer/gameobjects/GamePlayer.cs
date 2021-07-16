@@ -644,6 +644,20 @@ namespace DOL.GS
 			set { if (DBCharacter != null) DBCharacter.DeathCount = value; }
 		}
 
+        //public long PlayedTimeSinceLevel
+        //{
+        //    get { return DBCharacter != null ? DBCharacter.PlayedTimeSinceLevel : 0; }
+        //    set { if (DBCharacter != null) DBCharacter.PlayedTimeSinceLevel = PlayedTimeSinceLevel; }
+        //}
+
+        /// <summary>
+        /// Gets the last time this player leveled up
+        /// </summary>
+        public DateTime LastLevelUp
+        {
+            get { return DBCharacter != null ? DBCharacter.LastLevelUp : DateTime.MinValue; }
+            set { if (DBCharacter != null) DBCharacter.LastLevelUp = value; }
+        }
 		#endregion
 
 		#endregion
@@ -5314,6 +5328,8 @@ namespace DOL.GS
 								if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
 									subPet.SortSpells();
 			}
+
+            DBCharacter.PlayedTimeSinceLevel = 0;
 
 			// save player to database
 			SaveIntoDatabase();
@@ -10548,6 +10564,8 @@ namespace DOL.GS
 		{
 			set
 			{
+                if (value < CurrentRegion.WaterLevel)
+                    value = CurrentRegion.WaterLevel;
 				base.Z = value;
 				if (DBCharacter != null) DBCharacter.Zpos = base.Z;
 			}
@@ -10751,18 +10769,18 @@ namespace DOL.GS
 			{
 				//Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
 				//Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-				//if (CurrentRegion.Time - m_beginDrowningTick > 15000) // 15 sec
+				//if (CurrentRegion.Time - m_beginDrowningTick > 1000) // 15 sec
 				//{
-					//TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
-					//Out.SendCloseTimerWindow();
-					MoveTo(CurrentRegion.ID, X, Y, Z + 1, Heading);
-					IsDiving = false;
+                    //TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
+                    //Out.SendCloseTimerWindow();
+                    MoveTo(CurrentRegion.ID, X, Y, Z + 1, Heading);
+                    //IsDiving = false;
 					return 0;
 				//}
 				//else
-					//TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
+				//	TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
 			}
-			return 3000;
+			return 1000;
 		}
 
 		protected int HoldingBreathTimerCallback(RegionTimer callingTimer)
@@ -10784,17 +10802,19 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsDiving
 		{
-			get { return m_diving; }
+            get { return m_diving; }
 			set
 			{
-				if (m_diving != value)
-					Diving(waterBreath.Drowning);
-					//if (value && !CanBreathUnderWater)
-						//Diving(waterBreath.Holding);
-					//else
-						//Diving(waterBreath.Normal);
-				m_diving = value;
-			}
+                if (m_diving != value)
+                    Diving(waterBreath.Drowning);
+                    //if (value && !CanBreathUnderWater)
+                    //{
+                    //    Diving(waterBreath.Holding);
+                    //}
+                    //else
+                    //    Diving(waterBreath.Normal);
+                m_diving = value; 
+            }
 		}
 
 		protected bool m_canBreathUnderwater;
@@ -10847,7 +10867,7 @@ namespace DOL.GS
 					m_beginDrowningTick = CurrentRegion.Time;
 					if (m_drowningTimer == null)
 					{
-						//Out.SendTimerWindow("Drowning", 15);
+						//Out.SendTimerWindow("Drowning", 5);
 						m_drowningTimer = new RegionTimer(this);
 						m_drowningTimer.Callback = new RegionTimerCallback(DrowningTimerCallback);
 						m_drowningTimer.Start(1);
@@ -12202,10 +12222,29 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Saves the player's skills
+        /// <summary>
+		/// Subtracts the current time from the last time the character was saved
+		/// and adds it in the form of seconds to player.PlayedTime
+		/// for the /played level command.
 		/// </summary>
-		protected virtual void SaveSkillsToCharacter()
+		public long PlayedTimeSinceLevel
+        {
+            get
+            {
+                DateTime rightNow = DateTime.Now;
+                DateTime oldLast = LastPlayed;
+                // Get the total amount of time played between now and lastplayed
+                // This is safe as lastPlayed is updated on char load.
+                TimeSpan playaPlayed = rightNow.Subtract(oldLast);
+                TimeSpan newPlayed = playaPlayed + TimeSpan.FromSeconds(DBCharacter.PlayedTimeSinceLevel);
+                return (long)newPlayed.TotalSeconds;
+            }
+        }
+
+        /// <summary>
+        /// Saves the player's skills
+        /// </summary>
+        protected virtual void SaveSkillsToCharacter()
 		{
 			StringBuilder ab = new StringBuilder();
 			StringBuilder sp = new StringBuilder();
@@ -12751,6 +12790,8 @@ namespace DOL.GS
 				SaveSkillsToCharacter();
 				SaveCraftingSkills();
 				DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
+                DBCharacter.PlayedTimeSinceLevel = PlayedTimeSinceLevel;
+                DBCharacter.LastLevelUp = DateTime.Now;
 				DBCharacter.LastPlayed = DateTime.Now;
 
 				DBCharacter.ActiveWeaponSlot = (byte)((byte)ActiveWeaponSlot | (byte)ActiveQuiverSlot);
