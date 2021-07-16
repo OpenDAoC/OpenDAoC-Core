@@ -2137,8 +2137,16 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     foreach (Tuple<Spell, int, int> proc in style.Procs)
                     {
-                        dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
-                        dw.AddKeyValuePair("SpecialType", 1);
+                        if (clt.Player.CharacterClass.ID == proc.Item2)
+                        {
+                            dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
+                            dw.AddKeyValuePair("SpecialType", 1);                            
+                        }
+                        else if (proc.Item2 == 0 && !dw.Values.ContainsKey("SpecialNumber"))
+                        {
+                            dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
+                            dw.AddKeyValuePair("SpecialType", 1);                            
+                        }
                     }
                 }
             }
@@ -2168,7 +2176,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			switch(style.SpecialType)
 			{
 				case Style.eSpecialType.ExtendedRange:
-					return 128; // Extended Range für Reaver style
+					return 128; // Extended Range fÃ¼r Reaver style
 				case Style.eSpecialType.Taunt:
 					return style.SpecialValue;
 			}
