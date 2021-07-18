@@ -86,6 +86,13 @@ namespace DOL.GS.Commands
 									break;
 								}
 							#endregion Fighter
+							#region Commander
+							case "commander":
+								{
+									guard = new GuardCommander();
+									break;
+								}
+							#endregion Commander
 							#region Archer
 							case "archer":
 								{

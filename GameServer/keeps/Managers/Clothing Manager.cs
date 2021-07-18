@@ -58,7 +58,8 @@ namespace DOL.GS.Keeps
 		public static GameNpcInventoryTemplate Albion_Archer = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Albion_Caster = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Albion_Fighter = new GameNpcInventoryTemplate();
-		public static GameNpcInventoryTemplate Albion_Healer = new GameNpcInventoryTemplate();
+        public static GameNpcInventoryTemplate Albion_Commander = new GameNpcInventoryTemplate();
+        public static GameNpcInventoryTemplate Albion_Healer = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Albion_Stealther = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Albion_Lord = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Albion_FighterPK = new GameNpcInventoryTemplate();
@@ -69,7 +70,8 @@ namespace DOL.GS.Keeps
 		public static GameNpcInventoryTemplate Midgard_Archer = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Midgard_Caster = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Midgard_Fighter = new GameNpcInventoryTemplate();
-		public static GameNpcInventoryTemplate Midgard_Healer = new GameNpcInventoryTemplate();
+        public static GameNpcInventoryTemplate Midgard_Commander = new GameNpcInventoryTemplate();
+        public static GameNpcInventoryTemplate Midgard_Healer = new GameNpcInventoryTemplate();
         public static GameNpcInventoryTemplate Midgard_Hastener = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Midgard_Stealther = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Midgard_Lord = new GameNpcInventoryTemplate();
@@ -81,7 +83,8 @@ namespace DOL.GS.Keeps
 		public static GameNpcInventoryTemplate Hibernia_Archer = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Hibernia_Caster = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Hibernia_Fighter = new GameNpcInventoryTemplate();
-		public static GameNpcInventoryTemplate Hibernia_Healer = new GameNpcInventoryTemplate();
+        public static GameNpcInventoryTemplate Hibernia_Commander = new GameNpcInventoryTemplate();
+        public static GameNpcInventoryTemplate Hibernia_Healer = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Hibernia_Stealther = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Hibernia_Lord = new GameNpcInventoryTemplate();
 		public static GameNpcInventoryTemplate Hibernia_FighterPK = new GameNpcInventoryTemplate();
@@ -141,6 +144,24 @@ namespace DOL.GS.Keeps
                 Albion_Fighter = Albion_Fighter.CloseTemplate();
                 Albion_Fighter.GetItem(eInventorySlot.LeftHandWeapon).Object_Type = (int)eObjectType.Shield;
                 Albion_Fighter.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
+            }
+            #endregion
+            #region Commander
+            if (!Albion_Commander.LoadFromDatabase("albion_commander"))
+            {
+                Albion_Commander.AddNPCEquipment(eInventorySlot.Cloak, 3800);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.TorsoArmor, 662);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.LegsArmor, 663);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.ArmsArmor, 664);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.HandsArmor, 665);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.FeetArmor, 666);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.HeadArmor, 95);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 60);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.RightHandWeapon, 10);
+                Albion_Commander.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 649);
+                Albion_Commander = Albion_Commander.CloseTemplate();
+                Albion_Commander.GetItem(eInventorySlot.LeftHandWeapon).Object_Type = (int)eObjectType.Shield;
+                Albion_Commander.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
             }
             #endregion
             #region Lord
@@ -252,6 +273,24 @@ namespace DOL.GS.Keeps
                 Midgard_Fighter = Midgard_Fighter.CloseTemplate();
                 Midgard_Fighter.GetItem(eInventorySlot.LeftHandWeapon).Object_Type = (int)eObjectType.Shield;
                 Midgard_Fighter.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
+            }
+            #endregion
+            #region Commander
+            if (!Midgard_Commander.LoadFromDatabase("midgard_commander"))
+            {
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.Cloak, 3801);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.TorsoArmor, 668);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.LegsArmor, 2943);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.ArmsArmor, 2944);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.HandsArmor, 2945);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.FeetArmor, 2946);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.HeadArmor, 2874);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 60);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.RightHandWeapon, 313);
+                Midgard_Commander.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 572);
+                Midgard_Commander = Midgard_Commander.CloseTemplate();
+                Midgard_Commander.GetItem(eInventorySlot.LeftHandWeapon).Object_Type = (int)eObjectType.Shield;
+                Midgard_Commander.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
             }
             #endregion
             #region Lord
@@ -382,6 +421,24 @@ namespace DOL.GS.Keeps
                 Hibernia_Fighter.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
             }
             #endregion
+            #region Commander
+            if (!Hibernia_Commander.LoadFromDatabase("hibernia_commander"))
+            {
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.Cloak, 3802);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.TorsoArmor, 667);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.LegsArmor, 989);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.ArmsArmor, 990);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.HandsArmor, 991);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.FeetArmor, 992);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.HeadArmor, 1207);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 79);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.RightHandWeapon, 897);
+                Hibernia_Commander.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 476);
+                Hibernia_Commander = Hibernia_Commander.CloseTemplate();
+                Hibernia_Commander.GetItem(eInventorySlot.LeftHandWeapon).Object_Type = (int)eObjectType.Shield;
+                Hibernia_Commander.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
+            }
+            #endregion
             #region Lord
             if (!Hibernia_Lord.LoadFromDatabase("hibernia_lord"))
             {
@@ -480,7 +537,9 @@ namespace DOL.GS.Keeps
 								guard.Inventory = ClothingMgr.Albion_FighterPK.CloneTemplate();
 							else guard.Inventory = ClothingMgr.Albion_Fighter.CloneTemplate();
 						}
-						else if (guard is GuardLord || guard is MissionMaster)
+                        else if (guard is GuardCommander)
+                            guard.Inventory = ClothingMgr.Albion_Commander.CloneTemplate();
+                        else if (guard is GuardLord || guard is MissionMaster)
 							guard.Inventory = ClothingMgr.Albion_Lord.CloneTemplate();
 						else if (guard is GuardHealer)
 							guard.Inventory = ClothingMgr.Albion_Healer.CloneTemplate();
@@ -508,7 +567,9 @@ namespace DOL.GS.Keeps
 								guard.Inventory = ClothingMgr.Midgard_FighterPK.CloneTemplate();
 							else guard.Inventory = ClothingMgr.Midgard_Fighter.CloneTemplate();
 						}
-						else if (guard is GuardLord || guard is MissionMaster)
+                        else if (guard is GuardCommander)
+                            guard.Inventory = ClothingMgr.Midgard_Commander.CloneTemplate();
+                        else if (guard is GuardLord || guard is MissionMaster)
 							guard.Inventory = ClothingMgr.Midgard_Lord.CloneTemplate();
 						else if (guard is GuardHealer)
 							guard.Inventory = ClothingMgr.Midgard_Healer.CloneTemplate();
@@ -536,7 +597,9 @@ namespace DOL.GS.Keeps
 								guard.Inventory = ClothingMgr.Hibernia_FighterPK.CloneTemplate();
 							else guard.Inventory = ClothingMgr.Hibernia_Fighter.CloneTemplate();
 						}
-						else if (guard is GuardLord || guard is MissionMaster)
+                        else if (guard is GuardCommander)
+                            guard.Inventory = ClothingMgr.Hibernia_Commander.CloneTemplate();
+                        else if (guard is GuardLord || guard is MissionMaster)
 							guard.Inventory = ClothingMgr.Hibernia_Lord.CloneTemplate();
 						else if (guard is GuardHealer)
 							guard.Inventory = ClothingMgr.Hibernia_Healer.CloneTemplate();
@@ -641,7 +704,7 @@ namespace DOL.GS.Keeps
 				guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
 			else if (guard is GuardArcher)
 				guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
-			else if ((guard is GuardFighter || guard is GuardLord) && Util.Chance(50))
+			else if ((guard is GuardFighter || guard is GuardCommander || guard is GuardLord) && Util.Chance(50))
 				guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
 			else guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
 		}
