@@ -384,7 +384,8 @@ namespace DOL.GS
 				if (Brain is NecromancerPetBrain necroBrain)
 				{
 					StopCurrentSpellcast();
-					necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
+                    if (Brain.Body.IsCasting)
+					    necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
 
 					if(necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
@@ -405,12 +406,20 @@ namespace DOL.GS
 
 				if (Brain is NecromancerPetBrain necroBrain)
 				{
-					necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
+                    if (Brain.Body.IsCasting)
+					    necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
 
 					if (necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
 				}
 			}
+
+            NecromancerPetBrain tBrain = Brain as NecromancerPetBrain;
+
+            if (tBrain.AttackSpellsQueued)
+            {
+                tBrain.CheckAttackSpellQueue();
+            }
 
 			return base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
