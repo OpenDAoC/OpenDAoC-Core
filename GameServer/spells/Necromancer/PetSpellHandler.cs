@@ -118,7 +118,7 @@ namespace DOL.GS.Spells
                 {
                     spell.Level = Spell.Level;
                     petBrain.Notify(GameNPCEvent.PetSpell, this,
-                        new PetSpellEventArgs(spell, SpellLine, target));
+                        new PetSpellEventArgs(spell, SpellLine, target, Spell));
                 }
 			}
 
