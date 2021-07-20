@@ -1208,11 +1208,12 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
-					if (Caster is GamePlayer && !m_caster.IsWithinRadius(target, CalculateSpellRange()))
-					{
-						if (!quiet) MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
-						return false;
-					}
+					//Removed mid-cast range check - SuiteJ
+					//if (Caster is GamePlayer && !m_caster.IsWithinRadius(target, CalculateSpellRange()))
+					//{
+					//	if (!quiet) MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+					//	return false;
+					//}
 				}
 
 				switch (m_spell.Target.ToLower())
@@ -1418,11 +1419,12 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
-					if (Caster is GamePlayer && !m_caster.IsWithinRadius(target, CalculateSpellRange()))
-					{
-						if (!quiet) MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
-						return false;
-					}
+					//Removed mid-cast range check - SuiteJ
+					//if (Caster is GamePlayer && !m_caster.IsWithinRadius(target, CalculateSpellRange()))
+					//{
+					//	if (!quiet) MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+					//	return false;
+					//}
 				}
 
 				switch (m_spell.Target)
