@@ -70,11 +70,12 @@ namespace DOL.GS.RealmAbilities
 			{
 				switch (level)
 				{
-						case 1: return 0.10;
-						case 2: return 0.20;
-						case 3: return 0.30;
-						case 4: return 0.40;
-						case 5: return 0.50;
+						//atlas halving values
+						case 1: return 0.05;
+						case 2: return 0.10;
+						case 3: return 0.15;
+						case 4: return 0.20;
+						case 5: return 0.25;
 						default: return 0;
 				}
 			}
