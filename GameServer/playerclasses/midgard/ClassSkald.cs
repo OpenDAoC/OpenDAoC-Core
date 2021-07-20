@@ -1,3 +1,4 @@
+
 /*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
  *
@@ -49,7 +50,7 @@ namespace DOL.GS.PlayerClass
 
 		public override ushort MaxPulsingSpells
 		{
-			get { return 2; }
+			get { return 1; } //atlas down from 1
 		}
 
 		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
