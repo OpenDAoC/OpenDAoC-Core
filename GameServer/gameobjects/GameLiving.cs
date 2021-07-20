@@ -2141,8 +2141,20 @@ namespace DOL.GS
 				InterruptAction = 0;
 				return;
 			}
-			if (InterruptTime < CurrentRegion.Time + duration)
-				InterruptTime = CurrentRegion.Time + duration;
+
+			//modify interrupt chance by mob con
+			double mod = GetConLevel(attacker);
+			double chance = BaseInterruptChance;
+			chance += mod * 10;
+			chance = Math.Max(1, chance);
+			chance = Math.Min(99, chance);
+			if (attacker is GamePlayer) chance = 99;
+			
+			if (Util.Chance((int)chance))
+            {
+				if (InterruptTime < CurrentRegion.Time + duration)
+					InterruptTime = CurrentRegion.Time + duration;
+			}
 
 			if (CurrentSpellHandler != null)
 				CurrentSpellHandler.CasterIsAttacked(attacker);
