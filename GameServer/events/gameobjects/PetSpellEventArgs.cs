@@ -28,6 +28,7 @@ namespace DOL.Events
 		private Spell m_spell;
 		private SpellLine m_spellLine;
 		private GameLiving m_target;
+        private Spell m_parentSpell;
 
 		public PetSpellEventArgs(Spell spell, SpellLine spellLine, GameLiving target)
 		{
@@ -36,7 +37,15 @@ namespace DOL.Events
 			m_target = target;
 		}
 
-		public Spell Spell
+        public PetSpellEventArgs(Spell spell, SpellLine spellLine, GameLiving target, Spell parentSpell)
+        {
+            m_spell = spell;
+            m_spellLine = spellLine;
+            m_target = target;
+            m_parentSpell = parentSpell;
+        }
+
+        public Spell Spell
 		{
 			get { return m_spell; }
 		}
@@ -50,5 +59,10 @@ namespace DOL.Events
 		{
 			get { return m_target; }
 		}
+
+        public Spell ParentSpell
+        {
+            get { return m_parentSpell; }
+        }
 	}
 }
