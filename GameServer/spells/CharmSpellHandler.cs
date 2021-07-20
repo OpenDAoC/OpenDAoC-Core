@@ -125,11 +125,11 @@ namespace DOL.GS.Spells
         }
 
         /// <summary>
-        /// All checks before any casting begins
+        /// All checks after casting finishes
         /// </summary>
         /// <param name="selectedTarget"></param>
         /// <returns></returns>
-        public override bool CheckBeginCast(GameLiving selectedTarget)
+        public override bool CheckEndCast(GameLiving selectedTarget)
         {
         	// check cast target
             if (selectedTarget == null || (selectedTarget != null && !selectedTarget.IsAlive))
@@ -151,7 +151,7 @@ namespace DOL.GS.Spells
                 ((GamePlayer)Caster).CommandNpcRelease();
             }
 
-            if (!base.CheckBeginCast(selectedTarget)) 
+            if (!base.CheckEndCast(selectedTarget)) 
             	return false;
 
             if (Caster is GamePlayer && ((GamePlayer)Caster).ControlledBrain != null)
