@@ -66,12 +66,12 @@ namespace DOL.GS.RealmAbilities
 			{
 				switch (level)
 				{
-						case 1: return 4;
+						case 1: return 6;
 						case 2: return 12;
-						case 3: return 22;
-						case 4: return 34;
-						case 5: return 48;
-						default: return 48;
+						case 3: return 18;
+						case 4: return 24;
+						case 5: return 30;
+						default: return 30;
 				}
 			}
 		}
