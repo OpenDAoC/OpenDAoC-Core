@@ -6356,10 +6356,10 @@ namespace DOL.GS
 				Out.SendCloseTimerWindow();
 			}
 
-			AttackData ad = base.MakeAttack(target, weapon, style, effectiveness * Effectiveness, interruptDuration, dualWield);
+			AttackData ad = base.MakeAttack(target, weapon, style, effectiveness * Effectiveness * (1 + CharacterClass.WeaponSkillBase / 20 / 10), interruptDuration, dualWield);
 			
 			//Add weapon table damage
-            		ad.Damage *=  (1 + CharacterClass.WeaponSkillBase / 20 / 10);
+            		//ad.Damage *=  (1 + CharacterClass.WeaponSkillBase / 20 / 10);
 
 			//Clear the styles for the next round!
 			NextCombatStyle = null;
