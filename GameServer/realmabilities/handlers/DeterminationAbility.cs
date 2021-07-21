@@ -44,15 +44,15 @@ namespace DOL.GS.RealmAbilities
 			{
 				int amount = 0;
 				if (level >= 1)
-					amount += 4;
+					amount += 15;
 				if (level >= 2)
-					amount += 4;
+					amount += 15;
 				if (level >= 3)
-					amount += 12;
+					amount += 15;
 				if (level >= 4)
-					amount += 18;
+					amount += 15;
 				if (level >= 5)
-					amount += 17;
+					amount += 15;
 				return amount;
 			}
 		}
