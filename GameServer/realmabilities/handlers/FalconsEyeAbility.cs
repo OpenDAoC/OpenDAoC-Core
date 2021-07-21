@@ -14,37 +14,29 @@ namespace DOL.GS.RealmAbilities
 			: base(dba, level, eProperty.CriticalSpellHitChance)
 		{
 		}
-
+		public override int CostForUpgrade(int level)
+		{
+			switch (level)
+			{
+				case 0: return 1;
+				case 1: return 3;
+				case 2: return 6;
+				case 3: return 10;
+				case 4: return 14;
+				default: return 1000;
+			}
+		}
 		public override int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
-			if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+			switch (level)
 			{
-				switch (level)
-				{
-						case 1: return 3;
-						case 2: return 6;
-						case 3: return 9;
-						case 4: return 13;
-						case 5: return 17;
-						case 6: return 22;
-						case 7: return 27;
-						case 8: return 33;
-						case 9: return 39;
-						default: return 39;
-				}
-			}
-			else
-			{
-				switch (level)
-				{
-						case 1: return 5;
-						case 2: return 10;
-						case 3: return 15;
-						case 4: return 20;
-						case 5: return 25;
-						default: return 25;
-				}
+					case 1: return 5;
+					case 2: return 10;
+					case 3: return 15;
+					case 4: return 20;
+					case 5: return 25;
+					default: return 25;
 			}
 		}
 

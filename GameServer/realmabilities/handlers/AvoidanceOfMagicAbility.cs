@@ -29,36 +29,31 @@ namespace DOL.GS.RealmAbilities
 
 		protected override string ValueUnit { get { return "%"; } }
 
+		public override int CostForUpgrade(int level)
+		{
+			switch (level)
+			{
+				case 0: return 1;
+				case 1: return 3;
+				case 2: return 6;
+				case 3: return 10;
+				case 4: return 14;
+				default: return 1000;
+			}
+		}
+
 		public override int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
-			if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+
+			switch (level)
 			{
-				switch (level)
-				{
-						case 1: return 2;
-						case 2: return 3;
-						case 3: return 5;
-						case 4: return 7;
-						case 5: return 10;
-						case 6: return 12;
-						case 7: return 15;
-						case 8: return 17;
-						case 9: return 20;
-						default: return 20;
-				}
-			}
-			else
-			{
-				switch (level)
-				{
-						case 1: return 3;
-						case 2: return 6;
-						case 3: return 9;
-						case 4: return 12;
-						case 5: return 15;
-						default: return 15;
-				}
+					case 1: return 3;
+					case 2: return 6;
+					case 3: return 9;
+					case 4: return 12;
+					case 5: return 15;
+					default: return 15;
 			}
 		}
 	}
@@ -85,36 +80,31 @@ namespace DOL.GS.RealmAbilities
 
 		protected override string ValueUnit { get { return "%"; } }
 
+		public override int CostForUpgrade(int level)
+		{
+			switch (level)
+			{
+				case 0: return 1;
+				case 1: return 3;
+				case 2: return 6;
+				case 3: return 10;
+				case 4: return 14;
+				default: return 1000;
+			}
+		}
+
 		public override int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
-			if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+
+			switch (level)
 			{
-				switch (level)
-				{
-						case 1: return 2;
-						case 2: return 4;
-						case 3: return 6;
-						case 4: return 9;
-						case 5: return 12;
-						case 6: return 16;
-						case 7: return 20;
-						case 8: return 25;
-						case 9: return 30;
-						default: return 30;
-				}
-			}
-			else
-			{
-				switch (level)
-				{
-						case 1: return 2;
-						case 2: return 5;
-						case 3: return 12;
-						case 4: return 19;
-						case 5: return 28;
-						default: return 28;
-				}
+				case 1: return 3;
+				case 2: return 6;
+				case 3: return 9;
+				case 4: return 12;
+				case 5: return 15;
+				default: return 15;
 			}
 		}
 	}

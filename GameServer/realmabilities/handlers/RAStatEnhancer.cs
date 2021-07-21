@@ -42,28 +42,22 @@ namespace DOL.GS.RealmAbilities
 				return list;
 			}
 		}
-
+		public override int CostForUpgrade(int level)
+		{
+				switch (level)
+				{
+					case 0: return 1;
+					case 1: return 3;
+					case 2: return 6;
+					case 3: return 10;
+					case 4: return 14;
+					default: return 1000;
+				}
+		}
 		public virtual int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
-			if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
-			{
-				switch (level)
-				{
-						case 1: return 4;
-						case 2: return 8;
-						case 3: return 12;
-						case 4: return 17;
-						case 5: return 22;
-						case 6: return 28;
-						case 7: return 34;
-						case 8: return 41;
-						case 9: return 48;
-						default: return 48;
-				}
-			}
-			else
-			{
+
 				switch (level)
 				{
 						case 1: return 6;
@@ -73,7 +67,6 @@ namespace DOL.GS.RealmAbilities
 						case 5: return 30;
 						default: return 30;
 				}
-			}
 		}
 
 		/// <summary>

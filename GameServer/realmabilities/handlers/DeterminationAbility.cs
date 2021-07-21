@@ -21,40 +21,34 @@ namespace DOL.GS.RealmAbilities
 
 		protected override string ValueUnit { get { return "%"; } }
 
+		public override int CostForUpgrade(int level)
+		{
+			switch (level)
+			{
+				case 0: return 1;
+				case 1: return 3;
+				case 2: return 6;
+				case 3: return 10;
+				case 4: return 14;
+				default: return 1000;
+			}
+		}
 		public override int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
-			if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
-			{
-				switch (level)
-				{
-						case 1: return 4;
-						case 2: return 8;
-						case 3: return 12;
-						case 4: return 17;
-						case 5: return 23;
-						case 6: return 30;
-						case 7: return 38;
-						case 8: return 46;
-						case 9: return 55;
-						default: return 55;
-				}
-			}
-			else
-			{
-				int amount = 0;
-				if (level >= 1)
-					amount += 15;
-				if (level >= 2)
-					amount += 15;
-				if (level >= 3)
-					amount += 15;
-				if (level >= 4)
-					amount += 15;
-				if (level >= 5)
-					amount += 15;
-				return amount;
-			}
+
+			int amount = 0;
+			if (level >= 1)
+				amount += 15;
+			if (level >= 2)
+				amount += 15;
+			if (level >= 3)
+				amount += 15;
+			if (level >= 4)
+				amount += 15;
+			if (level >= 5)
+				amount += 15;
+			return amount;
 		}
 	}
 }
