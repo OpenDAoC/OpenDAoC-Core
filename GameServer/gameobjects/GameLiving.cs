@@ -1809,7 +1809,7 @@ namespace DOL.GS
 				}
 				damage *= (lowerboundary + Util.Random(50)) * 0.01;
 				ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
-				damage += ad.Modifier;
+				//damage += ad.Modifier;
 				// RA resist check
 				int resist = (int)(damage * ad.Target.GetDamageResist(GetResistTypeForDamage(ad.DamageType)) * -0.01);
 
@@ -1821,11 +1821,12 @@ namespace DOL.GS
 				damage += resist;
 				damage += resistModifier;
 				ad.Modifier += resist;
+				damage += ad.Modifier;
 				ad.Damage = (int)damage;
 
 				// apply total damage cap
 				ad.UncappedDamage = ad.Damage;
-				ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon) * effectiveness));
+				ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon)/* * effectiveness*/));
 
 				if ((this is GamePlayer || (this is GameNPC && (this as GameNPC).Brain is IControlledBrain && this.Realm != 0)) && target is GamePlayer)
 				{
