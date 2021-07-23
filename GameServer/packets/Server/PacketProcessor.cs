@@ -95,11 +95,7 @@ namespace DOL.GS.PacketHandler
 
             m_udpCounter = 0;
 			//TODO set encoding based on client version in the future :)
-			if (client.Version < GameClient.eClientVersion.Version1110)
-				m_encoding = new PacketEncoding168();
-			else
-				m_encoding = new PacketEncoding1110();
-
+			m_encoding = new PacketEncoding168();
 			m_asyncUdpCallback = new AsyncCallback(AsyncUdpSendCallback);
 			m_tcpSendBuffer = client.Server.AcquirePacketBuffer();
 			m_udpSendBuffer = client.Server.AcquirePacketBuffer();
@@ -368,12 +364,11 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-				m_encoding.EncryptPacket(buf, 0, false);
+				//buf = m_encoding.EncryptPacket(buf, false);
 
 				try
 				{
-					var packetLength = (buf[0] << 8) + buf[1] + 3;
-					Statistics.BytesOut += packetLength;
+					Statistics.BytesOut += buf.Length;
 					Statistics.PacketsOut++;
 
 					lock (((ICollection)m_tcpQueue).SyncRoot)
@@ -387,11 +382,11 @@ namespace DOL.GS.PacketHandler
 						m_sendingTcp = true;
 					}
 
-					Buffer.BlockCopy(buf, 0, m_tcpSendBuffer, 0, packetLength);
+					Buffer.BlockCopy(buf, 0, m_tcpSendBuffer, 0, buf.Length);
 
 					int start = Environment.TickCount;
 
-					m_client.Socket.BeginSend(m_tcpSendBuffer, 0, packetLength, SocketFlags.None, m_asyncTcpCallback, m_client);
+					m_client.Socket.BeginSend(m_tcpSendBuffer, 0, buf.Length, SocketFlags.None, m_asyncTcpCallback, m_client);
 
 					int took = Environment.TickCount - start;
 					if (took > 100 && log.IsWarnEnabled)
@@ -438,7 +433,7 @@ namespace DOL.GS.PacketHandler
                 if (client.IsConnected)
                     sent = client.Socket.EndSend(ar);
 
-				int dataLength = 0;
+				int count = 0;
 				byte[] data = pakProc.m_tcpSendBuffer;
 
 				if (data == null)
@@ -448,12 +443,12 @@ namespace DOL.GS.PacketHandler
 				{
 					if (q.Count > 0)
 					{
-						// log.WarnFormat("async sent {0} bytes, sending queued packets count: {1}", sent, q.Count);
-						dataLength = CombinePackets(data, q, data.Length, client);
+//						Log.WarnFormat("async sent {0} bytes, sending queued packets count: {1}", sent, q.Count);
+						count = CombinePackets(data, q, data.Length, client);
 					}
-					if (dataLength <= 0)
+					if (count <= 0)
 					{
-						// log.WarnFormat("async sent {0} bytes", sent);
+//						Log.WarnFormat("async sent {0} bytes", sent);
 						pakProc.m_sendingTcp = false;
 						return;
 					}
@@ -461,7 +456,7 @@ namespace DOL.GS.PacketHandler
 
 				int start = Environment.TickCount;
 
-				client.Socket.BeginSend(data, 0, dataLength, SocketFlags.None, m_asyncTcpCallback, client);
+				client.Socket.BeginSend(data, 0, count, SocketFlags.None, m_asyncTcpCallback, client);
 
 				int took = Environment.TickCount - start;
 				if (took > 100 && log.IsWarnEnabled)
@@ -500,12 +495,11 @@ namespace DOL.GS.PacketHandler
 			do
 			{
 				var pak = q.Peek();
-				var packetLength = (pak[0] << 8) + pak[1] + 3;
-				if (i + packetLength > buf.Length)
+				if (i + pak.Length > buf.Length)
 				{
 					if (i == 0)
 					{
-						log.WarnFormat("packet size {0} > buf size {1}, ignored; client: {2}\n{3}", packetLength, buf.Length, client,
+						log.WarnFormat("packet size {0} > buf size {1}, ignored; client: {2}\n{3}", pak.Length, buf.Length, client,
 						               Marshal.ToHexDump("packet data:", pak));
 						q.Dequeue();
 						continue;
@@ -513,8 +507,8 @@ namespace DOL.GS.PacketHandler
 					break;
 				}
 
-				Buffer.BlockCopy(pak, 0, buf, i, packetLength);
-				i += packetLength;
+				Buffer.BlockCopy(pak, 0, buf, i, pak.Length);
+				i += pak.Length;
 
 				q.Dequeue();
 			} while (q.Count > 0);
@@ -582,13 +576,14 @@ namespace DOL.GS.PacketHandler
 		/// <param name="isForced">Force UDP packet if <code>true</code>, else packet can be sent over TCP</param>
 		public void SendUDP(byte[] buf, bool isForced)
 		{
-			// log.WarnFormat("Send UDP: {0}, confirm:{1}, endpoint: {2}", isForced, m_client.UdpConfirm, m_client.UdpEndPoint);
+//			Log.FatalFormat("Send UDP: {0}", isForced);
 
 			//No udp available, send via TCP instead!
 			//bool flagLostUDP = false;
 			if (m_client.UdpEndPoint == null || !(isForced || m_client.UdpConfirm))
 			{
-				// log.WarnFormat("UDP sent over TCP");
+//				Log.FatalFormat("UDP sent over TCP");
+				//DOLConsole.WriteWarning("Trying to send UDP when UDP isn't initialized!");
 				var newbuf = new byte[buf.Length - 2];
 				newbuf[0] = buf[0];
 				newbuf[1] = buf[1];
@@ -600,7 +595,7 @@ namespace DOL.GS.PacketHandler
 			
 			if (m_client.ClientState == GameClient.eClientState.Playing)
 			{
-				if ((DateTime.Now.Ticks - m_client.UdpPingTime) >  60 * 1000 * 10_000L) // 1min
+				if ((DateTime.Now.Ticks - m_client.UdpPingTime) > 500000000L) // really 24s, not 50s
 				{
 					//flagLostUDP = true;
 					m_client.UdpConfirm = false;
@@ -617,7 +612,7 @@ namespace DOL.GS.PacketHandler
 			//fill the udpCounter
 			buf[2] = (byte) (m_udpCounter >> 8);
 			buf[3] = (byte) m_udpCounter;
-			m_encoding.EncryptPacket(buf, 0, true);
+			//buf = m_encoding.EncryptPacket(buf, true);
 
 			Statistics.BytesOut += buf.Length;
 			Statistics.PacketsOut++;
@@ -759,7 +754,13 @@ namespace DOL.GS.PacketHandler
 						break;
 					}
 
-					m_encoding.DecryptPacket(buffer, curOffset, false); // decrypt inplace
+					// ** commented out because this hasn't been used in forever and crutching
+					// ** to it only hurts performance in a design that needs to be reworked
+					// ** anyways.                                               
+					// **                                                               - tobz
+					//var curPacket = new byte[packetLength];
+					//Buffer.BlockCopy(buffer, curOffset, curPacket, 0, packetLength);
+					//curPacket = m_encoding.DecryptPacket(buffer, false);
 
 					int packetEnd = curOffset + packetLength;
 
@@ -873,23 +874,6 @@ namespace DOL.GS.PacketHandler
 						var thread = (Thread) entry.Key;
 						var client = (GameClient) entry.Value;
 
-						// The use of the deprecated Suspend and Resume methods is necessary to get the StackTrace.
-						// Suspend/Resume are not being used for thread synchronization (very bad).
-						// It may be possible to get the StackTrace some other way, but this works for now
-						// So, the related warning is disabled
-						#pragma warning disable 0618
-						thread.Suspend();
-						StackTrace trace;
-						try
-						{
-							trace = new StackTrace(thread, true);
-						}
-						finally
-						{
-							thread.Resume();
-						}
-						#pragma warning restore 0618
-						
 						builder.Append("Stack for thread from account: ");
 						if (client != null && client.Account != null)
 						{
@@ -906,7 +890,7 @@ namespace DOL.GS.PacketHandler
 							builder.Append("null");
 						}
 						builder.Append("\n");
-						builder.Append(Util.FormatStackTrace(trace));
+						builder.Append(Util.GetFormattedStackTraceFrom(Thread.CurrentThread));
 						builder.Append("\n\n");
 					}
 					catch (Exception e)

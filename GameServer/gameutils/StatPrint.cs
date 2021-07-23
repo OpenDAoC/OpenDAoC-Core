@@ -61,13 +61,13 @@ namespace DOL.GS.GameEvents
 				m_timer = new Timer(new TimerCallback(PrintStats), null, 10000, 0);
 
 				// Create performance counters
-                if (m_systemCpuUsedCounter == null) m_systemCpuUsedCounter	= CreatePerformanceCounter("Processor",				"% processor time",		"_total");
-                if (m_processCpuUsedCounter == null) m_processCpuUsedCounter = CreatePerformanceCounter("Process", "% processor time", GetProcessCounterName());
-                if (m_memoryPages == null) m_memoryPages = CreatePerformanceCounter("Memory", "Pages/sec", null);
-                if (m_physycalDisk == null) m_physycalDisk = CreatePerformanceCounter("PhysicalDisk", "Disk Transfers/sec", "_Total");
+				if (m_systemCpuUsedCounter == null) m_systemCpuUsedCounter = CreatePerformanceCounter("Processor", "% processor time", "_total");
+				if (m_processCpuUsedCounter == null) m_processCpuUsedCounter = CreatePerformanceCounter("Process", "% processor time", GetProcessCounterName());
+				if (m_memoryPages == null) m_memoryPages = CreatePerformanceCounter("Memory", "Pages/sec", null);
+				if (m_physycalDisk == null) m_physycalDisk = CreatePerformanceCounter("PhysicalDisk", "Disk Transfers/sec", "_Total");
 			}
 		}
-		
+
 		/// <summary>
 		/// Find the process counter name
 		/// </summary>
@@ -77,7 +77,7 @@ namespace DOL.GS.GameEvents
 			Process process = Process.GetCurrentProcess();
 			int id = process.Id;
 			PerformanceCounterCategory perfCounterCat = new PerformanceCounterCategory("Process");
-			foreach(DictionaryEntry entry in perfCounterCat.ReadCategory()["id process"])
+			foreach (DictionaryEntry entry in perfCounterCat.ReadCategory()["id process"])
 			{
 				string processCounterName = (string)entry.Key;
 				if (((InstanceData)entry.Value).RawValue == id)
@@ -127,15 +127,15 @@ namespace DOL.GS.GameEvents
 					log.Warn("Time has not changed since last call of PrintStats");
 					time = 1; // prevent division by zero?
 				}
-				long inRate = (Statistics.BytesIn - m_lastBytesIn)/time;
-				long outRate = (Statistics.BytesOut - m_lastBytesOut)/time;
-				long inPckRate = (Statistics.PacketsIn - m_lastPacketsIn)/time;
-				long outPckRate = (Statistics.PacketsOut - m_lastPacketsOut)/time;
+				long inRate = (Statistics.BytesIn - m_lastBytesIn) / time;
+				long outRate = (Statistics.BytesOut - m_lastBytesOut) / time;
+				long inPckRate = (Statistics.PacketsIn - m_lastPacketsIn) / time;
+				long outPckRate = (Statistics.PacketsOut - m_lastPacketsOut) / time;
 				m_lastBytesIn = Statistics.BytesIn;
 				m_lastBytesOut = Statistics.BytesOut;
 				m_lastPacketsIn = Statistics.PacketsIn;
 				m_lastPacketsOut = Statistics.PacketsOut;
-				
+
 				// Get threadpool info
 				int iocpCurrent, iocpMin, iocpMax;
 				int poolCurrent, poolMin, poolMax;
@@ -149,12 +149,12 @@ namespace DOL.GS.GameEvents
 				if (log.IsInfoEnabled)
 				{
 					StringBuilder stats = new StringBuilder(256)
-						.Append("-stats- Mem=").Append(GC.GetTotalMemory(false)/1024/1024).Append("MB")
+						.Append("-stats- Mem=").Append(GC.GetTotalMemory(false) / 1024 / 1024).Append("MB")
 						.Append("  Clients=").Append(GameServer.Instance.ClientCount)
-						.Append("  Down=").Append(inRate/1024).Append( "kb/s (" ).Append(Statistics.BytesIn/1024/1024).Append( "MB)" )
-						.Append("  Up=").Append(outRate/1024).Append( "kb/s (" ).Append(Statistics.BytesOut/1024/1024).Append( "MB)" )
-						.Append("  In=").Append(inPckRate).Append( "pck/s (" ).Append(Statistics.PacketsIn/1000).Append( "K)" )
-						.Append("  Out=").Append(outPckRate).Append( "pck/s (" ).Append(Statistics.PacketsOut/1000).Append( "K)" )
+						.Append("  Down=").Append(inRate / 1024).Append("kb/s (").Append(Statistics.BytesIn / 1024 / 1024).Append("MB)")
+						.Append("  Up=").Append(outRate / 1024).Append("kb/s (").Append(Statistics.BytesOut / 1024 / 1024).Append("MB)")
+						.Append("  In=").Append(inPckRate).Append("pck/s (").Append(Statistics.PacketsIn / 1000).Append("K)")
+						.Append("  Out=").Append(outPckRate).Append("pck/s (").Append(Statistics.PacketsOut / 1000).Append("K)")
 						.AppendFormat("  Pool={0}/{1}({2})", poolCurrent, poolMax, poolMin)
 						.AppendFormat("  IOCP={0}/{1}({2})", iocpCurrent, iocpMax, iocpMin)
 						.AppendFormat("  GH/OH={0}/{1}", globalHandlers, objectHandlers);
@@ -163,7 +163,7 @@ namespace DOL.GS.GameEvents
 					{
 						foreach (GameTimer.TimeManager mgr in WorldMgr.GetRegionTimeManagers())
 						{
-							TimerStats ts = (TimerStats) m_timerStatsByMgr[mgr];
+							TimerStats ts = (TimerStats)m_timerStatsByMgr[mgr];
 							if (ts == null)
 							{
 								ts = new TimerStats();
@@ -171,7 +171,7 @@ namespace DOL.GS.GameEvents
 							}
 							long curInvoked = mgr.InvokedCount;
 							long invoked = curInvoked - ts.InvokedCount;
-							stats.Append("  ").Append(mgr.Name).Append('=').Append(invoked/time).Append("t/s (")
+							stats.Append("  ").Append(mgr.Name).Append('=').Append(invoked / time).Append("t/s (")
 								.Append(mgr.ActiveTimers).Append(')');
 							ts.InvokedCount = curInvoked;
 						}
@@ -195,15 +195,15 @@ namespace DOL.GS.GameEvents
 					{
 						foreach (GameTimer.TimeManager mgr in WorldMgr.GetRegionTimeManagers())
 						{
-							TimerStats ts = (TimerStats) m_timerStatsByMgr[mgr];
+							TimerStats ts = (TimerStats)m_timerStatsByMgr[mgr];
 							if (ts == null) continue;
 
 							long curTick = mgr.CurrentTime;
 							if (ts.Time == curTick)
 							{
-								log.FatalFormat("{0} stopped ticking; timer stacktrace:\n{1}\n", mgr.Name, Util.FormatStackTrace(mgr.GetStacktrace()));
-								log.FatalFormat("NPC update stacktrace:\n{0}\n", Util.FormatStackTrace(WorldMgr.GetWorldUpdateStacktrace()));
-								log.FatalFormat("Relocate() stacktrace:\n{0}\n", Util.FormatStackTrace(WorldMgr.GetRelocateRegionsStacktrace()));
+								log.FatalFormat("{0} stopped ticking; timer stacktrace:\n{1}\n", mgr.Name, mgr.GetFormattedStackTrace());
+								log.FatalFormat("NPC update stacktrace:\n{0}\n", WorldMgr.GetFormattedWorldUpdateStackTrace());
+								log.FatalFormat("Relocate() stacktrace:\n{0}\n", WorldMgr.GetFormattedRelocateRegionsStackTrace());
 								log.FatalFormat("Packethandlers stacktraces:\n{0}\n", PacketProcessor.GetConnectionThreadpoolStacks());
 							}
 

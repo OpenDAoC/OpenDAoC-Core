@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#if NETFRAMEWORK
 using System;
 using System.Reflection;
 using System.IO;
@@ -46,13 +47,13 @@ namespace DOL.DOLServer
 			Directory.SetCurrentDirectory(dolserver.DirectoryName);
 			FileInfo configFile = new FileInfo("./config/serverconfig.xml");
 			GameServerConfiguration config = new GameServerConfiguration();
-			if(configFile.Exists)
+			if (configFile.Exists)
 			{
 				config.LoadFromXMLFile(configFile);
 			}
 			else
 			{
-				if(!configFile.Directory.Exists)
+				if (!configFile.Directory.Exists)
 					configFile.Directory.Create();
 				config.SaveToXMLFile(configFile);
 			}
@@ -98,3 +99,4 @@ namespace DOL.DOLServer
 		}
 	}
 }
+#endif
