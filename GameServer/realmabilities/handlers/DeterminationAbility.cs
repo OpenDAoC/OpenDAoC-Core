@@ -19,20 +19,28 @@ namespace DOL.GS.RealmAbilities
 		};
 		public DeterminationAbility(DBAbility dba, int level) : base(dba, level, properties) { }
 
+		public override int MaxLevel
+			{
+				get { return 5; }
+			}
+
 		protected override string ValueUnit { get { return "%"; } }
 
 		public override int CostForUpgrade(int level)
 		{
 			switch (level)
 			{
-				case 0: return 1;
-				case 1: return 3;
-				case 2: return 6;
-				case 3: return 10;
-				case 4: return 14;
+				case 0: return 0;
+				case 1: return 1;
+				case 2: return 3;
+				case 3: return 6;
+				case 4: return 10;
+				case 5: return 14;
 				default: return 1000;
 			}
 		}
+
+
 		public override int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
