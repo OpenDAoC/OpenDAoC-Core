@@ -42,7 +42,11 @@ namespace DOL.GS.Spells
 	public class SpellHandler : ISpellHandler
 	{
 		private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+		
+		//GameLoop Methods
+		private eCastState castState;
+		private double _castFinishedTickTime;
+		
 		/// <summary>
 		/// Maximum number of sub-spells to get delve info for.
 		/// </summary>
@@ -1517,6 +1521,26 @@ namespace DOL.GS.Spells
 
 
 		#endregion
+
+		//This is called after our pre-cast checks are done (Range, valid target, mana pre-req, and standing still?) and checks for the casting states
+		public void Tick()
+		{
+			Console.WriteLine("I'm in the gameloop and I'm pretty");
+			// if(eCastState)
+			// //Set the cast state
+			// switch (castState)
+			// {
+			// 	case eCastState.Casting:
+			// 		return;
+			// 	case eCastState.Starting:
+			// 		return;
+			// 	case eCastState.Finished:
+			// 		return;
+			// 	default:
+			// 		return;
+			// }
+			
+		}
 
 		/// <summary>
 		/// Calculates the power to cast the spell

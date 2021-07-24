@@ -43,7 +43,6 @@ using DOL.GS.ServerRules;
 using DOL.Language;
 using DOL.Mail;
 using DOL.Network;
-using GameServer.managers.GameLoopManager;
 using log4net;
 using log4net.Config;
 using log4net.Core;

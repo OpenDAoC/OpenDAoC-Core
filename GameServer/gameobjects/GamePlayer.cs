@@ -15761,6 +15761,9 @@ namespace DOL.GS
         {
             m_characterClass = charClass;
         }
+        
+        //Declare Components
+        public CastingComponent castingComponent;
 
 		/// <summary>
 		/// Creates a new player
@@ -15799,6 +15802,10 @@ namespace DOL.GS
 
 			m_saveInDB = true;
 			LoadFromDatabase(dbChar);
+			
+			//Component Initialization
+			castingComponent = new CastingComponent(this);
+			
 
 			CreateStatistics();
 		}

@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 		/// Should be used for StyleEffects, ...
 		/// </summary>
 		bool StartSpell(GameLiving target);
-
+		
 		/// <summary>
 		/// Starts the spell, without displaying cast message etc.
 		/// Should be used with spells attached to items (procs, /use, etc)
@@ -206,6 +206,9 @@ namespace DOL.GS.Spells
 		/// The Spell Caster
 		/// </summary>
 		GameLiving Caster { get; }
+
+		
+		void Tick();
 
 		/// <summary>
 		/// The power cost for this spell.

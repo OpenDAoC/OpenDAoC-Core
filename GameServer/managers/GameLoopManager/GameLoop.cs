@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace GameServer.managers.GameLoopManager
+namespace DOL.GS
 {
     public static class GameLoop
     {
@@ -9,18 +9,51 @@ namespace GameServer.managers.GameLoopManager
         
         //GameLoop tick timer -> will adjust based on the performance
         private static readonly long _interval = 25;
+        private static Timer _timerRef;
+        
+        //Max player count is 4000
+        public static GamePlayer[] players = new GamePlayer[4000];
+        private static int _lastPlayerIndex = 0;
         
         public static bool Init()
         {
-            var gameLoop = new Timer(Tick,null,0,_interval);
+            _timerRef = new Timer(Tick,null,0,_interval);
             return true;
         }
 
 
         private static void Tick(object obj)
         {
-            Console.WriteLine($"Tick {GameLoopTime}");
+            
+            //Because I'm lazy
+            var clients = WorldMgr.GetAllClients();
+            foreach (var client in clients)
+            {
+                GamePlayer p = client.Player;
+
+                if (p.castingComponent.spellHandler != null)
+                {
+                    p.castingComponent.Tick();
+                }
+            }
+            
+            
+            //Make sure the tick < gameLoopTick
+            //Timer.stopwatch()
+            for (int i = _lastPlayerIndex; i < players.Length; i++)
+            {
+                GamePlayer p = players[i];
+                
+                // //Check for spell
+                // if (p.SpellComponent?.SpellHandler != null)
+                // {
+                //     p.SpellComponent.Tick();
+                // }
+            }
+            //Console.WriteLine($"Tick {GameLoopTime}");
             GameLoopTime += _interval;
+            
+            //Timer.stopwatch() <-- check time, if time > _interval, interval goes up 5ms
         }
     }
 }
