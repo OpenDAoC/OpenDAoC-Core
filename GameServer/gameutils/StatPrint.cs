@@ -60,6 +60,9 @@ namespace DOL.GS.GameEvents
 				m_timerStatsByMgr = new Hashtable();
 				m_timer = new Timer(new TimerCallback(PrintStats), null, 10000, 0);
 
+				bool isLinux = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
+				if (isLinux) return;
+
 				// Create performance counters
 				if (m_systemCpuUsedCounter == null) m_systemCpuUsedCounter = CreatePerformanceCounter("Processor", "% processor time", "_total");
 				if (m_processCpuUsedCounter == null) m_processCpuUsedCounter = CreatePerformanceCounter("Process", "% processor time", GetProcessCounterName());

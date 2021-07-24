@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\DOLServer\**\*.cs" />
+    <Content Include=".\config\serverconfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory> 
+    </Content>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
