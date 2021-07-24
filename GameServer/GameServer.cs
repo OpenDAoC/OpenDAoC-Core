@@ -43,6 +43,7 @@ using DOL.GS.ServerRules;
 using DOL.Language;
 using DOL.Mail;
 using DOL.Network;
+using GameServer.managers.GameLoopManager;
 using log4net;
 using log4net.Config;
 using log4net.Core;
@@ -799,6 +800,12 @@ namespace DOL.GS
 				//Try to start the base server (open server port for connections)
 				if (!InitComponent(base.Start(), "base.Start()"))
 					return false;
+
+				//This is stupid and odd
+				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
+				{
+					return false;
+				}
 
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
