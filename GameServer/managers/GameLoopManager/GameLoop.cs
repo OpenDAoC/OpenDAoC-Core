@@ -29,11 +29,15 @@ namespace DOL.GS
             var clients = WorldMgr.GetAllClients();
             foreach (var client in clients)
             {
-                GamePlayer p = client.Player;
-
-                if (p.castingComponent.spellHandler != null)
+                
+                var p = client?.Player;
+                if (p == null)
                 {
-                    p.castingComponent.Tick();
+                    continue;
+                }
+                if (p.castingComponent?.spellHandler != null)
+                {
+                    p.castingComponent.Tick(GameLoopTime);
                 }
             }
             

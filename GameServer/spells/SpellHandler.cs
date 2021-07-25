@@ -91,6 +91,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected bool m_startReuseTimer = true;
 
+		private long _castStartTick;		
+
 		public bool StartReuseTimer
 		{
 			get { return m_startReuseTimer; }
@@ -189,7 +191,6 @@ namespace DOL.GS.Spells
 		/// The CastingCompleteEvent
 		/// </summary>
 		public event CastingCompleteCallback CastingCompleteEvent;
-		//public event SpellEndsCallback SpellEndsEvent;
 
 		/// <summary>
 		/// spell handler constructor
@@ -1523,24 +1524,57 @@ namespace DOL.GS.Spells
 		#endregion
 
 		//This is called after our pre-cast checks are done (Range, valid target, mana pre-req, and standing still?) and checks for the casting states
-		public void Tick()
+		public void Tick(long time)
 		{
-			Console.WriteLine("I'm in the gameloop and I'm pretty");
-			// if(eCastState)
-			// //Set the cast state
-			// switch (castState)
-			// {
-			// 	case eCastState.Casting:
-			// 		return;
-			// 	case eCastState.Starting:
-			// 		return;
-			// 	case eCastState.Finished:
-			// 		return;
-			// 	default:
-			// 		return;
-			// }
+			switch (castState)
+			{
+				case eCastState.Precast:
+					if (CheckBeginCast(m_spellTarget))
+					{
+						_castStartTick = time;
+						castState = eCastState.Casting;
+					}
+					else
+					{
+						castState = eCastState.Cleanup;
+					}
+					return;
+				case eCastState.Casting:
+					if (!CheckDuringCast(m_spellTarget))
+					{
+						castState = eCastState.Interrupted;
+					}
+
+					//Hardcode 3 second cast time for now
+					if (_castStartTick + 3000 > time)
+					{
+						castState = eCastState.Finished;
+					}
+					return;
+				case eCastState.Interrupted:
+					InterruptCasting();
+					castState = eCastState.Cleanup;
+					return;
+				case eCastState.Finished:
+					FinishSpellCast(m_spellTarget);
+					castState = eCastState.Cleanup;
+					return;
+				case eCastState.Cleanup:
+					CleanupSpellCast();
+					return;
+			}
 			
 		}
+
+		public void CleanupSpellCast()
+		{
+			if (Caster is GamePlayer p)
+			{
+				p.castingComponent.spellHandler = null;
+			}
+		}
+
+		
 
 		/// <summary>
 		/// Calculates the power to cast the spell
@@ -1649,6 +1683,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void InterruptCasting()
 		{
+			castState = eCastState.Interrupted;
 			if (m_interrupted || !IsCasting)
 				return;
 
@@ -1674,6 +1709,7 @@ namespace DOL.GS.Spells
 			}
 
 			m_startReuseTimer = false;
+			castState = eCastState.Interrupted;
 			OnAfterSpellCastSequence();
 		}
 

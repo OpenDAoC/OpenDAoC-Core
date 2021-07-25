@@ -2,9 +2,10 @@ namespace DOL.GS
 {
     public enum eCastState
     {
-        Starting,
+        Precast,
         Casting,
         Interrupted,
-        Finished
+        Finished,
+        Cleanup
     }
 }

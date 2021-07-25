@@ -152,7 +152,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					else if (sk is Spell)
 					{
 						if(sksib != null && sksib is SpellLine)
-							player.castingComponent.CastSpell((Spell)sk, (SpellLine)sksib);
+							player.castingComponent.StartCastSpell((Spell)sk, (SpellLine)sksib);
 					}
 					else if (sk is Style)
 					{
