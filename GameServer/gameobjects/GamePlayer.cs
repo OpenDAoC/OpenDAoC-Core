@@ -5450,11 +5450,11 @@ namespace DOL.GS
 			get { return DBCharacter != null ? DBCharacter.CancelStyle : false; }
 			set { if (DBCharacter != null) DBCharacter.CancelStyle = value; }
 		}
-		/// <summary>
-		/// Decides which style living will use in this moment
-		/// </summary>
-		/// <returns>Style to use or null if none</returns>
-		protected override Style GetStyleToUse()
+        /// <summary>
+        /// Decides which style living will use in this moment
+        /// </summary>
+        /// <returns>Style to use or null if none</returns>
+        public override Style GetStyleToUse()
 		{
 			InventoryItem weapon;
 			if (NextCombatStyle == null) return null;
@@ -6087,7 +6087,7 @@ namespace DOL.GS
 		/// Gets/Sets the target for current ranged attack
 		/// </summary>
 		/// <returns></returns>
-		protected override GameObject RangeAttackTarget
+		public override GameObject RangeAttackTarget
 		{
 			get
 			{
@@ -6099,12 +6099,12 @@ namespace DOL.GS
 			set { m_rangeAttackTarget.Target = value; }
 		}
 
-		/// <summary>
-		/// Check the range attack state and decides what to do
-		/// Called inside the AttackTimerCallback
-		/// </summary>
-		/// <returns></returns>
-		protected override eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
+        /// <summary>
+        /// Check the range attack state and decides what to do
+        /// Called inside the AttackTimerCallback
+        /// </summary>
+        /// <returns></returns>
+        public override eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
 		{
 			long holdStart = TempProperties.getProperty<long>(RANGE_ATTACK_HOLD_START);
 			if (holdStart == 0)
@@ -6209,7 +6209,7 @@ namespace DOL.GS
 		/// Send the messages to the GamePlayer
 		/// </summary>
 		/// <param name="ad"></param>
-		protected override void SendAttackingCombatMessages(AttackData ad)
+		public override void SendAttackingCombatMessages(AttackData ad)
 		{
 			base.SendAttackingCombatMessages(ad);
 			GameObject target = ad.Target;
@@ -6336,17 +6336,17 @@ namespace DOL.GS
             }
 		}
 
-		/// <summary>
-		/// Called whenever a single attack strike is made
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="weapon"></param>
-		/// <param name="style"></param>
-		/// <param name="effectiveness"></param>
-		/// <param name="interruptDuration"></param>
-		/// <param name="dualWield"></param>
-		/// <returns></returns>
-		protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+        /// <summary>
+        /// Called whenever a single attack strike is made
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="weapon"></param>
+        /// <param name="style"></param>
+        /// <param name="effectiveness"></param>
+        /// <param name="interruptDuration"></param>
+        /// <param name="dualWield"></param>
+        /// <returns></returns>
+        public override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
 		{
 			if (IsCrafting)
 			{
@@ -6483,7 +6483,9 @@ namespace DOL.GS
 										{
 											effectiveness *= 2;
 										}
-										new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
+                                        //new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
+                                        //if (GameServer.ServerRules.IsAllowedToAttack(this, target as GameLiving, false))
+                                            attackComponent.weaponAction = new WeaponAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 1000);
 									}
 								}
 							}
@@ -6527,14 +6529,14 @@ namespace DOL.GS
 		}
 
 
-		/// <summary>
-		/// Try and execute a weapon style
-		/// </summary>
-		/// <param name="style"></param>
-		public virtual void ExecuteWeaponStyle(Style style)
-		{
-			StyleProcessor.TryToUseStyle(this, style);
-		}
+		///// <summary>
+		///// Try and execute a weapon style
+		///// </summary>
+		///// <param name="style"></param>
+		//public virtual void ExecuteWeaponStyle(Style style)
+		//{
+		//	StyleProcessor.TryToUseStyle(this, style);
+		//}
 
 		/// <summary>
 		/// Calculates melee critical damage of this player
@@ -8078,14 +8080,14 @@ namespace DOL.GS
 
 			if (spell.SpellType == "StyleHandler" || spell.SpellType == "MLStyleHandler")
 			{
-				Style style = SkillBase.GetStyleByID((int)spell.Value, CharacterClass.ID);
-				//Andraste - Vico : try to use classID=0 (easy way to implement CL Styles)
-				if (style == null) style = SkillBase.GetStyleByID((int)spell.Value, 0);
-				if (style != null)
-				{
-					StyleProcessor.TryToUseStyle(this, style);
-				}
-				else { Out.SendMessage("That style is not implemented!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow); }
+				//Style style = SkillBase.GetStyleByID((int)spell.Value, CharacterClass.ID);
+				////Andraste - Vico : try to use classID=0 (easy way to implement CL Styles)
+				//if (style == null) style = SkillBase.GetStyleByID((int)spell.Value, 0);
+				//if (style != null)
+				//{
+				//	StyleProcessor.TryToUseStyle(this, style);
+				//}
+				//else { Out.SendMessage("That style is not implemented!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow); }
 			}
 			else if (spell.SpellType == "BodyguardHandler")
 			{
@@ -8907,7 +8909,8 @@ namespace DOL.GS
 							{
 								RangedAttackState = eRangedAttackState.Fire;
 								StopCurrentSpellcast();
-								m_attackAction.Start(1);
+								//m_attackAction.Start(1);
+                                attackComponent.attackAction.StartTime = 1;
 							}
 							else if (RangedAttackState == eRangedAttackState.Aim)
 							{
@@ -10677,10 +10680,12 @@ namespace DOL.GS
 					AttackData ad = TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
 					if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
 					{
-						//Does the target can be attacked ?
-						if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && m_attackAction != null)
-						{
-							m_attackAction.Start(1);
+                        //Does the target can be attacked ?
+                        //if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && m_attackAction != null)
+                        if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && attackComponent.attackAction != null)
+                        {
+							//m_attackAction.Start(1);
+                            attackComponent.attackAction.StartTime = 1;
 						}
 					}
 				}
@@ -11064,10 +11069,12 @@ namespace DOL.GS
 					AttackData ad = TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
 					if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
 					{
-						//Does the target can be attacked ?
-						if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && m_attackAction != null)
-						{
-							m_attackAction.Start(1);
+                        //Does the target can be attacked ?
+                        //if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && m_attackAction != null)
+                        if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && attackComponent.attackAction != null)
+                        {
+							//m_attackAction.Start(1);
+                            attackComponent.attackAction.StartTime = 1;
 						}
 					}
 				}
@@ -15764,6 +15771,7 @@ namespace DOL.GS
         
         //Declare Components
         public CastingComponent castingComponent;
+        
 
 		/// <summary>
 		/// Creates a new player
@@ -15805,7 +15813,7 @@ namespace DOL.GS
 			
 			//Component Initialization
 			castingComponent = new CastingComponent(this);
-			
+            attackComponent = new AttackComponent(this);
 
 			CreateStatistics();
 		}

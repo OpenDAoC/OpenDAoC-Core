@@ -166,10 +166,10 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Adds additional aggro to melee attacks if pet is set to taunt
-		/// </summary>
-		protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+        /// <summary>
+        /// Adds additional aggro to melee attacks if pet is set to taunt
+        /// </summary>
+        public override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
 		{
 			AttackData ad = base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
 

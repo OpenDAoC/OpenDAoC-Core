@@ -1608,7 +1608,8 @@ namespace DOL.GS
 				AttackData ad = (AttackData)TempProperties.getProperty<object>(LAST_ATTACK_DATA, null);
 				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange)
 				{
-					m_attackAction.Start(1);// schedule for next tick
+					//m_attackAction.Start(1);// schedule for next tick
+                    attackComponent.attackAction.StartTime = 1;
 				}
 			}
 			//sirru
@@ -4557,8 +4558,10 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void HoldAttack()
 		{
-			if (m_attackAction != null)
-				m_attackAction.Stop();
+			//if (m_attackAction != null)
+			//	m_attackAction.Stop();
+            if (attackComponent.attackAction != null)
+                attackComponent.attackAction.CleanupAttackAction();
 			StopFollowing();
 		}
 
@@ -4567,10 +4570,12 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void ContinueAttack(GameObject target)
 		{
-			if (m_attackAction != null && target != null)
-			{
-				Follow(target, STICKMINIMUMRANGE, MaxDistance);
-				m_attackAction.Start(1);
+			//if (m_attackAction != null && target != null)
+            if (attackComponent.attackAction != null && target != null)
+            {
+			    Follow(target, STICKMINIMUMRANGE, MaxDistance);
+			    //m_attackAction.Start(1);
+                attackComponent.attackAction.StartTime = 1;
 			}
 		}
 
@@ -5166,7 +5171,7 @@ namespace DOL.GS
 		/// Picks a style, prioritizing reactives an	d chains over positionals and anytimes
 		/// </summary>
 		/// <returns>Selected style</returns>
-		protected override Style GetStyleToUse()
+		public override Style GetStyleToUse()
 		{
 			if (m_styles == null || m_styles.Count < 1 || TargetObject == null)
 				return null;

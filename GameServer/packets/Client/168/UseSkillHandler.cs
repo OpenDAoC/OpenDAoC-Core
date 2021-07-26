@@ -156,7 +156,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else if (sk is Style)
 					{
-						player.ExecuteWeaponStyle((Style)sk);
+						player.attackComponent.ExecuteWeaponStyle((Style)sk);
 					}
 						
 				}
@@ -308,7 +308,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else if (sk is Style)
 					{
-						player.ExecuteWeaponStyle((Style)sk);
+						player.attackComponent.ExecuteWeaponStyle((Style)sk);
 					}
 						
 				}

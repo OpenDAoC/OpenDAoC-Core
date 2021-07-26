@@ -46,11 +46,13 @@ namespace DOL.GS
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		#region Combat
-		/// <summary>
-		/// Holds the AttackData object of last attack
-		/// </summary>
-		public const string LAST_ATTACK_DATA = "LastAttackData";
+        public AttackComponent attackComponent;
+
+        #region Combat
+        /// <summary>
+        /// Holds the AttackData object of last attack
+        /// </summary>
+        public const string LAST_ATTACK_DATA = "LastAttackData";
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -232,11 +234,14 @@ namespace DOL.GS
 			/// </summary>
 			Potion = 3
 		}
-		/// <summary>
-		/// Holds all the ways this living can
-		/// be healed
-		/// </summary>
-		public enum eManaChangeType : byte
+
+        
+
+        /// <summary>
+        /// Holds all the ways this living can
+        /// be healed
+        /// </summary>
+        public enum eManaChangeType : byte
 		{
 			/// <summary>
 			/// Unknown mana change
@@ -574,7 +579,7 @@ namespace DOL.GS
 		/// <summary>
 		/// AttackAction used for making an attack every weapon speed intervals
 		/// </summary>
-		protected AttackAction m_attackAction;
+		//protected AttackAction m_attackAction;
 		/// <summary>
 		/// The objects currently attacking this living
 		/// To be more exact, the objects that are in combat
@@ -582,10 +587,12 @@ namespace DOL.GS
 		/// </summary>
 		protected readonly List<GameObject> m_attackers;
 
-		/// <summary>
-		/// Returns the current active weapon slot of this living
-		/// </summary>
-		public virtual eActiveWeaponSlot ActiveWeaponSlot
+        
+
+        /// <summary>
+        /// Returns the current active weapon slot of this living
+        /// </summary>
+        public virtual eActiveWeaponSlot ActiveWeaponSlot
 		{
 			get { return m_activeWeaponSlot; }
 		}
@@ -787,13 +794,14 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int SwingTimeLeft
 		{
-			get { return (m_attackAction != null && m_attackAction.IsAlive) ? m_attackAction.TimeUntilElapsed : 0; }
+			//get { return (m_attackAction != null && m_attackAction.IsAlive) ? m_attackAction.TimeUntilElapsed : 0; }
+            get { return attackComponent.attackAction != null ? (int)attackComponent.attackAction.TimeUntilStart : 0; }
 		}
 		/// <summary>
 		/// Decides which style living will use in this moment
 		/// </summary>
 		/// <returns>Style to use or null if none</returns>
-		protected virtual Style GetStyleToUse()
+		public virtual Style GetStyleToUse()
 		{
 			InventoryItem weapon;
 			if (NextCombatStyle == null) return null;
@@ -1139,8 +1147,9 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsAttacking
 		{
-			get { return (AttackState && (m_attackAction != null) && m_attackAction.IsAlive); }
-		}
+			//get { return (AttackState && (m_attackAction != null) && m_attackAction.IsAlive); }
+            get { return (AttackState && (attackComponent.attackAction != null)); }
+        }
 
 		/// <summary>
 		/// Gets the effective AF of this living
@@ -1621,24 +1630,25 @@ namespace DOL.GS
 			set { }
 		}
 
-		/// <summary>
-		/// This method is called to make an attack, it is called from the
-		/// attacktimer and should not be called manually
-		/// </summary>
-		/// <param name="target">the target that is attacked</param>
-		/// <param name="weapon">the weapon used for attack</param>
-		/// <param name="style">the style used for attack</param>
-		/// <param name="effectiveness">damage effectiveness (0..1)</param>
-		/// <param name="interruptDuration">the interrupt duration</param>
-		/// <param name="dualWield">indicates if both weapons are used for attack</param>
-		/// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-		protected virtual AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+
+        /// <summary>
+        /// This method is called to make an attack, it is called from the
+        /// attacktimer and should not be called manually
+        /// </summary>
+        /// <param name="target">the target that is attacked</param>
+        /// <param name="weapon">the weapon used for attack</param>
+        /// <param name="style">the style used for attack</param>
+        /// <param name="effectiveness">damage effectiveness (0..1)</param>
+        /// <param name="interruptDuration">the interrupt duration</param>
+        /// <param name="dualWield">indicates if both weapons are used for attack</param>
+        /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
+        public virtual AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
 		{
 			return MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, false);
 		}
 
 
-		protected virtual AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+        public virtual AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
 			AttackData ad = new AttackData();
 			ad.Attacker = this;
@@ -2273,7 +2283,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The possible results for prechecks for range attacks
 		/// </summary>
-		protected enum eCheckRangeAttackStateResult
+		public enum eCheckRangeAttackStateResult
 		{
 			/// <summary>
 			/// Hold the shot/throw
@@ -2294,7 +2304,7 @@ namespace DOL.GS
 		/// Called inside the AttackTimerCallback
 		/// </summary>
 		/// <returns></returns>
-		protected virtual eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
+		public virtual eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
 		{
 			//Standard livings ALWAYS shot and reload automatically!
 			return eCheckRangeAttackStateResult.Fire;
@@ -2314,7 +2324,7 @@ namespace DOL.GS
 		/// Gets/Sets the target for current ranged attack
 		/// </summary>
 		/// <returns></returns>
-		protected virtual GameObject RangeAttackTarget
+		public virtual GameObject RangeAttackTarget
 		{
 			get { return TargetObject; }
 			set { }
@@ -2326,668 +2336,682 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected virtual AttackAction CreateAttackAction()
 		{
-			return m_attackAction ?? new AttackAction(this);
-		}
+			//return m_attackAction ?? new AttackAction(this);
+            return attackComponent.attackAction ?? new AttackAction(this);
+        }
 
-		/// <summary>
-		/// The attack action of this living
-		/// </summary>
-		protected class AttackAction : RegionAction
-		{
-			/// <summary>
-			/// Constructs a new attack action
-			/// </summary>
-			/// <param name="owner">The action source</param>
-			public AttackAction(GameLiving owner)
-				: base(owner)
-			{
-			}
+		///// <summary>
+		///// The attack action of this living
+		///// </summary>
+		//protected class AttackAction : RegionAction
+		//{
+            
 
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override void OnTick()
-			{
-				GameLiving owner = (GameLiving)m_actionSource;
+  //          /// <summary>
+  //          /// Constructs a new attack action
+  //          /// </summary>
+  //          /// <param name="owner">The action source</param>
+  //          public AttackAction(GameLiving owner)
+		//		: base(owner)
+		//	{
+		//	}
 
-				if (owner.IsMezzed || owner.IsStunned)
-				{
-					Interval = 100;
-					return;
-				}
+		//	/// <summary>
+		//	/// Called on every timer tick
+		//	/// </summary>
+		//	protected override void OnTick()
+		//	{
+		//		GameLiving owner = (GameLiving)m_actionSource;
 
-				if (owner.IsCasting && !owner.CurrentSpellHandler.Spell.Uninterruptible)
-				{
-					Interval = 100;
-					return;
-				}
+		//		if (owner.IsMezzed || owner.IsStunned)
+		//		{
+		//			Interval = 100;
+		//			return;
+		//		}
 
-				if (!owner.AttackState)
-				{
-					AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
-					owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
-					if (ad != null && ad.Target != null)
-						ad.Target.RemoveAttacker(owner);
-					Stop();
-					return;
-				}
+		//		if (owner.IsCasting && !owner.CurrentSpellHandler.Spell.Uninterruptible)
+		//		{
+		//			Interval = 100;
+		//			return;
+		//		}
 
-				// Don't attack if gameliving is engaging
-				if (owner.IsEngaging)
-				{
-					Interval = owner.AttackSpeed(owner.AttackWeapon); // while gameliving is engageing it doesn't attack.
-					return;
-				}
+		//		if (!owner.AttackState)
+		//		{
+		//			AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+		//			owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
+		//			if (ad != null && ad.Target != null)
+		//				ad.Target.RemoveAttacker(owner);
+		//			Stop();
+		//			return;
+		//		}
 
-				// Store all datas which must not change during the attack
-				// double effectiveness = 1.0;
-				double effectiveness = owner.Effectiveness;
-				int ticksToTarget = 1;
-				int interruptDuration = 0;
-				int leftHandSwingCount = 0;
-				Style combatStyle = null;
-				InventoryItem attackWeapon = owner.AttackWeapon;
-				InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-				GameObject attackTarget = null;
+		//		// Don't attack if gameliving is engaging
+		//		if (owner.IsEngaging)
+		//		{
+		//			Interval = owner.AttackSpeed(owner.AttackWeapon); // while gameliving is engageing it doesn't attack.
+		//			return;
+		//		}
 
-				if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				{
-					attackTarget = owner.RangeAttackTarget; // must be do here because RangeAttackTarget is changed in CheckRangeAttackState
-					eCheckRangeAttackStateResult rangeCheckresult = owner.CheckRangeAttackState(attackTarget);
-					if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
-					{
-						Interval = 100;
-						return; //Hold the shot another second
-					}
-					else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
-					{
-						owner.StopAttack(); //Stop the attack
-						Stop();
-						return;
-					}
+		//		// Store all datas which must not change during the attack
+		//		// double effectiveness = 1.0;
+		//		double effectiveness = owner.Effectiveness;
+		//		int ticksToTarget = 1;
+		//		int interruptDuration = 0;
+		//		int leftHandSwingCount = 0;
+		//		Style combatStyle = null;
+		//		InventoryItem attackWeapon = owner.AttackWeapon;
+		//		InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+		//		GameObject attackTarget = null;
 
-					int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-					foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						if (player == null) continue;
-						player.Out.SendCombatAnimation(owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
-					}
+		//		if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+		//		{
+		//			attackTarget = owner.RangeAttackTarget; // must be do here because RangeAttackTarget is changed in CheckRangeAttackState
+		//			eCheckRangeAttackStateResult rangeCheckresult = owner.CheckRangeAttackState(attackTarget);
+		//			if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
+		//			{
+		//				Interval = 100;
+		//				return; //Hold the shot another second
+		//			}
+		//			else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
+		//			{
+		//				owner.StopAttack(); //Stop the attack
+		//				Stop();
+		//				return;
+		//			}
 
-					interruptDuration = owner.AttackSpeed(attackWeapon);
+		//			int model = (attackWeapon == null ? 0 : attackWeapon.Model);
+		//			foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+		//			{
+		//				if (player == null) continue;
+		//				player.Out.SendCombatAnimation(owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
+		//			}
 
-					switch (owner.RangedAttackType)
-					{
-						case eRangedAttackType.Critical:
-							{
-								effectiveness *= 2 - 0.3 * owner.GetConLevel(attackTarget);
-								if (effectiveness > 2)
-									effectiveness *= 2;
-								else if (effectiveness < 1.1)
-									effectiveness *= 1.1;
-							}
-							break;
+		//			interruptDuration = owner.AttackSpeed(attackWeapon);
 
-						case eRangedAttackType.SureShot:
-							{
-								effectiveness *= 0.5;
-							}
-							break;
+		//			switch (owner.RangedAttackType)
+		//			{
+		//				case eRangedAttackType.Critical:
+		//					{
+		//						effectiveness *= 2 - 0.3 * owner.GetConLevel(attackTarget);
+		//						if (effectiveness > 2)
+		//							effectiveness *= 2;
+		//						else if (effectiveness < 1.1)
+		//							effectiveness *= 1.1;
+		//					}
+		//					break;
 
-						case eRangedAttackType.RapidFire:
-							{
-								// Source : http://www.camelotherald.com/more/888.shtml
-								// - (About Rapid Fire) If you release the shot 75% through the normal timer, the shot (if it hits) does 75% of its normal damage. If you
-								// release 50% through the timer, you do 50% of the damage, and so forth - The faster the shot, the less damage it does.
+		//				case eRangedAttackType.SureShot:
+		//					{
+		//						effectiveness *= 0.5;
+		//					}
+		//					break;
 
-								// Source : http://www.camelotherald.com/more/901.shtml
-								// Related note about Rapid Fire interrupts are determined by the speed of the bow is fired, meaning that the time of interruptions for each shot will be scaled
-								// down proportionally to bow speed. If that made your eyes bleed, here's an example from someone who would know: "I fire a 5.0 spd bow. Because I am buffed and have
-								// stat bonuses, I fire that bow at 3.0 seconds. The resulting interrupt on the caster will last 3.0 seconds. If I rapid fire that same bow, I will fire at 1.5 seconds,
-								// and the resulting interrupt will last 1.5 seconds."
+		//				case eRangedAttackType.RapidFire:
+		//					{
+		//						// Source : http://www.camelotherald.com/more/888.shtml
+		//						// - (About Rapid Fire) If you release the shot 75% through the normal timer, the shot (if it hits) does 75% of its normal damage. If you
+		//						// release 50% through the timer, you do 50% of the damage, and so forth - The faster the shot, the less damage it does.
 
-								long rapidFireMaxDuration = owner.AttackSpeed(attackWeapon) / 2; // half of the total time
-								long elapsedTime = owner.CurrentRegion.Time - owner.TempProperties.getProperty<long>(GamePlayer.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
-								if (elapsedTime < rapidFireMaxDuration)
-								{
-									effectiveness *= 0.5 + (double)elapsedTime * 0.5 / (double)rapidFireMaxDuration;
-									interruptDuration = (int)(interruptDuration * effectiveness);
-								}
-							}
-							break;
-					}
+		//						// Source : http://www.camelotherald.com/more/901.shtml
+		//						// Related note about Rapid Fire interrupts are determined by the speed of the bow is fired, meaning that the time of interruptions for each shot will be scaled
+		//						// down proportionally to bow speed. If that made your eyes bleed, here's an example from someone who would know: "I fire a 5.0 spd bow. Because I am buffed and have
+		//						// stat bonuses, I fire that bow at 3.0 seconds. The resulting interrupt on the caster will last 3.0 seconds. If I rapid fire that same bow, I will fire at 1.5 seconds,
+		//						// and the resulting interrupt will last 1.5 seconds."
 
-					// calculate Penetrating Arrow damage reduction
-					if (attackTarget is GameLiving)
-					{
-						int PALevel = owner.GetAbilityLevel(Abilities.PenetratingArrow);
-						if ((PALevel > 0) && (owner.RangedAttackType != eRangedAttackType.Long))
-						{
-							GameSpellEffect bladeturn = null;
-							lock (((GameLiving)attackTarget).EffectList)
-							{
-								foreach (IGameEffect effect in ((GameLiving)attackTarget).EffectList)
-								{
-									if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.SpellType == "Bladeturn")
-									{
-										bladeturn = (GameSpellEffect)effect;
-										break;
-									}
-								}
-							}
+		//						long rapidFireMaxDuration = owner.AttackSpeed(attackWeapon) / 2; // half of the total time
+		//						long elapsedTime = owner.CurrentRegion.Time - owner.TempProperties.getProperty<long>(GamePlayer.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
+		//						if (elapsedTime < rapidFireMaxDuration)
+		//						{
+		//							effectiveness *= 0.5 + (double)elapsedTime * 0.5 / (double)rapidFireMaxDuration;
+		//							interruptDuration = (int)(interruptDuration * effectiveness);
+		//						}
+		//					}
+		//					break;
+		//			}
 
-							if (bladeturn != null && attackTarget != bladeturn.SpellHandler.Caster)
-							{
-								// Penetrating Arrow work
-								effectiveness *= 0.25 + PALevel * 0.25;
-							}
-						}
-					}
+		//			// calculate Penetrating Arrow damage reduction
+		//			if (attackTarget is GameLiving)
+		//			{
+		//				int PALevel = owner.GetAbilityLevel(Abilities.PenetratingArrow);
+		//				if ((PALevel > 0) && (owner.RangedAttackType != eRangedAttackType.Long))
+		//				{
+		//					GameSpellEffect bladeturn = null;
+		//					lock (((GameLiving)attackTarget).EffectList)
+		//					{
+		//						foreach (IGameEffect effect in ((GameLiving)attackTarget).EffectList)
+		//						{
+		//							if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.SpellType == "Bladeturn")
+		//							{
+		//								bladeturn = (GameSpellEffect)effect;
+		//								break;
+		//							}
+		//						}
+		//					}
 
-					ticksToTarget = 1 + owner.GetDistanceTo( attackTarget ) * 100 / 150; // 150 units per 1/10s
-				}
-				else
-				{
-					attackTarget = owner.TargetObject;
+		//					if (bladeturn != null && attackTarget != bladeturn.SpellHandler.Caster)
+		//					{
+		//						// Penetrating Arrow work
+		//						effectiveness *= 0.25 + PALevel * 0.25;
+		//					}
+		//				}
+		//			}
 
-					// wait until target is selected
-					if (attackTarget == null || attackTarget == owner)
-					{
-						Interval = 100;
-						return;
-					}
+		//			ticksToTarget = 1 + owner.GetDistanceTo( attackTarget ) * 100 / 150; // 150 units per 1/10s
+		//		}
+		//		else
+		//		{
+		//			attackTarget = owner.TargetObject;
 
-					AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
-					if (ad != null && ad.AttackResult == eAttackResult.Fumbled)
-					{
-						Interval = owner.AttackSpeed(attackWeapon);
-						ad.AttackResult = eAttackResult.Missed;
-						return; //Don't start the attack if the last one fumbled
-					}
+		//			// wait until target is selected
+		//			if (attackTarget == null || attackTarget == owner)
+		//			{
+		//				Interval = 100;
+		//				return;
+		//			}
 
-					combatStyle = owner.GetStyleToUse();
-					if (combatStyle != null && combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
-					{
-						attackWeapon = leftWeapon;
-					}
-					interruptDuration = owner.AttackSpeed(attackWeapon);
+		//			AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+		//			if (ad != null && ad.AttackResult == eAttackResult.Fumbled)
+		//			{
+		//				Interval = owner.AttackSpeed(attackWeapon);
+		//				ad.AttackResult = eAttackResult.Missed;
+		//				return; //Don't start the attack if the last one fumbled
+		//			}
 
-					// Damage is doubled on sitting players
-					// but only with melee weapons; arrows and magic does normal damage.
-					if (attackTarget is GamePlayer && ((GamePlayer)attackTarget).IsSitting)
-					{
-						effectiveness *= 2;
-					}
+		//			combatStyle = owner.GetStyleToUse();
+		//			if (combatStyle != null && combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
+		//			{
+		//				attackWeapon = leftWeapon;
+		//			}
+		//			interruptDuration = owner.AttackSpeed(attackWeapon);
 
-					ticksToTarget = 1;
-				}
+		//			// Damage is doubled on sitting players
+		//			// but only with melee weapons; arrows and magic does normal damage.
+		//			if (attackTarget is GamePlayer && ((GamePlayer)attackTarget).IsSitting)
+		//			{
+		//				effectiveness *= 2;
+		//			}
 
-				if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.AttackRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-				{
-					if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain && ((owner as GameNPC).Brain as StandardMobBrain).AggroTable.Count > 0 && (owner as GameNPC).Brain is IControlledBrain == false)
-					{
-						#region Attack another target in range
+		//			ticksToTarget = 1;
+		//		}
 
-						GameNPC npc = owner as GameNPC;
-						StandardMobBrain npc_brain = npc.Brain as StandardMobBrain;
-						GameLiving Possibly_target = null;
-						long maxaggro = 0, aggro = 0;
+		//		if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.AttackRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+		//		{
+		//			if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain && ((owner as GameNPC).Brain as StandardMobBrain).AggroTable.Count > 0 && (owner as GameNPC).Brain is IControlledBrain == false)
+		//			{
+		//				#region Attack another target in range
 
-						foreach (GamePlayer player_test in owner.GetPlayersInRadius((ushort)owner.AttackRange))
-						{
-							if (npc_brain.AggroTable.ContainsKey(player_test))
-							{
-								aggro = npc_brain.GetAggroAmountForLiving(player_test);
-								if (aggro <= 0) continue;
-								if (aggro > maxaggro)
-								{
-									Possibly_target = player_test;
-									maxaggro = aggro;
-								}
-							}
-						}
-						foreach (GameNPC target_possibility in owner.GetNPCsInRadius((ushort)owner.AttackRange))
-						{
-							if (npc_brain.AggroTable.ContainsKey(target_possibility))
-							{
-								aggro = npc_brain.GetAggroAmountForLiving(target_possibility);
-								if (aggro <= 0) continue;
-								if (aggro > maxaggro)
-								{
-									Possibly_target = target_possibility;
-									maxaggro = aggro;
-								}
-							}
-						}
+		//				GameNPC npc = owner as GameNPC;
+		//				StandardMobBrain npc_brain = npc.Brain as StandardMobBrain;
+		//				GameLiving Possibly_target = null;
+		//				long maxaggro = 0, aggro = 0;
 
-						if (Possibly_target == null)
-						{
-							Interval = 100;
-							return;
-						}
-						else
-						{
-							attackTarget = Possibly_target;
-						}
+		//				foreach (GamePlayer player_test in owner.GetPlayersInRadius((ushort)owner.AttackRange))
+		//				{
+		//					if (npc_brain.AggroTable.ContainsKey(player_test))
+		//					{
+		//						aggro = npc_brain.GetAggroAmountForLiving(player_test);
+		//						if (aggro <= 0) continue;
+		//						if (aggro > maxaggro)
+		//						{
+		//							Possibly_target = player_test;
+		//							maxaggro = aggro;
+		//						}
+		//					}
+		//				}
+		//				foreach (GameNPC target_possibility in owner.GetNPCsInRadius((ushort)owner.AttackRange))
+		//				{
+		//					if (npc_brain.AggroTable.ContainsKey(target_possibility))
+		//					{
+		//						aggro = npc_brain.GetAggroAmountForLiving(target_possibility);
+		//						if (aggro <= 0) continue;
+		//						if (aggro > maxaggro)
+		//						{
+		//							Possibly_target = target_possibility;
+		//							maxaggro = aggro;
+		//						}
+		//					}
+		//				}
 
-						#endregion
+		//				if (Possibly_target == null)
+		//				{
+		//					Interval = 100;
+		//					return;
+		//				}
+		//				else
+		//				{
+		//					attackTarget = Possibly_target;
+		//				}
 
-					}
-					else
-					{
-						Interval = 100;
-						return;
-					}
-				}
+		//				#endregion
 
-				new WeaponOnTargetAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle).Start(ticksToTarget);  // really start the attack
+		//			}
+		//			else
+		//			{
+		//				Interval = 100;
+		//				return;
+		//			}
+		//		}
 
-				//Are we inactive?
-				if (owner.ObjectState != eObjectState.Active)
-				{
-					Stop();
-					return;
-				}
+		//		//new WeaponOnTargetAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle).Start(ticksToTarget);  // really start the attack
+  //              owner.attackComponent.attackManager = new AttackManager(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle, ticksToTarget);
+		//		//Are we inactive?
+		//		if (owner.ObjectState != eObjectState.Active)
+		//		{
+		//			Stop();
+		//			return;
+		//		}
 
-				//switch to melee if range to target is less than 200
-				if (owner is GameNPC && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance && owner.TargetObject != null && owner.IsWithinRadius( owner.TargetObject, 200 ) )
-				{
-					owner.SwitchWeapon(eActiveWeaponSlot.Standard);
-				}
+		//		//switch to melee if range to target is less than 200
+		//		if (owner is GameNPC && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance && owner.TargetObject != null && owner.IsWithinRadius( owner.TargetObject, 200 ) )
+		//		{
+		//			owner.SwitchWeapon(eActiveWeaponSlot.Standard);
+		//		}
 
-				if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				{
-					//Mobs always shot and reload
-					if (owner is GameNPC)
-					{
-						owner.RangedAttackState = eRangedAttackState.AimFireReload;
-					}
+		//		if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+		//		{
+		//			//Mobs always shot and reload
+		//			if (owner is GameNPC)
+		//			{
+		//				owner.RangedAttackState = eRangedAttackState.AimFireReload;
+		//			}
 
-					if (owner.RangedAttackState != eRangedAttackState.AimFireReload)
-					{
-						owner.StopAttack();
-						Stop();
-						return;
-					}
-					else
-					{
-						if (!(owner is GamePlayer) || (owner.RangedAttackType != eRangedAttackType.Long))
-						{
-							owner.RangedAttackType = eRangedAttackType.Normal;
-							lock (owner.EffectList)
-							{
-								foreach (IGameEffect effect in owner.EffectList) // switch to the correct range attack type
-								{
-									if (effect is SureShotEffect)
-									{
-										owner.RangedAttackType = eRangedAttackType.SureShot;
-										break;
-									}
-									else if (effect is RapidFireEffect)
-									{
-										owner.RangedAttackType = eRangedAttackType.RapidFire;
-										break;
-									}
-									else if (effect is TrueshotEffect)
-									{
-										owner.RangedAttackType = eRangedAttackType.Long;
-										break;
-									}
-								}
-							}
-						}
+		//			if (owner.RangedAttackState != eRangedAttackState.AimFireReload)
+		//			{
+		//				owner.StopAttack();
+		//				Stop();
+		//				return;
+		//			}
+		//			else
+		//			{
+		//				if (!(owner is GamePlayer) || (owner.RangedAttackType != eRangedAttackType.Long))
+		//				{
+		//					owner.RangedAttackType = eRangedAttackType.Normal;
+		//					lock (owner.EffectList)
+		//					{
+		//						foreach (IGameEffect effect in owner.EffectList) // switch to the correct range attack type
+		//						{
+		//							if (effect is SureShotEffect)
+		//							{
+		//								owner.RangedAttackType = eRangedAttackType.SureShot;
+		//								break;
+		//							}
+		//							else if (effect is RapidFireEffect)
+		//							{
+		//								owner.RangedAttackType = eRangedAttackType.RapidFire;
+		//								break;
+		//							}
+		//							else if (effect is TrueshotEffect)
+		//							{
+		//								owner.RangedAttackType = eRangedAttackType.Long;
+		//								break;
+		//							}
+		//						}
+		//					}
+		//				}
 
-						owner.RangedAttackState = eRangedAttackState.Aim;
+		//				owner.RangedAttackState = eRangedAttackState.Aim;
 
-						if (owner is GamePlayer)
-						{
-							owner.TempProperties.setProperty(GamePlayer.RANGE_ATTACK_HOLD_START, 0L);
-						}
+		//				if (owner is GamePlayer)
+		//				{
+		//					owner.TempProperties.setProperty(GamePlayer.RANGE_ATTACK_HOLD_START, 0L);
+		//				}
 
-						int speed = owner.AttackSpeed(attackWeapon);
-						byte attackSpeed = (byte)(speed / 100);
-						int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-						foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						{
-							player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
-						}
+		//				int speed = owner.AttackSpeed(attackWeapon);
+		//				byte attackSpeed = (byte)(speed / 100);
+		//				int model = (attackWeapon == null ? 0 : attackWeapon.Model);
+		//				foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+		//				{
+		//					player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
+		//				}
 
-						if (owner.RangedAttackType == eRangedAttackType.RapidFire)
-						{
-							speed /= 2; // can start fire at the middle of the normal time
-						}
+		//				if (owner.RangedAttackType == eRangedAttackType.RapidFire)
+		//				{
+		//					speed /= 2; // can start fire at the middle of the normal time
+		//				}
 
-						Interval = speed;
-					}
-				}
-				else
-				{
-					if (leftHandSwingCount > 0)
-					{
-						Interval = owner.AttackSpeed(attackWeapon, leftWeapon);
-					}
-					else
-					{
-						Interval = owner.AttackSpeed(attackWeapon);
-					}
-				}
-			}
-		}
+		//				Interval = speed;
+		//			}
+		//		}
+		//		else
+		//		{
+		//			if (leftHandSwingCount > 0)
+		//			{
+		//				Interval = owner.AttackSpeed(attackWeapon, leftWeapon);
+		//			}
+		//			else
+		//			{
+		//				Interval = owner.AttackSpeed(attackWeapon);
+		//			}
+		//		}
+		//	}
+		//}
 
 
-		/// <summary>
-		/// The action when the weapon hurt the target
-		/// </summary>
-		protected class WeaponOnTargetAction : RegionAction
-		{
-			/// <summary>
-			/// The target of the attack
-			/// </summary>
-			protected readonly GameObject m_target;
+		///// <summary>
+		///// The action when the weapon hurt the target
+		///// </summary>
+		//public class WeaponOnTargetAction : RegionAction
+		//{
+		//	/// <summary>
+		//	/// The target of the attack
+		//	/// </summary>
+		//	protected readonly GameObject m_target;
 
-			/// <summary>
-			/// The weapon of the attack
-			/// </summary>
-			protected readonly InventoryItem m_attackWeapon;
+		//	/// <summary>
+		//	/// The weapon of the attack
+		//	/// </summary>
+		//	protected readonly InventoryItem m_attackWeapon;
 
-			/// <summary>
-			/// The weapon in the left hand of the attacker
-			/// </summary>
-			protected readonly InventoryItem m_leftWeapon;
+		//	/// <summary>
+		//	/// The weapon in the left hand of the attacker
+		//	/// </summary>
+		//	protected readonly InventoryItem m_leftWeapon;
 
-			/// <summary>
-			/// The effectiveness of the attack
-			/// </summary>
-			protected readonly double m_effectiveness;
+		//	/// <summary>
+		//	/// The effectiveness of the attack
+		//	/// </summary>
+		//	protected readonly double m_effectiveness;
 
-			/// <summary>
-			/// The interrupt duration of the attack
-			/// </summary>
-			protected readonly int m_interruptDuration;
+		//	/// <summary>
+		//	/// The interrupt duration of the attack
+		//	/// </summary>
+		//	protected readonly int m_interruptDuration;
 
-			/// <summary>
-			/// The combat style of the attack
-			/// </summary>
-			protected readonly Style m_combatStyle;
+		//	/// <summary>
+		//	/// The combat style of the attack
+		//	/// </summary>
+		//	protected readonly Style m_combatStyle;
 
-			/// <summary>
-			/// Constructs a new attack action
-			/// </summary>
-			/// <param name="owner">The action source</param>
-			/// <param name="attackWeapon">the weapon used to attack</param>
-			/// <param name="combatStyle">the style used</param>
-			/// <param name="effectiveness">the effectiveness</param>
-			/// <param name="interruptDuration">the interrupt duration</param>
-			/// <param name="leftHandSwingCount">the left hand swing count</param>
-			/// <param name="leftWeapon">the left hand weapon used to attack</param>
-			/// <param name="target">the target of the attack</param>
-			public WeaponOnTargetAction(GameLiving owner, GameObject target, InventoryItem attackWeapon, InventoryItem leftWeapon, double effectiveness, int interruptDuration, Style combatStyle)
-				: base(owner)
-			{
-				m_target = target;
-				m_attackWeapon = attackWeapon;
-				m_leftWeapon = leftWeapon;
-				m_effectiveness = effectiveness;
-				m_interruptDuration = interruptDuration;
-				m_combatStyle = combatStyle;
-			}
+		//	/// <summary>
+		//	/// Constructs a new attack action
+		//	/// </summary>
+		//	/// <param name="owner">The action source</param>
+		//	/// <param name="attackWeapon">the weapon used to attack</param>
+		//	/// <param name="combatStyle">the style used</param>
+		//	/// <param name="effectiveness">the effectiveness</param>
+		//	/// <param name="interruptDuration">the interrupt duration</param>
+		//	/// <param name="leftHandSwingCount">the left hand swing count</param>
+		//	/// <param name="leftWeapon">the left hand weapon used to attack</param>
+		//	/// <param name="target">the target of the attack</param>
+		//	public WeaponOnTargetAction(GameLiving owner, GameObject target, InventoryItem attackWeapon, InventoryItem leftWeapon, double effectiveness, int interruptDuration, Style combatStyle)
+		//		: base(owner)
+		//	{
+		//		m_target = target;
+		//		m_attackWeapon = attackWeapon;
+		//		m_leftWeapon = leftWeapon;
+		//		m_effectiveness = effectiveness;
+		//		m_interruptDuration = interruptDuration;
+		//		m_combatStyle = combatStyle;
+		//	}
 
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override void OnTick()
-			{
-				GameLiving owner = (GameLiving)m_actionSource;
-				Style style = m_combatStyle;
-				int leftHandSwingCount = 0;
-				AttackData mainHandAD = null;
-				AttackData leftHandAD = null;
-				InventoryItem mainWeapon = m_attackWeapon;
-				InventoryItem leftWeapon = m_leftWeapon;
-				double leftHandEffectiveness = m_effectiveness;
-				double mainHandEffectiveness = m_effectiveness;
+		//	/// <summary>
+		//	/// Called on every timer tick
+		//	/// </summary>
+		//	protected override void OnTick()
+		//	{
+		//		GameLiving owner = (GameLiving)m_actionSource;
+		//		Style style = m_combatStyle;
+		//		int leftHandSwingCount = 0;
+		//		AttackData mainHandAD = null;
+		//		AttackData leftHandAD = null;
+		//		InventoryItem mainWeapon = m_attackWeapon;
+		//		InventoryItem leftWeapon = m_leftWeapon;
+		//		double leftHandEffectiveness = m_effectiveness;
+		//		double mainHandEffectiveness = m_effectiveness;
 
-				mainHandEffectiveness *= owner.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
-				leftHandEffectiveness *= owner.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
+		//		mainHandEffectiveness *= owner.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
+		//		leftHandEffectiveness *= owner.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
 					
-				// GameNPC can Dual Swing even with no weapon
-				if (owner is GameNPC && owner.CanUseLefthandedWeapon)
-				{
-					leftHandSwingCount = owner.CalculateLeftHandSwingCount();
-				}
-				else if (owner.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield
-				    && mainWeapon != null && (mainWeapon.Item_Type == Slot.RIGHTHAND || mainWeapon.Item_Type == Slot.LEFTHAND))
-				{
-					leftHandSwingCount = owner.CalculateLeftHandSwingCount();
-				}
+		//		// GameNPC can Dual Swing even with no weapon
+		//		if (owner is GameNPC && owner.CanUseLefthandedWeapon)
+		//		{
+		//			leftHandSwingCount = owner.CalculateLeftHandSwingCount();
+		//		}
+		//		else if (owner.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield
+		//		    && mainWeapon != null && (mainWeapon.Item_Type == Slot.RIGHTHAND || mainWeapon.Item_Type == Slot.LEFTHAND))
+		//		{
+		//			leftHandSwingCount = owner.CalculateLeftHandSwingCount();
+		//		}
 
-				// CMH
-				// 1.89
-				//- Pets will no longer continue to attack a character after the character has stealthed.
-				// 1.88
-				//- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
-				if (owner is GameNPC
-				    && m_target is GamePlayer
-				    && ((GamePlayer)m_target).IsStealthed)
-				{
-					// note due to the 2 lines above all npcs stop attacking
-					GameNPC npc = (GameNPC)owner;
-					npc.StopAttack();
-					npc.TargetObject = null;
-					Stop(); // stop the full tick timer? looks like other code is doing this
+		//		// CMH
+		//		// 1.89
+		//		//- Pets will no longer continue to attack a character after the character has stealthed.
+		//		// 1.88
+		//		//- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
+		//		if (owner is GameNPC
+		//		    && m_target is GamePlayer
+		//		    && ((GamePlayer)m_target).IsStealthed)
+		//		{
+		//			// note due to the 2 lines above all npcs stop attacking
+		//			GameNPC npc = (GameNPC)owner;
+		//			npc.StopAttack();
+		//			npc.TargetObject = null;
+		//			Stop(); // stop the full tick timer? looks like other code is doing this
 
-					// target death caused this below, so I'm replicating it
-					if (npc.ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
-					    npc.Inventory != null &&
-					    npc.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-						npc.SwitchWeapon(eActiveWeaponSlot.Distance);
-					return;
-				}
+		//			// target death caused this below, so I'm replicating it
+		//			if (npc.ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
+		//			    npc.Inventory != null &&
+		//			    npc.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
+		//				npc.SwitchWeapon(eActiveWeaponSlot.Distance);
+		//			return;
+		//		}
 
-				if (leftHandSwingCount > 0)
-				{
-					// both hands are used for attack
-					mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
-					if (style == null)
-					{
-						mainHandAD.AnimationId = -2; // virtual code for both weapons swing animation
-					}
-				}
-				else if (mainWeapon != null)
-				{
-					// no left hand used, all is simple here
-					mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
-					leftHandSwingCount = 0;
-				}
-				else
-				{
-					// one of two hands is used for attack if no style, treated as a main hand attack
-					if (style == null && Util.Chance(50))
-					{
-						mainWeapon = leftWeapon;
-						mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
-						mainHandAD.AnimationId = -1; // virtual code for left weapons swing animation
-					}
-					else
-					{
-						mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
-					}
-				}
+		//		if (leftHandSwingCount > 0)
+		//		{
+		//			// both hands are used for attack
+		//			mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+		//			if (style == null)
+		//			{
+		//				mainHandAD.AnimationId = -2; // virtual code for both weapons swing animation
+		//			}
+		//		}
+		//		else if (mainWeapon != null)
+		//		{
+		//			// no left hand used, all is simple here
+		//			mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+		//			leftHandSwingCount = 0;
+		//		}
+		//		else
+		//		{
+		//			// one of two hands is used for attack if no style, treated as a main hand attack
+		//			if (style == null && Util.Chance(50))
+		//			{
+		//				mainWeapon = leftWeapon;
+		//				mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+		//				mainHandAD.AnimationId = -1; // virtual code for left weapons swing animation
+		//			}
+		//			else
+		//			{
+		//				mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+		//			}
+		//		}
 
-				owner.TempProperties.setProperty( LAST_ATTACK_DATA, mainHandAD );
+		//		owner.TempProperties.setProperty( LAST_ATTACK_DATA, mainHandAD );
 
-				//Notify the target of our attack (sends damage messages, should be before damage)
-				// ...but certainly not if the attack never took place, like when the living
-				// is out of range!
-				if (mainHandAD.Target != null && mainHandAD.AttackResult != eAttackResult.OutOfRange)
-				{
-					mainHandAD.Target.AddAttacker(owner);
-					mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
-				}
+		//		//Notify the target of our attack (sends damage messages, should be before damage)
+		//		// ...but certainly not if the attack never took place, like when the living
+		//		// is out of range!
+		//		if (mainHandAD.Target != null && mainHandAD.AttackResult != eAttackResult.OutOfRange)
+		//		{
+		//			mainHandAD.Target.AddAttacker(owner);
+		//			mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
+		//		}
 
-				// deal damage and start effect
-				if (mainHandAD.AttackResult == eAttackResult.HitUnstyled || mainHandAD.AttackResult == eAttackResult.HitStyle)
-				{
-					owner.DealDamage(mainHandAD);
-					if (mainHandAD.IsMeleeAttack)
-					{
-						owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
-						if (mainHandAD.Target is GameLiving)
-						{
-							GameLiving living = mainHandAD.Target as GameLiving;
-							RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
-							if (ra != null && Util.Chance(ra.Amount))
-							{
-								AttackData ReflexAttackAD = living.MakeAttack(owner, living.AttackWeapon, null, 1, m_interruptDuration, false, true);
-								living.DealDamage(ReflexAttackAD);
-								living.SendAttackingCombatMessages(ReflexAttackAD);
-							}
-						}
-					}
-				}
+		//		// deal damage and start effect
+		//		if (mainHandAD.AttackResult == eAttackResult.HitUnstyled || mainHandAD.AttackResult == eAttackResult.HitStyle)
+		//		{
+		//			owner.DealDamage(mainHandAD);
+		//			if (mainHandAD.IsMeleeAttack)
+		//			{
+		//				owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
+		//				if (mainHandAD.Target is GameLiving)
+		//				{
+		//					GameLiving living = mainHandAD.Target as GameLiving;
+		//					RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
+		//					if (ra != null && Util.Chance(ra.Amount))
+		//					{
+		//						AttackData ReflexAttackAD = living.MakeAttack(owner, living.AttackWeapon, null, 1, m_interruptDuration, false, true);
+		//						living.DealDamage(ReflexAttackAD);
+		//						living.SendAttackingCombatMessages(ReflexAttackAD);
+		//					}
+		//				}
+		//			}
+		//		}
 
-				//CMH
-				// 1.89:
-				// - Characters who are attacked by stealthed archers will now target the attacking archer if the attacked player does not already have a target.
-				if( mainHandAD.Attacker.IsStealthed
-				   && mainHandAD.AttackType == AttackData.eAttackType.Ranged
-				   && ( mainHandAD.AttackResult == eAttackResult.HitUnstyled || mainHandAD.AttackResult == eAttackResult.HitStyle ) )
-				{
-					if( mainHandAD.Target.TargetObject == null )
-					{
-						if( mainHandAD.Target is GamePlayer )
-						{
-							GameClient targetClient = WorldMgr.GetClientByPlayerID( mainHandAD.Target.InternalID, false, false );
-							if( targetClient != null )
-							{
-								targetClient.Out.SendChangeTarget( mainHandAD.Attacker );
-							}
-						}
-					}
-				}
+		//		//CMH
+		//		// 1.89:
+		//		// - Characters who are attacked by stealthed archers will now target the attacking archer if the attacked player does not already have a target.
+		//		if( mainHandAD.Attacker.IsStealthed
+		//		   && mainHandAD.AttackType == AttackData.eAttackType.Ranged
+		//		   && ( mainHandAD.AttackResult == eAttackResult.HitUnstyled || mainHandAD.AttackResult == eAttackResult.HitStyle ) )
+		//		{
+		//			if( mainHandAD.Target.TargetObject == null )
+		//			{
+		//				if( mainHandAD.Target is GamePlayer )
+		//				{
+		//					GameClient targetClient = WorldMgr.GetClientByPlayerID( mainHandAD.Target.InternalID, false, false );
+		//					if( targetClient != null )
+		//					{
+		//						targetClient.Out.SendChangeTarget( mainHandAD.Attacker );
+		//					}
+		//				}
+		//			}
+		//		}
 
-				//Send the proper attacking messages to ourself
-				owner.SendAttackingCombatMessages(mainHandAD);
+		//		//Send the proper attacking messages to ourself
+		//		owner.SendAttackingCombatMessages(mainHandAD);
 
-				//Notify ourself about the attack
-				owner.Notify( GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs( mainHandAD ) );
+		//		//Notify ourself about the attack
+		//		owner.Notify( GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs( mainHandAD ) );
 
-				// remove the left-hand AttackData from the previous attack
-				owner.TempProperties.removeProperty( LAST_ATTACK_DATA_LH );
+		//		// remove the left-hand AttackData from the previous attack
+		//		owner.TempProperties.removeProperty( LAST_ATTACK_DATA_LH );
 
-				//now left hand damage
-				if (leftHandSwingCount > 0)
-				{
-					switch (mainHandAD.AttackResult)
-					{
-						case eAttackResult.HitStyle:
-						case eAttackResult.HitUnstyled:
-						case eAttackResult.Missed:
-						case eAttackResult.Blocked:
-						case eAttackResult.Evaded:
-						case eAttackResult.Parried:
-							for (int i = 0; i < leftHandSwingCount; i++)
-							{
-								if (m_target is GameLiving && (((GameLiving)m_target).IsAlive == false || ((GameLiving)m_target).ObjectState != eObjectState.Active))
-									break;
+		//		//now left hand damage
+		//		if (leftHandSwingCount > 0)
+		//		{
+		//			switch (mainHandAD.AttackResult)
+		//			{
+		//				case eAttackResult.HitStyle:
+		//				case eAttackResult.HitUnstyled:
+		//				case eAttackResult.Missed:
+		//				case eAttackResult.Blocked:
+		//				case eAttackResult.Evaded:
+		//				case eAttackResult.Parried:
+		//					for (int i = 0; i < leftHandSwingCount; i++)
+		//					{
+		//						if (m_target is GameLiving && (((GameLiving)m_target).IsAlive == false || ((GameLiving)m_target).ObjectState != eObjectState.Active))
+		//							break;
 
-								// Savage swings - main,left,main,left.
-								if ( i % 2 == 0 )
-									leftHandAD = owner.MakeAttack( m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, true );
-								else
-									leftHandAD = owner.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
+		//						// Savage swings - main,left,main,left.
+		//						if ( i % 2 == 0 )
+		//							leftHandAD = owner.MakeAttack( m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, true );
+		//						else
+		//							leftHandAD = owner.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
 
-								//Notify the target of our attack (sends damage messages, should be before damage)
-								if (leftHandAD.Target != null)
-									leftHandAD.Target.OnAttackedByEnemy(leftHandAD);
+		//						//Notify the target of our attack (sends damage messages, should be before damage)
+		//						if (leftHandAD.Target != null)
+		//							leftHandAD.Target.OnAttackedByEnemy(leftHandAD);
 
-								// deal damage and start the effect if any
-								if (leftHandAD.AttackResult == eAttackResult.HitUnstyled || leftHandAD.AttackResult == eAttackResult.HitStyle)
-								{
-									owner.DealDamage(leftHandAD);
-									if (leftHandAD.IsMeleeAttack)
-									{
-										owner.CheckWeaponMagicalEffect(leftHandAD, leftWeapon);
-									}
-								}
+		//						// deal damage and start the effect if any
+		//						if (leftHandAD.AttackResult == eAttackResult.HitUnstyled || leftHandAD.AttackResult == eAttackResult.HitStyle)
+		//						{
+		//							owner.DealDamage(leftHandAD);
+		//							if (leftHandAD.IsMeleeAttack)
+		//							{
+		//								owner.CheckWeaponMagicalEffect(leftHandAD, leftWeapon);
+		//							}
+		//						}
 
-								owner.TempProperties.setProperty( LAST_ATTACK_DATA_LH, leftHandAD );
+		//						owner.TempProperties.setProperty( LAST_ATTACK_DATA_LH, leftHandAD );
 
-								//Send messages about our left hand attack now
-								owner.SendAttackingCombatMessages(leftHandAD);
+		//						//Send messages about our left hand attack now
+		//						owner.SendAttackingCombatMessages(leftHandAD);
 
-								//Notify ourself about the attack
-								owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(leftHandAD));
-							}
-							break;
-					}
-				}
+		//						//Notify ourself about the attack
+		//						owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(leftHandAD));
+		//					}
+		//					break;
+		//			}
+		//		}
 
-				if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
-					owner.RangedAttackFinished();
+		//		if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
+		//			owner.RangedAttackFinished();
 
-				switch (mainHandAD.AttackResult)
-				{
-					case eAttackResult.NoTarget:
-					case eAttackResult.TargetDead:
-						{
-							Stop();
-							owner.OnTargetDeadOrNoTarget();
-							return;
-						}
-					case eAttackResult.NotAllowed_ServerRules:
-					case eAttackResult.NoValidTarget:
-						{
-							owner.StopAttack();
-							Stop();
-							return;
-						}
-					case eAttackResult.OutOfRange:
-						break;
-				}
+		//		switch (mainHandAD.AttackResult)
+		//		{
+		//			case eAttackResult.NoTarget:
+		//			case eAttackResult.TargetDead:
+		//				{
+  //                          CleanupAttack(owner);
+		//					//Stop();
+		//					owner.OnTargetDeadOrNoTarget();
+		//					return;
+		//				}
+		//			case eAttackResult.NotAllowed_ServerRules:
+		//			case eAttackResult.NoValidTarget:
+		//				{
+		//					owner.StopAttack();
+  //                          CleanupAttack(owner);
+		//					//Stop();
+		//					return;
+		//				}
+		//			case eAttackResult.OutOfRange:
+		//				break;
+		//		}
 
-				// unstealth before attack animation
-				if (owner is GamePlayer)
-					((GamePlayer)owner).Stealth(false);
+		//		// unstealth before attack animation
+		//		if (owner is GamePlayer)
+		//			((GamePlayer)owner).Stealth(false);
 
-				//Show the animation
-				if (mainHandAD.AttackResult != eAttackResult.HitUnstyled && mainHandAD.AttackResult != eAttackResult.HitStyle && leftHandAD != null)
-					owner.ShowAttackAnimation(leftHandAD, leftWeapon);
-				else
-					owner.ShowAttackAnimation(mainHandAD, mainWeapon);
+		//		//Show the animation
+		//		if (mainHandAD.AttackResult != eAttackResult.HitUnstyled && mainHandAD.AttackResult != eAttackResult.HitStyle && leftHandAD != null)
+		//			owner.ShowAttackAnimation(leftHandAD, leftWeapon);
+		//		else
+		//			owner.ShowAttackAnimation(mainHandAD, mainWeapon);
 
-				// (procs) start style effect after any damage
-				if (mainHandAD.StyleEffects.Count > 0 && mainHandAD.AttackResult == eAttackResult.HitStyle)
-				{
-					foreach (ISpellHandler proc in mainHandAD.StyleEffects)
-					{
-						proc.StartSpell(mainHandAD.Target);
-					}
-				}
+		//		// (procs) start style effect after any damage
+		//		if (mainHandAD.StyleEffects.Count > 0 && mainHandAD.AttackResult == eAttackResult.HitStyle)
+		//		{
+		//			foreach (ISpellHandler proc in mainHandAD.StyleEffects)
+		//			{
+		//				proc.StartSpell(mainHandAD.Target);
+		//			}
+		//		}
 
-				if (leftHandAD != null && leftHandAD.StyleEffects.Count > 0 && leftHandAD.AttackResult == eAttackResult.HitStyle)
-				{
-					foreach (ISpellHandler proc in leftHandAD.StyleEffects)
-					{
-						proc.StartSpell(leftHandAD.Target);
-					}
-				}
+		//		if (leftHandAD != null && leftHandAD.StyleEffects.Count > 0 && leftHandAD.AttackResult == eAttackResult.HitStyle)
+		//		{
+		//			foreach (ISpellHandler proc in leftHandAD.StyleEffects)
+		//			{
+		//				proc.StartSpell(leftHandAD.Target);
+		//			}
+		//		}
 
-				//mobs dont update the heading after they start attacking
-				//so here they update it after they swing
-				//update internal heading, do not send update to client
-				if (owner is GameNPC)
-					(owner as GameNPC).TurnTo(mainHandAD.Target, false);
+		//		//mobs dont update the heading after they start attacking
+		//		//so here they update it after they swing
+		//		//update internal heading, do not send update to client
+		//		if (owner is GameNPC)
+		//			(owner as GameNPC).TurnTo(mainHandAD.Target, false);
 
-				Stop();
-				return;
-			}
-		}
+		//		//Stop();
+  //              CleanupAttack(owner);
+		//		return;
+		//	}
 
-		/// <summary>
-		/// Sends the proper combat messages depending on our attack data
-		/// </summary>
-		/// <param name="ad">result of the attack</param>
-		protected virtual void SendAttackingCombatMessages(AttackData ad)
+  //          public void CleanupAttack(GameLiving owner)
+  //          {
+  //              if (owner is GamePlayer p)
+  //              {
+  //                  p.castingComponent.spellHandler = null;
+  //              }
+  //          }
+  //      }
+        
+    /// <summary>
+    /// Sends the proper combat messages depending on our attack data
+    /// </summary>
+    /// <param name="ad">result of the attack</param>
+    public virtual void SendAttackingCombatMessages(AttackData ad)
 		{
 			//None for GameLiving - could be a GameNPC DO NOT ADD ANYTHING HERE
 		}
@@ -3149,7 +3173,8 @@ namespace DOL.GS
 
 			if (speed > 0)
 			{
-				m_attackAction = CreateAttackAction();
+				//m_attackAction = CreateAttackAction();
+                attackComponent.attackAction = new AttackAction(this);
 
 				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				{
@@ -3162,13 +3187,17 @@ namespace DOL.GS
 							player.Out.SendCombatAnimation(this, null, (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
 							                               0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
-						m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
-					}
+                        //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
+                        attackComponent.attackAction.StartTime = (RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed;
+
+                    }
 				}
 				else
 				{
-					if (m_attackAction.TimeUntilElapsed < 500)
-						m_attackAction.Start(500);
+					//if (m_attackAction.TimeUntilElapsed < 500)
+					//	m_attackAction.Start(500);
+                    if (attackComponent.attackAction.TimeUntilStart < 500)
+                        attackComponent.attackAction.StartTime = 500;
 				}
 			}
 		}
@@ -6622,9 +6651,14 @@ namespace DOL.GS
 		{
 			if (!base.AddToWorld()) return false;
 
-			if (m_attackAction != null)
-				m_attackAction.Stop();
-			m_attackAction = new AttackAction(this);
+			//if (m_attackAction != null)
+			//	m_attackAction.Stop();
+			//m_attackAction = new AttackAction(this);
+
+            if (attackComponent.attackAction != null)
+                attackComponent.attackAction.CleanupAttackAction();
+            attackComponent.attackAction = new AttackAction(this);
+
 			return true;
 		}
 
@@ -6647,12 +6681,15 @@ namespace DOL.GS
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();
 
-			if (m_attackAction != null) m_attackAction.Stop();
+			//if (m_attackAction != null) m_attackAction.Stop();
+            if (attackComponent.attackAction != null) attackComponent.attackAction.CleanupAttackAction();
 			if (this is GameNPC && ((GameNPC)this).SpellTimer != null) ((GameNPC)this).SpellTimer.Stop();
 			if (m_healthRegenerationTimer != null) m_healthRegenerationTimer.Stop();
 			if (m_powerRegenerationTimer != null) m_powerRegenerationTimer.Stop();
 			if (m_enduRegenerationTimer != null) m_enduRegenerationTimer.Stop();
-			m_attackAction = null;
+            //m_attackAction = null;
+            if (attackComponent.attackAction != null)
+                attackComponent.attackAction.CleanupAttackAction();
 			m_healthRegenerationTimer = null;
 			m_powerRegenerationTimer = null;
 			m_enduRegenerationTimer = null;
@@ -7000,6 +7037,8 @@ namespace DOL.GS
 			m_mana = 1;
 			m_endurance = 1;
 			m_maxEndurance = 1;
+
+            attackComponent = new AttackComponent(this);
 		}
 	}
 }
