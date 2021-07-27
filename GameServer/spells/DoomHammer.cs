@@ -30,7 +30,7 @@ namespace DOL.GS.Spells
 		{
 			GamePlayer player=target as GamePlayer;
 			base.ApplyEffectOnTarget(Caster,effectiveness);
-			Caster.StopAttack();
+			Caster.attackComponent.LivingStopAttack();
             Caster.DisarmedTime = Caster.CurrentRegion.Time + Spell.Duration;
 			foreach (GamePlayer visPlayer in Caster.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
 				visPlayer.Out.SendCombatAnimation(Caster, target, 0x0000, 0x0000, (ushort)408, 0, 0x00, target.HealthPercent);

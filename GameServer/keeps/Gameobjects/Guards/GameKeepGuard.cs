@@ -225,7 +225,8 @@ namespace DOL.GS.Keeps
 				eAttackResult result = afargs.AttackData.AttackResult;
 				if (result == eAttackResult.OutOfRange)
 				{
-					guard.StopAttack();
+                    //guard.StopAttack();
+                    guard.attackComponent.NPCStopAttack();
 					lock (guard.Attackers)
 					{
 						foreach (GameLiving living in guard.Attackers)
@@ -251,13 +252,15 @@ namespace DOL.GS.Keeps
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(guard, guard.TargetObject as GameLiving, true) == false)
 				{
-					guard.StopAttack();
-					return;
+                    //guard.StopAttack();
+                    guard.attackComponent.NPCStopAttack();
+                    return;
 				}
 				if (!guard.IsWithinRadius(guard.TargetObject, guard.AttackRange))
 				{
-					guard.StopAttack();
-					return;
+                    //guard.StopAttack();
+                    guard.attackComponent.NPCStopAttack();
+                    return;
 				}
 			}
 
@@ -287,12 +290,13 @@ namespace DOL.GS.Keeps
 		/// Override for StartAttack which chooses Ranged or Melee attack
 		/// </summary>
 		/// <param name="attackTarget"></param>
-		public override void StartAttack(GameObject attackTarget)
+		public void StartAttack(GameObject attackTarget)
 		{
 			if (IsPortalKeepGuard)
 			{
-				base.StartAttack(attackTarget);
-				return;
+                //base.StartAttack(attackTarget);
+                attackComponent.StartAttack(attackTarget);
+                return;
 			}
 
 			if (AttackState || CurrentSpellHandler != null)
@@ -398,7 +402,7 @@ namespace DOL.GS.Keeps
 					}
 				}
 
-				base.StartAttack(TargetObject);
+				attackComponent.StartAttack(TargetObject);
 			}
 			else if (TargetObject != null && TargetObject is GameLiving)
 			{
@@ -416,7 +420,7 @@ namespace DOL.GS.Keeps
 		{
 			if ((response & 0x100) != 0x100)
 			{
-				StopAttack();
+				attackComponent.NPCStopAttack();
 
 				if (TargetObject != null && TargetPosition is GameLiving)
 				{
@@ -433,7 +437,7 @@ namespace DOL.GS.Keeps
 
 				if (healSpell != null && !IsStunned && !IsMezzed)
 				{
-					StopAttack();
+					attackComponent.NPCStopAttack();
 					TargetObject = HealTarget;
 					CastSpell(healSpell, GuardSpellLine);
 				}
@@ -564,7 +568,7 @@ namespace DOL.GS.Keeps
 				}
 			}
 			if (AttackState)
-				StopAttack();
+				attackComponent.NPCStopAttack();
 			if (IsMoving)
 				StopFollowing();
 			TurnTo(TargetObject);
@@ -622,7 +626,7 @@ namespace DOL.GS.Keeps
 					if (TargetObject != null && !IsWithinRadius(TargetObject, AttackRange))
 					{
 						//stop the attack
-						StopAttack();
+						attackComponent.NPCStopAttack();
 						//if the distance to the attacker is less than the attack range
 						if (IsWithinRadius(ad.Attacker, AttackRange))
 						{
@@ -1025,7 +1029,7 @@ namespace DOL.GS.Keeps
 		{
 			if (PatrolGroup != null)
 			{
-				StopAttack();
+				attackComponent.NPCStopAttack();
 				StopFollowing();
 
 				StandardMobBrain brain = Brain as StandardMobBrain;

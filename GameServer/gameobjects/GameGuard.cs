@@ -28,9 +28,9 @@ namespace DOL.GS
             return list;
         }
 
-        public override void StartAttack(GameObject attackTarget)
+        public void StartAttack(GameObject attackTarget)
         {
-            base.StartAttack(attackTarget);
+            attackComponent.StartAttack(attackTarget);
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.SAY_DISTANCE))
             {

@@ -93,7 +93,7 @@ namespace DOL.GS
                     }
                     else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
                     {
-                        owner.StopAttack(); //Stop the attack
+                        owner.attackComponent.LivingStopAttack(); //Stop the attack
                                             //Stop();
                         owner.attackComponent.attackAction?.CleanupAttackAction();
                         return;
@@ -197,7 +197,7 @@ namespace DOL.GS
                         return; //Don't start the attack if the last one fumbled
                     }
 
-                    combatStyle = owner.GetStyleToUse();
+                    combatStyle = owner.attackComponent.GetStyleToUse();
                     if (combatStyle != null && combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
                     {
                         attackWeapon = leftWeapon;
@@ -300,7 +300,7 @@ namespace DOL.GS
 
                     if (owner.RangedAttackState != eRangedAttackState.AimFireReload)
                     {
-                        owner.StopAttack();
+                        owner.attackComponent.LivingStopAttack();
                         //Stop();
                         owner.attackComponent.attackAction?.CleanupAttackAction();
                         return;

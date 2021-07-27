@@ -22,7 +22,7 @@ namespace DOL.GS.Effects
 			base.Start(target);
             target.DisarmedTime = target.CurrentRegion.Time + m_duration;
             target.SilencedTime = target.CurrentRegion.Time + m_duration;
-			target.StopAttack();
+			target.attackComponent.LivingStopAttack();
 			target.StopCurrentSpellcast();
 		}
 
@@ -52,7 +52,7 @@ namespace DOL.GS.Effects
 		{
 			base.Start(target);
 			target.IsStunned = true;
-			target.StopAttack();
+			target.attackComponent.LivingStopAttack();
 			target.StopCurrentSpellcast();
 			target.DisableTurning(true);
 			if (target is GamePlayer)

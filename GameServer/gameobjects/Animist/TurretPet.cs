@@ -54,51 +54,52 @@ namespace DOL.GS
 				foreach (var at in ambientTexts)
 					at.Chance /= 5;
 		}
-		
-		public override void StartAttack(GameObject attackTarget)
-		{
-			if (attackTarget == null)
-				return;
 
-			if (attackTarget is GameLiving && GameServer.ServerRules.IsAllowedToAttack(this, (GameLiving)attackTarget, true) == false)
-				return;
+        // Temporarily modified
+        public void StartAttack(GameObject attackTarget)
+        {
+            if (attackTarget == null)
+                return;
 
-			if (Brain is IControlledBrain)
-			{
-				if ((Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
-					return;
-				GamePlayer playerowner;
-				if ((playerowner = ((IControlledBrain)Brain).GetPlayerOwner()) != null)
-					playerowner.Stealth(false);
-			}
+            if (attackTarget is GameLiving && GameServer.ServerRules.IsAllowedToAttack(this, (GameLiving)attackTarget, true) == false)
+                return;
 
-			TargetObject = attackTarget;
-			if (TargetObject.Realm == 0 || Realm == 0)
-				m_lastAttackTickPvE = m_CurrentRegion.Time;
-			else
-				m_lastAttackTickPvP = m_CurrentRegion.Time;
+            if (Brain is IControlledBrain)
+            {
+                if ((Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
+                    return;
+                GamePlayer playerowner;
+                if ((playerowner = ((IControlledBrain)Brain).GetPlayerOwner()) != null)
+                    playerowner.Stealth(false);
+            }
 
-			if (m_attackers.Count == 0)
-			{
-				if (SpellTimer == null)
-					SpellTimer = new SpellAction(this);
-				if (!SpellTimer.IsAlive)
-					SpellTimer.Start(1);
-			}
+            TargetObject = attackTarget;
+            if (TargetObject.Realm == 0 || Realm == 0)
+                m_lastAttackTickPvE = m_CurrentRegion.Time;
+            else
+                m_lastAttackTickPvP = m_CurrentRegion.Time;
 
-			if (Brain is TurretMainPetTankBrain)
-			{
-				base.StartAttack(TargetObject);
-			}
-		}
+            if (m_attackers.Count == 0)
+            {
+                if (SpellTimer == null)
+                    SpellTimer = new SpellAction(this);
+                if (!SpellTimer.IsAlive)
+                    SpellTimer.Start(1);
+            }
 
-		/// <summary>
-		/// [Ganrod] Nidel: Don't interrupt turret cast.
-		/// </summary>
-		/// <param name="duration"></param>
-		/// <param name="attackType"></param>
-		/// <param name="attacker"></param>
-		public override void StartInterruptTimer(AttackData attack, int duration)
+            if (Brain is TurretMainPetTankBrain)
+            {
+                attackComponent.StartAttack(TargetObject);
+            }
+        }
+
+        /// <summary>
+        /// [Ganrod] Nidel: Don't interrupt turret cast.
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="attackType"></param>
+        /// <param name="attacker"></param>
+        public override void StartInterruptTimer(AttackData attack, int duration)
 		{
 			return;
 		}

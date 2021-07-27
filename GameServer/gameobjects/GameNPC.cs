@@ -47,7 +47,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Constant for determining if already at a point
@@ -1387,7 +1387,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Make the current (calculated) position permanent.
 		/// </summary>
-		private void SaveCurrentPosition()
+		public void SaveCurrentPosition()
 		{
 			SavePosition(this);
 		}
@@ -1483,7 +1483,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void WalkToSpawn(short speed)
 		{
-			StopAttack();
+			attackComponent.NPCStopAttack();
 			StopFollowing();
 
 			StandardMobBrain brain = Brain as StandardMobBrain;
@@ -3745,100 +3745,106 @@ namespace DOL.GS
 		public const string LAST_LOS_TICK_PROPERTY = "last_LOS_checkTick";
 		public const string NUM_LOS_CHECKS_INPROGRESS = "num_LOS_progress";
 
-		protected object LOS_LOCK = new object();
+		public object LOS_LOCK = new object();
 
-		protected GameObject m_targetLOSObject = null;
+		public GameObject m_targetLOSObject = null;
 
-		/// <summary>
-		/// Starts a melee attack on a target
-		/// </summary>
-		/// <param name="target">The object to attack</param>
-		public override void StartAttack(GameObject target)
-		{
-			if (target == null)
-				return;
+        public virtual void StopAttack()
+        {
+            attackComponent.NPCStopAttack();
+        }
 
-			TargetObject = target;
+        /// <summary>
+        /// Starts a melee attack on a target
+        /// </summary>
+        /// <param name="target">The object to attack</param>
+        public virtual void StartAttack(GameObject target)
+        {
+            attackComponent.StartAttack(target);
+            //if (target == null)
+            //    return;
 
-			long lastTick = this.TempProperties.getProperty<long>(LAST_LOS_TICK_PROPERTY);
+            //TargetObject = target;
 
-			if (ServerProperties.Properties.ALWAYS_CHECK_PET_LOS &&
-				Brain != null &&
-				Brain is IControlledBrain &&
-				(target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain != null && (target as GameNPC).Brain is IControlledBrain)))
-			{
-				GameObject lastTarget = (GameObject)this.TempProperties.getProperty<object>(LAST_LOS_TARGET_PROPERTY, null);
-				if (lastTarget != null && lastTarget == target)
-				{
-					if (lastTick != 0 && CurrentRegion.Time - lastTick < ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-						return;
-				}
+            //long lastTick = this.TempProperties.getProperty<long>(LAST_LOS_TICK_PROPERTY);
 
-				GamePlayer losChecker = null;
-				if (target is GamePlayer)
-				{
-					losChecker = target as GamePlayer;
-				}
-				else if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-				{
-					losChecker = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-				}
-				else
-				{
-					// try to find another player to use for checking line of site
-					foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						losChecker = player;
-						break;
-					}
-				}
+            //if (ServerProperties.Properties.ALWAYS_CHECK_PET_LOS &&
+            //    Brain != null &&
+            //    Brain is IControlledBrain &&
+            //    (target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain != null && (target as GameNPC).Brain is IControlledBrain)))
+            //{
+            //    GameObject lastTarget = (GameObject)this.TempProperties.getProperty<object>(LAST_LOS_TARGET_PROPERTY, null);
+            //    if (lastTarget != null && lastTarget == target)
+            //    {
+            //        if (lastTick != 0 && CurrentRegion.Time - lastTick < ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+            //            return;
+            //    }
 
-				if (losChecker == null)
-				{
-					return;
-				}
+            //    GamePlayer losChecker = null;
+            //    if (target is GamePlayer)
+            //    {
+            //        losChecker = target as GamePlayer;
+            //    }
+            //    else if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
+            //    {
+            //        losChecker = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+            //    }
+            //    else
+            //    {
+            //        // try to find another player to use for checking line of site
+            //        foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            //        {
+            //            losChecker = player;
+            //            break;
+            //        }
+            //    }
 
-				lock (LOS_LOCK)
-				{
-					int count = TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
+            //    if (losChecker == null)
+            //    {
+            //        return;
+            //    }
 
-					if (count > 10)
-					{
-						log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", Name);
+            //    lock (LOS_LOCK)
+            //    {
+            //        int count = TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
 
-						// Now do a safety check.  If it's been a while since we sent any check we should clear count
-						if (lastTick == 0 || CurrentRegion.Time - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-						{
-							log.Debug("LOS count reset!");
-							TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
-						}
+            //        if (count > 10)
+            //        {
+            //            log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", Name);
 
-						return;
-					}
+            //            // Now do a safety check.  If it's been a while since we sent any check we should clear count
+            //            if (lastTick == 0 || CurrentRegion.Time - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+            //            {
+            //                log.Debug("LOS count reset!");
+            //                TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
+            //            }
 
-					count++;
-					TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
+            //            return;
+            //        }
 
-					TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, target);
-					TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, CurrentRegion.Time);
-					m_targetLOSObject = target;
+            //        count++;
+            //        TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
 
-				}
+            //        TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, target);
+            //        TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, CurrentRegion.Time);
+            //        m_targetLOSObject = target;
 
-				losChecker.Out.SendCheckLOS(this, target, new CheckLOSResponse(this.NPCStartAttackCheckLOS));
-				return;
-			}
+            //    }
 
-			ContinueStartAttack(target);
-		}
+            //    losChecker.Out.SendCheckLOS(this, target, new CheckLOSResponse(this.NPCStartAttackCheckLOS));
+            //    return;
+            //}
 
-		/// <summary>
-		/// We only attack if we have LOS
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="response"></param>
-		/// <param name="targetOID"></param>
-		public void NPCStartAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+            //ContinueStartAttack(target);
+        }
+
+        /// <summary>
+        /// We only attack if we have LOS
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="response"></param>
+        /// <param name="targetOID"></param>
+        public void NPCStartAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
 		{
 			lock (LOS_LOCK)
 			{
@@ -3851,7 +3857,7 @@ namespace DOL.GS
 			{
 				// make sure we didn't switch targets
 				if (TargetObject != null && m_targetLOSObject != null && TargetObject == m_targetLOSObject)
-					ContinueStartAttack(m_targetLOSObject);
+					attackComponent.ContinueStartAttack(m_targetLOSObject);
 			}
 			else
 			{
@@ -3864,45 +3870,45 @@ namespace DOL.GS
 		}
 
 
-		public virtual void ContinueStartAttack(GameObject target)
-		{
-			StopMoving();
-			StopMovingOnPath();
+		//public virtual void ContinueStartAttack(GameObject target)
+		//{
+		//	StopMoving();
+		//	StopMovingOnPath();
 
-			if (Brain != null && Brain is IControlledBrain)
-			{
-				if ((Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
-					return;
+		//	if (Brain != null && Brain is IControlledBrain)
+		//	{
+		//		if ((Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
+		//			return;
 
-				GamePlayer owner = null;
+		//		GamePlayer owner = null;
 
-				if ((owner = ((IControlledBrain)Brain).GetPlayerOwner()) != null)
-					owner.Stealth(false);
-			}
+		//		if ((owner = ((IControlledBrain)Brain).GetPlayerOwner()) != null)
+		//			owner.Stealth(false);
+		//	}
 
-			SetLastMeleeAttackTick();
-			StartMeleeAttackTimer();
+		//	SetLastMeleeAttackTick();
+		//	StartMeleeAttackTimer();
 
-			base.StartAttack(target);
+		//	base.StartAttack(target);
 
-			if (AttackState)
-			{
-				// if we're moving we need to lock down the current position
-				if (IsMoving)
-					SaveCurrentPosition();
+		//	if (AttackState)
+		//	{
+		//		// if we're moving we need to lock down the current position
+		//		if (IsMoving)
+		//			SaveCurrentPosition();
 
-				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				{
-					// Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
-					Follow(target, AttackRange - 30, STICKMAXIMUMRANGE);
-				}
-				else
-				{
-					Follow(target, STICKMINIMUMRANGE, STICKMAXIMUMRANGE);
-				}
-			}
+		//		if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+		//		{
+		//			// Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
+		//			Follow(target, AttackRange - 30, STICKMAXIMUMRANGE);
+		//		}
+		//		else
+		//		{
+		//			Follow(target, STICKMINIMUMRANGE, STICKMAXIMUMRANGE);
+		//		}
+		//	}
 
-		}
+		//}
 
 
 		public override void RangedAttackFinished()
@@ -3955,7 +3961,7 @@ namespace DOL.GS
 					log.Debug(Name + " FAILED stop ranged attack LOS check to player " + player.Name);
 				}
 
-				StopAttack();
+                attackComponent.NPCStopAttack();
 			}
 		}
 
@@ -3968,7 +3974,7 @@ namespace DOL.GS
 				m_lastAttackTickPvP = m_CurrentRegion.Time;
 		}
 
-		private void StartMeleeAttackTimer()
+		public void StartMeleeAttackTimer()
 		{
 			if (m_attackers.Count == 0)
 			{
@@ -4285,7 +4291,7 @@ namespace DOL.GS
 		{
 			// Tolakram: Order is important here.  First StopAttack, then switch weapon
 			StopFollowing();
-			StopAttack();
+            attackComponent.NPCStopAttack();
 
 			InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
 			InventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
@@ -4301,7 +4307,7 @@ namespace DOL.GS
 			else
 				SwitchWeapon(eActiveWeaponSlot.Standard);
 
-			StartAttack(target);
+			attackComponent.StartAttack(target);
 		}
 
 		/// <summary>
@@ -4311,9 +4317,9 @@ namespace DOL.GS
 		public void SwitchToRanged(GameObject target)
 		{
 			StopFollowing();
-			StopAttack();
+            attackComponent.NPCStopAttack();
 			SwitchWeapon(eActiveWeaponSlot.Distance);
-			StartAttack(target);
+			attackComponent.StartAttack(target);
 		}
 
 		/// <summary>
@@ -4579,18 +4585,18 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Stops all attack actions, including following target
-		/// </summary>
-		public override void StopAttack()
-		{
-			base.StopAttack();
-			StopFollowing();
+		///// <summary>
+		///// Stops all attack actions, including following target
+		///// </summary>
+		//public override void StopAttack()
+		//{
+		//	base.StopAttack();
+		//	StopFollowing();
 
-			// Tolakram: If npc has a distance weapon it needs to be made active after attack is stopped
-			if (Inventory != null && Inventory.GetItem(eInventorySlot.DistanceWeapon) != null && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-				SwitchWeapon(eActiveWeaponSlot.Distance);
-		}
+		//	// Tolakram: If npc has a distance weapon it needs to be made active after attack is stopped
+		//	if (Inventory != null && Inventory.GetItem(eInventorySlot.DistanceWeapon) != null && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+		//		SwitchWeapon(eActiveWeaponSlot.Distance);
+		//}
 
 		/// <summary>
 		/// This method is called to drop loot after this mob dies
@@ -5156,7 +5162,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="style">The style to check.</param>
 		/// <returns>True if we should use the style, false if it would be spamming a stun effect.</returns>
-		protected bool CheckStyleStun(Style style)
+		public bool CheckStyleStun(Style style)
 		{
 			if (TargetObject is GameLiving living && style.Procs.Count > 0)
 				foreach (Tuple<Spell, int, int> t in style.Procs)
@@ -5167,63 +5173,63 @@ namespace DOL.GS
 			return true;
 		}
 
-		/// <summary>
-		/// Picks a style, prioritizing reactives an	d chains over positionals and anytimes
-		/// </summary>
-		/// <returns>Selected style</returns>
-		public override Style GetStyleToUse()
-		{
-			if (m_styles == null || m_styles.Count < 1 || TargetObject == null)
-				return null;
+		///// <summary>
+		///// Picks a style, prioritizing reactives an	d chains over positionals and anytimes
+		///// </summary>
+		///// <returns>Selected style</returns>
+		//public override Style GetStyleToUse()
+		//{
+		//	if (m_styles == null || m_styles.Count < 1 || TargetObject == null)
+		//		return null;
 
-			// Chain and defensive styles skip the GAMENPC_CHANCES_TO_STYLE,
-			//	or they almost never happen e.g. NPC blocks 10% of the time,
-			//	default 20% style chance means the defensive style only happens
-			//	2% of the time, and a chain from it only happens 0.4% of the time.
-			if (StylesChain != null && StylesChain.Count > 0)
-				foreach (Style s in StylesChain)
-					if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-						return s;
+		//	// Chain and defensive styles skip the GAMENPC_CHANCES_TO_STYLE,
+		//	//	or they almost never happen e.g. NPC blocks 10% of the time,
+		//	//	default 20% style chance means the defensive style only happens
+		//	//	2% of the time, and a chain from it only happens 0.4% of the time.
+		//	if (StylesChain != null && StylesChain.Count > 0)
+		//		foreach (Style s in StylesChain)
+		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
+		//				return s;
 
-			if (StylesDefensive != null && StylesDefensive.Count > 0)
-				foreach (Style s in StylesDefensive)
-					if (StyleProcessor.CanUseStyle(this, s, AttackWeapon)
-						&& CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
-						return s;
+		//	if (StylesDefensive != null && StylesDefensive.Count > 0)
+		//		foreach (Style s in StylesDefensive)
+		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon)
+		//				&& CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
+		//				return s;
 
-			if (Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE))
-			{
-				// Check positional styles
-				// Picking random styles allows mobs to use multiple styles from the same position
-				//	e.g. a mob with both Pincer and Ice Storm side styles will use both of them.
-				if (StylesBack != null && StylesBack.Count > 0)
-				{
-					Style s = StylesBack[Util.Random(0, StylesBack.Count - 1)];
-					if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-						return s;
-				}
+		//	if (Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE))
+		//	{
+		//		// Check positional styles
+		//		// Picking random styles allows mobs to use multiple styles from the same position
+		//		//	e.g. a mob with both Pincer and Ice Storm side styles will use both of them.
+		//		if (StylesBack != null && StylesBack.Count > 0)
+		//		{
+		//			Style s = StylesBack[Util.Random(0, StylesBack.Count - 1)];
+		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
+		//				return s;
+		//		}
 
-				if (StylesSide != null && StylesSide.Count > 0)
-				{
-					Style s = StylesSide[Util.Random(0, StylesSide.Count - 1)];
-					if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-						return s;
-				}
+		//		if (StylesSide != null && StylesSide.Count > 0)
+		//		{
+		//			Style s = StylesSide[Util.Random(0, StylesSide.Count - 1)];
+		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
+		//				return s;
+		//		}
 
-				if (StylesFront != null && StylesFront.Count > 0)
-				{
-					Style s = StylesFront[Util.Random(0, StylesFront.Count - 1)];
-					if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-						return s;
-				}
+		//		if (StylesFront != null && StylesFront.Count > 0)
+		//		{
+		//			Style s = StylesFront[Util.Random(0, StylesFront.Count - 1)];
+		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
+		//				return s;
+		//		}
 
-				// Pick a random anytime style
-				if (StylesAnytime != null && StylesAnytime.Count > 0)
-					return StylesAnytime[Util.Random(0, StylesAnytime.Count - 1)];
-			}
+		//		// Pick a random anytime style
+		//		if (StylesAnytime != null && StylesAnytime.Count > 0)
+		//			return StylesAnytime[Util.Random(0, StylesAnytime.Count - 1)];
+		//	}
 
-			return null;
-		} // GetStyleToUse()
+		//	return null;
+		//} // GetStyleToUse()
 
 		/// <summary>
 		/// The Abilities for this NPC

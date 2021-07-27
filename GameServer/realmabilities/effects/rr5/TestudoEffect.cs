@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
 				}
 			}
 
-			target.StopAttack();
+			target.attackComponent.LivingStopAttack();
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
 			if (player != null)

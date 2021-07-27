@@ -114,7 +114,7 @@ namespace DOL.GS
                 {
                     // note due to the 2 lines above all npcs stop attacking
                     GameNPC npc = (GameNPC)owner;
-                    npc.StopAttack();
+                    npc.attackComponent.NPCStopAttack();
                     npc.TargetObject = null;
                     //Stop(); // stop the full tick timer? looks like other code is doing this
                     CleanupAttack();
@@ -282,7 +282,7 @@ namespace DOL.GS
                     case eAttackResult.NotAllowed_ServerRules:
                     case eAttackResult.NoValidTarget:
                         {
-                            owner.StopAttack();
+                            owner.attackComponent.LivingStopAttack();
                             CleanupAttack();
                             //Stop();
                             return;

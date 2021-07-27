@@ -75,14 +75,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				if (m_start)
 				{
-					player.StartAttack(player.TargetObject);
+					player.attackComponent.StartAttack(player.TargetObject);
 					// unstealth right after entering combat mode if anything is targeted
 					if (player.AttackState && player.TargetObject != null)
 						player.Stealth(false);
 				}
 				else
 				{
-					player.StopAttack(false);
+					player.attackComponent.StopAttack(false);
 				}
 			}
 		}

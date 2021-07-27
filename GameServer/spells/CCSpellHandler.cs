@@ -74,7 +74,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				effect.Owner.StopAttack();
+				effect.Owner.attackComponent.LivingStopAttack();
 			}
 
 			effect.Owner.Notify(GameLivingEvent.CrowdControlled, effect.Owner);
@@ -213,7 +213,7 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			effect.Owner.IsMezzed = true;
-			effect.Owner.StopAttack();
+			effect.Owner.attackComponent.LivingStopAttack();
 			effect.Owner.StopCurrentSpellcast();
 			effect.Owner.DisableTurning(true);
 			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
@@ -496,7 +496,7 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			effect.Owner.IsStunned=true;
-			effect.Owner.StopAttack();
+			effect.Owner.attackComponent.LivingStopAttack();
 			effect.Owner.StopCurrentSpellcast();
 			effect.Owner.DisableTurning(true);
 			base.OnEffectStart(effect);

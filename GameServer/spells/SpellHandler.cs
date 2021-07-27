@@ -706,7 +706,7 @@ namespace DOL.GS.Spells
 			{
 				if (m_caster.CanCastInCombat(Spell) == false)
 				{
-					m_caster.StopAttack();
+					m_caster.attackComponent.LivingStopAttack();
 					return false;
 				}
 			}

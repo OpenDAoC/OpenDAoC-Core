@@ -78,9 +78,9 @@ namespace DOL.GS
 
             return base.AddToWorld();
         }
-        public override void StartAttack(GameObject target)
+        public void StartAttack(GameObject target)
         {
-            base.StartAttack(target);
+            attackComponent.StartAttack(target);
 
             if (!TempProperties.getProperty<bool>(ALREADY_GOT_HELP))
             {
@@ -88,7 +88,7 @@ namespace DOL.GS
                 {
                     //on initial attack, all fireborn in range add!
                     if (npc.Name == "minotaur fireborn")
-                    npc.StartAttack(target);
+                    npc.attackComponent.StartAttack(target);
                 }
 
                 TempProperties.setProperty(ALREADY_GOT_HELP, true);

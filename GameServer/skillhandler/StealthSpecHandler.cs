@@ -160,7 +160,7 @@ namespace DOL.GS.SkillHandler
 						{
 							((IOldAggressiveBrain)npc.Brain).RemoveFromAggroList(player);
 						}
-						attacker.StopAttack();
+						attacker.attackComponent.LivingStopAttack();
 					}
 				}
 			}

@@ -216,7 +216,7 @@ namespace DOL.GS.Styles
 				//Changing the attack state clears out the styles...
 				if (living.AttackState == false)
 				{
-					living.StartAttack(player.TargetObject);
+					living.attackComponent.StartAttack(player.TargetObject);
 				}
 
 				if (living.TargetObject == null)
@@ -257,7 +257,7 @@ namespace DOL.GS.Styles
 						preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
 
 					//We have not set any primary style yet?
-					if (player.NextCombatStyle == null)
+					if (player.attackComponent.NextCombatStyle == null)
 					{
 						if (preRequireStyle != null)
 						{
@@ -272,8 +272,8 @@ namespace DOL.GS.Styles
 							}
 						}
 
-						player.NextCombatStyle = style;
-						player.NextCombatBackupStyle = null;
+						player.attackComponent.NextCombatStyle = style;
+						player.attackComponent.NextCombatBackupStyle = null;
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PreparePerform", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						if (living.IsEngaging)
@@ -292,7 +292,7 @@ namespace DOL.GS.Styles
 					else
 					{
 						//Have we also set the backupstyle already?
-						if (player.NextCombatBackupStyle != null)
+						if (player.attackComponent.NextCombatBackupStyle != null)
 						{
 							//All styles set, can't change anything now
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.AlreadySelectedStyles"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -300,14 +300,14 @@ namespace DOL.GS.Styles
 						else
 						{
 							//Have we pressed the same style button used for the primary style again?
-							if (player.NextCombatStyle.ID == style.ID)
+							if (player.attackComponent.NextCombatStyle.ID == style.ID)
 							{
 								if (player.CancelStyle)
 								{
 									//If yes, we cancel the style
-									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.NoLongerPreparing", player.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									player.NextCombatStyle = null;
-									player.NextCombatBackupStyle = null;
+									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.NoLongerPreparing", player.attackComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									player.attackComponent.NextCombatStyle = null;
+									player.attackComponent.NextCombatBackupStyle = null;
 								}
 								else
 								{
@@ -329,8 +329,8 @@ namespace DOL.GS.Styles
 									}
 								}
 								//If no, set the secondary backup style
-								player.NextCombatBackupStyle = style;
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.attackComponent.NextCombatBackupStyle = style;
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.attackComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
 						}
 					}

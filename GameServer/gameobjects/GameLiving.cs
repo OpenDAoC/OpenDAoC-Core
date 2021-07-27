@@ -801,47 +801,47 @@ namespace DOL.GS
 		/// Decides which style living will use in this moment
 		/// </summary>
 		/// <returns>Style to use or null if none</returns>
-		public virtual Style GetStyleToUse()
-		{
-			InventoryItem weapon;
-			if (NextCombatStyle == null) return null;
-			if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
-				weapon = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-			else weapon = AttackWeapon;
+		//public virtual Style GetStyleToUse()
+		//{
+		//	InventoryItem weapon;
+		//	if (NextCombatStyle == null) return null;
+		//	if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
+		//		weapon = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+		//	else weapon = AttackWeapon;
 
-			if (StyleProcessor.CanUseStyle(this, NextCombatStyle, weapon))
-				return NextCombatStyle;
+		//	if (StyleProcessor.CanUseStyle(this, NextCombatStyle, weapon))
+		//		return NextCombatStyle;
 
-			if (NextCombatBackupStyle == null) return NextCombatStyle;
+		//	if (NextCombatBackupStyle == null) return NextCombatStyle;
 
-			return NextCombatBackupStyle;
-		}
+		//	return NextCombatBackupStyle;
+		//}
 
-		/// <summary>
-		/// Holds the Style that this living should use next
-		/// </summary>
-		protected Style m_nextCombatStyle;
-		/// <summary>
-		/// Holds the backup style for the style that the living should use next
-		/// </summary>
-		protected Style m_nextCombatBackupStyle;
+		///// <summary>
+		///// Holds the Style that this living should use next
+		///// </summary>
+		//protected Style m_nextCombatStyle;
+		///// <summary>
+		///// Holds the backup style for the style that the living should use next
+		///// </summary>
+		//protected Style m_nextCombatBackupStyle;
 		
-		/// <summary>
-		/// Gets or Sets the next combat style to use
-		/// </summary>
-		public Style NextCombatStyle
-		{
-			get { return m_nextCombatStyle; }
-			set { m_nextCombatStyle = value; }
-		}
-		/// <summary>
-		/// Gets or Sets the next combat backup style to use
-		/// </summary>
-		public Style NextCombatBackupStyle
-		{
-			get { return m_nextCombatBackupStyle; }
-			set { m_nextCombatBackupStyle = value; }
-		}
+		///// <summary>
+		///// Gets or Sets the next combat style to use
+		///// </summary>
+		//public Style NextCombatStyle
+		//{
+		//	get { return m_nextCombatStyle; }
+		//	set { m_nextCombatStyle = value; }
+		//}
+		///// <summary>
+		///// Gets or Sets the next combat backup style to use
+		///// </summary>
+		//public Style NextCombatBackupStyle
+		//{
+		//	get { return m_nextCombatBackupStyle; }
+		//	set { m_nextCombatBackupStyle = value; }
+		//}
 
 		/// <summary>
 		/// Gets the current attackspeed of this living in milliseconds
@@ -1126,7 +1126,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the attack-state of this living
 		/// </summary>
-		public virtual bool AttackState { get; protected set; }
+		public virtual bool AttackState { get; set; }
 
 		/// <summary>
 		/// Whether or not the living can be attacked.
@@ -2273,7 +2273,7 @@ namespace DOL.GS
 				interruptChance = Math.Min(99, interruptChance);
 				if (Util.Chance((int)interruptChance))
 				{
-					StopAttack();
+					attackComponent.LivingStopAttack();
 					return true;
 				}
 			}
@@ -2314,7 +2314,7 @@ namespace DOL.GS
 		/// Gets/Sets the item that is used for ranged attack
 		/// </summary>
 		/// <returns>Item that will be used for range/accuracy/damage modifications</returns>
-		protected virtual InventoryItem RangeAttackAmmo
+		public virtual InventoryItem RangeAttackAmmo
 		{
 			get { return null; }
 			set { }
@@ -3153,54 +3153,54 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Starts a melee or ranged attack on a given target.
-		/// </summary>
-		/// <param name="attackTarget">The object to attack.</param>
-		public virtual void StartAttack(GameObject attackTarget)
-		{
-			// Aredhel: Let the brain handle this, no need to call StartAttack
-			// if the body can't do anything anyway.
-			if (IsIncapacitated)
-				return;
+		///// <summary>
+		///// Starts a melee or ranged attack on a given target.
+		///// </summary>
+		///// <param name="attackTarget">The object to attack.</param>
+		//public virtual void StartAttack(GameObject attackTarget)
+		//{
+		//	// Aredhel: Let the brain handle this, no need to call StartAttack
+		//	// if the body can't do anything anyway.
+		//	if (IsIncapacitated)
+		//		return;
 
-			if (IsEngaging)
-				CancelEngageEffect();
+		//	if (IsEngaging)
+		//		CancelEngageEffect();
 
-			AttackState = true;
+		//	AttackState = true;
 
-			int speed = AttackSpeed(AttackWeapon);
+		//	int speed = AttackSpeed(AttackWeapon);
 
-			if (speed > 0)
-			{
-				//m_attackAction = CreateAttackAction();
-                attackComponent.attackAction = new AttackAction(this);
+		//	if (speed > 0)
+		//	{
+		//		//m_attackAction = CreateAttackAction();
+  //              attackComponent.attackAction = new AttackAction(this);
 
-				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				{
-					// only start another attack action if we aren't already aiming to shoot
-					if (RangedAttackState != eRangedAttackState.Aim)
-					{
-						RangedAttackState = eRangedAttackState.Aim;
+		//		if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+		//		{
+		//			// only start another attack action if we aren't already aiming to shoot
+		//			if (RangedAttackState != eRangedAttackState.Aim)
+		//			{
+		//				RangedAttackState = eRangedAttackState.Aim;
 
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-							player.Out.SendCombatAnimation(this, null, (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
-							                               0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
+		//				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+		//					player.Out.SendCombatAnimation(this, null, (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
+		//					                               0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
-                        //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
-                        attackComponent.attackAction.StartTime = (RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed;
+  //                      //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
+  //                      attackComponent.attackAction.StartTime = (RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed;
 
-                    }
-				}
-				else
-				{
-					//if (m_attackAction.TimeUntilElapsed < 500)
-					//	m_attackAction.Start(500);
-                    if (attackComponent.attackAction.TimeUntilStart < 500)
-                        attackComponent.attackAction.StartTime = 500;
-				}
-			}
-		}
+  //                  }
+		//		}
+		//		else
+		//		{
+		//			//if (m_attackAction.TimeUntilElapsed < 500)
+		//			//	m_attackAction.Start(500);
+  //                  if (attackComponent.attackAction.TimeUntilStart < 500)
+  //                      attackComponent.attackAction.StartTime = 500;
+		//		}
+		//	}
+		//}
 
 		/// <summary>
 		/// When a ranged attack is finished this is called in order to check LOS for next attack
@@ -3212,7 +3212,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Remove engage effect on this living if it is present.
 		/// </summary>
-		private void CancelEngageEffect()
+		public void CancelEngageEffect()
 		{
 			EngageEffect effect = EffectList.GetOfType<EngageEffect>();
 
@@ -3225,7 +3225,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Interrupts a ranged attack.
 		/// </summary>
-		protected virtual void InterruptRangedAttack()
+		public virtual void InterruptRangedAttack()
 		{
 			RangedAttackState = eRangedAttackState.None;
 			RangedAttackType = eRangedAttackType.Normal;
@@ -3241,7 +3241,7 @@ namespace DOL.GS
 		{
 			if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 			{
-				StopAttack();
+				attackComponent.LivingStopAttack();
 			}
 
 			if (this is GameNPC && ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
@@ -3252,32 +3252,32 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Stops all attacks this GameLiving is currently making.
-		/// </summary>
-		public virtual void StopAttack()
-		{
-			StopAttack(true);
-		}
+        ///// <summary>
+        ///// Stops all attacks this GameLiving is currently making.
+        ///// </summary>
+        //public virtual void StopAttack()
+        //{
+        //    StopAttack(true);
+        //}
 
-		/// <summary>
-		/// Stop all attackes this GameLiving is currently making
-		/// </summary>
-		/// <param name="forced">Is this a forced stop or is the client suggesting we stop?</param>
-		public virtual void StopAttack(bool forced)
-		{
-			CancelEngageEffect();
-			AttackState = false;
+        //      /// <summary>
+        //      /// Stop all attackes this GameLiving is currently making
+        //      /// </summary>
+        //      /// <param name="forced">Is this a forced stop or is the client suggesting we stop?</param>
+        //      public virtual void StopAttack(bool forced)
+        //{
+        //	CancelEngageEffect();
+        //	AttackState = false;
 
-			if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				InterruptRangedAttack();
-		}
+        //	if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+        //		InterruptRangedAttack();
+        //}
 
-		/// <summary>
-		/// Minimum melee critical damage as a percentage of the
-		/// raw damage.
-		/// </summary>
-		protected virtual float MinMeleeCriticalDamage
+        /// <summary>
+        /// Minimum melee critical damage as a percentage of the
+        /// raw damage.
+        /// </summary>
+        protected virtual float MinMeleeCriticalDamage
 		{
 			get { return 0.1f; }
 		}
@@ -4461,7 +4461,7 @@ namespace DOL.GS
 				GameServer.ServerRules.OnLivingKilled(this, killer);
 			}
 
-			StopAttack();
+			attackComponent.LivingStopAttack();
 
 			List<GameObject> clone;
 			lock (Attackers)
@@ -6669,7 +6669,7 @@ namespace DOL.GS
 		{
 			if (!base.RemoveFromWorld()) return false;
 
-			StopAttack();
+			attackComponent.LivingStopAttack();
 			List<GameObject> temp;
 			lock (Attackers)
 			{

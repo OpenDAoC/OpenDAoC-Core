@@ -70,7 +70,7 @@ namespace DOL.GS.SkillHandler
 				return;
 			}
 			player.RangedAttackType = GameLiving.eRangedAttackType.Critical;
-			player.StartAttack(player.TargetObject);
+			player.attackComponent.StartAttack(player.TargetObject);
 		}
 	}
 }

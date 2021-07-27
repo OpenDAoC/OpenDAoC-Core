@@ -63,8 +63,8 @@ namespace DOL.GS.Spells
 
 			if (target is GamePlayer)
 			{
-				((GamePlayer)target).NextCombatStyle = null;
-				((GamePlayer)target).NextCombatBackupStyle = null;
+				((GamePlayer)target).attackComponent.NextCombatStyle = null;
+				((GamePlayer)target).attackComponent.NextCombatBackupStyle = null;
 			}
 			target.StopCurrentSpellcast(); //stop even if MoC or QC
 
