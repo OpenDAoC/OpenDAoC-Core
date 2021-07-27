@@ -91,10 +91,10 @@ namespace DOL.GS
 		/// </summary>
 		protected ILog m_gmLog;
 
-        /// <summary>
-        /// The textwrite for log operations
-        /// </summary>
-        protected ILog m_inventoryLog;
+		/// <summary>
+		/// The textwrite for log operations
+		/// </summary>
+		protected ILog m_inventoryLog;
 
 		/// <summary>
 		/// Holds instance of current server rules
@@ -157,7 +157,7 @@ namespace DOL.GS
 		/// </summary>
 		public new virtual GameServerConfiguration Configuration
 		{
-			get { return (GameServerConfiguration) _config; }
+			get { return (GameServerConfiguration)_config; }
 		}
 
 		/// <summary>
@@ -167,12 +167,12 @@ namespace DOL.GS
 		{
 			get { return m_status; }
 		}
-		
+
 		/// <summary>
 		/// Gets the server Scheduler
 		/// </summary>
 		public Scheduler.SimpleScheduler Scheduler { get; protected set; }
-		
+
 		/// <summary>
 		/// Gets the server WorldManager
 		/// </summary>
@@ -245,7 +245,7 @@ namespace DOL.GS
 		/// Gets the database instance
 		/// </summary>
 		public static IObjectDatabase Database => m_instance.DataBaseImpl;
-		
+
 		/// <summary>
 		/// Gets this Instance's Database
 		/// </summary>
@@ -264,7 +264,7 @@ namespace DOL.GS
 			{
 				Configuration.SaveInterval = value;
 				if (m_timer != null)
-					m_timer.Change(value*MINUTE_CONV, Timeout.Infinite);
+					m_timer.Change(value * MINUTE_CONV, Timeout.Infinite);
 			}
 		}
 
@@ -388,7 +388,7 @@ namespace DOL.GS
 			if (ar == null)
 				return;
 
-			var server = (GameServer) ar.AsyncState;
+			var server = (GameServer)ar.AsyncState;
 			Socket s = server.UDPSocket;
 			GameClient client = null;
 
@@ -419,7 +419,7 @@ namespace DOL.GS
 						}
 						else
 						{
-							var sender = (IPEndPoint) (tempRemoteEP);
+							var sender = (IPEndPoint)(tempRemoteEP);
 
 							var pakin = new GSPacketIn(read - GSPacketIn.HDR_SIZE);
 							pakin.Load(server.UDPBuffer, 0, read);
@@ -449,7 +449,7 @@ namespace DOL.GS
 							{
 								log.Error(
 									string.Format("Got an UDP packet from invalid client id or ip: client id = {0}, ip = {1},  code = {2:x2}",
-									              pakin.SessionID, sender, pakin.ID));
+												  pakin.SessionID, sender, pakin.ID));
 							}
 						}
 					}
@@ -490,14 +490,14 @@ namespace DOL.GS
 			try
 			{
 				s.BeginReceiveFrom(server.UDPBuffer, 0, MAX_UDPBUF, SocketFlags.None, ref tempRemoteEP, m_udpReceiveCallback,
-				                   server);
+								   server);
 				ret = true;
 			}
 			catch (SocketException e)
 			{
 				log.Fatal(
 					string.Format("Failed to resume receiving UDP packets. UDP is DEAD now. (code: {0}  socketCode: {1})", e.ErrorCode,
-					              e.SocketErrorCode), e);
+								  e.SocketErrorCode), e);
 			}
 			catch (ObjectDisposedException e)
 			{
@@ -552,7 +552,7 @@ namespace DOL.GS
 
 			try
 			{
-				var s = (Socket) ar.AsyncState;
+				var s = (Socket)ar.AsyncState;
 				s.EndSendTo(ar);
 			}
 			catch (ObjectDisposedException)
@@ -581,8 +581,8 @@ namespace DOL.GS
 			try
 			{
 				if (log.IsDebugEnabled)
-					log.DebugFormat("Starting Server, Memory is {0}MB", GC.GetTotalMemory(false)/1024/1024);
-				
+					log.DebugFormat("Starting Server, Memory is {0}MB", GC.GetTotalMemory(false) / 1024 / 1024);
+
 				m_status = eGameServerStatus.GSS_Closed;
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
@@ -592,12 +592,12 @@ namespace DOL.GS
 				//Try to compile the Scripts
 				if (!InitComponent(CompileScripts(), "Script compilation"))
 					return false;
-				
+
 				//---------------------------------------------------------------
 				//Try to init Server Properties
 				if (!InitComponent(Properties.InitProperties, "Server Properties Lookup"))
 					return false;
-				
+
 				//---------------------------------------------------------------
 				//Try loading the commands
 				if (!InitComponent(ScriptMgr.LoadCommands(), "Loading Commands"))
@@ -641,7 +641,7 @@ namespace DOL.GS
 				//Try to initialize the WorldManager
 				if (!InitComponent(() => WorldManager = new WorldManager(this), "Instancied World Manager Initialization"))
 					return false;
-				
+
 				//---------------------------------------------------------------
 				//Try to initialize the PlayerManager
 				if (!InitComponent(() => PlayerManager = new PlayerManager(this), "Player Manager Initialization"))
@@ -651,7 +651,7 @@ namespace DOL.GS
 				//Try to initialize the NpcManager
 				if (!InitComponent(() => NpcManager = new NpcManager(this), "NPC Manager Initialization"))
 					return false;
-				
+
 				//---------------------------------------------------------------
 				//Try to start the Language Manager
 				if (!InitComponent(LanguageMgr.Init(), "Multi Language Initialization"))
@@ -722,7 +722,7 @@ namespace DOL.GS
 					m_timer.Change(Timeout.Infinite, Timeout.Infinite);
 					m_timer.Dispose();
 				}
-				m_timer = new Timer(SaveTimerProc, null, SaveInterval*MINUTE_CONV, Timeout.Infinite);
+				m_timer = new Timer(SaveTimerProc, null, SaveInterval * MINUTE_CONV, Timeout.Infinite);
 				if (log.IsInfoEnabled)
 					log.Info("World save timer: true");
 
@@ -809,10 +809,10 @@ namespace DOL.GS
 				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
 				{
 
-					var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);					
+					var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
 					hook.SendMessage("Server open for connections");
 				}
-								
+
 				if (log.IsInfoEnabled)
 					log.Info("GameServer is now open for connections!");
 
@@ -849,9 +849,9 @@ namespace DOL.GS
 			string scriptDirectory = Path.Combine(Configuration.RootDirectory, "scripts");
 			if (!Directory.Exists(scriptDirectory))
 				Directory.CreateDirectory(scriptDirectory);
-			
+
 			bool compiled = false;
-			
+
 			// Check if Configuration Forces to use Pre-Compiled Game Server Scripts Assembly
 			if (!Configuration.EnableCompilation)
 			{
@@ -865,21 +865,21 @@ namespace DOL.GS
 				{
 					log.WarnFormat("Compilation Disabled - Could not find pre-compiled Assembly : {0} - Server starting without Scripts Assembly!", Configuration.ScriptCompilationTarget);
 				}
-				
+
 				compiled = true;
 			}
 			else
 			{
-				compiled = ScriptMgr.CompileScripts(false, scriptDirectory, Configuration.ScriptCompilationTarget, Configuration.ScriptAssemblies);
+				compiled = ScriptMgr.CompileScripts(false, scriptDirectory, Configuration.ScriptCompilationTarget, Configuration.AdditionalScriptAssemblies);
 			}
-			
+
 			if (compiled)
 			{
 				//---------------------------------------------------------------
 				//Register Script Tables
 				if (log.IsInfoEnabled)
 					log.Info("GameServerScripts Tables Initializing...");
-				
+
 				try
 				{
 					// Walk through each assembly in scripts
@@ -890,13 +890,13 @@ namespace DOL.GS
 						{
 							if (type.IsClass != true || !typeof(DataObject).IsAssignableFrom(type))
 								continue;
-							
+
 							object[] attrib = type.GetCustomAttributes(typeof(DataTable), false);
 							if (attrib.Length > 0)
 							{
 								if (log.IsInfoEnabled)
 									log.Info("Registering Scripts table: " + type.FullName);
-								
+
 								GameServer.Database.RegisterDataObject(type);
 							}
 						}
@@ -906,16 +906,16 @@ namespace DOL.GS
 				{
 					if (log.IsErrorEnabled)
 						log.Error("Error while registering Script Tables", dbex);
-					
+
 					return false;
 				}
-				
-	        	if (log.IsInfoEnabled)
+
+				if (log.IsInfoEnabled)
 					log.Info("GameServerScripts Database Tables Initialization: true");
-	        	
-	        	return true;
+
+				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -926,7 +926,7 @@ namespace DOL.GS
 		protected bool StartScriptComponents()
 		{
 			try
-			{	        	
+			{
 				//---------------------------------------------------------------
 				//Create the server rules
 				m_serverRules = ScriptMgr.CreateServerRules(Configuration.ServerType);
@@ -945,10 +945,10 @@ namespace DOL.GS
 				//Register all event handlers
 				foreach (Assembly asm in ScriptMgr.GameServerScripts)
 				{
-					GameEventMgr.RegisterGlobalEvents(asm, typeof (GameServerStartedEventAttribute), GameServerEvent.Started);
-					GameEventMgr.RegisterGlobalEvents(asm, typeof (GameServerStoppedEventAttribute), GameServerEvent.Stopped);
-					GameEventMgr.RegisterGlobalEvents(asm, typeof (ScriptLoadedEventAttribute), ScriptEvent.Loaded);
-					GameEventMgr.RegisterGlobalEvents(asm, typeof (ScriptUnloadedEventAttribute), ScriptEvent.Unloaded);
+					GameEventMgr.RegisterGlobalEvents(asm, typeof(GameServerStartedEventAttribute), GameServerEvent.Started);
+					GameEventMgr.RegisterGlobalEvents(asm, typeof(GameServerStoppedEventAttribute), GameServerEvent.Stopped);
+					GameEventMgr.RegisterGlobalEvents(asm, typeof(ScriptLoadedEventAttribute), ScriptEvent.Loaded);
+					GameEventMgr.RegisterGlobalEvents(asm, typeof(ScriptUnloadedEventAttribute), ScriptEvent.Unloaded);
 				}
 				if (log.IsInfoEnabled)
 					log.Info("Registering global event handlers: true");
@@ -1073,7 +1073,7 @@ namespace DOL.GS
 			try
 			{
 				log.Info("Checking database for updates ...");
-				
+
 				foreach (Assembly asm in ScriptMgr.GameServerScripts)
 				{
 
@@ -1083,11 +1083,11 @@ namespace DOL.GS
 							continue;
 						if (!typeof(IDatabaseUpdater).IsAssignableFrom(type))
 							continue;
-						
-						object[] attributes = type.GetCustomAttributes(typeof (DatabaseUpdateAttribute), false);
+
+						object[] attributes = type.GetCustomAttributes(typeof(DatabaseUpdateAttribute), false);
 						if (attributes.Length <= 0)
 							continue;
-	
+
 						try
 						{
 							var instance = Activator.CreateInstance(type) as IDatabaseUpdater;
@@ -1097,7 +1097,7 @@ namespace DOL.GS
 						{
 							if (log.IsErrorEnabled)
 								log.ErrorFormat("Error While Updating Database with Script {0} - {1}", type, uex);
-							
+
 							result = false;
 						}
 					}
@@ -1123,25 +1123,25 @@ namespace DOL.GS
 		protected bool InitComponent(bool componentInitState, string text)
 		{
 			if (log.IsDebugEnabled)
-				log.DebugFormat("Start Memory {0}: {1}MB", text, GC.GetTotalMemory(false)/1024/1024);
-			
+				log.DebugFormat("Start Memory {0}: {1}MB", text, GC.GetTotalMemory(false) / 1024 / 1024);
+
 			if (log.IsInfoEnabled)
 				log.InfoFormat("{0}: {1}", text, componentInitState);
-			
+
 			if (!componentInitState)
 				Stop();
-			
+
 			if (log.IsDebugEnabled)
-				log.DebugFormat("Finish Memory {0}: {1}MB", text, GC.GetTotalMemory(false)/1024/1024);
-			
+				log.DebugFormat("Finish Memory {0}: {1}MB", text, GC.GetTotalMemory(false) / 1024 / 1024);
+
 			return componentInitState;
 		}
 
 		protected bool InitComponent(Action componentInitMethod, string text)
 		{
 			if (log.IsDebugEnabled)
-				log.DebugFormat("Start Memory {0}: {1}MB", text, GC.GetTotalMemory(false)/1024/1024);
-			
+				log.DebugFormat("Start Memory {0}: {1}MB", text, GC.GetTotalMemory(false) / 1024 / 1024);
+
 			bool componentInitState = false;
 			try
 			{
@@ -1159,10 +1159,10 @@ namespace DOL.GS
 
 			if (!componentInitState)
 				Stop();
-			
+
 			if (log.IsDebugEnabled)
-				log.DebugFormat("Finish Memory {0}: {1}MB", text, GC.GetTotalMemory(false)/1024/1024);
-			
+				log.DebugFormat("Finish Memory {0}: {1}MB", text, GC.GetTotalMemory(false) / 1024 / 1024);
+
 			return componentInitState;
 		}
 		#endregion
@@ -1253,7 +1253,7 @@ namespace DOL.GS
 			if (Scheduler != null)
 				Scheduler.Shutdown();
 			Scheduler = null;
-			
+
 			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
 			if (log.IsInfoEnabled)
@@ -1279,9 +1279,9 @@ namespace DOL.GS
 
 		public int MaxPacketPoolSize
 		{
-			get { return Configuration.MaxClientCount*3; }
+			get { return Configuration.MaxClientCount * 3; }
 		}
-		
+
 		/// <summary>
 		/// Gets the count of packet buffers in the pool.
 		/// </summary>
@@ -1290,10 +1290,10 @@ namespace DOL.GS
 			get
 			{
 				int packetBufCount = 0;
-				
-				lock(m_packetBufPoolLock)
+
+				lock (m_packetBufPoolLock)
 					packetBufCount = m_packetBufPool.Count;
-				
+
 				return packetBufCount;
 			}
 		}
@@ -1306,16 +1306,16 @@ namespace DOL.GS
 		{
 			int count = MaxPacketPoolSize;
 
-			lock(m_packetBufPoolLock)
+			lock (m_packetBufPoolLock)
 			{
 				m_packetBufPool = new Queue<byte[]>(count);
-			
+
 				for (int i = 0; i < count; i++)
 				{
 					m_packetBufPool.Enqueue(new byte[BUF_SIZE]);
 				}
 			}
-	
+
 			if (log.IsDebugEnabled)
 				log.DebugFormat("allocated packet buffers: {0}", count.ToString());
 
@@ -1382,7 +1382,7 @@ namespace DOL.GS
 		/// <param name="text">the text to log</param>
 		public void LogGMAction(string text)
 		{
-			m_gmLog.Logger.Log(typeof (GameServer), Level.Alert, text, null);
+			m_gmLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
 		}
 
 		/// <summary>
@@ -1391,18 +1391,18 @@ namespace DOL.GS
 		/// <param name="text">the text to log</param>
 		public void LogCheatAction(string text)
 		{
-			m_cheatLog.Logger.Log(typeof (GameServer), Level.Alert, text, null);
+			m_cheatLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
 			log.Debug(text);
 		}
 
-        /// <summary>
-        /// Writes a line to the inventory log file
-        /// </summary>
-        /// <param name="text">the text to log</param>
-        public void LogInventoryAction(string text)
-        {
-            m_inventoryLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
-        }
+		/// <summary>
+		/// Writes a line to the inventory log file
+		/// </summary>
+		/// <param name="text">the text to log</param>
+		public void LogInventoryAction(string text)
+		{
+			m_inventoryLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
+		}
 
 		#endregion
 
@@ -1425,25 +1425,25 @@ namespace DOL.GS
 					//server, it is done automatically!
 					foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
 					{
-                        // Walk through each type in the assembly
-					    assembly.GetTypes().AsParallel().ForAll(type =>
-					    {
-					        if (!type.IsClass || type.IsAbstract)
-					        {
-					            return;
-					        }
+						// Walk through each type in the assembly
+						assembly.GetTypes().AsParallel().ForAll(type =>
+						{
+							if (!type.IsClass || type.IsAbstract)
+							{
+								return;
+							}
 
-					        var attrib = type.GetCustomAttributes<DataTable>(false);
-					        if (attrib.Any())
-					        {
-					            if (log.IsInfoEnabled)
-					            {
-					                log.InfoFormat("Registering table: {0}", type.FullName);
-					            }
+							var attrib = type.GetCustomAttributes<DataTable>(false);
+							if (attrib.Any())
+							{
+								if (log.IsInfoEnabled)
+								{
+									log.InfoFormat("Registering table: {0}", type.FullName);
+								}
 
-					            m_database.RegisterDataObject(type);
-					        }
-                        });
+								m_database.RegisterDataObject(type);
+							}
+						});
 					}
 				}
 				catch (DatabaseException e)
@@ -1507,7 +1507,7 @@ namespace DOL.GS
 			finally
 			{
 				if (m_timer != null)
-					m_timer.Change(SaveInterval*MINUTE_CONV, Timeout.Infinite);
+					m_timer.Change(SaveInterval * MINUTE_CONV, Timeout.Infinite);
 				GameEventMgr.Notify(GameServerEvent.WorldSave);
 			}
 		}

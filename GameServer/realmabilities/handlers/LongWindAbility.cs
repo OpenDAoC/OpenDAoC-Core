@@ -17,6 +17,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override int GetAmountForLevel(int level)
 		{
+            return level;
             switch (level)
             {
                 case 1: return 20;

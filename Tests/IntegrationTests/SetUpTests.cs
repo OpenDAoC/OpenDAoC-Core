@@ -45,7 +45,7 @@ namespace DOL.Integration.Server
 		public static void CreateGameServerInstance()
 		{
 			Console.WriteLine("Create Game Server Instance");
-			DirectoryInfo CodeBase = new FileInfo(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath).Directory;
+			DirectoryInfo CodeBase = new FileInfo(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath).Directory;
 			Console.WriteLine("Code Base: " + CodeBase.FullName);
 			DirectoryInfo FakeRoot = CodeBase.Parent;
 			Console.WriteLine("Fake Root: " + FakeRoot.FullName);
@@ -83,28 +83,28 @@ namespace DOL.Integration.Server
 					var assembly = Assembly.Load("DOLDatabase");
 					// Walk through each type in the assembly
 					assembly.GetTypes().AsParallel().ForAll(type =>
+					{
+						if (!type.IsClass || type.IsAbstract)
 						{
-							if (!type.IsClass || type.IsAbstract)
-							{
-								return;
-							}
+							return;
+						}
 
-							var attrib = type.GetCustomAttributes<DataTable>(false);
-							if (attrib.Any())
-							{
+						var attrib = type.GetCustomAttributes<DataTable>(false);
+						if (attrib.Any())
+						{
 
-								m_database.RegisterDataObject(type);
-							}
-						});
+							m_database.RegisterDataObject(type);
+						}
+					});
 				}
 			}
 		}
-		
+
 		[OneTimeSetUp]
 		public virtual void Init()
 		{
 			CreateGameServerInstance();
-			
+
 			if (!GameServer.Instance.IsRunning)
 			{
 				Console.WriteLine("Starting GameServer");

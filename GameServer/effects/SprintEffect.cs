@@ -98,7 +98,7 @@ namespace DOL.GS.Effects
 					if (ra != null)
 						amount = 5 - ra.GetAmountForLevel(ra.Level);
 
-					m_owner.Endurance -= amount;
+					//m_owner.Endurance -= amount;
 				}
 			}
 			return nextInterval;

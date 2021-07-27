@@ -70,6 +70,12 @@ namespace DOL.GS.PropertyCalc
 					}
 				}
 			}
+            else
+            {
+				regen -= 3;
+				if (regen <= 0)
+					regen = 0.1;
+            }
 				
 
 			regen -= debuff;
