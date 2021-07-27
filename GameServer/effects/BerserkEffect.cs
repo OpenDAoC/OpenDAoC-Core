@@ -55,11 +55,11 @@ namespace DOL.GS.Effects
 				//TODO differentiate model between Dwarves and other races
 				if ((living as GamePlayer).Race == (int)eRace.Dwarf)
 				{
-					living.Model = 391;
+					living.Model = 12;
 				}
 				else
 				{
-					living.Model = 391;
+					living.Model = 12;
 				}
 			}
 		}
