@@ -398,7 +398,7 @@ namespace DOL.GS
         /// <summary>
         /// Called when the necro pet attacks, which interrupts current spells being cast
         /// </summary>
-        public override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
 			if (!HasEffect(typeof(FacilitatePainworkingEffect)))
 			{
@@ -421,7 +421,7 @@ namespace DOL.GS
                 tBrain.CheckAttackSpellQueue();
             }
 
-			return base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
+			return attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
 
 		/// <summary>

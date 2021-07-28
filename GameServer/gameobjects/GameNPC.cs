@@ -2059,7 +2059,7 @@ namespace DOL.GS
 				MeleeDamageType = eDamageType.Slash;
 			}
 			m_activeWeaponSlot = eActiveWeaponSlot.Standard;
-			ActiveQuiverSlot = eActiveQuiverSlot.None;
+            rangeAttackComponent.ActiveQuiverSlot = RangeAttackComponent.eActiveQuiverSlot.None;
 
 			m_faction = FactionMgr.GetFactionByID(dbMob.FactionID);
 			LoadEquipmentTemplateFromDatabase(dbMob.EquipmentTemplateID);
@@ -4549,7 +4549,7 @@ namespace DOL.GS
 		{
 			if (m_activeWeaponSlot == eActiveWeaponSlot.Distance)
 			{
-				if (RangedAttackType == eRangedAttackType.Critical)
+				if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
 					return 0; // no crit damage for crit shots
 				else
 					return GetModified(eProperty.CriticalArcheryHitChance);

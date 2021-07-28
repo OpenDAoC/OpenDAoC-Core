@@ -43,6 +43,10 @@ namespace DOL.GS
                 {
                     p.attackComponent.Tick(GameLoopTime);   
                 } 
+                else if (p.attackComponent?.weaponAction != null)
+                {
+                    p.attackComponent.Tick(GameLoopTime);
+                }
             }
             
             

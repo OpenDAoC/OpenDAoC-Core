@@ -130,7 +130,7 @@ namespace DOL.GS
                 if (leftHandSwingCount > 0)
                 {
                     // both hands are used for attack
-                    mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+                    mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
                     if (style == null)
                     {
                         mainHandAD.AnimationId = -2; // virtual code for both weapons swing animation
@@ -139,7 +139,7 @@ namespace DOL.GS
                 else if (mainWeapon != null)
                 {
                     // no left hand used, all is simple here
-                    mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+                    mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
                     leftHandSwingCount = 0;
                 }
                 else
@@ -148,15 +148,15 @@ namespace DOL.GS
                     if (style == null && Util.Chance(50))
                     {
                         mainWeapon = leftWeapon;
-                        mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+                        mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
                         mainHandAD.AnimationId = -1; // virtual code for left weapons swing animation
                     }
                     else
                     {
-                        mainHandAD = owner.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+                        mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
                     }
                 }
-
+                
                 owner.TempProperties.setProperty(LAST_ATTACK_DATA, mainHandAD);
 
                 //Notify the target of our attack (sends damage messages, should be before damage)
@@ -181,7 +181,7 @@ namespace DOL.GS
                             RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
                             if (ra != null && Util.Chance(ra.Amount))
                             {
-                                AttackData ReflexAttackAD = living.MakeAttack(owner, living.AttackWeapon, null, 1, m_interruptDuration, false, true);
+                                AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.AttackWeapon, null, 1, m_interruptDuration, false, true);
                                 living.DealDamage(ReflexAttackAD);
                                 living.SendAttackingCombatMessages(ReflexAttackAD);
                             }
@@ -236,9 +236,9 @@ namespace DOL.GS
 
                                 // Savage swings - main,left,main,left.
                                 if (i % 2 == 0)
-                                    leftHandAD = owner.MakeAttack(m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
+                                    leftHandAD = owner.attackComponent.MakeAttack(m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
                                 else
-                                    leftHandAD = owner.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
+                                    leftHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
 
                                 //Notify the target of our attack (sends damage messages, should be before damage)
                                 if (leftHandAD.Target != null)
@@ -267,7 +267,10 @@ namespace DOL.GS
                 }
 
                 if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
+                {
                     owner.RangedAttackFinished();
+                    AttackFinished = true;
+                }
 
                 switch (mainHandAD.AttackResult)
                 {

@@ -37,6 +37,7 @@ namespace DOL.GS
         /// </summary>
         public void Tick(long time)
         {
+
             if (time > StartTime)
             {
                 //GameLiving owner = (GameLiving)m_actionSource;
@@ -84,14 +85,14 @@ namespace DOL.GS
 
                 if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
-                    attackTarget = owner.RangeAttackTarget; // must be do here because RangeAttackTarget is changed in CheckRangeAttackState
-                    eCheckRangeAttackStateResult rangeCheckresult = owner.CheckRangeAttackState(attackTarget);
-                    if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
+                    attackTarget = owner.rangeAttackComponent.RangeAttackTarget; // must be do here because RangeAttackTarget is changed in CheckRangeAttackState
+                    RangeAttackComponent.eCheckRangeAttackStateResult rangeCheckresult = owner.rangeAttackComponent.CheckRangeAttackState(attackTarget);
+                    if (rangeCheckresult == RangeAttackComponent.eCheckRangeAttackStateResult.Hold)
                     {
                         Interval = 100;
                         return; //Hold the shot another second
                     }
-                    else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
+                    else if (rangeCheckresult == RangeAttackComponent.eCheckRangeAttackStateResult.Stop || attackTarget == null)
                     {
                         owner.attackComponent.LivingStopAttack(); //Stop the attack
                                             //Stop();
@@ -108,9 +109,9 @@ namespace DOL.GS
 
                     interruptDuration = owner.AttackSpeed(attackWeapon);
 
-                    switch (owner.RangedAttackType)
+                    switch (owner.rangeAttackComponent.RangedAttackType)
                     {
-                        case eRangedAttackType.Critical:
+                        case RangeAttackComponent.eRangedAttackType.Critical:
                             {
                                 effectiveness *= 2 - 0.3 * owner.GetConLevel(attackTarget);
                                 if (effectiveness > 2)
@@ -120,13 +121,13 @@ namespace DOL.GS
                             }
                             break;
 
-                        case eRangedAttackType.SureShot:
+                        case RangeAttackComponent.eRangedAttackType.SureShot:
                             {
                                 effectiveness *= 0.5;
                             }
                             break;
 
-                        case eRangedAttackType.RapidFire:
+                        case RangeAttackComponent.eRangedAttackType.RapidFire:
                             {
                                 // Source : http://www.camelotherald.com/more/888.shtml
                                 // - (About Rapid Fire) If you release the shot 75% through the normal timer, the shot (if it hits) does 75% of its normal damage. If you
@@ -139,7 +140,7 @@ namespace DOL.GS
                                 // and the resulting interrupt will last 1.5 seconds."
 
                                 long rapidFireMaxDuration = owner.AttackSpeed(attackWeapon) / 2; // half of the total time
-                                long elapsedTime = owner.CurrentRegion.Time - owner.TempProperties.getProperty<long>(GamePlayer.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
+                                long elapsedTime = GameLoop.GameLoopTime - owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
                                 if (elapsedTime < rapidFireMaxDuration)
                                 {
                                     effectiveness *= 0.5 + (double)elapsedTime * 0.5 / (double)rapidFireMaxDuration;
@@ -153,7 +154,7 @@ namespace DOL.GS
                     if (attackTarget is GameLiving)
                     {
                         int PALevel = owner.GetAbilityLevel(Abilities.PenetratingArrow);
-                        if ((PALevel > 0) && (owner.RangedAttackType != eRangedAttackType.Long))
+                        if ((PALevel > 0) && (owner.rangeAttackComponent.RangedAttackType != RangeAttackComponent.eRangedAttackType.Long))
                         {
                             GameSpellEffect bladeturn = null;
                             lock (((GameLiving)attackTarget).EffectList)
@@ -274,8 +275,8 @@ namespace DOL.GS
 
                 //new WeaponOnTargetAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle).Start(ticksToTarget);  // really start the attack
                 //if (GameServer.ServerRules.IsAllowedToAttack(owner, attackTarget as GameLiving, false))
-                owner.attackComponent.weaponAction = new WeaponAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle, ticksToTarget);
 
+                owner.attackComponent.weaponAction = new WeaponAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle, ticksToTarget);
                 //Are we inactive?
                 if (owner.ObjectState != eObjectState.Active)
                 {
@@ -295,10 +296,10 @@ namespace DOL.GS
                     //Mobs always shot and reload
                     if (owner is GameNPC)
                     {
-                        owner.RangedAttackState = eRangedAttackState.AimFireReload;
+                        owner.rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.AimFireReload;
                     }
 
-                    if (owner.RangedAttackState != eRangedAttackState.AimFireReload)
+                    if (owner.rangeAttackComponent.RangedAttackState != RangeAttackComponent.eRangedAttackState.AimFireReload)
                     {
                         owner.attackComponent.LivingStopAttack();
                         //Stop();
@@ -307,37 +308,37 @@ namespace DOL.GS
                     }
                     else
                     {
-                        if (!(owner is GamePlayer) || (owner.RangedAttackType != eRangedAttackType.Long))
+                        if (!(owner is GamePlayer) || (owner.rangeAttackComponent.RangedAttackType != RangeAttackComponent.eRangedAttackType.Long))
                         {
-                            owner.RangedAttackType = eRangedAttackType.Normal;
+                            owner.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
                             lock (owner.EffectList)
                             {
                                 foreach (IGameEffect effect in owner.EffectList) // switch to the correct range attack type
                                 {
                                     if (effect is SureShotEffect)
                                     {
-                                        owner.RangedAttackType = eRangedAttackType.SureShot;
+                                        owner.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.SureShot;
                                         break;
                                     }
                                     else if (effect is RapidFireEffect)
                                     {
-                                        owner.RangedAttackType = eRangedAttackType.RapidFire;
+                                        owner.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.RapidFire;
                                         break;
                                     }
                                     else if (effect is TrueshotEffect)
                                     {
-                                        owner.RangedAttackType = eRangedAttackType.Long;
+                                        owner.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Long;
                                         break;
                                     }
                                 }
                             }
                         }
 
-                        owner.RangedAttackState = eRangedAttackState.Aim;
+                        owner.rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.Aim;
 
                         if (owner is GamePlayer)
                         {
-                            owner.TempProperties.setProperty(GamePlayer.RANGE_ATTACK_HOLD_START, 0L);
+                            owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, 0L);
                         }
 
                         int speed = owner.AttackSpeed(attackWeapon);
@@ -348,7 +349,7 @@ namespace DOL.GS
                             player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
                         }
 
-                        if (owner.RangedAttackType == eRangedAttackType.RapidFire)
+                        if (owner.rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire)
                         {
                             speed /= 2; // can start fire at the middle of the normal time
                         }

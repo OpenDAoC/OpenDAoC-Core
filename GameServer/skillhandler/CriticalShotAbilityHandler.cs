@@ -58,10 +58,10 @@ namespace DOL.GS.SkillHandler
 
 			if (player.AttackState)
 			{
-				if (player.RangedAttackType == GameLiving.eRangedAttackType.Critical)
+				if (player.rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.SwitchToRegular"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					player.RangedAttackType = GameLiving.eRangedAttackType.Normal;
+					player.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
 				}
 				else
 				{
@@ -69,7 +69,7 @@ namespace DOL.GS.SkillHandler
 				}
 				return;
 			}
-			player.RangedAttackType = GameLiving.eRangedAttackType.Critical;
+			player.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Critical;
 			player.attackComponent.StartAttack(player.TargetObject);
 		}
 	}

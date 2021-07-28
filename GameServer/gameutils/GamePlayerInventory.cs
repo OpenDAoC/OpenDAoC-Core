@@ -454,7 +454,7 @@ namespace DOL.GS
 			}
 			else if (oldSlot >= eInventorySlot.FirstQuiver && oldSlot <= eInventorySlot.FourthQuiver)
 			{
-				m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.None, true);
+				m_player.SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.None, true);
 			}
 			else if (IsEquippedSlot(oldSlot))
 			{
@@ -1141,16 +1141,16 @@ namespace DOL.GS
 						else m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
 						break;
 					case eInventorySlot.FirstQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.First, true);
+						m_player.SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.First, true);
 						break;
 					case eInventorySlot.SecondQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.Second, true);
+						m_player.SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Second, true);
 						break;
 					case eInventorySlot.ThirdQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.Third, true);
+						m_player.SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Third, true);
 						break;
 					case eInventorySlot.FourthQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.Fourth, true);
+						m_player.SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Fourth, true);
 						break;
 
 
@@ -1180,7 +1180,7 @@ namespace DOL.GS
 
 						if (fromSlot >= eInventorySlot.FirstQuiver && fromSlot <= eInventorySlot.FourthQuiver)
 						{
-							m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.None, true);
+							m_player.SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.None, true);
 						}
 
 						break;
