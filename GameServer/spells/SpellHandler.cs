@@ -1553,15 +1553,18 @@ namespace DOL.GS.Spells
 					return;
 				case eCastState.Interrupted:
 					InterruptCasting();
+                    Console.WriteLine("Spell interrupted: " + this.ToString());
 					castState = eCastState.Cleanup;
 					return;
 				case eCastState.Finished:
 					FinishSpellCast(m_spellTarget);
-					castState = eCastState.Cleanup;
+                    Console.WriteLine("Finish Spell: " + this.ToString());
+                    castState = eCastState.Cleanup;
 					return;
 				case eCastState.Cleanup:
 					CleanupSpellCast();
-					return;
+                    Console.WriteLine("Cleanup Spell: " + this.ToString());
+                    return;
 			}
 			
 		}

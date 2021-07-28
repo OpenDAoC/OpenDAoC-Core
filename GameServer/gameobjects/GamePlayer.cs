@@ -15762,8 +15762,7 @@ namespace DOL.GS
             m_characterClass = charClass;
         }
         
-        //Declare Components
-        public CastingComponent castingComponent;
+       
 
 		/// <summary>
 		/// Creates a new player

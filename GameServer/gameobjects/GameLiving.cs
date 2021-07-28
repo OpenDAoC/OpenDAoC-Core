@@ -5417,13 +5417,22 @@ namespace DOL.GS
 
 			return 500 + Util.Random(EnduranceRegenerationPeriod);
 		}
-		#endregion
+        #endregion
 
-		#region Mana/Health/Endurance/Concentration/Delete
-		/// <summary>
-		/// Amount of mana
-		/// </summary>
-		protected int m_mana;
+        #region Components
+        //will be moved to a ComponentManager
+        //Declare Components
+        public CastingComponent castingComponent;
+        public HealthComponent healthComponent;
+        public DamageComponent damageComponent;
+        #endregion
+
+
+        #region Mana/Health/Endurance/Concentration/Delete
+        /// <summary>
+        /// Amount of mana
+        /// </summary>
+        protected int m_mana;
 		/// <summary>
 		/// Amount of endurance
 		/// </summary>
