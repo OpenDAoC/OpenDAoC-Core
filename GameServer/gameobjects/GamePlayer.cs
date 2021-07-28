@@ -15804,6 +15804,8 @@ namespace DOL.GS
 			
 			//Component Initialization
 			castingComponent = new CastingComponent(this);
+            healthComponent = new HealthComponent(this);
+            damageComponent = new DamageComponent(this);
 			
 
 			CreateStatistics();

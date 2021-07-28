@@ -8,13 +8,19 @@ namespace DOL.GS
 {
     public class HealthComponent
     {
-
         protected int m_health;
+        private GamePlayer gamePlayer;
+
+        public HealthComponent(GamePlayer gamePlayer)
+        {
+            this.gamePlayer = gamePlayer;
+        }
+       
 
         /// <summary>
-		/// Gets/sets the object health
-		/// </summary>
-		public int Health
+        /// Gets/sets the object health
+        /// </summary>
+        public int Health
         {
             get { return m_health; }
             set
@@ -98,6 +104,8 @@ namespace DOL.GS
         /// The default frequency of regenerating health in milliseconds
         /// </summary>
         protected const ushort m_healthRegenerationPeriod = 3000;
+
+        
         /// <summary>
         /// Interval for health regeneration tics
         /// </summary>

@@ -8,7 +8,7 @@ namespace DOL.GS
 {
     public class DamageComponent
     {
-        //entity casting the spell
+        //entity taking the damage
         public GameLiving owner;
 
         public int DamageToDeal = 0;
@@ -16,7 +16,11 @@ namespace DOL.GS
         //might be better moved to DamageOverTimeComponent
         public bool isRepeating = false;
         public int damageIntervalInMs = 0;
-
+        
+        public DamageComponent(GamePlayer gamePlayer)
+        {
+            this.owner = gamePlayer;
+        }
 
         public DamageComponent(GameLiving owner, int damage)
         {
