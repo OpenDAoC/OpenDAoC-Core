@@ -5591,23 +5591,23 @@ namespace DOL.GS
 
 			switch (slot)
 			{
-				case eActiveWeaponSlot.Standard:
-					// remove endurance remove handler
-					if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-						GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
-					break;
+				//case eActiveWeaponSlot.Standard:
+				//	// remove endurance remove handler
+				//	if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				//		GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
+				//	break;
 
-				case eActiveWeaponSlot.TwoHanded:
-					// remove endurance remove handler
-					if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-						GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
-					break;
+				//case eActiveWeaponSlot.TwoHanded:
+				//	// remove endurance remove handler
+				//	if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				//		GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
+				//	break;
 
-				case eActiveWeaponSlot.Distance:
-					// add endurance remove handler
-					if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-						GameEventMgr.AddHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
-					break;
+				//case eActiveWeaponSlot.Distance:
+				//	// add endurance remove handler
+				//	if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+				//		GameEventMgr.AddHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
+				//	break;
 			}
 
 
@@ -5669,38 +5669,38 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Removes ammo and endurance on range attack
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		protected virtual void RangeAttackHandler(DOLEvent e, object sender, EventArgs arguments)
-		{
-			AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
-			if (args == null) return;
+		///// <summary>
+		///// Removes ammo and endurance on range attack
+		///// </summary>
+		///// <param name="e"></param>
+		///// <param name="sender"></param>
+		///// <param name="arguments"></param>
+		//protected virtual void RangeAttackHandler(DOLEvent e, object sender, EventArgs arguments)
+		//{
+		//	AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
+		//	if (args == null) return;
 
-			switch (args.AttackData.AttackResult)
-			{
-				case eAttackResult.HitUnstyled:
-				case eAttackResult.Missed:
-				case eAttackResult.Blocked:
-				case eAttackResult.Parried:
-				case eAttackResult.Evaded:
-				case eAttackResult.HitStyle:
-				case eAttackResult.Fumbled:
-					// remove an arrow and endurance
-					InventoryItem ammo = rangeAttackComponent.RangeAttackAmmo;
-					Inventory.RemoveCountFromStack(ammo, 1);
+		//	switch (args.AttackData.AttackResult)
+		//	{
+		//		case eAttackResult.HitUnstyled:
+		//		case eAttackResult.Missed:
+		//		case eAttackResult.Blocked:
+		//		case eAttackResult.Parried:
+		//		case eAttackResult.Evaded:
+		//		case eAttackResult.HitStyle:
+		//		case eAttackResult.Fumbled:
+		//			// remove an arrow and endurance
+		//			InventoryItem ammo = rangeAttackComponent.RangeAttackAmmo;
+		//			Inventory.RemoveCountFromStack(ammo, 1);
 
-					if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
-						Endurance -= RangeAttackComponent.CRITICAL_SHOT_ENDURANCE;
-					else if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire && GetAbilityLevel(Abilities.RapidFire) == 1)
-						Endurance -= 2 * RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
-					else Endurance -= RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
-					break;
-			}
-		}
+		//			if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+		//				Endurance -= RangeAttackComponent.CRITICAL_SHOT_ENDURANCE;
+		//			else if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire && GetAbilityLevel(Abilities.RapidFire) == 1)
+		//				Endurance -= 2 * RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
+		//			else Endurance -= RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
+		//			break;
+		//	}
+		//}
 
 		///// <summary>
 		///// Starts a melee attack with this player
@@ -6205,136 +6205,136 @@ namespace DOL.GS
 		//	return eCheckRangeAttackStateResult.Fire;
 		//}
 
-		/// <summary>
-		/// Send the messages to the GamePlayer
-		/// </summary>
-		/// <param name="ad"></param>
-		public override void SendAttackingCombatMessages(AttackData ad)
-		{
-			base.SendAttackingCombatMessages(ad);
-			GameObject target = ad.Target;
-			InventoryItem weapon = ad.Weapon;
-            if (ad.Target is GameNPC)
-            {
-                switch (ad.AttackResult)
-                {
-                    case eAttackResult.TargetNotVisible: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NotInView",
-                        ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.OutOfRange: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.TooFarAway",
-                        ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.TargetDead: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.AlreadyDead",
-                        ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Blocked: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Blocked",
-                        ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Parried: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parried",
-                        ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Evaded: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evaded",
-                        ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.NoTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.NoValidTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Missed: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Miss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Fumbled: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.HitStyle:
-                    case eAttackResult.HitUnstyled:
-                        string modmessage = "";
-                        if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                        if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+		///// <summary>
+		///// Send the messages to the GamePlayer
+		///// </summary>
+		///// <param name="ad"></param>
+		//public override void SendAttackingCombatMessages(AttackData ad)
+		//{
+		//	base.SendAttackingCombatMessages(ad);
+		//	GameObject target = ad.Target;
+		//	InventoryItem weapon = ad.Weapon;
+  //          if (ad.Target is GameNPC)
+  //          {
+  //              switch (ad.AttackResult)
+  //              {
+  //                  case eAttackResult.TargetNotVisible: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NotInView",
+  //                      ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.OutOfRange: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.TooFarAway",
+  //                      ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.TargetDead: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.AlreadyDead",
+  //                      ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Blocked: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Blocked",
+  //                      ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Parried: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parried",
+  //                      ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Evaded: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evaded",
+  //                      ad.Target.GetName(0, true, Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.NoTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.NoValidTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Missed: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Miss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Fumbled: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.HitStyle:
+  //                  case eAttackResult.HitUnstyled:
+  //                      string modmessage = "";
+  //                      if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+  //                      if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
 
-                        string hitWeapon = "";
+  //                      string hitWeapon = "";
 
-                        switch (Client.Account.Language)
-                        {
-                            case "DE":
-                                if (weapon != null)
-                                    hitWeapon = weapon.Name;
-                                break;
-                            default:
-                                if (weapon != null)
-                                    hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
-                                break;
-                        }
+  //                      switch (Client.Account.Language)
+  //                      {
+  //                          case "DE":
+  //                              if (weapon != null)
+  //                                  hitWeapon = weapon.Name;
+  //                              break;
+  //                          default:
+  //                              if (weapon != null)
+  //                                  hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
+  //                              break;
+  //                      }
 
-                        if (hitWeapon.Length > 0)
-                            hitWeapon = " " + LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.WithYour") + " " + hitWeapon;
+  //                      if (hitWeapon.Length > 0)
+  //                          hitWeapon = " " + LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.WithYour") + " " + hitWeapon;
 
-                        string attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouAttack");
-                        if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                            attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouShot");
+  //                      string attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouAttack");
+  //                      if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+  //                          attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouShot");
 
-                        // intercept messages
-                        if (target != null && target != ad.Target)
-                        {
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Intercepted", ad.Target.GetName(0, true), target.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptedHit", attackTypeMsg, target.GetName(0, false), hitWeapon, ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                        }
-                        else
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptHit", attackTypeMsg,
-                                ad.Target.GetName(0, false, Client.Account.Language, (ad.Target as GameNPC)), hitWeapon, ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                      // intercept messages
+  //                      if (target != null && target != ad.Target)
+  //                      {
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Intercepted", ad.Target.GetName(0, true), target.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptedHit", attackTypeMsg, target.GetName(0, false), hitWeapon, ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                      }
+  //                      else
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptHit", attackTypeMsg,
+  //                              ad.Target.GetName(0, false, Client.Account.Language, (ad.Target as GameNPC)), hitWeapon, ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
-                        // critical hit
-                        if (ad.CriticalDamage > 0)
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Critical",
-                                ad.Target.GetName(0, false, Client.Account.Language, (ad.Target as GameNPC)), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                        break;
-                }
-            }
-            else
-            {
-                switch (ad.AttackResult)
-                {
-                    case eAttackResult.TargetNotVisible: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NotInView", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.OutOfRange: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.TooFarAway", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.TargetDead: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.AlreadyDead", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Blocked: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Blocked", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Parried: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parried", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Evaded: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evaded", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.NoTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.NoValidTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Missed: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Miss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.Fumbled: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                    case eAttackResult.HitStyle:
-                    case eAttackResult.HitUnstyled:
-                        string modmessage = "";
-                        if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                        if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+  //                      // critical hit
+  //                      if (ad.CriticalDamage > 0)
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Critical",
+  //                              ad.Target.GetName(0, false, Client.Account.Language, (ad.Target as GameNPC)), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                      break;
+  //              }
+  //          }
+  //          else
+  //          {
+  //              switch (ad.AttackResult)
+  //              {
+  //                  case eAttackResult.TargetNotVisible: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NotInView", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.OutOfRange: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.TooFarAway", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.TargetDead: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.AlreadyDead", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Blocked: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Blocked", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Parried: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parried", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Evaded: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evaded", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.NoTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.NoValidTarget: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Missed: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Miss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.Fumbled: Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+  //                  case eAttackResult.HitStyle:
+  //                  case eAttackResult.HitUnstyled:
+  //                      string modmessage = "";
+  //                      if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+  //                      if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
 
-                        string hitWeapon = "";
+  //                      string hitWeapon = "";
 
-                        switch (Client.Account.Language)
-                        {
-                            case "DE":
-                                if (weapon != null)
-                                    hitWeapon = weapon.Name;
-                                break;
-                            default:
-                                if (weapon != null)
-                                    hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
-                                break;
-                        }
+  //                      switch (Client.Account.Language)
+  //                      {
+  //                          case "DE":
+  //                              if (weapon != null)
+  //                                  hitWeapon = weapon.Name;
+  //                              break;
+  //                          default:
+  //                              if (weapon != null)
+  //                                  hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
+  //                              break;
+  //                      }
 
-                        if (hitWeapon.Length > 0)
-                            hitWeapon = " " + LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.WithYour") + " " + hitWeapon;
+  //                      if (hitWeapon.Length > 0)
+  //                          hitWeapon = " " + LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.WithYour") + " " + hitWeapon;
 
-                        string attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouAttack");
-                        if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                            attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouShot");
+  //                      string attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouAttack");
+  //                      if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+  //                          attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.YouShot");
 
-                        // intercept messages
-                        if (target != null && target != ad.Target)
-                        {
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Intercepted", ad.Target.GetName(0, true), target.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptedHit", attackTypeMsg, target.GetName(0, false), hitWeapon, ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                        }
-                        else
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptHit", attackTypeMsg, ad.Target.GetName(0, false), hitWeapon, ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                      // intercept messages
+  //                      if (target != null && target != ad.Target)
+  //                      {
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Intercepted", ad.Target.GetName(0, true), target.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptedHit", attackTypeMsg, target.GetName(0, false), hitWeapon, ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                      }
+  //                      else
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterceptHit", attackTypeMsg, ad.Target.GetName(0, false), hitWeapon, ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
-                        // critical hit
-                        if (ad.CriticalDamage > 0)
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Critical", ad.Target.GetName(0, false), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                        break;
-                }
-            }
-		}
+  //                      // critical hit
+  //                      if (ad.CriticalDamage > 0)
+  //                          Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Critical", ad.Target.GetName(0, false), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+  //                      break;
+  //              }
+  //          }
+		//}
 
   //      /// <summary>
   //      /// Called whenever a single attack strike is made
@@ -6538,52 +6538,52 @@ namespace DOL.GS
 		//	StyleProcessor.TryToUseStyle(this, style);
 		//}
 
-		/// <summary>
-		/// Calculates melee critical damage of this player
-		/// </summary>
-		/// <param name="ad">The attack data</param>
-		/// <param name="weapon">The weapon used</param>
-		/// <returns>The amount of critical damage</returns>
-		public override int GetMeleeCriticalDamage(AttackData ad, InventoryItem weapon)
-		{
-			if (Util.Chance(AttackCriticalChance(weapon)))
-			{
-				// triple wield prevents critical hits
-				if (ad.Target.EffectList.GetOfType<TripleWieldEffect>() != null) return 0;
+		///// <summary>
+		///// Calculates melee critical damage of this player
+		///// </summary>
+		///// <param name="ad">The attack data</param>
+		///// <param name="weapon">The weapon used</param>
+		///// <returns>The amount of critical damage</returns>
+		//public override int GetMeleeCriticalDamage(AttackData ad, InventoryItem weapon)
+		//{
+		//	if (Util.Chance(AttackCriticalChance(weapon)))
+		//	{
+		//		// triple wield prevents critical hits
+		//		if (ad.Target.EffectList.GetOfType<TripleWieldEffect>() != null) return 0;
 
-				int critMin;
-				int critMax;
-				BerserkEffect berserk = EffectList.GetOfType<BerserkEffect>();
+		//		int critMin;
+		//		int critMax;
+		//		BerserkEffect berserk = EffectList.GetOfType<BerserkEffect>();
 
-				if (berserk != null)
-				{
-					int level = GetAbilityLevel(Abilities.Berserk);
-					// According to : http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
-					// Zerk 1 = 1-25%
-					// Zerk 2 = 1-50%
-					// Zerk 3 = 1-75%
-					// Zerk 4 = 1-99%
-					critMin = (int)(0.01 * ad.Damage);
-					critMax = (int)(Math.Min(0.99, (level * 0.25)) * ad.Damage);
-				}
-				else
-				{
-					//think min crit dmage is 10% of damage
-					critMin = ad.Damage / 10;
-					// Critical damage to players is 50%, low limit should be around 20% but not sure
-					// zerkers in Berserk do up to 99%
-					if (ad.Target is GamePlayer)
-						critMax = ad.Damage >> 1;
-					else
-						critMax = ad.Damage;
-				}
-				critMin = Math.Max(critMin, 0);
-				critMax = Math.Max(critMin, critMax);
+		//		if (berserk != null)
+		//		{
+		//			int level = GetAbilityLevel(Abilities.Berserk);
+		//			// According to : http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
+		//			// Zerk 1 = 1-25%
+		//			// Zerk 2 = 1-50%
+		//			// Zerk 3 = 1-75%
+		//			// Zerk 4 = 1-99%
+		//			critMin = (int)(0.01 * ad.Damage);
+		//			critMax = (int)(Math.Min(0.99, (level * 0.25)) * ad.Damage);
+		//		}
+		//		else
+		//		{
+		//			//think min crit dmage is 10% of damage
+		//			critMin = ad.Damage / 10;
+		//			// Critical damage to players is 50%, low limit should be around 20% but not sure
+		//			// zerkers in Berserk do up to 99%
+		//			if (ad.Target is GamePlayer)
+		//				critMax = ad.Damage >> 1;
+		//			else
+		//				critMax = ad.Damage;
+		//		}
+		//		critMin = Math.Max(critMin, 0);
+		//		critMax = Math.Max(critMin, critMax);
 
-				return Util.Random(critMin, critMax);
-			}
-			return 0;
-		}
+		//		return Util.Random(critMin, critMax);
+		//	}
+		//	return 0;
+		//}
 
 		/// <summary>
 		/// This method is called at the end of the attack sequence to
@@ -7822,22 +7822,22 @@ namespace DOL.GS
 				foreach (GamePlayer player in Group.GetPlayersInTheGroup())
 				{
 					if (player == this) continue;
-					if (enemy.Attackers.Contains(player)) continue;
+					if (enemy.attackComponent.Attackers.Contains(player)) continue;
 					if (this.IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 					{
 						Notify(GameLivingEvent.EnemyKilled, player, new EnemyKilledEventArgs(enemy));
 					}
 
-					if (player.Attackers.Contains(enemy))
-						player.RemoveAttacker(enemy);
+					if (player.attackComponent.Attackers.Contains(enemy))
+						player.attackComponent.RemoveAttacker(enemy);
 
-					if (player.ControlledBrain != null && player.ControlledBrain.Body.Attackers.Contains(enemy))
-						player.ControlledBrain.Body.RemoveAttacker(enemy);
+					if (player.ControlledBrain != null && player.ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
+						player.ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
 				}
 			}
 
-			if (ControlledBrain != null && ControlledBrain.Body.Attackers.Contains(enemy))
-				ControlledBrain.Body.RemoveAttacker(enemy);
+			if (ControlledBrain != null && ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
+				ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
 
 			base.EnemyKilled(enemy);
 		}

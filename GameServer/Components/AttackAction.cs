@@ -59,7 +59,7 @@ namespace DOL.GS
                     AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
                     owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
                     if (ad != null && ad.Target != null)
-                        ad.Target.RemoveAttacker(owner);
+                        ad.Target.attackComponent.RemoveAttacker(owner);
                     //Stop();
                     owner.attackComponent.attackAction?.CleanupAttackAction();
                     return;

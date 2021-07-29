@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
 		/// <returns></returns>
 		public override bool CheckFormation(ref int x, ref int y, ref int z)
 		{
-			if (!Body.AttackState && Body.Attackers.Count == 0)
+			if (!Body.AttackState && Body.attackComponent.Attackers.Count == 0)
 			{
 				GameNPC commander = (GameNPC)Owner;
 				double heading = ((double)commander.Heading) * Point2D.HEADING_TO_RADIAN;

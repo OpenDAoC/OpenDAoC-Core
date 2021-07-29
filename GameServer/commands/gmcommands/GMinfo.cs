@@ -277,12 +277,12 @@ namespace DOL.GS.Commands
 						}
 					}
 
-					if (target.Attackers != null && target.Attackers.Count > 0)
+					if (target.attackComponent.Attackers != null && target.attackComponent.Attackers.Count > 0)
 					{
 						info.Add("");
 						info.Add("Attacker List:");
 
-						foreach (GameLiving attacker in target.Attackers)
+						foreach (GameLiving attacker in target.attackComponent.Attackers)
 							info.Add(attacker.Name);
 					}
 

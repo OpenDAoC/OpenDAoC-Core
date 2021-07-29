@@ -601,7 +601,7 @@ namespace DOL.AI.Brain
 			lock ((m_aggroTable as ICollection).SyncRoot)
 			{
 				m_aggroTable.Clear();
-				Body.TempProperties.removeProperty(Body.Attackers);
+				Body.TempProperties.removeProperty(Body.attackComponent.Attackers);
 			}
 		}
 
@@ -692,7 +692,7 @@ namespace DOL.AI.Brain
 				foreach (GameLiving l in removable)
 				{
 					RemoveFromAggroList(l);
-					Body.RemoveAttacker(l);
+					Body.attackComponent.RemoveAttacker(l);
 				}
 			}
 
@@ -845,7 +845,7 @@ namespace DOL.AI.Brain
 						}
 					}
 
-					Body.Attackers.Remove(eArgs.Target);
+					Body.attackComponent.Attackers.Remove(eArgs.Target);
 					AttackMostWanted();
 				}
 				return;

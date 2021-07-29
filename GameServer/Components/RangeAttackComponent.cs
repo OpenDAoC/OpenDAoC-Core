@@ -1,4 +1,5 @@
 ﻿using DOL.Database;
+using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
@@ -450,6 +452,39 @@ namespace DOL.GS
             }
             else
                 return eCheckRangeAttackStateResult.Fire;
+        }
+
+        /// <summary>
+        /// Removes ammo and endurance on range attack
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="sender"></param>
+        /// <param name="arguments"></param>
+        public void RangeAttackHandler(EventArgs arguments)
+        {
+            AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
+            if (args == null) return;
+
+            switch (args.AttackData.AttackResult)
+            {
+                case eAttackResult.HitUnstyled:
+                case eAttackResult.Missed:
+                case eAttackResult.Blocked:
+                case eAttackResult.Parried:
+                case eAttackResult.Evaded:
+                case eAttackResult.HitStyle:
+                case eAttackResult.Fumbled:
+                    // remove an arrow and endurance
+                    InventoryItem ammo = RangeAttackAmmo;
+                    owner.Inventory.RemoveCountFromStack(ammo, 1);
+
+                    if (RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+                        owner.Endurance -= RangeAttackComponent.CRITICAL_SHOT_ENDURANCE;
+                    else if (RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire && owner.GetAbilityLevel(Abilities.RapidFire) == 1)
+                        owner.Endurance -= 2 * RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
+                    else owner.Endurance -= RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
+                    break;
+            }
         }
 
     }

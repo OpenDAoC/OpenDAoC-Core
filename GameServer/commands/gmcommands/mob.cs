@@ -1168,7 +1168,7 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				targetMob.AddAttacker(client.Player);
+				targetMob.attackComponent.AddAttacker(client.Player);
 				targetMob.AddXPGainer(client.Player, targetMob.Health);
 				targetMob.Die(client.Player);
 				targetMob.XPGainers.Clear();
@@ -2130,7 +2130,7 @@ namespace DOL.GS.Commands
 				{
 					targetMob.AddXPGainer(client.Player, 1);
 					targetMob.DropLoot(client.Player);
-					targetMob.RemoveAttacker(client.Player);
+					targetMob.attackComponent.RemoveAttacker(client.Player);
 					return;
 				}
 
@@ -3113,12 +3113,12 @@ namespace DOL.GS.Commands
 				}
 			}
 
-			if (targetMob.Attackers != null && targetMob.Attackers.Count > 0)
+			if (targetMob.attackComponent.Attackers != null && targetMob.attackComponent.Attackers.Count > 0)
 			{
 				text.Add("");
 				text.Add("Attacker List:");
 
-				foreach (GameLiving attacker in targetMob.Attackers)
+				foreach (GameLiving attacker in targetMob.attackComponent.Attackers)
 				{
 					text.Add(attacker.Name);
 				}

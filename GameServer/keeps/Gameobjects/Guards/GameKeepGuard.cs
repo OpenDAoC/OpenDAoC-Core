@@ -227,9 +227,9 @@ namespace DOL.GS.Keeps
 				{
                     //guard.StopAttack();
                     guard.attackComponent.NPCStopAttack();
-					lock (guard.Attackers)
+					lock (guard.attackComponent.Attackers)
 					{
-						foreach (GameLiving living in guard.Attackers)
+						foreach (GameLiving living in guard.attackComponent.Attackers)
 						{
 							if (guard.IsWithinRadius(living, guard.AttackRange))
 							{

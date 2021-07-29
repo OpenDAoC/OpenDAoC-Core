@@ -69,8 +69,8 @@ namespace DOL.GS.RealmAbilities
 			}
 
 			var attackers = new List<GameObject>();
-			lock (living.Attackers)
-				attackers.AddRange(living.Attackers);
+			lock (living.attackComponent.Attackers)
+				attackers.AddRange(living.attackComponent.Attackers);
 			foreach (GameLiving attacker in attackers)
 			{
 				if (attacker.TargetObject == living)

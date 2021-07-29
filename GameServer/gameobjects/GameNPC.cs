@@ -1613,7 +1613,7 @@ namespace DOL.GS
 				}
 			}
 			//sirru
-			else if (m_attackers.Count == 0 && this.Spells.Count > 0 && this.TargetObject != null && GameServer.ServerRules.IsAllowedToAttack(this, (this.TargetObject as GameLiving), true))
+			else if (attackComponent.m_attackers.Count == 0 && this.Spells.Count > 0 && this.TargetObject != null && GameServer.ServerRules.IsAllowedToAttack(this, (this.TargetObject as GameLiving), true))
 			{
 				if (TargetObject.Realm == 0 || Realm == 0)
 					m_lastAttackTickPvE = m_CurrentRegion.Time;
@@ -3976,7 +3976,7 @@ namespace DOL.GS
 
 		public void StartMeleeAttackTimer()
 		{
-			if (m_attackers.Count == 0)
+			if (attackComponent.m_attackers.Count == 0)
 			{
 				if (SpellTimer == null)
 					SpellTimer = new SpellAction(this);

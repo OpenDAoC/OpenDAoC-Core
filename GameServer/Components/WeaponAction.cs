@@ -164,7 +164,7 @@ namespace DOL.GS
                 // is out of range!
                 if (mainHandAD.Target != null && mainHandAD.AttackResult != eAttackResult.OutOfRange)
                 {
-                    mainHandAD.Target.AddAttacker(owner);
+                    mainHandAD.Target.attackComponent.AddAttacker(owner);
                     mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
                 }
 
@@ -214,6 +214,8 @@ namespace DOL.GS
 
                 //Notify ourself about the attack
                 owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(mainHandAD));
+                if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
+                    owner.rangeAttackComponent.RangeAttackHandler(new AttackFinishedEventArgs(mainHandAD));
 
                 // remove the left-hand AttackData from the previous attack
                 owner.TempProperties.removeProperty(LAST_ATTACK_DATA_LH);
@@ -300,9 +302,9 @@ namespace DOL.GS
 
                 //Show the animation
                 if (mainHandAD.AttackResult != eAttackResult.HitUnstyled && mainHandAD.AttackResult != eAttackResult.HitStyle && leftHandAD != null)
-                    owner.ShowAttackAnimation(leftHandAD, leftWeapon);
+                    owner.attackComponent.ShowAttackAnimation(leftHandAD, leftWeapon);
                 else
-                    owner.ShowAttackAnimation(mainHandAD, mainWeapon);
+                    owner.attackComponent.ShowAttackAnimation(mainHandAD, mainWeapon);
 
                 // (procs) start style effect after any damage
                 if (mainHandAD.StyleEffects.Count > 0 && mainHandAD.AttackResult == eAttackResult.HitStyle)

@@ -197,7 +197,7 @@ namespace DOL.GS.Spells
                 rezImmune.Start(player);
 
 				IList<GameObject> attackers;
-				lock (player.Attackers) { attackers = new List<GameObject>(player.Attackers); }
+				lock (player.attackComponent.Attackers) { attackers = new List<GameObject>(player.attackComponent.Attackers); }
 
 				foreach (GameObject attacker in attackers)
 				{

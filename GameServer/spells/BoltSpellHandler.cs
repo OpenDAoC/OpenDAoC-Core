@@ -157,7 +157,7 @@ namespace DOL.GS.Spells
 				{
 					if (target.InCombat)
 					{
-						foreach (GameLiving attacker in target.Attackers)
+						foreach (GameLiving attacker in target.attackComponent.Attackers)
 						{
 							if (attacker != caster && target.GetDistanceTo(attacker) <= 200)
 							{

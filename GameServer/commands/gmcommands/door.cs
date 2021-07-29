@@ -424,7 +424,7 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				targetDoor.AddAttacker(client.Player);
+				targetDoor.attackComponent.AddAttacker(client.Player);
 				targetDoor.AddXPGainer(client.Player, targetDoor.Health);
 				targetDoor.Die(client.Player);
 				targetDoor.XPGainers.Clear();

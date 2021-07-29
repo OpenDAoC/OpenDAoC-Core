@@ -79,7 +79,7 @@ namespace DOL.GS
             else
                 m_lastAttackTickPvP = m_CurrentRegion.Time;
 
-            if (m_attackers.Count == 0)
+            if (attackComponent.m_attackers.Count == 0)
             {
                 if (SpellTimer == null)
                     SpellTimer = new SpellAction(this);

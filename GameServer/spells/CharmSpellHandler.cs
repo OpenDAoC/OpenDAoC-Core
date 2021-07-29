@@ -479,8 +479,8 @@ namespace DOL.GS.Spells
                     }
 
                     // remove NPC with new brain from all attackers aggro list
-                    lock (npc.Attackers)
-	                    foreach (GameObject obj in npc.Attackers)
+                    lock (npc.attackComponent.Attackers)
+	                    foreach (GameObject obj in npc.attackComponent.Attackers)
 	                    {
 	
 	                        if (obj == null || !(obj is GameNPC))

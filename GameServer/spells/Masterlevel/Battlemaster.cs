@@ -560,7 +560,7 @@ namespace DOL.GS.Spells
                     break;
             }
             //Throw Weapon is subject to all the conventional attack results, parry, evade, block, etc.
-            ad.AttackResult = ad.Target.CalculateEnemyAttackResult(ad, weapon);
+            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(ad, weapon);
 
             if (ad.AttackResult == GameLiving.eAttackResult.HitUnstyled || ad.AttackResult == GameLiving.eAttackResult.HitStyle)
             {
@@ -606,7 +606,7 @@ namespace DOL.GS.Spells
                 ad.Damage = Math.Min(ad.Damage, (int)(player.UnstyledDamageCap(weapon) * effectiveness));
                 ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
                 if (ad.Damage == 0) ad.AttackResult = DOL.GS.GameLiving.eAttackResult.Missed;
-                ad.CriticalDamage = player.GetMeleeCriticalDamage(ad, weapon);
+                ad.CriticalDamage = player.attackComponent.GetMeleeCriticalDamage(ad, weapon);
             }
             else
             {

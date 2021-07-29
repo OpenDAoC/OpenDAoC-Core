@@ -1009,7 +1009,7 @@ namespace DOL.AI.Brain
 				foreach (GameLiving living in removable)
 				{
 					RemoveFromAggroList(living);
-					Body.RemoveAttacker(living);
+					Body.attackComponent.RemoveAttacker(living);
 				}
 			}
 
