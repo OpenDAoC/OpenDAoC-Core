@@ -1306,7 +1306,7 @@ namespace DOL.GS
 
 				if (npc.ObjectState != eObjectState.Active) return;
 				if (!npc.IsAlive) return;
-				if (npc.AttackState) return;
+				if (npc.attackComponent.AttackState) return;
 				if (npc.IsMoving) return;
 				if (npc.Equals(m_oldPosition)) return;
 				if (npc.Heading == m_oldHeading) return; // already set? oO
@@ -1602,7 +1602,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void FollowTargetInRange()
 		{
-			if (AttackState)
+			if (attackComponent.AttackState)
 			{
 				// if in last attack the enemy was out of range, we can attack him now immediately
 				AttackData ad = (AttackData)TempProperties.getProperty<object>(LAST_ATTACK_DATA, null);
@@ -1613,7 +1613,7 @@ namespace DOL.GS
 				}
 			}
 			//sirru
-			else if (attackComponent.m_attackers.Count == 0 && this.Spells.Count > 0 && this.TargetObject != null && GameServer.ServerRules.IsAllowedToAttack(this, (this.TargetObject as GameLiving), true))
+			else if (attackComponent.Attackers.Count == 0 && this.Spells.Count > 0 && this.TargetObject != null && GameServer.ServerRules.IsAllowedToAttack(this, (this.TargetObject as GameLiving), true))
 			{
 				if (TargetObject.Realm == 0 || Realm == 0)
 					m_lastAttackTickPvE = m_CurrentRegion.Time;
@@ -1687,7 +1687,7 @@ namespace DOL.GS
 				//if the npc hasn't hit or been hit in a while, stop following and return home
 				if (!(Brain is IControlledBrain))
 				{
-					if (AttackState && brain != null && followLiving != null)
+					if (attackComponent.AttackState && brain != null && followLiving != null)
 					{
 						long seconds = 20 + ((brain.GetAggroAmountForLiving(followLiving) / (MaxHealth + 1)) * 100);
 						long lastattacked = LastAttackTick;
@@ -3013,7 +3013,7 @@ namespace DOL.GS
 
 			//If the Mob has a Path assigned he will now walk on it!
 			if (MaxSpeedBase > 0 && CurrentSpellHandler == null && !IsMoving
-				&& !AttackState && !InCombat && !IsMovingOnPath && !IsReturningHome
+				&& !attackComponent.AttackState && !InCombat && !IsMovingOnPath && !IsReturningHome
 				//Check everything otherwise the Server will crash
 				&& PathID != null && PathID != "" && PathID != "NULL")
 			{
@@ -3976,7 +3976,7 @@ namespace DOL.GS
 
 		public void StartMeleeAttackTimer()
 		{
-			if (attackComponent.m_attackers.Count == 0)
+			if (attackComponent.Attackers.Count == 0)
 			{
 				if (SpellTimer == null)
 					SpellTimer = new SpellAction(this);
@@ -3991,9 +3991,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapon">the weapon used for attack</param>
 		/// <returns></returns>
-		public override double AttackDamage(InventoryItem weapon)
+		public double AttackDamage(InventoryItem weapon)
 		{
-			double damage = base.AttackDamage(weapon);
+			double damage = attackComponent.AttackDamage(weapon);
 
 			if (ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded && m_blockChance > 0)
 				switch (this)
@@ -4196,7 +4196,7 @@ namespace DOL.GS
 		/// Returns the damage type of the current attack
 		/// </summary>
 		/// <param name="weapon">attack weapon</param>
-		public override eDamageType AttackDamageType(InventoryItem weapon)
+		public eDamageType AttackDamageType(InventoryItem weapon)
 		{
 			return m_meleeDamageType;
 		}
@@ -4268,7 +4268,7 @@ namespace DOL.GS
 		/// Calculates how many times left hand swings
 		/// </summary>
 		/// <returns></returns>
-		public override int CalculateLeftHandSwingCount()
+		public int CalculateLeftHandSwingCount()
 		{
 			if (Util.Chance(m_leftHandSwingChance))
 				return 1;
@@ -4278,9 +4278,10 @@ namespace DOL.GS
 		/// <summary>
 		/// Checks whether Living has ability to use lefthanded weapons
 		/// </summary>
-		public override bool CanUseLefthandedWeapon
+		public bool CanUseLefthandedWeapon
 		{
 			get { return m_leftHandSwingChance > 0; }
+            set { CanUseLefthandedWeapon =  value; }
 		}
 
 		/// <summary>
@@ -4327,13 +4328,13 @@ namespace DOL.GS
 		/// </summary>		
 		public virtual void DrawWeapon()
 		{
-			if (!AttackState)
+			if (!attackComponent.AttackState)
 			{
-				AttackState = true;
+                attackComponent.AttackState = true;
 
 				BroadcastUpdate();
 
-				AttackState = false;
+                attackComponent.AttackState = false;
 			}
 		}
 
@@ -4355,7 +4356,7 @@ namespace DOL.GS
 			}
 
 			// Experimental - this prevents interrupts from causing ranged attacks to always switch to melee
-			if (AttackState)
+			if (attackComponent.AttackState)
 			{
 				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance && HealthPercent < MINHEALTHPERCENTFORRANGEDATTACK)
 				{
@@ -4545,7 +4546,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The chance for a critical hit
 		/// </summary>
-		public override int AttackCriticalChance(InventoryItem weapon)
+		public int AttackCriticalChance(InventoryItem weapon)
 		{
 			if (m_activeWeaponSlot == eActiveWeaponSlot.Distance)
 			{
@@ -5321,7 +5322,7 @@ namespace DOL.GS
 					return;
 				}
 
-				if (owner.TargetObject == null || !owner.AttackState)
+				if (owner.TargetObject == null || !owner.attackComponent.AttackState)
 				{
 					Stop();
 					return;

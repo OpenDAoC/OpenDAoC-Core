@@ -105,7 +105,7 @@ namespace DOL.GS
 			return base.HasAbility(keyName);
 		}
 
-		public override int AttackRange
+		public int AttackRange
 		{
 			get { return 400; }
 			set { }
@@ -148,7 +148,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override double AttackDamage(InventoryItem weapon)
+		public double AttackDamage(InventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * 1.0 * DragonDifficulty / 100;
 		}

@@ -54,7 +54,7 @@ namespace DOL.GS
                     return;
                 }
 
-                if (!owner.AttackState)
+                if (!owner.attackComponent.AttackState)
                 {
                     AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
                     owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
@@ -68,7 +68,7 @@ namespace DOL.GS
                 // Don't attack if gameliving is engaging
                 if (owner.IsEngaging)
                 {
-                    Interval = owner.AttackSpeed(owner.AttackWeapon); // while gameliving is engageing it doesn't attack.
+                    Interval = owner.attackComponent.AttackSpeed(owner.attackComponent.AttackWeapon); // while gameliving is engageing it doesn't attack.
                     return;
                 }
 
@@ -79,7 +79,7 @@ namespace DOL.GS
                 int interruptDuration = 0;
                 int leftHandSwingCount = 0;
                 Style combatStyle = null;
-                InventoryItem attackWeapon = owner.AttackWeapon;
+                InventoryItem attackWeapon = owner.attackComponent.AttackWeapon;
                 InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                 GameObject attackTarget = null;
 
@@ -107,7 +107,7 @@ namespace DOL.GS
                         player.Out.SendCombatAnimation(owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
                     }
 
-                    interruptDuration = owner.AttackSpeed(attackWeapon);
+                    interruptDuration = owner.attackComponent.AttackSpeed(attackWeapon);
 
                     switch (owner.rangeAttackComponent.RangedAttackType)
                     {
@@ -139,7 +139,7 @@ namespace DOL.GS
                                 // stat bonuses, I fire that bow at 3.0 seconds. The resulting interrupt on the caster will last 3.0 seconds. If I rapid fire that same bow, I will fire at 1.5 seconds,
                                 // and the resulting interrupt will last 1.5 seconds."
 
-                                long rapidFireMaxDuration = owner.AttackSpeed(attackWeapon) / 2; // half of the total time
+                                long rapidFireMaxDuration = owner.attackComponent.AttackSpeed(attackWeapon) / 2; // half of the total time
                                 long elapsedTime = GameLoop.GameLoopTime - owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
                                 if (elapsedTime < rapidFireMaxDuration)
                                 {
@@ -193,17 +193,17 @@ namespace DOL.GS
                     AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
                     if (ad != null && ad.AttackResult == eAttackResult.Fumbled)
                     {
-                        Interval = owner.AttackSpeed(attackWeapon);
+                        Interval = owner.attackComponent.AttackSpeed(attackWeapon);
                         ad.AttackResult = eAttackResult.Missed;
                         return; //Don't start the attack if the last one fumbled
                     }
 
-                    combatStyle = owner.attackComponent.GetStyleToUse();
+                    combatStyle = owner.styleComponent.GetStyleToUse();
                     if (combatStyle != null && combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
                     {
                         attackWeapon = leftWeapon;
                     }
-                    interruptDuration = owner.AttackSpeed(attackWeapon);
+                    interruptDuration = owner.attackComponent.AttackSpeed(attackWeapon);
 
                     // Damage is doubled on sitting players
                     // but only with melee weapons; arrows and magic does normal damage.
@@ -215,7 +215,7 @@ namespace DOL.GS
                     ticksToTarget = 1;
                 }
 
-                if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.AttackRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.attackComponent.AttackRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
                     if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain && ((owner as GameNPC).Brain as StandardMobBrain).AggroTable.Count > 0 && (owner as GameNPC).Brain is IControlledBrain == false)
                     {
@@ -226,7 +226,7 @@ namespace DOL.GS
                         GameLiving Possibly_target = null;
                         long maxaggro = 0, aggro = 0;
 
-                        foreach (GamePlayer player_test in owner.GetPlayersInRadius((ushort)owner.AttackRange))
+                        foreach (GamePlayer player_test in owner.GetPlayersInRadius((ushort)owner.attackComponent.AttackRange))
                         {
                             if (npc_brain.AggroTable.ContainsKey(player_test))
                             {
@@ -239,7 +239,7 @@ namespace DOL.GS
                                 }
                             }
                         }
-                        foreach (GameNPC target_possibility in owner.GetNPCsInRadius((ushort)owner.AttackRange))
+                        foreach (GameNPC target_possibility in owner.GetNPCsInRadius((ushort)owner.attackComponent.AttackRange))
                         {
                             if (npc_brain.AggroTable.ContainsKey(target_possibility))
                             {
@@ -341,7 +341,7 @@ namespace DOL.GS
                             owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, 0L);
                         }
 
-                        int speed = owner.AttackSpeed(attackWeapon);
+                        int speed = owner.attackComponent.AttackSpeed(attackWeapon);
                         byte attackSpeed = (byte)(speed / 100);
                         int model = (attackWeapon == null ? 0 : attackWeapon.Model);
                         foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -361,11 +361,11 @@ namespace DOL.GS
                 {
                     if (leftHandSwingCount > 0)
                     {
-                        Interval = owner.AttackSpeed(attackWeapon, leftWeapon);
+                        Interval = owner.attackComponent.AttackSpeed(attackWeapon, leftWeapon);
                     }
                     else
                     {
-                        Interval = owner.AttackSpeed(attackWeapon);
+                        Interval = owner.attackComponent.AttackSpeed(attackWeapon);
                     }
                 }
                 StartTime = Interval;// owner.AttackSpeed(attackWeapon);

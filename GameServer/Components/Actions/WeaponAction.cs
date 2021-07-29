@@ -89,18 +89,18 @@ namespace DOL.GS
                 double leftHandEffectiveness = m_effectiveness;
                 double mainHandEffectiveness = m_effectiveness;
 
-                mainHandEffectiveness *= owner.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
-                leftHandEffectiveness *= owner.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
+                mainHandEffectiveness *= owner.attackComponent.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
+                leftHandEffectiveness *= owner.attackComponent.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
 
                 // GameNPC can Dual Swing even with no weapon
-                if (owner is GameNPC && owner.CanUseLefthandedWeapon)
+                if (owner is GameNPC && owner.attackComponent.CanUseLefthandedWeapon)
                 {
-                    leftHandSwingCount = owner.CalculateLeftHandSwingCount();
+                    leftHandSwingCount = owner.attackComponent.CalculateLeftHandSwingCount();
                 }
-                else if (owner.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield
+                else if (owner.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield
                     && mainWeapon != null && (mainWeapon.Item_Type == Slot.RIGHTHAND || mainWeapon.Item_Type == Slot.LEFTHAND))
                 {
-                    leftHandSwingCount = owner.CalculateLeftHandSwingCount();
+                    leftHandSwingCount = owner.attackComponent.CalculateLeftHandSwingCount();
                 }
 
                 // CMH
@@ -181,7 +181,7 @@ namespace DOL.GS
                             RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
                             if (ra != null && Util.Chance(ra.Amount))
                             {
-                                AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.AttackWeapon, null, 1, m_interruptDuration, false, true);
+                                AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.attackComponent.AttackWeapon, null, 1, m_interruptDuration, false, true);
                                 living.DealDamage(ReflexAttackAD);
                                 living.SendAttackingCombatMessages(ReflexAttackAD);
                             }
@@ -213,7 +213,7 @@ namespace DOL.GS
                 owner.SendAttackingCombatMessages(mainHandAD);
 
                 //Notify ourself about the attack
-                owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(mainHandAD));
+                //owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(mainHandAD));
                 if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
                     owner.rangeAttackComponent.RangeAttackHandler(new AttackFinishedEventArgs(mainHandAD));
 
@@ -262,7 +262,7 @@ namespace DOL.GS
                                 owner.SendAttackingCombatMessages(leftHandAD);
 
                                 //Notify ourself about the attack
-                                owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(leftHandAD));
+                                //owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(leftHandAD));
                             }
                             break;
                     }

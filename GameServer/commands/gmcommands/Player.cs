@@ -2500,7 +2500,7 @@ namespace DOL.GS.Commands
             //remove all their tricks and abilities!
             target.RemoveAllSpecs();
             target.RemoveAllSpellLines();
-            target.RemoveAllStyles();
+            target.styleComponent.RemoveAllStyles();
 
             //reset before, and after changing the class.
             target.Reset();

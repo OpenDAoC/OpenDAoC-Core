@@ -172,7 +172,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 				else if (sk is Styles.Style)
 				{
-					player.attackComponent.ExecuteWeaponStyle((Styles.Style)sk);
+					player.styleComponent.ExecuteWeaponStyle((Styles.Style)sk);
 				}
 				else if (sk is Ability)
 				{

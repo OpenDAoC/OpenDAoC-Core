@@ -159,7 +159,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public override int AttackSpeed(params InventoryItem[] weapon)
+		public int AttackSpeed(params InventoryItem[] weapon)
 		{
 			//speed 1 second = 10
 			int speed = 0;
@@ -176,18 +176,18 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// When moving guards have difficulty attacking players, so we double there attack range)
 		/// </summary>
-		public override int AttackRange
+		public int AttackRange
 		{
 			get
 			{
-				int range = base.AttackRange;
+				int range = attackComponent.AttackRange;
 				if (IsMoving && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 					range *= 2;
 				return range;
 			}
 			set
 			{
-				base.AttackRange = value;
+				attackComponent.AttackRange = value;
 			}
 		}
 
@@ -213,7 +213,7 @@ namespace DOL.GS.Keeps
 			GameKeepGuard guard = sender as GameKeepGuard;
 			if (guard.TargetObject == null)
 				return;
-			if (!guard.AttackState)
+			if (!guard.attackComponent.AttackState)
 				return;
 			if (guard is GuardArcher == false && guard is GuardLord == false && guard is GuardCaster == false)
 				return;
@@ -299,7 +299,7 @@ namespace DOL.GS.Keeps
                 return;
 			}
 
-			if (AttackState || CurrentSpellHandler != null)
+			if (attackComponent.AttackState || CurrentSpellHandler != null)
 				return;
 
 			if (attackTarget is GameLiving == false)
@@ -567,7 +567,7 @@ namespace DOL.GS.Keeps
 					break;
 				}
 			}
-			if (AttackState)
+			if (attackComponent.AttackState)
 				attackComponent.NPCStopAttack();
 			if (IsMoving)
 				StopFollowing();

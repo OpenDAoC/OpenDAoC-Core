@@ -204,7 +204,7 @@ namespace DOL.GS.Spells
                     InventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
-                    if (player.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
+                    if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
                     {
                         baseChance /= 2;
                     }
@@ -543,7 +543,7 @@ namespace DOL.GS.Spells
             ad.Damage = 0;
             ad.CriticalDamage = 0;
             ad.WeaponSpeed = player.AttackSpeed(weapon) / 100;
-            ad.DamageType = player.AttackDamageType(weapon);
+            ad.DamageType = player.attackComponent.AttackDamageType(weapon);
             ad.Weapon = weapon;
             ad.IsOffHand = weapon.Hand == 2;
             //we need to figure out which armor piece they are going to hit.
@@ -565,7 +565,7 @@ namespace DOL.GS.Spells
             if (ad.AttackResult == GameLiving.eAttackResult.HitUnstyled || ad.AttackResult == GameLiving.eAttackResult.HitStyle)
             {
                 //we only need to calculate the damage if the attack was a success.
-                double damage = player.AttackDamage(weapon) * effectiveness;
+                double damage = player.attackComponent.AttackDamage(weapon) * effectiveness;
 
                 if (target is GamePlayer)
                     ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
@@ -603,7 +603,7 @@ namespace DOL.GS.Spells
                 ad.Modifier += resist;
                 ad.Damage = (int)damage;
                 ad.UncappedDamage = ad.Damage;
-                ad.Damage = Math.Min(ad.Damage, (int)(player.UnstyledDamageCap(weapon) * effectiveness));
+                ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.UnstyledDamageCap(weapon) * effectiveness));
                 ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
                 if (ad.Damage == 0) ad.AttackResult = DOL.GS.GameLiving.eAttackResult.Missed;
                 ad.CriticalDamage = player.attackComponent.GetMeleeCriticalDamage(ad, weapon);

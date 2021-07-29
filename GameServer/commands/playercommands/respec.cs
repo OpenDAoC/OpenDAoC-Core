@@ -273,7 +273,7 @@ namespace DOL.GS.Commands
 			// Assign full points returned
 			if (player.SkillSpecialtyPoints > specPoints)
 			{
-				player.RemoveAllStyles(); // Kill styles
+				player.styleComponent.RemoveAllStyles(); // Kill styles
 				DisplayMessage(player, "You regain " + (player.SkillSpecialtyPoints - specPoints) + " specialization points!");
 			}
 			if (player.RealmSpecialtyPoints > realmSpecPoints)

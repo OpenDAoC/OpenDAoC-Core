@@ -811,7 +811,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.LeftHandWeapon:
 							if (fromItem.Item_Type != (int) toSlot ||
-							    (fromItem.Object_Type != (int) eObjectType.Shield && !m_player.CanUseLefthandedWeapon))
+							    (fromItem.Object_Type != (int) eObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
 								//shield can be used only in left hand slot
 							{
 								valid = false;
@@ -1003,7 +1003,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.LeftHandWeapon:
 							if (toItem.Item_Type != (int) fromSlot ||
-							    (toItem.Object_Type != (int) eObjectType.Shield && !m_player.CanUseLefthandedWeapon))
+							    (toItem.Object_Type != (int) eObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
 								//shield can be used only in left hand slot
 							{
 								valid = false;

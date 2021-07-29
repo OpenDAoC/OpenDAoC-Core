@@ -799,128 +799,128 @@ namespace DOL.GS
 			//get { return (m_attackAction != null && m_attackAction.IsAlive) ? m_attackAction.TimeUntilElapsed : 0; }
             get { return attackComponent.attackAction != null ? (int)attackComponent.attackAction.TimeUntilStart : 0; }
 		}
-		/// <summary>
-		/// Decides which style living will use in this moment
-		/// </summary>
-		/// <returns>Style to use or null if none</returns>
-		//public virtual Style GetStyleToUse()
-		//{
-		//	InventoryItem weapon;
-		//	if (NextCombatStyle == null) return null;
-		//	if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
-		//		weapon = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-		//	else weapon = AttackWeapon;
+        /// <summary>
+        /// Decides which style living will use in this moment
+        /// </summary>
+        /// <returns>Style to use or null if none</returns>
+        //public virtual Style GetStyleToUse()
+        //{
+        //	InventoryItem weapon;
+        //	if (NextCombatStyle == null) return null;
+        //	if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
+        //		weapon = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+        //	else weapon = AttackWeapon;
 
-		//	if (StyleProcessor.CanUseStyle(this, NextCombatStyle, weapon))
-		//		return NextCombatStyle;
+        //	if (StyleProcessor.CanUseStyle(this, NextCombatStyle, weapon))
+        //		return NextCombatStyle;
 
-		//	if (NextCombatBackupStyle == null) return NextCombatStyle;
+        //	if (NextCombatBackupStyle == null) return NextCombatStyle;
 
-		//	return NextCombatBackupStyle;
-		//}
+        //	return NextCombatBackupStyle;
+        //}
 
-		///// <summary>
-		///// Holds the Style that this living should use next
-		///// </summary>
-		//protected Style m_nextCombatStyle;
-		///// <summary>
-		///// Holds the backup style for the style that the living should use next
-		///// </summary>
-		//protected Style m_nextCombatBackupStyle;
-		
-		///// <summary>
-		///// Gets or Sets the next combat style to use
-		///// </summary>
-		//public Style NextCombatStyle
-		//{
-		//	get { return m_nextCombatStyle; }
-		//	set { m_nextCombatStyle = value; }
-		//}
-		///// <summary>
-		///// Gets or Sets the next combat backup style to use
-		///// </summary>
-		//public Style NextCombatBackupStyle
-		//{
-		//	get { return m_nextCombatBackupStyle; }
-		//	set { m_nextCombatBackupStyle = value; }
-		//}
+        ///// <summary>
+        ///// Holds the Style that this living should use next
+        ///// </summary>
+        //protected Style m_nextCombatStyle;
+        ///// <summary>
+        ///// Holds the backup style for the style that the living should use next
+        ///// </summary>
+        //protected Style m_nextCombatBackupStyle;
 
-		/// <summary>
-		/// Gets the current attackspeed of this living in milliseconds
-		/// </summary>
-		/// <param name="weapon">attack weapons</param>
-		/// <returns>effective speed of the attack. average if more than one weapon.</returns>
-		public virtual int AttackSpeed(params InventoryItem[] weapon)
-		{
-			double speed = 3000 * (1.0 - (GetModified(eProperty.Quickness) - 60) / 500.0);
+        ///// <summary>
+        ///// Gets or Sets the next combat style to use
+        ///// </summary>
+        //public Style NextCombatStyle
+        //{
+        //	get { return m_nextCombatStyle; }
+        //	set { m_nextCombatStyle = value; }
+        //}
+        ///// <summary>
+        ///// Gets or Sets the next combat backup style to use
+        ///// </summary>
+        //public Style NextCombatBackupStyle
+        //{
+        //	get { return m_nextCombatBackupStyle; }
+        //	set { m_nextCombatBackupStyle = value; }
+        //}
 
-			if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-			{
-				speed *= 1.5; // mob archer speed too fast
-				
-				// Old archery uses archery speed, but new archery uses casting speed
-				if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
-				    speed *= 1.0 - GetModified(eProperty.ArcherySpeed) * 0.01;
-				else
-				    speed *= 1.0 - GetModified(eProperty.CastingSpeed) * 0.01;
-			}
-			else
-			{
-				speed *= GetModified(eProperty.MeleeSpeed) * 0.01;
-			}
+        /// <summary>
+        /// Gets the current attackspeed of this living in milliseconds
+        /// </summary>
+        /// <param name="weapon">attack weapons</param>
+        /// <returns>effective speed of the attack. average if more than one weapon.</returns>
+        public virtual int AttackSpeed(params InventoryItem[] weapon)
+        {
+            double speed = 3000 * (1.0 - (GetModified(eProperty.Quickness) - 60) / 500.0);
 
-			return (int) Math.Max(500.0, speed);
-		}
-		/// <summary>
-		/// Returns the Damage this Living does on an attack
-		/// </summary>
-		/// <param name="weapon">the weapon used for attack</param>
-		/// <returns></returns>
-		public virtual double AttackDamage(InventoryItem weapon)
-		{
-			double effectiveness = 1.00;
-			//double effectiveness = Effectiveness;
-			double damage = (1.0 + Level / 3.7 + Level * Level / 175.0) * AttackSpeed(weapon) * 0.001;
-			if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
-			{
-				//Melee damage buff,debuff,RA
-				effectiveness += GetModified(eProperty.MeleeDamage) * 0.01;
-			}
-			else if (weapon.Item_Type == Slot.RANGED && (weapon.Object_Type == (int)eObjectType.Longbow || weapon.Object_Type == (int)eObjectType.RecurvedBow || weapon.Object_Type == (int)eObjectType.CompositeBow))
-			{
-				// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
-				if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
-				{
-					effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
-				}
-				// RDSandersJR: If we are NOT using old archery it should be SpellDamage
-				else if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
-				{
-					effectiveness += GetModified(eProperty.SpellDamage) * 0.01;
-				}
-			}
-			else if (weapon.Item_Type == Slot.RANGED)
-			{
-				effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
-			}
-			damage *= effectiveness;
-			return damage;
-		}
+            if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            {
+                speed *= 1.5; // mob archer speed too fast
 
-		/// <summary>
-		/// Max. Damage possible without style
-		/// </summary>
-		/// <param name="weapon">attack weapon</param>
-		/// <returns></returns>
-		public virtual double UnstyledDamageCap(InventoryItem weapon)
-		{
-			return AttackDamage(weapon) * (2.82 + 0.00009 * AttackSpeed(weapon));
-		}
+                // Old archery uses archery speed, but new archery uses casting speed
+                if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+                    speed *= 1.0 - GetModified(eProperty.ArcherySpeed) * 0.01;
+                else
+                    speed *= 1.0 - GetModified(eProperty.CastingSpeed) * 0.01;
+            }
+            else
+            {
+                speed *= GetModified(eProperty.MeleeSpeed) * 0.01;
+            }
 
-		/// <summary>
-		/// Minimum reduction possible to spell casting speed (CastTime * CastingSpeedCap)
-		/// </summary>
-		public virtual double CastingSpeedReductionCap
+            return (int)Math.Max(500.0, speed);
+        }
+        ///// <summary>
+        ///// Returns the Damage this Living does on an attack
+        ///// </summary>
+        ///// <param name="weapon">the weapon used for attack</param>
+        ///// <returns></returns>
+        //public virtual double AttackDamage(InventoryItem weapon)
+        //{
+        //	double effectiveness = 1.00;
+        //	//double effectiveness = Effectiveness;
+        //	double damage = (1.0 + Level / 3.7 + Level * Level / 175.0) * AttackSpeed(weapon) * 0.001;
+        //	if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
+        //	{
+        //		//Melee damage buff,debuff,RA
+        //		effectiveness += GetModified(eProperty.MeleeDamage) * 0.01;
+        //	}
+        //	else if (weapon.Item_Type == Slot.RANGED && (weapon.Object_Type == (int)eObjectType.Longbow || weapon.Object_Type == (int)eObjectType.RecurvedBow || weapon.Object_Type == (int)eObjectType.CompositeBow))
+        //	{
+        //		// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
+        //		if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+        //		{
+        //			effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
+        //		}
+        //		// RDSandersJR: If we are NOT using old archery it should be SpellDamage
+        //		else if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+        //		{
+        //			effectiveness += GetModified(eProperty.SpellDamage) * 0.01;
+        //		}
+        //	}
+        //	else if (weapon.Item_Type == Slot.RANGED)
+        //	{
+        //		effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
+        //	}
+        //	damage *= effectiveness;
+        //	return damage;
+        //}
+
+        ///// <summary>
+        ///// Max. Damage possible without style
+        ///// </summary>
+        ///// <param name="weapon">attack weapon</param>
+        ///// <returns></returns>
+        //public virtual double UnstyledDamageCap(InventoryItem weapon)
+        //{
+        //	return AttackDamage(weapon) * (2.82 + 0.00009 * AttackSpeed(weapon));
+        //}
+
+        /// <summary>
+        /// Minimum reduction possible to spell casting speed (CastTime * CastingSpeedCap)
+        /// </summary>
+        public virtual double CastingSpeedReductionCap
 		{
 			get { return 0.4; }
 		}
@@ -993,33 +993,33 @@ namespace DOL.GS
 		}
 
 
-		/// <summary>
-		/// Returns the AttackRange of this living
-		/// </summary>
-		public virtual int AttackRange
-		{
-			get
-			{
-				//Mobs have a good distance range with distance weapons
-				//automatically
-				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				{
-					return Math.Max(32, (int)(2000.0 * GetModified(eProperty.ArcheryRange) * 0.01));
-				}
-				//Normal mob attacks have 200 ...
-				//TODO dragon, big mobs etc...
-				return 200;
-			}
+        /// <summary>
+        /// Returns the AttackRange of this living
+        /// </summary>
+        public virtual int AttackRange
+        {
+            get
+            {
+                //Mobs have a good distance range with distance weapons
+                //automatically
+                if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                {
+                    return Math.Max(32, (int)(2000.0 * GetModified(eProperty.ArcheryRange) * 0.01));
+                }
+                //Normal mob attacks have 200 ...
+                //TODO dragon, big mobs etc...
+                return 200;
+            }
 
-			set { }
-		}
+            set { }
+        }
 
-		/// <summary>
-		/// calculates weapon stat
-		/// </summary>
-		/// <param name="weapon"></param>
-		/// <returns></returns>
-		public virtual int GetWeaponStat(InventoryItem weapon)
+        /// <summary>
+        /// calculates weapon stat
+        /// </summary>
+        /// <param name="weapon"></param>
+        /// <returns></returns>
+        public virtual int GetWeaponStat(InventoryItem weapon)
 		{
 			return GetModified(eProperty.Strength);
 		}
@@ -1080,60 +1080,60 @@ namespace DOL.GS
 			return (int)((Level + 1) * bs * (1 + (GetWeaponStat(weapon) - 50) * 0.005) * Level * 2 / 50);
 		}
 
-		/// <summary>
-		/// Returns the weapon used to attack, null=natural
-		/// </summary>
-		public virtual InventoryItem AttackWeapon
-		{
-			get
-			{
-				if (Inventory != null)
-				{
-					switch (ActiveWeaponSlot)
-					{
-							case eActiveWeaponSlot.Standard: return Inventory.GetItem(eInventorySlot.RightHandWeapon);
-							case eActiveWeaponSlot.TwoHanded: return Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-							case eActiveWeaponSlot.Distance: return Inventory.GetItem(eInventorySlot.DistanceWeapon);
-					}
-				}
-				return null;
-			}
-		}
+        /// <summary>
+        /// Returns the weapon used to attack, null=natural
+        /// </summary>
+        public virtual InventoryItem AttackWeapon
+        {
+            get
+            {
+                if (Inventory != null)
+                {
+                    switch (ActiveWeaponSlot)
+                    {
+                        case eActiveWeaponSlot.Standard: return Inventory.GetItem(eInventorySlot.RightHandWeapon);
+                        case eActiveWeaponSlot.TwoHanded: return Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+                        case eActiveWeaponSlot.Distance: return Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                    }
+                }
+                return null;
+            }
+        }
 
-		/// <summary>
-		/// Returns the chance for a critical hit
-		/// </summary>
-		/// <param name="weapon">attack weapon</param>
-		public virtual int AttackCriticalChance(InventoryItem weapon)
-		{
-			return 0;
-		}
-		/// <summary>
-		/// Returns the chance for a critical hit with a spell
-		/// </summary>
-		public virtual int SpellCriticalChance
+        ///// <summary>
+        ///// Returns the chance for a critical hit
+        ///// </summary>
+        ///// <param name="weapon">attack weapon</param>
+        //public virtual int AttackCriticalChance(InventoryItem weapon)
+        //{
+        //	return 0;
+        //}
+        /// <summary>
+        /// Returns the chance for a critical hit with a spell
+        /// </summary>
+        public virtual int SpellCriticalChance
 		{
 			get { return GetModified(eProperty.CriticalSpellHitChance); }
 			set { }
 		}
-		/// <summary>
-		/// Returns the damage type of the current attack
-		/// </summary>
-		/// <param name="weapon">attack weapon</param>
-		public virtual eDamageType AttackDamageType(InventoryItem weapon)
-		{
-			return eDamageType.Natural;
-		}
+        ///// <summary>
+        ///// Returns the damage type of the current attack
+        ///// </summary>
+        ///// <param name="weapon">attack weapon</param>
+        //public virtual eDamageType AttackDamageType(InventoryItem weapon)
+        //{
+        //	return eDamageType.Natural;
+        //}
 
-		/// <summary>
-		/// Gets the attack-state of this living
-		/// </summary>
-		public virtual bool AttackState { get; set; }
+        /// <summary>
+        /// Gets the attack-state of this living
+        /// </summary>
+        public virtual bool AttackState { get; set; }
 
-		/// <summary>
-		/// Whether or not the living can be attacked.
-		/// </summary>
-		public override bool IsAttackable
+        /// <summary>
+        /// Whether or not the living can be attacked.
+        /// </summary>
+        public override bool IsAttackable
 		{
 			get
 			{
@@ -1144,19 +1144,19 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Whether the living is actually attacking something.
-		/// </summary>
-		public virtual bool IsAttacking
-		{
-			//get { return (AttackState && (m_attackAction != null) && m_attackAction.IsAlive); }
-            get { return (AttackState && (attackComponent.attackAction != null)); }
+        /// <summary>
+        /// Whether the living is actually attacking something.
+        /// </summary>
+        public virtual bool IsAttacking
+        {
+            //get { return (AttackState && (m_attackAction != null) && m_attackAction.IsAlive); }
+            get { return (attackComponent.AttackState && (attackComponent.attackAction != null)); }
         }
 
-		/// <summary>
-		/// Gets the effective AF of this living
-		/// </summary>
-		public virtual int EffectiveOverallAF
+        /// <summary>
+        /// Gets the effective AF of this living
+        /// </summary>
+        public virtual int EffectiveOverallAF
 		{
 			get { return 0; }
 		}
@@ -2172,7 +2172,7 @@ namespace DOL.GS
 			if (CurrentSpellHandler != null)
 				CurrentSpellHandler.CasterIsAttacked(attacker);
 			
-			if (AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				OnInterruptTick(attacker, attackType);
 		}
 
@@ -2259,7 +2259,7 @@ namespace DOL.GS
 		/// <returns>true if interrupted successfully</returns>
 		protected virtual bool OnInterruptTick(GameLiving attacker, AttackData.eAttackType attackType)
 		{
-			if (AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 			{
 				if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.SureShot)
 				{
@@ -3917,13 +3917,13 @@ namespace DOL.GS
 					//BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry
 					BladeBarrier = player.EffectList.GetOfType<BladeBarrierEffect>();
 					//They still need an active weapon to parry with BladeBarrier
-					if( BladeBarrier != null && ( AttackWeapon != null ) )
+					if( BladeBarrier != null && (attackComponent.AttackWeapon != null ) )
 					{
 						parryChance = 0.90;
 					}
 					else if( IsObjectInFront( ad.Attacker, 120 ) )
 					{
-						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && ( AttackWeapon != null ) )
+						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (attackComponent.AttackWeapon != null ) )
 							parryChance = GetModified( eProperty.ParryChance );
 					}
 				}
@@ -3995,7 +3995,7 @@ namespace DOL.GS
 			if( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
 			{
 				lefthand = Inventory.GetItem( eInventorySlot.LeftHandWeapon );
-				if( lefthand != null && ( player.AttackWeapon == null || player.AttackWeapon.Item_Type == Slot.RIGHTHAND || player.AttackWeapon.Item_Type == Slot.LEFTHAND ) )
+				if( lefthand != null && ( player.attackComponent.AttackWeapon == null || player.attackComponent.AttackWeapon.Item_Type == Slot.RIGHTHAND || player.attackComponent.AttackWeapon.Item_Type == Slot.LEFTHAND ) )
 				{
 					if( lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront( ad.Attacker, 120 ) )
 						blockChance = GetModified( eProperty.BlockChance ) * lefthand.Quality * 0.01;
@@ -4034,7 +4034,7 @@ namespace DOL.GS
 					blockChance = .99;
 
 				// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
-				if( engage != null && AttackState && engage.EngageTarget == ad.Attacker )
+				if( engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker )
 				{
 					// You cannot engage a mob that was attacked within the last X seconds...
 					if( engage.EngageTarget.LastAttackedByEnemyTick > engage.EngageTarget.CurrentRegion.Time - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK )
@@ -4361,7 +4361,7 @@ namespace DOL.GS
 			if (healthChanged > 0 && healthChangeType != eHealthChangeType.Regenerate)
 			{
 				IList<GameObject> attackers;
-				lock (attackComponent.Attackers) { attackers = new List<GameObject>(attackComponent.m_attackers); }
+				lock (attackComponent.Attackers) { attackers = new List<GameObject>(attackComponent.Attackers); }
 				EnemyHealedEventArgs args = new EnemyHealedEventArgs(this, changeSource, healthChangeType, healthChanged);
 				foreach (GameObject attacker in attackers)
 				{
@@ -4468,9 +4468,9 @@ namespace DOL.GS
 			List<GameObject> clone;
 			lock (attackComponent.Attackers)
 			{
-				if (attackComponent.m_attackers.Contains(killer) == false)
-                    attackComponent.m_attackers.Add(killer);
-				clone = new List<GameObject>(attackComponent.m_attackers);
+				if (attackComponent.Attackers.Contains(killer) == false)
+                    attackComponent.Attackers.Add(killer);
+				clone = new List<GameObject>(attackComponent.Attackers);
 			}
 			List<GamePlayer> playerAttackers = null;
 
@@ -4541,7 +4541,7 @@ namespace DOL.GS
 				q.Notify(GamePlayerEvent.Dying, this, new DyingEventArgs(killer, playerAttackers));
 			}
 
-            attackComponent.m_attackers.Clear();
+            attackComponent.Attackers.Clear();
 
 			// cancel all concentration effects
 			ConcentrationEffects.CancelAll();
@@ -4626,41 +4626,41 @@ namespace DOL.GS
             attackComponent.RemoveAttacker(enemy);
 			Notify(GameLivingEvent.EnemyKilled, this, new EnemyKilledEventArgs(enemy));
 		}
-		/// <summary>
-		/// Checks whether Living has ability to use lefthanded weapons
-		/// </summary>
-		public virtual bool CanUseLefthandedWeapon
-		{
-			get { return false; }
-			set { }
-		}
+		///// <summary>
+		///// Checks whether Living has ability to use lefthanded weapons
+		///// </summary>
+		//public virtual bool CanUseLefthandedWeapon
+		//{
+		//	get { return false; }
+		//	set { }
+		//}
 
-		/// <summary>
-		/// Calculates how many times left hand swings
-		/// </summary>
-		/// <returns></returns>
-		public virtual int CalculateLeftHandSwingCount()
-		{
-			return 0;
-		}
+		///// <summary>
+		///// Calculates how many times left hand swings
+		///// </summary>
+		///// <returns></returns>
+		//public virtual int CalculateLeftHandSwingCount()
+		//{
+		//	return 0;
+		//}
 
-		/// <summary>
-		/// Returns a multiplier used to reduce left hand damage
-		/// </summary>
-		/// <returns></returns>
-		public virtual double CalculateLeftHandEffectiveness(InventoryItem mainWeapon, InventoryItem leftWeapon)
-		{
-			return 1.0;
-		}
+		///// <summary>
+		///// Returns a multiplier used to reduce left hand damage
+		///// </summary>
+		///// <returns></returns>
+		//public virtual double CalculateLeftHandEffectiveness(InventoryItem mainWeapon, InventoryItem leftWeapon)
+		//{
+		//	return 1.0;
+		//}
 
-		/// <summary>
-		/// Returns a multiplier used to reduce right hand damage
-		/// </summary>
-		/// <returns></returns>
-		public virtual double CalculateMainHandEffectiveness(InventoryItem mainWeapon, InventoryItem leftWeapon)
-		{
-			return 1.0;
-		}
+		///// <summary>
+		///// Returns a multiplier used to reduce right hand damage
+		///// </summary>
+		///// <returns></returns>
+		//public virtual double CalculateMainHandEffectiveness(InventoryItem mainWeapon, InventoryItem leftWeapon)
+		//{
+		//	return 1.0;
+		//}
 
 		/// <summary>
 		/// Holds visible active weapon slots
@@ -6675,8 +6675,8 @@ namespace DOL.GS
 			List<GameObject> temp;
 			lock (attackComponent.Attackers)
 			{
-				temp = new List<GameObject>(attackComponent.m_attackers);
-                attackComponent.m_attackers.Clear();
+				temp = new List<GameObject>(attackComponent.Attackers);
+                attackComponent.Attackers.Clear();
 			}
 			Util.ForEach(temp.OfType<GameLiving>(), o => o.EnemyKilled(this));
 			StopHealthRegeneration();

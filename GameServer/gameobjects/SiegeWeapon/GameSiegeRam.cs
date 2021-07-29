@@ -178,7 +178,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override int AttackRange
+		public int AttackRange
 		{
 			get
 			{

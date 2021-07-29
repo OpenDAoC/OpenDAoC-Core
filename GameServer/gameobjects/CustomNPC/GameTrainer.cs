@@ -207,7 +207,7 @@ namespace DOL.GS
 					// Assign full points returned
 					if (player.SkillSpecialtyPoints > specPoints)
 					{
-						player.RemoveAllStyles(); // Kill styles
+						player.styleComponent.RemoveAllStyles(); // Kill styles
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Interact.RegainPoints", (player.SkillSpecialtyPoints - specPoints)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 					player.RefreshSpecDependantSkills(false);
@@ -357,7 +357,7 @@ namespace DOL.GS
 			// Player was promoted
 			if (player.SetCharacterClass(classid))
 			{
-				player.RemoveAllStyles();
+				player.styleComponent.RemoveAllStyles();
 				player.RemoveAllAbilities();
 				player.RemoveAllSpellLines();
 

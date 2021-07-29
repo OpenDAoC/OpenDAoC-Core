@@ -461,7 +461,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public override eDamageType AttackDamageType(InventoryItem weapon)
+		public eDamageType AttackDamageType(InventoryItem weapon)
 		{
 			if (weapon != null)
 			{
@@ -481,7 +481,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapons"></param>
 		/// <returns></returns>
-		public override int AttackSpeed(params InventoryItem[] weapons)
+		public int AttackSpeed(params InventoryItem[] weapons)
 		{
 			double weaponSpeed = 0.0;
 

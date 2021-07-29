@@ -214,7 +214,7 @@ namespace DOL.GS.Styles
 
 				//Put player into attack state before setting the styles
 				//Changing the attack state clears out the styles...
-				if (living.AttackState == false)
+				if (living.attackComponent.AttackState == false)
 				{
 					living.attackComponent.StartAttack(player.TargetObject);
 				}
@@ -226,7 +226,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
-				InventoryItem weapon = (style.WeaponTypeRequirement == (int)eObjectType.Shield) ? living.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : living.AttackWeapon;
+				InventoryItem weapon = (style.WeaponTypeRequirement == (int)eObjectType.Shield) ? living.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : living.attackComponent.AttackWeapon;
 				//				if (weapon == null) return;	// no weapon = no style
 				if (!CheckWeaponType(style, living, weapon))
 				{
@@ -257,7 +257,7 @@ namespace DOL.GS.Styles
 						preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
 
 					//We have not set any primary style yet?
-					if (player.attackComponent.NextCombatStyle == null)
+					if (player.styleComponent.NextCombatStyle == null)
 					{
 						if (preRequireStyle != null)
 						{
@@ -272,8 +272,8 @@ namespace DOL.GS.Styles
 							}
 						}
 
-						player.attackComponent.NextCombatStyle = style;
-						player.attackComponent.NextCombatBackupStyle = null;
+						player.styleComponent.NextCombatStyle = style;
+						player.styleComponent.NextCombatBackupStyle = null;
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PreparePerform", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						if (living.IsEngaging)
@@ -292,7 +292,7 @@ namespace DOL.GS.Styles
 					else
 					{
 						//Have we also set the backupstyle already?
-						if (player.attackComponent.NextCombatBackupStyle != null)
+						if (player.styleComponent.NextCombatBackupStyle != null)
 						{
 							//All styles set, can't change anything now
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.AlreadySelectedStyles"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -300,14 +300,14 @@ namespace DOL.GS.Styles
 						else
 						{
 							//Have we pressed the same style button used for the primary style again?
-							if (player.attackComponent.NextCombatStyle.ID == style.ID)
+							if (player.styleComponent.NextCombatStyle.ID == style.ID)
 							{
-								if (player.CancelStyle)
+								if (player.styleComponent.CancelStyle)
 								{
 									//If yes, we cancel the style
-									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.NoLongerPreparing", player.attackComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									player.attackComponent.NextCombatStyle = null;
-									player.attackComponent.NextCombatBackupStyle = null;
+									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.NoLongerPreparing", player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									player.styleComponent.NextCombatStyle = null;
+									player.styleComponent.NextCombatBackupStyle = null;
 								}
 								else
 								{
@@ -329,8 +329,8 @@ namespace DOL.GS.Styles
 									}
 								}
 								//If no, set the secondary backup style
-								player.attackComponent.NextCombatBackupStyle = style;
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.attackComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.styleComponent.NextCombatBackupStyle = style;
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
 						}
 					}
@@ -407,16 +407,16 @@ namespace DOL.GS.Styles
 					//Growth * Style Spec * Effective Speed / Unstyled Damage Cap
 
 					bool staticGrowth = attackData.Style.StealthRequirement;  //static growth is not a function of (effective) weapon speed
-					double absorbRatio = attackData.Damage / living.UnstyledDamageCap(weapon); //scaling factor for style damage
-					double effectiveWeaponSpeed = living.AttackSpeed(weapon) * 0.001;
+					double absorbRatio = attackData.Damage / living.attackComponent.UnstyledDamageCap(weapon); //scaling factor for style damage
+					double effectiveWeaponSpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 					double styleGrowth = Math.Max(0,attackData.Style.GrowthOffset + attackData.Style.GrowthRate * living.GetModifiedSpecLevel(attackData.Style.Spec));
 					double styleDamageBonus = living.GetModified(eProperty.StyleDamage) * 0.01 - 1;
 
 					if (staticGrowth)
 					{
-						if (living.AttackWeapon.Item_Type == Slot.TWOHAND)
+						if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
 						{
-							styleGrowth = styleGrowth * 1.25 + living.WeaponDamage(living.AttackWeapon) * Math.Max(0,living.AttackWeapon.SPD_ABS - 21) * 10 / 66d;
+							styleGrowth = styleGrowth * 1.25 + living.WeaponDamage(living.attackComponent.AttackWeapon) * Math.Max(0,living.attackComponent.AttackWeapon.SPD_ABS - 21) * 10 / 66d;
 						}
 						attackData.StyleDamage = (int)(absorbRatio * styleGrowth * ServerProperties.Properties.CS_OPENING_EFFECTIVENESS);
 					}
@@ -579,7 +579,7 @@ namespace DOL.GS.Styles
 				case Style.SpecialWeaponType.DualWield:
 					// both weapons are needed to use style,
 					// shield is not a weapon here
-					InventoryItem rightHand = player.AttackWeapon;
+					InventoryItem rightHand = player.attackComponent.AttackWeapon;
 					InventoryItem leftHand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
 					if (rightHand == null || leftHand == null || (rightHand.Item_Type != Slot.RIGHTHAND && rightHand.Item_Type != Slot.LEFTHAND))
@@ -605,7 +605,7 @@ namespace DOL.GS.Styles
 
 					// can't use shield styles if no active weapon
 					if (style.WeaponTypeRequirement == (int)eObjectType.Shield
-						&& (player.AttackWeapon == null || (player.AttackWeapon.Item_Type != Slot.RIGHTHAND && player.AttackWeapon.Item_Type != Slot.LEFTHAND)))
+						&& (player.attackComponent.AttackWeapon == null || (player.attackComponent.AttackWeapon.Item_Type != Slot.RIGHTHAND && player.attackComponent.AttackWeapon.Item_Type != Slot.LEFTHAND)))
 						return false;
 
 					// weapon type check

@@ -218,7 +218,7 @@ namespace DOL.GS
         {
             var p = owner as GamePlayer;
 
-            InventoryItem weapon = p.AttackWeapon;
+            InventoryItem weapon = p.attackComponent.AttackWeapon;
             if (weapon != null)
             {
                 switch ((eObjectType)weapon.Object_Type)
@@ -271,7 +271,7 @@ namespace DOL.GS
                     //TODO: ammo should be saved on start of every range attack and used here
                     InventoryItem ammo = null;//(InventoryItem)m_rangeAttackArrows.Target;
 
-                    InventoryItem weapon = owner.AttackWeapon;
+                    InventoryItem weapon = owner.attackComponent.AttackWeapon;
                     if (weapon != null)
                     {
                         switch (weapon.Object_Type)
@@ -359,7 +359,7 @@ namespace DOL.GS
                     p.TempProperties.setProperty(RANGE_ATTACK_HOLD_START, holdStart);
                 }
                 //DOLConsole.WriteLine("Holding.... ("+holdStart+") "+(Environment.TickCount - holdStart));
-                if ((GameLoop.GameLoopTime - holdStart) > 15000 && p.AttackWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if ((GameLoop.GameLoopTime - holdStart) > 15000 && p.attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow)
                 {
                     p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return eCheckRangeAttackStateResult.Stop; //Stop the attack
@@ -376,7 +376,7 @@ namespace DOL.GS
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
-                    else if (!p.IsWithinRadius(target, p.AttackRange))
+                    else if (!p.IsWithinRadius(target, p.attackComponent.AttackRange))
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.TooFarAway", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
@@ -402,7 +402,7 @@ namespace DOL.GS
                         GameLiving living = target as GameLiving;
                         if (RangedAttackType == eRangedAttackType.Critical && living != null
                             && (living.CurrentSpeed > 90 //walk speed == 85, hope that's what they mean
-                                || (living.AttackState && living.InCombat) //maybe not 100% correct
+                                || (living.attackComponent.AttackState && living.InCombat) //maybe not 100% correct
                                 || SpellHandler.FindEffectOnTarget(living, "Mesmerize") != null
                                ))
                         {

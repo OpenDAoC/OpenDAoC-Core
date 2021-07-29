@@ -1005,7 +1005,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public static void WriteStyleInfo(IList<string> objectInfo, Style style, GameClient client)
 		{
-			client.Player.DelveWeaponStyle(objectInfo, style);
+			client.Player.styleComponent.DelveWeaponStyle(objectInfo, style);
 		}
 
 		/// <summary>
