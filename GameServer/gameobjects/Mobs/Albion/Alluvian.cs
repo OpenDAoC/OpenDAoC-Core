@@ -11,21 +11,31 @@ namespace DOL.GS
 	{
 		public Alluvian() : base()
 		{
-			SetOwnBrain(new AlluBrain());
+			SetOwnBrain(new AlluvianBrain());
 		}
 
+		/// <summary>
+		/// Keep track of globules
+		/// </summary>
 		private static int m_globuleCount;
 
-		//Holds the current number of globules, be sure to GlobuleNumber--; when a globule dies.
+		/// <summary>
+		/// Keep track of globules, decrease on death, increase on spawn method
+		/// </summary>
 		public static int GlobuleNumber
 		{
 			get { return m_globuleCount; }
 			set { m_globuleCount = value; }
 		}
 
+
+		/// <summary>
+		/// Spawns globules into the world, total of 12. this can be tweaked.
+		/// </summary>
+		/// <returns></returns>
 		public int SpawnGlobule()
 		{
-			AlluvianMob globulespawn = new AlluvianMob();
+			AlluvianGlobule globulespawn = new AlluvianGlobule();
 			globulespawn.Model = 928;
 			globulespawn.Size = 40;
 			globulespawn.Level = (byte)Util.Random(3, 4);
@@ -42,8 +52,7 @@ namespace DOL.GS
 			globulespawn.RespawnInterval = -1;
 			globulespawn.BodyType = 4;
 			globulespawn.Flags ^= eFlags.FLYING;
-
-			GlobuleBrain brain = new GlobuleBrain();
+			AlluvianGlobuleBrain brain = new AlluvianGlobuleBrain();
 			brain.AggroLevel = 70;
 			brain.AggroRange = 500;
 			globulespawn.SetOwnBrain(brain);
@@ -51,16 +60,19 @@ namespace DOL.GS
 			globulespawn.AddToWorld();
 			GlobuleNumber++;
 			brain.WalkFromSpawn();
-			//Tell me when you die so I can GlobuleNumber--;
 			GameEventMgr.AddHandler(globulespawn, GameNPCEvent.Dying, new DOLEventHandler(GlobuleHasDied));
-
 			return 0;
 		}
 
+		/// <summary>
+		/// Notify that a globule has died so we can reduce the count.
+		/// </summary>
+		/// <param name="e"></param>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
 		public static void GlobuleHasDied(DOLEvent e, object sender, EventArgs args)
 		{
 			GlobuleNumber--;
-			//Remove the handler so they don't pile up.
 			GameEventMgr.RemoveHandler(sender, GameNPCEvent.Dying, new DOLEventHandler(GlobuleHasDied));
 			return;
 		}

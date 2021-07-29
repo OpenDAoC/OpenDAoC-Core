@@ -4,17 +4,28 @@ using DOL.GS.Scheduler;
 
 namespace DOL.AI.Brain
 {
-    public class GlobuleBrain : StandardMobBrain
+	/// <summary>
+	/// Brains for Alluvian mob in Albion SI Avalon Isle
+	/// </summary>
+    public class AlluvianGlobuleBrain : StandardMobBrain
 	{
 		private bool hasGrown = false;
-		public GlobuleBrain()
+
+		/// <summary>
+		/// Put on lower think cycle so mobs spawn a little slower.
+		/// </summary>
+		public AlluvianGlobuleBrain()
 			: base()
 		{
 			ThinkInterval = 3000;
 			hasGrown = false;
-
 		}
 
+		/// <summary>
+		/// Determine if there's currently a storm to do effect.
+		/// Special logic for group fights.
+		/// This mob also casts a DD. Will leave out until gameloop is ready.
+		/// </summary>
 		public override void Think()
 		{
 			if (CheckStorm())
@@ -33,12 +44,10 @@ namespace DOL.AI.Brain
 					{
 						if (!PlayersSeen.Contains(player))
 						{
-							//Body.FireAmbientSentence(GameNPC.eAmbientTrigger.seeing, player as GameLiving);
 							PlayersSeen.Add(player);
 						}
 						currentPlayersSeen.Add(player);
 					}
-
 					for (int i = 0; i < PlayersSeen.Count; i++)
 					{
 						if (!currentPlayersSeen.Contains(PlayersSeen[i]))
@@ -47,42 +56,16 @@ namespace DOL.AI.Brain
 						}
 					}
 				}
-
-
-				//if (!Body.AttackState && (AggroLevel > 0 || (Properties.USE_NPC_FACTIONS)))
 				if (!Body.AttackState && AggroLevel > 0)
 				{
-					//if (!IsHostile)
-					//{
-					//	CheckPlayerAggro();
-					//}
 					CheckPlayerAggro();
 					CheckNPCAggro();
 				}
-
-				//Maybe
-				//if (Body.AttackState)
-				//{
-				//	long delay = 18000 * (1 + ((100 - Body.HealthPercent) / 250));
-				//	long lastattack = Body.TempProperties.getProperty<long>(GameLiving.LAST_ATTACK_TIME, 0);
-
-				//	if ((LastNaturalAggro == 0 || LastNaturalAggro + delay < Body.CurrentRegion.Time)
-				//		&& (Body.LastAttackedByEnemyTick == 0 || Body.LastAttackedByEnemyTick + delay < Body.CurrentRegion.Time)
-				//		&& (lastattack == 0 || lastattack + delay < Body.CurrentRegion.Time))
-				//	{
-				//		Body.StopAttack();
-
-				//		Body.WalkToSpawn();
-				//		return;
-				//	}
-				//}
-
 				if (HasAggro)
 				{
 					AttackMostWanted();
 					return;
 				}
-
 				if (!HasAggro)
 				{
 					if (Body.AttackState)
@@ -93,49 +76,28 @@ namespace DOL.AI.Brain
 					Body.TargetObject = null;
 				}
 			}
-
 			if (!Body.AttackState && !Body.IsMoving && !Body.InCombat)
 			{
-				Body.WalkTo(544196 + Util.Random(1, 3919), 514980 + Util.Random(1, 3200), 3140 + Util.Random(1, 540), 80); // loc range around the lake that Alluvian spanws.
+				// loc range around the lake that Alluvian spanws.
+				Body.WalkTo(544196 + Util.Random(1, 3919), 514980 + Util.Random(1, 3200), 3140 + Util.Random(1, 540), 80);
 			}
 		}
 
+		/// <summary>
+		/// Determine most wanted player.
+		/// </summary>
 		protected override void AttackMostWanted()
 		{
 			if (!IsActive)
 			{
 				return;
 			}
-
 			Body.TargetObject = CalculateNextAttackTarget();
-
-			if (Body.TargetObject != null)
-			{
-				if (!CheckSpellCast())
-				{
-					Body.StartAttack(Body.TargetObject);
-				}
-			}
 		}
 
-		private bool CheckSpellCast()
-		{
-			if (Body.IsCasting || Body.IsBeingInterrupted)
-			{
-				return false;
-			}
-
-			SpellLine mobspells = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
-			if (mobspells == null)
-			{
-				return false;
-			}
-
-			Spell nuke = SkillBase.FindSpell(1604, mobspells);
-			Body.CastSpell(nuke, mobspells);
-			return true;
-		}
-
+		/// <summary>
+		/// Walk from spawn point
+		/// </summary>
 		public void WalkFromSpawn()
 		{
 			const int roamingRadius = 500;
@@ -144,6 +106,10 @@ namespace DOL.AI.Brain
 			Body.WalkTo((int)targetX, (int)targetY, 3083, 150);
 		}
 
+		/// <summary>
+		/// Check if currently in the storm, send out special effect to all players.
+		/// </summary>
+		/// <returns></returns>
 		public bool CheckStorm()
 		{
 			var currentStorm = GameServer.Instance.WorldManager.WeatherManager[Body.CurrentRegionID];
@@ -151,11 +117,8 @@ namespace DOL.AI.Brain
 			if (currentStorm != null)
 			{
 				var weatherCurrentPosition = currentStorm.CurrentPosition(SimpleScheduler.Ticks);
-				//var currentStorm = WeatherMgr.GetWeatherForRegion(Body.CurrentRegionID);
 				if (Body.X > (weatherCurrentPosition - currentStorm.Width) && Body.X < weatherCurrentPosition)
 				{
-					//var playersInRange = Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
-					//1 in 5 chance? sure, I dunno, this can be tweaked
 					if (Util.Random(4) == 0)
 					{
 						foreach (GamePlayer player in Glob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -168,9 +131,12 @@ namespace DOL.AI.Brain
 			}
 			return false;
 		}
+
+		/// <summary>
+		/// Grow in size and level
+		/// </summary>
 		public void Grow()
 		{
-			//It's raining, now the globules can grow
 			Body.Size = 95;
 			Body.Level = (byte)Util.Random(10, 11);
 			Body.AutoSetStats();
