@@ -8,7 +8,7 @@ namespace DOL.AI.Brain
     /// These mobs grow with the intensity of the storm and ocassionally cast an effect.
     /// It may be worth finding the effect live does with a packet logger in the future.
     /// </summary>
-    public class WaterElemental : StandardMobBrain
+    public class WaterElementalBrain : StandardMobBrain
     {
         /// <summary>
         /// Store the size & strength buff modifiers

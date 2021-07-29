@@ -1,14 +1,8 @@
-﻿using DOL.AI.Brain;
-using DOL.GS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-	public class AlluBrain : StandardMobBrain
+    public class AlluBrain : StandardMobBrain
 	{
 		public override void Think()
 		{
@@ -19,7 +13,6 @@ namespace DOL.AI.Brain
 				mob.SpawnGlobule();
 			}
 			base.Think();
-
 		}
 	}
 }

@@ -5,18 +5,18 @@ using System;
 namespace DOL.GS
 {
     /// <summary>
-    /// Alluvian is a mob that spawns Alluvian Globules mobs. With a maximum of 12
-    /// Remove the existing Alluvian in the water by Caifelle
+    /// Class to override default respawn behaviour
     /// </summary>
-    public class AlluvianMob : GameNPC
+    public class Alluvian : GameNPC
 	{
-		public AlluvianMob() : base()
+		public Alluvian() : base()
 		{
 			SetOwnBrain(new AlluBrain());
 		}
 
 		private static int m_globuleCount;
 
+		//Holds the current number of globules, be sure to GlobuleNumber--; when a globule dies.
 		public static int GlobuleNumber
 		{
 			get { return m_globuleCount; }
@@ -51,15 +51,18 @@ namespace DOL.GS
 			globulespawn.AddToWorld();
 			GlobuleNumber++;
 			brain.WalkFromSpawn();
+			//Tell me when you die so I can GlobuleNumber--;
 			GameEventMgr.AddHandler(globulespawn, GameNPCEvent.Dying, new DOLEventHandler(GlobuleHasDied));
+
 			return 0;
 		}
 
 		public static void GlobuleHasDied(DOLEvent e, object sender, EventArgs args)
 		{
 			GlobuleNumber--;
+			//Remove the handler so they don't pile up.
 			GameEventMgr.RemoveHandler(sender, GameNPCEvent.Dying, new DOLEventHandler(GlobuleHasDied));
 			return;
 		}
-	}	
+	}
 }
