@@ -5425,6 +5425,8 @@ namespace DOL.GS
         public CastingComponent castingComponent;
         public HealthComponent healthComponent;
         public DamageComponent damageComponent;
+        public StatsComponent statsComponent;
+        public SingleStatBuffComponent buffComponent;
         #endregion
 
 
