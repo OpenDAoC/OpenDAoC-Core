@@ -9,11 +9,11 @@ namespace DOL.GS
     public class HealthComponent
     {
         protected int m_health;
-        private GamePlayer gamePlayer;
+        private GameLiving owner;
 
-        public HealthComponent(GamePlayer gamePlayer)
+        public HealthComponent(GameLiving owner)
         {
-            this.gamePlayer = gamePlayer;
+            this.owner = owner;
         }
        
 

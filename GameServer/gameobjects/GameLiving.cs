@@ -7009,6 +7009,9 @@ namespace DOL.GS
 			m_mana = 1;
 			m_endurance = 1;
 			m_maxEndurance = 1;
+
+            healthComponent = new HealthComponent(this);
+            damageComponent = new DamageComponent(this);
 		}
 	}
 }

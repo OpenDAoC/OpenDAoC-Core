@@ -25,6 +25,12 @@ namespace DOL.GS.Systems
                 hp.Health -= dmg.DamageToDeal;
                 dmg.DamageToDeal = 0;
                 Console.WriteLine("Dealing " + dmg.DamageToDeal.ToString() + " damage to entity: " + e.ToString());
+
+                if(hp.Health >= 0)
+                {
+                    //if current entity has 0 HP, kill it and pass in the entity who did killing blow
+                    e.Die(dmg.lastEntityToDamageThisEntity);
+                }
             }
         }
     }
