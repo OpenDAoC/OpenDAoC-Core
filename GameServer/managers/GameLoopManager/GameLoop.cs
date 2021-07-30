@@ -55,17 +55,6 @@ namespace DOL.GS
                 {
                     p.attackComponent.Tick(GameLoopTime);
                 }
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(client.Player.CurrentRegionID))
-                {
-                    if (npc.attackComponent?.attackAction != null)
-                    {
-                        npc.attackComponent.Tick(GameLoopTime);
-                    }
-                    else if (npc.attackComponent?.weaponAction != null)
-                    {
-                        npc.attackComponent.Tick(GameLoopTime);
-                    }
-                }
 
                 //here we would call a new class -> MeleeSystem
 
