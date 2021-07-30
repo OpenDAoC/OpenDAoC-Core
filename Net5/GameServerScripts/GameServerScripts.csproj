@@ -38,18 +38,18 @@
     <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\GameServerScripts\**\*.cs" />
-    <XmlFiles Include="..\..\GameServerScripts\dbupdater\**\*.xml" />
+    <Compile Include="..\..\..\AtlasScripts\**\*.cs" />
+    <!-- <XmlFiles Include="..\..\..\AtlasScripts\dbupdater\**\*.xml" /> -->
   </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
     <Copy 
       SourceFiles="@(Compile)" 
       DestinationFiles="@(Compile->'$(MSBuildProjectDirectory)\..\$(Configuration)\scripts\%(RecursiveDir)%(Filename)%(Extension)')"
     />
-    <Copy 
+    <!-- <Copy 
       SourceFiles="@(XmlFiles)" 
       DestinationFiles="@(XmlFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\scripts\dbupdater\%(RecursiveDir)%(Filename)%(Extension)')"
-    />
+    /> -->
   </Target>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
