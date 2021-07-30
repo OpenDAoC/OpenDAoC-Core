@@ -39,22 +39,58 @@ namespace DOL.Integration.Server
 
 		}
 
+	[SetUp]
+	public void InitGetRandomNpcTest() 
+	{
+		var testRegionData = new RegionData();
+		testRegionData.Id = 0;
+		testRegionData.Ip = "127.0.0.1";
+		testRegionData.IsFrontier = false;
+		testRegionData.Name = "TEST";
+		testRegionData.Description = "TEST";
+		testRegionData.Port = 42069;
+		testRegionData.WaterLevel = 0;
+		testRegionData.DivingEnabled = false;
+		testRegionData.HousingEnabled = false;
+		testRegionData.Expansion = (int)eClientExpansion.None;
+		testRegionData.Mobs = new DOL.Database.Mob[]{
+			new DOL.Database.Mob() {},
+		};
+
+		var testZoneData = new ZoneData(){
+			ZoneID = 0,
+			RegionID = 0,
+			OffX = 1,
+			OffY = 1,
+			Height = 1,
+			Width = 1,
+			Description = "TEST",
+			DivingFlag = 0,
+			WaterLevel = 0,
+			IsLava = false,
+		};
+
+		WorldMgr.RegisterRegion(new GameTimer.TimeManager("TEST"), testRegionData);
+		WorldMgr.RegisterZone(testZoneData, 0, 0, "TEST", 1, 1, 1, 1, (byte)eRealm.None);
+	}
+
 		[Test]
 		public void GetRandomNPCTest()
-		{
+		{		
 			Zone zone = WorldMgr.GetZone(0);
 			Assert.IsNotNull(zone);
 
 			StartWatch();
 			GameNPC npc = zone.GetRandomNPC(eRealm.None, 5, 7);
+			// TODO(Blasnoc) the two following nullchecks always skip because there are no mobs in the db.
+			// 	this test should be enhanced with actual mobs.
 			if (npc != null)
 			{
-				Console.WriteLine("Found NPC from Realm None in " + zone.ZoneRegion.Description + "/" + zone.Description + ":" + npc.Name + " level:" + npc.Level);
-				if (npc.Level < 5 || npc.Level > 7)
-					Assert.Fail("NPC Level out of defined range");
+				Console.WriteLine($"Found NPC from Realm None in {zone.ZoneRegion.Description}/{zone.Description}:{npc.Name} level:{npc.Level}");
 
-				if (npc.Realm != eRealm.None)
-					Assert.Fail("NPC wrong Realm");
+				Assert.GreaterOrEqual(npc.Level, 5, "NPC Level out of defined range");
+				Assert.LessOrEqual(npc.Level, 7, "NPC Level out of defined range");
+				Assert.AreEqual(eRealm.None, npc.Realm, "NPC wrong realm");
 			}
 			else
 			{

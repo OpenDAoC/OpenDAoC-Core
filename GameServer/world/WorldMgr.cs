@@ -885,10 +885,7 @@ namespace DOL.GS
 			Region region = GetRegion(regionID);
 			if (region == null)
 			{
-				if (log.IsWarnEnabled)
-				{
-					log.WarnFormat("Could not find Region {0} for Zone {1}", regionID, zoneData.Description);
-				}
+				log.Warn($"Could not find Region {regionID} for Zone {zoneData.Description}");
 				return;
 			}
 			
