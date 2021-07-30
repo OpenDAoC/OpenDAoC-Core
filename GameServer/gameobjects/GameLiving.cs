@@ -5448,13 +5448,24 @@ namespace DOL.GS
 
 			return 500 + Util.Random(EnduranceRegenerationPeriod);
 		}
-		#endregion
+        #endregion
 
-		#region Mana/Health/Endurance/Concentration/Delete
-		/// <summary>
-		/// Amount of mana
-		/// </summary>
-		protected int m_mana;
+        #region Components
+        //will be moved to a ComponentManager
+        //Declare Components
+        public CastingComponent castingComponent;
+        public HealthComponent healthComponent;
+        public DamageComponent damageComponent;
+        public StatsComponent statsComponent;
+        public SingleStatBuffComponent buffComponent;
+        #endregion
+
+
+        #region Mana/Health/Endurance/Concentration/Delete
+        /// <summary>
+        /// Amount of mana
+        /// </summary>
+        protected int m_mana;
 		/// <summary>
 		/// Amount of endurance
 		/// </summary>
@@ -7024,6 +7035,7 @@ namespace DOL.GS
             attackComponent = new AttackComponent(this);
             rangeAttackComponent = new RangeAttackComponent(this);
             styleComponent = new StyleComponent(this);
+            castingComponent = new CastingComponent(this);
 
             m_guildName = string.Empty;
 			m_targetObjectWeakReference = new WeakRef(null);
@@ -7044,7 +7056,10 @@ namespace DOL.GS
 			m_endurance = 1;
 			m_maxEndurance = 1;
 
-            
+
+            healthComponent = new HealthComponent(this);
+            damageComponent = new DamageComponent(this);
+
 		}
 	}
 }

@@ -15769,9 +15769,13 @@ namespace DOL.GS
             m_characterClass = charClass;
         }
         
-        //Declare Components
-        public CastingComponent castingComponent;
+//<<<<<<< HEAD
+//        //Declare Components
+//        public CastingComponent castingComponent;
         
+//=======
+       
+//>>>>>>> GameLoop
 
 		/// <summary>
 		/// Creates a new player
@@ -15812,8 +15816,14 @@ namespace DOL.GS
 			LoadFromDatabase(dbChar);
 			
 			//Component Initialization
-			castingComponent = new CastingComponent(this);
-            attackComponent = new AttackComponent(this);
+			//castingComponent = new CastingComponent(this);
+
+   //         attackComponent = new AttackComponent(this);
+
+   //         healthComponent = new HealthComponent(this);
+   //         damageComponent = new DamageComponent(this);
+			
+
 
 			CreateStatistics();
 		}

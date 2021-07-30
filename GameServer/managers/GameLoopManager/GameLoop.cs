@@ -8,7 +8,7 @@ namespace DOL.GS
         public static long GameLoopTime=0;
         
         //GameLoop tick timer -> will adjust based on the performance
-        private static readonly long _interval = 25;
+        private static long _interval = 10;
         private static Timer _timerRef;
         
         //Max player count is 4000
@@ -24,8 +24,12 @@ namespace DOL.GS
 
         private static void Tick(object obj)
         {
-            
-            //Because I'm lazy
+            //Make sure the tick < gameLoopTick
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+
+            //Change this to a list of all entities
+            //currently does not handle any non-player entities
             var clients = WorldMgr.GetAllClients();
             foreach (var client in clients)
             {
@@ -35,10 +39,14 @@ namespace DOL.GS
                 {
                     continue;
                 }
+
+                //to conform to ECS move this to a new class -> CastingSystem
                 if (p.castingComponent?.spellHandler != null)
                 {
                     p.castingComponent.Tick(GameLoopTime);
                 }
+
+                // Will be consolidated
                 if (p.attackComponent?.attackAction != null)
                 {
                     p.attackComponent.Tick(GameLoopTime);   
@@ -47,11 +55,19 @@ namespace DOL.GS
                 {
                     p.attackComponent.Tick(GameLoopTime);
                 }
+
+
+                //here we would call a new class -> MeleeSystem
+
+                //here we would call a new class -> DamageSystem
+
+                //here we would call a new class -> MovementSystem
+
             }
+
+
             
-            
-            //Make sure the tick < gameLoopTick
-            //Timer.stopwatch()
+            /*
             for (int i = _lastPlayerIndex; i < players.Length; i++)
             {
                 GamePlayer p = players[i];
@@ -62,10 +78,17 @@ namespace DOL.GS
                 //     p.SpellComponent.Tick();
                 // }
             }
+            */
             //Console.WriteLine($"Tick {GameLoopTime}");
             GameLoopTime += _interval;
-            
-            //Timer.stopwatch() <-- check time, if time > _interval, interval goes up 5ms
+
+            //check time, if time > _interval, interval goes up 5ms
+            stopwatch.Stop();
+            if(stopwatch.ElapsedMilliseconds > _interval)
+            {
+                _interval += 5;
+                Console.WriteLine("Increasing interval by 5ms. New interval: " + _interval);
+            }
         }
     }
 }

@@ -300,7 +300,9 @@ namespace DOL.GS.Spells
 					ad.CriticalDamage = Util.Random(critMax / 10, critMax);
 				}
 
-				m_handler.SendDamageMessages(ad);
+                target.damageComponent.DamageToDeal += ad.Damage;
+
+                m_handler.SendDamageMessages(ad);
 				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
 				target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
 			}
