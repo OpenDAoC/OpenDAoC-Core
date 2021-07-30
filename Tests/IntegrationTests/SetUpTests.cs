@@ -64,7 +64,7 @@ namespace DOL.Integration.Server
 				config.RegionIP = System.Net.IPAddress.Parse("127.0.0.1");
 
 				GameServer.LoadTestDouble(new GameServerWithDefaultDB(config));
-
+				
 				Console.WriteLine("Game Server Instance Created !");
 			}
 		}
@@ -107,6 +107,14 @@ namespace DOL.Integration.Server
 
 			if (!GameServer.Instance.IsRunning)
 			{
+				GameServer.Database.SaveObject(new ServerProperty(){
+					Category = "system",
+					Description = "Temporary workaround, prevents failure in ArtifactScholar region load.",
+					Key = "load_quests",
+					DefaultValue = "False",
+					Value = "False",
+				});
+
 				Console.WriteLine("Starting GameServer");
 				if (!GameServer.Instance.Start())
 				{
