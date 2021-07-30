@@ -55,15 +55,26 @@ namespace DOL.GS
                 {
                     p.attackComponent.Tick(GameLoopTime);
                 }
-
+                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(client.Player.CurrentRegionID))
+                {
+                    if (npc.attackComponent?.attackAction != null)
+                    {
+                        npc.attackComponent.Tick(GameLoopTime);
+                    }
+                    else if (npc.attackComponent?.weaponAction != null)
+                    {
+                        npc.attackComponent.Tick(GameLoopTime);
+                    }
+                }
 
                 //here we would call a new class -> MeleeSystem
 
-                //here we would call a new class -> DamageSystem
+                    //here we would call a new class -> DamageSystem
 
-                //here we would call a new class -> MovementSystem
+                    //here we would call a new class -> MovementSystem
 
             }
+            
 
 
             
@@ -87,6 +98,7 @@ namespace DOL.GS
             if(stopwatch.ElapsedMilliseconds > _interval)
             {
                 _interval += 5;
+                _timerRef.Change(0, _interval);
                 Console.WriteLine("Increasing interval by 5ms. New interval: " + _interval);
             }
         }
