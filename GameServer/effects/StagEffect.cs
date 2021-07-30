@@ -81,7 +81,7 @@ namespace DOL.GS.Effects
 			{
 				if ((living as GamePlayer).Race == (int)eRace.Lurikeen)
 					living.Model = 13;
-				else living.Model = 13;
+				else living.Model = 4;
 			}			
 
 

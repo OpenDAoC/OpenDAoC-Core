@@ -59,7 +59,7 @@ namespace DOL.GS.Effects
 				}
 				else
 				{
-					living.Model = 12;
+					living.Model = 3;
 				}
 			}
 		}
