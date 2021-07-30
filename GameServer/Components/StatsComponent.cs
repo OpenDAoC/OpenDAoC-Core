@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    class StatsComponent
+    public class StatsComponent
     {
         int Strength;
         int Dexterity;
