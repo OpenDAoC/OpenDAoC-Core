@@ -27,3 +27,9 @@ Suggested VSCode extensions that make test running easier:
   - .NET Core Test Explorer
 
 > Currently not all tests run reliably during a full suite run. Especially in the Integration category, there can be several ephemeral failures due to race conditions with the database. Manual reruns of individual tests after a full suite run should see most or all failures clear. Obviously this is not optimal, and at some point someone should be deleting this note because it's been fixed...
+
+
+Logging
+----
+
+The default logging configuration may not be verbose enough for development. You can change the level by editing /Net5/Debug/config/logconfig.xml (or similar). 
