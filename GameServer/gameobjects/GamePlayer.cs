@@ -1079,6 +1079,9 @@ namespace DOL.GS
 
 				//Cleanup stuff
 				Delete();
+				
+				//Remove from EntityManager
+				EntityManager.RemovePlayer(this);
 			}
 			return true;
 		}
@@ -15769,13 +15772,6 @@ namespace DOL.GS
             m_characterClass = charClass;
         }
         
-//<<<<<<< HEAD
-//        //Declare Components
-//        public CastingComponent castingComponent;
-        
-//=======
-       
-//>>>>>>> GameLoop
 
 		/// <summary>
 		/// Creates a new player
@@ -15826,6 +15822,9 @@ namespace DOL.GS
 
 
 			CreateStatistics();
+			
+			//Add to EntityManager
+			EntityManager.AddPlayer((this));
 		}
 
 		/// <summary>

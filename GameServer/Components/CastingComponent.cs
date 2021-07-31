@@ -35,13 +35,6 @@ namespace DOL.GS
             this.owner = owner;
         }
         
-
-        //move Tick and StartCastSpell to Systems
-        public void Tick(long time)
-        {
-	        spellHandler?.Tick(time);
-        }
-
         public void StartCastSpell(Spell spell, SpellLine line)
         {
             System.Console.WriteLine("Creating spell handler for spell: " + spell.ToString());

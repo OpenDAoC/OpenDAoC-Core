@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
@@ -8,12 +9,14 @@ namespace DOL.GS
         public static long GameLoopTime=0;
         
         //GameLoop tick timer -> will adjust based on the performance
-        private static long _interval = 10;
+        private static long _interval = 25;
         private static Timer _timerRef;
         
         //Max player count is 4000
         public static GamePlayer[] players = new GamePlayer[4000];
         private static int _lastPlayerIndex = 0;
+
+        // private static CastingService _castingService;
         
         public static bool Init()
         {
@@ -28,41 +31,44 @@ namespace DOL.GS
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
 
+            CastingService.Tick(GameLoopTime);
+            
+            
             //Change this to a list of all entities
             //currently does not handle any non-player entities
-            var clients = WorldMgr.GetAllClients();
-            foreach (var client in clients)
-            {
-                
-                var p = client?.Player;
-                if (p == null)
-                {
-                    continue;
-                }
+            //var clients = WorldMgr.GetAllClients();
+            // foreach (var client in clients)
+            // {
+            //     
+            //     var p = client?.Player;
+            //     if (p == null)
+            //     {
+            //         continue;
+            //     }
+            //
+            //     //to conform to ECS move this to a new class -> CastingSystem
+            //     if (p.castingComponent?.spellHandler != null)
+            //     {
+            //         p.castingComponent.Tick(GameLoopTime);
+            //     }
+            //
+            //     // Will be consolidated
+            //     if (p.attackComponent?.attackAction != null)
+            //     {
+            //         p.attackComponent.Tick(GameLoopTime);   
+            //     } 
+            //     else if (p.attackComponent?.weaponAction != null)
+            //     {
+            //         p.attackComponent.Tick(GameLoopTime);
+            //     }
+            //
+            //     //here we would call a new class -> MeleeSystem
+            //
+            //         //here we would call a new class -> DamageSystem
+            //
+            //         //here we would call a new class -> MovementSystem
 
-                //to conform to ECS move this to a new class -> CastingSystem
-                if (p.castingComponent?.spellHandler != null)
-                {
-                    p.castingComponent.Tick(GameLoopTime);
-                }
-
-                // Will be consolidated
-                if (p.attackComponent?.attackAction != null)
-                {
-                    p.attackComponent.Tick(GameLoopTime);   
-                } 
-                else if (p.attackComponent?.weaponAction != null)
-                {
-                    p.attackComponent.Tick(GameLoopTime);
-                }
-
-                //here we would call a new class -> MeleeSystem
-
-                    //here we would call a new class -> DamageSystem
-
-                    //here we would call a new class -> MovementSystem
-
-            }
+            // }
             
 
 

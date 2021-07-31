@@ -809,7 +809,9 @@ namespace DOL.GS
 							try
 							{
 								if (Player != null)
+								{
 									Player.Quit(true); //calls delete
+								}
 								//m_player.Delete(true);
 							}
 							catch (Exception e)
