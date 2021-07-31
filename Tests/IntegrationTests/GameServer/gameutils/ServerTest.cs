@@ -21,7 +21,7 @@ using System;
 using DOL.GS;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	[TestFixture]
 	public class ServerTest
@@ -34,11 +34,9 @@ namespace DOL.Integration.Server
 		public void TestGameServerStartup()
 		{
 			Console.WriteLine("Test GameServer Startup...");
-			Assert.IsTrue(GameServer.Instance != null
-				&& GameServer.Instance.IsRunning 
-				&& GameServer.Instance.ServerStatus == eGameServerStatus.GSS_Open,
-				"GameServer is not running correctly  : " + GameServer.Instance.ServerStatus
-			);
+			Assert.NotNull(GameServer.Instance);
+			Assert.IsTrue(GameServer.Instance.IsRunning);
+			Assert.AreEqual(GameServer.Instance.ServerStatus, eGameServerStatus.GSS_Open);
 		}
 	}
 }

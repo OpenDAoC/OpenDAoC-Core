@@ -23,7 +23,7 @@ using System.Reflection;
 using DOL.Database;
 using DOL.Database.Connection;
 
-namespace DOL.Integration
+namespace DOL.Tests.Integration
 {
     public partial class Create
     {

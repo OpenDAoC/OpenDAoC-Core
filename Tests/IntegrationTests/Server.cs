@@ -25,7 +25,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	public class ServerTests
 	{

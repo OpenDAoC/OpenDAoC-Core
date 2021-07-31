@@ -3,7 +3,7 @@ using DOL.GS;
 using DOL.GS.Spells;
 using NUnit.Framework;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_PropertyChangingSpell

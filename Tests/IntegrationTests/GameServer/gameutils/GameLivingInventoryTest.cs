@@ -21,7 +21,7 @@ using DOL.GS;
 using DOL.Database;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	public class TestInventory : GameLivingInventory
 	{

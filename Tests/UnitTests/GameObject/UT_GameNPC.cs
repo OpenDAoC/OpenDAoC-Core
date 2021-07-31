@@ -2,7 +2,7 @@
 using DOL.GS;
 using DOL.GS.Keeps;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_GameNPC

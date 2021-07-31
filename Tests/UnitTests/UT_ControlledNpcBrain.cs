@@ -19,7 +19,7 @@
 using DOL.AI.Brain;
 using NUnit.Framework;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {  
     [TestFixture]
     class UT_ControlledNpcBrain

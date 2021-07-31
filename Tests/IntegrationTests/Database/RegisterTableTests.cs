@@ -26,7 +26,7 @@ using DOL.Database.Attributes;
 
 using NUnit.Framework;
 
-namespace DOL.Integration.Database
+namespace DOL.Tests.Integration.Database
 {
 	[TestFixture]
 	public class RegisterTableTests

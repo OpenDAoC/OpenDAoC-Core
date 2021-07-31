@@ -19,7 +19,7 @@
 using DOL.Database;
 using DOL.Database.Attributes;
 
-namespace DOL.Integration.Database
+namespace DOL.Tests.Integration.Database
 {
 	/// <summary>
 	/// Basic Test Table
