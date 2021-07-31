@@ -25,6 +25,8 @@ namespace DOL.UnitTests.Gameserver
         }
 
         [Test]
+        [Category("Unit")]
+        [Category("Unreliable")]
         public void GetArmorAbsorb_LevelZeroNPCHasOneConstitution_Circa5Percent()
         {
             var npc = NewNPC();

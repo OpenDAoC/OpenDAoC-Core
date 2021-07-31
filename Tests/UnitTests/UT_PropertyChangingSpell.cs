@@ -30,6 +30,8 @@ namespace DOL.UnitTests.Gameserver
         }
 
         [Test]
+        [Category("Unit")]
+        [Category("Unreliable")]
         public void ApplyEffectOnTarget_50ConBuffOnL50NPC_51Constitution()
         {
             var caster = new FakeNPC();
