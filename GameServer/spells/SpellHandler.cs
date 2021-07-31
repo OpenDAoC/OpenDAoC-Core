@@ -1340,6 +1340,12 @@ namespace DOL.GS.Spells
 				if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
+			
+			if (m_caster.IsMoving || m_caster.IsStrafing)
+			{
+				CasterMoves();
+				return false;
+			}
 
 			return true;
 		}
@@ -1524,14 +1530,15 @@ namespace DOL.GS.Spells
 		#endregion
 
 		//This is called after our pre-cast checks are done (Range, valid target, mana pre-req, and standing still?) and checks for the casting states
-		public void Tick(long time)
+		public void Tick(long currentTick)
 		{
 			switch (castState)
 			{
 				case eCastState.Precast:
 					if (CheckBeginCast(m_spellTarget))
 					{
-						_castStartTick = time;
+						_castStartTick = currentTick;
+						SendCastAnimation(3000);
 						castState = eCastState.Casting;
 					}
 					else
@@ -1544,21 +1551,21 @@ namespace DOL.GS.Spells
 					{
 						castState = eCastState.Interrupted;
 					}
-
 					//Hardcode 3 second cast time for now
-					if (_castStartTick + 3000 > time)
+					if (_castStartTick + 3000 < currentTick)
 					{
 						castState = eCastState.Finished;
 					}
 					return;
 				case eCastState.Interrupted:
 					InterruptCasting();
+					SendInterruptCastAnimation();
                     Console.WriteLine("Spell interrupted: " + this.ToString());
 					castState = eCastState.Cleanup;
 					return;
 				case eCastState.Finished:
 					FinishSpellCast(m_spellTarget);
-                    Console.WriteLine("Finish Spell: " + this.ToString());
+					Console.WriteLine("Finish Spell: " + this.ToString());
                     castState = eCastState.Cleanup;
 					return;
 				case eCastState.Cleanup:
@@ -1712,7 +1719,6 @@ namespace DOL.GS.Spells
 			}
 
 			m_startReuseTimer = false;
-			castState = eCastState.Interrupted;
 			OnAfterSpellCastSequence();
 		}
 

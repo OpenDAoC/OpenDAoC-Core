@@ -19,7 +19,6 @@ namespace DOL.GS
                 var handler = p.castingComponent.spellHandler;
                 
                 handler.Tick(tick);
-                //Console.WriteLine($"{p.Name} hanging in da loop");
             }
         }
 

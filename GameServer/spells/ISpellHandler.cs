@@ -208,7 +208,7 @@ namespace DOL.GS.Spells
 		GameLiving Caster { get; }
 
 		
-		void Tick(long time);
+		void Tick(long currentTick);
 
 		/// <summary>
 		/// The power cost for this spell.

@@ -32,60 +32,7 @@ namespace DOL.GS
 
 
             CastingService.Tick(GameLoopTime);
-            
-            
-            //Change this to a list of all entities
-            //currently does not handle any non-player entities
-            //var clients = WorldMgr.GetAllClients();
-            // foreach (var client in clients)
-            // {
-            //     
-            //     var p = client?.Player;
-            //     if (p == null)
-            //     {
-            //         continue;
-            //     }
-            //
-            //     //to conform to ECS move this to a new class -> CastingSystem
-            //     if (p.castingComponent?.spellHandler != null)
-            //     {
-            //         p.castingComponent.Tick(GameLoopTime);
-            //     }
-            //
-            //     // Will be consolidated
-            //     if (p.attackComponent?.attackAction != null)
-            //     {
-            //         p.attackComponent.Tick(GameLoopTime);   
-            //     } 
-            //     else if (p.attackComponent?.weaponAction != null)
-            //     {
-            //         p.attackComponent.Tick(GameLoopTime);
-            //     }
-            //
-            //     //here we would call a new class -> MeleeSystem
-            //
-            //         //here we would call a new class -> DamageSystem
-            //
-            //         //here we would call a new class -> MovementSystem
 
-            // }
-            
-
-
-            
-            /*
-            for (int i = _lastPlayerIndex; i < players.Length; i++)
-            {
-                GamePlayer p = players[i];
-                
-                // //Check for spell
-                // if (p.SpellComponent?.SpellHandler != null)
-                // {
-                //     p.SpellComponent.Tick();
-                // }
-            }
-            */
-            //Console.WriteLine($"Tick {GameLoopTime}");
             GameLoopTime += _interval;
 
             //check time, if time > _interval, interval goes up 5ms
