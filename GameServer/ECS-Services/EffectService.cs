@@ -47,6 +47,7 @@ namespace DOL.GS
             {
                 p2.Out.SendMessage("You heal " + e.Target.GetName(0, false) + " for " + heal + " hit points!", 
                     eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
+                p2.Out.SendSpellEffectAnimation(e.Caster, e.Target, e.SpellEffectId, 0, false, 0x01);
             }
         }
 

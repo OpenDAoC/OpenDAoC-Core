@@ -5,6 +5,10 @@ namespace DOL.GS
         Self,
         Group,
         Realm,
-        Enemy
+        Enemy,
+        Ground,
+        Area,
+        Cone,
+        
     }
 }

@@ -2619,7 +2619,7 @@ namespace DOL.GS.Spells
 		public virtual void CreateSpellEffects()
 		{
 			Console.WriteLine($"Creating spell effect for {this.m_spell}");
-			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster));
+			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster,m_spell.ClientEffect));
 			
 			var effectEntity = new EffectEntity();
 			foreach (var effect in _spellEffectComponents)

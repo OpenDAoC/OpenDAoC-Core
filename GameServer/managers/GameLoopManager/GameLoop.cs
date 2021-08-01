@@ -9,7 +9,7 @@ namespace DOL.GS
         public static long GameLoopTime=0;
         
         //GameLoop tick timer -> will adjust based on the performance
-        private static long _interval = 25;
+        private static long _tickDueTime = 50;
         private static Timer _timerRef;
         
         //Max player count is 4000
@@ -19,7 +19,7 @@ namespace DOL.GS
         
         public static bool Init()
         {
-            _timerRef = new Timer(Tick,null,0,_interval);
+            _timerRef = new Timer(Tick,null,0,Timeout.Infinite);
             return true;
         }
 
@@ -33,16 +33,25 @@ namespace DOL.GS
             CastingService.Tick(GameLoopTime);
             EffectService.Tick(GameLoopTime);
 
-            GameLoopTime += _interval;
+            GameLoopTime += _tickDueTime;
 
-            //check time, if time > _interval, interval goes up 5ms
             stopwatch.Stop();
-            if(stopwatch.ElapsedMilliseconds > _interval)
+            var elapsed = (float) stopwatch.Elapsed.TotalMilliseconds;
+
+            
+            //We need to delay our next threading time to the default tick time. If this is > 0, we delay the next tick until its met to maintain consistent tick rate
+            var diff = (int) (50 - elapsed);
+            if (diff <= 0)
             {
-                _interval += 5;
-                _timerRef.Change(0, _interval);
-                Console.WriteLine("Increasing interval by 5ms. New interval: " + _interval);
+                Console.WriteLine($"Tick rate unable to keep up with load! Elapsed: {elapsed}");
+                _timerRef.Change(0, Timeout.Infinite);
+                return;
             }
+
+            //Console.WriteLine($"Elapsed: {elapsed}");
+            _timerRef.Change(diff, Timeout.Infinite);
+
+
         }
     }
 }

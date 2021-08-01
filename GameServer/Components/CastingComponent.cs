@@ -43,7 +43,6 @@ namespace DOL.GS
             {
                 if (!CanCastSpell(p))
                 {
-                    p.Out.SendMessage("You are already casting a spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return; 
                 }
             }
@@ -54,7 +53,7 @@ namespace DOL.GS
         {
             if (spellHandler != null)
             {
-                p.Out.SendMessage("You are already casting a spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                p.Out.SendMessage("You are already casting a spell.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return false;
             }
 
