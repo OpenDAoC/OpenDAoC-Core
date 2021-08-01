@@ -29,6 +29,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
+using DOL.GS.SpellEffects;
 using DOL.Language;
 
 using log4net;
@@ -46,6 +47,8 @@ namespace DOL.GS.Spells
 		//GameLoop Methods
 		private eCastState castState;
 		private double _castFinishedTickTime;
+		//todo create this list when loading spell
+		private List<IEffectComponent> _spellEffectComponents = new List<IEffectComponent>();
 		
 		/// <summary>
 		/// Maximum number of sub-spells to get delve info for.
@@ -1963,7 +1966,8 @@ namespace DOL.GS.Spells
 					SendEffectAnimation(target, 0, false,1);
 			}
 
-			StartSpell(target); // and action
+			CreateSpellEffects();
+			//StartSpell(target); // and action
 
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.
@@ -2610,6 +2614,19 @@ namespace DOL.GS.Spells
 
 			CastSubSpells(target);
 			return true;
+		}
+
+		public virtual void CreateSpellEffects()
+		{
+			Console.WriteLine($"Creating spell effect for {this.m_spell}");
+			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster));
+			
+			var effectEntity = new EffectEntity();
+			foreach (var effect in _spellEffectComponents)
+			{
+				effectEntity._effectComponents.Add(effect);
+			}
+			EntityManager.AddEffect(effectEntity);
 		}
 		/// <summary>
 		/// Calculate the variance due to the radius of the spell

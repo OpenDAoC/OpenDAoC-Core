@@ -16,7 +16,6 @@ namespace DOL.GS
         public static GamePlayer[] players = new GamePlayer[4000];
         private static int _lastPlayerIndex = 0;
 
-        // private static CastingService _castingService;
         
         public static bool Init()
         {
@@ -32,6 +31,7 @@ namespace DOL.GS
 
 
             CastingService.Tick(GameLoopTime);
+            EffectService.Tick(GameLoopTime);
 
             GameLoopTime += _interval;
 
