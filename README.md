@@ -1,6 +1,10 @@
 Atlas Freeshard - Core
 ========
 
+[![.Net5 Tests on Linux](https://github.com/claitz/AtlasCore/actions/workflows/test_dotnet5_linux.yml/badge.svg)](https://github.com/claitz/AtlasCore/actions/workflows/test_dotnet5_linux.yml)
+[![.Net5 Tests on Windows](https://github.com/claitz/AtlasCore/actions/workflows/test_dotnet5_windows.yml/badge.svg)](https://github.com/claitz/AtlasCore/actions/workflows/test_dotnet5_windows.yml)
+
+
 How To Build
 ----
 
