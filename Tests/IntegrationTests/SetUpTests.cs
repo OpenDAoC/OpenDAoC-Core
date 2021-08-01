@@ -27,7 +27,7 @@ using DOL.Database;
 using DOL.Database.Connection;
 using DOL.Database.Attributes;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration
 {
 	/// <summary>
 	/// SetUpTests Start The Needed Environnement for Unit Tests
@@ -64,7 +64,7 @@ namespace DOL.Integration.Server
 				config.RegionIP = System.Net.IPAddress.Parse("127.0.0.1");
 
 				GameServer.LoadTestDouble(new GameServerWithDefaultDB(config));
-
+				
 				Console.WriteLine("Game Server Instance Created !");
 			}
 		}
@@ -92,10 +92,25 @@ namespace DOL.Integration.Server
 						var attrib = type.GetCustomAttributes<DataTable>(false);
 						if (attrib.Any())
 						{
-
 							m_database.RegisterDataObject(type);
 						}
 					});
+
+					ServerProperty loadQuestsProp = m_database.SelectObject<ServerProperty>(DB.Column("Key").IsEqualTo("load_quests"));
+					if(loadQuestsProp == null) {
+						loadQuestsProp = new ServerProperty() {
+							Description = "Temporary workaround, prevents failure in ArtifactScholar region load.",
+							Key = "load_quests",
+							DefaultValue = "True",
+							Value = "False",
+							Category = "system",
+						};
+						m_database.SaveObject(loadQuestsProp);
+					}
+					if(loadQuestsProp.Value != "False") {
+						loadQuestsProp.Value = "False";
+						m_database.SaveObject(loadQuestsProp);
+					}
 				}
 			}
 		}

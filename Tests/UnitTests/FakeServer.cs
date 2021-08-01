@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     public class FakePacketLib : PacketLib1124
     {

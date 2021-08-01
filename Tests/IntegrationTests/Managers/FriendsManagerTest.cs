@@ -26,7 +26,7 @@ using DOL.Events;
 
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	/// <summary>
 	/// FriendsManager Unit Tests.

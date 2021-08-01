@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_Recipe

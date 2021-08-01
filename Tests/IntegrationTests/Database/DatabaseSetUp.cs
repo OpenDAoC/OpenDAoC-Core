@@ -25,7 +25,7 @@ using DOL.Database.Connection;
 
 using NUnit.Framework;
 
-namespace DOL.Integration.Database
+namespace DOL.Tests.Integration.Database
 {
 	[SetUpFixture]
 	public class DatabaseSetUp

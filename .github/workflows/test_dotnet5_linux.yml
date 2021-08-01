@@ -24,5 +24,4 @@ jobs:
           dotnet build -c ${{ matrix.build_target }} "Net5/Tests/Tests.csproj"
       - name: Test
         run: |
-          dotnet test ./Net5/build/Tests/${{ matrix.build_target }}/lib/Tests.dll -v n --filter "DOL.UnitTests"
-          dotnet test ./Net5/build/Tests/${{ matrix.build_target }}/lib/Tests.dll -v n --filter "DOL.Integration"
+          dotnet test ./Net5/build/Tests/${{ matrix.build_target }}/lib/Tests.dll -v n --filter "DOL.Tests.Unit"

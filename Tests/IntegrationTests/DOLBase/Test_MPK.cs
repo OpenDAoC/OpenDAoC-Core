@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System.Text;
 using System.IO;
 
-namespace DOL.Integration.DOLBase
+namespace DOL.Tests.Integration.DOLBase
 {
     [TestFixture]
     class Test_MPK
