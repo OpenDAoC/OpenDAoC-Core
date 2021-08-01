@@ -25,4 +25,3 @@ jobs:
       - name: Test
         run: |
           dotnet test .\Net5\build\Tests\${{ matrix.build_target }}\lib\Tests.dll -v n --filter "DOL.Tests.Unit"
-          dotnet test .\Net5\build\Tests\${{ matrix.build_target }}\lib\Tests.dll -v n --filter "DOL.Tests.Integration"

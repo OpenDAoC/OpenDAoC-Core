@@ -46,7 +46,6 @@ after_build:
 
 test_script:
   - nunit3-console ".\build\Tests\%CONFIGURATION%\lib\Tests.dll" --where "namespace =~ 'DOL.Tests.Unit' and category != 'Explicit'" --result=myresults.xml;format=AppVeyor
-  - nunit3-console ".\build\Tests\%CONFIGURATION%\lib\Tests.dll" --where "namespace =~ 'DOL.Tests.Integration' and category != 'Explicit'" --result=myresults.xml;format=AppVeyor
 
 artifacts:
 
