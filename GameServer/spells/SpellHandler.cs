@@ -157,6 +157,9 @@ namespace DOL.GS.Spells
 
 		protected bool m_ignoreDamageCap = false;
 
+
+		private long _calculatedCastTime = 0;
+
 		/// <summary>
 		/// Does this spell ignore any damage cap?
 		/// </summary>
@@ -1538,7 +1541,7 @@ namespace DOL.GS.Spells
 					if (CheckBeginCast(m_spellTarget))
 					{
 						_castStartTick = currentTick;
-						SendCastAnimation(3000);
+						SendCastAnimation();
 						castState = eCastState.Casting;
 					}
 					else
@@ -1551,8 +1554,7 @@ namespace DOL.GS.Spells
 					{
 						castState = eCastState.Interrupted;
 					}
-					//Hardcode 3 second cast time for now
-					if (_castStartTick + 3000 < currentTick)
+					if (_castStartTick + _calculatedCastTime < currentTick)
 					{
 						castState = eCastState.Finished;
 					}
@@ -1560,17 +1562,14 @@ namespace DOL.GS.Spells
 				case eCastState.Interrupted:
 					InterruptCasting();
 					SendInterruptCastAnimation();
-                    Console.WriteLine("Spell interrupted: " + this.ToString());
 					castState = eCastState.Cleanup;
 					return;
 				case eCastState.Finished:
 					FinishSpellCast(m_spellTarget);
-					Console.WriteLine("Finish Spell: " + this.ToString());
                     castState = eCastState.Cleanup;
 					return;
 				case eCastState.Cleanup:
 					CleanupSpellCast();
-                    Console.WriteLine("Cleanup Spell: " + this.ToString());
                     return;
 			}
 			
@@ -1862,6 +1861,7 @@ namespace DOL.GS.Spells
 		public virtual void SendCastAnimation()
 		{
 			ushort castTime = (ushort)(CalculateCastingTime() / 100);
+			_calculatedCastTime = castTime *100;
 			SendCastAnimation(castTime);
 		}
 
@@ -1875,6 +1875,7 @@ namespace DOL.GS.Spells
 			{
 				if (player == null)
 					continue;
+				_calculatedCastTime = castTime * 100;
 				player.Out.SendSpellCastAnimation(m_caster, m_spell.ClientEffect, castTime);
 			}
 		}

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.GS.Effects;
+
 namespace DOL.GS
 
 {
@@ -12,6 +14,9 @@ namespace DOL.GS
 
         private static List<GameObject> _npcs = new List<GameObject>(50000);
         private static object _npcsLock = new object();
+        
+        private static List<EffectEntity> _effects = new List<EffectEntity>(50000);
+        private static object _effectsLock = new object();
         
         public static GamePlayer[] GetAllPlayers()
         {
@@ -60,6 +65,30 @@ namespace DOL.GS
             lock (_npcsLock)
             {
                 _npcs.Remove(o);
+            }
+        }
+        
+        public static EffectEntity[] GetAllEffects()
+        {
+            lock (_effectsLock)
+            {
+                return _effects.ToArray();
+            }
+        }
+
+        public static void AddEffect(EffectEntity e)
+        {
+            lock (_effectsLock)
+            {
+                _effects.Add(e);
+            }
+        }
+
+        public static void RemoveEffect(EffectEntity e)
+        {
+            lock (_effectsLock)
+            {
+                _effects.Remove(e);
             }
         }
         
