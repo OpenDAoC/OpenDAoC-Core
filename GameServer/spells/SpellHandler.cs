@@ -398,6 +398,19 @@ namespace DOL.GS.Spells
 			return CastSpell(targetObject);
 		}
 
+		public void CreateECSEffect()
+		{
+			Console.WriteLine("Creating ECS Effect..");
+			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster,m_spell.ClientEffect));
+		
+			var effectEntity = new EffectEntity();
+			foreach (var effect in _spellEffectComponents)
+			{
+				effectEntity._effectComponents.Add(effect);
+			}
+			EntityManager.AddEffect(effectEntity);
+		}
+
 		/// <summary>
 		/// called whenever the player clicks on a spell icon
 		/// or a GameLiving wants to cast a spell
@@ -1978,8 +1991,8 @@ namespace DOL.GS.Spells
 					SendEffectAnimation(target, 0, false,1);
 			}
 
-			CreateSpellEffects();
-			//StartSpell(target); // and action
+			//CreateSpellEffects();
+			StartSpell(target); // and action
 
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.

@@ -28,6 +28,8 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public interface ISpellHandler
 	{
+
+		void CreateECSEffect();
 		/// <summary>
 		/// Called when a spell is casted
 		/// </summary>

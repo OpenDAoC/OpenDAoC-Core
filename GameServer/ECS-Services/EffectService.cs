@@ -4,7 +4,7 @@ using DOL.GS.SpellEffects;
 
 namespace DOL.GS
 {
-    public class EffectService
+    public static class EffectService
     {
         public static void Tick(long tick)
         {
@@ -37,17 +37,25 @@ namespace DOL.GS
         {
 
             int heal = e.Target.ChangeHealth(e.Caster, GameLiving.eHealthChangeType.Spell, (int)e.Value);
-            if (e.Target is GamePlayer p)
+
+            if (e.Target == e.Caster && e.Target is GamePlayer pl)
+            {
+                pl.Out.SendMessage("You are healed by " + e.Caster.GetName(0, false) + " for " + heal + " hit points.", 
+                    eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
+                pl.Out.SendSpellEffectAnimation(e.Caster, e.Target, e.SpellEffectId, 0, false, 0x01);
+        
+            }
+            
+            else if (e.Target is GamePlayer p)
             {
                 p.Out.SendMessage("You are healed by " + e.Caster.GetName(0, false) + " for " + heal + " hit points.", 
                     eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
             }
 
-            if (e.Caster is GamePlayer p2)
+            else if (e.Caster is GamePlayer p2)
             {
                 p2.Out.SendMessage("You heal " + e.Target.GetName(0, false) + " for " + heal + " hit points!", 
                     eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
-                Console.WriteLine($"Sending spell effect at {GameLoop.GameLoopTime}");
                 p2.Out.SendSpellEffectAnimation(e.Caster, e.Target, e.SpellEffectId, 0, false, 0x01);
             }
         }
@@ -58,5 +66,6 @@ namespace DOL.GS
         {
             
         }
+        
     }
 }
