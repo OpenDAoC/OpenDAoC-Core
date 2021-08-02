@@ -136,6 +136,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				if(player != null && player != client.Player)
 				{
+					if (client.Player.IsStealthed && !player.CanDetect(client.Player))
+						return;
 					if (player.Client.Version >= GameClient.eClientVersion.Version1127)
 						player.Out.SendUDP(outpak1127);
 					else if (player.Client.Version >= GameClient.eClientVersion.Version1124)
