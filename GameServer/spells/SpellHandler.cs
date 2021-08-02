@@ -1551,29 +1551,41 @@ namespace DOL.GS.Spells
 					{
 						castState = eCastState.Cleanup;
 					}
-					return;
+					break;
 				case eCastState.Casting:
 					if (!CheckDuringCast(m_spellTarget))
 					{
 						castState = eCastState.Interrupted;
 					}
-					if (_castStartTick + _calculatedCastTime < currentTick)
+					if (_castStartTick + _calculatedCastTime  < currentTick)
 					{
 						castState = eCastState.Finished;
 					}
-					return;
+					break;
 				case eCastState.Interrupted:
 					InterruptCasting();
 					SendInterruptCastAnimation();
 					castState = eCastState.Cleanup;
-					return;
+					break;
 				case eCastState.Finished:
 					FinishSpellCast(m_spellTarget);
-                    castState = eCastState.Cleanup;
-					return;
+					castState = eCastState.Cleanup;
+					break;
 				case eCastState.Cleanup:
 					CleanupSpellCast();
                     return;
+			}
+
+			//Process cast on same tick if finished.
+			if (castState == eCastState.Finished)
+			{
+				FinishSpellCast(m_spellTarget);
+				castState = eCastState.Cleanup;
+			}
+			
+			if (castState == eCastState.Cleanup)
+			{
+				CleanupSpellCast();
 			}
 			
 		}
@@ -1864,7 +1876,6 @@ namespace DOL.GS.Spells
 		public virtual void SendCastAnimation()
 		{
 			ushort castTime = (ushort)(CalculateCastingTime() / 100);
-			_calculatedCastTime = castTime *100;
 			SendCastAnimation(castTime);
 		}
 
@@ -1879,6 +1890,7 @@ namespace DOL.GS.Spells
 				if (player == null)
 					continue;
 				_calculatedCastTime = castTime * 100;
+				Console.WriteLine($"Cast Animation CastTime Sent to Client: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 				player.Out.SendSpellCastAnimation(m_caster, m_spell.ClientEffect, castTime);
 			}
 		}
@@ -2618,7 +2630,7 @@ namespace DOL.GS.Spells
 
 		public virtual void CreateSpellEffects()
 		{
-			Console.WriteLine($"Creating spell effect for {this.m_spell}");
+			Console.WriteLine($"Creating spell effect at {GameLoop.GameLoopTime}");
 			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster,m_spell.ClientEffect));
 			
 			var effectEntity = new EffectEntity();

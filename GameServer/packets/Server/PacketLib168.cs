@@ -1285,6 +1285,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid,
 		                                             ushort boltTime, bool noSound, byte success)
 		{
+			Console.WriteLine($"Spell Effect sent at {GameLoop.GameLoopTime}");
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
 				pak.WriteShort((ushort) spellCaster.ObjectID);

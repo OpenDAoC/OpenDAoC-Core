@@ -29,18 +29,18 @@ namespace DOL.GS
             //Make sure the tick < gameLoopTick
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-
             CastingService.Tick(GameLoopTime);
             EffectService.Tick(GameLoopTime);
 
-            GameLoopTime += _tickDueTime;
-
+            
+            GameLoopTime = GameTimer.GetTickCount();
+            
             stopwatch.Stop();
             var elapsed = (float) stopwatch.Elapsed.TotalMilliseconds;
 
             
             //We need to delay our next threading time to the default tick time. If this is > 0, we delay the next tick until its met to maintain consistent tick rate
-            var diff = (int) (50 - elapsed);
+            var diff = (int) (_tickDueTime - elapsed);
             if (diff <= 0)
             {
                 Console.WriteLine($"Tick rate unable to keep up with load! Elapsed: {elapsed}");
@@ -48,7 +48,6 @@ namespace DOL.GS
                 return;
             }
 
-            //Console.WriteLine($"Elapsed: {elapsed}");
             _timerRef.Change(diff, Timeout.Infinite);
 
 
