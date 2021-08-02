@@ -144,7 +144,7 @@ namespace DOL.GS.Effects
 				int baseheal = healTarget.MaxHealth - healTarget.Health;
 				if (reducedHeal < baseheal)
 					baseheal = reducedHeal;
-				healTarget.ChangeHealth(player, GameLiving.eHealthChangeType.Spell, baseheal);
+				healTarget.ChangeHealth(player, eHealthChangeType.Spell, baseheal);
 				player.Out.SendMessage("You heal " + healTarget.Name + " for " + baseheal + "!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				if (healTarget is GamePlayer)
 					((GamePlayer)healTarget).Out.SendMessage(player.Name + " heals you for " + baseheal + "!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);

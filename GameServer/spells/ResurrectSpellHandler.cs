@@ -205,7 +205,7 @@ namespace DOL.GS.Spells
 						attacker.Notify(
 							GameLivingEvent.EnemyHealed,
 							attacker,
-							new EnemyHealedEventArgs(living, m_caster, GameLiving.eHealthChangeType.Spell, living.Health));
+							new EnemyHealedEventArgs(living, m_caster, eHealthChangeType.Spell, living.Health));
 				}
 
 				GamePlayer casterPlayer = Caster as GamePlayer;

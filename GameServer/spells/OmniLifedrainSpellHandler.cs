@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
 				heal >>= 1;
 			}
 
-            heal = m_caster.ChangeHealth(m_caster, GameLiving.eHealthChangeType.Spell, heal);
+            heal = m_caster.ChangeHealth(m_caster, eHealthChangeType.Spell, heal);
 
 			if (heal > 0)
 			{
@@ -92,7 +92,7 @@ namespace DOL.GS.Spells
                 if (m_caster is NecromancerPet && ((m_caster as NecromancerPet).Brain as IControlledBrain).GetPlayerOwner() != null || m_caster is GamePlayer)
                 {
                     if (m_caster.DamageRvRMemory > 0)
-                        m_caster.DamageRvRMemory = 0; //Remise a zéro compteur dommages/heal rps
+                        m_caster.DamageRvRMemory = 0; //Remise a zÃ©ro compteur dommages/heal rps
                 }
                 #endregion PVP DAMAGE
 			}

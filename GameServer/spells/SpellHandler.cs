@@ -49,6 +49,7 @@ namespace DOL.GS.Spells
 		private double _castFinishedTickTime;
 		//todo create this list when loading spell
 		private List<IEffectComponent> _spellEffectComponents = new List<IEffectComponent>();
+		public GameLiving Target;
 		
 		/// <summary>
 		/// Maximum number of sub-spells to get delve info for.
@@ -398,17 +399,18 @@ namespace DOL.GS.Spells
 			return CastSpell(targetObject);
 		}
 
-		public void CreateECSEffect()
+
+		public virtual void CreateECSEffect()
 		{
-			Console.WriteLine("Creating ECS Effect..");
-			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster,m_spell.ClientEffect));
-		
-			var effectEntity = new EffectEntity();
-			foreach (var effect in _spellEffectComponents)
-			{
-				effectEntity._effectComponents.Add(effect);
-			}
-			EntityManager.AddEffect(effectEntity);
+			Console.WriteLine($"{Spell.Name} does not have ECSCreateEffect! Type: {Spell.SpellType}");
+			// _spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster,m_spell.ClientEffect));
+			//
+			// var effectEntity = new EffectEntity();
+			// foreach (var effect in _spellEffectComponents)
+			// {
+			// 	effectEntity._effectComponents.Add(effect);
+			// }
+			// EntityManager.AddEffect(effectEntity);
 		}
 
 		/// <summary>
@@ -759,6 +761,7 @@ namespace DOL.GS.Spells
 
 			String targetType = m_spell.Target.ToLower();
 
+			
 			//[Ganrod] Nidel: Can cast pet spell on all Pet/Turret/Minion (our pet)
 			if (targetType.Equals("pet"))
 			{
@@ -1445,7 +1448,7 @@ namespace DOL.GS.Spells
 					if (target == null || target.ObjectState != GameObject.eObjectState.Active)
 					{
 						if (Caster is GamePlayer && !quiet)
-							MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
+							MessageToCaster("FYou must select a target for this spell!", eChatType.CT_SpellResisted);
 						return false;
 					}
 
@@ -1554,7 +1557,8 @@ namespace DOL.GS.Spells
 			switch (castState)
 			{
 				case eCastState.Precast:
-					if (CheckBeginCast(m_spellTarget))
+					Target = Caster?.TargetObject as GameLiving;
+					if (CheckBeginCast(Target))
 					{
 						_castStartTick = currentTick;
 						SendCastAnimation();
@@ -1566,7 +1570,7 @@ namespace DOL.GS.Spells
 					}
 					break;
 				case eCastState.Casting:
-					if (!CheckDuringCast(m_spellTarget))
+					if (!CheckDuringCast(Target))
 					{
 						castState = eCastState.Interrupted;
 					}
@@ -1580,19 +1584,13 @@ namespace DOL.GS.Spells
 					SendInterruptCastAnimation();
 					castState = eCastState.Cleanup;
 					break;
-				case eCastState.Finished:
-					FinishSpellCast(m_spellTarget);
-					castState = eCastState.Cleanup;
-					break;
-				case eCastState.Cleanup:
-					CleanupSpellCast();
-                    return;
 			}
 
 			//Process cast on same tick if finished.
 			if (castState == eCastState.Finished)
 			{
-				FinishSpellCast(m_spellTarget);
+				FinishSpellCast(Target);
+				CreateECSEffect();
 				castState = eCastState.Cleanup;
 			}
 			
@@ -2640,19 +2638,7 @@ namespace DOL.GS.Spells
 			CastSubSpells(target);
 			return true;
 		}
-
-		public virtual void CreateSpellEffects()
-		{
-			Console.WriteLine($"Creating spell effect at {GameLoop.GameLoopTime}");
-			_spellEffectComponents.Add(new HealEffectComponent(80,m_caster,m_caster,m_spell.ClientEffect));
-			
-			var effectEntity = new EffectEntity();
-			foreach (var effect in _spellEffectComponents)
-			{
-				effectEntity._effectComponents.Add(effect);
-			}
-			EntityManager.AddEffect(effectEntity);
-		}
+		
 		/// <summary>
 		/// Calculate the variance due to the radius of the spell
 		/// </summary>

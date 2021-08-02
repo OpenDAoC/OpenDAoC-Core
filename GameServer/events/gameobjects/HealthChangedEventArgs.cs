@@ -34,7 +34,7 @@ namespace DOL.Events
         /// <summary>
         /// The type of changing
         /// </summary>
-        private GameLiving.eHealthChangeType m_changetype;
+        private eHealthChangeType m_changetype;
 
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace DOL.Events
         /// <summary>
         /// Constructs a new Dying event args
         /// </summary>
-        public HealthChangedEventArgs(GameObject source, GameLiving.eHealthChangeType type, int amount)
+        public HealthChangedEventArgs(GameObject source, eHealthChangeType type, int amount)
         {
             m_changesource = source;
             m_changetype = type;
@@ -57,7 +57,7 @@ namespace DOL.Events
             get { return m_changesource; }
         }
 
-        public GameLiving.eHealthChangeType ChangeType
+        public eHealthChangeType ChangeType
         {
             get { return m_changetype; }
         }

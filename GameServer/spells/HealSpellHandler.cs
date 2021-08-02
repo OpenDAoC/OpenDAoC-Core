@@ -202,7 +202,7 @@ namespace DOL.GS.Spells
             }
 
             amount = Math.Round(amount);
-            int heal = target.ChangeHealth(Caster, GameLiving.eHealthChangeType.Spell, (int)amount);
+            int heal = target.ChangeHealth(Caster, eHealthChangeType.Spell, (int)amount);
 
             #region PVP DAMAGE
 
@@ -344,7 +344,7 @@ namespace DOL.GS.Spells
 			if (target is Keeps.GameKeepComponent || target is Keeps.GameKeepDoor)
 				return false;
 
-			int heal = target.ChangeHealth(Caster, GameLiving.eHealthChangeType.Spell, (int)Math.Round(amount));
+			int heal = target.ChangeHealth(Caster, eHealthChangeType.Spell, (int)Math.Round(amount));
 
 			if (m_caster == target && heal > 0)
 			{

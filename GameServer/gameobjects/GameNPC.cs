@@ -4798,7 +4798,7 @@ namespace DOL.GS
 		/// <param name="healSource"></param>
 		/// <param name="changeType"></param>
 		/// <param name="healAmount"></param>
-		public override void EnemyHealed(GameLiving enemy, GameObject healSource, GameLiving.eHealthChangeType changeType, int healAmount)
+		public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType, int healAmount)
 		{
 			base.EnemyHealed(enemy, healSource, changeType, healAmount);
 

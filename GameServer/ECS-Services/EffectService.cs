@@ -36,7 +36,7 @@ namespace DOL.GS
         private static void HandleHealEffect(HealEffectComponent e)
         {
 
-            int heal = e.Target.ChangeHealth(e.Caster, GameLiving.eHealthChangeType.Spell, (int)e.Value);
+            int heal = e.Target.ChangeHealth(e.Caster, eHealthChangeType.Spell, (int)e.Value);
 
             if (e.Target == e.Caster && e.Target is GamePlayer pl)
             {

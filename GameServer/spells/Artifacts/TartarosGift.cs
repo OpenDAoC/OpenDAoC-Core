@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                 heal >>= 1;
             }
             if (heal <= 0) return;            
-            heal = Caster.ChangeHealth(Caster, GameLiving.eHealthChangeType.Spell, heal);
+            heal = Caster.ChangeHealth(Caster, eHealthChangeType.Spell, heal);
             if (heal > 0)
             {
                 MessageToCaster("You drain " + heal + " hit point" + (heal == 1 ? "." : "s."), eChatType.CT_Spell);

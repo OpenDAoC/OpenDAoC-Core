@@ -109,7 +109,7 @@ namespace DOL.GS.Spells
 				else
 					cost = m_spell.Power;
 				if (effect.Owner.Health > cost)
-					effect.Owner.ChangeHealth(effect.Owner, GameLiving.eHealthChangeType.Spell, -cost);
+					effect.Owner.ChangeHealth(effect.Owner, eHealthChangeType.Spell, -cost);
 			}
 			SendUpdates(effect.Owner);
 			return 0;

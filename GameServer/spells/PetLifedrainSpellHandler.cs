@@ -51,7 +51,7 @@ namespace DOL.spells
             }
             if(heal <= 0) return;
 
-            heal = player.ChangeHealth(player, GameLiving.eHealthChangeType.Spell, heal);
+            heal = player.ChangeHealth(player, eHealthChangeType.Spell, heal);
             if(heal > 0)
             {
                 MessageToLiving(player, "You steal " + heal + " hit point" + (heal == 1 ? "." :"s."), eChatType.CT_Spell);

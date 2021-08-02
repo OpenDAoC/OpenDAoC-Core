@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
         public override void OnDirectEffect(GameLiving target,double effectiveness)
         {
             base.OnDirectEffect(target,effectiveness);
-            Caster.ChangeHealth(Caster,GameLiving.eHealthChangeType.Spell,-Spell.ResurrectHealth);
+            Caster.ChangeHealth(Caster,eHealthChangeType.Spell,-Spell.ResurrectHealth);
         }
     }
 

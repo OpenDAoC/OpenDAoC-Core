@@ -84,7 +84,7 @@ namespace DOL.GS.Effects
 						if (p.Health + heal > p.MaxHealth)
 							heal = p.MaxHealth - p.Health;
 							
-						p.ChangeHealth(player, GameLiving.eHealthChangeType.Regenerate, heal);
+						p.ChangeHealth(player, eHealthChangeType.Regenerate, heal);
 						
 						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);

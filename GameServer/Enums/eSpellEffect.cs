@@ -5,5 +5,6 @@ namespace DOL.GS
         Heal,
         Damage,
         Snare,
+        Buff,
     }
 }

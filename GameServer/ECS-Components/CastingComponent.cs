@@ -47,6 +47,7 @@ namespace DOL.GS
                 }
             }
             spellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+            
         }
 
         private bool CanCastSpell(GamePlayer p)

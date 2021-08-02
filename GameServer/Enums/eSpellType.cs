@@ -118,6 +118,5 @@ namespace DOL.GS
         GatewayPersonalBind,
         UniPortal,
         FrontalPulseConeDD,
-
     }
 }
