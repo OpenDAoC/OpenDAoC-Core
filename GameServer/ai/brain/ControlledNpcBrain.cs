@@ -1135,13 +1135,13 @@ namespace DOL.AI.Brain
 			// react only on these attack results
 			switch (args.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.Blocked:
-				case GameLiving.eAttackResult.Evaded:
-				case GameLiving.eAttackResult.Fumbled:
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
-				case GameLiving.eAttackResult.Missed:
-				case GameLiving.eAttackResult.Parried:
+				case eAttackResult.Blocked:
+				case eAttackResult.Evaded:
+				case eAttackResult.Fumbled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+				case eAttackResult.Missed:
+				case eAttackResult.Parried:
 					AddToAggroList(args.AttackData.Attacker, args.AttackData.Attacker.EffectiveLevel + args.AttackData.Damage + args.AttackData.CriticalDamage);
 					break;
 			}

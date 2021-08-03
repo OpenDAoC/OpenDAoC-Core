@@ -96,8 +96,8 @@ namespace DOL.GS.Spells
 
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
 					GameSpellEffect effect = FindEffectOnTarget(living, this);
 					if (effect != null)
 						effect.Cancel(false);

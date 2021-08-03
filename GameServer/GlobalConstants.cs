@@ -125,19 +125,19 @@ namespace DOL.GS
 
 	public static class GlobalConstants
 	{
-		private static readonly Dictionary<GameLiving.eAttackResult, byte> AttackResultByte = new Dictionary<GameLiving.eAttackResult, byte>()
+		private static readonly Dictionary<eAttackResult, byte> AttackResultByte = new Dictionary<eAttackResult, byte>()
 	    {
-			{GameLiving.eAttackResult.Missed, 0},
-			{GameLiving.eAttackResult.Parried, 1},
-			{GameLiving.eAttackResult.Blocked, 2},
-			{GameLiving.eAttackResult.Evaded, 3},
-			{GameLiving.eAttackResult.Fumbled, 4},
-			{GameLiving.eAttackResult.HitUnstyled, 10},
-			{GameLiving.eAttackResult.HitStyle, 11},
-			{GameLiving.eAttackResult.Any, 20},
+			{eAttackResult.Missed, 0},
+			{eAttackResult.Parried, 1},
+			{eAttackResult.Blocked, 2},
+			{eAttackResult.Evaded, 3},
+			{eAttackResult.Fumbled, 4},
+			{eAttackResult.HitUnstyled, 10},
+			{eAttackResult.HitStyle, 11},
+			{eAttackResult.Any, 20},
 	    };
 		
-		public static byte GetAttackResultByte(GameLiving.eAttackResult attResult)
+		public static byte GetAttackResultByte(eAttackResult attResult)
 		{
 			if (AttackResultByte.ContainsKey(attResult))
 			{

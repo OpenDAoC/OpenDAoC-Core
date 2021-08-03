@@ -111,7 +111,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			int heal = target.ChangeMana(Caster, GameLiving.eManaChangeType.Spell, amount);
+			int heal = target.ChangeMana(Caster, eManaChangeType.Spell, amount);
 
 			if (heal == 0)
 			{

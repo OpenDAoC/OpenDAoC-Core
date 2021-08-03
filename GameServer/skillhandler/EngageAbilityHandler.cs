@@ -82,7 +82,7 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 
-			if (player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Distance)
+			if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.CannotUseNoCaCWeapons"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 return;

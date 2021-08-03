@@ -57,8 +57,8 @@ namespace DOL.GS.Spells
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
 
-			if (atkArgs.AttackData.AttackResult != GameLiving.eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != GameLiving.eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
 
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;
@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
 			ad.DamageType = Spell.DamageType;
 			ad.AttackType = AttackData.eAttackType.Spell;
 			ad.SpellHandler = this;
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 
 			if ( ad.Attacker is GameNPC )
 			{
@@ -165,8 +165,8 @@ namespace DOL.GS.Spells
 		{
 			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
 			if (args == null) return;
-			if (args.AttackData.AttackResult != GameLiving.eAttackResult.HitUnstyled
-				&& args.AttackData.AttackResult != GameLiving.eAttackResult.HitStyle) return;
+			if (args.AttackData.AttackResult != eAttackResult.HitUnstyled
+				&& args.AttackData.AttackResult != eAttackResult.HitStyle) return;
 			if (!args.AttackData.IsMeleeAttack) return;
 			GameLiving attacker = sender as GameLiving; //sender is target of attack, becomes attacker for damage shield
 			if (attacker == null) return;
@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
 			ad.DamageType = Spell.DamageType;
 			ad.SpellHandler = this;
 			ad.AttackType = AttackData.eAttackType.Spell;
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 
 			GamePlayer owner = null;
 

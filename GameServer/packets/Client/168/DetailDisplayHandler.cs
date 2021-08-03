@@ -2189,21 +2189,21 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			switch(StyleProcessor.ResolveAttackResult(style,clt.Player.PlayerCharacter.Class))
 			{
-				case GameLiving.eAttackResult.Any:
+				case eAttackResult.Any:
 					return (int)Style.eAttackResult.Any;
-				case GameLiving.eAttackResult.Missed:
+				case eAttackResult.Missed:
 					return (int) Style.eAttackResult.Miss;
-				case GameLiving.eAttackResult.Parried:
+				case eAttackResult.Parried:
 					return (int)Style.eAttackResult.Parry;
-				case GameLiving.eAttackResult.Evaded:
+				case eAttackResult.Evaded:
 					return (int)Style.eAttackResult.Evade;
-				case GameLiving.eAttackResult.Blocked:
+				case eAttackResult.Blocked:
 					return (int)Style.eAttackResult.Block;
-				case GameLiving.eAttackResult.Fumbled:
+				case eAttackResult.Fumbled:
 					return (int)Style.eAttackResult.Fumble;
-				case GameLiving.eAttackResult.HitStyle:
+				case eAttackResult.HitStyle:
 					return (int)Style.eAttackResult.Style;
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitUnstyled:
 					return (int)Style.eAttackResult.Hit;
 			}
 			return 0;

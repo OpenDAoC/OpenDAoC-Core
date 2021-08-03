@@ -338,12 +338,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Realm); // moved                            
 							pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 4)));
 
-							if (c.ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);

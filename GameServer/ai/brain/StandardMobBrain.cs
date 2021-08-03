@@ -874,7 +874,7 @@ namespace DOL.AI.Brain
 			    && Body.IsAlive
 			    && Body.ObjectState == GameObject.eObjectState.Active)
 			{
-				if (ad.AttackResult == GameLiving.eAttackResult.Missed)
+				if (ad.AttackResult == eAttackResult.Missed)
 				{
 					AddToAggroList(ad.Attacker, 1);
 				}

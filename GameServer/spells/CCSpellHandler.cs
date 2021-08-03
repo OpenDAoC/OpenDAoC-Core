@@ -422,13 +422,13 @@ namespace DOL.GS.Spells
 			{
 				switch (attackArgs.AttackData.AttackResult)
 				{
-					case GameLiving.eAttackResult.HitStyle:
-					case GameLiving.eAttackResult.HitUnstyled:
-					case GameLiving.eAttackResult.Blocked:
-					case GameLiving.eAttackResult.Evaded:
-					case GameLiving.eAttackResult.Fumbled:
-					case GameLiving.eAttackResult.Missed:
-					case GameLiving.eAttackResult.Parried:
+					case eAttackResult.HitStyle:
+					case eAttackResult.HitUnstyled:
+					case eAttackResult.Blocked:
+					case eAttackResult.Evaded:
+					case eAttackResult.Fumbled:
+					case eAttackResult.Missed:
+					case eAttackResult.Parried:
 						remove = true;
 						break;
 				}
@@ -443,7 +443,7 @@ namespace DOL.GS.Spells
 				else if (attackArgs.AttackData.SpellHandler is PropertyChangingSpell || attackArgs.AttackData.SpellHandler is MesmerizeSpellHandler
 				         || attackArgs.AttackData.SpellHandler is NearsightSpellHandler || attackArgs.AttackData.SpellHandler.HasPositiveEffect) return;
 
-				if (attackArgs.AttackData.AttackResult == GameLiving.eAttackResult.Missed || attackArgs.AttackData.AttackResult == GameLiving.eAttackResult.HitUnstyled)
+				if (attackArgs.AttackData.AttackResult == eAttackResult.Missed || attackArgs.AttackData.AttackResult == eAttackResult.HitUnstyled)
 					remove = true;
 			}
 

@@ -61,8 +61,8 @@ namespace DOL.GS.Effects
 			if (attackArgs == null) return;
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
 					Stop();
 					break;
 			}

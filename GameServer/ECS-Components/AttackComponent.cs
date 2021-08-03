@@ -179,7 +179,7 @@ namespace DOL.GS
             {
                 var p = owner as GamePlayer;
 
-                if (weapon != null && weapon.Item_Type == Slot.RANGED && p.rangeAttackComponent?.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+                if (weapon != null && weapon.Item_Type == Slot.RANGED && p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     return 0; // no crit damage for crit shots
 
                 // check for melee attack
@@ -389,7 +389,7 @@ namespace DOL.GS
                         // Apply RA difference
                         speed -= percent;
                         //log.Debug("speed = " + speed + " percent = " + percent + " eProperty.archeryspeed = " + GetModified(eProperty.ArcherySpeed));
-                        if (p.rangeAttackComponent?.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+                        if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                             speed = speed * 2 - (p.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
                     }
                     else
@@ -597,25 +597,25 @@ namespace DOL.GS
                         {
                             if (effect is SureShotEffect)
                             {
-                                p.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.SureShot;
+                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
                                 break;
                             }
 
                             if (effect is RapidFireEffect)
                             {
-                                p.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.RapidFire;
+                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
                                 break;
                             }
 
                             if (effect is TrueshotEffect)
                             {
-                                p.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Long;
+                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
                                 break;
                             }
                         }
                     }
 
-                    if (p.rangeAttackComponent?.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical && p.Endurance < RangeAttackComponent.CRITICAL_SHOT_ENDURANCE)
+                    if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical && p.Endurance < RangeAttackComponent.CRITICAL_SHOT_ENDURANCE)
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.TiredShot"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
@@ -633,7 +633,7 @@ namespace DOL.GS
                         // -Chance to unstealth nocking a crit = stealth / level  0.20
                         int stealthSpec = p.GetModifiedSpecLevel(Specs.Stealth);
                         int stayStealthed = stealthSpec * 100 / p.Level;
-                        if (p.rangeAttackComponent?.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+                        if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                             stayStealthed -= 20;
 
                         if (!Util.Chance(stayStealthed))
@@ -742,16 +742,16 @@ namespace DOL.GS
                 if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
                     // only start another attack action if we aren't already aiming to shoot
-                    if (owner.rangeAttackComponent?.RangedAttackState != RangeAttackComponent.eRangedAttackState.Aim)
+                    if (owner.rangeAttackComponent?.RangedAttackState != eRangedAttackState.Aim)
                     {
-                        owner.rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.Aim;
+                        owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
                         foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             player.Out.SendCombatAnimation(owner, null, (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
                                                            0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
-                        attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire) ? speed / 2 : speed;
+                        attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed;
 
                     }
                 }
@@ -1233,9 +1233,9 @@ namespace DOL.GS
                 return ad;
             }
 
-            if (owner.rangeAttackComponent?.RangedAttackType == RangeAttackComponent.eRangedAttackType.Long)
+            if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Long)
             {
-                owner.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
+                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
             }
 
             if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, false))
@@ -2094,7 +2094,7 @@ namespace DOL.GS
                 if (stealthStyle)
                     penetrate = true;
 
-                if (ad.Attacker.rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Long // stealth styles pierce bladeturn
+                if (ad.Attacker.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long // stealth styles pierce bladeturn
                     || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn
                     penetrate = true;
 

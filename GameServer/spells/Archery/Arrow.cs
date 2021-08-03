@@ -164,7 +164,7 @@ namespace DOL.GS.Spells
 				// add defence bonus from last executed style if any
 				AttackData targetAD = (AttackData)target.TempProperties.getProperty<object>(GameLiving.LAST_ATTACK_DATA, null);
 				if (targetAD != null
-				    && targetAD.AttackResult == GameLiving.eAttackResult.HitStyle
+				    && targetAD.AttackResult == eAttackResult.HitStyle
 				    && targetAD.Style != null)
 				{
 					missrate += targetAD.Style.BonusToDefense;
@@ -175,14 +175,14 @@ namespace DOL.GS.Spells
 				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.5 - (caster.GetModified(eProperty.SpellDamage) * 0.01));
 
 				// check for bladeturn miss
-				if (ad.AttackResult == GameLiving.eAttackResult.Missed)
+				if (ad.AttackResult == eAttackResult.Missed)
 				{
 					return;
 				}
 
 				if (Util.Chance(missrate))
 				{
-					ad.AttackResult = GameLiving.eAttackResult.Missed;
+					ad.AttackResult = eAttackResult.Missed;
 					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
 					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
@@ -351,7 +351,7 @@ namespace DOL.GS.Spells
 
 				if (arrowBlock == false && m_handler.Caster.AttackWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)m_handler.Caster.AttackWeapon.Object_Type))
 				{
-					if (ad.AttackResult == GameLiving.eAttackResult.HitUnstyled || ad.AttackResult == GameLiving.eAttackResult.HitStyle)
+					if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
 					{
 						caster.CheckWeaponMagicalEffect(ad, m_handler.Caster.AttackWeapon);
 					}

@@ -1350,37 +1350,6 @@ namespace DOL.GS
 		public const string RELEASING_PROPERTY = "releasing";
 
 		/// <summary>
-		/// The current after-death player release type
-		/// </summary>
-		public enum eReleaseType
-		{
-			/// <summary>
-			/// Normal release to the bind point using /release command and 10sec delay after death
-			/// </summary>
-			Normal,
-			/// <summary>
-			/// Release to the players home city
-			/// </summary>
-			City,
-			/// <summary>
-			/// Release to the current location
-			/// </summary>
-			Duel,
-			/// <summary>
-			/// Release to your bind point
-			/// </summary>
-			Bind,
-			/// <summary>
-			/// Release in a battleground or the frontiers
-			/// </summary>
-			RvR,
-			/// <summary>
-			/// Release to players house
-			/// </summary>
-			House,
-		}
-
-		/// <summary>
 		/// The current release type
 		/// </summary>
 		protected eReleaseType m_releaseType = eReleaseType.Normal;
@@ -1691,7 +1660,7 @@ namespace DOL.GS
 					long lastDeathExpLoss = TempProperties.getProperty<long>(DEATH_EXP_LOSS_PROPERTY);
 					TempProperties.removeProperty(DEATH_EXP_LOSS_PROPERTY);
 
-					GainExperience(GameLiving.eXPSource.Other, -lastDeathExpLoss);
+					GainExperience(eXPSource.Other, -lastDeathExpLoss);
 					lostExp -= Experience;
 
 					// raise only the gravestone if xp has to be stored in it
@@ -1829,16 +1798,7 @@ namespace DOL.GS
 			return 1000;
 		}
 		
-		/// <summary>
-		/// Death types ingame
-		/// </summary>
-		public enum eDeathType
-		{
-			PvE,
-			RvR,
-			PvP,
-			None,
-		}
+		
 		
 		/// <summary>
 		/// The current death type
@@ -1861,7 +1821,7 @@ namespace DOL.GS
 			GamePlayer player = (GamePlayer)sender;
 						
 			if (player.IsUnderwater && player.CanBreathUnderWater == false)
-				player.Diving(waterBreath.Holding);
+				player.Diving(eWaterBreath.Holding);
 			//We need two different sickness spells because RvR sickness is not curable by Healer NPC -Unty
 			if (player.Level >= ServerProperties.Properties.RESS_SICKNESS_LEVEL)
 			    switch (DeathType)
@@ -2127,15 +2087,6 @@ namespace DOL.GS
 			{
 			}
 		}
-
-
-		public enum eSize : ushort
-		{
-			Short = 0x800,
-			Average = 0x1000,
-			Tall = 0x1800
-		}
-
 
 		public eSize Size
 		{
@@ -5696,9 +5647,9 @@ namespace DOL.GS
 		//			InventoryItem ammo = rangeAttackComponent.RangeAttackAmmo;
 		//			Inventory.RemoveCountFromStack(ammo, 1);
 
-		//			if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+		//			if (rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
 		//				Endurance -= RangeAttackComponent.CRITICAL_SHOT_ENDURANCE;
-		//			else if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire && GetAbilityLevel(Abilities.RapidFire) == 1)
+		//			else if (rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire && GetAbilityLevel(Abilities.RapidFire) == 1)
 		//				Endurance -= 2 * RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
 		//			else Endurance -= RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
 		//			break;
@@ -5942,18 +5893,18 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="slot"></param>
 		/// <param name="forced"></param>
-		public virtual void SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot slot, bool forced)
+		public virtual void SwitchQuiver(eActiveQuiverSlot slot, bool forced)
 		{
-			if (slot != RangeAttackComponent.eActiveQuiverSlot.None)
+			if (slot != eActiveQuiverSlot.None)
 			{
 				eInventorySlot updatedSlot = eInventorySlot.Invalid;
-				if ((slot & RangeAttackComponent.eActiveQuiverSlot.Fourth) > 0)
+				if ((slot & eActiveQuiverSlot.Fourth) > 0)
 					updatedSlot = eInventorySlot.FourthQuiver;
-				else if ((slot & RangeAttackComponent.eActiveQuiverSlot.Third) > 0)
+				else if ((slot & eActiveQuiverSlot.Third) > 0)
 					updatedSlot = eInventorySlot.ThirdQuiver;
-				else if ((slot & RangeAttackComponent.eActiveQuiverSlot.Second) > 0)
+				else if ((slot & eActiveQuiverSlot.Second) > 0)
 					updatedSlot = eInventorySlot.SecondQuiver;
-				else if ((slot & RangeAttackComponent.eActiveQuiverSlot.First) > 0)
+				else if ((slot & eActiveQuiverSlot.First) > 0)
 					updatedSlot = eInventorySlot.FirstQuiver;
 
 				if (Inventory.GetItem(updatedSlot) != null && (rangeAttackComponent.ActiveQuiverSlot != slot || forced))
@@ -5964,7 +5915,7 @@ namespace DOL.GS
 				}
 				else
 				{
-                    rangeAttackComponent.ActiveQuiverSlot = RangeAttackComponent.eActiveQuiverSlot.None;
+                    rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NoMoreAmmo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 
@@ -5973,16 +5924,16 @@ namespace DOL.GS
 			else
 			{
 				if (Inventory.GetItem(eInventorySlot.FirstQuiver) != null)
-					SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.First, true);
+					SwitchQuiver(eActiveQuiverSlot.First, true);
 				else if (Inventory.GetItem(eInventorySlot.SecondQuiver) != null)
-					SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Second, true);
+					SwitchQuiver(eActiveQuiverSlot.Second, true);
 				else if (Inventory.GetItem(eInventorySlot.ThirdQuiver) != null)
-					SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Third, true);
+					SwitchQuiver(eActiveQuiverSlot.Third, true);
 				else if (Inventory.GetItem(eInventorySlot.FourthQuiver) != null)
-					SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Fourth, true);
+					SwitchQuiver(eActiveQuiverSlot.Fourth, true);
 				else
 				{
-                    rangeAttackComponent.ActiveQuiverSlot = RangeAttackComponent.eActiveQuiverSlot.None;
+                    rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NotUseQuiver"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 				Out.SendInventorySlotsUpdate(null);
@@ -7561,7 +7512,7 @@ namespace DOL.GS
 			bool realmDeath = killer != null && killer.Realm != eRealm.None;
 
 			TargetObject = null;
-			Diving(waterBreath.Normal);
+			Diving(eWaterBreath.Normal);
 			if (IsOnHorse)
 				IsOnHorse = false;
 
@@ -8903,19 +8854,19 @@ namespace DOL.GS
 						//anymore
 						if (!attackComponent.AttackState)
 						{
-                            rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.None;
-                            rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
+                            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+                            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 						}
-						if (!newAttack && rangeAttackComponent.RangedAttackState != RangeAttackComponent.eRangedAttackState.None)
+						if (!newAttack && rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
 						{
-							if (rangeAttackComponent.RangedAttackState == RangeAttackComponent.eRangedAttackState.ReadyToFire)
+							if (rangeAttackComponent.RangedAttackState == eRangedAttackState.ReadyToFire)
 							{
-                                rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.Fire;
+                                rangeAttackComponent.RangedAttackState = eRangedAttackState.Fire;
 								StopCurrentSpellcast();
 								//m_attackAction.Start(1);
                                 attackComponent.attackAction.StartTime = 1;
 							}
-							else if (rangeAttackComponent.RangedAttackState == RangeAttackComponent.eRangedAttackState.Aim)
+							else if (rangeAttackComponent.RangedAttackState == eRangedAttackState.Aim)
 							{
 								if (!TargetInView)
 								{
@@ -8930,26 +8881,26 @@ namespace DOL.GS
                                         rangeAttackComponent.RangeAttackTarget = TargetObject;
 									}
 
-                                    rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.AimFire;
+                                    rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFire;
 									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShot"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								}
 							}
-							else if (rangeAttackComponent.RangedAttackState == RangeAttackComponent.eRangedAttackState.AimFire)
+							else if (rangeAttackComponent.RangedAttackState == eRangedAttackState.AimFire)
 							{
-                                rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.AimFireReload;
+                                rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFireReload;
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShotReload"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
-							else if (rangeAttackComponent.RangedAttackState == RangeAttackComponent.eRangedAttackState.AimFireReload)
+							else if (rangeAttackComponent.RangedAttackState == eRangedAttackState.AimFireReload)
 							{
-                                rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.Aim;
+                                rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NoAutoReleaseShotReload"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
 						}
 						break;
-						case Slot.FIRSTQUIVER: SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.First, false); break;
-						case Slot.SECONDQUIVER: SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Second, false); break;
-						case Slot.THIRDQUIVER: SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Third, false); break;
-						case Slot.FOURTHQUIVER: SwitchQuiver(RangeAttackComponent.eActiveQuiverSlot.Fourth, false); break;
+						case Slot.FIRSTQUIVER: SwitchQuiver(eActiveQuiverSlot.First, false); break;
+						case Slot.SECONDQUIVER: SwitchQuiver(eActiveQuiverSlot.Second, false); break;
+						case Slot.THIRDQUIVER: SwitchQuiver(eActiveQuiverSlot.Third, false); break;
+						case Slot.FOURTHQUIVER: SwitchQuiver(eActiveQuiverSlot.Fourth, false); break;
 				}
 
 				#endregion
@@ -10078,7 +10029,7 @@ namespace DOL.GS
 				m_invulnerabilityTimer.Stop();
 				m_invulnerabilityTimer = null;
 			}
-			Diving(waterBreath.Normal);
+			Diving(eWaterBreath.Normal);
 			if (IsOnHorse)
 				IsOnHorse = false;
 
@@ -10155,7 +10106,7 @@ namespace DOL.GS
 			if (rgn.GetZone(x, y) == null)
 				return false;
 
-			Diving(waterBreath.Normal);
+			Diving(eWaterBreath.Normal);
 
 			if (SiegeWeapon != null)
 				SiegeWeapon.ReleaseControl();
@@ -10759,15 +10710,10 @@ namespace DOL.GS
 		}
 
 
-		public enum waterBreath : byte
-		{
-			Normal = 0,
-			Holding = 1,
-			Drowning = 2,
-		}
+		
 
 		protected long m_beginDrowningTick;
-		protected waterBreath m_currentWaterBreathState;
+		protected eWaterBreath m_currentWaterBreathState;
 
 		protected int DrowningTimerCallback(RegionTimer callingTimer)
 		{
@@ -10794,7 +10740,7 @@ namespace DOL.GS
 		protected int HoldingBreathTimerCallback(RegionTimer callingTimer)
 		{
 			m_holdBreathTimer = null;
-			Diving(waterBreath.Drowning);
+			Diving(eWaterBreath.Drowning);
 			return 0;
 		}
 
@@ -10814,7 +10760,7 @@ namespace DOL.GS
 			set
 			{
                 if (m_diving != value)
-                    Diving(waterBreath.Drowning);
+                    Diving(eWaterBreath.Drowning);
                     //if (value && !CanBreathUnderWater)
                     //{
                     //    Diving(waterBreath.Holding);
@@ -10833,13 +10779,13 @@ namespace DOL.GS
 			{
 				m_canBreathUnderwater = value;
 				if (!value && IsDiving)
-					Diving(waterBreath.Holding);
+					Diving(eWaterBreath.Holding);
 				else
-					Diving(waterBreath.Normal);
+					Diving(eWaterBreath.Normal);
 			}
 		}
 
-		public void Diving(waterBreath state)
+		public void Diving(eWaterBreath state)
 		{
 			//bool changeSpeed = false;
 			if (m_currentWaterBreathState != state)
@@ -10860,9 +10806,9 @@ namespace DOL.GS
 			}
 			switch (state)
 			{
-				case waterBreath.Normal:
+				case eWaterBreath.Normal:
 					break;
-				case waterBreath.Holding:
+				case eWaterBreath.Holding:
 					if (m_holdBreathTimer == null)
 					{
 						Out.SendTimerWindow("Holding Breath", 30);
@@ -10871,7 +10817,7 @@ namespace DOL.GS
 						m_holdBreathTimer.Start(30001);
 					}
 					break;
-				case waterBreath.Drowning:
+				case eWaterBreath.Drowning:
 					m_beginDrowningTick = CurrentRegion.Time;
 					if (m_drowningTimer == null)
 					{
@@ -12695,7 +12641,7 @@ namespace DOL.GS
 
 			m_inventory.LoadFromDatabase(InternalID);
 
-			SwitchQuiver((RangeAttackComponent.eActiveQuiverSlot)(DBCharacter.ActiveWeaponSlot & 0xF0), false);
+			SwitchQuiver((eActiveQuiverSlot)(DBCharacter.ActiveWeaponSlot & 0xF0), false);
 			SwitchWeapon((eActiveWeaponSlot)(DBCharacter.ActiveWeaponSlot & 0x0F));
 
 
@@ -14998,16 +14944,7 @@ namespace DOL.GS
 			IsOnHorse = true;
 			return 0;
 		}
-
-		public enum eHorseSaddleBag : byte
-		{
-			None = 0x00,
-			LeftFront = 0x01,
-			RightFront = 0x02,
-			LeftRear = 0x04,
-			RightRear = 0x08,
-			All = 0x0F
-		}
+		
 
 		/// <summary>
 		/// What horse saddle bags are active on this player?

@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                 return;
             }
             AttackData ad = args.AttackData;
-            if (ad.AttackResult != GameLiving.eAttackResult.HitUnstyled && ad.AttackResult != GameLiving.eAttackResult.HitStyle)
+            if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
                 return;
 
             int baseChance = 0;

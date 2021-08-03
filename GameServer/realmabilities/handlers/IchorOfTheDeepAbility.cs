@@ -281,8 +281,8 @@ namespace DOL.GS.RealmAbilities
 
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
 					living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 					SendUpdates(living);
 					break;

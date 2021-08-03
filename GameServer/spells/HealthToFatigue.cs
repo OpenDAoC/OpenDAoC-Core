@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
 			if (target.Endurance >= amount)
 				amount = target.MaxEndurance - target.Endurance;
 
-			target.ChangeEndurance(target, GameLiving.eEnduranceChangeType.Spell, amount);
+			target.ChangeEndurance(target, eEnduranceChangeType.Spell, amount);
 			MessageToCaster("You transfer " + amount + " life to Endurance!", eChatType.CT_Spell);
 		}
 

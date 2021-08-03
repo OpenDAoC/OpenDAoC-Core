@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
             }
             
             if (mana <=0) return;
-            mana = m_caster.ChangeMana(m_caster,GameLiving.eManaChangeType.Spell,mana);
+            mana = m_caster.ChangeMana(m_caster,eManaChangeType.Spell,mana);
             if (mana > 0)
             {
                 MessageToCaster("You steal " + mana + " power point" + (mana == 1 ? "." : "s."), eChatType.CT_Spell);
@@ -74,7 +74,7 @@ namespace DOL.GS.Spells
             }     
             
             if (endu <=0) return;
-            endu = m_caster.ChangeEndurance(m_caster,GameLiving.eEnduranceChangeType.Spell,endu);            
+            endu = m_caster.ChangeEndurance(m_caster,eEnduranceChangeType.Spell,endu);            
             if (heal > 0)
             {
                 MessageToCaster("You steal " + endu + " endurance point" + (endu == 1 ? "." : "s."), eChatType.CT_Spell);

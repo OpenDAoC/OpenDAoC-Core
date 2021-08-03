@@ -222,7 +222,7 @@ namespace DOL.GS
                         int powerCost = spellHandler.PowerCost(Player);
 
                         if (powerCost > 0)
-							Player.ChangeMana(Player, GameLiving.eManaChangeType.Spell, -powerCost);
+							Player.ChangeMana(Player, eManaChangeType.Spell, -powerCost);
                     }
 
                     return;

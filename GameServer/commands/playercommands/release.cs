@@ -30,22 +30,22 @@ namespace DOL.GS.Commands
 		{
 			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon)
 			{
-				client.Player.Release(GamePlayer.eReleaseType.RvR, false);
+				client.Player.Release(eReleaseType.RvR, false);
 				return;
 			}
 
             if (args.Length > 1 && args[1].ToLower() == "city")
 			{
-					client.Player.Release(GamePlayer.eReleaseType.City, false);
+					client.Player.Release(eReleaseType.City, false);
 					return;
 			}
 
             if (args.Length > 1 && args[1].ToLower() == "house")
             {
-                client.Player.Release(GamePlayer.eReleaseType.House, false);
+                client.Player.Release(eReleaseType.House, false);
                 return;
             }
-			client.Player.Release(GamePlayer.eReleaseType.Normal, false);
+			client.Player.Release(eReleaseType.Normal, false);
 		}
 	}
 }

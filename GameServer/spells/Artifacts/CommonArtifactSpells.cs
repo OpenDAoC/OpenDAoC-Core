@@ -241,7 +241,7 @@ namespace DOL.GS.Spells
             newad.Damage = DamageAmount;
             newad.DamageType = Spell.DamageType;
             newad.AttackType = AttackData.eAttackType.Spell;
-            newad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+            newad.AttackResult = eAttackResult.HitUnstyled;
             newad.SpellHandler = this;
             newad.Target.OnAttackedByEnemy(newad);
             newad.Attacker.DealDamage(newad);
