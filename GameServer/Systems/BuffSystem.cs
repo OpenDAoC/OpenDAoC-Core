@@ -17,20 +17,20 @@ namespace DOL.GS.Systems {
                 //else, increment the buff timers
 
                 //needs to be able to handle multiple StatBuffComponents on entity
-                if (entity.buffComponent.isApplied)
-                {
-                    entity.buffComponent.UpdateTimeLeft();
-                    if(entity.buffComponent.timeSinceApplication > entity.buffComponent.maxDuration)
-                    {
-                        entity.statsComponent.DecreaseStat(entity.buffComponent.statToModify, entity.buffComponent.buffValue);
-                        entity.buffComponent.isApplied = false;
-                    }
-                } else
-                {
-                    entity.statsComponent.IncreaseStat(entity.buffComponent.statToModify, entity.buffComponent.buffValue);
-                    entity.buffComponent.isApplied = true;
-                    entity.buffComponent.UpdateTimeLeft();
-                }
+                // if (entity.buffComponent.isApplied)
+                // {
+                //     entity.buffComponent.UpdateTimeLeft();
+                //     if(entity.buffComponent.timeSinceApplication > entity.buffComponent.maxDuration)
+                //     {
+                //         entity.statsComponent.DecreaseStat(entity.buffComponent.statToModify, entity.buffComponent.buffValue);
+                //         entity.buffComponent.isApplied = false;
+                //     }
+                // } else
+                // {
+                //     entity.statsComponent.IncreaseStat(entity.buffComponent.statToModify, entity.buffComponent.buffValue);
+                //     entity.buffComponent.isApplied = true;
+                //     entity.buffComponent.UpdateTimeLeft();
+                // }
             }
         }
     }

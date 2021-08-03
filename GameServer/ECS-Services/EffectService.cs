@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.SpellEffects;
 
@@ -8,64 +9,106 @@ namespace DOL.GS
     {
         public static void Tick(long tick)
         {
-            
-            //Needs to be logic for each effect?
             foreach (var e in EntityManager.GetAllEffects())
             {
-                foreach (var effect in e._effectComponents)
+                if (e.CancelEffect)
                 {
-                    if (effect is null)
+                    HandleCancelEffect(e);
+                }
+                else
+                {
+                    switch (e.SpellHandler.Spell.SpellType)
                     {
-                        continue;
-                    }
-                    
-                    switch (effect.Type)
-                    {
-                        case eSpellEffect.Heal:
-                            HandleHealEffect(effect is HealEffectComponent ? (HealEffectComponent) effect : default);
+                        case "ConstitutionBuff":
+                            HandleBaseCon(e);
                             break;
-                        default:
-                            Console.WriteLine("No effect type handler!");
-                            break;
+                            
                     }
-                    EntityManager.RemoveEffect(e);
+                }
+                EntityManager.RemoveEffect(e);
+            }
+        }
+
+
+        private static void HandleBaseCon(ECSGameEffect e)
+        {
+            Console.WriteLine($"Handling Basecon");
+            if (e.Owner == null)
+            {
+                Console.WriteLine($"Invalid target for Effect {e}");
+                return;
+            }
+
+            EffectListComponent effectList = e.Owner.effectListComponent;
+            if (effectList == null)
+            {
+                Console.WriteLine($"No effect list found for {e.Owner}");
+                return;
+            }
+            
+
+            if (!effectList.AddEffect(e))
+            {
+                SendSpellResistAnimation(e);
+                
+            }
+            else
+            {
+                SendSpellAnimation(e);
+                if(e.Owner is GamePlayer player)
+                {
+                    e.Owner.AbilityBonus[(int)eProperty.Constitution] += (int)e.SpellHandler.Spell.Value;
+                    player.Out.SendCharStatsUpdate();
+                    player.UpdateEncumberance();
+                    player.UpdatePlayerStatus();
+                    player.Out.SendUpdatePlayer();             	
                 }
             }
         }
 
-        private static void HandleHealEffect(HealEffectComponent e)
+        //todo - abstract this out to dynamically cancel the effect. Need a way to look up eProperty and such
+        private static void HandleCancelEffect(ECSGameEffect e)
         {
-
-            int heal = e.Target.ChangeHealth(e.Caster, eHealthChangeType.Spell, (int)e.Value);
-
-            if (e.Target == e.Caster && e.Target is GamePlayer pl)
+            Console.WriteLine($"Handling Cancel Effect");
+            if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
-                pl.Out.SendMessage("You are healed by " + e.Caster.GetName(0, false) + " for " + heal + " hit points.", 
-                    eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
-                pl.Out.SendSpellEffectAnimation(e.Caster, e.Target, e.SpellEffectId, 0, false, 0x01);
-        
+                Console.WriteLine("Unable to remove effect!");
+                return;
             }
             
-            else if (e.Target is GamePlayer p)
+            e.Owner.AbilityBonus[(int)eProperty.Constitution] -= (int)e.SpellHandler.Spell.Value;
+            if(e.Owner is GamePlayer player)
             {
-                p.Out.SendMessage("You are healed by " + e.Caster.GetName(0, false) + " for " + heal + " hit points.", 
-                    eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
+                player.Out.SendCharStatsUpdate();
+                player.UpdateEncumberance();
+                player.UpdatePlayerStatus();
+                player.Out.SendUpdatePlayer();
+                //Now update EffectList
+                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+            } 
+        }
+
+        private static void SendSpellAnimation(ECSGameEffect e)
+        {
+            foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.SpellHandler.Target, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
             }
 
-            else if (e.Caster is GamePlayer p2)
+            if (e.Owner is GamePlayer player1)
             {
-                p2.Out.SendMessage("You heal " + e.Target.GetName(0, false) + " for " + heal + " hit points!", 
-                    eChatType.CT_Spell,eChatLoc.CL_SystemWindow);
-                p2.Out.SendSpellEffectAnimation(e.Caster, e.Target, e.SpellEffectId, 0, false, 0x01);
+                player1.Out.SendUpdateIcons(player1.effectListComponent.Effects.Values.ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
             }
         }
 
-
-        //Parrellel Thread does this
-        private static void HandleTick(long tick)
+        private static void SendSpellResistAnimation(ECSGameEffect e)
         {
-            
+            foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.SpellHandler.Target, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
+            }
         }
+
         
     }
 }

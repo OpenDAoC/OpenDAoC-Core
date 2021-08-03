@@ -5432,9 +5432,10 @@ namespace DOL.GS
         //Declare Components
         public CastingComponent castingComponent;
         public HealthComponent healthComponent;
-        public DamageComponent damageComponent;
+        //public DamageComponent damageComponent;
         public StatsComponent statsComponent;
-        public SingleStatBuffComponent buffComponent;
+        //public SingleStatBuffComponent buffComponent;
+        public EffectListComponent effectListComponent;
         #endregion
 
 
@@ -7013,6 +7014,7 @@ namespace DOL.GS
             rangeAttackComponent = new RangeAttackComponent(this);
             styleComponent = new StyleComponent(this);
             castingComponent = new CastingComponent(this);
+            effectListComponent = new EffectListComponent(this);
 
             m_guildName = string.Empty;
 			m_targetObjectWeakReference = new WeakRef(null);
@@ -7035,7 +7037,7 @@ namespace DOL.GS
 
 
             healthComponent = new HealthComponent(this);
-            damageComponent = new DamageComponent(this);
+            // damageComponent = new DamageComponent(this);
 
 		}
 	}

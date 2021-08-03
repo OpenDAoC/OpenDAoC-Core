@@ -3877,7 +3877,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (IGameEffect effect in m_gameClient.Player.EffectList)
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.Effects.Values)
 				{
 					if (effect.Icon != 0)
 					{
@@ -3888,7 +3888,7 @@ namespace DOL.GS.PacketHandler
 						}
 
 						// store tooltip update for gamespelleffect.
-						if (ForceTooltipUpdate && effect is GameSpellEffect gameEffect)
+						if (ForceTooltipUpdate && effect is ECSGameEffect gameEffect)
 						{
 							tooltipSpellHandlers.Add(gameEffect.SpellHandler);
 						}
@@ -3898,38 +3898,39 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
 
 						byte ImmunByte = 0;
-						var gsp = effect as GameSpellEffect;
-						if (gsp != null && gsp.IsDisabled)
-							ImmunByte = 1;
-						pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
+						var gsp = effect as ECSGameEffect;
+						//todo this logic
+						// if (gsp != null && gsp.IsDisabled)
+						// 	ImmunByte = 1;
+						pak.WriteByte(0); // new in 1.73; if non zero says "protected by" on right click
 
 						// bit 0x08 adds "more..." to right click info
-						pak.WriteShort(effect.Icon);
+						pak.WriteShort(2435);
 						//pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
-						pak.WriteShort((ushort)(effect.RemainingTime / 1000));
-						if (effect is GameSpellEffect)
-							pak.WriteShort((ushort)((GameSpellEffect)effect).Spell.InternalID); //v1.110+ send the spell ID for delve info in active icon
+						pak.WriteShort((ushort)(effect.Duration / 1000));
+						if (effect is ECSGameEffect)
+							pak.WriteShort((ushort)((ECSGameEffect)effect).Icon); //v1.110+ send the spell ID for delve info in active icon
 						else
 							pak.WriteShort(0);//don't override existing tooltip ids
 
 						byte flagNegativeEffect = 0;
-						if (effect is StaticEffect)
-						{
-							if (((StaticEffect)effect).HasNegativeEffect)
-							{
-								flagNegativeEffect = 1;
-							}
-						}
-						else if (effect is GameSpellEffect)
-						{
-							if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
-							{
-								flagNegativeEffect = 1;
-							}
-						}
+						// if (effect is StaticEffect)
+						// {
+						// 	if (((StaticEffect)effect).HasNegativeEffect)
+						// 	{
+						// 		flagNegativeEffect = 1;
+						// 	}
+						// }
+						// else if (effect is GameSpellEffect)
+						// {
+						// 	if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
+						// 	{
+						// 		flagNegativeEffect = 1;
+						// 	}
+						// }
 						pak.WriteByte(flagNegativeEffect);
 
-						pak.WritePascalString(effect.Name);
+						pak.WritePascalString(effect.SpellHandler.Spell.Name);
 						entriesCount++;
 					}
 				}
