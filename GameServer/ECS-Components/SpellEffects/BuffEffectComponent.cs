@@ -20,6 +20,7 @@
             this.isApplied = false;
             this.startTick = currentTick;
             this.maxDuration = maxDuration;
+            this.Type = eSpellEffect.Buff;
         }
 
         /* public void UpdateTimeLeft()
