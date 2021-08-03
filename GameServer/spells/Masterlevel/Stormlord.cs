@@ -228,7 +228,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             //spell damage should 25;
             int end = (int)(Spell.Damage);
-            target.ChangeEndurance(target, GameLiving.eEnduranceChangeType.Spell, (-end));
+            target.ChangeEndurance(target, eEnduranceChangeType.Spell, (-end));
 
             if (target is GamePlayer)
                 ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
@@ -395,7 +395,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
             int mana = (int)(Spell.Damage);
-            target.ChangeMana(target, GameLiving.eManaChangeType.Spell, (-mana));
+            target.ChangeMana(target, eManaChangeType.Spell, (-mana));
 
             if (target is GamePlayer)
             {
@@ -410,7 +410,7 @@ namespace DOL.GS.Spells
         public virtual void StealMana(GameLiving target, int mana)
         {
             if (!m_caster.IsAlive) return;
-            m_caster.ChangeMana(target, GameLiving.eManaChangeType.Spell, mana);
+            m_caster.ChangeMana(target, eManaChangeType.Spell, mana);
             SendCasterMessage(target, mana);
 
         }

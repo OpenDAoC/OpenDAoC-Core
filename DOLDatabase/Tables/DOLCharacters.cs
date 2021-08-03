@@ -815,7 +815,7 @@ namespace DOL.Database
 		}
 
 		/// <summary>
-		/// The character's active weapon slot and quiver slot - <see cref="T:DOL.GS.GameLiving.eActiveWeaponSlot" /> ORed with <see cref="T:DOL.GS.GameLiving.eActiveQuiverSlot" />
+		/// The character's active weapon slot and quiver slot - <see cref="T:DOL.GS.eActiveWeaponSlot" /> ORed with <see cref="T:DOL.GS.GameLiving.eActiveQuiverSlot" />
 		/// </summary>
 		[DataElement(AllowDbNull = false)]
 		public byte ActiveWeaponSlot

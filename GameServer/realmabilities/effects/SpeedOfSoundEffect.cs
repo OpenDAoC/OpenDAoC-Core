@@ -70,13 +70,13 @@ namespace DOL.GS.Effects
 
 				switch (afargs.AttackData.AttackResult)
 				{
-					case GameLiving.eAttackResult.HitStyle:
-					case GameLiving.eAttackResult.HitUnstyled:
-					case GameLiving.eAttackResult.Blocked:
-					case GameLiving.eAttackResult.Evaded:
-					case GameLiving.eAttackResult.Fumbled:
-					case GameLiving.eAttackResult.Missed:
-					case GameLiving.eAttackResult.Parried:
+					case eAttackResult.HitStyle:
+					case eAttackResult.HitUnstyled:
+					case eAttackResult.Blocked:
+					case eAttackResult.Evaded:
+					case eAttackResult.Fumbled:
+					case eAttackResult.Missed:
+					case eAttackResult.Parried:
 						SpeedOfSoundEffect effect = player.EffectList.GetOfType<SpeedOfSoundEffect>();
 						if (effect != null)
 							effect.Cancel(false);

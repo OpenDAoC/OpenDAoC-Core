@@ -45,6 +45,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -86,9 +87,7 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy
-      SourceFiles="serverconfig_extraproperties.xml"
-      DestinationFolder="$(MSBuildProjectDirectory)\..\$(Configuration)\lib\config\" />
+    <Copy SourceFiles="serverconfig_extraproperties.xml" DestinationFolder="$(MSBuildProjectDirectory)\..\$(Configuration)\lib\config\" />
   </Target>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

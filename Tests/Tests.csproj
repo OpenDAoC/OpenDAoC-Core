@@ -29,6 +29,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -66,15 +67,9 @@
     <TranslationFiles Include="..\GameServer\language\**\*.txt" />
   </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy
-      SourceFiles="@(ScriptFiles)"
-      DestinationFiles="@(ScriptFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy
-      SourceFiles="@(DbUpdaterFiles)"
-      DestinationFiles="@(DbUpdaterFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\scripts\dbupdater\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy
-      SourceFiles="@(TranslationFiles)"
-      DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ScriptFiles)" DestinationFiles="@(ScriptFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(DbUpdaterFiles)" DestinationFiles="@(DbUpdaterFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\scripts\dbupdater\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

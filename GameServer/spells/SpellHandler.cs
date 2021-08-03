@@ -2772,7 +2772,7 @@ namespace DOL.GS.Spells
 				ad.Target = target;
 				ad.AttackType = AttackData.eAttackType.Spell;
 				ad.SpellHandler = this;
-				ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+				ad.AttackResult = eAttackResult.HitUnstyled;
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
@@ -3177,7 +3177,7 @@ namespace DOL.GS.Spells
 			ad.Target = target;
 			ad.AttackType = AttackData.eAttackType.Spell;
 			ad.SpellHandler = this;
-			ad.AttackResult = GameLiving.eAttackResult.Missed;
+			ad.AttackResult = eAttackResult.Missed;
 			ad.IsSpellResisted = true;
 			target.OnAttackedByEnemy(ad);
 			
@@ -3888,7 +3888,7 @@ namespace DOL.GS.Spells
 			ad.Target = target;
 			ad.AttackType = AttackData.eAttackType.Spell;
 			ad.SpellHandler = this;
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 
 			double minVariance;
 			double maxVariance;
@@ -4081,7 +4081,7 @@ namespace DOL.GS.Spells
 		/// <param name="attackResult"></param>
 		public virtual void DamageTarget(AttackData ad, bool showEffectAnimation, int attackResult)
 		{
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 			if (showEffectAnimation)
 			{
 				SendEffectAnimation(ad.Target, 0, false, 1);

@@ -701,12 +701,12 @@ namespace DOL.GS.Keeps
 			// casters use two handed weapons as default
             // archers use distance weapons as default
 			if (guard is GuardCaster)
-				guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+				guard.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 			else if (guard is GuardArcher)
-				guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+				guard.SwitchWeapon(eActiveWeaponSlot.Distance);
 			else if ((guard is GuardFighter || guard is GuardCommander || guard is GuardLord) && Util.Chance(50))
-				guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
-			else guard.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+				guard.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			else guard.SwitchWeapon(eActiveWeaponSlot.Standard);
 		}
 
 		/// <summary>

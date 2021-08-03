@@ -76,80 +76,7 @@ namespace DOL.GS
 
         #region enums
 
-        /// <summary>
-        /// The result of an attack
-        /// </summary>
-        public enum eAttackResult : int
-        {
-            /// <summary>
-            /// No specific attack
-            /// </summary>
-            Any = 0,
-            /// <summary>
-            /// The attack was a hit
-            /// </summary>
-            HitUnstyled = 1,
-            /// <summary>
-            /// The attack was a hit
-            /// </summary>
-            HitStyle = 2,
-            /// <summary>
-            /// Attack was denied by server rules
-            /// </summary>
-            NotAllowed_ServerRules = 3,
-            /// <summary>
-            /// No target for the attack
-            /// </summary>
-            NoTarget = 5,
-            /// <summary>
-            /// Target is already dead
-            /// </summary>
-            TargetDead = 6,
-            /// <summary>
-            /// Target is out of range
-            /// </summary>
-            OutOfRange = 7,
-            /// <summary>
-            /// Attack missed
-            /// </summary>
-            Missed = 8,
-            /// <summary>
-            /// The attack was evaded
-            /// </summary>
-            Evaded = 9,
-            /// <summary>
-            /// The attack was blocked
-            /// </summary>
-            Blocked = 10,
-            /// <summary>
-            /// The attack was parried
-            /// </summary>
-            Parried = 11,
-            /// <summary>
-            /// The target is invalid
-            /// </summary>
-            NoValidTarget = 12,
-            /// <summary>
-            /// The target is not visible
-            /// </summary>
-            TargetNotVisible = 14,
-            /// <summary>
-            /// The attack was fumbled
-            /// </summary>
-            Fumbled = 15,
-            /// <summary>
-            /// The attack was Bodyguarded
-            /// </summary>
-            Bodyguarded = 16,
-            /// <summary>
-            /// The attack was Phaseshiftet
-            /// </summary>
-            Phaseshift = 17,
-            /// <summary>
-            /// The attack was Grappled
-            /// </summary>
-            Grappled = 18
-        }
+        
 
         ///// <summary>
         ///// The possible states for a ranged attack
@@ -216,70 +143,9 @@ namespace DOL.GS
 
 
         
-        /// <summary>
-        /// Holds all the ways this living can
-        /// be healed
-        /// </summary>
-        public enum eManaChangeType : byte
-		{
-			/// <summary>
-			/// Unknown mana change
-			/// </summary>
-			Unknown = 0,
-			/// <summary>
-			/// Mana was changed by regenerate
-			/// </summary>
-			Regenerate = 1,
-			/// <summary>
-			/// Mana was changed by spell
-			/// </summary>
-			Spell = 2,
-			/// <summary>
-			/// Mana was changed by potion
-			/// </summary>
-			Potion = 3
-		}
-		/// <summary>
-		/// Holds all the ways this living can
-		/// be healed
-		/// </summary>
-		public enum eEnduranceChangeType : byte
-		{
-			/// <summary>
-			/// Enduracen was changed by unknown
-			/// </summary>
-			Unknown = 0,
-			/// <summary>
-			/// Endurance was changed by Regenerate
-			/// </summary>
-			Regenerate = 1,
-			/// <summary>
-			/// Enduracen was changed by spell
-			/// </summary>
-			Spell = 2,
-			/// <summary>
-			/// Enduracen was changed by potion
-			/// </summary>
-			Potion = 3
-		}
-		/// <summary>
-		/// Holds the possible activeWeaponSlot values
-		/// </summary>
-		public enum eActiveWeaponSlot : byte
-		{
-			/// <summary>
-			/// Weapon slot righthand
-			/// </summary>
-			Standard = 0x00,
-			/// <summary>
-			/// Weaponslot twohanded
-			/// </summary>
-			TwoHanded = 0x01,
-			/// <summary>
-			/// Weaponslot distance
-			/// </summary>
-			Distance = 0x02
-		}
+       
+		
+		
 
 		///// <summary>
 		///// Holds the possible activeQuiverSlot values
@@ -308,17 +174,7 @@ namespace DOL.GS
 		//	Fourth = 0x80,
 		//}
 
-		public enum eXPSource
-		{
-			NPC,
-			Player,
-			Quest,
-			Mission,
-			Task,
-			Praying,
-			GM,
-			Other
-		}
+		
 
 		#endregion
 
@@ -1862,7 +1718,7 @@ namespace DOL.GS
 		//	//Add styled damage if style hits and remove endurance if missed
 		//	if (StyleProcessor.ExecuteStyle(this, ad, weapon))
 		//	{
-		//		ad.AttackResult = GameLiving.eAttackResult.HitStyle;
+		//		ad.AttackResult = eAttackResult.HitStyle;
 		//	}
 
 		//	if ((ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
@@ -2238,7 +2094,7 @@ namespace DOL.GS
 		{
 			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 			{
-				if (rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.SureShot)
+				if (rangeAttackComponent.RangedAttackType == eRangedAttackType.SureShot)
 				{
 					if (attackType != AttackData.eAttackType.MeleeOneHand
 					    && attackType != AttackData.eAttackType.MeleeTwoHand
@@ -3206,8 +3062,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void InterruptRangedAttack()
 		{
-            rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.None;
-            rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
+            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendInterruptAnimation(this);
@@ -3755,7 +3611,7 @@ namespace DOL.GS
 		//		if (stealthStyle)
 		//			penetrate = true;
 
-		//		if (ad.Attacker.rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Long // stealth styles pierce bladeturn
+		//		if (ad.Attacker.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long // stealth styles pierce bladeturn
 		//		    || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn
 		//			penetrate = true;
 
@@ -3995,7 +3851,7 @@ namespace DOL.GS
 
 				blockChance *= 0.001;
 				// no chance bonus with ranged attacks?
-				//					if (ad.Attacker.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Distance)
+				//					if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
@@ -4117,7 +3973,7 @@ namespace DOL.GS
 					{
 						// Calculate mana using %. % is calculated with target maxhealth and damage difference, apply this % to mauler maxmana
 						double manareturned = (difference / this.MaxHealth * TheMauler.MaxMana);
-						TheMauler.ChangeMana(source, GameLiving.eManaChangeType.Spell, (int)manareturned);
+						TheMauler.ChangeMana(source, eManaChangeType.Spell, (int)manareturned);
 					}
 				}
 
@@ -4706,8 +4562,8 @@ namespace DOL.GS
 
             //Clean up range attack variables, no matter to what
             //weapon we switch
-            rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.None;
-            rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
+            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
 			InventoryItem rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 			InventoryItem leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
@@ -7020,9 +6876,9 @@ namespace DOL.GS
 
 			//Set all combat properties
 			m_activeWeaponSlot = eActiveWeaponSlot.Standard;
-            rangeAttackComponent.ActiveQuiverSlot = RangeAttackComponent.eActiveQuiverSlot.None;
-            rangeAttackComponent.RangedAttackState = RangeAttackComponent.eRangedAttackState.None;
-            rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
+            rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
+            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 			m_xpGainers = new HybridDictionary();
 			m_effects = CreateEffectsList();
 			m_concEffects = new ConcentrationList(this);

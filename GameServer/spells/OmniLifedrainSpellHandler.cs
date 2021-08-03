@@ -106,7 +106,7 @@ namespace DOL.GS.Spells
 			if (!m_caster.IsAlive) return;
 
 			int renew = ((ad.Damage + ad.CriticalDamage) * Spell.ResurrectHealth / 100) * Spell.LifeDrainReturn / 100; // %endo returned
-            renew = m_caster.ChangeEndurance(m_caster, GameLiving.eEnduranceChangeType.Spell, renew);
+            renew = m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, renew);
 			if (renew > 0)
 			{
 				MessageToCaster("You steal " + renew + " endurance.", eChatType.CT_Spell);
@@ -125,7 +125,7 @@ namespace DOL.GS.Spells
 			if (!m_caster.IsAlive) return;
 
 			int replenish = ((ad.Damage + ad.CriticalDamage) * Spell.ResurrectMana  / 100) * Spell.LifeDrainReturn / 100; // %mana returned
-            replenish = m_caster.ChangeMana(m_caster, GameLiving.eManaChangeType.Spell, replenish);
+            replenish = m_caster.ChangeMana(m_caster, eManaChangeType.Spell, replenish);
 			if (replenish > 0)
 			{
 				MessageToCaster("You steal " + replenish + " power.", eChatType.CT_Spell);

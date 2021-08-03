@@ -1696,7 +1696,7 @@ namespace DOL.GS.Quests
 					{
 						if (RewardXP > 0)
 						{
-							m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, RewardXP);
+							m_questPlayer.GainExperience(eXPSource.Quest, RewardXP);
 						}
 	
 						if (RewardRP > 0)
@@ -1712,7 +1712,7 @@ namespace DOL.GS.Quests
 	
 						if (RewardCLXP > 0)
 						{
-							m_questPlayer.GainChampionExperience(RewardCLXP, GameLiving.eXPSource.Quest);
+							m_questPlayer.GainChampionExperience(RewardCLXP, eXPSource.Quest);
 						}
 						
 						if (RewardBP > 0)
@@ -2031,12 +2031,12 @@ namespace DOL.GS.Quests
 
 							if (m_rewardXPs.Count > 0 && m_rewardXPs[0] > 0)
 							{
-								player.GainExperience(GameLiving.eXPSource.Quest, m_rewardXPs[0]);
+								player.GainExperience(eXPSource.Quest, m_rewardXPs[0]);
 							}
 							
 							if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
 							{
-								player.GainChampionExperience(m_rewardCLXPs[0], GameLiving.eXPSource.Quest);
+								player.GainChampionExperience(m_rewardCLXPs[0], eXPSource.Quest);
 							}
 							
 							if (m_rewardRPs.Count > 0 && m_rewardRPs[0] > 0)
@@ -2249,7 +2249,7 @@ namespace DOL.GS.Quests
 						long rewardXP = 0;
 						if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
 						{
-							player.GainExperience(GameLiving.eXPSource.Quest, rewardXP);
+							player.GainExperience(eXPSource.Quest, rewardXP);
 						}
 						if (m_sourceTexts.Count > 0)
 						{
@@ -2633,12 +2633,12 @@ namespace DOL.GS.Quests
 
 								if (m_rewardXPs.Count > 0 && m_rewardXPs[0] > 0)
 								{
-									player.GainExperience(GameLiving.eXPSource.Quest, m_rewardXPs[0]);
+									player.GainExperience(eXPSource.Quest, m_rewardXPs[0]);
 								}
 								
 								if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
 								{
-									player.GainChampionExperience(m_rewardCLXPs[0], GameLiving.eXPSource.Quest);
+									player.GainChampionExperience(m_rewardCLXPs[0], eXPSource.Quest);
 								}
 								
 								if (m_rewardRPs.Count > 0 && m_rewardRPs[0] > 0)
@@ -2867,7 +2867,7 @@ namespace DOL.GS.Quests
 								return false;
 							}
 	
-							m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, rewardXP);
+							m_questPlayer.GainExperience(eXPSource.Quest, rewardXP);
 						}
 	
 						if (rewardRP > 0)
@@ -2902,7 +2902,7 @@ namespace DOL.GS.Quests
 							rewardCLXP = m_rewardCLXPs[lastStep - 1];
 							if (rewardCLXP > 0)
 							{
-								m_questPlayer.GainChampionExperience(rewardCLXP, GameLiving.eXPSource.Quest);
+								m_questPlayer.GainChampionExperience(rewardCLXP, eXPSource.Quest);
 							}
 						}
 						
@@ -2951,7 +2951,7 @@ namespace DOL.GS.Quests
 								return false;
 							}
 	
-							m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, rewardXP);
+							m_questPlayer.GainExperience(eXPSource.Quest, rewardXP);
 						}
 	
 						if (rewardRP > 0)
@@ -2986,7 +2986,7 @@ namespace DOL.GS.Quests
 							rewardCLXP = m_rewardCLXPs[0];
 							if (rewardCLXP > 0)
 							{
-								m_questPlayer.GainChampionExperience(rewardCLXP, GameLiving.eXPSource.Quest);
+								m_questPlayer.GainChampionExperience(rewardCLXP, eXPSource.Quest);
 							}
 						}
 						

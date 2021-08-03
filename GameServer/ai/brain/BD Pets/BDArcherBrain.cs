@@ -59,7 +59,7 @@ namespace DOL.AI.Brain
 
 		public override void Attack(GameObject target)
 		{
-			Body.SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+			Body.SwitchWeapon(eActiveWeaponSlot.Distance);
 			base.Attack(target);
 		}
 

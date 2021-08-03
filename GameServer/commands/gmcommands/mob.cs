@@ -1923,13 +1923,13 @@ namespace DOL.GS.Commands
 				{
 					case "righthand":
 					case "lefthand":
-						targetMob.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+						targetMob.SwitchWeapon(eActiveWeaponSlot.Standard);
 						break;
 					case "twohanded":
-						targetMob.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+						targetMob.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 						break;
 					case "distance":
-						targetMob.SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+						targetMob.SwitchWeapon(eActiveWeaponSlot.Distance);
 						break;
 
 					default:

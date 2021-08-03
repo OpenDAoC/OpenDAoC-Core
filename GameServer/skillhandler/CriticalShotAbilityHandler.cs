@@ -31,7 +31,7 @@ namespace DOL.GS.SkillHandler
 	{
 		public void Execute(Ability ab, GamePlayer player)
 		{
-			if (player.ActiveWeaponSlot != GameLiving.eActiveWeaponSlot.Distance)
+			if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
@@ -58,10 +58,10 @@ namespace DOL.GS.SkillHandler
 
 			if (player.AttackState)
 			{
-				if (player.rangeAttackComponent.RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
+				if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.SwitchToRegular"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					player.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Normal;
+					player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 				}
 				else
 				{
@@ -69,7 +69,7 @@ namespace DOL.GS.SkillHandler
 				}
 				return;
 			}
-			player.rangeAttackComponent.RangedAttackType = RangeAttackComponent.eRangedAttackType.Critical;
+			player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Critical;
 			player.attackComponent.StartAttack(player.TargetObject);
 		}
 	}

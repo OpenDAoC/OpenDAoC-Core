@@ -75,111 +75,11 @@ namespace DOL.GS
             get { return m_activeQuiverSlot; }
             set { m_activeQuiverSlot = value; }
         }
-        /// <summary>
-		/// Holds the possible activeQuiverSlot values
-		/// </summary>
-		public enum eActiveQuiverSlot : byte
-        {
-            /// <summary>
-            /// No quiver slot active
-            /// </summary>
-            None = 0x00,
-            /// <summary>
-            /// First quiver slot
-            /// </summary>
-            First = 0x10,
-            /// <summary>
-            /// Second quiver slot
-            /// </summary>
-            Second = 0x20,
-            /// <summary>
-            /// Third quiver slot
-            /// </summary>
-            Third = 0x40,
-            /// <summary>
-            /// Fourth quiver slot
-            /// </summary>
-            Fourth = 0x80,
-        }
-        /// <summary>
-		/// The possible states for a ranged attack
-		/// </summary>
-		public enum eRangedAttackState : byte
-        {
-            /// <summary>
-            /// No ranged attack active
-            /// </summary>
-            None = 0,
-            /// <summary>
-            /// Ranged attack in aim-state
-            /// </summary>
-            Aim,
-            /// <summary>
-            /// Player wants to fire the shot/throw NOW!
-            /// </summary>
-            Fire,
-            /// <summary>
-            /// Ranged attack will fire when ready
-            /// </summary>
-            AimFire,
-            /// <summary>
-            /// Ranged attack will fire and reload when ready
-            /// </summary>
-            AimFireReload,
-            /// <summary>
-            /// Ranged attack is ready to be fired
-            /// </summary>
-            ReadyToFire,
-        }
+        
+        
 
-        /// <summary>
-        /// The type of range attack
-        /// </summary>
-        public enum eRangedAttackType : byte
-        {
-            /// <summary>
-            /// A normal ranged attack
-            /// </summary>
-            Normal = 0,
-            /// <summary>
-            /// A critical shot is attempted
-            /// </summary>
-            Critical,
-            /// <summary>
-            /// A longshot is attempted
-            /// </summary>
-            Long,
-            /// <summary>
-            /// A volley shot is attempted
-            /// </summary>
-            Volley,
-            /// <summary>
-            /// A sure shot is attempted
-            /// </summary>
-            SureShot,
-            /// <summary>
-            /// A rapid shot is attempted
-            /// </summary>
-            RapidFire,
-        }
-        /// <summary>
-		/// The possible results for prechecks for range attacks
-		/// </summary>
-		public enum eCheckRangeAttackStateResult
-        {
-            /// <summary>
-            /// Hold the shot/throw
-            /// </summary>
-            Hold,
-            /// <summary>
-            /// Fire the shot/throw
-            /// </summary>
-            Fire,
-            /// <summary>
-            /// Stop the attack
-            /// </summary>
-            Stop
-        }
+        
+        
   //      /// <summary>
 		///// Check the range attack state and decides what to do
 		///// Called inside the AttackTimerCallback
@@ -210,6 +110,7 @@ namespace DOL.GS
         //    get { return owner.TargetObject; }
         //    set { }
         //}
+
         /// <summary>
 		/// Check the selected range ammo and decides if it's compatible with select weapon
 		/// </summary>
@@ -478,11 +379,11 @@ namespace DOL.GS
                     InventoryItem ammo = RangeAttackAmmo;
                     owner.Inventory.RemoveCountFromStack(ammo, 1);
 
-                    if (RangedAttackType == RangeAttackComponent.eRangedAttackType.Critical)
-                        owner.Endurance -= RangeAttackComponent.CRITICAL_SHOT_ENDURANCE;
-                    else if (RangedAttackType == RangeAttackComponent.eRangedAttackType.RapidFire && owner.GetAbilityLevel(Abilities.RapidFire) == 1)
-                        owner.Endurance -= 2 * RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
-                    else owner.Endurance -= RangeAttackComponent.RANGE_ATTACK_ENDURANCE;
+                    if (RangedAttackType == eRangedAttackType.Critical)
+                        owner.Endurance -= CRITICAL_SHOT_ENDURANCE;
+                    else if (RangedAttackType == eRangedAttackType.RapidFire && owner.GetAbilityLevel(Abilities.RapidFire) == 1)
+                        owner.Endurance -= 2 * RANGE_ATTACK_ENDURANCE;
+                    else owner.Endurance -= RANGE_ATTACK_ENDURANCE;
                     break;
             }
         }

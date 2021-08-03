@@ -41,7 +41,7 @@ namespace DOL.GS
 		private eDamageType m_damageType = 0;
 		private Style m_style = null;
 		private eAttackType m_attackType = eAttackType.Unknown;
-		private GameLiving.eAttackResult m_attackResult = GameLiving.eAttackResult.Any;
+		private eAttackResult m_attackResult = eAttackResult.Any;
 		private ISpellHandler m_spellHandler;
 		private List<ISpellHandler> m_styleEffects;
 		private int m_animationId;
@@ -166,7 +166,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the attack result
 		/// </summary>
-		public GameLiving.eAttackResult AttackResult
+		public eAttackResult AttackResult
 		{
 			get { return m_attackResult; }
 			set { m_attackResult = value; }
@@ -282,13 +282,13 @@ namespace DOL.GS
 			{
 				switch (m_attackResult)
 				{
-					case GameLiving.eAttackResult.HitUnstyled:
-					case GameLiving.eAttackResult.HitStyle:
-					case GameLiving.eAttackResult.Missed:
-					case GameLiving.eAttackResult.Blocked:
-					case GameLiving.eAttackResult.Evaded:
-					case GameLiving.eAttackResult.Fumbled:
-					case GameLiving.eAttackResult.Parried: return true;
+					case eAttackResult.HitUnstyled:
+					case eAttackResult.HitStyle:
+					case eAttackResult.Missed:
+					case eAttackResult.Blocked:
+					case eAttackResult.Evaded:
+					case eAttackResult.Fumbled:
+					case eAttackResult.Parried: return true;
 					default: return false;
 				}
 			}

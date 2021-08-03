@@ -128,8 +128,8 @@ namespace DOL.GS.Effects
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
-			if (atkArgs.AttackData.AttackResult != GameLiving.eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != GameLiving.eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
 			if (atkArgs.AttackData.Target == null) return;
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;

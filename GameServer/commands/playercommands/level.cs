@@ -86,7 +86,7 @@ namespace DOL.GS.Commands
 			if (newXP < 0)
 				newXP = 0;
 
-			client.Player.GainExperience(GameLiving.eXPSource.Other, newXP);
+			client.Player.GainExperience(eXPSource.Other, newXP);
 			client.Player.UsedLevelCommand = true;
 			client.Player.Out.SendMessage("You have been rewarded enough Experience to reach level " + ServerProperties.Properties.SLASH_LEVEL_TARGET + ", right click on your trainer to gain levels!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			client.Player.SaveIntoDatabase();

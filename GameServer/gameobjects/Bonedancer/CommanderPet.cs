@@ -527,7 +527,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Thrust;
 				temp.SPD_ABS = 45;
 				temp.Item_Type = (int)eInventorySlot.DistanceWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Distance;
+				temp.Hand = (int)eActiveWeaponSlot.Distance;
 			}
 			else if (weaponType == eWeaponType.OneHandAxe)
 			{
@@ -538,7 +538,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 37;
 				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Standard;
+				temp.Hand = (int)eActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.OneHandHammer)
 			{
@@ -549,7 +549,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Crush;
 				temp.SPD_ABS = 37;
 				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Standard;
+				temp.Hand = (int)eActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.OneHandSword)
 			{
@@ -560,7 +560,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 34;
 				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Standard;
+				temp.Hand = (int)eActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.TwoHandAxe)
 			{
@@ -571,7 +571,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 50;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.TwoHandHammer)
 			{
@@ -582,7 +582,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Crush;
 				temp.SPD_ABS = 50;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.TwoHandSword)
 			{
@@ -593,7 +593,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 45;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.Staff)
 			{
@@ -604,7 +604,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Crush;
 				temp.SPD_ABS = 50;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else
 				return null;

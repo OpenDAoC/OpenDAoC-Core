@@ -38,11 +38,11 @@ namespace DOL.GS
 			if (Inventory != null)
 			{
 				if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-					SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+					SwitchWeapon(eActiveWeaponSlot.Distance);
 				else if (Inventory.GetItem(eInventorySlot.RightHandWeapon) != null)
-					SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+					SwitchWeapon(eActiveWeaponSlot.Standard);
 				else if (Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null)
-					SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 			}
 			AddStatsToWeapon();
 			BroadcastLivingEquipmentUpdate();

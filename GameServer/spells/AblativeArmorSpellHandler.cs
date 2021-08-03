@@ -135,7 +135,7 @@ namespace DOL.GS.Spells
 		protected virtual bool MatchingDamageType(ref AttackData ad)
 		{
 			
-			if (ad == null || (ad.AttackResult != GameLiving.eAttackResult.HitStyle && ad.AttackResult != GameLiving.eAttackResult.HitUnstyled))
+			if (ad == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 				return false;
 			if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
 				return false;
@@ -254,7 +254,7 @@ namespace DOL.GS.Spells
 		// Check if Melee
 		protected override bool MatchingDamageType(ref AttackData ad)
 		{
-			if (ad == null || (ad.AttackResult == GameLiving.eAttackResult.HitStyle && ad.AttackResult == GameLiving.eAttackResult.HitUnstyled))
+			if (ad == null || (ad.AttackResult == eAttackResult.HitStyle && ad.AttackResult == eAttackResult.HitUnstyled))
 				return false;
 			if (ad.IsMeleeAttack && ad.AttackType == AttackData.eAttackType.Ranged)
 				return false;

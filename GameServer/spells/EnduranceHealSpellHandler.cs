@@ -106,7 +106,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			int heal = target.ChangeEndurance(Caster, GameLiving.eEnduranceChangeType.Spell, amount);
+			int heal = target.ChangeEndurance(Caster, eEnduranceChangeType.Spell, amount);
 
 			if (heal == 0)
 			{

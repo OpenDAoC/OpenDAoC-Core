@@ -230,7 +230,7 @@ namespace DOL.GS.Spells
 			{
 				return;
 			}
-			else if (sp == null && (ad.AttackResult != GameLiving.eAttackResult.HitStyle && ad.AttackResult != GameLiving.eAttackResult.HitUnstyled))
+			else if (sp == null && (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 			{
 				return;
 			}
