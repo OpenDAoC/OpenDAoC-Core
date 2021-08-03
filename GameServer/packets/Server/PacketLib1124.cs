@@ -3872,7 +3872,7 @@ namespace DOL.GS.PacketHandler
 				int fxcount = 0;
 				int entriesCount = 0;
 
-				pak.WriteByte(0); // effects count set in the end
+				pak.WriteByte(0); // effects count set in the end0
 				pak.WriteByte(0); // unknown
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
@@ -3895,18 +3895,18 @@ namespace DOL.GS.PacketHandler
 
 						//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
 						pak.WriteByte((byte)(fxcount - 1)); // icon index
-						pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
+						pak.WriteByte((effect is ECSGameEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
 
 						byte ImmunByte = 0;
 						var gsp = effect as ECSGameEffect;
-						//todo this logic
 						// if (gsp != null && gsp.IsDisabled)
 						// 	ImmunByte = 1;
+						
+						//todo this should be the ImmunByte
 						pak.WriteByte(0); // new in 1.73; if non zero says "protected by" on right click
 
 						// bit 0x08 adds "more..." to right click info
-						pak.WriteShort(2435);
-						//pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
+						pak.WriteShort(effect.Icon);
 						pak.WriteShort((ushort)(effect.Duration / 1000));
 						if (effect is ECSGameEffect)
 							pak.WriteShort((ushort)((ECSGameEffect)effect).Icon); //v1.110+ send the spell ID for delve info in active icon
