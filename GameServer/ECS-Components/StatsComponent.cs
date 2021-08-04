@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
-    public class StatsComponent
+    public struct StatsComponent
     {
         int Strength;
         int Dexterity;

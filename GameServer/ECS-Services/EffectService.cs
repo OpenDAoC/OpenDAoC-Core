@@ -17,10 +17,26 @@ namespace DOL.GS
                 }
                 else
                 {
-                    switch (e.SpellHandler.Spell.SpellType)
+                    switch (e.EffectType)
                     {
-                        case "ConstitutionBuff":
-                            HandleBaseCon(e);
+                        case eEffect.BaseStr:
+                            HandleBaseStat(e, eProperty.Strength);
+                            break;
+                        case eEffect.BaseDex:
+                            HandleBaseStat(e, eProperty.Dexterity);
+                            break;
+                        case eEffect.BaseCon:
+                            HandleBaseStat(e, eProperty.Constitution);
+                            break;
+                        case eEffect.Acuity:
+                            HandleBaseStat(e, eProperty.Acuity);
+                            break;
+                        case eEffect.BaseAf:
+                            HandleBaseStat(e, eProperty.ArmorFactor);
+                            break;
+
+                        case eEffect.DexQui:
+                            HandleSpecStat(e, eProperty.Dexterity, eProperty.Quickness);
                             break;
                             
                     }
@@ -29,10 +45,9 @@ namespace DOL.GS
             }
         }
 
-
-        private static void HandleBaseCon(ECSGameEffect e)
+        private static void HandleBaseStat(ECSGameEffect e, eProperty property)
         {
-            Console.WriteLine($"Handling Basecon");
+            Console.WriteLine($"Handling {property.ToString()}");
             if (e.Owner == null)
             {
                 Console.WriteLine($"Invalid target for Effect {e}");
@@ -45,25 +60,64 @@ namespace DOL.GS
                 Console.WriteLine($"No effect list found for {e.Owner}");
                 return;
             }
-            
+
 
             if (!effectList.AddEffect(e))
             {
                 SendSpellResistAnimation(e);
-                
+
             }
             else
             {
                 SendSpellAnimation(e);
-                if(e.Owner is GamePlayer player)
+                if (e.Owner is GamePlayer player)
                 {
-                    e.Owner.AbilityBonus[(int)eProperty.Constitution] += (int)e.SpellHandler.Spell.Value;
-                    player.Out.SendCharStatsUpdate();
-                    player.UpdateEncumberance();
-                    player.UpdatePlayerStatus();
-                    player.Out.SendUpdatePlayer();             	
+                    e.Owner.AbilityBonus[(int)property] += (int)e.SpellHandler.Spell.Value;
+                    SendPlayerUpdates(player);
                 }
             }
+        }
+
+        private static void HandleSpecStat(ECSGameEffect e, eProperty property1, eProperty property2)
+        {
+            Console.WriteLine($"Handling {property1.ToString()} and {property2.ToString()}");
+            if (e.Owner == null)
+            {
+                Console.WriteLine($"Invalid target for Effect {e}");
+                return;
+            }
+
+            EffectListComponent effectList = e.Owner.effectListComponent;
+            if (effectList == null)
+            {
+                Console.WriteLine($"No effect list found for {e.Owner}");
+                return;
+            }
+
+
+            if (!effectList.AddEffect(e))
+            {
+                SendSpellResistAnimation(e);
+
+            }
+            else
+            {
+                SendSpellAnimation(e);
+                if (e.Owner is GamePlayer player)
+                {
+                    e.Owner.AbilityBonus[(int)property1] += (int)e.SpellHandler.Spell.Value;
+                    e.Owner.AbilityBonus[(int)property2] += (int)e.SpellHandler.Spell.Value;
+                    SendPlayerUpdates(player);
+                }
+            }
+        }
+
+        private static void SendPlayerUpdates(GamePlayer player)
+        {
+            player.Out.SendCharStatsUpdate();
+            player.UpdateEncumberance();
+            player.UpdatePlayerStatus();
+            player.Out.SendUpdatePlayer();
         }
 
         //todo - abstract this out to dynamically cancel the effect. Need a way to look up eProperty and such

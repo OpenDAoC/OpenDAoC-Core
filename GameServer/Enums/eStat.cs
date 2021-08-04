@@ -34,6 +34,7 @@ namespace DOL.GS
 		PIE = eProperty.Piety,
 		EMP = eProperty.Empathy,
 		CHR = eProperty.Charisma,
+		ACU = eProperty.Acuity,
 		_Last = eProperty.Stat_Last,
 	}
 }
