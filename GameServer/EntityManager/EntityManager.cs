@@ -15,7 +15,7 @@ namespace DOL.GS
         private static List<GameObject> _npcs = new List<GameObject>(50000);
         private static object _npcsLock = new object();
         
-        private static List<EffectEntity> _effects = new List<EffectEntity>(50000);
+        private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
         private static object _effectsLock = new object();
         
         public static GamePlayer[] GetAllPlayers()
@@ -68,7 +68,7 @@ namespace DOL.GS
             }
         }
         
-        public static EffectEntity[] GetAllEffects()
+        public static ECSGameEffect[] GetAllEffects()
         {
             lock (_effectsLock)
             {
@@ -76,7 +76,7 @@ namespace DOL.GS
             }
         }
 
-        public static void AddEffect(EffectEntity e)
+        public static void AddEffect(ECSGameEffect e)
         {
             lock (_effectsLock)
             {
@@ -84,7 +84,7 @@ namespace DOL.GS
             }
         }
 
-        public static void RemoveEffect(EffectEntity e)
+        public static void RemoveEffect(ECSGameEffect e)
         {
             lock (_effectsLock)
             {

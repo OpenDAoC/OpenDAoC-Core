@@ -28,8 +28,10 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public interface ISpellHandler
 	{
-
-		void CreateECSEffect();
+		
+		GameLiving Target { get; set; }
+		
+		void CreateECSEffect(GameLiving target, double effectiveness);
 		/// <summary>
 		/// Called when a spell is casted
 		/// </summary>

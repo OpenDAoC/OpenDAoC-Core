@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System;
 using DOL.GS.Effects;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -105,21 +107,29 @@ namespace DOL.GS.PacketHandler.Client.v168
 			protected override void OnTick()
 			{
 				GamePlayer player = (GamePlayer) m_actionSource;
-
-				IGameEffect found = null;
-				lock (player.EffectList)
+				EffectListComponent effectListComponent = player.effectListComponent;
+				ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(m_effectId);
+				if (effect != null)
 				{
-					foreach (IGameEffect effect in player.EffectList)
-					{
-						if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.InternalID == m_effectId)
-						{
-							found = effect;
-							break;
-						}
-					}
+					//I guess we can send the Effect to the EntityService since we do not want to interact with it (no business logic on Components)
+					effect.CancelEffect = true;
+					EntityManager.AddEffect(effect);
 				}
-				if (found != null)
-					found.Cancel(true);
+				//player.effectListComponent.RemoveEffect(effect)
+				// IGameEffect found = null;
+				// lock (player.EffectList)
+				// {
+				// 	foreach (IGameEffect effect in player.EffectList)
+				// 	{
+				// 		if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.InternalID == m_effectId)
+				// 		{
+				// 			found = effect;
+				// 			break;
+				// 		}
+				// 	}
+				// }
+				// if (found != null)
+				// 	found.Cancel(true);
 			}
 		}
 	}

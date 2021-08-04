@@ -8,47 +8,81 @@ namespace DOL.GS
     public class EffectListComponent
     {
         public long _lastChecked = 0;
-        public GamePlayer Owner;
+        public GameLiving Owner;
+        public int _lastUpdateEffectsCount = 0;
         
         private object _effectsLock = new object(); 
-        public Dictionary<eEffect,IECSGameEffect> Effects = new Dictionary<eEffect, IECSGameEffect>();
+        public Dictionary<eEffect,ECSGameEffect> Effects = new Dictionary<eEffect, ECSGameEffect>();
+        public Dictionary<int, ECSGameEffect> EffectIdToEffect = new Dictionary<int, ECSGameEffect>();
 
-        public EffectListComponent(GamePlayer p)
+        public EffectListComponent(GameLiving p)
         {
             Owner = p;
         }
 
-        public bool AddEffect(IECSGameEffect effect)
+        public bool AddEffect(ECSGameEffect effect)
         {
             lock (_effectsLock)
             {
-                if (Effects.ContainsKey(effect.Type))
+                try
                 {
-                    Console.WriteLine("Effect List contains type");
+                    if (Effects.ContainsKey(effect.EffectType))
+                    {
+                        //If this buff is stronger > in list. cancel current buff and add this one- Return true;
+                        Console.WriteLine("Effect List contains type");
+                        return false;
+                    }
+                    else
+                    {
+                        Effects.Add(effect.EffectType, effect);
+                        EffectIdToEffect.Add(effect.Icon, effect);
+
+                    }
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error adding an Effect {e}");
                     return false;
                 }
-                else
-                {
-                    Effects.Add(effect.Type,effect);
-                }
-                return true;
+
             }
         }
 
-        public bool RemoveEffect(IECSGameEffect effect)
+        public ECSGameEffect TryGetEffectFromEffectId(int effectId)
         {
             lock (_effectsLock)
             {
-                if (!Effects.ContainsKey(effect.Type))
+                EffectIdToEffect.TryGetValue(effectId, out var effect);
+                return effect;
+            }
+        }
+
+        public bool RemoveEffect(ECSGameEffect effect)
+        {
+            lock (_effectsLock)
+            {
+                try
                 {
-                    Console.WriteLine("Effect List does not contain type");
+                    if (!Effects.ContainsKey(effect.EffectType))
+                    {
+                        Console.WriteLine("Effect List does not contain type");
+                        return false;
+                    }
+                    else
+                    {
+                        EffectIdToEffect.Remove(effect.Icon);
+                        Effects.Remove(effect.EffectType);
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error removing an Effect from EffectList {e}");
                     return false;
                 }
-                else
-                {
-                    Effects.Remove(effect.Type);
-                }
-                return true;
+
             }
         }
 

@@ -202,11 +202,6 @@ namespace DOL.GS.Spells
 				MessageToLiving(effect.Owner, Spell.Message1, toLiving);
 				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
 			}
-			if (ServerProperties.Properties.BUFF_RANGE > 0 && effect.Spell.Concentration > 0 && effect.SpellHandler.HasPositiveEffect && effect.Owner != effect.SpellHandler.Caster)
-			{
-				m_buffCheckAction = new BuffCheckAction(effect.SpellHandler.Caster, effect.Owner, effect);
-				m_buffCheckAction.Start(BuffCheckAction.BUFFCHECKINTERVAL);
-			}
 
 		}
 

@@ -556,37 +556,38 @@ namespace DOL.GS.PacketHandler.Client.v168
 				#region Effect
 				case 5: // icons on top (buffs/dots)
 					{
-						IGameEffect foundEffect = null;
-						lock (client.Player.EffectList)
-						{
-							foreach (IGameEffect effect in client.Player.EffectList)
-							{
-								if (effect.InternalID == objectId)
-								{
-									foundEffect = effect;
-									break;
-								}
-							}
-						}
+						// IGameEffect foundEffect = null;
+						// lock (client.Player.EffectList)
+						// {
+						// 	foreach (IGameEffect effect in client.Player.EffectList)
+						// 	{
+						// 		if (effect.InternalID == objectId)
+						// 		{
+						// 			foundEffect = effect;
+						// 			break;
+						// 		}
+						// 	}
+						// }
+						ECSGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectFromEffectId(objectId);
 
 						if (foundEffect == null)
 							break;
 
-						caption = foundEffect.Name;
-						objectInfo.AddRange(foundEffect.DelveInfo);
+						caption = foundEffect.SpellHandler.Spell.Name;
+						objectInfo.AddRange(foundEffect.SpellHandler.DelveInfo);
 
-						if (client.Account.PrivLevel > 1 && foundEffect is GameSpellEffect spellEffect && spellEffect.Spell != null)
+						if (client.Account.PrivLevel > 1 && foundEffect is ECSGameEffect spellEffect && spellEffect.SpellHandler.Spell != null)
 						{
 							objectInfo.Add(" ");
 							objectInfo.Add("----------Technical informations----------");
 							objectInfo.Add($"Line: {spellEffect.SpellHandler?.SpellLine?.Name ?? "unknown"}");
-							objectInfo.Add($"SpellID: {spellEffect.Spell.ID}");
-							objectInfo.Add($"Type: {spellEffect.Spell.SpellType}");
-							objectInfo.Add($"ClientEffect: {spellEffect.Spell.ClientEffect}");
-							objectInfo.Add($"Icon: {spellEffect.Spell.Icon}");
+							objectInfo.Add($"SpellID: {spellEffect.SpellHandler.Spell.ID}");
+							objectInfo.Add($"Type: {spellEffect.SpellHandler.Spell.SpellType}");
+							objectInfo.Add($"ClientEffect: {spellEffect.SpellHandler.Spell.ClientEffect}");
+							objectInfo.Add($"Icon: {spellEffect.SpellHandler.Spell.Icon}");
 							if (spellEffect.SpellHandler != null)
 								objectInfo.Add($"HasPositiveEffect: {spellEffect.SpellHandler.HasPositiveEffect}");
-							objectInfo.Add($"Disabled: {spellEffect.IsDisabled}");
+							objectInfo.Add($"Disabled: No Value in Supplied");
 						}
 						break;
 					}

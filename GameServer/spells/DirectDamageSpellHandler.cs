@@ -190,10 +190,10 @@ namespace DOL.GS.Spells
 
             //if damageComponent = null, add a new component
             //but that will have to wait until we implement a ComponentManager
-            if (target.damageComponent != null){
-                target.damageComponent.DamageToDeal += ad.Damage;
-                target.damageComponent.lastEntityToDamageThisEntity = Caster;
-            }
+            // if (target.damageComponent != null){
+            //     target.damageComponent.DamageToDeal += ad.Damage;
+            //     target.damageComponent.lastEntityToDamageThisEntity = Caster;
+            // }
 
 			DamageTarget(ad, true);
 			SendDamageMessages(ad);
