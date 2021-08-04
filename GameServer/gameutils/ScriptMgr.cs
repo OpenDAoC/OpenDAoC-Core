@@ -942,12 +942,12 @@ namespace DOL.GS
 		/// <returns>spellhandler or null if not found</returns>
 		public static ISpellHandler CreateSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 		{
-			if (spell == null || spell.SpellType.ToString().Length == 0) return null;
+			if (spell == null || ((eSpellType)spell.SpellType).ToString().Length == 0) return null;
 
 			ConstructorInfo handlerConstructor = null;
 
-			if (m_spellhandlerConstructorCache.ContainsKey(spell.SpellType.ToString()))
-				handlerConstructor = m_spellhandlerConstructorCache[spell.SpellType.ToString()];
+			if (m_spellhandlerConstructorCache.ContainsKey(((eSpellType)spell.SpellType).ToString()))
+				handlerConstructor = m_spellhandlerConstructorCache[((eSpellType)spell.SpellType).ToString()];
 
 			// try to find it in assemblies when not in cache
 			if (handlerConstructor == null)
@@ -969,7 +969,7 @@ namespace DOL.GS
 
 							foreach (SpellHandlerAttribute attrib in objs)
 							{
-								if (attrib.SpellType == spell.SpellType.ToString())
+								if (attrib.SpellType == ((eSpellType)spell.SpellType).ToString())
 								{
 									handlerConstructor = type.GetConstructor(constructorParams);
 									if (log.IsDebugEnabled)
@@ -991,7 +991,7 @@ namespace DOL.GS
 
 				if (handlerConstructor != null)
 				{
-					m_spellhandlerConstructorCache.Add(spell.SpellType.ToString(), handlerConstructor);
+					m_spellhandlerConstructorCache.Add(((eSpellType)spell.SpellType).ToString(), handlerConstructor);
 				}
 			}
 
