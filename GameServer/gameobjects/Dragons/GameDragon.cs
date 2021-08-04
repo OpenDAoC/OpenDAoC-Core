@@ -828,7 +828,7 @@ namespace DOL.GS
 					spell.RecastDelay = 10;
 					spell.SpellID = 6000;
 					spell.Target = "Enemy";
-					spell.Type = "Stun";
+					spell.Type = (byte)eSpellType.Stun;
 					spell.Message1 = "You cannot move!";
 					spell.Message2 = "{0} cannot seem to move!";
 					m_stun = new Spell(spell, 70);

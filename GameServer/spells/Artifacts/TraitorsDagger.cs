@@ -120,7 +120,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = 10;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "PetLifedrain";
+            dbs.Type = (byte)eSpellType.PetLifedrain;
             dbs.Damage = 70;
             dbs.LifeDrainReturn = 100;
             dbs.Value = -100;

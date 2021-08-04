@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
 					if (effect is GameSpellEffect)
 					{
 						GameSpellEffect oEffect = (GameSpellEffect)effect;
-						if (oEffect.Spell.SpellType.ToLower().IndexOf("speeddecrease") != -1 && oEffect.Spell.Value != 99)
+						if (oEffect.Spell.SpellType.ToString().ToLower().IndexOf("speeddecrease") != -1 && oEffect.Spell.Value != 99)
 						{
 							GamePlayer player = living as GamePlayer;
 							if (player != null) player.Out.SendMessage("You may not use this ability while snared!", eChatType.CT_System, eChatLoc.CL_SystemWindow);

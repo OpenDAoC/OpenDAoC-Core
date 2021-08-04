@@ -450,17 +450,17 @@ namespace DOL.GS.ServerRules
 
 						if (spell.Radius == 0)
 						{
-							switch (spell.SpellType.ToLower())
+							switch (spell.SpellType)
 							{
-								case "archery":
-								case "bolt":
-								case "bomber":
-								case "damagespeeddecrease":
-								case "directdamage":
-								case "magicalstrike":
-								case "siegearrow":
-								case "summontheurgistpet":
-								case "directdamagewithdebuff":
+                                case (byte)eSpellType.Archery:
+								case (byte)eSpellType.Bolt:
+								case (byte)eSpellType.Bomber:
+                                case (byte)eSpellType.DamageSpeedDecrease:
+                                case (byte)eSpellType.DirectDamage:
+                                case (byte)eSpellType.MagicalStrike:
+                                case (byte)eSpellType.SiegeArrow:
+                                case (byte)eSpellType.SummonTheurgistPet:
+                                case (byte)eSpellType.DirectDamageWithDebuff:
 									isAllowed = true;
 									break;
 							}

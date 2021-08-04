@@ -68,7 +68,7 @@ namespace DOL.AI.Brain
 			Body.TargetObject = null;
 			switch (spell.SpellType)
 			{
-				case "CombatSpeedDebuff":
+				case (byte)eSpellType.CombatSpeedDebuff:
 					Body.TargetObject = lastTarget;
 					break;
 			}

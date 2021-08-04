@@ -5168,7 +5168,7 @@ namespace DOL.GS
 			if (TargetObject is GameLiving living && style.Procs.Count > 0)
 				foreach (Tuple<Spell, int, int> t in style.Procs)
 					if (t != null && t.Item1 is Spell spell
-						&& spell.SpellType.ToUpper() == "STYLESTUN" && living.HasEffect(t.Item1))
+						&& spell.SpellType == (byte)eSpellType.StyleStun && living.HasEffect(t.Item1))
 							return false;
 
 			return true;

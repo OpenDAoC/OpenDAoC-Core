@@ -320,7 +320,7 @@ namespace DOL.GS.ServerRules
 
 					// only caster can be the target, can't buff/heal other players
 					// PBAE/GTAE doesn't need a target so we check spell type as well
-					if (caster != target || spell.Target == "Area" || spell.Target == "Enemy" || (spell.Target == "Group" && spell.SpellType != "SpeedEnhancement"))
+					if (caster != target || spell.Target == "Area" || spell.Target == "Enemy" || (spell.Target == "Group" && spell.SpellType != (byte)eSpellType.SpeedEnhancement))
 					{
 						MessageToLiving(caster, "You can only cast spells on yourself until your PvP invulnerability timer wears off!", eChatType.CT_Important);
 						return false;

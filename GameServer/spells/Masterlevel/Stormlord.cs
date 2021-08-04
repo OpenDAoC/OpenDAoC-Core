@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Realm";
             dbs.Radius = 0;
-            dbs.Type = "StormMissHit";
+            dbs.Type = (byte)eSpellType.StormMissHit;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 4
             dbs.Frequency = spell.ResurrectMana;
@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormEnduDrain";
+            dbs.Type = (byte)eSpellType.StormEnduDrain;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; //should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -278,7 +278,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.Damage;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormDexQuickDebuff";
+            dbs.Type = (byte)eSpellType.StormDexQuickDebuff;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -361,7 +361,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "PowerDrainStorm";
+            dbs.Type = (byte)eSpellType.PowerDrainStorm;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -515,7 +515,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormStrConstDebuff";
+            dbs.Type = (byte)eSpellType.StormStrConstDebuff;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -598,7 +598,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormAcuityDebuff";
+            dbs.Type = (byte)eSpellType.StormAcuityDebuff;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -692,7 +692,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormEnergyTempest";
+            dbs.Type = (byte)eSpellType.StormEnergyTempest;
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;

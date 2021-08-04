@@ -167,7 +167,7 @@ namespace DOL.GS.Spells
 			//check for spell.
 			foreach (GameSpellEffect effect in target.EffectList.GetAllOfType<GameSpellEffect>())
 			{
-				if (effect.Spell.SpellType == ShearSpellType)
+				if (effect.Spell.SpellType.ToString() == ShearSpellType)
 				{
 					if ((effect.Owner != effect.SpellHandler.Caster || effect.Spell.IsShearable) && effect.Spell.Value <= Spell.Value)
 					{
@@ -237,7 +237,7 @@ namespace DOL.GS.Spells
 
 				var list = new List<string>();
 
-				list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
+				list.Add("Function: " + (Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString()));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line

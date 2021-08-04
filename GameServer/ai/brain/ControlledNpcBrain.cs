@@ -577,62 +577,62 @@ namespace DOL.AI.Brain
 			GamePlayer player = null;
 			GameLiving owner = null;
 
-			switch (spell.SpellType.ToUpper())
+			switch (spell.SpellType)
 			{
                 #region Buffs
-                case "ACUITYBUFF":
-                case "AFHITSBUFF":
-                case "ALLMAGICRESISTSBUFF":
-                case "ARMORABSORPTIONBUFF":
-                case "ARMORFACTORBUFF":
-                case "BODYRESISTBUFF":
-                case "BODYSPIRITENERGYBUFF":
-                case "BUFF":
-                case "CELERITYBUFF":
-                case "COLDRESISTBUFF":
-                case "COMBATSPEEDBUFF":
-                case "CONSTITUTIONBUFF":
-                case "COURAGEBUFF":
-                case "CRUSHSLASHTHRUSTBUFF":
-                case "DEXTERITYBUFF":
-                case "DEXTERITYQUICKNESSBUFF":
-                case "EFFECTIVENESSBUFF":
-                case "ENDURANCEREGENBUFF":
-                case "ENERGYRESISTBUFF":
-                case "FATIGUECONSUMPTIONBUFF":
-                case "FELXIBLESKILLBUFF":
-                case "HASTEBUFF":
-                case "HEALTHREGENBUFF":
-                case "HEATCOLDMATTERBUFF":
-                case "HEATRESISTBUFF":
-                case "HEROISMBUFF":
-                case "KEEPDAMAGEBUFF":
-                case "MAGICRESISTSBUFF":
-                case "MATTERRESISTBUFF":
-                case "MELEEDAMAGEBUFF":
-                case "MESMERIZEDURATIONBUFF":
-                case "MLABSBUFF":
-                case "PALADINARMORFACTORBUFF":
-                case "PARRYBUFF":
-                case "POWERHEALTHENDURANCEREGENBUFF":
-                case "POWERREGENBUFF":
-                case "SAVAGECOMBATSPEEDBUFF":
-                case "SAVAGECRUSHRESISTANCEBUFF":
-                case "SAVAGEDPSBUFF":
-                case "SAVAGEPARRYBUFF":
-                case "SAVAGESLASHRESISTANCEBUFF":
-                case "SAVAGETHRUSTRESISTANCEBUFF":
-                case "SPIRITRESISTBUFF":
-                case "STRENGTHBUFF":
-                case "STRENGTHCONSTITUTIONBUFF":
-                case "SUPERIORCOURAGEBUFF":
-                case "TOHITBUFF":
-                case "WEAPONSKILLBUFF":
-                case "DAMAGEADD":
-                case "OFFENSIVEPROC":
-                case "DEFENSIVEPROC":
-                case "DAMAGESHIELD":
-				case "BLADETURN":
+                case (byte)eSpellType.AcuityBuff:
+                case (byte)eSpellType.AFHitsBuff:
+                case (byte)eSpellType.AllMagicResistBuff:
+                case (byte)eSpellType.ArmorAbsorptionBuff:
+                case (byte)eSpellType.ArmorFactorBuff:
+                case (byte)eSpellType.BodyResistBuff:
+                case (byte)eSpellType.BodySpiritEnergyBuff:
+                case (byte)eSpellType.Buff:
+                case (byte)eSpellType.CelerityBuff:
+                case (byte)eSpellType.ColdResistBuff:
+                case (byte)eSpellType.CombatSpeedBuff:
+                case (byte)eSpellType.ConstitutionBuff:
+                case (byte)eSpellType.CourageBuff:
+                case (byte)eSpellType.CrushSlashTrustBuff:
+                case (byte)eSpellType.DexterityBuff:
+                case (byte)eSpellType.DexterityQuicknessBuff:
+                case (byte)eSpellType.EffectivenessBuff:
+                case (byte)eSpellType.EnduranceRegenBuff:
+                case (byte)eSpellType.EnergyResistBuff:
+                case (byte)eSpellType.FatigueConsumptionBuff:
+                case (byte)eSpellType.FlexibleSkillBuff:
+                case (byte)eSpellType.HasteBuff:
+                case (byte)eSpellType.HealthRegenBuff:
+                case (byte)eSpellType.HeatColdMatterBuff:
+                case (byte)eSpellType.HeatResistBuff:
+                case (byte)eSpellType.HeroismBuff:
+                case (byte)eSpellType.KeepDamageBuff:
+                case (byte)eSpellType.MagicResistBuff:
+                case (byte)eSpellType.MatterResistBuff:
+                case (byte)eSpellType.MeleeDamageBuff:
+                case (byte)eSpellType.MesmerizeDurationBuff:
+                case (byte)eSpellType.MLABSBuff:
+                case (byte)eSpellType.PaladinArmorFactorBuff:
+                case (byte)eSpellType.ParryBuff:
+                case (byte)eSpellType.PowerHealthEnduranceRegenBuff:
+                case (byte)eSpellType.PowerRegenBuff:
+                case (byte)eSpellType.SavageCombatSpeedBuff:
+                case (byte)eSpellType.SavageCrushResistanceBuff:
+                case (byte)eSpellType.SavageDPSBuff:
+                case (byte)eSpellType.SavageParryBuff:
+                case (byte)eSpellType.SavageSlashResistanceBuff:
+                case (byte)eSpellType.SavageThrustResistanceBuff:
+                case (byte)eSpellType.SpiritResistBuff:
+                case (byte)eSpellType.StrengthBuff:
+                case (byte)eSpellType.StrengthConstitutionBuff:
+                case (byte)eSpellType.SuperiorCourageBuff:
+                case (byte)eSpellType.ToHitBuff:
+                case (byte)eSpellType.WeaponSkillBuff:
+                case (byte)eSpellType.DamageAdd:
+                case (byte)eSpellType.OffensiveProc:
+                case (byte)eSpellType.DefensiveProc:
+                case (byte)eSpellType.DamageShield:
+                case (byte)eSpellType.Bladeturn:
                     {
 						String target;
 
@@ -699,10 +699,10 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-					#endregion Buffs
+                #endregion Buffs
 
-					#region Disease Cure/Poison Cure/Summon
-				case "CUREDISEASE":
+                #region Disease Cure/Poison Cure/Summon
+                case (byte)eSpellType.CureDisease:
 					//Cure owner
 					owner = (this as IControlledBrain).Owner;
 					if (owner.IsDiseased)
@@ -734,7 +734,7 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-				case "CUREPOISON":
+                case (byte)eSpellType.CurePoison:
 					//Cure owner
 					owner = (this as IControlledBrain).Owner;
 					if (LivingIsPoisoned(owner))
@@ -766,19 +766,19 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-				case "SUMMON":
+                case (byte)eSpellType.Summon:
 					Body.TargetObject = Body;
 					break;
                 #endregion
 
                 #region Heals
-                case "COMBATHEAL":
-                case "HEAL":
-                case "HEALOVERTIME":
-                case "MERCHEAL":
-                case "OMNIHEAL":
-                case "PBAEHEAL":
-                case "SPREADHEAL":
+                case (byte)eSpellType.CombatHeal:
+                case (byte)eSpellType.Heal:
+                case (byte)eSpellType.HealOverTime:
+                case (byte)eSpellType.MercHeal:
+                case (byte)eSpellType.OmniHeal:
+                case (byte)eSpellType.PBAoEHeal:
+                case (byte)eSpellType.SpreadHeal:
 					String spellTarget = spell.Target.ToUpper();
 					int bodyPercent = Body.HealthPercent;
 					

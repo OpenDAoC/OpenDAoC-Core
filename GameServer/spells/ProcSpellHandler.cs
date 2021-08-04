@@ -232,7 +232,7 @@ namespace DOL.GS.Spells
 				var list = new List<string>();
 
 //                list.Add("Function: " + (string)(Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
-				list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "ProcSpellHandler.DelveInfo.Function", (string)(Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType)));
+				list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "ProcSpellHandler.DelveInfo.Function", (string)(Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString())));
 
 //                list.Add("Target: " + Spell.Target);
 				list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Target", Spell.Target));
@@ -350,7 +350,7 @@ namespace DOL.GS.Spells
 				{
 					if (pet.GetSkillDisabledDuration(spell) == 0)
 					{
-						if (spell.SpellType.ToLower() == "offensiveproc")
+						if (spell.SpellType == (byte)eSpellType.OffensiveProc)
 							procSpells.Add(spell);
 					}
 				}

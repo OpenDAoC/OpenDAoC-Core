@@ -789,22 +789,22 @@ namespace DOL.GS
 			{
 				if (spell != null)
 				{
-					switch (spell.SpellType.ToUpper())
+					switch (spell.SpellType)
 					{
-						case "DAMAGEOVERTIME":
+                        case (byte)eSpellType.DamageOverTime:
 							CommSpellDot = spell;
 							break;
-						case "DIRECTDAMAGE":
+                        case (byte)eSpellType.DirectDamage:
 							CommSpellDamage = spell;
 							break;
-						case "DIRECTDAMAGEWITHDEBUFF":
+                        case (byte)eSpellType.DirectDamageWithDebuff:
 							CommSpellDamageDebuff = spell;
 							break;
-						case "DISEASE":
+                        case (byte)eSpellType.Disease:
 							CommSpellDebuff = spell;
 							break;
-						case "LIFEDRAIN":
-						case "DAMAGESPEEDDECREASE":
+                        case (byte)eSpellType.Lifedrain:
+                        case (byte)eSpellType.DamageSpeedDecrease:
 							CommSpellOther = spell;
 							break;
 					}

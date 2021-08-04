@@ -1261,7 +1261,7 @@ namespace DOL.GS.Keeps
 				spell.CastTime = 2;
 				spell.Name = "Guard Heal";
 				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-				spell.Type = "Heal";
+				spell.Type = (byte)eSpellType.Heal;
 				return spell;
 			}
         }

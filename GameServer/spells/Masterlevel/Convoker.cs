@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "Prescience";
+			dbs.Type = (byte)eSpellType.Prescience;
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -145,7 +145,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "PowerRend";
+			dbs.Type = (byte)eSpellType.PowerRend;
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "SpeedWrap";
+			dbs.Type = (byte)eSpellType.SpeedWrap;
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -426,7 +426,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "DirectDamage";
+			dbs.Type = (byte)eSpellType.DirectDamage;
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;

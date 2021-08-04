@@ -3654,7 +3654,7 @@ namespace DOL.GS
 			double evadeChance = 0;
 			GamePlayer player = this as GamePlayer;
 
-			GameSpellEffect evadeBuff = SpellHandler.FindEffectOnTarget( this, "EvadeBuff" );
+			GameSpellEffect evadeBuff = SpellHandler.FindEffectOnTarget( this, "EvadeBuff");
 			if( evadeBuff == null )
 				evadeBuff = SpellHandler.FindEffectOnTarget( this, "SavageEvadeBuff" );
 
@@ -3741,9 +3741,9 @@ namespace DOL.GS
 				GamePlayer player = this as GamePlayer;
 				BladeBarrierEffect BladeBarrier = null;
 
-				GameSpellEffect parryBuff = SpellHandler.FindEffectOnTarget( this, "ParryBuff" );
+				GameSpellEffect parryBuff = SpellHandler.FindEffectOnTarget( this, "ParryBuff");
 				if( parryBuff == null )
-					parryBuff = SpellHandler.FindEffectOnTarget( this, "SavageParryBuff" );
+					parryBuff = SpellHandler.FindEffectOnTarget( this, "SavageParryBuff");
 
 				if( player != null )
 				{

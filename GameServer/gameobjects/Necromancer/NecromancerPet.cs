@@ -537,7 +537,7 @@ namespace DOL.GS
 				{
 					switch (spell.SpellType)
 					{
-						case "StrengthBuff":
+						case (byte)eSpellType.StrengthBuff:
 							{
 								if (strBuff == null)
 									strBuff = spell;
@@ -545,7 +545,7 @@ namespace DOL.GS
 									strBuff = (strBuff.Level < spell.Level) ? spell : strBuff;
 							}
 							break;
-						case "DexterityBuff":
+						case (byte)eSpellType.DexterityBuff:
 							{
 								if (dexBuff == null)
 									dexBuff = spell;
@@ -585,7 +585,7 @@ namespace DOL.GS
 
 			Spell tauntSpell = null;
 			foreach (Spell spell in chantsList)
-				if (spell.SpellType == "Taunt" && spell.Level <= Level)
+				if (spell.SpellType == (byte)eSpellType.Taunt && spell.Level <= Level)
 					tauntSpell = spell;
 
 			if (tauntSpell != null && GetSkillDisabledDuration(tauntSpell) == 0)

@@ -1719,19 +1719,19 @@ namespace DOL.GS
                     {
                         switch ((effect as GameSpellEffect).Spell.SpellType)
                         {
-                            case "Phaseshift":
+                            case (byte)eSpellType.Phaseshift:
                                 if (phaseshift == null)
                                     phaseshift = (GameSpellEffect)effect;
                                 continue;
-                            case "Grapple":
+                            case (byte)eSpellType.Grapple:
                                 if (grapple == null)
                                     grapple = (GameSpellEffect)effect;
                                 continue;
-                            case "BrittleGuard":
+                            case (byte)eSpellType.BrittleGuard:
                                 if (brittleguard == null)
                                     brittleguard = (GameSpellEffect)effect;
                                 continue;
-                            case "Bladeturn":
+                            case (byte)eSpellType.Bladeturn:
                                 if (bladeturn == null)
                                     bladeturn = (GameSpellEffect)effect;
                                 continue;

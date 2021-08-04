@@ -33,7 +33,7 @@ namespace DOL.GS
 	{
 		protected readonly string m_description = "";
 		protected readonly string m_target = "";
-		protected readonly string m_spelltype = "-";
+        protected readonly byte m_spelltype;// = "-";
 		protected readonly int m_range = 0;
 		protected readonly int m_radius = 0;
 		protected double m_value = 0;
@@ -184,7 +184,7 @@ namespace DOL.GS
 
 		}
 
-		public virtual string SpellType
+		public virtual byte SpellType
 		{
 			get { return m_spelltype; }
 		}
@@ -350,19 +350,19 @@ namespace DOL.GS
 		{
 			get
 			{
-				switch (SpellType.ToUpper())
+				switch (SpellType)//.ToUpper())
 				{
-					case "CUREPOISON":
-					case "CUREDISEASE":
-					case "COMBATHEAL":
-					case "HEAL":
-					case "HEALOVERTIME":
-					case "HEALTHREGENBUFF":
-					case "MERCHEAL":
-					case "OMNIHEAL":
-					case "PBAEHEAL":
-					case "SPREADHEAL":
-					case "SUMMONHEALINGELEMENTAL":
+                    case (byte)eSpellType.CurePoison: 
+                    case (byte)eSpellType.CureDisease:
+                    case (byte)eSpellType.CombatHeal:
+                    case (byte)eSpellType.Heal:
+                    case (byte)eSpellType.HealOverTime:
+                    case (byte)eSpellType.HealthRegenBuff:
+                    case (byte)eSpellType.MercHeal:
+                    case (byte)eSpellType.OmniHeal:
+                    case (byte)eSpellType.PBAoEHeal:
+                    case (byte)eSpellType.SpreadHeal:
+                    case (byte)eSpellType.SummonHealingElemental: 
 						return true;
 					default:
 						return false;
@@ -441,12 +441,12 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="spell"></param>
 		/// <param name="spellType"></param>
-		public Spell(Spell spell, string spellType) :
+		public Spell(Spell spell, eSpellType spellType) :
 			base(spell.Name, spell.ID, (ushort)spell.Icon, spell.Level, spell.InternalID)
 		{
 			m_description = spell.Description;
 			m_target = spell.Target;
-			m_spelltype = spellType; // replace SpellType
+			m_spelltype = (byte)spellType; // replace SpellType
 			m_range = spell.Range;
 			m_radius = spell.Radius;
 			m_value = spell.Value;

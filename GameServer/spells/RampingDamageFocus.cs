@@ -244,7 +244,7 @@ namespace DOL.GS.Spells
 			DBSpell dbSpell = new DBSpell();
 			dbSpell.ClientEffect = Spell.ClientEffect;
 			dbSpell.Icon = Spell.Icon;
-			dbSpell.Type = "SpeedDecrease";
+			dbSpell.Type = (byte)eSpellType.SpeedDecrease;
 			dbSpell.Duration = (Spell.Radius == 0) ? 10 : 3;
 			dbSpell.Target = "Enemy";
 			dbSpell.Range = 1500;
@@ -275,7 +275,7 @@ namespace DOL.GS.Spells
 
 	public class FocusSpell : Spell
 	{
-		public FocusSpell(Spell spell) : base(spell, spell.SpellType) 
+		public FocusSpell(Spell spell) : base(spell, (eSpellType)spell.SpellType) 
 		{
 			if (spell.Frequency == 0) Frequency = 5000;
 			else Frequency = spell.Frequency;

@@ -8032,7 +8032,7 @@ namespace DOL.GS
 				Out.SendCloseTimerWindow();
 			}
 
-			if (spell.SpellType == "StyleHandler" || spell.SpellType == "MLStyleHandler")
+			if (spell.SpellType == (byte)eSpellType.StyleHandler || spell.SpellType == (byte)eSpellType.MLStyleHandler)
 			{
 				//Style style = SkillBase.GetStyleByID((int)spell.Value, CharacterClass.ID);
 				////Andraste - Vico : try to use classID=0 (easy way to implement CL Styles)
@@ -8043,7 +8043,7 @@ namespace DOL.GS
 				//}
 				//else { Out.SendMessage("That style is not implemented!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow); }
 			}
-			else if (spell.SpellType == "BodyguardHandler")
+			else if (spell.SpellType == (byte)eSpellType.BodyguardHandler)
 			{
 				Ability ab = SkillBase.GetAbility("Bodyguard");
 				IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ab.KeyName);
@@ -8093,7 +8093,7 @@ namespace DOL.GS
 							return false;
 						}
 
-						if (spell.CastTime > 0 && !(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType != "Chamber")
+						if (spell.CastTime > 0 && !(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType != (byte)eSpellType.Chamber)
 						{
 							if (m_runningSpellHandler.Spell.InstrumentRequirement != 0)
 							{
@@ -8102,7 +8102,7 @@ namespace DOL.GS
 							}
 							if (SpellQueue)
 							{
-								if (spell.SpellType.ToLower() == "archery")
+								if (spell.SpellType == (byte)eSpellType.Archery)
 								{
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.FollowSpell", spell.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 								}
@@ -8171,7 +8171,7 @@ namespace DOL.GS
 							}
 							if (spell.IsPrimary)
 							{
-								if (spell.SpellType == "Bolt" && !chamber.Spell.AllowBolt)
+								if (spell.SpellType == (byte)eSpellType.Bolt && !chamber.Spell.AllowBolt)
 								{
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellNotInChamber"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 									return false;
@@ -8218,7 +8218,7 @@ namespace DOL.GS
 							}
 
 						}
-						else if (!(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType == "Chamber")
+						else if (!(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType == (byte)eSpellType.Chamber)
 						{
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.NotAFollowSpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							return false;

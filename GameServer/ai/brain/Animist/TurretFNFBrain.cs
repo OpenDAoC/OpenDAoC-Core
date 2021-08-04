@@ -56,10 +56,10 @@ namespace DOL.AI.Brain
 					if (!Body.IsWithinRadius(living, ((TurretPet)Body).TurretSpell.Range, true))
 						continue;
 
-					if (((TurretPet)Body).TurretSpell.SpellType != "SpeedDecrease" && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
 						continue;
 
-					if (((TurretPet)Body).TurretSpell.SpellType == "SpeedDecrease" && living.HasAbility(Abilities.RootImmunity))
+					if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && living.HasAbility(Abilities.RootImmunity))
 						continue;
 
 					newTargets.Add(living);
@@ -80,7 +80,7 @@ namespace DOL.AI.Brain
                 if (living.IsMezzed || living.IsStealthed)
                     continue;
 
-                if (((TurretPet)Body).TurretSpell.SpellType != "SpeedDecrease" && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+                if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
                     continue;
 
 				if (LivingHasEffect(living, ((TurretPet)Body).TurretSpell))
@@ -104,10 +104,10 @@ namespace DOL.AI.Brain
                 if (living.IsMezzed || living.IsStealthed)
                     continue;
 
-                if (((TurretPet)Body).TurretSpell.SpellType != "SpeedDecrease" && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+                if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
                     continue;
 
-                if (((TurretPet)Body).TurretSpell.SpellType == "SpeedDecrease" && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
+                if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
                     continue;
 
 				if (LivingHasEffect(living, ((TurretPet)Body).TurretSpell))

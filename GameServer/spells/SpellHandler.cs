@@ -300,7 +300,7 @@ namespace DOL.GS.Spells
 		/// <param name="living">owner of pulsing spell</param>
 		/// <param name="spellType">type of spell to cancel</param>
 		/// <returns>true if any spells were canceled</returns>
-		public virtual bool CancelPulsingSpell(GameLiving living, string spellType)
+		public virtual bool CancelPulsingSpell(GameLiving living, byte spellType)
 		{
 			lock (living.ConcentrationEffects)
 			{
@@ -677,7 +677,7 @@ namespace DOL.GS.Spells
 			}
 
 			GameSpellEffect Phaseshift = FindEffectOnTarget(Caster, "Phaseshift");
-			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == "Mesmerize"))
+			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == (byte)eSpellType.Mesmerize))
 			{
 				if (!quiet) MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
 				return false;
@@ -700,7 +700,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (selectedTarget!=null && selectedTarget.HasAbility("DamageImmunity") && Spell.SpellType == "DirectDamage" && Spell.Radius == 0)
+			if (selectedTarget!=null && selectedTarget.HasAbility("DamageImmunity") && Spell.SpellType == (byte)eSpellType.DirectDamage && Spell.Radius == 0)
 			{
 				if (!quiet) MessageToCaster(selectedTarget.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				return false;
@@ -828,7 +828,7 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (m_spell.SpellType == "Charm" && m_spell.CastTime == 0 && m_spell.Pulse != 0)
+						if (m_spell.SpellType == (byte)eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
 							break;
 
 						if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
@@ -883,7 +883,7 @@ namespace DOL.GS.Spells
 			}
 
 			//Ryan: don't want mobs to have reductions in mana
-			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(selectedTarget) && Spell.SpellType != "Archery")
+			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(selectedTarget) && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
@@ -1136,12 +1136,12 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != "Archery")
+			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
-			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != "Archery")
+			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
@@ -1340,12 +1340,12 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != "Archery")
+			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
-			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != "Archery")
+			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
@@ -1522,12 +1522,12 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != "Archery")
+			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
-			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != "Archery")
+			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
@@ -1994,7 +1994,7 @@ namespace DOL.GS.Spells
 
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.
-			if (m_spell.SpellType != "Powerless" && m_spell.SpellType != "Range" && m_spell.SpellType != "Uninterruptable")
+			if (m_spell.SpellType != (byte)eSpellType.Powerless && m_spell.SpellType != (byte)eSpellType.Range && m_spell.SpellType != (byte)eSpellType.Uninterruptable)
 			{
 				GameSpellEffect effect = SpellHandler.FindEffectOnTarget(m_caster, "Powerless");
 				if (effect == null)
@@ -2076,14 +2076,14 @@ namespace DOL.GS.Spells
 					switch (newtarget)
 					{
 						case 0: // Apply on heal single
-							if (m_spell.SpellType.ToLower() == "heal" && modifiedTarget == "realm")
+							if (m_spell.SpellType == (byte)eSpellType.Heal && modifiedTarget == "realm")
 							{
 								modifiedTarget = "group";
 								targetchanged = true;
 							}
 							break;
 						case 1: // Apply on heal group
-							if (m_spell.SpellType.ToLower() == "heal" && modifiedTarget == "group")
+							if (m_spell.SpellType == (byte)eSpellType.Heal && modifiedTarget == "group")
 							{
 								modifiedTarget = "realm";
 								modifiedRadius = (ushort)m_spell.Range;
@@ -2122,7 +2122,7 @@ namespace DOL.GS.Spells
 			{
 				modifiedTarget = "enemy";
 				//[Ganrod] Nidel: can cast TurretPBAoE on selected Pet/Turret
-				if (Spell.SpellType.ToLower() != "TurretPBAoE".ToLower())
+				if (Spell.SpellType != (byte)eSpellType.TurretPBAoE)
 				{
 					target = Caster.ControlledBrain.Body;
 				}
@@ -2136,7 +2136,7 @@ namespace DOL.GS.Spells
 				case "area":
 					//Dinberg - fix for animists turrets, where before a radius of zero meant that no targets were ever
 					//selected!
-					if (Spell.SpellType == "SummonAnimistPet" || Spell.SpellType == "SummonAnimistFnF")
+					if (Spell.SpellType == (byte)eSpellType.SummonAnimistPet || Spell.SpellType == (byte)eSpellType.SummonAnimistFnF)
 					{
 						list.Add(Caster);
 					}
@@ -2245,7 +2245,7 @@ namespace DOL.GS.Spells
 				case "enemy":
 					if (modifiedRadius > 0)
 					{
-						if (Spell.SpellType.ToLower() != "TurretPBAoE".ToLower() && (target == null || Spell.Range == 0))
+						if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || Spell.Range == 0))
 							target = Caster;
 						if (target == null) return null;
 						foreach (GamePlayer player in target.GetPlayersInRadius(modifiedRadius))
@@ -2539,7 +2539,7 @@ namespace DOL.GS.Spells
 		public virtual bool StartSpell(GameLiving target)
 		{
             // For PBAOE spells always set the target to the caster
-			if (Spell.SpellType.ToLower() != "TurretPBAoE".ToLower() && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
+			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
 			{
 				target = Caster;
 			}
@@ -2701,7 +2701,7 @@ namespace DOL.GS.Spells
 			{
 				GameSpellEffect effect1;
 				effect1 = SpellHandler.FindEffectOnTarget(target, "Phaseshift");
-				if ((effect1 != null && (Spell.SpellType != "SpreadHeal" || Spell.SpellType != "Heal" || Spell.SpellType != "SpeedEnhancement")))
+				if ((effect1 != null && (Spell.SpellType != (byte)eSpellType.SpreadHeal || Spell.SpellType != (byte)eSpellType.Heal || Spell.SpellType != (byte)eSpellType.SpeedEnhancement)))
 				{
 					MessageToCaster(target.Name + " is Phaseshifted and can't be effected by this Spell!", eChatType.CT_SpellResisted);
 					return;
@@ -2715,17 +2715,17 @@ namespace DOL.GS.Spells
 
 				if (Spell.Radius == 0)
 				{
-					switch (Spell.SpellType.ToLower())
+					switch (Spell.SpellType)
 					{
-						case "archery":
-						case "bolt":
-						case "bomber":
-						case "damagespeeddecrease":
-						case "directdamage":
-						case "magicalstrike":
-						case "siegearrow":
-						case "summontheurgistpet":
-						case "directdamagewithdebuff":
+						case (byte)eSpellType.Archery:
+						case (byte)eSpellType.Bolt:
+						case (byte)eSpellType.Bomber:
+						case (byte)eSpellType.DamageSpeedDecrease:
+						case (byte)eSpellType.DirectDamage:
+						case (byte)eSpellType.MagicalStrike:
+						case (byte)eSpellType.SiegeArrow:
+						case (byte)eSpellType.SummonTheurgistPet:
+						case (byte)eSpellType.DirectDamageWithDebuff:
 							isAllowed = true;
 							break;
 					}
@@ -3191,7 +3191,7 @@ namespace DOL.GS.Spells
 		{
 			// Spells that would have caused damage or are not instant will still
 			// interrupt a casting player.
-			if(!(Spell.SpellType.IndexOf("debuff", StringComparison.OrdinalIgnoreCase) >= 0 && Spell.CastTime == 0))
+			if(!(Spell.SpellType.ToString().IndexOf("debuff", StringComparison.OrdinalIgnoreCase) >= 0 && Spell.CastTime == 0))
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);			
 		}
 		
@@ -3421,7 +3421,7 @@ namespace DOL.GS.Spells
 					if (fx is GameSpellAndImmunityEffect && ((GameSpellAndImmunityEffect)fx).ImmunityState)
 						continue; // ignore immunity effects
 
-					if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == spellType) && (effect.SpellHandler.Spell.Name == spellName))
+					if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType.ToString() == spellType) && (effect.SpellHandler.Spell.Name == spellName))
 					{
 						return effect;
 					}
@@ -3449,7 +3449,7 @@ namespace DOL.GS.Spells
 					GameSpellEffect effect = (GameSpellEffect)fx;
 					if (fx is GameSpellAndImmunityEffect && ((GameSpellAndImmunityEffect)fx).ImmunityState)
 						continue; // ignore immunity effects
-					if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == spellType))
+					if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType.ToString() == spellType))
 					{
 						return effect;
 					}
@@ -3960,7 +3960,7 @@ namespace DOL.GS.Spells
 			 */
 			int resiPierce = Caster.GetModified(eProperty.ResistPierce);
 			GamePlayer ply = Caster as GamePlayer;
-			if (resiPierce > 0 && Spell.SpellType != "Archery")
+			if (resiPierce > 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				//substract max ItemBonus of property of target, but atleast 0.
 				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int)property], resiPierce));

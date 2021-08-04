@@ -131,7 +131,7 @@ namespace DOL.GS.Spells
 			}
 
 
-			if (Spell.SpellType.ToLower() != "stylestun")
+			if (Spell.SpellType != (byte)eSpellType.StyleStun)
 			{
 				// capping duration adjustment to 100%, live cap unknown - Tolakram
 				int hitChance = Math.Min(200, CalculateToHitChance(target));
@@ -531,7 +531,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 			//Ceremonial bracer dont intercept physical stun
-			if(Spell.SpellType.ToLower() != "stylestun" )
+			if(Spell.SpellType != (byte)eSpellType.StyleStun)
 			{
 				GameSpellEffect stunblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerStun");
 				if (stunblock != null)
@@ -575,7 +575,7 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.Spell.EffectGroup;
-			if (compare.Spell.SpellType == "StyleStun") return true;
+			if (compare.Spell.SpellType == (byte)eSpellType.StyleStun) return true;
 			return base.IsOverwritable(compare);
 		}
 

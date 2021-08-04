@@ -73,7 +73,7 @@ namespace DOL.GS
 					spell.Duration = 60;
 					spell.SpellID = 900090;
 					spell.Target = "Self";
-					spell.Type = "BloodRage";
+					spell.Type = (byte)eSpellType.BloodRage;
 					Blood_Rage = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Reserved_Spells, Blood_Rage);
 				}
@@ -103,7 +103,7 @@ namespace DOL.GS
 					spell.Duration = 60;
 					spell.SpellID = 900091;
 					spell.Target = "Self";
-					spell.Type = "HeightenedAwareness";
+					spell.Type = (byte)eSpellType.HeightenedAwareness;
 					Heightened_Awareness = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Reserved_Spells, Heightened_Awareness);
 				}
@@ -133,7 +133,7 @@ namespace DOL.GS
 					spell.Duration = 60;
 					spell.SpellID = 900092;
 					spell.Target = "Self";
-					spell.Type = "SubtleKills";
+					spell.Type = (byte)eSpellType.SubtleKills;
 					Subtle_Kills = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Reserved_Spells, Subtle_Kills);
 				}

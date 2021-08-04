@@ -161,7 +161,7 @@ namespace DOL.GS
                             {
                                 foreach (IGameEffect effect in ((GameLiving)attackTarget).EffectList)
                                 {
-                                    if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.SpellType == "Bladeturn")
+                                    if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.SpellType == (byte)eSpellType.Bladeturn)
                                     {
                                         bladeturn = (GameSpellEffect)effect;
                                         break;
