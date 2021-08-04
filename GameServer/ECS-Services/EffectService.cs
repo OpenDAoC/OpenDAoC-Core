@@ -102,15 +102,22 @@ namespace DOL.GS
             }
             foreach(var prop in getPropertyFromEffect(e.EffectType))
             {
-                e.Owner.AbilityBonus[(int)prop] -= (int)e.SpellHandler.Spell.Value;
+                
+                if (isPositiveEffect(e.EffectType))
+                {
+                    //if e.EffectType == buff, subtract value
+                    e.Owner.AbilityBonus[(int)prop] -= (int)e.SpellHandler.Spell.Value;
+                } else
+                {
+                    //else if e.EffectType == debuff, add value
+                    e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                }
+                
             }
             
             if(e.Owner is GamePlayer player)
             {
-                player.Out.SendCharStatsUpdate();
-                player.UpdateEncumberance();
-                player.UpdatePlayerStatus();
-                player.Out.SendUpdatePlayer();
+                SendPlayerUpdates(player);
                 //Now update EffectList
                 player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             } 
@@ -144,49 +151,63 @@ namespace DOL.GS
             {
                 //stats
                 case eEffect.BaseStr:
+                case eEffect.StrengthDebuff:
                     list.Add(eProperty.Strength);
                     return list;
                 case eEffect.BaseDex:
+                case eEffect.DexterityDebuff:
                     list.Add(eProperty.Dexterity);
                     return list;
                 case eEffect.BaseCon:
+                case eEffect.ConstitutionDebuff:
                     list.Add(eProperty.Constitution);
                     return list;
                 case eEffect.Acuity:
+                case eEffect.AcuityDebuff:
                     list.Add(eProperty.Acuity);
                     return list; 
                 case eEffect.StrCon:
+                case eEffect.StrConDebuff:
                     list.Add(eProperty.Strength);
                     list.Add(eProperty.Constitution);
                     return list;
                 case eEffect.DexQui:
+                case eEffect.DexQuiDebuff:
                     list.Add(eProperty.Dexterity);
                     list.Add(eProperty.Quickness);
                     return list;
                 case eEffect.BaseAf:
+                case eEffect.ArmorFactorDebuff:
                     list.Add(eProperty.ArmorFactor);
                     return list;
                 case eEffect.ArmorAbsorptionBuff:
+                case eEffect.ArmorAbsorptionDebuff:
                     list.Add(eProperty.ArmorAbsorption);
                     return list;
 
                     //resists
                 case eEffect.BodyResistBuff:
+                case eEffect.BodyResistDebuff:
                     list.Add(eProperty.Resist_Body);
                     return list;
                 case eEffect.SpiritResistBuff:
+                case eEffect.SpiritResistDebuff:
                     list.Add(eProperty.Resist_Spirit);
                     return list;
                 case eEffect.EnergyResistBuff:
+                case eEffect.EnergyResistDebuff:
                     list.Add(eProperty.Resist_Energy);
                     return list;
                 case eEffect.HeatResistBuff:
+                case eEffect.HeatResistDebuff:
                     list.Add(eProperty.Resist_Heat);
                     return list;
                 case eEffect.ColdResistBuff:
+                case eEffect.ColdResistDebuff:
                     list.Add(eProperty.Resist_Cold);
                     return list;
                 case eEffect.MatterResistBuff:
+                case eEffect.MatterResistDebuff:
                     list.Add(eProperty.Resist_Matter);
                     return list;
 
@@ -195,6 +216,47 @@ namespace DOL.GS
             }
         }
 
+        private static Boolean isPositiveEffect(eEffect e)
+        {
+            switch (e)
+            {
+                case eEffect.BaseStr:
+                case eEffect.BaseDex:
+                case eEffect.BaseCon:
+                case eEffect.Acuity:
+                case eEffect.StrCon:
+                case eEffect.DexQui:
+                case eEffect.BaseAf:
+                case eEffect.ArmorAbsorptionBuff:
+                case eEffect.BodyResistBuff:
+                case eEffect.SpiritResistBuff:
+                case eEffect.EnergyResistBuff:
+                case eEffect.HeatResistBuff:
+                case eEffect.ColdResistBuff:
+                case eEffect.MatterResistBuff:
+                    return true;
+
+                case eEffect.StrengthDebuff:
+                case eEffect.DexterityDebuff:
+                case eEffect.ConstitutionDebuff:
+                case eEffect.AcuityDebuff:
+                case eEffect.StrConDebuff:
+                case eEffect.DexQuiDebuff:
+                case eEffect.ArmorFactorDebuff:
+                case eEffect.ArmorAbsorptionDebuff:
+                case eEffect.BodyResistDebuff:
+                case eEffect.SpiritResistDebuff:
+                case eEffect.EnergyResistDebuff:
+                case eEffect.HeatResistDebuff:
+                case eEffect.ColdResistDebuff:
+                case eEffect.MatterResistDebuff:
+                    return false;
+                default:
+                    return false;
+            }
+            
+
+        }
         
     }
 }
