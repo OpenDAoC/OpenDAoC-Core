@@ -2,7 +2,7 @@
 using DOL.GS.PropertyCalc;
 using NUnit.Framework;
 
-namespace DOL.UnitTests.Gameserver.PropertyCalc
+namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 {
     [TestFixture]
     class UT_ResistCalculator

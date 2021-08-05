@@ -23,7 +23,7 @@ using DOL.GS;
 using DOL.GS.Quests;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	/// <summary>
 	/// Unit Test for GamePlayerTest.

@@ -21,7 +21,7 @@ using DOL.Database;
 using DOL.GS;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	[TestFixture]
 	public class InventoryTest : ServerTests

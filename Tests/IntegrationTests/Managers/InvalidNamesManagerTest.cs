@@ -20,7 +20,7 @@ using DOL.GS;
 
 using NUnit.Framework;
 
-namespace DOL.Integration.Managers
+namespace DOL.Tests.Integration.Managers
 {
 	/// <summary>
 	/// Unit Tests for Invalid Names Manager.

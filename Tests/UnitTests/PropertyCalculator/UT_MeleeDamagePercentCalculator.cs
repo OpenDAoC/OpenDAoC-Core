@@ -2,7 +2,7 @@
 using DOL.GS;
 using DOL.GS.PropertyCalc;
 
-namespace DOL.UnitTests.Gameserver.PropertyCalc
+namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 {
     [TestFixture]
     class UT_MeleeDamagePercentCalculator

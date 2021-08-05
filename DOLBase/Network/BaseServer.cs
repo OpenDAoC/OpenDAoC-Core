@@ -135,9 +135,7 @@ namespace DOL.Network
 			}
 			catch (Exception e)
 			{
-				if (Log.IsErrorEnabled)
-					Log.Error("InitSocket", e);
-
+				Log.Error("InitSocket", e);
 				return false;
 			}
 
@@ -157,18 +155,19 @@ namespace DOL.Network
 					UPnPNat nat = new UPnPNat();
 					if (!nat.Discover())
 						throw new Exception("[UPNP] Unable to access the UPnP Internet Gateway Device");
-					if (Log.IsDebugEnabled)
+					
+					Log.Debug("[UPNP] Current UPnP mappings:");
+					foreach (var info in nat.ListForwardedPort())
 					{
-						Log.Debug("[UPNP] Current UPnP mappings:");
-						foreach (var info in nat.ListForwardedPort())
-							Log.DebugFormat("[UPNP] {0} - {1} -> {2}:{3}({4}) ({5})",
-							                info.description,
-							                info.externalPort,
-							                info.internalIP,
-							                info.internalPort,
-							                info.protocol,
-							                info.enabled ? "enabled" : "disabled");
+						Log.DebugFormat("[UPNP] {0} - {1} -> {2}:{3}({4}) ({5})",
+														info.description,
+														info.externalPort,
+														info.internalIP,
+														info.internalPort,
+														info.protocol,
+														info.enabled ? "enabled" : "disabled");
 					}
+
 					IPAddress localAddr = Configuration.IP;
 					nat.ForwardPort(Configuration.UDPPort, Configuration.UDPPort, ProtocolType.Udp, "DOL UDP", localAddr);
 					nat.ForwardPort(Configuration.Port, Configuration.Port, ProtocolType.Tcp, "DOL TCP", localAddr);
@@ -177,8 +176,7 @@ namespace DOL.Network
 						try
 						{
 							Configuration.RegionIP = nat.GetExternalIP();
-							if(Log.IsDebugEnabled)
-								Log.Debug("[UPNP] Found the RegionIP: " + Configuration.RegionIP);
+							Log.Debug("[UPNP] Found the RegionIP: " + Configuration.RegionIP);
 						}
 						catch(Exception e)
 						{
@@ -201,13 +199,11 @@ namespace DOL.Network
 				_listen.Listen(100);
 				_listen.BeginAccept(_asyncAcceptCallback, this);
 
-				if (Log.IsDebugEnabled)
-					Log.Debug("Server is now listening to incoming connections!");
+				Log.Info("Server is now listening to incoming connections!");
 			}
 			catch (Exception e)
 			{
-				if (Log.IsErrorEnabled)
-					Log.Error("Start", e);
+				Log.Error("Start", e);
 
 				if (_listen != null)
 					_listen.Close();
@@ -298,9 +294,6 @@ namespace DOL.Network
 		/// </summary>
 		public virtual void Stop()
 		{
-			if (Log.IsDebugEnabled)
-				Log.Debug("Stopping server! - Entering method");
-
 			/*if(Configuration.EnableUPNP)
 			{
 				try
@@ -328,14 +321,12 @@ namespace DOL.Network
 					_listen = null;
 					socket.Close();
 
-					if (Log.IsDebugEnabled)
-						Log.Debug("Server is no longer listening for incoming connections!");
+					Log.Info("Server is no longer listening for incoming connections");
 				}
 			}
 			catch (Exception e)
 			{
-				if (Log.IsErrorEnabled)
-					Log.Error("Stop", e);
+				Log.Error("Stop", e);
 			}
 
 			lock (_clientsLock)
@@ -354,13 +345,10 @@ namespace DOL.Network
 				}
 				catch (Exception e)
 				{
-					if (Log.IsErrorEnabled)
-						Log.Error("Stop", e);
+					Log.Error("Stop", e);
 				}
 			}
-			
-			if (Log.IsDebugEnabled)
-				Log.Debug("Stopping server! - End of method!");
+			Log.Info("Server stopped");
 		}
 
 		/// <summary>
@@ -385,9 +373,7 @@ namespace DOL.Network
 			}
 			catch (Exception e)
 			{
-				if (Log.IsErrorEnabled)
-					Log.Error("Exception", e);
-
+				Log.Error("Exception", e);
 				return false;
 			}
 

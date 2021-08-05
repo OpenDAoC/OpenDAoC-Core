@@ -22,9 +22,9 @@ using NUnit.Framework;
 
 using DOL.Database;
 using DOL.GS;
-using DOL.UnitTests.Gameserver;
+using DOL.Tests.Unit.Gameserver;
 
-namespace DOL.Integration.Performance
+namespace DOL.Tests.Integration.Performance
 {
     [TestFixture, Explicit]
     class Test_GamePlayerCraftItem

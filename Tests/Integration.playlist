@@ -6,7 +6,7 @@
         <Rule Match="All">
           <Property Name="Project" Value="Tests" />
           <Rule Match="All">
-            <Property Name="Namespace" Match="Contains" Value="DOL.Integration" />
+            <Property Name="Namespace" Match="Contains" Value="DOL.Tests.Integration" />
             <Rule Match="Not">
               <Property Name="Trait" Value="Explicit" />
             </Rule>
