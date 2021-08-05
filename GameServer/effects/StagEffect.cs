@@ -76,11 +76,12 @@ namespace DOL.GS.Effects
 
 			m_originalModel = living.Model;
 
+			//TODO differentiate model between Lurikeens and other races
 			if (living is GamePlayer)
 			{
 				if ((living as GamePlayer).Race == (int)eRace.Lurikeen)
-					living.Model = 859;
-				else living.Model = 583;
+					living.Model = 13;
+				else living.Model = 4;
 			}			
 
 

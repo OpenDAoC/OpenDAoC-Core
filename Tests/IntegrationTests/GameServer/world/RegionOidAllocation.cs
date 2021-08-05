@@ -22,7 +22,7 @@ using DOL.Database;
 using DOL.GS;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	/// <summary>
 	/// Unit Test for Region OID Allocation

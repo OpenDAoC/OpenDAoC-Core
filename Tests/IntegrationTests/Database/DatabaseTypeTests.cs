@@ -22,7 +22,7 @@ using System.Linq;
 using DOL.Database;
 using NUnit.Framework;
 
-namespace DOL.Integration.Database
+namespace DOL.Tests.Integration.Database
 {
 	[TestFixture]
 	public class DatabaseTypeTests

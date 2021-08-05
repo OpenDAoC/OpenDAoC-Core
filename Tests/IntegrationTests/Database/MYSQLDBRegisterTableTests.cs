@@ -22,7 +22,7 @@ using DOL.Database.Attributes;
 using NUnit.Framework;
 using DOL.Database;
 
-namespace DOL.Integration.Database.MySQL
+namespace DOL.Tests.Integration.Database.MySQL
 {
 	[TestFixture, Explicit]
 	public class MYSQLDBRegisterTableTests : RegisterTableTests

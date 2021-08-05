@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#if NETFRAMEWORK
 using System;
 using System.Collections;
 using System.Configuration.Install;
@@ -34,7 +35,7 @@ namespace DOL.DOLServer.Actions
 		/// </summary>
 		public string Name
 		{
-			get { return "--serviceinstall"; } 
+			get { return "--serviceinstall"; }
 		}
 
 		/// <summary>
@@ -58,17 +59,17 @@ namespace DOL.DOLServer.Actions
 			ArrayList temp = new ArrayList();
 			temp.Add("/LogToConsole=false");
 			StringBuilder tempString = new StringBuilder();
-			foreach(DictionaryEntry entry in parameters)
+			foreach (DictionaryEntry entry in parameters)
 			{
-				if(tempString.Length > 0)
+				if (tempString.Length > 0)
 					tempString.Append(" ");
 				tempString.Append(entry.Key);
 				tempString.Append("=");
 				tempString.Append(entry.Value);
 			}
-			temp.Add("commandline="+tempString.ToString());
-			
-			string[] commandLine = (string[]) temp.ToArray(typeof(string));
+			temp.Add("commandline=" + tempString.ToString());
+
+			string[] commandLine = (string[])temp.ToArray(typeof(string));
 
 			System.Configuration.Install.AssemblyInstaller asmInstaller = new AssemblyInstaller(Assembly.GetExecutingAssembly(), commandLine);
 			Hashtable rollback = new Hashtable();
@@ -96,3 +97,4 @@ namespace DOL.DOLServer.Actions
 		}
 	}
 }
+#endif

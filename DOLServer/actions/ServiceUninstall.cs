@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#if NETFRAMEWORK
 using System;
 using System.Collections;
 using System.Configuration.Install;
@@ -54,7 +55,7 @@ namespace DOL.DOLServer.Actions
 
 		public void OnAction(Hashtable parameters)
 		{
-			System.Configuration.Install.AssemblyInstaller asmInstaller = new AssemblyInstaller(Assembly.GetExecutingAssembly(), new string[1] {"/LogToConsole=false"});
+			System.Configuration.Install.AssemblyInstaller asmInstaller = new AssemblyInstaller(Assembly.GetExecutingAssembly(), new string[1] { "/LogToConsole=false" });
 			Hashtable rollback = new Hashtable();
 			if (GameServerService.GetDOLService() == null)
 			{
@@ -76,3 +77,4 @@ namespace DOL.DOLServer.Actions
 		}
 	}
 }
+#endif

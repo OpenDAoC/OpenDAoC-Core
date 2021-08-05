@@ -2,7 +2,7 @@
 using DOL.GS;
 using DOL.GS.Keeps;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_GameNPC
@@ -25,6 +25,8 @@ namespace DOL.UnitTests.Gameserver
         }
 
         [Test]
+        [Category("Unit")]
+        [Category("Unreliable")]
         public void GetArmorAbsorb_LevelZeroNPCHasOneConstitution_Circa5Percent()
         {
             var npc = NewNPC();

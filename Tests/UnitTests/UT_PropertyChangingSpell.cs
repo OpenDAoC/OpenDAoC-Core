@@ -3,7 +3,7 @@ using DOL.GS;
 using DOL.GS.Spells;
 using NUnit.Framework;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_PropertyChangingSpell
@@ -30,6 +30,8 @@ namespace DOL.UnitTests.Gameserver
         }
 
         [Test]
+        [Category("Unit")]
+        [Category("Unreliable")]
         public void ApplyEffectOnTarget_50ConBuffOnL50NPC_51Constitution()
         {
             var caster = new FakeNPC();

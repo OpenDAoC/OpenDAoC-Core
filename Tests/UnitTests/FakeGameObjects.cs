@@ -4,7 +4,7 @@ using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     public class FakePlayer : GamePlayer
     {

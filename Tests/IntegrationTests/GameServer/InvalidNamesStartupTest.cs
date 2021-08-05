@@ -19,7 +19,7 @@
 using DOL.GS;
 using NUnit.Framework;
 
-namespace DOL.Integration.Server
+namespace DOL.Tests.Integration.Server
 {
 	/// <summary>
 	/// Unit Test for Default Invalid Names Startup Behavior.
