@@ -29,11 +29,11 @@ namespace DOL.GS
                     if (Effects.ContainsKey(effect.EffectType))
                     {
                         //If this buff is stronger > in list. cancel current buff and add this one- Return true;
-                        Console.WriteLine("Effect List contains type");
+                        Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
                         return false;
                     }
                     else
-                    {
+                    {                      
                         Effects.Add(effect.EffectType, effect);
                         EffectIdToEffect.Add(effect.Icon, effect);
 
@@ -67,7 +67,7 @@ namespace DOL.GS
                 {
                     if (!Effects.ContainsKey(effect.EffectType))
                     {
-                        Console.WriteLine("Effect List does not contain type");
+                        Console.WriteLine("Effect List does not contain type: " + effect.EffectType.ToString());
                         return false;
                     }
                     else

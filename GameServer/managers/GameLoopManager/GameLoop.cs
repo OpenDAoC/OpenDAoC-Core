@@ -32,6 +32,7 @@ namespace DOL.GS
             AttackService.Tick(GameLoopTime);
             CastingService.Tick(GameLoopTime);
             EffectService.Tick(GameLoopTime);
+            EffectListService.Tick(GameLoopTime);
 
             
             GameLoopTime = GameTimer.GetTickCount();

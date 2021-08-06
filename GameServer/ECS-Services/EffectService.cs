@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.SpellEffects;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -20,48 +21,50 @@ namespace DOL.GS
                 {
 
                     
-                    switch (e.EffectType)
-                    {
+                    //switch (e.EffectType)
+                    //{
                         
-                        case eEffect.BaseStr:
-                        case eEffect.BaseDex:
-                        case eEffect.BaseCon:
-                        case eEffect.Acuity:
-                        case eEffect.StrCon:
-                        case eEffect.DexQui:
-                        case eEffect.BaseAf:
-                        case eEffect.ArmorAbsorptionBuff:
-                        case eEffect.BodyResistBuff:
-                        case eEffect.SpiritResistBuff:
-                        case eEffect.EnergyResistBuff:
-                        case eEffect.HeatResistBuff:
-                        case eEffect.ColdResistBuff:
-                        case eEffect.MatterResistBuff:
+                        //case eEffect.BaseStr:
+                        //case eEffect.BaseDex:
+                        //case eEffect.BaseCon:
+                        //case eEffect.Acuity:
+                        //case eEffect.StrCon:
+                        //case eEffect.DexQui:
+                        //case eEffect.BaseAf:
+                        //case eEffect.ArmorAbsorptionBuff:
+                        //case eEffect.BodyResistBuff:
+                        //case eEffect.SpiritResistBuff:
+                        //case eEffect.EnergyResistBuff:
+                        //case eEffect.HeatResistBuff:
+                        //case eEffect.ColdResistBuff:
+                        //case eEffect.MatterResistBuff:
+                        //case eEffect.HealOverTime:
+                        //case eEffect.DamageAdd:
                             HandlePropertyBuff(e, getPropertyFromEffect(e.EffectType));
-                            break;
+                            //break;
                             
-                    }
+                    //}
                 }
+                
+                
                 EntityManager.RemoveEffect(e);
             }
         }
 
         private static void HandlePropertyBuff(ECSGameEffect e, List<eProperty> properties)
         {
-            
-            if (e.Owner == null)
+            if (e.Owner == null /*&& !e.SpellHandler.Spell.Target.ToLower().Equals("group") && !e.SpellHandler.Spell.Target.ToLower().Equals("self")*/)
             {
                 Console.WriteLine($"Invalid target for Effect {e}");
                 return;
             }
-
+           
             EffectListComponent effectList = e.Owner.effectListComponent;
             if (effectList == null)
             {
                 Console.WriteLine($"No effect list found for {e.Owner}");
                 return;
-            }
-
+            }     
 
             if (!effectList.AddEffect(e))
             {
@@ -71,13 +74,20 @@ namespace DOL.GS
             else
             {
                 SendSpellAnimation(e);
+                    
+                foreach (var prop in properties)
+                {
+                    Console.WriteLine($"Handling {prop.ToString()}");
+                    if (isPositiveEffect(e.EffectType))
+                        e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                    else
+                       // e.Owner.AbilityBonus[(int)prop] -= (int)e.SpellHandler.Spell.Value;
+                        e.Owner.DebuffCategory[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                }
+
+
                 if (e.Owner is GamePlayer player)
                 {
-                    foreach(var prop in properties)
-                    {
-                        Console.WriteLine($"Handling {prop.ToString()}");
-                        e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
-                    }
                     SendPlayerUpdates(player);
                 }
             }
@@ -94,7 +104,8 @@ namespace DOL.GS
         //todo - abstract this out to dynamically cancel the effect. Need a way to look up eProperty and such
         private static void HandleCancelEffect(ECSGameEffect e)
         {
-            Console.WriteLine($"Handling Cancel Effect");
+
+            Console.WriteLine($"Handling Cancel Effect: " + e.EffectType.ToString());
             if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 Console.WriteLine("Unable to remove effect!");
@@ -110,7 +121,8 @@ namespace DOL.GS
                 } else
                 {
                     //else if e.EffectType == debuff, add value
-                    e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                    //e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                    e.Owner.DebuffCategory[(int)prop] -= (int)e.SpellHandler.Spell.Value;
                 }
                 
             }
@@ -125,9 +137,12 @@ namespace DOL.GS
 
         private static void SendSpellAnimation(ECSGameEffect e)
         {
-            foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            GameLiving target = e.SpellHandler.Target != null ? e.SpellHandler.Target : e.SpellHandler.Caster;
+
+            //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.SpellHandler.Target, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
+                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, /*e.SpellHandler.Target target*/e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
             }
 
             if (e.Owner is GamePlayer player1)
@@ -138,9 +153,11 @@ namespace DOL.GS
 
         private static void SendSpellResistAnimation(ECSGameEffect e)
         {
-            foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            GameLiving target = e.SpellHandler.Target != null ? e.SpellHandler.Target : e.SpellHandler.Caster;
+            //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.SpellHandler.Target, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
+                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, /*e.SpellHandler.Target target*/e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
             }
         }
 
@@ -257,6 +274,37 @@ namespace DOL.GS
             
 
         }
+
+        public static void OnEffectPulse(ECSGameEffect effect)
+        {
+
+            if (effect.Owner.IsAlive == false)
+            {
+                //effect.Cancel(false);
+                effect.CancelEffect = true;
+                EntityManager.AddEffect(effect);
+            }
         
+            if (effect.Owner.IsAlive)
+            {
+                // An acidic cloud surrounds you!
+                (effect.SpellHandler as DoTSpellHandler).MessageToLiving(effect.Owner, effect.SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                // {0} is surrounded by an acidic cloud!
+                Message.SystemToArea(effect.Owner, Util.MakeSentence(effect.SpellHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
+                (effect.SpellHandler as DoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
+            }
+        }
+
+        public static void OnDirectEffect(GameLiving target, double effectiveness, ECSGameEffect effect)
+        {
+            if (target == null) return;
+            if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+
+            // no interrupts on DoT direct effect
+            // calc damage
+            AttackData ad = (effect.SpellHandler as DoTSpellHandler).CalculateDamageToTarget(target, effectiveness);
+            (effect.SpellHandler as DoTSpellHandler).SendDamageMessages(ad);
+            (effect.SpellHandler as DoTSpellHandler).DamageTarget(ad, false);
+        }
     }
 }

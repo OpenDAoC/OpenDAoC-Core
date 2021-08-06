@@ -405,9 +405,9 @@ namespace DOL.GS.Spells
 			
 			//IECSGameEffect effect;
 			int freq = Spell != null ? Spell.Frequency : 0;
-			// return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
+            // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
-			ECSGameEffect effect = new ECSGameEffect(Target,this,CalculateEffectDuration(target,effectiveness),freq,effectiveness,Spell.Icon);
+            ECSGameEffect effect = new ECSGameEffect(target,this,CalculateEffectDuration(target,effectiveness),freq,effectiveness,Spell.Icon);
 
 			EntityManager.AddEffect(effect);
 
