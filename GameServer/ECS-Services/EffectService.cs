@@ -13,9 +13,10 @@ namespace DOL.GS
         {
             foreach (var e in EntityManager.GetAllEffects())
             {
-                if (e.CancelEffect)
+                if (e.CancelEffect)// &&  )
                 {
-                    HandleCancelEffect(e);
+                    if (tick > e.ExpireTick)
+                        HandleCancelEffect(e);
                 }
                 else
                 {
@@ -96,6 +97,7 @@ namespace DOL.GS
         private static void SendPlayerUpdates(GamePlayer player)
         {
             player.Out.SendCharStatsUpdate();
+            player.Out.SendCharResistsUpdate();
             player.UpdateEncumberance();
             player.UpdatePlayerStatus();
             player.Out.SendUpdatePlayer();
@@ -131,7 +133,7 @@ namespace DOL.GS
             {
                 SendPlayerUpdates(player);
                 //Now update EffectList
-                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendUpdateIcons(new List<ECSGameEffect>() { e }/*e.Owner.effectListComponent.Effects.Values.ToList()*/, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             } 
         }
 
@@ -147,7 +149,7 @@ namespace DOL.GS
 
             if (e.Owner is GamePlayer player1)
             {
-                player1.Out.SendUpdateIcons(player1.effectListComponent.Effects.Values.ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
+                player1.Out.SendUpdateIcons(new List<ECSGameEffect>() { e }/*player1.effectListComponent.Effects.Values.ToList()*/, ref player1.effectListComponent._lastUpdateEffectsCount);
             }
         }
 
@@ -237,6 +239,17 @@ namespace DOL.GS
         {
             switch (e)
             {
+                case eEffect.Bladeturn:
+                case eEffect.DamageAdd:
+                case eEffect.DamageReturn:
+                case eEffect.FocusShield:
+                case eEffect.AblativeArmor:
+                case eEffect.MeleeDamageBuff:
+                case eEffect.MeleeHasteBuff:
+                case eEffect.Celerity:
+                case eEffect.MovementSpeedBuff:
+                case eEffect.HealOverTime:
+
                 case eEffect.BaseStr:
                 case eEffect.BaseDex:
                 case eEffect.BaseCon:
@@ -244,13 +257,19 @@ namespace DOL.GS
                 case eEffect.StrCon:
                 case eEffect.DexQui:
                 case eEffect.BaseAf:
+                case eEffect.SpecAf:
                 case eEffect.ArmorAbsorptionBuff:
+
                 case eEffect.BodyResistBuff:
                 case eEffect.SpiritResistBuff:
                 case eEffect.EnergyResistBuff:
                 case eEffect.HeatResistBuff:
                 case eEffect.ColdResistBuff:
                 case eEffect.MatterResistBuff:
+
+                case eEffect.HealthRegenBuff:
+                case eEffect.EnduranceRegenBuff:
+                case eEffect.PowerRegenBuff:
                     return true;
 
                 case eEffect.StrengthDebuff:

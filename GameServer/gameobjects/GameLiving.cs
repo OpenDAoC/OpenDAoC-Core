@@ -49,7 +49,7 @@ namespace DOL.GS
         public AttackComponent attackComponent;
         public RangeAttackComponent rangeAttackComponent;
         public StyleComponent styleComponent;
-
+        public Spell LastPulseCast;
         #region Combat
         /// <summary>
         /// Holds the AttackData object of last attack

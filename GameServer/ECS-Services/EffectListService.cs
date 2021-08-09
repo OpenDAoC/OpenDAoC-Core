@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DOL.GS
 {
     public static class EffectListService
@@ -22,8 +24,18 @@ namespace DOL.GS
                 {
                     if (tick > effect.Value.ExpireTick && !effect.Value.SpellHandler.Spell.IsConcentration)
                     {
-                        effect.Value.CancelEffect = true;
-                        EntityManager.AddEffect(effect.Value);
+                        if (effect.Value.SpellHandler.Spell.IsPulsing && (effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell))
+                        {
+                            if (effect.Value.Owner is GamePlayer)
+                                ((GamePlayer)effect.Value.Owner).Out.SendUpdateIcons(new List<ECSGameEffect>() { effect.Value }, ref effect.Value.Owner.effectListComponent._lastUpdateEffectsCount);
+                            effect.Value.ExpireTick += effect.Value.PulseFreq;
+                            
+                        }
+                        else
+                        {
+                            effect.Value.CancelEffect = true;
+                            EntityManager.AddEffect(effect.Value);
+                        }
                     }
                     if (effect.Value.EffectType == eEffect.DamageOverTime)
                     {

@@ -1885,8 +1885,15 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void SendCastAnimation()
 		{
-			ushort castTime = (ushort)(CalculateCastingTime() / 100);
-			SendCastAnimation(castTime);
+            if (Spell.CastTime == 0)
+            {
+                SendCastAnimation(0);
+            }
+            else
+            {
+                ushort castTime = (ushort)(CalculateCastingTime() / 100);
+                SendCastAnimation(castTime);
+            }
 		}
 
 		/// <summary>
@@ -1978,14 +1985,24 @@ namespace DOL.GS.Spells
 
 			if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
 			{
-				CancelAllPulsingSpells(Caster);
-				PulsingSpellEffect pulseeffect = new PulsingSpellEffect(this);
-				pulseeffect.Start();
-				// show animation on caster for positive spells, negative shows on every StartSpell
-				if (m_spell.Target == "Self" || m_spell.Target == "Group")
-					SendEffectAnimation(Caster, 0, false, 1);
-				if (m_spell.Target == "Pet")
-					SendEffectAnimation(target, 0, false,1);
+
+                foreach (ECSGameEffect effect in Caster.effectListComponent.Effects.Values)
+                {
+                    if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.Equals(Caster))
+                    {
+                        effect.CancelEffect = true;
+                        EntityManager.AddEffect(effect);
+                    }
+                }
+                
+				//CancelAllPulsingSpells(Caster);
+				//PulsingSpellEffect pulseeffect = new PulsingSpellEffect(this);
+				//pulseeffect.Start();
+				//// show animation on caster for positive spells, negative shows on every StartSpell
+				//if (m_spell.Target == "Self" || m_spell.Target == "Group")
+				//	SendEffectAnimation(Caster, 0, false, 1);
+				//if (m_spell.Target == "Pet")
+				//	SendEffectAnimation(target, 0, false,1);
 			}
 
 			//CreateSpellEffects();
@@ -2883,14 +2900,33 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness"></param>
 		public virtual void OnDurationEffectApply(GameLiving target, double effectiveness)
 		{
-			 if (!target.IsAlive || target.effectListComponent == null)
-			 {
-			 	return;
-			 }
-			
-			
-			 // eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
-			 CreateECSEffect(target, effectiveness);
+			if (!target.IsAlive || target.effectListComponent == null)
+			{
+			return;
+			}
+
+            if (Spell.IsPulsing && Caster.LastPulseCast != null && Caster.LastPulseCast.Equals(Spell))
+            {
+                // eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
+                //CreateECSEffect(target, effectiveness);
+
+                ECSGameEffect cancelEffect = Caster.effectListComponent.Effects.Where(effect => effect.Value.SpellHandler.Spell.Equals(Spell)).FirstOrDefault().Value;
+
+                if (cancelEffect != null)
+                {
+                    cancelEffect.CancelEffect = true;
+                    EntityManager.AddEffect(cancelEffect);
+                    Caster.LastPulseCast = null;
+                    Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
+                }
+                else
+                    Console.WriteLine("Error Canceling Effect");
+            }
+            else
+            {
+                CreateECSEffect(target, effectiveness);
+            }
+            
 			 // GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
 			 //
 			 // // Iterate through Overwritable Effect

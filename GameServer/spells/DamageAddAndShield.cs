@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
@@ -161,7 +161,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
 		{
 			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
 			if (args == null) return;
@@ -255,7 +255,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event handler of given event type
 		/// </summary>
-		protected abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
+		public abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
 
 		/// <summary>
 		/// Holds min damage spread based on spec level caster

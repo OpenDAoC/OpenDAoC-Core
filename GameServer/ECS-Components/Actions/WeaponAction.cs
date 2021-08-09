@@ -175,6 +175,12 @@ namespace DOL.GS
                     if (mainHandAD.IsMeleeAttack)
                     {
                         owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
+
+                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out ECSGameEffect dAEffect))
+                        {
+                            ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(mainHandAD));
+                        }
+
                         if (mainHandAD.Target is GameLiving)
                         {
                             GameLiving living = mainHandAD.Target as GameLiving;
@@ -252,6 +258,10 @@ namespace DOL.GS
                                     owner.DealDamage(leftHandAD);
                                     if (leftHandAD.IsMeleeAttack)
                                     {
+                                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out ECSGameEffect dAEffect))
+                                        {
+                                            ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(leftHandAD));
+                                        }
                                         owner.CheckWeaponMagicalEffect(leftHandAD, leftWeapon);
                                     }
                                 }
@@ -322,7 +332,7 @@ namespace DOL.GS
                         proc.StartSpell(leftHandAD.Target);
                     }
                 }
-
+                
                 //mobs dont update the heading after they start attacking
                 //so here they update it after they swing
                 //update internal heading, do not send update to client

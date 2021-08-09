@@ -38,7 +38,10 @@ namespace DOL.GS
                         EffectIdToEffect.Add(effect.Icon, effect);
 
                     }
-
+                    if (effect.SpellHandler.Spell.IsPulsing)
+                    {
+                        effect.SpellHandler.Caster.LastPulseCast = effect.SpellHandler.Spell;
+                    }
                     return true;
                 }
                 catch (Exception e)
@@ -46,8 +49,9 @@ namespace DOL.GS
                     Console.WriteLine($"Error adding an Effect {e}");
                     return false;
                 }
-
+                
             }
+            
         }
 
         public ECSGameEffect TryGetEffectFromEffectId(int effectId)
