@@ -14,6 +14,7 @@ namespace DOL.GS
         public ushort Icon;
         public bool CancelEffect;
         public eEffect EffectType;
+        public eSpellType SpellType;
         public GameLiving Owner;
         
         
@@ -27,7 +28,6 @@ namespace DOL.GS
             Icon = icon;
             CancelEffect = cancelEffect;
             EffectType = MapEffect();
-
         }
 
         public ushort GetRemainingTimeForClient()
@@ -75,5 +75,6 @@ namespace DOL.GS
                     return eEffect.Unknown;
             }
         }
+
     }
 }

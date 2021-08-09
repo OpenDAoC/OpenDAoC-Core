@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.PacketHandler;
+using DOL.GS.PropertyCalc;
+using DOL.GS.ServerProperties;
 using DOL.GS.SpellEffects;
 
 namespace DOL.GS
@@ -19,10 +21,10 @@ namespace DOL.GS
                 else
                 {
 
-                    
+
                     switch (e.EffectType)
                     {
-                        
+
                         case eEffect.BaseStr:
                         case eEffect.BaseDex:
                         case eEffect.BaseCon:
@@ -39,7 +41,7 @@ namespace DOL.GS
                         case eEffect.MatterResistBuff:
                             HandlePropertyBuff(e, getPropertyFromEffect(e.EffectType));
                             break;
-                            
+
                     }
                 }
                 EntityManager.RemoveEffect(e);
@@ -48,7 +50,7 @@ namespace DOL.GS
 
         private static void HandlePropertyBuff(ECSGameEffect e, List<eProperty> properties)
         {
-            
+
             if (e.Owner == null)
             {
                 Console.WriteLine($"Invalid target for Effect {e}");
@@ -73,11 +75,25 @@ namespace DOL.GS
                 SendSpellAnimation(e);
                 if (e.Owner is GamePlayer player)
                 {
-                    foreach(var prop in properties)
+                    if (e.EffectType == eEffect.StrCon || e.EffectType == eEffect.DexQui || e.EffectType == eEffect.SpecAf)                         
                     {
-                        Console.WriteLine($"Handling {prop.ToString()}");
-                        e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                        foreach (var prop in properties)
+                        {
+                            Console.WriteLine($"Handling {prop.ToString()}");
+                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            //e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                        }
                     }
+                    else
+                    {
+                        foreach (var prop in properties)
+                        {
+                            Console.WriteLine($"Handling {prop.ToString()}");
+                            ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            //e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                        }
+                    }
+
                     SendPlayerUpdates(player);
                 }
             }
@@ -86,6 +102,7 @@ namespace DOL.GS
         private static void SendPlayerUpdates(GamePlayer player)
         {
             player.Out.SendCharStatsUpdate();
+            player.Out.SendCharResistsUpdate();
             player.UpdateEncumberance();
             player.UpdatePlayerStatus();
             player.Out.SendUpdatePlayer();
@@ -94,33 +111,39 @@ namespace DOL.GS
         //todo - abstract this out to dynamically cancel the effect. Need a way to look up eProperty and such
         private static void HandleCancelEffect(ECSGameEffect e)
         {
-            Console.WriteLine($"Handling Cancel Effect");
+            Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
             if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 Console.WriteLine("Unable to remove effect!");
                 return;
             }
-            foreach(var prop in getPropertyFromEffect(e.EffectType))
+
+            if (e.EffectType == eEffect.StrCon || e.EffectType == eEffect.DexQui || e.EffectType == eEffect.SpecAf)
             {
-                
-                if (isPositiveEffect(e.EffectType))
+                foreach (var prop in getPropertyFromEffect(e.EffectType))
                 {
-                    //if e.EffectType == buff, subtract value
-                    e.Owner.AbilityBonus[(int)prop] -= (int)e.SpellHandler.Spell.Value;
-                } else
+                    Console.WriteLine($"Canceling {prop.ToString()}");
+                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                    //e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+
+                } 
+            }
+            else
+            {
+                foreach (var prop in getPropertyFromEffect(e.EffectType))
                 {
-                    //else if e.EffectType == debuff, add value
-                    e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
+                    Console.WriteLine($"Canceling {prop.ToString()}");
+                    ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                    //e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
                 }
-                
             }
             
-            if(e.Owner is GamePlayer player)
+            if (e.Owner is GamePlayer player)
             {
                 SendPlayerUpdates(player);
                 //Now update EffectList
                 player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
-            } 
+            }
         }
 
         private static void SendSpellAnimation(ECSGameEffect e)
@@ -165,7 +188,7 @@ namespace DOL.GS
                 case eEffect.Acuity:
                 case eEffect.AcuityDebuff:
                     list.Add(eProperty.Acuity);
-                    return list; 
+                    return list;
                 case eEffect.StrCon:
                 case eEffect.StrConDebuff:
                     list.Add(eProperty.Strength);
@@ -177,6 +200,7 @@ namespace DOL.GS
                     list.Add(eProperty.Quickness);
                     return list;
                 case eEffect.BaseAf:
+                case eEffect.SpecAf:
                 case eEffect.ArmorFactorDebuff:
                     list.Add(eProperty.ArmorFactor);
                     return list;
@@ -185,7 +209,7 @@ namespace DOL.GS
                     list.Add(eProperty.ArmorAbsorption);
                     return list;
 
-                    //resists
+                //resists
                 case eEffect.BodyResistBuff:
                 case eEffect.BodyResistDebuff:
                     list.Add(eProperty.Resist_Body);
@@ -227,6 +251,7 @@ namespace DOL.GS
                 case eEffect.StrCon:
                 case eEffect.DexQui:
                 case eEffect.BaseAf:
+                case eEffect.SpecAf:
                 case eEffect.ArmorAbsorptionBuff:
                 case eEffect.BodyResistBuff:
                 case eEffect.SpiritResistBuff:
@@ -254,9 +279,61 @@ namespace DOL.GS
                 default:
                     return false;
             }
-            
+
 
         }
-        
+
+        /// <summary>
+		/// Method used to apply bonuses
+		/// </summary>
+		/// <param name="owner"></param>
+		/// <param name="BonusCat"></param>
+		/// <param name="Property"></param>
+		/// <param name="Value"></param>
+		/// <param name="IsSubstracted"></param>
+		private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, int Value, bool IsSubstracted)
+        {
+            IPropertyIndexer tblBonusCat;
+            if (Property != eProperty.Undefined)
+            {
+                tblBonusCat = GetBonusCategory(owner, BonusCat);
+                if (IsSubstracted)
+                    tblBonusCat[(int)Property] -= Value;
+                else
+                    tblBonusCat[(int)Property] += Value;
+            }
+        }
+
+        private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
+        {
+            IPropertyIndexer bonuscat = null;
+            switch (categoryid)
+            {
+                case eBuffBonusCategory.BaseBuff:
+                    bonuscat = target.BaseBuffBonusCategory;
+                    break;
+                case eBuffBonusCategory.SpecBuff:
+                    bonuscat = target.SpecBuffBonusCategory;
+                    break;
+                case eBuffBonusCategory.Debuff:
+                    bonuscat = target.DebuffCategory;
+                    break;
+                case eBuffBonusCategory.Other:
+                    bonuscat = target.BuffBonusCategory4;
+                    break;
+                case eBuffBonusCategory.SpecDebuff:
+                    bonuscat = target.SpecDebuffCategory;
+                    break;
+                case eBuffBonusCategory.AbilityBuff:
+                    bonuscat = target.AbilityBonus;
+                    break;
+                default:
+                    //if (log.IsErrorEnabled)
+                    Console.WriteLine("BonusCategory not found " + categoryid + "!");
+                    break;
+            }
+            return bonuscat;
+        }
+
     }
 }
