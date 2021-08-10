@@ -1561,8 +1561,15 @@ namespace DOL.GS.Spells
 					if (CheckBeginCast(Target))
 					{
 						_castStartTick = currentTick;
-						if (!Spell.IsInstantCast) { SendCastAnimation(); }
-						castState = eCastState.Casting;
+						if (Spell.IsInstantCast)
+						{
+							castState = eCastState.Finished;
+						}
+						else
+						{
+							SendCastAnimation();
+							castState = eCastState.Casting;
+						}
 					}
 					else
 					{
