@@ -119,7 +119,8 @@ namespace DOL.GS
                         }
                     }
 
-                } else
+                }
+                else
                 {
                     if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
                     {
@@ -145,7 +146,7 @@ namespace DOL.GS
                 }
             }
         }
-  
+
         private static void HandleCancelEffect(ECSGameEffect e)
         {
             Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
@@ -161,7 +162,7 @@ namespace DOL.GS
                 {
                     foreach (var prop in getPropertyFromEffect(e.EffectType))
                     {
-                        Console.WriteLine($"Debuffing {prop.ToString()}");
+                        Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
                         ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, false);
                     }
                 }
@@ -169,11 +170,12 @@ namespace DOL.GS
                 {
                     foreach (var prop in getPropertyFromEffect(e.EffectType))
                     {
-                        Console.WriteLine($"Debuffing {prop.ToString()}");
+                        Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
                         ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
                     }
                 }
-            } else
+            }
+            else
             {
                 if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
                 {
@@ -404,10 +406,12 @@ namespace DOL.GS
             if (Property != eProperty.Undefined)
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
+                Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
                 if (IsSubstracted)
                     tblBonusCat[(int)Property] -= Value;
                 else
                     tblBonusCat[(int)Property] += Value;
+                Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
             }
         }
 

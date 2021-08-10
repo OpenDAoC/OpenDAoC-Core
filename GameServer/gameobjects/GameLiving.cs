@@ -6893,7 +6893,8 @@ namespace DOL.GS
 
 
             healthComponent = new HealthComponent(this);
-            // damageComponent = new DamageComponent(this);
+			// damageComponent = new DamageComponent(this);
+			EntityManager.AddNpc(this);
 
 		}
 	}
