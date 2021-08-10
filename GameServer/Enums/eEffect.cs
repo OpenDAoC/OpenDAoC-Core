@@ -74,7 +74,7 @@ namespace DOL.GS
         StrengthDebuff,
         DexterityDebuff,
         ConstitutionDebuff,
-        QuicknessDebuff
+        QuicknessDebuff,
         StrConDebuff, 
         DexQuiDebuff,
         AcuityDebuff,

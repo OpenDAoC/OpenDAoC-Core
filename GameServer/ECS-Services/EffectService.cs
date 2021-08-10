@@ -41,6 +41,11 @@ namespace DOL.GS
                         case eEffect.HeatResistBuff:
                         case eEffect.ColdResistBuff:
                         case eEffect.MatterResistBuff:
+                        case eEffect.BodySpiritEnergyBuff:
+                        case eEffect.HeatColdMatterBuff:
+                        case eEffect.AllMagicResistsBuff:
+                        case eEffect.AllMeleeResistsBuff:
+                        case eEffect.AllResistsBuff:
 
                         //debuffs
                         case eEffect.StrengthDebuff:
@@ -59,6 +64,8 @@ namespace DOL.GS
                         case eEffect.HeatResistDebuff:
                         case eEffect.MatterResistDebuff:
                         case eEffect.SpiritResistDebuff:
+                        case eEffect.AllMeleeResistsDebuff:
+                        case eEffect.NaturalResistDebuff:
                             HandlePropertyModification(e);
                             break;
                     }
@@ -268,6 +275,9 @@ namespace DOL.GS
                     return list;
 
                 //resists
+                case eEffect.NaturalResistDebuff:
+                    list.Add(eProperty.Resist_Natural);
+                    return list;
                 case eEffect.BodyResistBuff:
                 case eEffect.BodyResistDebuff:
                     list.Add(eProperty.Resist_Body);
@@ -292,8 +302,46 @@ namespace DOL.GS
                 case eEffect.MatterResistDebuff:
                     list.Add(eProperty.Resist_Matter);
                     return list;
+                case eEffect.HeatColdMatterBuff:
+                    list.Add(eProperty.Resist_Heat);
+                    list.Add(eProperty.Resist_Cold);
+                    list.Add(eProperty.Resist_Matter);
+                    return list;
+                case eEffect.BodySpiritEnergyBuff:
+                    list.Add(eProperty.Resist_Body);
+                    list.Add(eProperty.Resist_Spirit);
+                    list.Add(eProperty.Resist_Energy);
+                    return list;
+                case eEffect.AllMagicResistsBuff:
+                    list.Add(eProperty.Resist_Body);
+                    list.Add(eProperty.Resist_Spirit);
+                    list.Add(eProperty.Resist_Energy);
+                    list.Add(eProperty.Resist_Heat);
+                    list.Add(eProperty.Resist_Cold);
+                    list.Add(eProperty.Resist_Matter);
+                    return list;
+
+                case eEffect.SlashResistBuff:
+                case eEffect.SlashResistDebuff:
+                    list.Add(eProperty.Resist_Slash);
+                    return list;
+                case eEffect.ThrustResistBuff:
+                case eEffect.ThrustResistDebuff:
+                    list.Add(eProperty.Resist_Thrust);
+                    return list;
+                case eEffect.CrushResistBuff:
+                case eEffect.CrushResistDebuff:
+                    list.Add(eProperty.Resist_Crush);
+                    return list;
+                case eEffect.AllMeleeResistsBuff:
+                case eEffect.AllMeleeResistsDebuff:
+                    list.Add(eProperty.Resist_Crush);
+                    list.Add(eProperty.Resist_Thrust);
+                    list.Add(eProperty.Resist_Slash);
+                    return list;
 
                 default:
+                    Console.WriteLine($"Unable to find property mapping for: {e}");
                     return list;
             }
         }
