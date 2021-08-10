@@ -23,6 +23,7 @@ namespace DOL.GS
             Owner = owner;
             SpellHandler = handler;
             Duration = duration;
+            ExpireTick = 0;
             PulseFreq = pulseFreq;
             Effectiveness = effectiveness;
             Icon = icon;
