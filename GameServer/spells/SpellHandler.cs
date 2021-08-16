@@ -407,17 +407,30 @@ namespace DOL.GS.Spells
 			int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
-            ECSGameEffect effect = new ECSGameEffect(target,this,CalculateEffectDuration(target,effectiveness),freq,effectiveness,Spell.Icon);
+            ECSGameEffect effect = new ECSGameEffect(target,this,Spell.Duration == 0 ? 0 : CalculateEffectDuration(target,effectiveness),freq,effectiveness,Spell.Icon);
 
 			EntityManager.AddEffect(effect);
 
 		}
 
-		/// <summary>
-		/// called whenever the player clicks on a spell icon
-		/// or a GameLiving wants to cast a spell
-		/// </summary>
-		public virtual bool CastSpell()
+        public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
+        {
+
+            //IECSGameEffect effect;
+            int freq = Spell != null ? Spell.Frequency : 0;
+            // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
+
+            ECSPulseEffect effect = new ECSPulseEffect(target, this, Spell.Duration == 0 ? 0 : CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
+
+            EntityManager.AddEffect(effect);
+
+        }
+
+        /// <summary>
+        /// called whenever the player clicks on a spell icon
+        /// or a GameLiving wants to cast a spell
+        /// </summary>
+        public virtual bool CastSpell()
 		{
 			return CastSpell(Caster.TargetObject as GameLiving);
 		}
@@ -644,15 +657,39 @@ namespace DOL.GS.Spells
 			{
 				return false;
 			}
-
-			if (!m_caster.IsAlive)
+ 
+            if (!m_caster.IsAlive)
 			{
 				if (!quiet) MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
 				return false;
 			}
 
+            if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
+            {
+                if (Spell.IsPulsing && Caster.LastPulseCast != null && Caster.LastPulseCast.Equals(Spell))
+                {
+                    if (Spell.InstrumentRequirement == 0)
+                        MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
+                    else
+                        MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
 
-			if (m_caster is GamePlayer)
+                    ECSGameEffect cancelEffect = Caster.effectListComponent.Effects.Where(effect => effect.Value.SpellHandler.Spell.Equals(Spell)).FirstOrDefault().Value;
+
+                    if (cancelEffect != null)
+                    {
+                        cancelEffect.CancelEffect = true;
+                        EntityManager.AddEffect(cancelEffect);
+                        Caster.LastPulseCast = null;
+                        Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
+                    }
+                    else
+                        Console.WriteLine("Error Canceling Effect");
+
+                    return false;
+                }
+            }
+
+            if (m_caster is GamePlayer)
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.getProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
@@ -1983,30 +2020,17 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
-			{
+            //CancelAllPulsingSpells(Caster);
+            //PulsingSpellEffect pulseeffect = new PulsingSpellEffect(this);
+            //pulseeffect.Start();
+            //// show animation on caster for positive spells, negative shows on every StartSpell
+            //if (m_spell.Target == "Self" || m_spell.Target == "Group")
+            //	SendEffectAnimation(Caster, 0, false, 1);
+            //if (m_spell.Target == "Pet")
+            //	SendEffectAnimation(target, 0, false,1);
 
-                foreach (ECSGameEffect effect in Caster.effectListComponent.Effects.Values)
-                {
-                    if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.Equals(Caster))
-                    {
-                        effect.CancelEffect = true;
-                        EntityManager.AddEffect(effect);
-                    }
-                }
-                
-				//CancelAllPulsingSpells(Caster);
-				//PulsingSpellEffect pulseeffect = new PulsingSpellEffect(this);
-				//pulseeffect.Start();
-				//// show animation on caster for positive spells, negative shows on every StartSpell
-				//if (m_spell.Target == "Self" || m_spell.Target == "Group")
-				//	SendEffectAnimation(Caster, 0, false, 1);
-				//if (m_spell.Target == "Pet")
-				//	SendEffectAnimation(target, 0, false,1);
-			}
-
-			//CreateSpellEffects();
-			StartSpell(target); // and action
+            //CreateSpellEffects();
+            StartSpell(target); // and action
 
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.
@@ -2554,6 +2578,12 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
+            if (Spell.IsPulsing)
+            {
+                CreateECSPulseEffect(Caster, Caster.Effectiveness);
+                Caster.LastPulseCast = Spell;
+            }
+
             // For PBAOE spells always set the target to the caster
 			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
 			{
@@ -2905,114 +2935,97 @@ namespace DOL.GS.Spells
 			return;
 			}
 
-            if (Spell.IsPulsing && Caster.LastPulseCast != null && Caster.LastPulseCast.Equals(Spell))
-            {
-                // eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
-                //CreateECSEffect(target, effectiveness);
+            // eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
+            //CreateECSEffect(target, effectiveness);
 
-                ECSGameEffect cancelEffect = Caster.effectListComponent.Effects.Where(effect => effect.Value.SpellHandler.Spell.Equals(Spell)).FirstOrDefault().Value;
-
-                if (cancelEffect != null)
-                {
-                    cancelEffect.CancelEffect = true;
-                    EntityManager.AddEffect(cancelEffect);
-                    Caster.LastPulseCast = null;
-                    Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
-                }
-                else
-                    Console.WriteLine("Error Canceling Effect");
-            }
-            else
-            {
-                CreateECSEffect(target, effectiveness);
-            }
+            CreateECSEffect(target, Caster.Effectiveness);
             
-			 // GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
-			 //
-			 // // Iterate through Overwritable Effect
-			 // var overwritenEffects = target.EffectList.OfType<GameSpellEffect>().Where(effect => effect.SpellHandler != null && effect.SpellHandler.IsOverwritable(neweffect));
-			 //
-			 // // Store Overwritable or Cancellable
-			 // var enable = true;
-			 // var cancellableEffects = new List<GameSpellEffect>(1);
-			 // GameSpellEffect overwriteEffect = null;
-			 //
-			 // foreach (var ovEffect in overwritenEffects)
-			 // {					
-			 // 	// If we can cancel spell effect we don't need to overwrite it
-			 // 	if (ovEffect.SpellHandler.IsCancellable(neweffect))
-			 // 	{
-			 // 		// Spell is better than existing "Cancellable" or it should start disabled
-			 // 		if (IsCancellableEffectBetter(ovEffect, neweffect))
-			 // 			cancellableEffects.Add(ovEffect);
-			 // 		else
-			 // 			enable = false;
-			 // 	}
-			 // 	else
-			 // 	{
-			 // 		// Check for Overwriting.
-			 // 		if (IsNewEffectBetter(ovEffect, neweffect))
-			 // 		{
-			 // 			// New Spell is overwriting this one.
-			 // 			overwriteEffect = ovEffect;
-			 // 		}
-			 // 		else
-			 // 		{
-			 // 			// Old Spell is Better than new one
-			 // 			SendSpellResistAnimation(target);
-			 // 			if (target == Caster)
-			 // 			{
-			 // 				if (ovEffect.ImmunityState)
-			 // 					MessageToCaster("You can't have that effect again yet!", noOverwrite);
-			 // 				else
-			 // 					MessageToCaster("You already have that effect. Wait until it expires. Spell failed.", noOverwrite);
-			 // 			}
-			 // 			else
-			 // 			{
-			 // 				if (ovEffect.ImmunityState)
-			 // 				{
-			 // 					this.MessageToCaster(noOverwrite, "{0} can't have that effect again yet!", ovEffect.Owner != null ? ovEffect.Owner.GetName(0, true) : "(null)");
-			 // 				}
-			 // 				else
-			 // 				{
-			 // 					this.MessageToCaster(noOverwrite, "{0} already has that effect.", target.GetName(0, true));
-			 // 					MessageToCaster("Wait until it expires. Spell Failed.", noOverwrite);
-			 // 				}
-			 // 			}
-			 // 			// Prevent Adding.
-			 // 			return;
-			 // 		}
-			 // 	}
-			 // }
-			 //
-			 // // Register Effect list Changes
-			 // target.EffectList.BeginChanges();
-			 // try
-			 // {
-			 // 	// Check for disabled effect
-			 // 	foreach (var disableEffect in cancellableEffects)
-			 // 		disableEffect.DisableEffect(false);
-			 // 	
-			 // 	if (overwriteEffect != null)
-			 // 	{
-			 // 		if (enable)
-			 // 			overwriteEffect.Overwrite(neweffect);
-			 // 		else
-			 // 			overwriteEffect.OverwriteDisabled(neweffect);
-			 // 	}
-			 // 	else
-			 // 	{
-			 // 		if (enable)
-			 // 		neweffect.Start(target);
-			 // 		else
-			 // 			neweffect.StartDisabled(target);
-			 // 	}
-			 // }
-			 // finally
-			 // {
-			 // 	target.EffectList.CommitChanges();
-			 // }
-		}
+            // GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            //
+            // // Iterate through Overwritable Effect
+            // var overwritenEffects = target.EffectList.OfType<GameSpellEffect>().Where(effect => effect.SpellHandler != null && effect.SpellHandler.IsOverwritable(neweffect));
+            //
+            // // Store Overwritable or Cancellable
+            // var enable = true;
+            // var cancellableEffects = new List<GameSpellEffect>(1);
+            // GameSpellEffect overwriteEffect = null;
+            //
+            // foreach (var ovEffect in overwritenEffects)
+            // {					
+            // 	// If we can cancel spell effect we don't need to overwrite it
+            // 	if (ovEffect.SpellHandler.IsCancellable(neweffect))
+            // 	{
+            // 		// Spell is better than existing "Cancellable" or it should start disabled
+            // 		if (IsCancellableEffectBetter(ovEffect, neweffect))
+            // 			cancellableEffects.Add(ovEffect);
+            // 		else
+            // 			enable = false;
+            // 	}
+            // 	else
+            // 	{
+            // 		// Check for Overwriting.
+            // 		if (IsNewEffectBetter(ovEffect, neweffect))
+            // 		{
+            // 			// New Spell is overwriting this one.
+            // 			overwriteEffect = ovEffect;
+            // 		}
+            // 		else
+            // 		{
+            // 			// Old Spell is Better than new one
+            // 			SendSpellResistAnimation(target);
+            // 			if (target == Caster)
+            // 			{
+            // 				if (ovEffect.ImmunityState)
+            // 					MessageToCaster("You can't have that effect again yet!", noOverwrite);
+            // 				else
+            // 					MessageToCaster("You already have that effect. Wait until it expires. Spell failed.", noOverwrite);
+            // 			}
+            // 			else
+            // 			{
+            // 				if (ovEffect.ImmunityState)
+            // 				{
+            // 					this.MessageToCaster(noOverwrite, "{0} can't have that effect again yet!", ovEffect.Owner != null ? ovEffect.Owner.GetName(0, true) : "(null)");
+            // 				}
+            // 				else
+            // 				{
+            // 					this.MessageToCaster(noOverwrite, "{0} already has that effect.", target.GetName(0, true));
+            // 					MessageToCaster("Wait until it expires. Spell Failed.", noOverwrite);
+            // 				}
+            // 			}
+            // 			// Prevent Adding.
+            // 			return;
+            // 		}
+            // 	}
+            // }
+            //
+            // // Register Effect list Changes
+            // target.EffectList.BeginChanges();
+            // try
+            // {
+            // 	// Check for disabled effect
+            // 	foreach (var disableEffect in cancellableEffects)
+            // 		disableEffect.DisableEffect(false);
+            // 	
+            // 	if (overwriteEffect != null)
+            // 	{
+            // 		if (enable)
+            // 			overwriteEffect.Overwrite(neweffect);
+            // 		else
+            // 			overwriteEffect.OverwriteDisabled(neweffect);
+            // 	}
+            // 	else
+            // 	{
+            // 		if (enable)
+            // 		neweffect.Start(target);
+            // 		else
+            // 			neweffect.StartDisabled(target);
+            // 	}
+            // }
+            // finally
+            // {
+            // 	target.EffectList.CommitChanges();
+            // }
+        }
 		
 		/// <summary>
 		/// Called when Effect is Added to target Effect List

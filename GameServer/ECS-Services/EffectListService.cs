@@ -1,3 +1,4 @@
+using DOL.GS.Spells;
 using System.Collections.Generic;
 
 namespace DOL.GS
@@ -24,20 +25,25 @@ namespace DOL.GS
                 {
                     if (tick > effect.Value.ExpireTick && !effect.Value.SpellHandler.Spell.IsConcentration)
                     {
-                        if (effect.Value.SpellHandler.Spell.IsPulsing && (effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell))
+                        if (effect.Value.EffectType == eEffect.Pulse && effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell)
                         {
-                            if (effect.Value.Owner is GamePlayer)
-                                ((GamePlayer)effect.Value.Owner).Out.SendUpdateIcons(new List<ECSGameEffect>() { effect.Value }, ref effect.Value.Owner.effectListComponent._lastUpdateEffectsCount);
-                            effect.Value.ExpireTick += effect.Value.PulseFreq;
-                            
+                            if (effect.Value.SpellHandler.Spell.IsHarmful)
+                            {
+                                ((SpellHandler)effect.Value.SpellHandler).SendCastAnimation();
+
+                            }
+                            effect.Value.SpellHandler.StartSpell(null);
                         }
                         else
                         {
+                            if (effect.Value.EffectType == eEffect.Bleed)
+                                effect.Value.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
+
                             effect.Value.CancelEffect = true;
                             EntityManager.AddEffect(effect.Value);
                         }
                     }
-                    if (effect.Value.EffectType == eEffect.DamageOverTime)
+                    if (effect.Value.EffectType == eEffect.DamageOverTime || effect.Value.EffectType == eEffect.Bleed)
                     {
                         if (effect.Value.LastTick == 0)
                         {

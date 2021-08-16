@@ -26,22 +26,32 @@ namespace DOL.GS
             {
                 try
                 {
-                    if (Effects.ContainsKey(effect.EffectType))
+                    if (Effects.TryGetValue(effect.EffectType, out ECSGameEffect existing))
                     {
                         //If this buff is stronger > in list. cancel current buff and add this one- Return true;
+                        if (existing.SpellHandler.Spell.IsPulsing)
+                        {
+                            if (existing.EffectType != eEffect.Pulse)
+                                EffectIdToEffect.Remove(existing.Icon);
+                            Effects.Remove(existing.EffectType);
+                            
+
+                            Effects.Add(effect.EffectType, effect);
+                            if (effect.EffectType != eEffect.Pulse)
+                                EffectIdToEffect.Add(effect.Icon, effect);
+                            return true;
+                        }
                         Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
                         return false;
                     }
                     else
                     {                      
                         Effects.Add(effect.EffectType, effect);
-                        EffectIdToEffect.Add(effect.Icon, effect);
+                        if (effect.EffectType != eEffect.Pulse)
+                            EffectIdToEffect.Add(effect.Icon, effect);
 
                     }
-                    if (effect.SpellHandler.Spell.IsPulsing)
-                    {
-                        effect.SpellHandler.Caster.LastPulseCast = effect.SpellHandler.Spell;
-                    }
+                    
                     return true;
                 }
                 catch (Exception e)

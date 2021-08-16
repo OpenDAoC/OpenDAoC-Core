@@ -17,8 +17,8 @@ namespace DOL.GS
         public bool CancelEffect;
         public eEffect EffectType;
         public GameLiving Owner;
-        
 
+        public ECSGameEffect() { }
 
         public ECSGameEffect(GameLiving owner,ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
         {
@@ -37,12 +37,17 @@ namespace DOL.GS
 
         public ushort GetRemainingTimeForClient()
         {
+            if (Duration > 0)
+                return (ushort)(ExpireTick - GameLoop.GameLoopTime);
+            else
+                return 0;
             return 10000;
         }
 
-        private eEffect MapEffect()
+        protected eEffect MapEffect()
         {
             Console.WriteLine("Spell of type: " + ((eSpellType)SpellHandler.Spell.SpellType).ToString());
+
             switch (SpellHandler.Spell.SpellType)
             {
                 #region Positive Effects
@@ -83,9 +88,13 @@ namespace DOL.GS
                     return eEffect.Acuity;
                 case (byte)eSpellType.ArmorAbsorptionBuff:
                     return eEffect.ArmorAbsorptionBuff;
-                case (byte)eSpellType.ArmorFactorBuff:
                 case (byte)eSpellType.PaladinArmorFactorBuff:
-                    return eEffect.BaseAf; //currently no map to specAF. where is spec AF handled?
+                    return eEffect.PaladinAf;
+                case (byte)eSpellType.ArmorFactorBuff:
+                    if (SpellHandler.SpellLine.IsBaseLine)
+                        return eEffect.BaseAf; //currently no map to specAF. where is spec AF handled?
+                    else
+                        return eEffect.SpecAf;
 
 
                 //resists
@@ -110,12 +119,14 @@ namespace DOL.GS
                 case (byte)eSpellType.PowerRegenBuff:
                     return eEffect.PowerRegenBuff;
 
-                #endregion
+                    #endregion
 
-                #region Negative Effects
+                    #region Negative Effects
 
-                //persistent negative effects
-                case (byte)eSpellType.DamageOverTime:
+                    //persistent negative effects
+                case (byte)eSpellType.StyleBleeding:
+                    return eEffect.Bleed;
+                case (byte)eSpellType.DamageOverTime: 
                     return eEffect.DamageOverTime;
                 case (byte)eSpellType.Charm:
                     return eEffect.Charm;
@@ -123,12 +134,14 @@ namespace DOL.GS
                     return eEffect.MovementSpeedDebuff;
                 case (byte)eSpellType.MeleeDamageDebuff:
                     return eEffect.MeleeDamageDebuff;
+                case (byte)eSpellType.StyleCombatSpeedDebuff:
                 case (byte)eSpellType.CombatSpeedDebuff:
                     return eEffect.MeleeHasteDebuff;
                 case (byte)eSpellType.Disease:
                     return eEffect.Disease;
 
                 //Crowd Control Effects
+                case (byte)eSpellType.StyleStun:
                 case (byte)eSpellType.Stun:
                     return eEffect.Stun;
                 //case (byte)eSpellType.StunImmunity: // Not implemented
@@ -177,6 +190,10 @@ namespace DOL.GS
                     return eEffect.ColdResistDebuff;
                 case (byte)eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
+
+                //misc
+                case (byte)eSpellType.DirectDamage:
+                    return eEffect.DirectDamage;
 
                 #endregion
 

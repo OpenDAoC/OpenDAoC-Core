@@ -4052,7 +4052,12 @@ namespace DOL.GS
 			{
 				Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));
 
-				if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
+                if (effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out ECSGameEffect dSEffect))
+                {
+                    ((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
+                }
+
+                if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
 					((GameNPC)this).SwitchToMelee(ad.Attacker);
 
 				attackComponent.AddAttacker( ad.Attacker );

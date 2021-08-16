@@ -3907,7 +3907,7 @@ namespace DOL.GS.PacketHandler
 
 						// bit 0x08 adds "more..." to right click info
 						pak.WriteShort(effect.Icon);
-						pak.WriteShort((ushort)(effect.Duration / 1000));
+						pak.WriteShort((ushort)((effect.SpellHandler.Spell.IsPulsing ? effect.GetRemainingTimeForClient() : effect.Duration) / 1000));
 						if (effect is ECSGameEffect)
 							pak.WriteShort((ushort)((ECSGameEffect)effect).Icon); //v1.110+ send the spell ID for delve info in active icon
 						else

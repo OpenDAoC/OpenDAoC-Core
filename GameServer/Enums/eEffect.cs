@@ -25,6 +25,7 @@ namespace DOL.GS
         Acuity,
         SpecAf,
         BaseAf,
+        PaladinAf,
         ArmorAbsorptionBuff,
 
         //resists
@@ -45,6 +46,7 @@ namespace DOL.GS
         #region Negative Effects
         //persistent negative effects
         DamageOverTime,
+        Bleed,
         Charm,
         MovementSpeedDebuff,
         MeleeDamageDebuff,
@@ -82,6 +84,8 @@ namespace DOL.GS
         #endregion
 
         //other
-        Unknown
+        Unknown,
+        DirectDamage,
+        Pulse
     }
 }
