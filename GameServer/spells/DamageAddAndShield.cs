@@ -223,8 +223,8 @@ namespace DOL.GS.Spells
 			GameClient targetClient = null;
 			if ( target is GamePlayer ) targetClient = ( (GamePlayer)target ).Client;
 
-			if ( targetClient != null )
-				MessageToLiving(target, String.Format(LanguageMgr.GetTranslation( targetClient, "DamageAddAndShield.EventHandlerDS.DamageToYou" ), attacker.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
+			//if ( targetClient != null )
+			//	MessageToLiving(target, String.Format(LanguageMgr.GetTranslation( targetClient, "DamageAddAndShield.EventHandlerDS.DamageToYou" ), attacker.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
 
             target.OnAttackedByEnemy(ad);
 			attacker.DealDamage(ad);

@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The property name for bleed value
 		/// </summary>
-		protected const string BLEED_VALUE_PROPERTY = "BleedValue";
+		public const string BLEED_VALUE_PROPERTY = "BleedValue";
 
 		/// <summary>
 		/// When an applied effect starts
