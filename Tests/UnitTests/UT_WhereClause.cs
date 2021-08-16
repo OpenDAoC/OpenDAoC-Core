@@ -21,7 +21,7 @@ using NUnit.Framework;
 using DOL.Database;
 using System;
 
-namespace DOL.UnitTests.Database
+namespace DOL.Tests.Unit.Database
 {
     [TestFixture]
     class UT_WhereClause

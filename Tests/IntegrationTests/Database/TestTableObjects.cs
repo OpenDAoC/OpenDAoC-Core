@@ -21,7 +21,7 @@ using System;
 using DOL.Database;
 using DOL.Database.Attributes;
 
-namespace DOL.Integration.Database
+namespace DOL.Tests.Integration.Database
 {
 	/// <summary>
 	/// Test Table with Multiple Overlapping Index

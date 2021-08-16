@@ -17,7 +17,6 @@
  *
  */
 using System;
-using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -32,9 +31,6 @@ using DOL.GS.Spells;
 using DOL.GS.Commands;
 using DOL.Events;
 using log4net;
-using Microsoft.CSharp;
-using Microsoft.VisualBasic;
-using System.Runtime.InteropServices;
 
 namespace DOL.GS
 {
@@ -84,10 +80,10 @@ namespace DOL.GS
 		{
 			get
 			{
-				return m_compiledScripts.Values.Concat( new[] { typeof(GameServer).Assembly } ).ToArray();
+				return m_compiledScripts.Values.Concat(new[] { typeof(GameServer).Assembly }).ToArray();
 			}
 		}
-		
+
 		/// <summary>
 		/// Get all loaded assemblies with Scripts First
 		/// </summary>
@@ -97,7 +93,7 @@ namespace DOL.GS
 			{
 				return Scripts.Union(AppDomain.CurrentDomain.GetAssemblies()).ToArray();
 			}
-		}		
+		}
 
 		/// <summary>
 		/// Get all loaded assemblies with Scripts Last
@@ -108,7 +104,7 @@ namespace DOL.GS
 			{
 				return AppDomain.CurrentDomain.GetAssemblies().Where(asm => !Scripts.Contains(asm)).Concat(Scripts).ToArray();
 			}
-		}		
+		}
 
 		/// <summary>
 		/// Gets the requested command if it exists
@@ -136,11 +132,11 @@ namespace DOL.GS
 				return cmd;
 
 			// Trying to guess the command
-			var commands =  m_gameCommands.Where(kv => kv.Value != null && kv.Key.StartsWith(commandName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value);
-			
+			var commands = m_gameCommands.Where(kv => kv.Value != null && kv.Key.StartsWith(commandName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value);
+
 			if (commands.Count() == 1)
 				return commands.First();
-			
+
 			return null;
 		}
 
@@ -153,10 +149,10 @@ namespace DOL.GS
 		public static string[] GetCommandList(ePrivLevel plvl, bool addDesc)
 		{
 			return m_gameCommands.Where(kv => kv.Value != null && kv.Key != null && (uint)plvl > kv.Value.m_lvl)
-				.Select(kv => string.Format("/{0}{2}{1}", kv.Key.Remove(0,1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
+				.Select(kv => string.Format("/{0}{2}{1}", kv.Key.Remove(0, 1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
 				.ToArray();
 		}
-		
+
 		/// <summary>
 		/// Parses a directory for all source files
 		/// </summary>
@@ -167,9 +163,9 @@ namespace DOL.GS
 		private static IList<FileInfo> ParseDirectory(DirectoryInfo path, string filter, bool deep)
 		{
 			if (!path.Exists)
-		    return new List<FileInfo>();
-		
-		   	return path.GetFiles(filter, SearchOption.TopDirectoryOnly).Union(deep ? path.GetDirectories().Where(di => !di.Name.Equals("obj", StringComparison.OrdinalIgnoreCase)).SelectMany(di => di.GetFiles(filter, SearchOption.AllDirectories)) : new FileInfo[0]).ToList();
+				return new List<FileInfo>();
+
+			return path.GetFiles(filter, SearchOption.TopDirectoryOnly).Union(deep ? path.GetDirectories().Where(di => !di.Name.Equals("obj", StringComparison.OrdinalIgnoreCase)).SelectMany(di => di.GetFiles(filter, SearchOption.AllDirectories)) : new FileInfo[0]).ToList();
 		}
 
 		/// <summary>
@@ -183,7 +179,7 @@ namespace DOL.GS
 			//build array of disabled commands
 			string[] disabledarray = ServerProperties.Properties.DISABLED_COMMANDS.Split(';');
 
-			foreach (Assembly script in GameServerScripts)
+			foreach (var script in GameServerScripts)
 			{
 				if (log.IsDebugEnabled)
 					log.Debug("ScriptMgr: Searching for commands in " + script.GetName());
@@ -221,7 +217,7 @@ namespace DOL.GS
 							if (log.IsDebugEnabled && quiet == false)
 								log.Debug("ScriptMgr: Command - '" + attrib.Cmd + "' - (" + attrib.Description + ") required plvl:" + attrib.Level);
 
-							GameCommand cmd = new GameCommand();
+							var cmd = new GameCommand();
 							cmd.Usage = attrib.Usage;
 							cmd.m_cmd = attrib.Cmd;
 							cmd.m_lvl = attrib.Level;
@@ -273,7 +269,7 @@ namespace DOL.GS
 							pars[0] = '/' + pars[0].Remove(0, 1);
 						//client.Out.SendMessage("You do not have enough priveleges to use " + pars[0], eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						//why should a player know the existing commands..
-						client.Out.SendMessage("No such command ("+pars[0]+")",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("No such command (" + pars[0] + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return true;
 					}
 					//else execute the command
@@ -417,20 +413,21 @@ namespace DOL.GS
 		/// Compiles the scripts into an assembly
 		/// </summary>
 		/// <param name="compileVB">True if the source files will be in VB.NET</param>
-		/// <param name="path">Path to the source files</param>
-		/// <param name="dllName">Name of the assembly to be generated</param>
+		/// <param name="scriptFolder">Path to the source files</param>
+		/// <param name="outputPath">Name of the assembly to be generated</param>
 		/// <param name="asm_names">References to other assemblies</param>
 		/// <returns>True if succeeded</returns>
-		public static bool CompileScripts(bool compileVB, string path, string dllName, string[] asm_names)
+		public static bool CompileScripts(bool compileVB, string scriptFolder, string outputPath, string[] asm_names)
 		{
-			if (!path.EndsWith(@"\") && !path.EndsWith(@"/"))
-				path = path + "/";
+			var outputFile = new FileInfo(outputPath);
+			if (!scriptFolder.EndsWith(@"\") && !scriptFolder.EndsWith(@"/"))
+				scriptFolder = scriptFolder + "/";
 
 			//Reset the assemblies
 			m_compiledScripts.Clear();
 
 			//Check if there are any scripts, if no scripts exist, that is fine as well
-			IList<FileInfo> files = ParseDirectory(new DirectoryInfo(path), compileVB ? "*.vb" : "*.cs", true);
+			IList<FileInfo> files = ParseDirectory(new DirectoryInfo(scriptFolder), compileVB ? "*.vb" : "*.cs", true);
 			if (files.Count == 0)
 			{
 				return true;
@@ -440,10 +437,10 @@ namespace DOL.GS
 			bool recompileRequired = true;
 
 			//This file should hold the script infos
-			FileInfo configFile = new FileInfo(dllName + ".xml");
+			var configFile = new FileInfo(outputFile.FullName + ".xml");
 
 			//If the script assembly is missing, recompile is required
-			if (!File.Exists(dllName))
+			if (!outputFile.Exists)
 			{
 				if (log.IsDebugEnabled)
 					log.Debug("Script assembly missing, recompile required!");
@@ -471,7 +468,7 @@ namespace DOL.GS
 						foreach (FileInfo finfo in files)
 						{
 							if (config[finfo.FullName]["size"].GetInt(0) != finfo.Length
-							    || config[finfo.FullName]["lastmodified"].GetLong(0) != finfo.LastWriteTime.ToFileTime())
+								|| config[finfo.FullName]["lastmodified"].GetLong(0) != finfo.LastWriteTime.ToFileTime())
 							{
 								//Recompile required
 								recompileRequired = true;
@@ -499,12 +496,12 @@ namespace DOL.GS
 						log.Debug("Script info file missing, recompile required!");
 				}
 			}
-			
+
 			//If we need no compiling, we load the existing assembly!
 			if (!recompileRequired)
 			{
-				recompileRequired = !LoadAssembly(dllName);
-				
+				recompileRequired = !LoadAssembly(outputFile.FullName);
+
 				if (!recompileRequired)
 				{
 					//Return success!
@@ -513,73 +510,24 @@ namespace DOL.GS
 			}
 
 			//We need a recompile, if the dll exists, delete it firsthand
-			if (File.Exists(dllName))
-				File.Delete(dllName);
+			if (outputFile.Exists)
+				outputFile.Delete();
 
-			CompilerResults res = null;
+			var compilationSuccessful = false;
 			try
 			{
-				CodeDomProvider compiler;
+				var compiler = new DOLScriptCompiler();
+				if (compileVB) compiler.SetToVisualBasicNet();
 
-				if (compileVB)
+				var compiledAssembly = compiler.Compile(outputFile, files);
+				foreach (var errorMessage in compiler.GetDetailedErrorMessages())
 				{
-					compiler = new VBCodeProvider();
+					log.Error(errorMessage);
 				}
-				else
-				{
-					compiler = new CSharpCodeProvider(new Dictionary<string, string> { { "CompilerVersion", "v4.0" } });
-				}
-				
-				// Graveen: allow script compilation in debug or release mode
-				#if DEBUG
-				CompilerParameters param = new CompilerParameters(asm_names, dllName, true);
-				#else
-				CompilerParameters param = new CompilerParameters(asm_names, dllName, false);
-				#endif
-				param.GenerateExecutable = false;
-				param.GenerateInMemory = false;
-				param.WarningLevel = 2;
-				param.CompilerOptions = string.Format("/optimize /lib:.{0}lib", Path.DirectorySeparatorChar);
-				param.ReferencedAssemblies.Add("System.Core.dll");
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-				{
-					param.ReferencedAssemblies.Add("netstandard.dll");
-				}
+				if (compiler.HasErrors) return false;
+				compilationSuccessful = true;
 
-				string[] filepaths = new string[files.Count];
-				for (int i = 0; i < files.Count; i++)
-					filepaths[i] = ((FileInfo)files[i]).FullName;
-
-				res = compiler.CompileAssemblyFromFile(param, filepaths);
-
-				//After compiling, collect
-				GC.Collect();
-
-				if (res.Errors.HasErrors)
-				{
-					foreach (CompilerError err in res.Errors)
-					{
-						if (err.IsWarning) continue;
-
-						StringBuilder builder = new StringBuilder();
-						builder.Append("   ");
-						builder.Append(err.FileName);
-						builder.Append(" Line:");
-						builder.Append(err.Line);
-						builder.Append(" Col:");
-						builder.Append(err.Column);
-						if (log.IsErrorEnabled)
-						{
-							log.Error("Script compilation failed because: ");
-							log.Error(err.ErrorText);
-							log.Error(builder.ToString());
-						}
-					}
-
-					return false;
-				}
-
-				AddOrReplaceAssembly(res.CompiledAssembly);
+				AddOrReplaceAssembly(compiledAssembly);
 			}
 			catch (Exception e)
 			{
@@ -588,16 +536,10 @@ namespace DOL.GS
 				m_compiledScripts.Clear();
 			}
 			//now notify our callbacks
-			bool ret = false;
-			if (res != null)
-			{
-				ret = !res.Errors.HasErrors;
-			}
-			if (ret == false)
-				return ret;
+			if (!compilationSuccessful) return false;
 
-			XMLConfigFile newconfig = new XMLConfigFile();
-			foreach (FileInfo finfo in files)
+			var newconfig = new XMLConfigFile();
+			foreach (var finfo in files)
 			{
 				newconfig[finfo.FullName]["size"].Set(finfo.Length);
 				newconfig[finfo.FullName]["lastmodified"].Set(finfo.LastWriteTime.ToFileTime());
@@ -609,7 +551,9 @@ namespace DOL.GS
 
 			return true;
 		}
-		
+
+
+
 		/// <summary>
 		/// Load an Assembly from DLL path.
 		/// </summary>
@@ -624,7 +568,7 @@ namespace DOL.GS
 
 				if (log.IsInfoEnabled)
 					log.InfoFormat("Assembly {0} loaded successfully from path {1}", asm.FullName, dllName);
-				
+
 				return true;
 			}
 			catch (Exception e)
@@ -632,7 +576,7 @@ namespace DOL.GS
 				if (log.IsErrorEnabled)
 					log.ErrorFormat("Error loading Assembly from path {0} - {1}", dllName, e);
 			}
-			
+
 			return false;
 		}
 
@@ -785,13 +729,13 @@ namespace DOL.GS
 		public static ICharacterClass FindCharacterBaseClass(int id)
 		{
 			var charClass = FindCharacterClass(id);
-			
+
 			if (charClass == null)
 				return null;
-			
+
 			if (!charClass.HasAdvancedFromBaseClass())
 				return charClass;
-			
+
 			try
 			{
 				object[] objs = charClass.GetType().BaseType.GetCustomAttributes(typeof(CharacterClassAttribute), true);
@@ -810,7 +754,7 @@ namespace DOL.GS
 				if (log.IsErrorEnabled)
 					log.Error("FindCharacterBaseClass", e);
 			}
-			
+
 			return null;
 		}
 
@@ -1165,7 +1109,7 @@ namespace DOL.GS
 
 			return types.ToArray();
 		}
-		
+
 		/// <summary>
 		/// Create new instance of ClassType, Looking through Assemblies and Scripts with given param
 		/// </summary>
@@ -1188,10 +1132,10 @@ namespace DOL.GS
 				}
 
 			}
-			
+
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Create new instance of ClassType, Looking through Scripts then Assemblies with given param
 		/// </summary>
@@ -1214,7 +1158,7 @@ namespace DOL.GS
 				}
 
 			}
-			
+
 			return null;
 		}
 	}

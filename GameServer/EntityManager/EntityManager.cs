@@ -12,7 +12,7 @@ namespace DOL.GS
         private static List<GamePlayer> _players = new List<GamePlayer>(4000);
         private static object _playersLock = new object();
 
-        private static List<GameObject> _npcs = new List<GameObject>(50000);
+        private static List<GameLiving> _npcs = new List<GameLiving>(50000);
         private static object _npcsLock = new object();
         
         private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
@@ -44,7 +44,7 @@ namespace DOL.GS
             }
         }
         
-        public static GameObject[] GetAllNpcs()
+        public static GameLiving[] GetAllNpcs()
         {
             lock (_npcs)
             {
@@ -52,7 +52,7 @@ namespace DOL.GS
             }
         }
 
-        public static void AddNpc(GameObject o)
+        public static void AddNpc(GameLiving o)
         {
             lock (_npcsLock)
             {
@@ -60,7 +60,7 @@ namespace DOL.GS
             }
         }
 
-        public static void RemoveNpc(GameObject o)
+        public static void RemoveNpc(GameLiving o)
         {
             lock (_npcsLock)
             {

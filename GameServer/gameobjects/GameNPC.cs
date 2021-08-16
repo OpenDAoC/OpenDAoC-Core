@@ -3991,7 +3991,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapon">the weapon used for attack</param>
 		/// <returns></returns>
-		public double AttackDamage(InventoryItem weapon)
+		public virtual double AttackDamage(InventoryItem weapon)
 		{
 			double damage = attackComponent.AttackDamage(weapon);
 

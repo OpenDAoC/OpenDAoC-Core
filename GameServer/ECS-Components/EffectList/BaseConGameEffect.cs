@@ -13,7 +13,7 @@ namespace DOL.GS
 
         public BaseConGameEffect(long expireTick, bool neverExpire, string name, int value, GameLiving owner)
         {
-            Type = eEffect.BaseCon;
+            Type = eEffect.ConstitutionBuff;
             ExpireTick = expireTick;
             NeverExpire = neverExpire;
             Name = name;

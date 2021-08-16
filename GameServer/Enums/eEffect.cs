@@ -17,15 +17,27 @@ namespace DOL.GS
         HealOverTime,
 
         //stats
-        BaseStr,
-        BaseDex,
-        BaseCon,
-        StrCon,
-        DexQui,
-        Acuity,
-        SpecAf,
-        BaseAf,
+//<<<<<<< HEAD
+        //BaseStr,
+        //BaseDex,
+        //BaseCon,
+        //StrCon,
+        //DexQui,
+        //Acuity,
+        //SpecAf,
+        //BaseAf,
         PaladinAf,
+        //=======
+        StrengthBuff,
+        DexterityBuff,
+        ConstitutionBuff,
+        QuicknessBuff,
+        StrengthConBuff,
+        DexQuickBuff,
+        AcuityBuff,
+        SpecAFBuff,
+        BaseAFBuff,
+        //>>>>>>> CombinedGameLoop
         ArmorAbsorptionBuff,
 
         //resists
@@ -35,6 +47,14 @@ namespace DOL.GS
         HeatResistBuff,
         ColdResistBuff,
         MatterResistBuff,
+        SlashResistBuff,
+        CrushResistBuff,
+        ThrustResistBuff,
+        BodySpiritEnergyBuff,
+        HeatColdMatterBuff,
+        AllMagicResistsBuff,
+        AllMeleeResistsBuff,
+        AllResistsBuff,
 
         //regen
         HealthRegenBuff,
@@ -67,6 +87,7 @@ namespace DOL.GS
         StrengthDebuff,
         DexterityDebuff,
         ConstitutionDebuff,
+        QuicknessDebuff,
         StrConDebuff, 
         DexQuiDebuff,
         AcuityDebuff,
@@ -80,6 +101,11 @@ namespace DOL.GS
         HeatResistDebuff,
         ColdResistDebuff,
         MatterResistDebuff,
+        SlashResistDebuff,
+        CrushResistDebuff,
+        ThrustResistDebuff,
+        NaturalResistDebuff,
+        AllMeleeResistsDebuff,
 
         #endregion
 

@@ -5,7 +5,7 @@ using DOL.GS.Quests;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_DataQuest

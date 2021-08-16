@@ -18,7 +18,7 @@
  */
 using NUnit.Framework;
 
-namespace DOL.Integration.Database.MySQL
+namespace DOL.Tests.Integration.Database.MySQL
 {
 	[TestFixture, Explicit]
 	public class MySQLDBInterfaceTests : InterfaceTests

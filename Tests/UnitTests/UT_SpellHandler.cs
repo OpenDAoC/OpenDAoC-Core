@@ -5,7 +5,7 @@ using DOL.Events;
 using System;
 using DOL.Database;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_SpellHandler

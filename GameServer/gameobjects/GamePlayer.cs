@@ -9469,6 +9469,12 @@ namespace DOL.GS
 				return false;
 			}
 
+			if (toItem.PoisonCharges > 0)
+			{
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.ApplyPoison.CantReapplyPoison"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
 			if (toItem.PoisonSpellID != 0)
 			{
 				bool canApply = false;
@@ -11766,6 +11772,8 @@ namespace DOL.GS
 		/// <returns>true if player took the item</returns>
 		public override bool ReceiveItem(GameLiving source, InventoryItem item)
 		{
+			//if (item == null) return false;
+			GamePlayer sourcePlayer = source as GamePlayer;
 			if (item == null) return false;
 
 			if (!Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
@@ -11784,22 +11792,35 @@ namespace DOL.GS
                     Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.ReceiveFrom", item.GetName(0, false), source.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 			}
 
-			if (source is GamePlayer)
+			//if (source is gameplayer)
+			//{
+			//	gameplayer sourceplayer = source as gameplayer;
+			//	if (sourceplayer != null)
+			//	{
+			//		uint privlevel1 = client.account.privlevel;
+			//		uint privlevel2 = sourceplayer.client.account.privlevel;
+			//		if (privlevel1 != privlevel2
+			//		    && (privlevel1 > 1 || privlevel2 > 1)
+			//		    && (privlevel1 == 1 || privlevel2 == 1))
+			//		{
+			//			gameserver.instance.loggmaction("   item: " + source.name + "(" + sourceplayer.client.account.name + ") -> " + name + "(" + client.account.name + ") : " + item.name + "(" + item.id_nb + ")");
+			//		}
+			//	}
+			//}
+			//return true;
+			if (sourcePlayer != null)
 			{
-				GamePlayer sourcePlayer = source as GamePlayer;
-				if (sourcePlayer != null)
+				uint privLevel1 = Client.Account.PrivLevel;
+				uint privLevel2 = sourcePlayer.Client.Account.PrivLevel;
+				if (privLevel1 != privLevel2
+					&& (privLevel1 > 1 || privLevel2 > 1)
+					&& (privLevel1 == 1 || privLevel2 == 1))
 				{
-					uint privLevel1 = Client.Account.PrivLevel;
-					uint privLevel2 = sourcePlayer.Client.Account.PrivLevel;
-					if (privLevel1 != privLevel2
-					    && (privLevel1 > 1 || privLevel2 > 1)
-					    && (privLevel1 == 1 || privLevel2 == 1))
-					{
-						GameServer.Instance.LogGMAction("   Item: " + source.Name + "(" + sourcePlayer.Client.Account.Name + ") -> " + Name + "(" + Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
-					}
+					GameServer.Instance.LogGMAction("   Item: " + source.Name + "(" + sourcePlayer.Client.Account.Name + ") -> " + Name + "(" + Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
 				}
 			}
 			return true;
+
 		}
 
 		/// <summary>
@@ -15762,6 +15783,7 @@ namespace DOL.GS
 			
 			//Add to EntityManager
 			EntityManager.AddPlayer((this));
+			EntityManager.RemoveNpc(this);
 		}
 
 		/// <summary>

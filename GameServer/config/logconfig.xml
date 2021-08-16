@@ -27,12 +27,12 @@
 		</mapping>
 		<mapping>
 			<level value="DEBUG" />
-			<foreColor value="White" />
+			<foreColor value="Blue" />
 		</mapping>
 
 		<Threshold value="DEBUG" />
 		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="[%d{ABSOLUTE}] %m%n" />
+			<param name="ConversionPattern" value="[%date{ABSOLUTE}] [%level] [%class] %message%newline" />
 		</Layout>
 	</appender>
 
@@ -44,9 +44,10 @@
 		<datePattern value="yyyy-MM-dd" />
 		<immediateFlush value="false"/>
 		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%d - [%t] - %-5p - %c - %m%n" />
+			<param name="ConversionPattern" value="%date - [%thread] - %level - %logger - %message%newline" />
 		</Layout>
 	</appender>
+	
 	<!-- Define our ERROR Logger -->
 	<appender name="ErrorLogFile" type="log4net.Appender.RollingFileAppender" >
 		<file value="./logs/Error.log" />
@@ -55,7 +56,7 @@
 		<maximumFileSize value="20MB" />
 		<staticLogFileName value="true" />
 		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - [%thread] - %-5p - %c - %message%newline" />
+			<param name="ConversionPattern" value="%date - [%thread] - %level - %logger - %message%newline" />
 		</Layout>
 		<Threshold value="ERROR" />
 	</appender>
@@ -68,7 +69,7 @@
 			<maximumFileSize value="20MB" />
 			<staticLogFileName value="true" />
 			<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - [%thread] - %-5p - %c - %message%newline" />
+			<param name="ConversionPattern" value="%date - [%thread] - %level - %logger - %message%newline" />
 			</Layout>
 			<filter type="log4net.Filter.LevelRangeFilter">
 			<param name="LevelMin" value="WARN"/>
@@ -88,7 +89,7 @@
 		<appendtofile value="true" />
 		<file value="./logs/GMActions.log" />
 		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%d - %m%n" />
+			<param name="ConversionPattern" value="%date - %message%newline" />
 		</Layout>
 	</appender>
 
@@ -103,7 +104,7 @@
 		<appendtofile value="true" />
 		<file value="./logs/Cheats.log" />
 		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%d - %m%n" />
+			<param name="ConversionPattern" value="%date - %message%newline" />
 		</Layout>
 	</appender>
 
@@ -118,27 +119,27 @@
 		<appendtofile value="true" />
 		<file value="./logs/Inventories.log" />
 		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%d - %m%n" />
+			<param name="ConversionPattern" value="%date - %message%newline" />
 		</Layout>
 	</appender>
 
 	<!-- We set the log level for some lowlevel loggers so it won't clutter our output -->
 	<logger name="DOL.GS.PacketHandler.PacketProcessor">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	<logger name="DOL.Database.ObjectDatabase">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	<logger name="DOL.GS.GameObject">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	<logger name="DOL.Database.Handlers">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	<logger name="DOL.GS.Zone">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	<logger name="DOL.GS.GameTimer">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 </log4net>

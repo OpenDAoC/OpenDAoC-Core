@@ -40,8 +40,8 @@ namespace DOL.DOLServer
 		/// <param name="action">The action to register</param>
 		private static void RegisterAction(IAction action)
 		{
-			if(action == null)
-				throw new ArgumentException("Action can't be null!","action");
+			if (action == null)
+				throw new ArgumentException("Action can't be null!", "action");
 
 			m_actions.Add(action);
 		}
@@ -86,32 +86,32 @@ namespace DOL.DOLServer
 			parameters = new Hashtable();
 			actionName = null;
 
-			if(!args[0].StartsWith("--"))
+			if (!args[0].StartsWith("--"))
 				throw new ArgumentException("First argument must be the action");
 
 			actionName = args[0];
-			if(args.Length == 1) return;
+			if (args.Length == 1) return;
 
-			for(int i = 1; i < args.Length; i++)
+			for (int i = 1; i < args.Length; i++)
 			{
 				string arg = args[i];
-				if(arg.StartsWith("--"))
+				if (arg.StartsWith("--"))
 				{
-						throw new ArgumentException("At least two actions given and only one action allowed!");				
+					throw new ArgumentException("At least two actions given and only one action allowed!");
 				}
-				else if(arg.StartsWith("-"))
+				else if (arg.StartsWith("-"))
 				{
 					int valueIdx = arg.IndexOf('=');
-					if(valueIdx==-1)
+					if (valueIdx == -1)
 					{
 						parameters.Add(arg, "");
 						continue;
 					}
-					string argName = arg.Substring(0,valueIdx);
-					
+					string argName = arg.Substring(0, valueIdx);
+
 					string argValue = "";
-					if(valueIdx+1 < arg.Length)
-						argValue = arg.Substring(valueIdx+1);
+					if (valueIdx + 1 < arg.Length)
+						argValue = arg.Substring(valueIdx + 1);
 
 					parameters.Add(argName, argValue);
 				}
@@ -128,12 +128,14 @@ namespace DOL.DOLServer
 		/// </remarks>
 		private static void RegisterActions()
 		{
+			//Start server in console mode
+			RegisterAction(new ConsoleStart());
+
+#if NETFRAMEWORK
 			//Important action, used on service start internally
 			//!!!DO NOT REMOVE!!!
 			RegisterAction(new ServiceRun());
-			
-			//Start server in console mode
-			RegisterAction(new ConsoleStart());
+
 			//Install service action
 			RegisterAction(new ServiceInstall());
 			//Uninstall service action
@@ -142,6 +144,7 @@ namespace DOL.DOLServer
 			RegisterAction(new ServiceStart());
 			//Stop service action
 			RegisterAction(new ServiceStop());
+#endif
 		}
 
 		/// <summary>
@@ -154,7 +157,7 @@ namespace DOL.DOLServer
 			//AppDomain.CurrentDomain.AppendPrivatePath("."+Path.DirectorySeparatorChar+"lib");
 
 			Thread.CurrentThread.Name = "MAIN";
-				
+
 			RegisterActions();
 
 			if (args.Length == 0)
@@ -168,7 +171,7 @@ namespace DOL.DOLServer
 			{
 				ParseParameters(args, out actionName, out parameters);
 			}
-			catch(ArgumentException e)
+			catch (ArgumentException e)
 			{
 				Console.WriteLine(e.Message);
 				return;

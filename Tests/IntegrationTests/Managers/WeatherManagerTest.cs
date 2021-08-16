@@ -22,7 +22,7 @@ using DOL.GS;
 using DOL.GS.Scheduler;
 using NUnit.Framework;
 
-namespace DOL.Integration.Managers
+namespace DOL.Tests.Integration.Managers
 {
 	/// <summary>
 	/// Unit Tests for WeatherManagerTest.

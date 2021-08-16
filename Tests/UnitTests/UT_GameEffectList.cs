@@ -4,7 +4,7 @@ using DOL.GS.Effects;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace DOL.UnitTests.Gameserver
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_GameEffectList

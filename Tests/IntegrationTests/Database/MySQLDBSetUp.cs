@@ -25,7 +25,7 @@ using DOL.Database.Connection;
 
 using NUnit.Framework;
 
-namespace DOL.Integration.Database.MySQL
+namespace DOL.Tests.Integration.Database.MySQL
 {
 	[SetUpFixture]
 	public class MySQLDBSetUp
@@ -33,27 +33,28 @@ namespace DOL.Integration.Database.MySQL
 		public MySQLDBSetUp()
 		{
 		}
-		
+
 		public static SQLObjectDatabase Database { get; set; }
 		public static string ConnectionString { get; set; }
-				
+
 		[OneTimeSetUp]
 		public void SetUp()
 		{
-			var CodeBase = new FileInfo(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath).Directory;
+			var CodeBase = new FileInfo(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath).Directory;
 			ConnectionString = "Server=localhost;Port=3306;Database=test_dol_database;User ID=root;Password=;Treat Tiny As Boolean=False";
-			                                     
+
 			Database = (SQLObjectDatabase)ObjectDatabase.GetObjectDatabase(ConnectionType.DATABASE_MYSQL, ConnectionString);
-			
+
 			Console.WriteLine("DB Configured : {0}, {1}", Database.ConnectionType, ConnectionString);
-			
+
 			log4net.Config.BasicConfigurator.Configure(
-				new log4net.Appender.ConsoleAppender {
+				new log4net.Appender.ConsoleAppender
+				{
 					Layout = new log4net.Layout.SimpleLayout(),
 					Threshold = log4net.Core.Level.Info
 				});
 		}
-		
+
 		[OneTimeTearDown]
 		public void TearDown()
 		{

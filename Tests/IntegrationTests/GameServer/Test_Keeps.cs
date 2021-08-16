@@ -21,9 +21,9 @@ using NUnit.Framework;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.Keeps;
-using DOL.UnitTests.Gameserver;
+using DOL.Tests.Unit.Gameserver;
 
-namespace DOL.Integration.Keeps
+namespace DOL.Tests.Integration.Keeps
 {
     [TestFixture]
     class Test_Keeps
@@ -47,6 +47,7 @@ namespace DOL.Integration.Keeps
         }
 
         [Test]
+        [Category("Unreliable")]
         public void ComponentFillPosition_TwoIdenticalComponentsWithAGuardEachOnSameKeep_KeepHas2Guards()
         {
             var keep = CreateKeep();
@@ -64,6 +65,7 @@ namespace DOL.Integration.Keeps
         }
 
         [Test]
+        [Category("Unreliable")]
         public void ComponentFillPosition_TwoIdenticalComponentsWithAGuardOnEachHeightOnSameKeepWithLevel2_KeepHas4Guards()
         {
             var keep = CreateKeep();

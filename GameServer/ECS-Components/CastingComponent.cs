@@ -29,6 +29,9 @@ namespace DOL.GS
         //data for the spell that they are casting
         public ISpellHandler spellHandler;
 
+        //data for the spell they want to queue
+        public ISpellHandler queuedSpellHandler;
+
 
         public CastingComponent(GameLiving owner)
         {
@@ -46,17 +49,31 @@ namespace DOL.GS
                     return; 
                 }
             }
-            spellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+
+            if(spellHandler != null)
+            {
+                if(owner is GamePlayer pl)
+                {
+                    pl.Out.SendMessage("You begin casting this spell as a follow-up!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                }
+                
+                queuedSpellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+            } else
+            {
+                spellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+            }
+            
             
         }
 
         private bool CanCastSpell(GamePlayer p)
         {
+            /*
             if (spellHandler != null)
             {
                 p.Out.SendMessage("You are already casting a spell.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return false;
-            }
+            }*/
 
             if (p.IsCrafting)
             {

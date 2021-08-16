@@ -24,7 +24,7 @@ using DOL.Database.UniqueID;
 
 using NUnit.Framework;
 
-namespace DOL.Integration.Database
+namespace DOL.Tests.Integration.Database
 {
 	[TestFixture]
 	public class DatabaseTests
