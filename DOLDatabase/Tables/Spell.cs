@@ -34,7 +34,7 @@ namespace DOL.Database
 		protected string m_description;
 		protected string m_target = string.Empty;
 
-        protected byte m_spelltype;// = string.Empty;
+        protected string m_spelltype = string.Empty;
 		protected int m_range = 0;
 		protected int m_radius = 0;
 		protected double m_value = 0;
@@ -235,7 +235,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = true)]
-		public byte Type
+		public string Type
 		{
 			get
 			{

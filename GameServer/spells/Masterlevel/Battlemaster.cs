@@ -281,7 +281,7 @@ namespace DOL.GS.Spells
                     spell.Duration = 10;
                     spell.SpellID = 900100;
                     spell.Target = "Self";
-                    spell.Type = (byte)eSpellType.Disarm;
+                    spell.Type = eSpellType.Disarm.ToString();
                     Disarm_Weapon = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Combat_Styles_Effect, Disarm_Weapon);
                 }

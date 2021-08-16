@@ -395,7 +395,7 @@ namespace DOL.GS
 		{
 			m_description = dbspell.Description;
 			m_target = dbspell.Target;
-			m_spelltype = dbspell.Type;
+            m_spelltype = (byte)Enum.Parse(typeof (eSpellType), dbspell.Type);
 			m_range = dbspell.Range;
 			m_radius = dbspell.Radius;
 			m_value = dbspell.Value;

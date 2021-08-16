@@ -244,7 +244,7 @@ namespace DOL.GS.Spells
 			DBSpell dbSpell = new DBSpell();
 			dbSpell.ClientEffect = Spell.ClientEffect;
 			dbSpell.Icon = Spell.Icon;
-			dbSpell.Type = (byte)eSpellType.SpeedDecrease;
+			dbSpell.Type = eSpellType.SpeedDecrease.ToString();
 			dbSpell.Duration = (Spell.Radius == 0) ? 10 : 3;
 			dbSpell.Target = "Enemy";
 			dbSpell.Range = 1500;

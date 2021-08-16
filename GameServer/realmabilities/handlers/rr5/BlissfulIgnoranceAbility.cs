@@ -89,7 +89,7 @@ namespace DOL.GS.RealmAbilities
 	                    db.Message2 = "";
 	                    db.Message3 = "";
 	                    db.Message4 = "";
-                        db.Type = spell.SpellType;
+                        db.Type = ((eSpellType)spell.SpellType).ToString();
                         db.Target = "Self";
                         db.MoveCast = true;
                         db.Uninterruptible = true;
