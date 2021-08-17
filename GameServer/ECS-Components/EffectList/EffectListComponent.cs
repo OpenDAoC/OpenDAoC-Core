@@ -31,14 +31,8 @@ namespace DOL.GS
                         //If this buff is stronger > in list. cancel current buff and add this one- Return true;
                         if (existing.SpellHandler.Spell.IsPulsing)
                         {
-                            if (existing.EffectType != eEffect.Pulse)
-                                EffectIdToEffect.Remove(existing.Icon);
-                            Effects.Remove(existing.EffectType);
-                            
-
-                            Effects.Add(effect.EffectType, effect);
-                            if (effect.EffectType != eEffect.Pulse)
-                                EffectIdToEffect.Add(effect.Icon, effect);
+                            Effects[effect.EffectType] = effect;
+                            effect.RenewEffect = true;
                             return true;
                         }
                         Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");

@@ -15,6 +15,7 @@ namespace DOL.GS
         public double Effectiveness;
         public ushort Icon;
         public bool CancelEffect;
+        public bool RenewEffect;
         public eEffect EffectType;
         public eSpellType SpellType;
         public GameLiving Owner;
@@ -31,6 +32,7 @@ namespace DOL.GS
             Effectiveness = effectiveness;
             Icon = icon;
             CancelEffect = cancelEffect;
+            RenewEffect = false;
             EffectType = MapEffect();
             ExpireTick = duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
@@ -78,26 +80,26 @@ namespace DOL.GS
 
                 //stats
                 case (byte)eSpellType.StrengthBuff:
-                    return eEffect.BaseStr;
+                    return eEffect.StrengthBuff;
                 case (byte)eSpellType.DexterityBuff:
-                    return eEffect.BaseDex;
+                    return eEffect.DexterityBuff;
                 case (byte)eSpellType.ConstitutionBuff:
-                    return eEffect.BaseCon;
+                    return eEffect.ConstitutionBuff;
                 case (byte)eSpellType.StrengthConstitutionBuff:
-                    return eEffect.StrCon;
+                    return eEffect.StrengthConBuff;
                 case (byte)eSpellType.DexterityQuicknessBuff:
-                    return eEffect.DexQui;
+                    return eEffect.DexQuickBuff;
                 case (byte)eSpellType.AcuityBuff:
-                    return eEffect.Acuity;
+                    return eEffect.AcuityBuff;
                 case (byte)eSpellType.ArmorAbsorptionBuff:
                     return eEffect.ArmorAbsorptionBuff;
                 case (byte)eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
                 case (byte)eSpellType.ArmorFactorBuff:
                     if (SpellHandler.SpellLine.IsBaseLine)
-                        return eEffect.BaseAf; //currently no map to specAF. where is spec AF handled?
+                        return eEffect.BaseAFBuff; //currently no map to specAF. where is spec AF handled?
                     else
-                        return eEffect.SpecAf;
+                        return eEffect.SpecAFBuff;
 
 
                 //resists

@@ -15,89 +15,62 @@ namespace DOL.GS
         {
             foreach (var e in EntityManager.GetAllEffects())
             {
-                if (e.CancelEffect)// &&  )
+                if (e.CancelEffect)
                 {
                     if (tick > e.ExpireTick)
                         HandleCancelEffect(e);
                 }
                 else
                 {
-
-
                     //switch (e.EffectType)
                     //{
+                    //    //buffs
+                    //    case eEffect.StrengthBuff:
+                    //    case eEffect.DexterityBuff:
+                    //    case eEffect.ConstitutionBuff:
+                    //    case eEffect.QuicknessBuff:
+                    //    case eEffect.AcuityBuff:
+                    //    case eEffect.StrengthConBuff:
+                    //    case eEffect.DexQuickBuff:
+                    //    case eEffect.BaseAFBuff:
+                    //    case eEffect.ArmorAbsorptionBuff:
 
-                    //case eEffect.BaseStr:
-                    //case eEffect.BaseDex:
-                    //case eEffect.BaseCon:
-                    //case eEffect.Acuity:
-                    //case eEffect.StrCon:
-                    //case eEffect.DexQui:
-                    //case eEffect.BaseAf:
-                    //case eEffect.ArmorAbsorptionBuff:
-                    //case eEffect.BodyResistBuff:
-                    //case eEffect.SpiritResistBuff:
-                    //case eEffect.EnergyResistBuff:
-                    //case eEffect.HeatResistBuff:
-                    //case eEffect.ColdResistBuff:
-                    //case eEffect.MatterResistBuff:
-                    //case eEffect.HealOverTime:
-                    //case eEffect.DamageAdd:
-                    //HandlePropertyBuff(e, getPropertyFromEffect(e.EffectType));
-                    //break;
+                    //    case eEffect.BodyResistBuff:
+                    //    case eEffect.SpiritResistBuff:
+                    //    case eEffect.EnergyResistBuff:
+                    //    case eEffect.HeatResistBuff:
+                    //    case eEffect.ColdResistBuff:
+                    //    case eEffect.MatterResistBuff:
+                    //    case eEffect.BodySpiritEnergyBuff:
+                    //    case eEffect.HeatColdMatterBuff:
+                    //    case eEffect.AllMagicResistsBuff:
+                    //    case eEffect.AllMeleeResistsBuff:
+                    //    case eEffect.AllResistsBuff:
 
+                    //    //debuffs
+                    //    case eEffect.StrengthDebuff:
+                    //    case eEffect.DexterityDebuff:
+                    //    case eEffect.ConstitutionDebuff:
+                    //    case eEffect.QuicknessDebuff:
+                    //    case eEffect.AcuityDebuff:
+                    //    case eEffect.StrConDebuff:
+                    //    case eEffect.DexQuiDebuff:
+                    //    case eEffect.ArmorAbsorptionDebuff:
+                    //    case eEffect.ArmorFactorDebuff:
+
+                    //    case eEffect.BodyResistDebuff:
+                    //    case eEffect.ColdResistDebuff:
+                    //    case eEffect.EnergyResistDebuff:
+                    //    case eEffect.HeatResistDebuff:
+                    //    case eEffect.MatterResistDebuff:
+                    //    case eEffect.SpiritResistDebuff:
+                    //    case eEffect.AllMeleeResistsDebuff:
+                    //    case eEffect.NaturalResistDebuff:
+                    //        HandlePropertyModification(e);
+                    //        break;
                     //}
-
-                    switch (e.EffectType)
-                    {
-                        //buffs
-                        case eEffect.StrengthBuff:
-                        case eEffect.DexterityBuff:
-                        case eEffect.ConstitutionBuff:
-                        case eEffect.QuicknessBuff:
-                        case eEffect.AcuityBuff:
-                        case eEffect.StrengthConBuff:
-                        case eEffect.DexQuickBuff:
-                        case eEffect.BaseAFBuff:
-                        case eEffect.ArmorAbsorptionBuff:
-
-                        case eEffect.BodyResistBuff:
-                        case eEffect.SpiritResistBuff:
-                        case eEffect.EnergyResistBuff:
-                        case eEffect.HeatResistBuff:
-                        case eEffect.ColdResistBuff:
-                        case eEffect.MatterResistBuff:
-                        case eEffect.BodySpiritEnergyBuff:
-                        case eEffect.HeatColdMatterBuff:
-                        case eEffect.AllMagicResistsBuff:
-                        case eEffect.AllMeleeResistsBuff:
-                        case eEffect.AllResistsBuff:
-
-                        //debuffs
-                        case eEffect.StrengthDebuff:
-                        case eEffect.DexterityDebuff:
-                        case eEffect.ConstitutionDebuff:
-                        case eEffect.QuicknessDebuff:
-                        case eEffect.AcuityDebuff:
-                        case eEffect.StrConDebuff:
-                        case eEffect.DexQuiDebuff:
-                        case eEffect.ArmorAbsorptionDebuff:
-                        case eEffect.ArmorFactorDebuff:
-
-                        case eEffect.BodyResistDebuff:
-                        case eEffect.ColdResistDebuff:
-                        case eEffect.EnergyResistDebuff:
-                        case eEffect.HeatResistDebuff:
-                        case eEffect.MatterResistDebuff:
-                        case eEffect.SpiritResistDebuff:
-                        case eEffect.AllMeleeResistsDebuff:
-                        case eEffect.NaturalResistDebuff:
-                            HandlePropertyModification(e);
-                            break;
-                    }
-
+                    HandlePropertyModification(e);
                 }
-
 
                 EntityManager.RemoveEffect(e);
             }
@@ -121,66 +94,56 @@ namespace DOL.GS
 
             if (!effectList.AddEffect(e))
             {
-                SendSpellResistAnimation(e);
+                
+                    SendSpellResistAnimation(e);
 
             }
             else if (e.EffectType != eEffect.Pulse)
             {
                 SendSpellAnimation(e);
 
-//<<<<<<< HEAD
-//                foreach (var prop in properties)
-//                {
-//                    Console.WriteLine($"Handling {prop.ToString()}");
-//                    if (isPositiveEffect(e.EffectType))
-//                        e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
-//                    else
-//                        // e.Owner.AbilityBonus[(int)prop] -= (int)e.SpellHandler.Spell.Value;
-//                        e.Owner.DebuffCategory[(int)prop] += (int)e.SpellHandler.Spell.Value;
-//                }
-
-//=======
-                if (isDebuff(e.EffectType))
+                if (!e.RenewEffect)
                 {
-                    if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
+                    if (isDebuff(e.EffectType))
                     {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
                         {
-                            Console.WriteLine($"Debuffing {prop.ToString()}");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Debuffing {prop.ToString()}");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            }
                         }
+                        else
+                        {
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Debuffing {prop.ToString()}");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            }
+                        }
+
                     }
                     else
                     {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
                         {
-                            Console.WriteLine($"Debuffing {prop.ToString()}");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Buffing {prop.ToString()}");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            }
                         }
-                    }
-
-                }
-                else
-                {
-                    if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
-                    {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        else
                         {
-                            Console.WriteLine($"Buffing {prop.ToString()}");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
-                        {
-                            Console.WriteLine($"Buffing {prop.ToString()}");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Buffing {prop.ToString()}");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            }
                         }
                     }
                 }
-//>>>>>>> CombinedGameLoop
-
                 if (e.Owner is GamePlayer player)
                 {
                     SendPlayerUpdates(player);
@@ -188,48 +151,15 @@ namespace DOL.GS
             }
         }
 
-//<<<<<<< HEAD
-//        private static void SendPlayerUpdates(GamePlayer player)
-//        {
-//            player.Out.SendCharStatsUpdate();
-//            player.Out.SendCharResistsUpdate();
-//            player.UpdateEncumberance();
-//            player.UpdatePlayerStatus();
-//            player.Out.SendUpdatePlayer();
-//        }
-
-//        //todo - abstract this out to dynamically cancel the effect. Need a way to look up eProperty and such
-//        private static void HandleCancelEffect(ECSGameEffect e)
-//        {
-
-//            Console.WriteLine($"Handling Cancel Effect: " + e.EffectType.ToString());
-//=======
         private static void HandleCancelEffect(ECSGameEffect e)
         {
             Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
-//>>>>>>> CombinedGameLoop
+
             if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 Console.WriteLine("Unable to remove effect!");
                 return;
             }
-//<<<<<<< HEAD
-//            foreach (var prop in getPropertyFromEffect(e.EffectType))
-//            {
-
-//                if (isPositiveEffect(e.EffectType))
-//                {
-//                    //if e.EffectType == buff, subtract value
-//                    e.Owner.AbilityBonus[(int)prop] -= (int)e.SpellHandler.Spell.Value;
-//                }
-//                else
-//                {
-//                    //else if e.EffectType == debuff, add value
-//                    //e.Owner.AbilityBonus[(int)prop] += (int)e.SpellHandler.Spell.Value;
-//                    e.Owner.DebuffCategory[(int)prop] -= (int)e.SpellHandler.Spell.Value;
-//                }
-
-//=======
 
             if (isDebuff(e.EffectType))
             {
@@ -268,39 +198,29 @@ namespace DOL.GS
                         ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
                     }
                 }
-//>>>>>>> CombinedGameLoop
             }
 
             if (e.Owner is GamePlayer player)
             {
                 SendPlayerUpdates(player);
                 //Now update EffectList
-//<<<<<<< HEAD
-                player.Out.SendUpdateIcons(/*new List<ECSGameEffect>() { e }*/e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             }
         }
 
         public static void SendSpellAnimation(ECSGameEffect e)
-//=======
-//                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
-//            }
-//        }
-
-//        //move these to a sendUpdateToPlayer class
-//        private static void SendSpellAnimation(ECSGameEffect e)
-//>>>>>>> CombinedGameLoop
         {
             GameLiving target = e.SpellHandler.Target != null ? e.SpellHandler.Target : e.SpellHandler.Caster;
 
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, /*e.SpellHandler.Target target*/e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
+                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
             }
 
             if (e.Owner is GamePlayer player1)
             {
-                player1.Out.SendUpdateIcons(/*new List<ECSGameEffect>() { e }*/player1.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
+                player1.Out.SendUpdateIcons(player1.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
             }
         }
 
@@ -310,7 +230,7 @@ namespace DOL.GS
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, /*e.SpellHandler.Target target*/e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
+                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
             }
         }
 
@@ -345,11 +265,8 @@ namespace DOL.GS
                 case eEffect.AcuityDebuff:
                     list.Add(eProperty.Acuity);
                     return list;
-//<<<<<<< HEAD
-                case eEffect.StrCon:
-//=======
-//                case eEffect.StrengthConBuff:
-//>>>>>>> CombinedGameLoop
+
+                case eEffect.StrengthConBuff:
                 case eEffect.StrConDebuff:
                     list.Add(eProperty.Strength);
                     list.Add(eProperty.Constitution);
@@ -370,12 +287,9 @@ namespace DOL.GS
                     return list;
 
                 //resists
-//<<<<<<< HEAD
-//=======
                 case eEffect.NaturalResistDebuff:
                     list.Add(eProperty.Resist_Natural);
                     return list;
-//>>>>>>> CombinedGameLoop
                 case eEffect.BodyResistBuff:
                 case eEffect.BodyResistDebuff:
                     list.Add(eProperty.Resist_Body);
@@ -448,7 +362,6 @@ namespace DOL.GS
         {
             switch (e)
             {
-//<<<<<<< HEAD
                 case eEffect.Bladeturn:
                 case eEffect.DamageAdd:
                 case eEffect.DamageReturn:
@@ -459,16 +372,6 @@ namespace DOL.GS
                 case eEffect.Celerity:
                 case eEffect.MovementSpeedBuff:
                 case eEffect.HealOverTime:
-
-//                case eEffect.BaseStr:
-//                case eEffect.BaseDex:
-//                case eEffect.BaseCon:
-//                case eEffect.Acuity:
-//                case eEffect.StrCon:
-//                case eEffect.DexQui:
-//                case eEffect.BaseAf:
-//                case eEffect.SpecAf:
-//=======
                 case eEffect.StrengthBuff:
                 case eEffect.DexterityBuff:
                 case eEffect.ConstitutionBuff:
@@ -477,24 +380,18 @@ namespace DOL.GS
                 case eEffect.DexQuickBuff:
                 case eEffect.BaseAFBuff:
                 case eEffect.SpecAFBuff:
-//>>>>>>> CombinedGameLoop
+                case eEffect.PaladinAf:
                 case eEffect.ArmorAbsorptionBuff:
-
                 case eEffect.BodyResistBuff:
                 case eEffect.SpiritResistBuff:
                 case eEffect.EnergyResistBuff:
                 case eEffect.HeatResistBuff:
                 case eEffect.ColdResistBuff:
                 case eEffect.MatterResistBuff:
-//<<<<<<< HEAD
-
                 case eEffect.HealthRegenBuff:
                 case eEffect.EnduranceRegenBuff:
                 case eEffect.PowerRegenBuff:
-                    return true;
-//=======
-//                    return false;
-//>>>>>>> CombinedGameLoop
+                    return false;
 
                 case eEffect.StrengthDebuff:
                 case eEffect.DexterityDebuff:
@@ -519,13 +416,12 @@ namespace DOL.GS
 
         }
 
-//<<<<<<< HEAD
+
         public static void OnEffectPulse(ECSGameEffect effect)
         {
 
             if (effect.Owner.IsAlive == false)
             {
-                //effect.Cancel(false);
                 effect.CancelEffect = true;
                 EntityManager.AddEffect(effect);
             }
@@ -567,10 +463,7 @@ namespace DOL.GS
 
                     if (--bleedValue <= 0 || !effect.Owner.IsAlive)
                     {
-                        //effect.Cancel(false);
                         effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                        //effect.CancelEffect = true;
-                        //EntityManager.AddEffect(effect);
                     }
                     else effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
                 }
@@ -588,6 +481,8 @@ namespace DOL.GS
             (effect.SpellHandler as DoTSpellHandler).SendDamageMessages(ad);
             (effect.SpellHandler as DoTSpellHandler).DamageTarget(ad, false);
         }
+
+        // added to map without having to create the effect
         public static eEffect MapEffect(SpellHandler spellHandler)
         {
             //Console.WriteLine("Spell of type: " + ((eSpellType)spellHandler.Spell.SpellType).ToString());
@@ -618,26 +513,26 @@ namespace DOL.GS
 
                 //stats
                 case (byte)eSpellType.StrengthBuff:
-                    return eEffect.BaseStr;
+                    return eEffect.StrengthBuff;
                 case (byte)eSpellType.DexterityBuff:
-                    return eEffect.BaseDex;
+                    return eEffect.DexterityBuff;
                 case (byte)eSpellType.ConstitutionBuff:
-                    return eEffect.BaseCon;
+                    return eEffect.ConstitutionBuff;
                 case (byte)eSpellType.StrengthConstitutionBuff:
-                    return eEffect.StrCon;
+                    return eEffect.StrengthConBuff;
                 case (byte)eSpellType.DexterityQuicknessBuff:
-                    return eEffect.DexQui;
+                    return eEffect.DexQuickBuff;
                 case (byte)eSpellType.AcuityBuff:
-                    return eEffect.Acuity;
+                    return eEffect.AcuityBuff;
                 case (byte)eSpellType.ArmorAbsorptionBuff:
                     return eEffect.ArmorAbsorptionBuff;
                 case (byte)eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
                 case (byte)eSpellType.ArmorFactorBuff:
                     if (spellHandler.SpellLine.IsBaseLine)
-                        return eEffect.BaseAf; //currently no map to specAF. where is spec AF handled?
+                        return eEffect.BaseAFBuff; //currently no map to specAF. where is spec AF handled?
                     else
-                        return eEffect.SpecAf;
+                        return eEffect.SpecAFBuff;
 
 
                 //resists
@@ -745,7 +640,7 @@ namespace DOL.GS
                     return eEffect.Unknown;
             }
         }
-//=======
+
         /// <summary>
 		/// Method used to apply bonuses
 		/// </summary>
@@ -800,6 +695,5 @@ namespace DOL.GS
             return bonuscat;
         }
 
-//>>>>>>> CombinedGameLoop
     }
 }
