@@ -62,8 +62,9 @@ namespace DOL.GS
             {
                 spellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
             }
-            
-            
+
+            // Cancel MoveSpeedBuff=========================May not be the best place for this========================================
+            owner.OnAttack();
         }
 
         private bool CanCastSpell(GamePlayer p)

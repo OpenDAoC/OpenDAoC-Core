@@ -4041,6 +4041,21 @@ namespace DOL.GS
 			}
 		}
 
+        public void OnAttack()
+        {
+            if (effectListComponent is null)
+                return;
+
+            // Cancel MoveSpeedBuff
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+            {
+                var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff];
+                effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                effect.CancelEffect = true;
+                EntityManager.AddEffect(effect);
+            }
+        }
+
 		/// <summary>
 		/// This method is called at the end of the attack sequence to
 		/// notify objects if they have been attacked/hit by an attack
@@ -4052,10 +4067,13 @@ namespace DOL.GS
 			{
 				Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));
 
+                // Handle DamageShield damage
                 if (effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out ECSGameEffect dSEffect))
                 {
                     ((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
                 }
+
+                OnAttack();
 
                 if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
 					((GameNPC)this).SwitchToMelee(ad.Attacker);
@@ -4073,14 +4091,6 @@ namespace DOL.GS
 					ad.Attacker.LastAttackTickPvP = CurrentRegion.Time;
 				}
 
-                // Cancel MoveSpeedBuff
-                if(effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-                {
-                    var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff];
-                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                    effect.CancelEffect = true;
-                    EntityManager.AddEffect(effect);
-                }
 			}
 		}
 

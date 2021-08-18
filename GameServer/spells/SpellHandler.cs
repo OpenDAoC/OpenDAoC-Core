@@ -2758,6 +2758,8 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public virtual void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+            target.OnAttack();
+
             if (target is GamePlayer)
 			{
 				GameSpellEffect effect1;

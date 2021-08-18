@@ -1002,6 +1002,8 @@ namespace DOL.GS
         /// <returns></returns>
         public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
         {
+            owner.OnAttack();
+
             var p = owner as GamePlayer;
 
             if (p != null)

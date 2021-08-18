@@ -45,7 +45,7 @@ namespace DOL.GS
             var diff = (int) (_tickDueTime - elapsed);
             if (diff <= 0)
             {
-                Console.WriteLine($"Tick rate unable to keep up with load! Elapsed: {elapsed}");
+                //Console.WriteLine($"Tick rate unable to keep up with load! Elapsed: {elapsed}");
                 _timerRef.Change(0, Timeout.Infinite);
                 return;
             }
