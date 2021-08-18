@@ -95,7 +95,7 @@ namespace DOL.GS
             if (!effectList.AddEffect(e))
             {
                 
-                    SendSpellResistAnimation(e);
+                SendSpellResistAnimation(e);
 
             }
             else if (e.EffectType != eEffect.Pulse)
@@ -160,46 +160,47 @@ namespace DOL.GS
                 Console.WriteLine("Unable to remove effect!");
                 return;
             }
-
-            if (isDebuff(e.EffectType))
+            if (e.EffectType != eEffect.Pulse)
             {
-                if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
+                if (isDebuff(e.EffectType))
                 {
-                    foreach (var prop in getPropertyFromEffect(e.EffectType))
+                    if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
                     {
-                        Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                        ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        {
+                            Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
+                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        {
+                            Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
+                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                        }
                     }
                 }
                 else
                 {
-                    foreach (var prop in getPropertyFromEffect(e.EffectType))
+                    if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
                     {
-                        Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        {
+                            Console.WriteLine($"Canceling {prop.ToString()}");
+                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        {
+                            Console.WriteLine($"Canceling {prop.ToString()}");
+                            ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                        }
                     }
                 }
             }
-            else
-            {
-                if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
-                {
-                    foreach (var prop in getPropertyFromEffect(e.EffectType))
-                    {
-                        Console.WriteLine($"Canceling {prop.ToString()}");
-                        ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, true);
-                    }
-                }
-                else
-                {
-                    foreach (var prop in getPropertyFromEffect(e.EffectType))
-                    {
-                        Console.WriteLine($"Canceling {prop.ToString()}");
-                        ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
-                    }
-                }
-            }
-
             if (e.Owner is GamePlayer player)
             {
                 SendPlayerUpdates(player);
@@ -416,230 +417,7 @@ namespace DOL.GS
 
         }
 
-
-        public static void OnEffectPulse(ECSGameEffect effect)
-        {
-
-            if (effect.Owner.IsAlive == false)
-            {
-                effect.CancelEffect = true;
-                EntityManager.AddEffect(effect);
-            }
-
-            if (effect.Owner.IsAlive)
-            {
-                if (effect.SpellHandler is DoTSpellHandler handler)
-                {
-                    // An acidic cloud surrounds you!
-                    handler.MessageToLiving(effect.Owner, effect.SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                    // {0} is surrounded by an acidic cloud!
-                    Message.SystemToArea(effect.Owner, Util.MakeSentence(effect.SpellHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-                    handler.OnDirectEffect(effect.Owner, effect.Effectiveness);
-                }
-                else if (effect.SpellHandler is StyleBleeding bleedHandler)
-                {
-                    if (effect.StartTick + effect.PulseFreq > GameLoop.GameLoopTime && effect.Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) == 0)
-                    {
-                        effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage + (int)bleedHandler.Spell.Damage * Util.Random(25) / 100);  // + random max 25%
-
-                    }
-                    bleedHandler.MessageToLiving(effect.Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
-                    Message.SystemToArea(effect.Owner, Util.MakeSentence(bleedHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-
-                    int bleedValue = effect.Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
-
-                    AttackData ad = bleedHandler.CalculateDamageToTarget(effect.Owner, 1.0);
-
-                    bleedHandler.SendDamageMessages(ad);
-
-                    // attacker must be null, attack result is 0x0A
-                    foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    {
-                        player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, 0x0A, ad.Target.HealthPercent);
-                    }
-                    // send animation before dealing damage else dead livings show no animation
-                    ad.Target.OnAttackedByEnemy(ad);
-                    ad.Attacker.DealDamage(ad);
-
-                    if (--bleedValue <= 0 || !effect.Owner.IsAlive)
-                    {
-                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                    }
-                    else effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
-                }
-            }
-        }
-
-        public static void OnDirectEffect(GameLiving target, double effectiveness, ECSGameEffect effect)
-        {
-            if (target == null) return;
-            if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
-
-            // no interrupts on DoT direct effect
-            // calc damage
-            AttackData ad = (effect.SpellHandler as DoTSpellHandler).CalculateDamageToTarget(target, effectiveness);
-            (effect.SpellHandler as DoTSpellHandler).SendDamageMessages(ad);
-            (effect.SpellHandler as DoTSpellHandler).DamageTarget(ad, false);
-        }
-
-        // added to map without having to create the effect
-        public static eEffect MapEffect(SpellHandler spellHandler)
-        {
-            //Console.WriteLine("Spell of type: " + ((eSpellType)spellHandler.Spell.SpellType).ToString());
-            switch (spellHandler.Spell.SpellType)
-            {
-                #region Positive Effects
-                //positive effects
-                case (byte)eSpellType.Bladeturn:
-                    return eEffect.Bladeturn;
-                case (byte)eSpellType.DamageAdd:
-                    return eEffect.DamageAdd;
-                //case (byte)eSpellType.DamageReturn:
-                //    return eEffect.DamageReturn;
-                case (byte)eSpellType.DamageShield: //FocusShield: Could be the wrong SpellType here
-                    return eEffect.FocusShield;
-                case (byte)eSpellType.AblativeArmor:
-                    return eEffect.AblativeArmor;
-                case (byte)eSpellType.MeleeDamageBuff:
-                    return eEffect.MeleeDamageBuff;
-                case (byte)eSpellType.CombatSpeedBuff:
-                    return eEffect.MeleeHasteBuff;
-                //case (byte)eSpellType.Celerity:  //Possibly the same as CombatSpeedBuff?
-                //    return eEffect.Celerity;
-                case (byte)eSpellType.SpeedEnhancement:
-                    return eEffect.MovementSpeedBuff;
-                case (byte)eSpellType.HealOverTime:
-                    return eEffect.HealOverTime;
-
-                //stats
-                case (byte)eSpellType.StrengthBuff:
-                    return eEffect.StrengthBuff;
-                case (byte)eSpellType.DexterityBuff:
-                    return eEffect.DexterityBuff;
-                case (byte)eSpellType.ConstitutionBuff:
-                    return eEffect.ConstitutionBuff;
-                case (byte)eSpellType.StrengthConstitutionBuff:
-                    return eEffect.StrengthConBuff;
-                case (byte)eSpellType.DexterityQuicknessBuff:
-                    return eEffect.DexQuickBuff;
-                case (byte)eSpellType.AcuityBuff:
-                    return eEffect.AcuityBuff;
-                case (byte)eSpellType.ArmorAbsorptionBuff:
-                    return eEffect.ArmorAbsorptionBuff;
-                case (byte)eSpellType.PaladinArmorFactorBuff:
-                    return eEffect.PaladinAf;
-                case (byte)eSpellType.ArmorFactorBuff:
-                    if (spellHandler.SpellLine.IsBaseLine)
-                        return eEffect.BaseAFBuff; //currently no map to specAF. where is spec AF handled?
-                    else
-                        return eEffect.SpecAFBuff;
-
-
-                //resists
-                case (byte)eSpellType.BodyResistBuff:
-                    return eEffect.BodyResistBuff;
-                case (byte)eSpellType.SpiritResistBuff:
-                    return eEffect.SpiritResistBuff;
-                case (byte)eSpellType.EnergyResistBuff:
-                    return eEffect.EnergyResistBuff;
-                case (byte)eSpellType.HeatResistBuff:
-                    return eEffect.HeatResistBuff;
-                case (byte)eSpellType.ColdResistBuff:
-                    return eEffect.ColdResistBuff;
-                case (byte)eSpellType.MatterResistBuff:
-                    return eEffect.MatterResistBuff;
-
-                //regen
-                case (byte)eSpellType.HealthRegenBuff:
-                    return eEffect.HealthRegenBuff;
-                case (byte)eSpellType.EnduranceRegenBuff:
-                    return eEffect.EnduranceRegenBuff;
-                case (byte)eSpellType.PowerRegenBuff:
-                    return eEffect.PowerRegenBuff;
-
-                #endregion
-
-                #region Negative Effects
-
-                //persistent negative effects
-                case (byte)eSpellType.StyleBleeding:
-                    return eEffect.Bleed;
-                case (byte)eSpellType.DamageOverTime:
-                    return eEffect.DamageOverTime;
-                case (byte)eSpellType.Charm:
-                    return eEffect.Charm;
-                case (byte)eSpellType.SpeedDecrease:
-                    return eEffect.MovementSpeedDebuff;
-                case (byte)eSpellType.MeleeDamageDebuff:
-                    return eEffect.MeleeDamageDebuff;
-                case (byte)eSpellType.StyleCombatSpeedDebuff:
-                case (byte)eSpellType.CombatSpeedDebuff:
-                    return eEffect.MeleeHasteDebuff;
-                case (byte)eSpellType.Disease:
-                    return eEffect.Disease;
-
-                //Crowd Control Effects
-                case (byte)eSpellType.StyleStun:
-                case (byte)eSpellType.Stun:
-                    return eEffect.Stun;
-                //case (byte)eSpellType.StunImmunity: // Not implemented
-                //    return eEffect.StunImmunity;
-                case (byte)eSpellType.Mesmerize:
-                    return eEffect.Mez;
-                //case (byte)eSpellType.MezImmunity: // Not implemented
-                //    return eEffect.MezImmunity;
-                case (byte)eSpellType.StyleSpeedDecrease:
-                    return eEffect.MeleeSnare;
-                //case (byte)eSpellType.Snare: // May work off of SpeedDecrease
-                //    return eEffect.Snare;
-                //case (byte)eSpellType.SnareImmunity: // Not implemented
-                //    return eEffect.SnareImmunity;
-                case (byte)eSpellType.Nearsight:
-                    return eEffect.Nearsight;
-
-                //stat debuffs
-                case (byte)eSpellType.StrengthDebuff:
-                    return eEffect.StrengthDebuff;
-                case (byte)eSpellType.DexterityDebuff:
-                    return eEffect.DexterityDebuff;
-                case (byte)eSpellType.ConstitutionDebuff:
-                    return eEffect.ConstitutionDebuff;
-                case (byte)eSpellType.StrengthConstitutionDebuff:
-                    return eEffect.StrConDebuff;
-                case (byte)eSpellType.DexterityQuicknessDebuff:
-                    return eEffect.DexQuiDebuff;
-                //case (byte)eSpellType.AcuityDebuff: //Not sure what this is yet
-                //return eEffect.Acuity;
-                case (byte)eSpellType.ArmorAbsorptionDebuff:
-                    return eEffect.ArmorAbsorptionDebuff;
-                case (byte)eSpellType.ArmorFactorDebuff:
-                    return eEffect.ArmorFactorDebuff;
-
-                //resist debuffs
-                case (byte)eSpellType.BodyResistDebuff:
-                    return eEffect.BodyResistDebuff;
-                case (byte)eSpellType.SpiritResistDebuff:
-                    return eEffect.SpiritResistDebuff;
-                case (byte)eSpellType.EnergyResistDebuff:
-                    return eEffect.EnergyResistDebuff;
-                case (byte)eSpellType.HeatResistDebuff:
-                    return eEffect.HeatResistDebuff;
-                case (byte)eSpellType.ColdResistDebuff:
-                    return eEffect.ColdResistDebuff;
-                case (byte)eSpellType.MatterResistDebuff:
-                    return eEffect.MatterResistDebuff;
-
-                //misc
-                case (byte)eSpellType.DirectDamage:
-                    return eEffect.DirectDamage;
-
-                #endregion
-
-                default:
-                    Console.WriteLine($"Unable to map effect for ECSGameEffect! {((eSpellType)spellHandler.Spell.SpellType).ToString()}");
-                    return eEffect.Unknown;
-            }
-        }
+        
 
         /// <summary>
 		/// Method used to apply bonuses
@@ -694,6 +472,62 @@ namespace DOL.GS
             }
             return bonuscat;
         }
+        #region DoT/Bleed
 
+        // For DoT/Bleed functionality. Can be moved.
+        public static void OnEffectPulse(ECSGameEffect effect)
+        {
+
+            if (effect.Owner.IsAlive == false)
+            {
+                effect.CancelEffect = true;
+                EntityManager.AddEffect(effect);
+            }
+
+            if (effect.Owner.IsAlive)
+            {
+                if (effect.SpellHandler is DoTSpellHandler handler)
+                {
+                    // An acidic cloud surrounds you!
+                    handler.MessageToLiving(effect.Owner, effect.SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                    // {0} is surrounded by an acidic cloud!
+                    Message.SystemToArea(effect.Owner, Util.MakeSentence(effect.SpellHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
+                    handler.OnDirectEffect(effect.Owner, effect.Effectiveness);
+                }
+                else if (effect.SpellHandler is StyleBleeding bleedHandler)
+                {
+                    if (effect.StartTick + effect.PulseFreq > GameLoop.GameLoopTime && effect.Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) == 0)
+                    {
+                        effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage + (int)bleedHandler.Spell.Damage * Util.Random(25) / 100);  // + random max 25%
+
+                    }
+                    bleedHandler.MessageToLiving(effect.Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
+                    Message.SystemToArea(effect.Owner, Util.MakeSentence(bleedHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
+
+                    int bleedValue = effect.Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
+
+                    AttackData ad = bleedHandler.CalculateDamageToTarget(effect.Owner, 1.0);
+
+                    bleedHandler.SendDamageMessages(ad);
+
+                    // attacker must be null, attack result is 0x0A
+                    foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    {
+                        player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, 0x0A, ad.Target.HealthPercent);
+                    }
+                    // send animation before dealing damage else dead livings show no animation
+                    ad.Target.OnAttackedByEnemy(ad);
+                    ad.Attacker.DealDamage(ad);
+
+                    if (--bleedValue <= 0 || !effect.Owner.IsAlive)
+                    {
+                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                    }
+                    else effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
+                }
+            }
+        }
+
+        #endregion
     }
 }
