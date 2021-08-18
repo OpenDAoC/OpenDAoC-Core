@@ -104,7 +104,18 @@ namespace DOL.GS
 
                 if (!e.RenewEffect)
                 {
-                    if (isDebuff(e.EffectType))
+                    if (e.EffectType == eEffect.MovementSpeedBuff)
+                    {
+                        e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
+                        (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                    }
+                    else if (e.EffectType == eEffect.EnduranceRegenBuff)
+                    {
+                        Console.WriteLine("Applying EnduranceRegenBuff");
+                        var handler = e.SpellHandler as EnduranceRegenSpellHandler;
+                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, false);
+                    }
+                    else if (isDebuff(e.EffectType))
                     {
                         if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
                         {
@@ -162,7 +173,18 @@ namespace DOL.GS
             }
             if (e.EffectType != eEffect.Pulse)
             {
-                if (isDebuff(e.EffectType))
+                if (e.EffectType == eEffect.MovementSpeedBuff)
+                {
+                    e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                    (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                }
+                else if (e.EffectType == eEffect.EnduranceRegenBuff)
+                {
+                    Console.WriteLine("Removing EnduranceRegenBuff");
+                    var handler = e.SpellHandler as EnduranceRegenSpellHandler;
+                    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, true);
+                }
+                else if (isDebuff(e.EffectType))
                 {
                     if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
                     {
@@ -351,6 +373,13 @@ namespace DOL.GS
                     list.Add(eProperty.Resist_Crush);
                     list.Add(eProperty.Resist_Thrust);
                     list.Add(eProperty.Resist_Slash);
+                    return list;
+
+                case eEffect.HealthRegenBuff:
+                    list.Add(eProperty.HealthRegenerationRate);
+                    return list;
+                case eEffect.PowerRegenBuff:
+                    list.Add(eProperty.PowerRegenerationRate);
                     return list;
 
                 default:

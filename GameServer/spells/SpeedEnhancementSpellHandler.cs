@@ -68,38 +68,38 @@ namespace DOL.GS.Spells
 			return (int)duration;
 		}
 		
-		/// <summary>
-		/// Start event listener for Speed Effect
-		/// </summary>
-		/// <param name="effect"></param>
-		public override void OnEffectAdd(GameSpellEffect effect)
-		{
-			GamePlayer player = effect.Owner as GamePlayer;
+		///// <summary>
+		///// Start event listener for Speed Effect
+		///// </summary>
+		///// <param name="effect"></param>
+		//public override void OnEffectAdd(GameSpellEffect effect)
+		//{
+		//	GamePlayer player = effect.Owner as GamePlayer;
 			
-			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(OnAttack));
-			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.CastFinished, new DOLEventHandler(OnAttack));
-			if (player != null)
-				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(OnStealthStateChanged));
+		//	GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+		//	GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(OnAttack));
+		//	GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.CastFinished, new DOLEventHandler(OnAttack));
+		//	if (player != null)
+		//		GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(OnStealthStateChanged));
 			
-			base.OnEffectAdd(effect);
-		}
+		//	base.OnEffectAdd(effect);
+		//}
 
-		/// <summary>
-		/// Remove event listener for Speed Effect
-		/// </summary>
-		/// <param name="effect"></param>
-		/// <param name="overwrite"></param>
-		public override void OnEffectRemove(GameSpellEffect effect, bool overwrite)
-		{
-			GamePlayer player = effect.Owner as GamePlayer;
-			GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(OnAttack));
-			if (player != null)
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(OnStealthStateChanged));
+		///// <summary>
+		///// Remove event listener for Speed Effect
+		///// </summary>
+		///// <param name="effect"></param>
+		///// <param name="overwrite"></param>
+		//public override void OnEffectRemove(GameSpellEffect effect, bool overwrite)
+		//{
+		//	GamePlayer player = effect.Owner as GamePlayer;
+		//	GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+		//	GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(OnAttack));
+		//	if (player != null)
+		//		GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(OnStealthStateChanged));
 			
-			base.OnEffectRemove(effect, overwrite);
-		}
+		//	base.OnEffectRemove(effect, overwrite);
+		//}
 		
 		/// <summary>
 		/// Apply effect on target or do spell action if non duration spell
@@ -135,49 +135,49 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}
 
-		/// <summary>
-		/// When an applied effect starts
-		/// duration spells only
-		/// </summary>
-		/// <param name="effect"></param>
-		public override void OnEffectStart(GameSpellEffect effect)
-		{
-			base.OnEffectStart(effect);
+		///// <summary>
+		///// When an applied effect starts
+		///// duration spells only
+		///// </summary>
+		///// <param name="effect"></param>
+		//public override void OnEffectStart(GameSpellEffect effect)
+		//{
+		//	base.OnEffectStart(effect);
 
-			GamePlayer player = effect.Owner as GamePlayer;
+		//	GamePlayer player = effect.Owner as GamePlayer;
 
-			if (player == null || !player.IsStealthed)
-			{
-				effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, Spell.Value / 100.0);
-				SendUpdates(effect.Owner);
-			}
-		}
+		//	if (player == null || !player.IsStealthed)
+		//	{
+		//		effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, Spell.Value / 100.0);
+		//		SendUpdates(effect.Owner);
+		//	}
+		//}
 
-		/// <summary>
-		/// When an applied effect expires.
-		/// Duration spells only.
-		/// </summary>
-		/// <param name="effect">The expired effect</param>
-		/// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
-		/// <returns>immunity duration in milliseconds</returns>
-		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-		{
-			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+		///// <summary>
+		///// When an applied effect expires.
+		///// Duration spells only.
+		///// </summary>
+		///// <param name="effect">The expired effect</param>
+		///// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
+		///// <returns>immunity duration in milliseconds</returns>
+		//public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
+		//{
+		//	effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 
-			if (!noMessages)
-			{
-				SendUpdates(effect.Owner);
-			}
+		//	if (!noMessages)
+		//	{
+		//		SendUpdates(effect.Owner);
+		//	}
 
-			return base.OnEffectExpires(effect, noMessages);
-		}
+		//	return base.OnEffectExpires(effect, noMessages);
+		//}
 
 
 		/// <summary>
 		/// Sends updates on effect start/stop
 		/// </summary>
 		/// <param name="owner"></param>
-		protected virtual void SendUpdates(GameLiving owner)
+		public virtual void SendUpdates(GameLiving owner)
 		{
 			if (owner.IsMezzed || owner.IsStunned)
 				return;

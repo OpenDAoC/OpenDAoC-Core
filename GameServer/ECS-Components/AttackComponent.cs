@@ -443,55 +443,87 @@ namespace DOL.GS
         /// <returns>the weapon damage</returns>
         public double AttackDamage(InventoryItem weapon)
         {
-            var p = owner as GamePlayer;
-
-            if (weapon == null)
-                return 0;
-
-            double effectiveness = 1.00;
-            double damage = p.WeaponDamage(weapon) * weapon.SPD_ABS * 0.1;
-
-            if (weapon.Hand == 1) // two-hand
+            if (owner is GamePlayer p)
             {
-                // twohanded used weapons get 2H-Bonus = 10% + (Skill / 2)%
-                int spec = p.WeaponSpecLevel(weapon) - 1;
-                damage *= 1.1 + spec * 0.005;
-            }
 
-            if (weapon.Item_Type == Slot.RANGED)
-            {
-                //ammo damage bonus
-                if (p.rangeAttackComponent?.RangeAttackAmmo != null)
+                if (weapon == null)
+                    return 0;
+
+                double effectiveness = 1.00;
+                double damage = p.WeaponDamage(weapon) * weapon.SPD_ABS * 0.1;
+
+                if (weapon.Hand == 1) // two-hand
                 {
-                    switch ((p.rangeAttackComponent?.RangeAttackAmmo.SPD_ABS) & 0x3)
+                    // twohanded used weapons get 2H-Bonus = 10% + (Skill / 2)%
+                    int spec = p.WeaponSpecLevel(weapon) - 1;
+                    damage *= 1.1 + spec * 0.005;
+                }
+
+                if (weapon.Item_Type == Slot.RANGED)
+                {
+                    //ammo damage bonus
+                    if (p.rangeAttackComponent?.RangeAttackAmmo != null)
                     {
-                        case 0: damage *= 0.85; break; //Blunt       (light) -15%
-                                                       //case 1: damage *= 1;	break; //Bodkin     (medium)   0%
-                        case 2: damage *= 1.15; break; //doesn't exist on live
-                        case 3: damage *= 1.25; break; //Broadhead (X-heavy) +25%
+                        switch ((p.rangeAttackComponent?.RangeAttackAmmo.SPD_ABS) & 0x3)
+                        {
+                            case 0: damage *= 0.85; break; //Blunt       (light) -15%
+                                                           //case 1: damage *= 1;	break; //Bodkin     (medium)   0%
+                            case 2: damage *= 1.15; break; //doesn't exist on live
+                            case 3: damage *= 1.25; break; //Broadhead (X-heavy) +25%
+                        }
+                    }
+                    //Ranged damage buff,debuff,Relic,RA
+                    effectiveness += p.GetModified(eProperty.RangedDamage) * 0.01;
+                }
+                else if (weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
+                {
+                    //Melee damage buff,debuff,Relic,RA
+                    effectiveness += p.GetModified(eProperty.MeleeDamage) * 0.01;
+                }
+                damage *= effectiveness;
+                return damage;
+            }
+            else
+            {
+                double effectiveness = 1.00;
+                //double effectiveness = Effectiveness;
+                double damage = (1.0 + owner.Level / 3.7 + owner.Level * owner.Level / 175.0) * AttackSpeed(weapon) * 0.001;
+                if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
+                {
+                    //Melee damage buff,debuff,RA
+                    effectiveness += owner.GetModified(eProperty.MeleeDamage) * 0.01;
+                }
+                else if (weapon.Item_Type == Slot.RANGED && (weapon.Object_Type == (int)eObjectType.Longbow || weapon.Object_Type == (int)eObjectType.RecurvedBow || weapon.Object_Type == (int)eObjectType.CompositeBow))
+                {
+                    // RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
+                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+                    {
+                        effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
+                    }
+                    // RDSandersJR: If we are NOT using old archery it should be SpellDamage
+                    else if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+                    {
+                        effectiveness += owner.GetModified(eProperty.SpellDamage) * 0.01;
                     }
                 }
-                //Ranged damage buff,debuff,Relic,RA
-                effectiveness += p.GetModified(eProperty.RangedDamage) * 0.01;
+                else if (weapon.Item_Type == Slot.RANGED)
+                {
+                    effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
+                }
+                damage *= effectiveness;
+                return damage;
             }
-            else if (weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
-            {
-                //Melee damage buff,debuff,Relic,RA
-                effectiveness += p.GetModified(eProperty.MeleeDamage) * 0.01;
-            }
-            damage *= effectiveness;
-            return damage;
         }
 
-        
 
-        
+
+
 
         /// <summary>
-		/// Starts a melee attack with this player
-		/// </summary>
-		/// <param name="attackTarget">the target to attack</param>
-		public void StartAttack(GameObject attackTarget)
+        /// Starts a melee attack with this player
+        /// </summary>
+        /// <param name="attackTarget">the target to attack</param>
+        public void StartAttack(GameObject attackTarget)
         {
             var p = owner as GamePlayer;
 
@@ -972,185 +1004,191 @@ namespace DOL.GS
         {
             var p = owner as GamePlayer;
 
-            if (p.IsCrafting)
+            if (p != null)
             {
-                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                // TODO: look into timer
-                p.CraftTimer.Stop();
-                p.CraftTimer = null;
-                p.Out.SendCloseTimerWindow();
-            }
+                if (p.IsCrafting)
+                {
+                    p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // TODO: look into timer
+                    p.CraftTimer.Stop();
+                    p.CraftTimer = null;
+                    p.Out.SendCloseTimerWindow();
+                }
 
-            AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness * (1 + p.CharacterClass.WeaponSkillBase / 20.0 / 100.0), interruptDuration, dualWield);
+                AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness * (1 + p.CharacterClass.WeaponSkillBase / 20.0 / 100.0), interruptDuration, dualWield);
 
-            //Clear the styles for the next round!
-            owner.styleComponent.NextCombatStyle = null;
-            owner.styleComponent.NextCombatBackupStyle = null;
+                //Clear the styles for the next round!
+                owner.styleComponent.NextCombatStyle = null;
+                owner.styleComponent.NextCombatBackupStyle = null;
 
-            switch (ad.AttackResult)
-            {
-                case eAttackResult.HitStyle:
-                case eAttackResult.HitUnstyled:
-                    {
-                        //keep component
-                        if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameSiegeWeapon) && ad.Attacker is GamePlayer && ad.Attacker.GetModified(eProperty.KeepDamage) > 0)
+                switch (ad.AttackResult)
+                {
+                    case eAttackResult.HitStyle:
+                    case eAttackResult.HitUnstyled:
                         {
-                            int keepdamage = (int)Math.Floor((double)ad.Damage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
-                            int keepstyle = (int)Math.Floor((double)ad.StyleDamage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
-                            ad.Damage += keepdamage;
-                            ad.StyleDamage += keepstyle;
-                        }
-                        // vampiir
-                        if (p.CharacterClass is PlayerClass.ClassVampiir
-                            && target is GameKeepComponent == false
-                            && target is GameKeepDoor == false
-                            && target is GameSiegeWeapon == false)
-                        {
-                            int perc = Convert.ToInt32(((double)(ad.Damage + ad.CriticalDamage) / 100) * (55 - p.Level));
-                            perc = (perc < 1) ? 1 : ((perc > 15) ? 15 : perc);
-                            p.Mana += Convert.ToInt32(Math.Ceiling(((Decimal)(perc * p.MaxMana) / 100)));
-                        }
+                            //keep component
+                            if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameSiegeWeapon) && ad.Attacker is GamePlayer && ad.Attacker.GetModified(eProperty.KeepDamage) > 0)
+                            {
+                                int keepdamage = (int)Math.Floor((double)ad.Damage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
+                                int keepstyle = (int)Math.Floor((double)ad.StyleDamage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
+                                ad.Damage += keepdamage;
+                                ad.StyleDamage += keepstyle;
+                            }
+                            // vampiir
+                            if (p.CharacterClass is PlayerClass.ClassVampiir
+                                && target is GameKeepComponent == false
+                                && target is GameKeepDoor == false
+                                && target is GameSiegeWeapon == false)
+                            {
+                                int perc = Convert.ToInt32(((double)(ad.Damage + ad.CriticalDamage) / 100) * (55 - p.Level));
+                                perc = (perc < 1) ? 1 : ((perc > 15) ? 15 : perc);
+                                p.Mana += Convert.ToInt32(Math.Ceiling(((Decimal)(perc * p.MaxMana) / 100)));
+                            }
 
-                        //only miss when strafing when attacking a player
-                        //30% chance to miss
-                        if (p.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
-                        {
-                            ad.AttackResult = eAttackResult.Missed;
-                            p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.StrafMiss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                            //only miss when strafing when attacking a player
+                            //30% chance to miss
+                            if (p.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
+                            {
+                                ad.AttackResult = eAttackResult.Missed;
+                                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.StrafMiss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                break;
+                            }
                             break;
                         }
+                }
+
+                switch (ad.AttackResult)
+                {
+                    case eAttackResult.Blocked:
+                    case eAttackResult.Fumbled:
+                    case eAttackResult.HitStyle:
+                    case eAttackResult.HitUnstyled:
+                    case eAttackResult.Missed:
+                    case eAttackResult.Parried:
+                        //Condition percent can reach 70%
+                        //durability percent can reach zero
+                        // if item durability reachs 0, item is useless and become broken item
+
+                        if (weapon != null && weapon is GameInventoryItem)
+                        {
+                            (weapon as GameInventoryItem).OnStrikeTarget(p, target);
+                        }
+                        //Camouflage - Camouflage will be disabled only when attacking a GamePlayer or ControlledNPC of a GamePlayer.
+                        if (p.HasAbility(Abilities.Camouflage) && target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain is IControlledBrain && ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null))
+                        {
+                            CamouflageEffect camouflage = p.EffectList.GetOfType<CamouflageEffect>();
+
+                            if (camouflage != null)// Check if Camo is active, if true, cancel ability.
+                            {
+                                camouflage.Cancel(false);
+                            }
+                            Skill camo = SkillBase.GetAbility(Abilities.Camouflage); // now we find the ability
+                            p.DisableSkill(camo, CamouflageSpecHandler.DISABLE_DURATION); // and here we disable it.
+                        }
+
+                        // Multiple Hit check
+                        if (ad.AttackResult == eAttackResult.HitStyle)
+                        {
+                            byte numTargetsCanHit = 0;
+                            int random;
+                            IList extraTargets = new ArrayList();
+                            IList listAvailableTargets = new ArrayList();
+                            InventoryItem attackWeapon = AttackWeapon;
+                            InventoryItem leftWeapon = (p.Inventory == null) ? null : p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            switch (style.ID)
+                            {
+                                case 374: numTargetsCanHit = 1; break; //Tribal Assault:   Hits 2 targets
+                                case 377: numTargetsCanHit = 1; break; //Clan's Might:      Hits 2 targets
+                                case 379: numTargetsCanHit = 2; break; //Totemic Wrath:      Hits 3 targets
+                                case 384: numTargetsCanHit = 3; break; //Totemic Sacrifice:   Hits 4 targets
+                                case 600: numTargetsCanHit = 255; break; //Shield Swipe: No Cap on Targets
+                                default: numTargetsCanHit = 0; break; //For others;
+                            }
+                            if (numTargetsCanHit > 0)
+                            {
+                                if (style.ID != 600) // Not Shield Swipe
+                                {
+                                    foreach (GamePlayer pl in p.GetPlayersInRadius(false, (ushort)AttackRange))
+                                    {
+                                        if (pl == null) continue;
+                                        if (GameServer.ServerRules.IsAllowedToAttack(p, pl, true))
+                                        {
+                                            listAvailableTargets.Add(pl);
+                                        }
+                                    }
+                                    foreach (GameNPC npc in p.GetNPCsInRadius(false, (ushort)AttackRange))
+                                    {
+                                        if (GameServer.ServerRules.IsAllowedToAttack(p, npc, true))
+                                        {
+                                            listAvailableTargets.Add(npc);
+                                        }
+                                    }
+
+                                    // remove primary target
+                                    listAvailableTargets.Remove(target);
+                                    numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);
+
+                                    if (listAvailableTargets.Count > 1)
+                                    {
+                                        while (extraTargets.Count < numTargetsCanHit)
+                                        {
+                                            random = Util.Random(listAvailableTargets.Count - 1);
+                                            if (!extraTargets.Contains(listAvailableTargets[random]))
+                                                extraTargets.Add(listAvailableTargets[random] as GameObject);
+                                        }
+                                        foreach (GameObject obj in extraTargets)
+                                        {
+                                            if (obj is GamePlayer && ((GamePlayer)obj).IsSitting)
+                                            {
+                                                effectiveness *= 2;
+                                            }
+                                            //new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
+                                            //if (GameServer.ServerRules.IsAllowedToAttack(this, target as GameLiving, false))
+                                            weaponAction = new WeaponAction(p, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 1000);
+                                        }
+                                    }
+                                }
+                                else // shield swipe
+                                {
+                                    foreach (GameNPC npc in p.GetNPCsInRadius(false, (ushort)AttackRange))
+                                    {
+                                        if (GameServer.ServerRules.IsAllowedToAttack(p, npc, true))
+                                        {
+                                            listAvailableTargets.Add(npc);
+                                        }
+                                    }
+
+                                    listAvailableTargets.Remove(target);
+                                    numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);
+
+                                    if (listAvailableTargets.Count > 1)
+                                    {
+                                        while (extraTargets.Count < numTargetsCanHit)
+                                        {
+                                            random = Util.Random(listAvailableTargets.Count - 1);
+                                            if (!extraTargets.Contains(listAvailableTargets[random]))
+                                            {
+                                                extraTargets.Add(listAvailableTargets[random] as GameObject);
+                                            }
+                                        }
+                                        foreach (GameNPC obj in extraTargets)
+                                        {
+                                            if (obj != ad.Target)
+                                            {
+                                                LivingMakeAttack(obj, attackWeapon, null, 1, ServerProperties.Properties.SPELL_INTERRUPT_DURATION, false, false);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         break;
-                    }
+                }
+                return ad;
             }
-
-            switch (ad.AttackResult)
-            {
-                case eAttackResult.Blocked:
-                case eAttackResult.Fumbled:
-                case eAttackResult.HitStyle:
-                case eAttackResult.HitUnstyled:
-                case eAttackResult.Missed:
-                case eAttackResult.Parried:
-                    //Condition percent can reach 70%
-                    //durability percent can reach zero
-                    // if item durability reachs 0, item is useless and become broken item
-
-                    if (weapon != null && weapon is GameInventoryItem)
-                    {
-                        (weapon as GameInventoryItem).OnStrikeTarget(p, target);
-                    }
-                    //Camouflage - Camouflage will be disabled only when attacking a GamePlayer or ControlledNPC of a GamePlayer.
-                    if (p.HasAbility(Abilities.Camouflage) && target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain is IControlledBrain && ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null))
-                    {
-                        CamouflageEffect camouflage = p.EffectList.GetOfType<CamouflageEffect>();
-
-                        if (camouflage != null)// Check if Camo is active, if true, cancel ability.
-                        {
-                            camouflage.Cancel(false);
-                        }
-                        Skill camo = SkillBase.GetAbility(Abilities.Camouflage); // now we find the ability
-                        p.DisableSkill(camo, CamouflageSpecHandler.DISABLE_DURATION); // and here we disable it.
-                    }
-
-                    // Multiple Hit check
-                    if (ad.AttackResult == eAttackResult.HitStyle)
-                    {
-                        byte numTargetsCanHit = 0;
-                        int random;
-                        IList extraTargets = new ArrayList();
-                        IList listAvailableTargets = new ArrayList();
-                        InventoryItem attackWeapon = AttackWeapon;
-                        InventoryItem leftWeapon = (p.Inventory == null) ? null : p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                        switch (style.ID)
-                        {
-                            case 374: numTargetsCanHit = 1; break; //Tribal Assault:   Hits 2 targets
-                            case 377: numTargetsCanHit = 1; break; //Clan's Might:      Hits 2 targets
-                            case 379: numTargetsCanHit = 2; break; //Totemic Wrath:      Hits 3 targets
-                            case 384: numTargetsCanHit = 3; break; //Totemic Sacrifice:   Hits 4 targets
-                            case 600: numTargetsCanHit = 255; break; //Shield Swipe: No Cap on Targets
-                            default: numTargetsCanHit = 0; break; //For others;
-                        }
-                        if (numTargetsCanHit > 0)
-                        {
-                            if (style.ID != 600) // Not Shield Swipe
-                            {
-                                foreach (GamePlayer pl in p.GetPlayersInRadius(false, (ushort)AttackRange))
-                                {
-                                    if (pl == null) continue;
-                                    if (GameServer.ServerRules.IsAllowedToAttack(p, pl, true))
-                                    {
-                                        listAvailableTargets.Add(pl);
-                                    }
-                                }
-                                foreach (GameNPC npc in p.GetNPCsInRadius(false, (ushort)AttackRange))
-                                {
-                                    if (GameServer.ServerRules.IsAllowedToAttack(p, npc, true))
-                                    {
-                                        listAvailableTargets.Add(npc);
-                                    }
-                                }
-
-                                // remove primary target
-                                listAvailableTargets.Remove(target);
-                                numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);
-
-                                if (listAvailableTargets.Count > 1)
-                                {
-                                    while (extraTargets.Count < numTargetsCanHit)
-                                    {
-                                        random = Util.Random(listAvailableTargets.Count - 1);
-                                        if (!extraTargets.Contains(listAvailableTargets[random]))
-                                            extraTargets.Add(listAvailableTargets[random] as GameObject);
-                                    }
-                                    foreach (GameObject obj in extraTargets)
-                                    {
-                                        if (obj is GamePlayer && ((GamePlayer)obj).IsSitting)
-                                        {
-                                            effectiveness *= 2;
-                                        }
-                                        //new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
-                                        //if (GameServer.ServerRules.IsAllowedToAttack(this, target as GameLiving, false))
-                                        weaponAction = new WeaponAction(p, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 1000);
-                                    }
-                                }
-                            }
-                            else // shield swipe
-                            {
-                                foreach (GameNPC npc in p.GetNPCsInRadius(false, (ushort)AttackRange))
-                                {
-                                    if (GameServer.ServerRules.IsAllowedToAttack(p, npc, true))
-                                    {
-                                        listAvailableTargets.Add(npc);
-                                    }
-                                }
-
-                                listAvailableTargets.Remove(target);
-                                numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);
-
-                                if (listAvailableTargets.Count > 1)
-                                {
-                                    while (extraTargets.Count < numTargetsCanHit)
-                                    {
-                                        random = Util.Random(listAvailableTargets.Count - 1);
-                                        if (!extraTargets.Contains(listAvailableTargets[random]))
-                                        {
-                                            extraTargets.Add(listAvailableTargets[random] as GameObject);
-                                        }
-                                    }
-                                    foreach (GameNPC obj in extraTargets)
-                                    {
-                                        if (obj != ad.Target)
-                                        {
-                                            LivingMakeAttack(obj, attackWeapon, null, 1, ServerProperties.Properties.SPELL_INTERRUPT_DURATION, false, false);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    break;
-            }
-            return ad;
+            else
+              return LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
+            
         }
 
         /// <summary>

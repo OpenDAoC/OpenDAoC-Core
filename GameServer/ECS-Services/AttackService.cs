@@ -21,6 +21,16 @@ namespace DOL.GS
 
                 p.attackComponent.Tick(tick);
             }
+            foreach (var npc in EntityManager.GetAllNpcs())
+            {
+                if (npc == null)
+                    continue;
+
+                if (npc.attackComponent is null)
+                    continue;
+
+                npc.attackComponent.Tick(tick);
+            }
         }
 
 

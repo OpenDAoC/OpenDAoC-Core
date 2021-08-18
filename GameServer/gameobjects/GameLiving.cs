@@ -4072,6 +4072,15 @@ namespace DOL.GS
 					LastAttackedByEnemyTickPvP = CurrentRegion.Time;
 					ad.Attacker.LastAttackTickPvP = CurrentRegion.Time;
 				}
+
+                // Cancel MoveSpeedBuff
+                if(effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+                {
+                    var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff];
+                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                    effect.CancelEffect = true;
+                    EntityManager.AddEffect(effect);
+                }
 			}
 		}
 

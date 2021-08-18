@@ -8023,6 +8023,8 @@ namespace DOL.GS
 		public override bool CastSpell(Spell spell, SpellLine line)
 		{
 			bool casted = false;
+            if (spell is null)
+                return false;
 
 			if (IsCrafting)
 			{

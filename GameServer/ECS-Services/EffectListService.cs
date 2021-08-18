@@ -25,6 +25,13 @@ namespace DOL.GS
             {
                 foreach (var effect in living.effectListComponent.Effects)
                 {
+                    if (!effect.Value.Owner.IsAlive)
+                    {
+                        effect.Value.CancelEffect = true;
+                        EntityManager.AddEffect(effect.Value);
+                        continue;
+                    }
+
                     if (tick > effect.Value.ExpireTick && !effect.Value.SpellHandler.Spell.IsConcentration)
                     {
                         if (effect.Value.EffectType == eEffect.Pulse && effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell)
