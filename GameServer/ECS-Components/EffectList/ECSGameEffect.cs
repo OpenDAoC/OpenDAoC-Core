@@ -17,8 +17,9 @@ namespace DOL.GS
         public bool CancelEffect;
         public bool RenewEffect;
         public eEffect EffectType;
-        public eSpellType SpellType;
         public GameLiving Owner;
+        public int TickInterval;
+        public int NextTick;
 
         public ECSGameEffect() { }
 
@@ -38,6 +39,11 @@ namespace DOL.GS
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
 
+            if (handler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            {
+                TickInterval = 650;
+                NextTick = 1 + (duration >> 1) + (int)StartTick;
+            }
         }
 
         public ushort GetRemainingTimeForClient()
@@ -72,6 +78,7 @@ namespace DOL.GS
                     return eEffect.MeleeHasteBuff;
                 //case (byte)eSpellType.Celerity:  //Possibly the same as CombatSpeedBuff?
                 //    return eEffect.Celerity;
+                case (byte)eSpellType.SpeedOfTheRealm:
                 case (byte)eSpellType.SpeedEnhancement:
                     return eEffect.MovementSpeedBuff;
                 case (byte)eSpellType.HealOverTime:
@@ -135,6 +142,7 @@ namespace DOL.GS
                     return eEffect.DamageOverTime;
                 case (byte)eSpellType.Charm:
                     return eEffect.Charm;
+                case (byte)eSpellType.StyleSpeedDecrease:
                 case (byte)eSpellType.SpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
                 case (byte)eSpellType.MeleeDamageDebuff:
@@ -155,8 +163,8 @@ namespace DOL.GS
                     return eEffect.Mez;
                 //case (byte)eSpellType.MezImmunity: // ImmunityEffect
                 //    return eEffect.MezImmunity;
-                case (byte)eSpellType.StyleSpeedDecrease:
-                    return eEffect.MeleeSnare;
+                //case (byte)eSpellType.StyleSpeedDecrease:
+                //    return eEffect.MeleeSnare;
                 //case (byte)eSpellType.Snare: // May work off of SpeedDecrease
                 //    return eEffect.Snare;
                 //case (byte)eSpellType.SnareImmunity: // Not implemented

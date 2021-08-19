@@ -4092,13 +4092,26 @@ namespace DOL.GS
                     if (remove)
                     {
                         // Remove Mez
-
                         var effect = effectListComponent.Effects[eEffect.Mez];
                         effect.ExpireTick = GameLoop.GameLoopTime - 1;
                         effect.CancelEffect = true;
                         EntityManager.AddEffect(effect);
 
                     }
+                }
+            }
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff) &&
+                effectListComponent.Effects[eEffect.MovementSpeedDebuff].SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            {
+                switch (ad.AttackResult)
+                {
+                    case eAttackResult.HitStyle:
+                    case eAttackResult.HitUnstyled:
+                        var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff];
+                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                        effect.CancelEffect = true;
+                        EntityManager.AddEffect(effect);
+                        break;
                 }
             }
         }

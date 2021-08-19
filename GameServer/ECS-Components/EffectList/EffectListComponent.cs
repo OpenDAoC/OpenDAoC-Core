@@ -41,7 +41,7 @@ namespace DOL.GS
                     else
                     {                      
                         Effects.Add(effect.EffectType, effect);
-                        if (effect.EffectType != eEffect.Pulse)
+                        if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
 
                     }

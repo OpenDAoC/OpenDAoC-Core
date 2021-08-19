@@ -30,7 +30,8 @@ namespace DOL.GS
                     return eEffect.MezImmunity;
                 case (byte)eSpellType.Stun:
                     return eEffect.StunImmunity;
-
+                case (byte)eSpellType.SpeedDecrease:
+                    return eEffect.SnareImmunity;
                 default:
                     return eEffect.Unknown;
             }
