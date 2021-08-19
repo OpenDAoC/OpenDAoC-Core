@@ -28,8 +28,7 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public interface ISpellHandler
 	{
-		
-		GameLiving Target { get; set; }
+		GameLiving GetTarget();
 		
 		void CreateECSEffect(GameLiving target, double effectiveness);
 		/// <summary>
