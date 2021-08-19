@@ -306,7 +306,7 @@ namespace DOL.GS
 
         public static void SendSpellAnimation(ECSGameEffect e)
         {
-            GameLiving target = e.SpellHandler.Target != null ? e.SpellHandler.Target : e.SpellHandler.Caster;
+            GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
 
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -322,7 +322,7 @@ namespace DOL.GS
 
         private static void SendSpellResistAnimation(ECSGameEffect e)
         {
-            GameLiving target = e.SpellHandler.Target != null ? e.SpellHandler.Target : e.SpellHandler.Caster;
+            GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {

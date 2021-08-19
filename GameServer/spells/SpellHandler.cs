@@ -49,7 +49,10 @@ namespace DOL.GS.Spells
 		private double _castFinishedTickTime;
 		//todo create this list when loading spell
 		private List<IEffectComponent> _spellEffectComponents = new List<IEffectComponent>();
-		public GameLiving Target { get; set; }
+		public GameLiving GetTarget()
+        {
+			return m_spellTarget;
+        }
 		
 		/// <summary>
 		/// Maximum number of sub-spells to get delve info for.
@@ -1594,8 +1597,17 @@ namespace DOL.GS.Spells
 			switch (castState)
 			{
 				case eCastState.Precast:
-					Target = Caster?.TargetObject as GameLiving;
-					if (CheckBeginCast(Target))
+					if (Spell.Target == "Self")
+                    {
+						// Self spells should ignore whatever we actually have selected.
+						m_spellTarget = Caster;
+					}
+                    else
+                    {
+						m_spellTarget = Caster?.TargetObject as GameLiving;
+                    }
+
+                    if (CheckBeginCast(m_spellTarget))
 					{
 						_castStartTick = currentTick;
 						if (Spell.IsInstantCast)
@@ -1614,7 +1626,7 @@ namespace DOL.GS.Spells
 					}
 					break;
 				case eCastState.Casting:
-					if (!CheckDuringCast(Target))
+					if (!CheckDuringCast(m_spellTarget))
 					{
 						castState = eCastState.Interrupted;
 					}
@@ -1633,7 +1645,7 @@ namespace DOL.GS.Spells
 			//Process cast on same tick if finished.
 			if (castState == eCastState.Finished)
 			{
-				FinishSpellCast(Target);
+				FinishSpellCast(m_spellTarget);
 				castState = eCastState.Cleanup;
 			}
 			
