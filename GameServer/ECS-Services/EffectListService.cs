@@ -21,7 +21,7 @@ namespace DOL.GS
 
         private static void HandleEffects(long tick, GameLiving living)
         {
-            if (living.effectListComponent.Effects.Count > 0)
+            if (living?.effectListComponent?.Effects.Count > 0)
             {
                 foreach (var effect in living.effectListComponent.Effects)
                 {
@@ -48,8 +48,16 @@ namespace DOL.GS
                             if (effect.Value.EffectType == eEffect.Bleed)
                                 effect.Value.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
 
-                            effect.Value.CancelEffect = true;
-                            EntityManager.AddEffect(effect.Value);
+                            if (effect.Value.SpellHandler.Spell.IsPulsing && effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell)
+                            {
+                                //Add time to effect to make sure the spell refreshes instead of cancels
+                                effect.Value.ExpireTick += GameLoop.TickRate;
+                            }
+                            else
+                            {
+                                effect.Value.CancelEffect = true;
+                                EntityManager.AddEffect(effect.Value);
+                            }
                         }
                     }
                     if (effect.Value.EffectType == eEffect.DamageOverTime || effect.Value.EffectType == eEffect.Bleed)

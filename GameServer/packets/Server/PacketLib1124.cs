@@ -3899,21 +3899,23 @@ namespace DOL.GS.PacketHandler
 
 						byte ImmunByte = 0;
 						var gsp = effect as ECSGameEffect;
-						// if (gsp != null && gsp.IsDisabled)
-						// 	ImmunByte = 1;
-						
+                        // if (gsp != null && gsp.IsDisabled)
+                        // 	ImmunByte = 1;
+                        if (gsp is ECSImmunityEffect)
+                            ImmunByte = 1;
 						//todo this should be the ImmunByte
-						pak.WriteByte(0); // new in 1.73; if non zero says "protected by" on right click
+						pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
 
 						// bit 0x08 adds "more..." to right click info
 						pak.WriteShort(effect.Icon);
 						pak.WriteShort((ushort)((effect.SpellHandler.Spell.IsPulsing ? effect.GetRemainingTimeForClient() : effect.Duration) / 1000));
-						if (effect is ECSGameEffect)
+						if (effect is ECSGameEffect || effect is ECSImmunityEffect)
 							pak.WriteShort((ushort)((ECSGameEffect)effect).Icon); //v1.110+ send the spell ID for delve info in active icon
 						else
 							pak.WriteShort(0);//don't override existing tooltip ids
 
 						byte flagNegativeEffect = 0;
+                        
 						// if (effect is StaticEffect)
 						// {
 						// 	if (((StaticEffect)effect).HasNegativeEffect)

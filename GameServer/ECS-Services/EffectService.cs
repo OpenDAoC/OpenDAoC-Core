@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
 using DOL.GS.ServerProperties;
@@ -100,59 +101,96 @@ namespace DOL.GS
             }
             else if (e.EffectType != eEffect.Pulse)
             {
-                SendSpellAnimation(e);
-
-                if (!e.RenewEffect)
+                if (!(e is ECSImmunityEffect))
                 {
-                    if (e.EffectType == eEffect.MovementSpeedBuff)
-                    {
-                        e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
-                        (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
-                    }
-                    else if (e.EffectType == eEffect.EnduranceRegenBuff)
-                    {
-                        Console.WriteLine("Applying EnduranceRegenBuff");
-                        var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, false);
-                    }
-                    else if (isDebuff(e.EffectType))
-                    {
-                        if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
-                        {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
-                            {
-                                Console.WriteLine($"Debuffing {prop.ToString()}");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, true);
-                            }
-                        }
-                        else
-                        {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
-                            {
-                                Console.WriteLine($"Debuffing {prop.ToString()}");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
-                            }
-                        }
+                    SendSpellAnimation(e);
 
-                    }
-                    else
+                    if (!e.RenewEffect)
                     {
-                        if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
+                        if (e.EffectType == eEffect.MovementSpeedBuff)
                         {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
+                            (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                        }
+                        else if (e.EffectType == eEffect.EnduranceRegenBuff)
+                        {
+                            Console.WriteLine("Applying EnduranceRegenBuff");
+                            var handler = e.SpellHandler as EnduranceRegenSpellHandler;
+                            ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, false);
+                        }
+                        else if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
+                        {
+                            if (e.EffectType == eEffect.Mez)
+                                e.Owner.IsMezzed = true;
+                            else
+                                e.Owner.IsStunned = true;
+
+                            e.Owner.attackComponent.LivingStopAttack();
+                            e.Owner.StopCurrentSpellcast();
+                            e.Owner.DisableTurning(true);
+
+                            ((SpellHandler)e.SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                            ((SpellHandler)e.SpellHandler).MessageToCaster(Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell);
+                            Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell, e.Owner, e.SpellHandler.Caster);
+
+                            GamePlayer gPlayer = e.Owner as GamePlayer;
+                            if (gPlayer != null)
                             {
-                                Console.WriteLine($"Buffing {prop.ToString()}");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                gPlayer.Client.Out.SendUpdateMaxSpeed();
+                                if (gPlayer.Group != null)
+                                    gPlayer.Group.UpdateMember(gPlayer, false, false);
                             }
+                            else
+                            {
+                                e.Owner.attackComponent.LivingStopAttack();
+                            }
+                        }
+                        else if (isDebuff(e.EffectType))
+                        {
+                            if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
+                            {
+                                foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                {
+                                    Console.WriteLine($"Debuffing {prop.ToString()}");
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                }
+                            }
+                            else
+                            {
+                                foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                {
+                                    Console.WriteLine($"Debuffing {prop.ToString()}");
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                }
+                            }
+
                         }
                         else
                         {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
                             {
-                                Console.WriteLine($"Buffing {prop.ToString()}");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                {
+                                    Console.WriteLine($"Buffing {prop.ToString()}");
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                }
+                            }
+                            else
+                            {
+                                foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                {
+                                    Console.WriteLine($"Buffing {prop.ToString()}");
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                }
                             }
                         }
+                    }
+                }
+                else
+                {
+                    if (e.Owner is GamePlayer immunePlayer)
+                    {
+                        immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     }
                 }
                 if (e.Owner is GamePlayer player)
@@ -173,52 +211,87 @@ namespace DOL.GS
             }
             if (e.EffectType != eEffect.Pulse)
             {
-                if (e.EffectType == eEffect.MovementSpeedBuff)
+                if (!(e is ECSImmunityEffect))
                 {
-                    e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
-                    (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
-                }
-                else if (e.EffectType == eEffect.EnduranceRegenBuff)
-                {
-                    Console.WriteLine("Removing EnduranceRegenBuff");
-                    var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, true);
-                }
-                else if (isDebuff(e.EffectType))
-                {
-                    if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
+                    if (e.EffectType == eEffect.MovementSpeedBuff)
                     {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                        (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                    }
+                    else if (e.EffectType == eEffect.EnduranceRegenBuff)
+                    {
+                        Console.WriteLine("Removing EnduranceRegenBuff");
+                        var handler = e.SpellHandler as EnduranceRegenSpellHandler;
+                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, true);
+                    }
+                    else if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
+                    {
+                        if (e.EffectType == eEffect.Mez)
+                            e.Owner.IsMezzed = false;
+                        else
+                            e.Owner.IsStunned = false;
+
+                        // Add Immunity------------Hard coded 60 second Immunity and Icon needs work
+                        var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
+                        EntityManager.AddEffect(immunityEffect);
+
+                        e.Owner.DisableTurning(false);
+
+                        GamePlayer gPlayer = e.Owner as GamePlayer;
+
+                        if (gPlayer != null)
                         {
-                            Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            gPlayer.Client.Out.SendUpdateMaxSpeed();
+                            if (gPlayer.Group != null)
+                                gPlayer.Group.UpdateMember(gPlayer, false, false);
+                        }
+                        else
+                        {
+                            GameNPC npc = e.Owner as GameNPC;
+                            if (npc != null)
+                            {
+                                IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
+                                if (aggroBrain != null)
+                                    aggroBrain.AddToAggroList(e.SpellHandler.Caster, 1);
+                            }
+                        }
+                    }
+                    else if (isDebuff(e.EffectType))
+                    {
+                        if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
+                        {
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            }
+                        }
+                        else
+                        {
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            }
                         }
                     }
                     else
                     {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
                         {
-                            Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Canceling {prop.ToString()}");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
-                    {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
+                        else
                         {
-                            Console.WriteLine($"Canceling {prop.ToString()}");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, true);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var prop in getPropertyFromEffect(e.EffectType))
-                        {
-                            Console.WriteLine($"Canceling {prop.ToString()}");
-                            ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            {
+                                Console.WriteLine($"Canceling {prop.ToString()}");
+                                ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                            }
                         }
                     }
                 }

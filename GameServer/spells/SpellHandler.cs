@@ -2758,7 +2758,7 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public virtual void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-            target.OnAttack();
+            
 
             if (target is GamePlayer)
 			{
@@ -2839,9 +2839,10 @@ namespace DOL.GS.Spells
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
+                target.OnAttack(ad);
 
-				// Treat non-damaging effects as attacks to trigger an immediate response and BAF
-				if (ad.Damage == 0 && ad.Target is GameNPC)
+                // Treat non-damaging effects as attacks to trigger an immediate response and BAF
+                if (ad.Damage == 0 && ad.Target is GameNPC)
 				{
 					IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)

@@ -149,11 +149,11 @@ namespace DOL.GS
                 case (byte)eSpellType.StyleStun:
                 case (byte)eSpellType.Stun:
                     return eEffect.Stun;
-                //case (byte)eSpellType.StunImmunity: // Not implemented
-                //    return eEffect.StunImmunity;
-                case (byte)eSpellType.Mez:
+                //case (byte)eSpellType.StunImmunity: // ImmunityEffect
+                    //return eEffect.StunImmunity;
+                case (byte)eSpellType.Mesmerize:
                     return eEffect.Mez;
-                //case (byte)eSpellType.MezImmunity: // Not implemented
+                //case (byte)eSpellType.MezImmunity: // ImmunityEffect
                 //    return eEffect.MezImmunity;
                 case (byte)eSpellType.StyleSpeedDecrease:
                     return eEffect.MeleeSnare;

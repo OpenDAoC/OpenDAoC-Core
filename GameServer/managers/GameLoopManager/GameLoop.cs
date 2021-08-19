@@ -16,7 +16,8 @@ namespace DOL.GS
         public static GamePlayer[] players = new GamePlayer[4000];
         private static int _lastPlayerIndex = 0;
 
-        
+        public static long TickRate { get { return _tickDueTime; } }
+
         public static bool Init()
         {
             _timerRef = new Timer(Tick,null,0,Timeout.Infinite);

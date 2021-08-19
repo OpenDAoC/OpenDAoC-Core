@@ -4041,7 +4041,7 @@ namespace DOL.GS
 			}
 		}
 
-        public void OnAttack()
+        public void OnAttack(AttackData ad = null)
         {
             if (effectListComponent is null)
                 return;
@@ -4053,6 +4053,53 @@ namespace DOL.GS
                 effect.ExpireTick = GameLoop.GameLoopTime - 1;
                 effect.CancelEffect = true;
                 EntityManager.AddEffect(effect);
+            }
+            if (effectListComponent.Effects.ContainsKey(eEffect.Mez) && ad != null)
+            {
+                if (ad.Attacker != this)
+                {
+                    bool remove = false;
+
+                    if (ad.AttackType != AttackData.eAttackType.Spell)
+                    {
+                        switch (ad.AttackResult)
+                        {
+                            case eAttackResult.HitStyle:
+                            case eAttackResult.HitUnstyled:
+                            case eAttackResult.Blocked:
+                            case eAttackResult.Evaded:
+                            case eAttackResult.Fumbled:
+                            case eAttackResult.Missed:
+                            case eAttackResult.Parried:
+                                remove = true;
+                                break;
+                        }
+                    }
+                    //If the spell was resisted - then we don't break mezz
+                    else if (!ad.IsSpellResisted)
+                    {
+                        //temporary fix for DirectDamageDebuff not breaking mez
+                        if (ad.SpellHandler is PropertyChangingSpell && ad.SpellHandler.HasPositiveEffect == false && ad.Damage > 0)
+                            remove = true;
+                        //debuffs/shears dont interrupt mez, neither does recasting mez
+                        else if (ad.SpellHandler is PropertyChangingSpell || ad.SpellHandler is MesmerizeSpellHandler
+                                 || ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler.HasPositiveEffect) return;
+
+                        if (ad.AttackResult == eAttackResult.Missed || ad.AttackResult == eAttackResult.HitUnstyled)
+                            remove = true;
+                    }
+
+                    if (remove)
+                    {
+                        // Remove Mez
+
+                        var effect = effectListComponent.Effects[eEffect.Mez];
+                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                        effect.CancelEffect = true;
+                        EntityManager.AddEffect(effect);
+
+                    }
+                }
             }
         }
 
@@ -4073,7 +4120,7 @@ namespace DOL.GS
                     ((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
                 }
 
-                OnAttack();
+                OnAttack(ad);
 
                 if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
 					((GameNPC)this).SwitchToMelee(ad.Attacker);
