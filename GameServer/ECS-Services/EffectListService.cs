@@ -131,6 +131,19 @@ namespace DOL.GS
                         (effect.Value.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Value.Owner, effect.Value.Effectiveness);
                         effect.Value.NextTick += effect.Value.PulseFreq;
                     }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.Value.NextTick)
+                    {
+                        if ((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                        {
+                            GameNPC npc = effect.Value.Owner as GameNPC;
+                            npc.StopAttack();
+                            npc.StopCurrentSpellcast();
+
+                            GameLiving target = (effect.Value.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
+
+                            npc.StartAttack(target);
+                        }
+                    }
                 }
             }
         }

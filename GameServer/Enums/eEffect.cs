@@ -69,6 +69,7 @@ namespace DOL.GS
         DamageOverTime,
         Bleed,
         Charm,
+        Confusion,
         MovementSpeedDebuff,
         MeleeDamageDebuff,
         MeleeHasteDebuff,

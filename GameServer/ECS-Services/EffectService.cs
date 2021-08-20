@@ -134,11 +134,103 @@ namespace DOL.GS
                                 e.Owner.attackComponent.LivingStopAttack();
                             }
                         }
-                        if (e.EffectType == eEffect.HealOverTime)
+                        else if (e.EffectType == eEffect.HealOverTime)
                         {
                             (e.SpellHandler as HoTSpellHandler).SendEffectAnimation(e.Owner, 0, false, 1);
                             //"{0} seems calm and healthy."
                             Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), eChatType.CT_Spell, e.Owner);
+                        }
+                        else if (e.EffectType == eEffect.Confusion)
+                        {
+                            if (e.Owner is GamePlayer)
+                            {
+                                /*
+                                 *Q: What does the confusion spell do against players?
+                                 *A: According to the magic man, “Confusion against a player interrupts their current action, whether it's a bow shot or spellcast.
+                                 */
+                                if (e.SpellHandler.Spell.Value < 0 || Util.Chance(Convert.ToInt32(Math.Abs(e.SpellHandler.Spell.Value))))
+                                {
+                                    //Spell value below 0 means it's 100% chance to confuse.
+                                    GamePlayer gPlayer = e.Owner as GamePlayer;
+
+                                    gPlayer.StartInterruptTimer(gPlayer.SpellInterruptDuration, AttackData.eAttackType.Spell, e.SpellHandler.Caster);
+                                }
+                                e.CancelEffect = true;
+                                e.ExpireTick = GameLoop.GameLoopTime;
+                                EntityManager.AddEffect(e);
+                            }
+                            else if (e.Owner is GameNPC)
+                            {
+                                //check if we should do anything at all.
+
+                                bool doConfuse = (e.SpellHandler.Spell.Value < 0 || Util.Chance(Convert.ToInt32(e.SpellHandler.Spell.Value)));
+
+                                if (!doConfuse)
+                                    return;
+
+                                bool doAttackFriend = e.SpellHandler.Spell.Value < 0 && Util.Chance(Convert.ToInt32(Math.Abs(e.SpellHandler.Spell.Value)));
+
+                                GameNPC npc = e.Owner as GameNPC;
+
+                                npc.IsConfused = true;
+
+                                //if (log.IsDebugEnabled)
+                                //    log.Debug("CONFUSION: " + npc.Name + " was confused(true," + doAttackFriend.ToString() + ")");
+
+                                if (npc is GamePet && npc.Brain != null && (npc.Brain as IControlledBrain) != null)
+                                {
+                                    //it's a pet.
+                                    GamePlayer playerowner = (npc.Brain as IControlledBrain).GetPlayerOwner();
+                                    if (playerowner != null && playerowner.CharacterClass.ID == (int)eCharacterClass.Theurgist)
+                                    {
+                                        //Theurgist pets die.
+                                        npc.Die(e.SpellHandler.Caster);
+                                        e.CancelEffect = true;
+                                        e.ExpireTick = GameLoop.GameLoopTime;
+                                        EntityManager.AddEffect(e);
+                                        return;
+                                    }
+                                }
+
+                                (e.SpellHandler as ConfusionSpellHandler).targetList.Clear();
+                                foreach (GamePlayer target in npc.GetPlayersInRadius(1000))
+                                {
+                                    if (doAttackFriend)
+                                        (e.SpellHandler as ConfusionSpellHandler).targetList.Add(target);
+                                    else
+                                    {
+                                        //this should prevent mobs from attacking friends.
+                                        if (GameServer.ServerRules.IsAllowedToAttack(npc, target, true))
+                                            (e.SpellHandler as ConfusionSpellHandler).targetList.Add(target);
+                                    }
+                                }
+
+                                foreach (GameNPC target in npc.GetNPCsInRadius(1000))
+                                {
+                                    //don't agro yourself.
+                                    if (target == npc)
+                                        continue;
+
+                                    if (doAttackFriend)
+                                        (e.SpellHandler as ConfusionSpellHandler).targetList.Add(target);
+                                    else
+                                    {
+                                        //this should prevent mobs from attacking friends.
+                                        if (GameServer.ServerRules.IsAllowedToAttack(npc, target, true) && !GameServer.ServerRules.IsSameRealm(npc, target, true))
+                                            (e.SpellHandler as ConfusionSpellHandler).targetList.Add(target);
+                                    }
+                                }
+
+                                //targetlist should be full, start effect pulse.
+                                if ((e.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                                {
+                                    npc.StopAttack();
+                                    npc.StopCurrentSpellcast();
+
+                                    GameLiving target = (e.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((e.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
+                                    npc.StartAttack(target);
+                                }
+                            }
                         }
                         else if (isDebuff(e.EffectType))
                         {
@@ -344,6 +436,14 @@ namespace DOL.GS
                         (e.SpellHandler as HoTSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
                         //"{0}'s meditative state fades."
                         Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
+                    }
+                    else if (e.EffectType == eEffect.Confusion)
+                    {
+                        if (e != null && e.Owner != null && e.Owner is GameNPC)
+                        {
+                            GameNPC npc = e.Owner as GameNPC;
+                            npc.IsConfused = false;
+                        }
                     }
                     else if (isDebuff(e.EffectType))
                     {

@@ -48,6 +48,10 @@ namespace DOL.GS
             {
                 NextTick = StartTick;
             }
+            else if (handler.Spell.SpellType == (byte)eSpellType.Confusion)
+            {
+                PulseFreq = 5000;
+            }
         }
 
         public ushort GetRemainingTimeForClient()
@@ -158,6 +162,8 @@ namespace DOL.GS
                     return eEffect.MeleeHasteDebuff;
                 case (byte)eSpellType.Disease:
                     return eEffect.Disease;
+                case (byte)eSpellType.Confusion:
+                    return eEffect.Confusion;
 
                 //Crowd Control Effects
                 case (byte)eSpellType.StyleStun:
