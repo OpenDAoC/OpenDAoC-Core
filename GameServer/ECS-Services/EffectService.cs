@@ -107,18 +107,7 @@ namespace DOL.GS
 
                     if (!e.RenewEffect)
                     {
-                        //if (e.EffectType == eEffect.MovementSpeedBuff)
-                        //{
-                        //    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
-                        //    (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
-                        //}
-                        //else if (e.EffectType == eEffect.EnduranceRegenBuff)
-                        //{
-                        //    Console.WriteLine("Applying EnduranceRegenBuff");
-                        //    var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                        //    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, false);
-                        //}
-                        /*else*/ if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
+                        if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                         {
                             if (e.EffectType == eEffect.Mez)
                                 e.Owner.IsMezzed = true;
@@ -157,37 +146,95 @@ namespace DOL.GS
                             }
                             else
                             {
-                                foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                if (e.EffectType == eEffect.MovementSpeedDebuff)
                                 {
-                                    Console.WriteLine($"Debuffing {prop.ToString()}");
-                                    
-                                    if (e.EffectType == eEffect.MovementSpeedDebuff)
+                                    //// Cannot apply if the effect owner has a charging effect
+                                    //if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.TempProperties.getProperty("Charging", false))
+                                    //{
+                                    //    MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
+                                    //    return;
+                                    //}
+
+
+                                    //// Cancels mezz on the effect owner, if applied
+                                    //e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
+                                    //if (mezz != null)
+                                    //{
+                                    //    mezz.CancelEffect = true;
+                                    //    mezz.ExpireTick = GameLoop.GameLoopTime - 1;
+                                    //    EntityManager.AddEffect(mezz);
+                                    //}
+
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - e.SpellHandler.Spell.Value * 0.01);
+                                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
+
+                                    (e.SpellHandler as SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell, e.Owner);
+                                }
+                                else if (e.EffectType == eEffect.Disease)
+                                {
+                                    if (e.Owner.Realm == 0 || e.SpellHandler.Caster.Realm == 0)
                                     {
-                                        //// Cannot apply if the effect owner has a charging effect
-                                        //if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.TempProperties.getProperty("Charging", false))
-                                        //{
-                                        //    MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
-                                        //    return;
-                                        //}
-
-
-                                        //// Cancels mezz on the effect owner, if applied
-                                        //e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
-                                        //if (mezz != null)
-                                        //{
-                                        //    mezz.CancelEffect = true;
-                                        //    mezz.ExpireTick = GameLoop.GameLoopTime - 1;
-                                        //    EntityManager.AddEffect(mezz);
-                                        //}
-                                            
-                                        e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - e.SpellHandler.Spell.Value * 0.01);
-                                        UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
-
-                                        (e.SpellHandler as SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                                        Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell, e.Owner);
+                                        e.Owner.LastAttackedByEnemyTickPvE = e.Owner.CurrentRegion.Time;
+                                        e.SpellHandler.Caster.LastAttackTickPvE = e.SpellHandler.Caster.CurrentRegion.Time;
                                     }
                                     else
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                    {
+                                        e.Owner.LastAttackedByEnemyTickPvP = e.Owner.CurrentRegion.Time;
+                                        e.SpellHandler.Caster.LastAttackTickPvP = e.SpellHandler.Caster.CurrentRegion.Time;
+                                    }
+
+                                    e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
+                                    if (mezz != null)
+                                    {
+                                        mezz.CancelEffect = true;
+                                        mezz.ExpireTick = GameLoop.GameLoopTime - 1;
+                                        EntityManager.AddEffect(mezz);
+                                    }
+                                    e.Owner.Disease(true);
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - 0.15);
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, e.SpellHandler, 1.0 - 0.075);
+
+                                    (e.SpellHandler as DiseaseSpellHandler).SendUpdates(e);
+
+                                    (e.SpellHandler as DiseaseSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_System, e.Owner);
+
+                                    e.Owner.StartInterruptTimer(e.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, e.SpellHandler.Caster);
+                                    if (e.Owner is GameNPC)
+                                    {
+                                        IOldAggressiveBrain aggroBrain = ((GameNPC)e.Owner).Brain as IOldAggressiveBrain;
+                                        if (aggroBrain != null)
+                                            aggroBrain.AddToAggroList(e.SpellHandler.Caster, 1);
+                                    }
+                                }
+                                else if (e.EffectType == eEffect.Nearsight)
+                                {
+                                    e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
+                                    if (mezz != null)
+                                    {
+                                        mezz.CancelEffect = true;
+                                        mezz.ExpireTick = GameLoop.GameLoopTime - 1;
+                                        EntityManager.AddEffect(mezz);
+                                    }
+                                    
+                                    // percent category
+                                    e.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)e.SpellHandler.Spell.Value;
+                                    e.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)e.SpellHandler.Spell.Value;
+                                    (e.SpellHandler as NearsightSpellHandler).SendEffectAnimation(e.Owner, 0, false, 1);
+                                    (e.SpellHandler as NearsightSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), eChatType.CT_Spell, e.Owner);
+                                }
+                                else
+                                {
+                                    foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                    {
+                                        Console.WriteLine($"Debuffing {prop.ToString()}");
+                                        if (e.EffectType == eEffect.ArmorFactorDebuff)
+                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                        else
+                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                    }
                                 }
                             }
 
@@ -253,18 +300,7 @@ namespace DOL.GS
             {
                 if (!(e is ECSImmunityEffect))
                 {
-                    //if (e.EffectType == eEffect.MovementSpeedBuff)
-                    //{
-                    //    e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
-                    //    (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
-                    //}
-                    //else if (e.EffectType == eEffect.EnduranceRegenBuff)
-                    //{
-                    //    Console.WriteLine("Removing EnduranceRegenBuff");
-                    //    var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                    //    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, true);
-                    //}
-                    /*else*/ if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
+                    if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                     {
                         if (e.EffectType == eEffect.Mez)
                             e.Owner.IsMezzed = false;
@@ -308,23 +344,53 @@ namespace DOL.GS
                         }
                         else
                         {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
+                            if (e.EffectType == eEffect.MovementSpeedDebuff)
                             {
-                                Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                                
-                                if (e.EffectType == eEffect.MovementSpeedDebuff)
+                                if (e.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                                 {
-                                    if (e.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                                    {
-                                        ECSImmunityEffect immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
-                                        EntityManager.AddEffect(immunityEffect);
-                                    }
-
-                                    e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
-                                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
+                                    ECSImmunityEffect immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
+                                    EntityManager.AddEffect(immunityEffect);
                                 }
-                                else
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                                UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
+                            }
+                            else if (e.EffectType == eEffect.Disease)
+                            {
+                                e.Owner.Disease(false);
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, e.SpellHandler);
+
+                                //if (!noMessages)
+                                //{
+                                    ((SpellHandler)e.SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
+                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, true)), eChatType.CT_SpellExpires, e.Owner);
+                                //}
+
+                                (e.SpellHandler as DiseaseSpellHandler).SendUpdates(e);
+                            }
+                            else if (e.EffectType == eEffect.Nearsight)
+                            {
+                                // percent category
+                                e.Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)e.SpellHandler.Spell.Value;
+                                e.Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)e.SpellHandler.Spell.Value;
+                                //if (!noMessages)
+                                //{
+                                    (e.SpellHandler as NearsightSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
+                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
+                                //}
+                            }
+                            else
+                            {
+                                foreach (var prop in getPropertyFromEffect(e.EffectType))
+                                {
+                                    Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
+
+                                    if (e.EffectType == eEffect.ArmorFactorDebuff)
+                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                    else
+                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                }
                             }
                         }
                     }
@@ -401,6 +467,7 @@ namespace DOL.GS
         {
             player.Out.SendCharStatsUpdate();
             player.Out.SendCharResistsUpdate();
+            player.Out.SendUpdateWeaponAndArmorStats();
             player.UpdateEncumberance();
             player.UpdatePlayerStatus();
             player.Out.SendUpdatePlayer();
@@ -586,6 +653,9 @@ namespace DOL.GS
                 case eEffect.MatterResistDebuff:
                 case eEffect.MeleeHasteDebuff:
                 case eEffect.MovementSpeedDebuff:
+                case eEffect.Disease:
+                case eEffect.Nearsight:
+                case eEffect.MeleeDamageDebuff:
                     return true;
                 default:
                     Console.WriteLine($"Unable to detect debuff status for {e}");
@@ -618,7 +688,7 @@ namespace DOL.GS
                     tblBonusCat[(int)Property] += Value;
                 Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
             }
-        }
+        } 
 
         private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
         {
