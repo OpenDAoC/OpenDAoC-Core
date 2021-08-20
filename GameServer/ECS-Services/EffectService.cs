@@ -134,6 +134,12 @@ namespace DOL.GS
                                 e.Owner.attackComponent.LivingStopAttack();
                             }
                         }
+                        if (e.EffectType == eEffect.HealOverTime)
+                        {
+                            (e.SpellHandler as HoTSpellHandler).SendEffectAnimation(e.Owner, 0, false, 1);
+                            //"{0} seems calm and healthy."
+                            Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), eChatType.CT_Spell, e.Owner);
+                        }
                         else if (isDebuff(e.EffectType))
                         {
                             if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
@@ -331,6 +337,13 @@ namespace DOL.GS
                                     aggroBrain.AddToAggroList(e.SpellHandler.Caster, 1);
                             }
                         }
+                    }
+                    else if (e.EffectType == eEffect.HealOverTime)
+                    {
+                        //"Your meditative state fades."
+                        (e.SpellHandler as HoTSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
+                        //"{0}'s meditative state fades."
+                        Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
                     }
                     else if (isDebuff(e.EffectType))
                     {

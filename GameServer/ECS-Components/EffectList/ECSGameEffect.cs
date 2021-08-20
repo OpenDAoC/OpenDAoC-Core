@@ -19,7 +19,7 @@ namespace DOL.GS
         public eEffect EffectType;
         public GameLiving Owner;
         public int TickInterval;
-        public int NextTick;
+        public long NextTick;
 
         public ECSGameEffect() { }
 
@@ -43,6 +43,10 @@ namespace DOL.GS
             {
                 TickInterval = 650;
                 NextTick = 1 + (duration >> 1) + (int)StartTick;
+            }
+            else if (handler.Spell.SpellType == (byte)eSpellType.HealOverTime)
+            {
+                NextTick = StartTick;
             }
         }
 
@@ -83,6 +87,8 @@ namespace DOL.GS
                     return eEffect.MovementSpeedBuff;
                 case (byte)eSpellType.HealOverTime:
                     return eEffect.HealOverTime;
+                case (byte)eSpellType.CombatHeal:
+                    return eEffect.CombatHeal;
 
                 //stats
                 case (byte)eSpellType.StrengthBuff:

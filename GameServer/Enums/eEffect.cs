@@ -15,6 +15,7 @@ namespace DOL.GS
         Celerity,
         MovementSpeedBuff,
         HealOverTime,
+        CombatHeal,
 
         //stats
 //<<<<<<< HEAD

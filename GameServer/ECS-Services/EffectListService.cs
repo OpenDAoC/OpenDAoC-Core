@@ -126,6 +126,11 @@ namespace DOL.GS
                                 effect.Value.ExpireTick = GameLoop.GameLoopTime - 1;
                         }
                     }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.Value.NextTick)
+                    {
+                        (effect.Value.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Value.Owner, effect.Value.Effectiveness);
+                        effect.Value.NextTick += effect.Value.PulseFreq;
+                    }
                 }
             }
         }
