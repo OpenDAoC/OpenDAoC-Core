@@ -144,18 +144,18 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectPulse(GameSpellEffect effect)
 		{
-			base.OnEffectPulse(effect);
+			//base.OnEffectPulse(effect);
 
-			if (targetList.Count > 0)
-			{
-				GameNPC npc = effect.Owner as GameNPC;
-				npc.StopAttack();
-				npc.StopCurrentSpellcast();
+			//if (targetList.Count > 0)
+			//{
+			//	GameNPC npc = effect.Owner as GameNPC;
+			//	npc.StopAttack();
+			//	npc.StopCurrentSpellcast();
 
-				GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
+			//	GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
 
-				npc.StartAttack(target);
-			}
+			//	npc.StartAttack(target);
+			//}
 		}
 
 		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)

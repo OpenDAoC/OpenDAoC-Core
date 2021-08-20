@@ -378,7 +378,7 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (!HasEffect(typeof(FacilitatePainworkingEffect)) &&
+			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/ &&
 				ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
 			{
 				if (Brain is NecromancerPetBrain necroBrain)
@@ -400,7 +400,7 @@ namespace DOL.GS
         /// </summary>
         public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
-			if (!HasEffect(typeof(FacilitatePainworkingEffect)))
+			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/)
 			{
 				StopCurrentSpellcast();
 

@@ -219,6 +219,8 @@ namespace DOL.GS
                 //misc
                 case (byte)eSpellType.DirectDamage:
                     return eEffect.DirectDamage;
+                case (byte)eSpellType.FacilitatePainworking:
+                    return eEffect.FacilitatePainworking;
 
                 #endregion
 

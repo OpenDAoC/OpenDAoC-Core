@@ -111,7 +111,7 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200)
 				return false;
-			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0)
+			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0 || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
 				return false;
 			if (IsCasting && Stage < 2)
 			{

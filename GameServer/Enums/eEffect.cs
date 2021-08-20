@@ -114,6 +114,7 @@ namespace DOL.GS
         //other
         Unknown,
         DirectDamage,
-        Pulse
+        Pulse,
+        FacilitatePainworking
     }
 }
