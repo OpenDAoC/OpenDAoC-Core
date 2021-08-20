@@ -152,6 +152,7 @@ namespace DOL.GS
                     return eEffect.DamageOverTime;
                 case (byte)eSpellType.Charm:
                     return eEffect.Charm;
+                case (byte)eSpellType.DamageSpeedDecrease:
                 case (byte)eSpellType.StyleSpeedDecrease:
                 case (byte)eSpellType.SpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
@@ -221,6 +222,8 @@ namespace DOL.GS
                     return eEffect.DirectDamage;
                 case (byte)eSpellType.FacilitatePainworking:
                     return eEffect.FacilitatePainworking;
+                
+                    
 
                 #endregion
 
