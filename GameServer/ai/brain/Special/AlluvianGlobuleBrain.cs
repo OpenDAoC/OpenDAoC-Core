@@ -86,7 +86,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Determine most wanted player.
 		/// </summary>
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive)
 			{

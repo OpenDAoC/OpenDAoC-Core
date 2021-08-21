@@ -93,7 +93,7 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive || !m_active) return;
 			if (m_target == null) m_target = (GameLiving)Body.TempProperties.getProperty<object>("target", null);

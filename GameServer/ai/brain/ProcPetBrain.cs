@@ -60,7 +60,7 @@ namespace DOL.AI.Brain
 
 		public void SetAggressionState(eAggressionState state) { }
 
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive || m_target == null) return;
 			GameLiving target = m_target;

@@ -113,7 +113,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Check Area for Players to attack
 		/// </summary>
-		protected override void CheckPlayerAggro()
+		public override void CheckPlayerAggro()
 		{
 			if (Body.AttackState || Body.CurrentSpellHandler != null)
 			{
@@ -148,7 +148,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Check area for NPCs to attack
 		/// </summary>
-		protected override void CheckNPCAggro()
+		public override void CheckNPCAggro()
 		{
 			if (Body.AttackState || Body.CurrentSpellHandler != null)
 				return;

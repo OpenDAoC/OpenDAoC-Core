@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using DOL.Events;
 using DOL.GS;
+using FiniteStateMachine;
 using log4net;
 
 namespace DOL.AI
@@ -47,6 +48,14 @@ namespace DOL.AI
 		/// The body of this brain
 		/// </summary>
 		protected GameNPC m_body;
+
+		//The state machine for this brain
+		public FSM m_fsm;
+
+		public FSM FSM {
+			get { return m_fsm; }
+			set { m_fsm = value; }
+		}
 
 		/// <summary>
 		/// The timer used to check for player proximity

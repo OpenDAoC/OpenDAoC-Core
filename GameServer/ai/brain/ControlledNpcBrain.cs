@@ -1019,7 +1019,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Selects and attacks the next target or does nothing
 		/// </summary>
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive || m_aggressionState == eAggressionState.Passive) return;
 

@@ -110,7 +110,7 @@ namespace DOL.AI.Brain
         }
 
 
-		protected override void CheckNPCAggro()
+		public override void CheckNPCAggro()
 		{
 			if (Body.AttackState)
 				return;
