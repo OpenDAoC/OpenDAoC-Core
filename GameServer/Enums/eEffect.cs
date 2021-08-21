@@ -115,6 +115,8 @@ namespace DOL.GS
         Unknown,
         DirectDamage,
         Pulse,
-        FacilitatePainworking
+        FacilitatePainworking,
+        MesmerizeDurationBuff,
+        FatigueConsumptionBuff
     }
 }

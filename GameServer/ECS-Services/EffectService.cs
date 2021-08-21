@@ -878,6 +878,12 @@ namespace DOL.GS
                 case eEffect.MovementSpeedDebuff:
                     list.Add(eProperty.MaxSpeed);
                     return list;
+                case eEffect.MesmerizeDurationBuff:
+                    list.Add(eProperty.MesmerizeDurationReduction);
+                    return list;
+                case eEffect.FatigueConsumptionBuff:
+                    list.Add(eProperty.FatigueConsumption);
+                    return list;
                 default:
                     Console.WriteLine($"Unable to find property mapping for: {e}");
                     return list;

@@ -174,6 +174,8 @@ namespace DOL.GS
                     //return eEffect.StunImmunity;
                 case (byte)eSpellType.Mesmerize:
                     return eEffect.Mez;
+                case (byte)eSpellType.MesmerizeDurationBuff:
+                    return eEffect.MesmerizeDurationBuff;
                 //case (byte)eSpellType.MezImmunity: // ImmunityEffect
                 //    return eEffect.MezImmunity;
                 //case (byte)eSpellType.StyleSpeedDecrease:
@@ -222,7 +224,8 @@ namespace DOL.GS
                     return eEffect.DirectDamage;
                 case (byte)eSpellType.FacilitatePainworking:
                     return eEffect.FacilitatePainworking;
-
+                case (byte)eSpellType.FatigueConsumptionBuff:
+                    return eEffect.FatigueConsumptionBuff;
                 case (byte)eSpellType.DirectDamageWithDebuff:
                     if (SpellHandler.Spell.DamageType == eDamageType.Body)
                         return eEffect.BodyResistDebuff;
