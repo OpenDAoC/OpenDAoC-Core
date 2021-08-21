@@ -1712,6 +1712,7 @@ namespace DOL.GS
             DashingDefenseEffect dashing = null;
             InterceptEffect intercept = null;
             GameSpellEffect bladeturn = null;
+            ECSGameEffect ecsbladeturn = null;
             EngageEffect engage = null;
             // ML effects
             GameSpellEffect phaseshift = null;
@@ -1727,6 +1728,8 @@ namespace DOL.GS
             //			BerserkEffect berserk = null;
 
             // get all needed effects in one loop
+            owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out ecsbladeturn);
+
             lock (owner.EffectList)
             {
                 foreach (IGameEffect effect in owner.EffectList)
@@ -2130,7 +2133,7 @@ namespace DOL.GS
 			 * levels of the players involved into account.
 			 */
             // "The blow penetrated the magical barrier!"
-            if (bladeturn != null)
+            if (ecsbladeturn != null)
             {
                 bool penetrate = false;
 
@@ -2138,22 +2141,29 @@ namespace DOL.GS
                     penetrate = true;
 
                 if (ad.Attacker.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long // stealth styles pierce bladeturn
-                    || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn
+                    || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != ecsbladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn
                     penetrate = true;
 
 
-                if (ad.IsMeleeAttack && !Util.ChanceDouble((double)bladeturn.SpellHandler.Caster.Level / (double)ad.Attacker.Level))
+                if (ad.IsMeleeAttack && !Util.ChanceDouble((double)ecsbladeturn.SpellHandler.Caster.Level / (double)ad.Attacker.Level))
                     penetrate = true;
                 if (penetrate)
                 {
                     if (ad.Target is GamePlayer) ((GamePlayer)ad.Target).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    bladeturn.Cancel(false);
+                    {//bladeturn.Cancel(false);
+                        ecsbladeturn.CancelEffect = true;
+                        ecsbladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
+                        EntityManager.AddEffect(ecsbladeturn);
+                    }
                 }
                 else
                 {
                     if (owner is GamePlayer) ((GamePlayer)owner).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)owner).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Attacker).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    bladeturn.Cancel(false);
+                    //bladeturn.Cancel(false);
+                    ecsbladeturn.CancelEffect = true;
+                    ecsbladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
+                    EntityManager.AddEffect(ecsbladeturn);
                     if (owner is GamePlayer)
                         ((GamePlayer)owner).Stealth(false);
                     return eAttackResult.Missed;

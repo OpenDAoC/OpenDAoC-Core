@@ -215,7 +215,8 @@ namespace DOL.GS.Spells
 		{
 			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
 			GamePlayer player;
-			GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
+			//GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
+            target.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
 			if (bladeturn != null)
 			{
 				switch (Spell.LifeDrainReturn)
@@ -236,8 +237,11 @@ namespace DOL.GS.Spells
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							ad.AttackResult = eAttackResult.HitUnstyled;
-							bladeturn.Cancel(false);
-						}
+                            //bladeturn.Cancel(false);
+                            bladeturn.CancelEffect = true;
+                            bladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
+                            EntityManager.AddEffect(bladeturn);
+                        }
 						break;
 
 					case (int)eShotType.Other:
@@ -253,8 +257,11 @@ namespace DOL.GS.Spells
 								player = target as GamePlayer;
 								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 								ad.AttackResult = eAttackResult.Missed;
-								bladeturn.Cancel(false);
-							}
+								//bladeturn.Cancel(false);
+                                bladeturn.CancelEffect = true;
+                                bladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
+                                EntityManager.AddEffect(bladeturn);
+                            }
 						}
 						break;
 				}

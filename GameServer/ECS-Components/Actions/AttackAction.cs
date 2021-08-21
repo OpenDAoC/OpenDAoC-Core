@@ -156,18 +156,21 @@ namespace DOL.GS
                         int PALevel = owner.GetAbilityLevel(Abilities.PenetratingArrow);
                         if ((PALevel > 0) && (owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
                         {
-                            GameSpellEffect bladeturn = null;
-                            lock (((GameLiving)attackTarget).EffectList)
-                            {
-                                foreach (IGameEffect effect in ((GameLiving)attackTarget).EffectList)
-                                {
-                                    if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.SpellType == (byte)eSpellType.Bladeturn)
-                                    {
-                                        bladeturn = (GameSpellEffect)effect;
-                                        break;
-                                    }
-                                }
-                            }
+                            ECSGameEffect bladeturn = null;
+                            ((GameLiving)attackTarget).effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out bladeturn);
+
+                            //GameSpellEffect bladeturn = null;
+                            //lock (((GameLiving)attackTarget).EffectList)
+                            //{
+                            //    foreach (IGameEffect effect in ((GameLiving)attackTarget).EffectList)
+                            //    {
+                            //        if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.SpellType == (byte)eSpellType.Bladeturn)
+                            //        {
+                            //            bladeturn = (GameSpellEffect)effect;
+                            //            break;
+                            //        }
+                            //    }
+                            //}
 
                             if (bladeturn != null && attackTarget != bladeturn.SpellHandler.Caster)
                             {
