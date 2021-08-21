@@ -53,7 +53,10 @@ namespace DOL.GS.Spells
         {
 			return m_spellTarget;
         }
-		
+
+		// Max number of Concentration spells that a single caster is allowed to cast.
+		public const int MAX_CONC_SPELLS = 20;
+
 		/// <summary>
 		/// Maximum number of sub-spells to get delve info for.
 		/// </summary>
@@ -937,9 +940,9 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+				if (m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 				{
-					if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+					if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 					return false;
 				}
 			}
@@ -1193,9 +1196,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 			{
-				MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+				MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
@@ -1397,9 +1400,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 			{
-				if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 			
@@ -1579,9 +1582,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 			{
-				if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
@@ -1955,7 +1958,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                ushort castTime = (ushort)(CalculateCastingTime() / 100);
+				ushort castTime = (ushort)(CalculateCastingTime() / 100);
                 SendCastAnimation(castTime);
             }
 		}
