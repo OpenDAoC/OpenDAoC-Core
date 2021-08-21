@@ -1403,7 +1403,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 			
-			if (m_caster.IsMoving || m_caster.IsStrafing)
+			if ((m_caster.IsMoving || m_caster.IsStrafing) && !Spell.MoveCast)
 			{
 				CasterMoves();
 				return false;

@@ -4046,14 +4046,16 @@ namespace DOL.GS
             if (effectListComponent is null)
                 return;
 
+            
             // Cancel MoveSpeedBuff
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff) && ad != null)
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff];
                 effect.ExpireTick = GameLoop.GameLoopTime - 1;
                 effect.CancelEffect = true;
                 EntityManager.AddEffect(effect);
             }
+          
             if (effectListComponent.Effects.ContainsKey(eEffect.Mez) && ad != null)
             {
                 if (ad.Attacker != this)

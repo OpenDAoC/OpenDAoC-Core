@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
+using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
 using DOL.GS.ServerProperties;
@@ -232,6 +233,54 @@ namespace DOL.GS
                                 }
                             }
                         }
+                        else if (e.EffectType == eEffect.Charm)
+                        {
+                            GamePlayer gPlayer = e.SpellHandler.Caster as GamePlayer;
+                            GameNPC npc = e.Owner as GameNPC;
+
+                            if (gPlayer != null && npc != null)
+                            {
+
+                                if ((e.SpellHandler as CharmSpellHandler).m_controlledBrain == null)
+                                    (e.SpellHandler as CharmSpellHandler).m_controlledBrain = new ControlledNpcBrain(gPlayer);
+
+                                if (!(e.SpellHandler as CharmSpellHandler).m_isBrainSet)
+                                {
+
+                                    npc.AddBrain((e.SpellHandler as CharmSpellHandler).m_controlledBrain);
+                                    (e.SpellHandler as CharmSpellHandler).m_isBrainSet = true;
+
+                                    GameEventMgr.AddHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler((e.SpellHandler as CharmSpellHandler).ReleaseEventHandler));
+                                }
+
+                                if (gPlayer.ControlledBrain != (e.SpellHandler as CharmSpellHandler).m_controlledBrain)
+                                {
+
+                                    // sorc: "The slough serpent is enthralled!" ct_spell
+                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message1, npc.GetName(0, false)), eChatType.CT_Spell);
+                                    (e.SpellHandler as CharmSpellHandler).MessageToCaster(npc.GetName(0, true) + " is now under your control.", eChatType.CT_Spell);
+
+                                    gPlayer.SetControlledBrain((e.SpellHandler as CharmSpellHandler).m_controlledBrain);
+
+                                    foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    {
+                                        ply.Out.SendNPCCreate(npc);
+                                        if (npc.Inventory != null)
+                                            ply.Out.SendLivingEquipmentUpdate(npc);
+
+                                        ply.Out.SendObjectGuildID(npc, gPlayer.Guild);
+                                    }
+                                }
+                            }
+                            //else
+                            //{
+                            //    // something went wrong.
+                            //    if (log.IsWarnEnabled)
+                            //        log.Warn(string.Format("charm effect start: Caster={0} effect.Owner={1}",
+                            //                               (Caster == null ? "(null)" : Caster.GetType().ToString()),
+                            //                               (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
+                            //}
+                        }
                         else if (isDebuff(e.EffectType))
                         {
                             if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
@@ -444,6 +493,92 @@ namespace DOL.GS
                             GameNPC npc = e.Owner as GameNPC;
                             npc.IsConfused = false;
                         }
+                    }
+                    else if (e.EffectType == eEffect.Charm)
+                    {
+                        GamePlayer gPlayer = e.SpellHandler.Caster as GamePlayer;
+                        GameNPC npc = e.Owner as GameNPC;
+
+                        if (gPlayer != null && npc != null)
+                        {
+                            //if (!noMessages) // no overwrite
+                            //{
+
+                                GameEventMgr.RemoveHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler((e.SpellHandler as CharmSpellHandler).ReleaseEventHandler));
+
+                                gPlayer.SetControlledBrain(null);
+                                (e.SpellHandler as CharmSpellHandler).MessageToCaster("You lose control of " + npc.GetName(0, false) + "!", eChatType.CT_SpellExpires);
+
+                                lock (npc.BrainSync)
+                                {
+
+                                    npc.StopAttack();
+                                    npc.RemoveBrain((e.SpellHandler as CharmSpellHandler).m_controlledBrain);
+                                (e.SpellHandler as CharmSpellHandler).m_isBrainSet = false;
+
+
+                                    if (npc.Brain != null && npc.Brain is IOldAggressiveBrain)
+                                    {
+
+                                        ((IOldAggressiveBrain)npc.Brain).ClearAggroList();
+
+                                        if (e.SpellHandler.Spell.Pulse != 0 && e.SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active && e.SpellHandler.Caster.IsAlive)
+                                        {
+                                            ((IOldAggressiveBrain)npc.Brain).AddToAggroList(e.SpellHandler.Caster, e.SpellHandler.Caster.Level * 10);
+                                            npc.StartAttack(e.SpellHandler.Caster);
+                                        }
+                                        else
+                                        {
+                                            npc.WalkToSpawn();
+                                        }
+
+                                    }
+
+                                }
+
+                                // remove NPC with new brain from all attackers aggro list
+                                lock (npc.attackComponent.Attackers)
+                                    foreach (GameObject obj in npc.attackComponent.Attackers)
+                                    {
+
+                                        if (obj == null || !(obj is GameNPC))
+                                            continue;
+
+                                        if (((GameNPC)obj).Brain != null && ((GameNPC)obj).Brain is IOldAggressiveBrain)
+                                            ((IOldAggressiveBrain)((GameNPC)obj).Brain).RemoveFromAggroList(npc);
+                                    }
+
+                                (e.SpellHandler as CharmSpellHandler).m_controlledBrain.ClearAggroList();
+                                npc.StopFollowing();
+
+                                npc.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, npc.CurrentRegion.Time);
+
+
+                                foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                {
+                                    if (npc.IsAlive)
+                                    {
+
+                                        ply.Out.SendNPCCreate(npc);
+
+                                        if (npc.Inventory != null)
+                                            ply.Out.SendLivingEquipmentUpdate(npc);
+
+                                        ply.Out.SendObjectGuildID(npc, null);
+
+                                    }
+
+                                }
+                            }
+
+                        //}
+                        //else
+                        //{
+                        //    if (log.IsWarnEnabled)
+                        //        log.Warn(string.Format("charm effect expired: Caster={0} effect.Owner={1}",
+                        //                               (Caster == null ? "(null)" : Caster.GetType().ToString()),
+                        //                               (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
+                        //}
                     }
                     else if (isDebuff(e.EffectType))
                     {
