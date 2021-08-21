@@ -117,6 +117,7 @@ namespace DOL.GS
         Pulse,
         FacilitatePainworking,
         MesmerizeDurationBuff,
-        FatigueConsumptionBuff
+        FatigueConsumptionBuff,
+        SavageBuff
     }
 }

@@ -219,7 +219,16 @@ namespace DOL.GS
                 case (byte)eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
 
-                //misc                   
+                //misc 
+                case (byte)eSpellType.SavageCombatSpeedBuff:
+                case (byte)eSpellType.SavageCrushResistanceBuff:
+                case (byte)eSpellType.SavageDPSBuff:
+                case (byte)eSpellType.SavageEnduranceHeal:
+                case (byte)eSpellType.SavageEvadeBuff:
+                case (byte)eSpellType.SavageParryBuff:
+                case (byte)eSpellType.SavageSlashResistanceBuff:
+                case (byte)eSpellType.SavageThrustResistanceBuff:
+                    return eEffect.SavageBuff;
                 case (byte)eSpellType.DirectDamage:
                     return eEffect.DirectDamage;
                 case (byte)eSpellType.FacilitatePainworking:

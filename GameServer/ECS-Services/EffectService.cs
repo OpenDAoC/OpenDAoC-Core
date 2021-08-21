@@ -298,6 +298,11 @@ namespace DOL.GS
                             (e.SpellHandler as BladeturnSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, toLiving);
                             Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), toOther, e.Owner);
                         }
+                        if (e.EffectType == eEffect.SavageBuff)
+                        {
+                            Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
+                            ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, (int)e.SpellHandler.Spell.Value, false);
+                        }
                         else if (isDebuff(e.EffectType))
                         {
                             if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
@@ -390,7 +395,7 @@ namespace DOL.GS
                                     Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), eChatType.CT_Spell, e.Owner);
                                 }
                                 else
-                                {
+                                {                                    
                                     foreach (var prop in getPropertyFromEffect(e.EffectType))
                                     {
                                         Console.WriteLine($"Debuffing {prop.ToString()}");
@@ -412,13 +417,13 @@ namespace DOL.GS
                                     Console.WriteLine($"Buffing {prop.ToString()}");
                                     ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
                                 }
-                            }
+                            } 
                             else
                             {
                                 foreach (var prop in getPropertyFromEffect(e.EffectType))
                                 {
                                     Console.WriteLine($"Buffing {prop.ToString()}");
-                                    
+
                                     if (e.EffectType == eEffect.MovementSpeedBuff)
                                     {
                                         e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
@@ -433,7 +438,7 @@ namespace DOL.GS
                                     else
                                         ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
                                 }
-                            }
+                            }                          
                         }
                     }
                 }
@@ -611,6 +616,22 @@ namespace DOL.GS
                         (e.SpellHandler as BladeturnSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
                         Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
                     }
+                    else if (e.EffectType == eEffect.SavageBuff)
+                    {
+                        Console.WriteLine($"Savage Canceling {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
+                        ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, (int)e.SpellHandler.Spell.Value, true);
+
+                        if (e.SpellHandler.Spell.Power != 0)
+                        {
+                            int cost = 0;
+                            if (e.SpellHandler.Spell.Power < 0)
+                                cost = (int)(e.SpellHandler.Caster.MaxHealth * Math.Abs(e.SpellHandler.Spell.Power) * 0.01);
+                            else
+                                cost = e.SpellHandler.Spell.Power;
+                            if (e.Owner.Health > cost)
+                                e.Owner.ChangeHealth(e.Owner, eHealthChangeType.Spell, -cost);
+                        }
+                    }
                     else if (isDebuff(e.EffectType))
                     {
                         if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
@@ -684,11 +705,11 @@ namespace DOL.GS
                             }
                         }
                         else
-                        {
+                        {                           
                             foreach (var prop in getPropertyFromEffect(e.EffectType))
                             {
                                 Console.WriteLine($"Canceling {prop.ToString()}");
-                                
+
 
                                 if (e.EffectType == eEffect.MovementSpeedBuff)
                                 {
@@ -703,6 +724,7 @@ namespace DOL.GS
                                 }
                                 else
                                     ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                              
                             }
                         }
                     }
