@@ -59,8 +59,7 @@ namespace DOL.GS
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
 
-		public FSM m_fsm;
-
+		
 		#region Formations/Spacing
 
 		//Space/Offsets used in formations

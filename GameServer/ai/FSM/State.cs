@@ -1,6 +1,6 @@
 ﻿using FiniteStateMachine;
 
-public abstract class State
+public class State
 {
     protected FSM m_fsm;
     public State(FSM fsm)
@@ -8,16 +8,16 @@ public abstract class State
         m_fsm = fsm;
     }
 
-    public void Enter()
+    public virtual void Enter()
     {
 
     }
-    public void Exit()
+    public virtual void Exit()
     {
 
     }
 
-    public void Think()
+    public virtual void Think()
     {
 
     }

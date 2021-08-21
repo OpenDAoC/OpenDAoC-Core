@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FiniteStateMachine
 {
-    public abstract class FSM
+    public class FSM
     {
-        protected Dictionary<int, State> m_states;
+        protected Dictionary<int, State> m_states = new Dictionary<int, State>();
         protected State m_currentState;
 
         public FSM()
@@ -28,7 +28,7 @@ namespace FiniteStateMachine
 
         public void SetCurrentState(State state)
         {
-            if(m_currentState == null)
+            if(m_currentState != null)
             {
                 m_currentState.Exit();
             }
@@ -42,7 +42,7 @@ namespace FiniteStateMachine
 
         public void Think()
         {
-            if(m_currentState != null)
+            if (m_currentState != null)
             {
                 m_currentState.Think();
             }
