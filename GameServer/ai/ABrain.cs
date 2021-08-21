@@ -51,7 +51,10 @@ namespace DOL.AI
 		/// <summary>
 		/// The timer used to check for player proximity
 		/// </summary>
-		private RegionTimer m_brainTimer;
+		//private RegionTimer m_brainTimer;
+
+		//holds the last tick that this entity processed Think()
+		private long m_lastThinkTick;
 
 		/// <summary>
 		/// Constructs a new brain for a body
@@ -88,7 +91,7 @@ namespace DOL.AI
 		/// </summary>
 		public virtual bool IsActive
 		{
-			get { return m_brainTimer != null && m_brainTimer.IsAlive; }
+			get { return m_body != null && m_body.IsAlive && m_body.ObjectState == GameObject.eObjectState.Active && m_body.IsVisibleToPlayers; }
 		}
 
 		/// <summary>
@@ -99,6 +102,11 @@ namespace DOL.AI
 			get { return 2500; }
 			set {}
 		}
+
+		public virtual long LastThinkTick {
+			get { return m_lastThinkTick; }
+			set { m_lastThinkTick = value; }
+        }
 
 		/// <summary>
 		/// How fast can this brain cast, in milliseconds
@@ -123,9 +131,9 @@ namespace DOL.AI
 			{
 				if (IsActive) return false;
 
-				m_brainTimer = new RegionTimer(m_body);
-				m_brainTimer.Callback = new RegionTimerCallback(BrainTimerCallback);
-				m_brainTimer.Start(ThinkInterval);
+				//m_brainTimer = new RegionTimer(m_body);
+				//m_brainTimer.Callback = new RegionTimerCallback(BrainTimerCallback);
+				//m_brainTimer.Start(ThinkInterval);
 			}
 			return true;
 		}
@@ -139,12 +147,13 @@ namespace DOL.AI
 			lock (m_LockObject)
 			{
 				if(!IsActive) return false;
-				m_brainTimer.Stop();
-				m_brainTimer = null;
+				//m_brainTimer.Stop();
+				//m_brainTimer = null;
 			}
 			return true;
 		}
 
+		/*
 		/// <summary>
 		/// The callback timer for the brain ticks
 		/// </summary>
@@ -163,7 +172,7 @@ namespace DOL.AI
 			GameEventMgr.Notify(GameNPCEvent.OnAICallback, m_body);
 			return ThinkInterval;
 		}
-
+		*/
 		/// <summary>
 		/// Receives all messages of the body
 		/// </summary>
