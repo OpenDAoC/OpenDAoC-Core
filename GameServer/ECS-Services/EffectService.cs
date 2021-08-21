@@ -794,7 +794,10 @@ namespace DOL.GS
                 case eEffect.ArmorAbsorptionDebuff:
                     list.Add(eProperty.ArmorAbsorption);
                     return list;
-
+                case eEffect.MeleeDamageBuff:
+                case eEffect.MeleeDamageDebuff:
+                    list.Add(eProperty.MeleeDamage);
+                    return list;
                 //resists
                 case eEffect.NaturalResistDebuff:
                     list.Add(eProperty.Resist_Natural);

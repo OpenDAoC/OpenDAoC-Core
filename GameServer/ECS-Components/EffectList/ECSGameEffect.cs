@@ -217,13 +217,20 @@ namespace DOL.GS
                 case (byte)eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
 
-                //misc
+                //misc                   
                 case (byte)eSpellType.DirectDamage:
                     return eEffect.DirectDamage;
                 case (byte)eSpellType.FacilitatePainworking:
                     return eEffect.FacilitatePainworking;
-                
-                    
+
+                case (byte)eSpellType.DirectDamageWithDebuff:
+                    if (SpellHandler.Spell.DamageType == eDamageType.Body)
+                        return eEffect.BodyResistDebuff;
+                    else if (SpellHandler.Spell.DamageType == eDamageType.Cold)
+                        return eEffect.ColdResistDebuff;
+                    else
+                        return eEffect.Unknown;
+
 
                 #endregion
 
