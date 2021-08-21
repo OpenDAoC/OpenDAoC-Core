@@ -4116,6 +4116,46 @@ namespace DOL.GS
                         break;
                 }
             }
+            if (effectListComponent.Effects.ContainsKey(eEffect.AblativeArmor) && ad != null)
+            {
+                var effect = effectListComponent.Effects[eEffect.AblativeArmor];
+
+                if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
+
+                int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
+                double absorbPercent = 25;
+                if (effect.SpellHandler.Spell.Damage > 0)
+                    absorbPercent = effect.SpellHandler.Spell.Damage;
+                //because albatives can reach 100%
+                if (absorbPercent > 100)
+                    absorbPercent = 100;
+                int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
+                if (damageAbsorbed > ablativehp)
+                    damageAbsorbed = ablativehp;
+                ablativehp -= damageAbsorbed;
+                ad.Damage -= damageAbsorbed;
+                (effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+
+                if (ad.Target is GamePlayer)
+                    (ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+                if (ad.Attacker is GamePlayer)
+                    (ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+                if (ablativehp <= 0)
+                {
+                    //GameSpellEffect effect = SpellHandler.FindEffectOnTarget(living, this);
+                    //if (effect != null)
+                    //    effect.Cancel(false);
+                    effect.CancelEffect = true;
+                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                    EntityManager.AddEffect(effect);
+                }
+                else
+                {
+                    effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
+                }
+            }
         }
 
 		/// <summary>
