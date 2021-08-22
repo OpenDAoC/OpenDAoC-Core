@@ -9,13 +9,17 @@ using DOL.GS.PropertyCalc;
 using DOL.GS.ServerProperties;
 using DOL.GS.SpellEffects;
 using DOL.GS.Spells;
+using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class EffectService
     {
+        private const string ServiceName = "EffectService";
         public static void Tick(long tick)
         {
+            Diagnostics.StartPerfCounter(ServiceName);
+
             foreach (var e in EntityManager.GetAllEffects())
             {
                 if (e.CancelEffect)
@@ -77,6 +81,8 @@ namespace DOL.GS
 
                 EntityManager.RemoveEffect(e);
             }
+
+            Diagnostics.StopPerfCounter(ServiceName);
         }
 
         private static void HandlePropertyModification(ECSGameEffect e)

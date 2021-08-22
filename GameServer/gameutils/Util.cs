@@ -525,14 +525,20 @@ namespace DOL.GS
 			return IsNearValue(xH, xC, tolerance) && IsNearValue(yH, yC, tolerance) && IsNearValue(zH, zC, tolerance);
 		}
 
-		#region Collection Utils
+        public static string TruncateString(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
 
-		/// <summary>
-		/// Implementation of a List Shuffle for Generics.
-		/// This can help for Loot Randomizing.
-		/// </summary>
-		/// <param name="list"></param>
-		public static void Shuffle<T>(IList<T> list)
+        #region Collection Utils
+
+        /// <summary>
+        /// Implementation of a List Shuffle for Generics.
+        /// This can help for Loot Randomizing.
+        /// </summary>
+        /// <param name="list"></param>
+        public static void Shuffle<T>(IList<T> list)
 		{
 			int n = list.Count;
 			while (n > 1)

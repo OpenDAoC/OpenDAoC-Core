@@ -1,12 +1,16 @@
 using System;
+using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class CastingService
     {
+        private const string ServiceName = "CastingService";
+
         public static void Tick(long tick)
         {
-            
+            Diagnostics.StartPerfCounter(ServiceName);
+
             foreach (var p in EntityManager.GetAllPlayers())
             {
                 if (p == null)
@@ -20,6 +24,8 @@ namespace DOL.GS
                 
                 handler.Tick(tick);
             }
+
+            Diagnostics.StopPerfCounter(ServiceName);
         }
 
 

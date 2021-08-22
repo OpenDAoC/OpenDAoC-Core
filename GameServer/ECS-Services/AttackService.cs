@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class AttackService
     {
+        private const string ServiceName = "AttackService";
+
         public static void Tick(long tick)
         {
+            Diagnostics.StartPerfCounter(ServiceName);
 
             foreach (var p in EntityManager.GetAllPlayers())
             {
@@ -31,6 +35,8 @@ namespace DOL.GS
 
                 npc.attackComponent.Tick(tick);
             }
+
+            Diagnostics.StopPerfCounter(ServiceName);
         }
 
 

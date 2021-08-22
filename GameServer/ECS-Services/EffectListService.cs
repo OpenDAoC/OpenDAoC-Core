@@ -2,13 +2,18 @@ using DOL.GS.Spells;
 using System.Collections.Generic;
 using System;
 using System.Numerics;
+using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class EffectListService
     {
+        private const string ServiceName = "EffectListService";
+
         public static void Tick(long tick)
         {
+            Diagnostics.StartPerfCounter(ServiceName);
+
             foreach (var p in EntityManager.GetAllPlayers())
             {
                 HandleEffects(tick, p);
@@ -17,6 +22,8 @@ namespace DOL.GS
             {
                 HandleEffects(tick, (GameLiving)npc);
             }
+
+            Diagnostics.StopPerfCounter(ServiceName);               
         }
 
         private static void HandleEffects(long tick, GameLiving living)
