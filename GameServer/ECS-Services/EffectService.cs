@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.Events;
+using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
 using DOL.GS.ServerProperties;
@@ -156,9 +157,7 @@ namespace DOL.GS
 
                                     gPlayer.StartInterruptTimer(gPlayer.SpellInterruptDuration, AttackData.eAttackType.Spell, e.SpellHandler.Caster);
                                 }
-                                e.CancelEffect = true;
-                                e.ExpireTick = GameLoop.GameLoopTime;
-                                EntityManager.AddEffect(e);
+                                EffectService.RequestCancelEffect(e);
                             }
                             else if (e.Owner is GameNPC)
                             {
@@ -186,9 +185,7 @@ namespace DOL.GS
                                     {
                                         //Theurgist pets die.
                                         npc.Die(e.SpellHandler.Caster);
-                                        e.CancelEffect = true;
-                                        e.ExpireTick = GameLoop.GameLoopTime;
-                                        EntityManager.AddEffect(e);
+                                        EffectService.RequestCancelEffect(e);
                                         return;
                                     }
                                 }
@@ -356,9 +353,8 @@ namespace DOL.GS
                                     e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
                                     if (mezz != null)
                                     {
-                                        mezz.CancelEffect = true;
-                                        mezz.ExpireTick = GameLoop.GameLoopTime - 1;
-                                        EntityManager.AddEffect(mezz);
+                                        EffectService.RequestCancelEffect(mezz);
+
                                     }
                                     e.Owner.Disease(true);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - 0.15);
@@ -382,11 +378,9 @@ namespace DOL.GS
                                     e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
                                     if (mezz != null)
                                     {
-                                        mezz.CancelEffect = true;
-                                        mezz.ExpireTick = GameLoop.GameLoopTime - 1;
-                                        EntityManager.AddEffect(mezz);
+                                        EffectService.RequestCancelEffect(mezz);
                                     }
-                                    
+
                                     // percent category
                                     e.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)e.SpellHandler.Spell.Value;
                                     e.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)e.SpellHandler.Spell.Value;
@@ -449,6 +443,14 @@ namespace DOL.GS
                         immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     }
                 }
+
+                // Handle Concentration spells (buffs/songs/chants) being added.
+                if (e.SpellHandler.Spell.IsConcentration && e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+                {
+                    e.SpellHandler.Caster.ConcentrationEffects.Add(e);
+                }
+
+
                 if (e.Owner is GamePlayer player)
                 {
                     SendPlayerUpdates(player);
@@ -730,6 +732,13 @@ namespace DOL.GS
                     }
                 }
             }
+
+            // Handle Concentration spells (buffs/songs/chants) being removed.
+            if (e.SpellHandler.Spell.IsConcentration && e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+            {
+                e.SpellHandler.Caster.ConcentrationEffects.Remove(e);
+            }
+
             if (e.Owner is GamePlayer player)
             {
                 SendPlayerUpdates(player);
@@ -738,6 +747,28 @@ namespace DOL.GS
             }
         }
 
+        /// <summary>
+        /// Enqueues an ECSGameEffect to be canceled on the next tick.
+        /// </summary>
+        public static void RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
+        {
+            // playerCanceled param isn't used but it's there in case we eventually want to...
+            effect.CancelEffect = true;
+            effect.ExpireTick = GameLoop.GameLoopTime - 1;
+            EntityManager.AddEffect(effect);
+        }
+
+        /// <summary>
+        /// Enqueues an ECSGameEffect (as a IConcentrationEffect) to be canceled on the next tick.
+        /// </summary>
+        public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled)
+        {
+            ECSGameEffect effect = concEffect as ECSGameEffect;
+            if (effect != null)
+            {
+                RequestCancelEffect(effect, playerCanceled);
+            }
+        }
         public static void SendSpellAnimation(ECSGameEffect e)
         {
             GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
@@ -1038,8 +1069,7 @@ namespace DOL.GS
 
             if (effect.Owner.IsAlive == false)
             {
-                effect.CancelEffect = true;
-                EntityManager.AddEffect(effect);
+                EffectService.RequestCancelEffect(effect);
             }
 
             if (effect.Owner.IsAlive)

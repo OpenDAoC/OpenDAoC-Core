@@ -27,8 +27,7 @@ namespace DOL.GS
                 {
                     if (!effect.Value.Owner.IsAlive)
                     {
-                        effect.Value.CancelEffect = true;
-                        EntityManager.AddEffect(effect.Value);
+                        EffectService.RequestCancelEffect(effect.Value);
                         continue;
                     }
 
@@ -55,8 +54,7 @@ namespace DOL.GS
                             }
                             else
                             {
-                                effect.Value.CancelEffect = true;
-                                EntityManager.AddEffect(effect.Value);
+                                EffectService.RequestCancelEffect(effect.Value);
                             }
                         }
                     }

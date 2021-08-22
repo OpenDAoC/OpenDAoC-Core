@@ -237,12 +237,9 @@ namespace DOL.GS.Spells
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							ad.AttackResult = eAttackResult.HitUnstyled;
-                            //bladeturn.Cancel(false);
-                            bladeturn.CancelEffect = true;
-                            bladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
-                            EntityManager.AddEffect(bladeturn);
+                            EffectService.RequestCancelEffect(bladeturn);
                         }
-						break;
+                        break;
 
 					case (int)eShotType.Other:
 					default:
@@ -257,11 +254,8 @@ namespace DOL.GS.Spells
 								player = target as GamePlayer;
 								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 								ad.AttackResult = eAttackResult.Missed;
-								//bladeturn.Cancel(false);
-                                bladeturn.CancelEffect = true;
-                                bladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
-                                EntityManager.AddEffect(bladeturn);
-                            }
+								EffectService.RequestCancelEffect(bladeturn);
+							}
 						}
 						break;
 				}

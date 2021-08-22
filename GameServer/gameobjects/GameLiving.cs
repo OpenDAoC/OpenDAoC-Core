@@ -4051,11 +4051,9 @@ namespace DOL.GS
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff) && ad != null)
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff];
-                effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                effect.CancelEffect = true;
-                EntityManager.AddEffect(effect);
+                EffectService.RequestCancelEffect(effect);
             }
-          
+
             if (effectListComponent.Effects.ContainsKey(eEffect.Mez) && ad != null)
             {
                 if (ad.Attacker != this)
@@ -4095,10 +4093,7 @@ namespace DOL.GS
                     {
                         // Remove Mez
                         var effect = effectListComponent.Effects[eEffect.Mez];
-                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                        effect.CancelEffect = true;
-                        EntityManager.AddEffect(effect);
-
+                        EffectService.RequestCancelEffect(effect);
                     }
                 }
             }
@@ -4110,9 +4105,7 @@ namespace DOL.GS
                     case eAttackResult.HitStyle:
                     case eAttackResult.HitUnstyled:
                         var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff];
-                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                        effect.CancelEffect = true;
-                        EntityManager.AddEffect(effect);
+                        EffectService.RequestCancelEffect(effect);
                         break;
                 }
             }
@@ -4147,9 +4140,7 @@ namespace DOL.GS
                     //GameSpellEffect effect = SpellHandler.FindEffectOnTarget(living, this);
                     //if (effect != null)
                     //    effect.Cancel(false);
-                    effect.CancelEffect = true;
-                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                    EntityManager.AddEffect(effect);
+                    EffectService.RequestCancelEffect(effect);
                 }
                 else
                 {
@@ -5609,34 +5600,47 @@ namespace DOL.GS
 			// cancel conc spells
 			ConcentrationEffects.CancelAll(leaveSelf);
 
-			// cancel all active conc spell effects from other casters
-			ArrayList concEffects = new ArrayList();
-			lock (EffectList)
+			//cancel all active conc spell effects from other casters
+			if (effectListComponent != null)
 			{
-				foreach (IGameEffect effect in EffectList)
+				foreach (var effect in effectListComponent.Effects)
 				{
-					if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.Concentration > 0)
+					if (effect.Value.IsConcentrationEffect())
 					{
-						if (!leaveSelf || leaveSelf && ((GameSpellEffect)effect).SpellHandler.Caster != this)
-							concEffects.Add(effect);
+						if (!leaveSelf || (leaveSelf && effect.Value.SpellHandler.Caster != this))
+							EffectService.RequestCancelConcEffect(effect.Value, false);
 					}
 				}
 			}
-			foreach (GameSpellEffect effect in concEffects)
-			{
-				effect.Cancel(false);
-			}
-		}
+        }
 
-		#endregion
-		#region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
-		/// <summary>
-		/// The targetobject of this living
-		/// This is a weak reference to a GameObject, which
-		/// means that the gameobject can be cleaned up even
-		/// when this living has a reference on it ...
-		/// </summary>
-		protected readonly WeakReference m_targetObjectWeakReference;
+        // 			ArrayList concEffects = new ArrayList();
+        // 			lock (EffectList)
+        // 			{
+        // 				foreach (IGameEffect effect in EffectList)
+        // 				{
+        // 					if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.Concentration > 0)
+        // 					{
+        // 						if (!leaveSelf || leaveSelf && ((GameSpellEffect)effect).SpellHandler.Caster != this)
+        // 							concEffects.Add(effect);
+        // 					}
+        // 				}
+        // 			}
+        // 			foreach (GameSpellEffect effect in concEffects)
+        // 			{
+        // 				effect.Cancel(false);
+        // 			}
+        // 		}
+
+        #endregion
+        #region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
+        /// <summary>
+        /// The targetobject of this living
+        /// This is a weak reference to a GameObject, which
+        /// means that the gameobject can be cleaned up even
+        /// when this living has a reference on it ...
+        /// </summary>
+        protected readonly WeakReference m_targetObjectWeakReference;
 		/// <summary>
 		/// The current speed of this living
 		/// </summary>

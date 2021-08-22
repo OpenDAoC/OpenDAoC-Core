@@ -1,9 +1,10 @@
 using System;
+using DOL.GS.Effects;
 using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-    public class ECSGameEffect
+    public class ECSGameEffect : IConcentrationEffect
     {
         public ISpellHandler SpellHandler;
         //Based on GameLoop expire tick
@@ -20,6 +21,11 @@ namespace DOL.GS
         public GameLiving Owner;
         public int TickInterval;
         public long NextTick;
+
+        string IConcentrationEffect.Name => SpellHandler.Spell.Name;
+        string IConcentrationEffect.OwnerName => Owner.Name;
+        ushort IConcentrationEffect.Icon => Icon;
+        byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
 
         public ECSGameEffect() { }
 
@@ -60,6 +66,11 @@ namespace DOL.GS
                 return (ushort)(ExpireTick - GameLoop.GameLoopTime);
             else
                 return 0;
+        }
+
+        public bool IsConcentrationEffect()
+        {
+            return SpellHandler.Spell.IsConcentration;
         }
 
         protected eEffect MapEffect()
@@ -251,6 +262,5 @@ namespace DOL.GS
                     return eEffect.Unknown;
             }
         }
-
     }
 }

@@ -331,6 +331,8 @@ namespace DOL.GS.Spells
 		/// <param name="living"></param>
 		public static void CancelAllPulsingSpells(GameLiving living)
 		{
+			//[Takii] I updated this method so things would compile but the only call to it is currently commented and its unclear if we want to keep it.
+
 			List<IConcentrationEffect> pulsingSpells = new List<IConcentrationEffect>();
 
 			GamePlayer player = living as GamePlayer;
@@ -339,14 +341,14 @@ namespace DOL.GS.Spells
 			{
 				for (int i = 0; i < living.ConcentrationEffects.Count; i++)
 				{
-					PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+					ECSPulseEffect effect = living.ConcentrationEffects[i] as ECSPulseEffect;
 					if (effect == null)
 						continue;
 
-					if ( player != null && player.CharacterClass.MaxPulsingSpells > 1 )
-						pulsingSpells.Add( effect );
+					if (player != null && player.CharacterClass.MaxPulsingSpells > 1)
+						pulsingSpells.Add(effect);
 					else
-						effect.Cancel(false);
+						EffectService.RequestCancelEffect(effect);
 				}
 			}
 
@@ -360,9 +362,13 @@ namespace DOL.GS.Spells
 			// will prevent us from knowing which spell is the oldest and should be canceled - we can go ahead and simply
 			// cancel the last spell in the list (which will result in inconsistent behavior) or change the code that adds
 			// spells to ConcentrationEffects so that it enforces predictable ordering.
-			if ( pulsingSpells.Count > 1 )
+			if (pulsingSpells.Count > 1)
 			{
-				pulsingSpells[pulsingSpells.Count - 1].Cancel( false );
+				ECSPulseEffect effect = pulsingSpells[pulsingSpells.Count - 1] as ECSPulseEffect;
+				if (effect != null)
+				{
+					EffectService.RequestCancelEffect(effect);
+				}
 			}
 		}
 

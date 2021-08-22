@@ -2150,20 +2150,15 @@ namespace DOL.GS
                 if (penetrate)
                 {
                     if (ad.Target is GamePlayer) ((GamePlayer)ad.Target).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    {//bladeturn.Cancel(false);
-                        ecsbladeturn.CancelEffect = true;
-                        ecsbladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
-                        EntityManager.AddEffect(ecsbladeturn);
+                    {
+                        EffectService.RequestCancelEffect(ecsbladeturn);
                     }
                 }
                 else
                 {
                     if (owner is GamePlayer) ((GamePlayer)owner).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)owner).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Attacker).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    //bladeturn.Cancel(false);
-                    ecsbladeturn.CancelEffect = true;
-                    ecsbladeturn.ExpireTick = GameLoop.GameLoopTime - 1;
-                    EntityManager.AddEffect(ecsbladeturn);
+                    EffectService.RequestCancelEffect(ecsbladeturn);
                     if (owner is GamePlayer)
                         ((GamePlayer)owner).Stealth(false);
                     return eAttackResult.Missed;
