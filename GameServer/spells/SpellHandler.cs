@@ -1969,11 +1969,12 @@ namespace DOL.GS.Spells
 		/// <param name="castTime">The cast time</param>
 		public virtual void SendCastAnimation(ushort castTime)
 		{
+			_calculatedCastTime = castTime * 100;
+
 			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player == null)
 					continue;
-				_calculatedCastTime = castTime * 100;
 				Console.WriteLine($"Cast Animation CastTime Sent to Client: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 				player.Out.SendSpellCastAnimation(m_caster, m_spell.ClientEffect, castTime);
 			}
