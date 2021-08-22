@@ -689,8 +689,7 @@ namespace DOL.GS.Spells
 
                     if (cancelEffect != null)
                     {
-                        cancelEffect.CancelEffect = true;
-                        EntityManager.AddEffect(cancelEffect);
+						EffectService.RequestCancelEffect(cancelEffect);
                         Caster.LastPulseCast = null;
                         Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }

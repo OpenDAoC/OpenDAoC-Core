@@ -101,13 +101,23 @@ namespace DOL.GS
                 return;
             }
 
+            // Early out if we're trying to add an effect that is already present.
             if (!effectList.AddEffect(e))
             {
-                
                 SendSpellResistAnimation(e);
-
+                return;
             }
-            else if (e.EffectType != eEffect.Pulse)
+
+            // Update the Concentration List if Conc Buff/Song/Chant.
+            if (e.ShouldBeAddedToConcentrationList())
+            {
+                if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+                {
+                    e.SpellHandler.Caster.ConcentrationEffects.Add(e);
+                }
+            }
+
+            if (e.EffectType != eEffect.Pulse)
             {
                 if (!(e is ECSImmunityEffect))
                 {
@@ -450,13 +460,6 @@ namespace DOL.GS
                     }
                 }
 
-                // Handle Concentration spells (buffs/songs/chants) being added.
-                if (e.SpellHandler.Spell.IsConcentration && e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
-                {
-                    e.SpellHandler.Caster.ConcentrationEffects.Add(e);
-                }
-
-
                 if (e.Owner is GamePlayer player)
                 {
                     SendPlayerUpdates(player);
@@ -739,10 +742,13 @@ namespace DOL.GS
                 }
             }
 
-            // Handle Concentration spells (buffs/songs/chants) being removed.
-            if (e.SpellHandler.Spell.IsConcentration && e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+            // Update the Concentration List if Conc Buff/Song/Chant.
+            if (e.ShouldBeRemovedFromConcentrationList())
             {
-                e.SpellHandler.Caster.ConcentrationEffects.Remove(e);
+                if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+                {
+                    e.SpellHandler.Caster.ConcentrationEffects.Remove(e);
+                }
             }
 
             if (e.Owner is GamePlayer player)

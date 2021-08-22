@@ -73,6 +73,16 @@ namespace DOL.GS
             return SpellHandler.Spell.IsConcentration;
         }
 
+        public bool ShouldBeAddedToConcentrationList()
+        {
+            return SpellHandler.Spell.IsConcentration || (EffectType == eEffect.Pulse && RenewEffect == false);
+        }
+
+        public bool ShouldBeRemovedFromConcentrationList()
+        {
+            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
+        }
+
         protected eEffect MapEffect()
         {
             Console.WriteLine("Spell of type: " + ((eSpellType)SpellHandler.Spell.SpellType).ToString());
