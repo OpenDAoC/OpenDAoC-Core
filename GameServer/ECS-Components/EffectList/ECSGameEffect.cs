@@ -59,7 +59,7 @@ namespace DOL.GS
                 PulseFreq = 5000;
             }
         }
-
+        
         public ushort GetRemainingTimeForClient()
         {
             if (Duration > 0)

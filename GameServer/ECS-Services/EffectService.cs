@@ -120,11 +120,11 @@ namespace DOL.GS
             if (e.EffectType != eEffect.Pulse)
             {
                 if (!(e is ECSImmunityEffect))
-                {
-                    SendSpellAnimation(e);
-
-                    if (!e.RenewEffect)
+                {                    
+                   if (!e.RenewEffect)
                     {
+                        SendSpellAnimation(e);
+
                         if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                         {
                             if (e.EffectType == eEffect.Mez)
@@ -452,16 +452,17 @@ namespace DOL.GS
                         }
                     }
                 }
-                else
-                {
-                    if (e.Owner is GamePlayer immunePlayer)
-                    {
-                        immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
-                    }
-                }
+                //else
+                //{
+                //    if (e.Owner is GamePlayer immunePlayer)
+                //    {
+                //        immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                //    }
+                //}
 
                 if (e.Owner is GamePlayer player)
                 {
+                    player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     SendPlayerUpdates(player);
                 }
             }
