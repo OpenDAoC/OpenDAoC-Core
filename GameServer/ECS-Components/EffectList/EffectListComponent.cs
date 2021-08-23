@@ -44,6 +44,8 @@ namespace DOL.GS
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
 
+                        if (Effects.Count == 0)
+                            EntityManager.AddNpcComponent(typeof(EffectListComponent), Owner);
                     }
                     
                     return true;
@@ -82,6 +84,8 @@ namespace DOL.GS
                     {
                         EffectIdToEffect.Remove(effect.Icon);
                         Effects.Remove(effect.EffectType);
+                        if (Effects.Count == 0)
+                            EntityManager.RemoveNpcComponent(typeof(EffectListComponent), Owner);
                         return true;
                     }
                 }
