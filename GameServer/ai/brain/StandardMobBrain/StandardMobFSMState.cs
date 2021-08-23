@@ -116,6 +116,10 @@ public class StandardMobFSMState_WAKING_UP : StandardMobFSMState
 
         //if patrol path,
         //set state == PATROLLING
+        if (_brain.HasPatrolPath())
+        {
+            _brain.FSM.SetCurrentState(StandardMobStateType.PATROLLING);
+        }
 
         //if aggroList > 0,
         //setStatus = aggro
@@ -164,6 +168,7 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
 
     public new void Think()
     {
+        Console.WriteLine($"aggro think for {_brain}");
         // check for returning to home if to far away
         if (_brain.IsBeyondTetherRange())
         {
@@ -174,12 +179,9 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         if (!_brain.HasAggressionTable())
         {
             _brain.FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
-        } else
-        {
-            _brain.AttackMostWanted();
-        }
-
-
+        } 
+        
+        _brain.AttackMostWanted();
         
         base.Think();
     }
@@ -260,10 +262,6 @@ public class StandardMobFSMState_RETURN_TO_SPAWN : StandardMobFSMState
 
     public new void Think()
     {
-
-
-        _brain.Body.WalkToSpawn();
-
         //if aggroList > 0,
         //setStatus = aggro
         if (_brain.HasAggressionTable())
@@ -273,6 +271,14 @@ public class StandardMobFSMState_RETURN_TO_SPAWN : StandardMobFSMState
             return;
         }
 
+        if (_brain.Body.GetDistanceTo(_brain.Body.SpawnPoint) > 0)
+        {
+            _brain.FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
+        }
+
+        _brain.Body.WalkToSpawn();
+
+        
         base.Think();
     }
 }
@@ -299,18 +305,6 @@ public class StandardMobFSMState_PATROLLING : StandardMobFSMState
             _brain.FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
         }
 
-        //handle patrol logic
-        PathPoint path = MovementMgr.LoadPath(_brain.Body.PathID);
-        if (path != null)
-        {
-            _brain.Body.CurrentWayPoint = path;
-           _brain. Body.MoveOnPath((short)path.MaxSpeed);
-        }
-        else
-        {
-            log.ErrorFormat("Path {0} not found for mob {1}.", _brain.Body.PathID, _brain.Body.Name);
-        }
-
         //if aggroList > 0,
         //setStatus = aggro
         if (_brain.HasAggressionTable())
@@ -318,6 +312,19 @@ public class StandardMobFSMState_PATROLLING : StandardMobFSMState
             _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             _brain.FSM.SetCurrentState(StandardMobStateType.AGGRO);
             return;
+        }
+
+        //handle patrol logic
+        PathPoint path = MovementMgr.LoadPath(_brain.Body.PathID);
+        if (path != null)
+        {
+            _brain.Body.CurrentWayPoint = path;
+            _brain.Body.MoveOnPath((short)path.MaxSpeed);
+        }
+        else
+        {
+            log.ErrorFormat("Path {0} not found for mob {1}.", _brain.Body.PathID, _brain.Body.Name);
+            _brain.FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
         }
 
         base.Think();
