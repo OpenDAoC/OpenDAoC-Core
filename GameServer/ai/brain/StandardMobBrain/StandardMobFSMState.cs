@@ -153,6 +153,7 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         if (_brain.Body.attackComponent == null) { _brain.Body.attackComponent = new DOL.GS.AttackComponent(_brain.Body); }
         if (_brain.Body.castingComponent == null) { _brain.Body.castingComponent = new DOL.GS.CastingComponent(_brain.Body); }
         Console.WriteLine($"{_brain.Body} is entering AGGRO");
+        _brain.AttackMostWanted();
         base.Enter();
     }
 
@@ -166,9 +167,8 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         base.Exit();
     }
 
-    public new void Think()
+    public override void Think()
     {
-        Console.WriteLine($"aggro think for {_brain}");
         // check for returning to home if to far away
         if (_brain.IsBeyondTetherRange())
         {
@@ -180,9 +180,12 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         {
             _brain.FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
         } 
-        
-        _brain.AttackMostWanted();
-        
+
+        if(_brain.Body.TargetObject == null)
+        {
+            _brain.AttackMostWanted();
+        }
+                
         base.Think();
     }
 }
