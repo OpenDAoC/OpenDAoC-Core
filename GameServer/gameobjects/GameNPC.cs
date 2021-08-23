@@ -1440,7 +1440,7 @@ namespace DOL.GS
 			{
 				// No need to start walking.
 
-				Notify(GameNPCEvent.ArriveAtTarget, this);
+				//Notify(GameNPCEvent.ArriveAtTarget, this);
 				return;
 			}
 
@@ -1478,6 +1478,12 @@ namespace DOL.GS
 			CancelWalkToTimer();
 			IsReturningHome = false;
 			IsReturningToSpawnPoint = false;
+		}
+
+		public bool IsNearSpawn()
+        {
+			return IsWithinRadius(SpawnPoint, CONST_WALKTOTOLERANCE);
+
 		}
 
 		/// <summary>

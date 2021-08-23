@@ -203,7 +203,7 @@ public class StandardMobFSMState_ROAMING : StandardMobFSMState
         base.Enter();
     }
 
-    public new void Think()
+    public override void Think()
     {
         // check for returning to home if to far away
         if (_brain.IsBeyondTetherRange())
@@ -263,25 +263,16 @@ public class StandardMobFSMState_RETURN_TO_SPAWN : StandardMobFSMState
         base.Enter();
     }
 
-    public new void Think()
+    public override void Think()
     {
-        //if aggroList > 0,
-        //setStatus = aggro
-        if (_brain.HasAggressionTable())
-        {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
-            _brain.FSM.SetCurrentState(StandardMobStateType.AGGRO);
-            return;
-        }
+        _brain.Body.WalkToSpawn();
 
-        if (_brain.Body.GetDistanceTo(_brain.Body.SpawnPoint) > 0)
+        if (_brain.Body.IsNearSpawn())
         {
             _brain.FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
         }
 
-        _brain.Body.WalkToSpawn();
 
-        
         base.Think();
     }
 }
@@ -300,7 +291,7 @@ public class StandardMobFSMState_PATROLLING : StandardMobFSMState
         base.Enter();
     }
 
-    public new void Think()
+    public override void Think()
     {
         // check for returning to home if to far away
         if (_brain.IsBeyondTetherRange())

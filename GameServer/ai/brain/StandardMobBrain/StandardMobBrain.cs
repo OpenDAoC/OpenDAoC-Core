@@ -943,8 +943,8 @@ namespace DOL.AI.Brain
                 {
                     AddToAggroList(ad.Attacker, 1);
                 }
-
-                Body.StartAttack(ad.Attacker);
+                FSM.SetCurrentState(StandardMobStateType.AGGRO);
+                //Body.StartAttack(ad.Attacker);
             }
         }
 
