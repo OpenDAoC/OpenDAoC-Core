@@ -20,25 +20,15 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var p in EntityManager.GetAllPlayers())
+            foreach (var living in EntityManager.GetLivingByComponent(typeof(AttackComponent)))
             {
-                if (p == null)
+                if (living == null)
                     continue;
 
-                if (p.attackComponent is null)
+                if (living.attackComponent is null)
                     continue;
 
-                p.attackComponent.Tick(tick);
-            }
-            foreach (var npc in EntityManager.GetAllNpcs())
-            {
-                if (npc == null)
-                    continue;
-
-                if (npc.attackComponent is null)
-                    continue;
-
-                npc.attackComponent.Tick(tick);
+                living.attackComponent.Tick(tick);
             }
 
             Diagnostics.StopPerfCounter(ServiceName);
