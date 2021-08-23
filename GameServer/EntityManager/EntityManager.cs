@@ -12,7 +12,7 @@ namespace DOL.GS
         private static List<GamePlayer> _players = new List<GamePlayer>(4000);
         private static object _playersLock = new object();
 
-        private static List<GameLiving> _npcs = new List<GameLiving>(50000);
+        private static List<GameLiving> _npcs = new List<GameLiving>(100000);
         private static object _npcsLock = new object();
         
         private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
