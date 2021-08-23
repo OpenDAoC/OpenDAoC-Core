@@ -20,13 +20,9 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var p in EntityManager.GetPlayersByComponent(typeof(EffectListService)))
+            foreach (var living in EntityManager.GetLivingByComponent(typeof(EffectListService)))
             {
-                HandleEffects(tick, p);
-            }
-            foreach (var npc in EntityManager.GetNpcsByComponent(typeof(EffectListService)))
-            {
-                HandleEffects(tick, (GameLiving)npc);
+                HandleEffects(tick, living);
             }
 
             Diagnostics.StopPerfCounter(ServiceName);               

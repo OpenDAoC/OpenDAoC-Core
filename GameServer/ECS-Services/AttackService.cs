@@ -11,6 +11,11 @@ namespace DOL.GS
     {
         private const string ServiceName = "AttackService";
 
+        static AttackService()
+        {
+            EntityManager.AddService(typeof(AttackService));
+        }
+
         public static void Tick(long tick)
         {
             Diagnostics.StartPerfCounter(ServiceName);

@@ -21,11 +21,8 @@ namespace DOL.GS
         private static List<Type> _services = new List<Type>(100);
         private static object _servicesLock = new object();
 
-        private static Dictionary<Type, List<GamePlayer>> _playerComponents = new Dictionary<Type, List<GamePlayer>>(5000);
-        private static object _playerComponentLock = new object();
-
-        private static Dictionary<Type, List<GameLiving>> _npcComponents = new Dictionary<Type, List<GameLiving>>(5000);
-        private static object _npcComponentLock = new object();
+        private static Dictionary<Type, List<GameLiving>> _components = new Dictionary<Type, List<GameLiving>>(5000);
+        private static object _componentLock = new object();
 
         public static void AddService(Type t)
         {
@@ -43,56 +40,26 @@ namespace DOL.GS
             }
         }
 
-        public static void AddPlayerComponent(Type t, GamePlayer p)
+        public static void AddComponent(Type t, GameLiving n)
         {
-            lock (_playerComponentLock)
+            lock (_componentLock)
             {
-                if (_playerComponents.ContainsKey(t))
+                if (_components.ContainsKey(t))
                 {
-                    _playerComponents[t].Add(p);
+                    _components[t].Add(n);
                 }
                 else
                 {
-                    _playerComponents.Add(t, new List<GamePlayer> { p });
+                    _components.Add(t, new List<GameLiving> { n });
                 }
             }
         }
 
-        public static GamePlayer[] GetPlayersByComponent(Type t)
+        public static GameLiving[] GetLivingByComponent(Type t)
         {
-            lock (_playerComponents)
+            lock (_components)
             {
-                if (_playerComponents.TryGetValue(t, out var p))
-                {
-                    return p.ToArray();
-                }
-                else
-                {
-                    return new GamePlayer[0];
-                }
-            }
-        }
-
-        public static void AddNpcComponent(Type t, GameLiving n)
-        {
-            lock (_npcComponentLock)
-            {
-                if (_npcComponents.ContainsKey(t))
-                {
-                    _npcComponents[t].Add(n);
-                }
-                else
-                {
-                    _npcComponents.Add(t, new List<GameLiving> { n });
-                }
-            }
-        }
-
-        public static GameLiving[] GetNpcsByComponent(Type t)
-        {
-            lock (_npcComponents)
-            {
-                if (_npcComponents.TryGetValue(t, out var p))
+                if (_components.TryGetValue(t, out var p))
                 {
                     return p.ToArray();
                 }
@@ -103,22 +70,11 @@ namespace DOL.GS
             }
         }
 
-        public static void RemovePlayerComponent(Type t, GamePlayer p)
+        public static void RemoveComponent(Type t, GameLiving n)
         {
-            lock (_playerComponentLock)
+            lock (_componentLock)
             {
-                if (_playerComponents.TryGetValue(t, out var pl))
-                {
-                    pl.Remove(p);
-                }
-            }
-        }
-
-        public static void RemoveNpcComponent(Type t, GameLiving n)
-        {
-            lock (_npcComponentLock)
-            {
-                if (_npcComponents.TryGetValue(t, out var nl))
+                if (_components.TryGetValue(t, out var nl))
                 {
                     nl.Remove(n);
                 }
