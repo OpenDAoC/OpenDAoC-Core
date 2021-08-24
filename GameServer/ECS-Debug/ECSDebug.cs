@@ -6,7 +6,7 @@ namespace ECS.Debug
 {
     public static class Diagnostics
     {
-        private static bool PerfCountersEnabled = true;
+        private static bool PerfCountersEnabled = false;
         private static Dictionary<string, System.Diagnostics.Stopwatch> PerfCounters = new Dictionary<string, System.Diagnostics.Stopwatch>();
 
         public static void TogglePerfCounters(bool enabled)
