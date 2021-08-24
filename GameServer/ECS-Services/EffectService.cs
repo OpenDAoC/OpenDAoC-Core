@@ -938,6 +938,9 @@ namespace DOL.GS
                 case eEffect.PowerRegenBuff:
                     list.Add(eProperty.PowerRegenerationRate);
                     return list;
+                case eEffect.EnduranceRegenBuff:
+                    list.Add(eProperty.EnduranceRegenerationRate);
+                    return list;
                 case eEffect.MeleeHasteBuff:
                 case eEffect.MeleeHasteDebuff:
                     list.Add(eProperty.MeleeSpeed);
