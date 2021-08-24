@@ -49,24 +49,17 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
-            GamePlayer playerowner = GetPlayerOwner();
+		  GamePlayer playerowner = GetPlayerOwner();
+			if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
+		  {
+			playerowner.Out.SendObjectUpdate(Body);
+		  }
 
-            long lastUpdate = 0;
-            if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out lastUpdate))
-            {
-                playerowner.Client.GameObjectUpdateArray.Add(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
-            }
-
-            if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
-            {
-                playerowner.Out.SendObjectUpdate(Body);
-            }
-
-            if (!CheckSpells(eCheckSpellType.Defensive))
-            {
-                AttackMostWanted();
-            }
-        }
+		  if(!CheckSpells(eCheckSpellType.Defensive))
+		  {
+		  	AttackMostWanted();
+		  }
+		}
 
 
 		public override bool CheckSpells(eCheckSpellType type)
