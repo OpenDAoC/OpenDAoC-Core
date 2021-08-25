@@ -15,7 +15,7 @@ namespace GameServer.realmabilities_atlasOF._temporary_helper
         /*
 
         -- DROP EXISTING TABLE ------------------------------------------------------------
-        DROP TABLE `classxrealmability_atlas`
+        DROP TABLE `classxrealmability_atlas`;
 
 
         -- CREATE NEW EMPTY TABLE ---------------------------------------------------------
@@ -33,8 +33,6 @@ namespace GameServer.realmabilities_atlasOF._temporary_helper
         -- ADD REALM ABILITES WITH FOREIGN KEY FROM TABLE : ability
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_Atlas_ID`) VALUES ('4', 'AtlasOF_MCL', 'Minstrel1-0-1');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_Atlas_ID`) VALUES ('4', 'AtlasOF_Purge', 'Minstrel1-0-2');
-
-
 
         */
     }
