@@ -16,6 +16,14 @@ namespace DOL.GS
     public static class EffectService
     {
         private const string ServiceName = "EffectService";
+
+        static EffectService()
+        {
+            //This should technically be the world manager
+            EntityManager.AddService(typeof(EffectService));
+        }
+
+
         public static void Tick(long tick)
         {
             Diagnostics.StartPerfCounter(ServiceName);

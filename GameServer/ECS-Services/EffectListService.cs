@@ -10,17 +10,19 @@ namespace DOL.GS
     {
         private const string ServiceName = "EffectListService";
 
+        static EffectListService()
+        {
+            //This should technically be the world manager
+            EntityManager.AddService(typeof(EffectListService));
+        }
+
         public static void Tick(long tick)
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var p in EntityManager.GetAllPlayers())
+            foreach (var living in EntityManager.GetLivingByComponent(typeof(EffectListService)))
             {
-                HandleEffects(tick, p);
-            }
-            foreach (var npc in EntityManager.GetAllNpcs())
-            {
-                HandleEffects(tick, (GameLiving)npc);
+                HandleEffects(tick, living);
             }
 
             Diagnostics.StopPerfCounter(ServiceName);               

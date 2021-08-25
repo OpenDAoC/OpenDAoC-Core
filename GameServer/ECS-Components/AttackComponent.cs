@@ -55,6 +55,8 @@ namespace DOL.GS
                 if (attacker == owner) return;
                 if (m_attackers.Contains(attacker)) return;
                 m_attackers.Add(attacker);
+                if (m_attackers.Count() == 1)
+                    EntityManager.AddComponent(typeof(AttackComponent), owner);
             }
         }
         /// <summary>
@@ -68,6 +70,8 @@ namespace DOL.GS
             lock (Attackers)
             {
                 m_attackers.Remove(attacker);
+                if (m_attackers.Count() == 0)
+                    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
             }
         }
 

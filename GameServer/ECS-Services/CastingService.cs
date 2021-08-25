@@ -6,6 +6,10 @@ namespace DOL.GS
     public static class CastingService
     {
         private const string ServiceName = "CastingService";
+        static CastingService()
+        {
+            EntityManager.AddService(typeof(CastingService));
+        }
 
         public static void Tick(long tick)
         {
