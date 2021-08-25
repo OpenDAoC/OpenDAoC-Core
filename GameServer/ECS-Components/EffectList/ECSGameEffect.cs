@@ -1,9 +1,10 @@
 using System;
+using DOL.GS.Effects;
 using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-    public class ECSGameEffect
+    public class ECSGameEffect : IConcentrationEffect
     {
         public ISpellHandler SpellHandler;
         //Based on GameLoop expire tick
@@ -17,8 +18,14 @@ namespace DOL.GS
         public bool CancelEffect;
         public bool RenewEffect;
         public eEffect EffectType;
-        public eSpellType SpellType;
         public GameLiving Owner;
+        public int TickInterval;
+        public long NextTick;
+
+        string IConcentrationEffect.Name => SpellHandler.Spell.Name;
+        string IConcentrationEffect.OwnerName => Owner.Name;
+        ushort IConcentrationEffect.Icon => Icon;
+        byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
 
         public ECSGameEffect() { }
 
@@ -38,6 +45,19 @@ namespace DOL.GS
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
 
+            if (handler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            {
+                TickInterval = 650;
+                NextTick = 1 + (duration >> 1) + (int)StartTick;
+            }
+            else if (handler.Spell.SpellType == (byte)eSpellType.HealOverTime)
+            {
+                NextTick = StartTick;
+            }
+            else if (handler.Spell.SpellType == (byte)eSpellType.Confusion)
+            {
+                PulseFreq = 5000;
+            }
         }
 
         public ushort GetRemainingTimeForClient()
@@ -46,6 +66,21 @@ namespace DOL.GS
                 return (ushort)(ExpireTick - GameLoop.GameLoopTime);
             else
                 return 0;
+        }
+
+        public bool IsConcentrationEffect()
+        {
+            return SpellHandler.Spell.IsConcentration;
+        }
+
+        public bool ShouldBeAddedToConcentrationList()
+        {
+            return SpellHandler.Spell.IsConcentration || (EffectType == eEffect.Pulse && RenewEffect == false);
+        }
+
+        public bool ShouldBeRemovedFromConcentrationList()
+        {
+            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
         protected eEffect MapEffect()
@@ -72,10 +107,13 @@ namespace DOL.GS
                     return eEffect.MeleeHasteBuff;
                 //case (byte)eSpellType.Celerity:  //Possibly the same as CombatSpeedBuff?
                 //    return eEffect.Celerity;
+                case (byte)eSpellType.SpeedOfTheRealm:
                 case (byte)eSpellType.SpeedEnhancement:
                     return eEffect.MovementSpeedBuff;
                 case (byte)eSpellType.HealOverTime:
                     return eEffect.HealOverTime;
+                case (byte)eSpellType.CombatHeal:
+                    return eEffect.CombatHeal;
 
                 //stats
                 case (byte)eSpellType.StrengthBuff:
@@ -135,6 +173,8 @@ namespace DOL.GS
                     return eEffect.DamageOverTime;
                 case (byte)eSpellType.Charm:
                     return eEffect.Charm;
+                case (byte)eSpellType.DamageSpeedDecrease:
+                case (byte)eSpellType.StyleSpeedDecrease:
                 case (byte)eSpellType.SpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
                 case (byte)eSpellType.MeleeDamageDebuff:
@@ -144,6 +184,8 @@ namespace DOL.GS
                     return eEffect.MeleeHasteDebuff;
                 case (byte)eSpellType.Disease:
                     return eEffect.Disease;
+                case (byte)eSpellType.Confusion:
+                    return eEffect.Confusion;
 
                 //Crowd Control Effects
                 case (byte)eSpellType.StyleStun:
@@ -153,10 +195,12 @@ namespace DOL.GS
                     //return eEffect.StunImmunity;
                 case (byte)eSpellType.Mesmerize:
                     return eEffect.Mez;
+                case (byte)eSpellType.MesmerizeDurationBuff:
+                    return eEffect.MesmerizeDurationBuff;
                 //case (byte)eSpellType.MezImmunity: // ImmunityEffect
                 //    return eEffect.MezImmunity;
-                case (byte)eSpellType.StyleSpeedDecrease:
-                    return eEffect.MeleeSnare;
+                //case (byte)eSpellType.StyleSpeedDecrease:
+                //    return eEffect.MeleeSnare;
                 //case (byte)eSpellType.Snare: // May work off of SpeedDecrease
                 //    return eEffect.Snare;
                 //case (byte)eSpellType.SnareImmunity: // Not implemented
@@ -196,9 +240,30 @@ namespace DOL.GS
                 case (byte)eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
 
-                //misc
+                //misc 
+                case (byte)eSpellType.SavageCombatSpeedBuff:
+                case (byte)eSpellType.SavageCrushResistanceBuff:
+                case (byte)eSpellType.SavageDPSBuff:
+                case (byte)eSpellType.SavageEnduranceHeal:
+                case (byte)eSpellType.SavageEvadeBuff:
+                case (byte)eSpellType.SavageParryBuff:
+                case (byte)eSpellType.SavageSlashResistanceBuff:
+                case (byte)eSpellType.SavageThrustResistanceBuff:
+                    return eEffect.SavageBuff;
                 case (byte)eSpellType.DirectDamage:
                     return eEffect.DirectDamage;
+                case (byte)eSpellType.FacilitatePainworking:
+                    return eEffect.FacilitatePainworking;
+                case (byte)eSpellType.FatigueConsumptionBuff:
+                    return eEffect.FatigueConsumptionBuff;
+                case (byte)eSpellType.DirectDamageWithDebuff:
+                    if (SpellHandler.Spell.DamageType == eDamageType.Body)
+                        return eEffect.BodyResistDebuff;
+                    else if (SpellHandler.Spell.DamageType == eDamageType.Cold)
+                        return eEffect.ColdResistDebuff;
+                    else
+                        return eEffect.Unknown;
+
 
                 #endregion
 
@@ -207,6 +272,5 @@ namespace DOL.GS
                     return eEffect.Unknown;
             }
         }
-
     }
 }

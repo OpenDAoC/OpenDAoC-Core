@@ -53,14 +53,14 @@ namespace DOL.GS.Spells
 		/// <param name="effect"></param>
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
- 			if(mezz != null) mezz.Cancel(false);
-			// percent category
-			effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)Spell.Value;
-			effect.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)Spell.Value;
-			SendEffectAnimation(effect.Owner, 0, false, 1);
-			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
+			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
+ 		//	if(mezz != null) mezz.Cancel(false);
+			//// percent category
+			//effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)Spell.Value;
+			//effect.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)Spell.Value;
+			//SendEffectAnimation(effect.Owner, 0, false, 1);
+			//MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
+			//Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
 		}
 
 		/// <summary>
@@ -72,13 +72,13 @@ namespace DOL.GS.Spells
 		/// <returns>immunity duration in milliseconds</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			// percent category
-			effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)Spell.Value;
-			effect.Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)Spell.Value;
-			if (!noMessages) {
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
-			}
+			//// percent category
+			//effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)Spell.Value;
+			//effect.Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)Spell.Value;
+			//if (!noMessages) {
+			//	MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+			//	Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+			//}
 			return 60000;
 		}
 

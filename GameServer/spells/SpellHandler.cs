@@ -53,7 +53,10 @@ namespace DOL.GS.Spells
         {
 			return m_spellTarget;
         }
-		
+
+		// Max number of Concentration spells that a single caster is allowed to cast.
+		public const int MAX_CONC_SPELLS = 20;
+
 		/// <summary>
 		/// Maximum number of sub-spells to get delve info for.
 		/// </summary>
@@ -328,6 +331,8 @@ namespace DOL.GS.Spells
 		/// <param name="living"></param>
 		public static void CancelAllPulsingSpells(GameLiving living)
 		{
+			//[Takii] I updated this method so things would compile but the only call to it is currently commented and its unclear if we want to keep it.
+
 			List<IConcentrationEffect> pulsingSpells = new List<IConcentrationEffect>();
 
 			GamePlayer player = living as GamePlayer;
@@ -336,14 +341,14 @@ namespace DOL.GS.Spells
 			{
 				for (int i = 0; i < living.ConcentrationEffects.Count; i++)
 				{
-					PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+					ECSPulseEffect effect = living.ConcentrationEffects[i] as ECSPulseEffect;
 					if (effect == null)
 						continue;
 
-					if ( player != null && player.CharacterClass.MaxPulsingSpells > 1 )
-						pulsingSpells.Add( effect );
+					if (player != null && player.CharacterClass.MaxPulsingSpells > 1)
+						pulsingSpells.Add(effect);
 					else
-						effect.Cancel(false);
+						EffectService.RequestCancelEffect(effect);
 				}
 			}
 
@@ -357,9 +362,13 @@ namespace DOL.GS.Spells
 			// will prevent us from knowing which spell is the oldest and should be canceled - we can go ahead and simply
 			// cancel the last spell in the list (which will result in inconsistent behavior) or change the code that adds
 			// spells to ConcentrationEffects so that it enforces predictable ordering.
-			if ( pulsingSpells.Count > 1 )
+			if (pulsingSpells.Count > 1)
 			{
-				pulsingSpells[pulsingSpells.Count - 1].Cancel( false );
+				ECSPulseEffect effect = pulsingSpells[pulsingSpells.Count - 1] as ECSPulseEffect;
+				if (effect != null)
+				{
+					EffectService.RequestCancelEffect(effect);
+				}
 			}
 		}
 
@@ -627,7 +636,7 @@ namespace DOL.GS.Spells
 			}
 			if (Spell.Uninterruptible)
 				return false;
-			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0)
+			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0 || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
 				return false;
 			if (IsCasting && Stage < 2)
 			{
@@ -680,8 +689,7 @@ namespace DOL.GS.Spells
 
                     if (cancelEffect != null)
                     {
-                        cancelEffect.CancelEffect = true;
-                        EntityManager.AddEffect(cancelEffect);
+						EffectService.RequestCancelEffect(cancelEffect);
                         Caster.LastPulseCast = null;
                         Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
@@ -937,9 +945,9 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+				if (m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 				{
-					if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+					if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 					return false;
 				}
 			}
@@ -1193,9 +1201,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 			{
-				MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+				MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
@@ -1217,7 +1225,7 @@ namespace DOL.GS.Spells
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
 			{
-				if(Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
+				if(false)//Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
 				{
 					if (!quiet)
 					{
@@ -1397,13 +1405,13 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 			{
-				if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 			
-			if (m_caster.IsMoving || m_caster.IsStrafing)
+			if ((m_caster.IsMoving || m_caster.IsStrafing) && !Spell.MoveCast)
 			{
 				CasterMoves();
 				return false;
@@ -1579,9 +1587,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= 50)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
 			{
-				if (!quiet) MessageToCaster("You can only cast up to 50 simultaneous concentration spells!", eChatType.CT_SpellResisted);
+				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
@@ -1955,7 +1963,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                ushort castTime = (ushort)(CalculateCastingTime() / 100);
+				ushort castTime = (ushort)(CalculateCastingTime() / 100);
                 SendCastAnimation(castTime);
             }
 		}
@@ -1966,12 +1974,13 @@ namespace DOL.GS.Spells
 		/// <param name="castTime">The cast time</param>
 		public virtual void SendCastAnimation(ushort castTime)
 		{
-			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			_calculatedCastTime = castTime * 100;
+            Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
+
+            foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player == null)
 					continue;
-				_calculatedCastTime = castTime * 100;
-				Console.WriteLine($"Cast Animation CastTime Sent to Client: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 				player.Out.SendSpellCastAnimation(m_caster, m_spell.ClientEffect, castTime);
 			}
 		}

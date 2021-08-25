@@ -55,6 +55,8 @@ namespace DOL.GS
                 if (attacker == owner) return;
                 if (m_attackers.Contains(attacker)) return;
                 m_attackers.Add(attacker);
+                if (m_attackers.Count() == 1)
+                    EntityManager.AddComponent(typeof(AttackComponent), owner);
             }
         }
         /// <summary>
@@ -68,6 +70,8 @@ namespace DOL.GS
             lock (Attackers)
             {
                 m_attackers.Remove(attacker);
+                if (m_attackers.Count() == 0)
+                    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
             }
         }
 
@@ -1014,7 +1018,7 @@ namespace DOL.GS
                     p.CraftTimer = null;
                     p.Out.SendCloseTimerWindow();
                 }
-
+                
                 AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness * (1 + p.CharacterClass.WeaponSkillBase / 20.0 / 100.0), interruptDuration, dualWield);
                 owner.OnAttack(ad);
 
@@ -1187,8 +1191,12 @@ namespace DOL.GS
                 }
                 return ad;
             }
+            else if (owner is NecromancerPet)
+            {
+                return (owner as NecromancerPet).MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, false);
+            }
             else
-              return LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
+                return LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
             
         }
 
@@ -1708,6 +1716,7 @@ namespace DOL.GS
             DashingDefenseEffect dashing = null;
             InterceptEffect intercept = null;
             GameSpellEffect bladeturn = null;
+            ECSGameEffect ecsbladeturn = null;
             EngageEffect engage = null;
             // ML effects
             GameSpellEffect phaseshift = null;
@@ -1723,6 +1732,8 @@ namespace DOL.GS
             //			BerserkEffect berserk = null;
 
             // get all needed effects in one loop
+            owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out ecsbladeturn);
+
             lock (owner.EffectList)
             {
                 foreach (IGameEffect effect in owner.EffectList)
@@ -2126,7 +2137,7 @@ namespace DOL.GS
 			 * levels of the players involved into account.
 			 */
             // "The blow penetrated the magical barrier!"
-            if (bladeturn != null)
+            if (ecsbladeturn != null)
             {
                 bool penetrate = false;
 
@@ -2134,22 +2145,24 @@ namespace DOL.GS
                     penetrate = true;
 
                 if (ad.Attacker.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long // stealth styles pierce bladeturn
-                    || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn
+                    || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != ecsbladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn
                     penetrate = true;
 
 
-                if (ad.IsMeleeAttack && !Util.ChanceDouble((double)bladeturn.SpellHandler.Caster.Level / (double)ad.Attacker.Level))
+                if (ad.IsMeleeAttack && !Util.ChanceDouble((double)ecsbladeturn.SpellHandler.Caster.Level / (double)ad.Attacker.Level))
                     penetrate = true;
                 if (penetrate)
                 {
                     if (ad.Target is GamePlayer) ((GamePlayer)ad.Target).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    bladeturn.Cancel(false);
+                    {
+                        EffectService.RequestCancelEffect(ecsbladeturn);
+                    }
                 }
                 else
                 {
                     if (owner is GamePlayer) ((GamePlayer)owner).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)owner).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Attacker).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    bladeturn.Cancel(false);
+                    EffectService.RequestCancelEffect(ecsbladeturn);
                     if (owner is GamePlayer)
                         ((GamePlayer)owner).Stealth(false);
                     return eAttackResult.Missed;

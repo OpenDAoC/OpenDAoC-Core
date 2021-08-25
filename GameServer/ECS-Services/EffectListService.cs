@@ -2,21 +2,30 @@ using DOL.GS.Spells;
 using System.Collections.Generic;
 using System;
 using System.Numerics;
+using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class EffectListService
     {
+        private const string ServiceName = "EffectListService";
+
+        static EffectListService()
+        {
+            //This should technically be the world manager
+            EntityManager.AddService(typeof(EffectListService));
+        }
+
         public static void Tick(long tick)
         {
-            foreach (var p in EntityManager.GetAllPlayers())
+            Diagnostics.StartPerfCounter(ServiceName);
+
+            foreach (var living in EntityManager.GetLivingByComponent(typeof(EffectListService)))
             {
-                HandleEffects(tick, p);
+                HandleEffects(tick, living);
             }
-            foreach (var npc in EntityManager.GetAllNpcs())
-            {
-                HandleEffects(tick, (GameLiving)npc);
-            }
+
+            Diagnostics.StopPerfCounter(ServiceName);               
         }
 
         private static void HandleEffects(long tick, GameLiving living)
@@ -27,8 +36,7 @@ namespace DOL.GS
                 {
                     if (!effect.Value.Owner.IsAlive)
                     {
-                        effect.Value.CancelEffect = true;
-                        EntityManager.AddEffect(effect.Value);
+                        EffectService.RequestCancelEffect(effect.Value);
                         continue;
                     }
 
@@ -55,8 +63,7 @@ namespace DOL.GS
                             }
                             else
                             {
-                                effect.Value.CancelEffect = true;
-                                EntityManager.AddEffect(effect.Value);
+                                EffectService.RequestCancelEffect(effect.Value);
                             }
                         }
                     }
@@ -109,6 +116,40 @@ namespace DOL.GS
 //                        effect.ExpireTick = tick + effect.Duration;
 //                        Console.WriteLine($"Current tick {tick}. Duration {effect.Duration}. Expiry tick {effect.ExpireTick}");
 //>>>>>>> CombinedGameLoop
+                    }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                    {
+                        if (tick > effect.Value.NextTick)
+                        {
+                            double factor = 2.0 - (effect.Value.Duration - effect.Value.GetRemainingTimeForClient()) / (double)(effect.Value.Duration >> 1);
+                            if (factor < 0) factor = 0;
+                            else if (factor > 1) factor = 1;
+
+                            effect.Value.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.Value.SpellHandler, 1.0 - effect.Value.SpellHandler.Spell.Value * factor * 0.01);
+
+                            UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Value.Owner);
+                            effect.Value.NextTick += effect.Value.TickInterval;
+                            if (factor <= 0)
+                                effect.Value.ExpireTick = GameLoop.GameLoopTime - 1;
+                        }
+                    }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.Value.NextTick)
+                    {
+                        (effect.Value.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Value.Owner, effect.Value.Effectiveness);
+                        effect.Value.NextTick += effect.Value.PulseFreq;
+                    }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.Value.NextTick)
+                    {
+                        if ((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                        {
+                            GameNPC npc = effect.Value.Owner as GameNPC;
+                            npc.StopAttack();
+                            npc.StopCurrentSpellcast();
+
+                            GameLiving target = (effect.Value.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
+
+                            npc.StartAttack(target);
+                        }
                     }
                 }
             }

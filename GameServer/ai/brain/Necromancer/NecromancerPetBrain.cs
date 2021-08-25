@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
 
                 if (petSpell.ParentSpell != null)
                 {
-                    if (petSpell.ParentSpell.IsInstantCast && petSpell.Spell.IsInstantCast)
+                    if (/*petSpell.ParentSpell.IsInstantCast && */petSpell.Spell.IsInstantCast && !petSpell.Spell.IsHarmful)
                     {
                         CastSpell(petSpell.Spell, petSpell.SpellLine, petSpell.Target);
                     }

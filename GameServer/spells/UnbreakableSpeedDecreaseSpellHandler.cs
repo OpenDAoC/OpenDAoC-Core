@@ -116,7 +116,7 @@ namespace DOL.GS.Spells
 		/// Sends updates on effect start/stop
 		/// </summary>
 		/// <param name="owner"></param>
-		protected static void SendUpdates(GameLiving owner)
+		public static void SendUpdates(GameLiving owner)
 		{
 			if (owner.IsMezzed || owner.IsStunned)
 				return;
@@ -137,7 +137,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		private sealed class RestoreSpeedTimer : GameTimer
+		public sealed class RestoreSpeedTimer : GameTimer
 		{
 			/// <summary>
 			/// The speed changing effect

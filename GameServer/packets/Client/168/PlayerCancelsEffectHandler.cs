@@ -111,26 +111,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(m_effectId);
 				if (effect != null)
 				{
-					//I guess we can send the Effect to the EntityService since we do not want to interact with it (no business logic on Components)
-					effect.CancelEffect = true;
-					EntityManager.AddEffect(effect);
-				}
-				//player.effectListComponent.RemoveEffect(effect)
-				// IGameEffect found = null;
-				// lock (player.EffectList)
-				// {
-				// 	foreach (IGameEffect effect in player.EffectList)
-				// 	{
-				// 		if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.InternalID == m_effectId)
-				// 		{
-				// 			found = effect;
-				// 			break;
-				// 		}
-				// 	}
-				// }
-				// if (found != null)
-				// 	found.Cancel(true);
-			}
+                    EffectService.RequestCancelEffect(effect, true);
+                }
+            }
 		}
 	}
 }

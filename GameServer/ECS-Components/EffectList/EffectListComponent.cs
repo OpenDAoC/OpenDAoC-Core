@@ -9,6 +9,7 @@ namespace DOL.GS
     {
         public long _lastChecked = 0;
         public GameLiving Owner;
+        
         public int _lastUpdateEffectsCount = 0;
         
         private object _effectsLock = new object(); 
@@ -41,9 +42,13 @@ namespace DOL.GS
                     else
                     {                      
                         Effects.Add(effect.EffectType, effect);
-                        if (effect.EffectType != eEffect.Pulse)
+                        if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
 
+                        if (Effects.Count == 1)
+                        {
+                            EntityManager.AddComponent(typeof(EffectListComponent), Owner);
+                        }
                     }
                     
                     return true;
@@ -82,6 +87,10 @@ namespace DOL.GS
                     {
                         EffectIdToEffect.Remove(effect.Icon);
                         Effects.Remove(effect.EffectType);
+                        if (Effects.Count == 0)
+                        {
+                            EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
+                        }
                         return true;
                     }
                 }

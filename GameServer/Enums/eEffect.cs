@@ -15,6 +15,7 @@ namespace DOL.GS
         Celerity,
         MovementSpeedBuff,
         HealOverTime,
+        CombatHeal,
 
         //stats
 //<<<<<<< HEAD
@@ -68,6 +69,7 @@ namespace DOL.GS
         DamageOverTime,
         Bleed,
         Charm,
+        Confusion,
         MovementSpeedDebuff,
         MeleeDamageDebuff,
         MeleeHasteDebuff,
@@ -112,6 +114,10 @@ namespace DOL.GS
         //other
         Unknown,
         DirectDamage,
-        Pulse
+        Pulse,
+        FacilitatePainworking,
+        MesmerizeDurationBuff,
+        FatigueConsumptionBuff,
+        SavageBuff
     }
 }

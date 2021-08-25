@@ -172,7 +172,7 @@ namespace DOL.GS.Spells
 				BeginChanges();
 				foreach (IConcentrationEffect fx in concEffect.Where(eff => !leaveself || leaveself && eff.OwnerName != m_owner.Name))
 				{
-					fx.Cancel(false);
+					EffectService.RequestCancelConcEffect(fx, false);
 				}
 				CommitChanges();
 			}

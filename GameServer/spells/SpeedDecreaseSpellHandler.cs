@@ -38,8 +38,8 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			// Check for root immunity.
-			if (Spell.Value == 99 &&
-				FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
+			if (Spell.Value == 99 && target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity))
+				//FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
 			{
 				MessageToCaster("Your target is immune!", eChatType.CT_System);
 				return;

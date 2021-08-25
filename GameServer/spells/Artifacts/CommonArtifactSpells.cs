@@ -233,7 +233,7 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("ABSDamageShield")]
     public class ABSDamageShield : AblativeArmorSpellHandler
     {
-        protected override void OnDamageAbsorbed(AttackData ad, int DamageAmount)
+        public override void OnDamageAbsorbed(AttackData ad, int DamageAmount)
         {
             AttackData newad = new AttackData();
             newad.Attacker = ad.Target;
