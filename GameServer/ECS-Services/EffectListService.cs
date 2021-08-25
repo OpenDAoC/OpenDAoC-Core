@@ -77,43 +77,6 @@ namespace DOL.GS
                             EffectService.OnEffectPulse(effect.Value);
                             effect.Value.LastTick += effect.Value.PulseFreq;
                         }
-//=======
-//{
-//                EffectListComponent effectListComponent = p.effectListComponent;
-//                foreach(ECSGameEffect effect in effectListComponent.Effects.Values)
-//                {
-//                    if(effect.ExpireTick != 0 && effect.ExpireTick <= tick)
-//                    {
-//                        effect.CancelEffect = true;
-//                        Console.WriteLine($"Canceling effect {effect}");
-//                        EntityManager.AddEffect(effect);
-//                    }
-
-//                    if(effect.Duration > 1 && effect.ExpireTick == 0)
-//                    {
-//                        effect.ExpireTick = tick + effect.Duration;
-//                        Console.WriteLine($"Current tick {tick}. Duration {effect.Duration}. Expiry tick {effect.ExpireTick}");
-//                    }
-//                }
-//            }
-
-//            foreach (var n in EntityManager.GetAllNpcs())
-//            {
-//                EffectListComponent effectListComponent = n.effectListComponent;
-//                foreach (ECSGameEffect effect in effectListComponent.Effects.Values)
-//                {
-//                    if (effect.ExpireTick != 0 && effect.ExpireTick <= tick)
-//                    {
-//                        effect.CancelEffect = true;
-//                        Console.WriteLine($"Canceling effect {effect}");
-//                        EntityManager.AddEffect(effect);
-//                    }
-
-//                    if (effect.Duration > 1 && effect.ExpireTick == 0)
-//                    {
-//                        effect.ExpireTick = tick + effect.Duration;
-//                        Console.WriteLine($"Current tick {tick}. Duration {effect.Duration}. Expiry tick {effect.ExpireTick}");
-//>>>>>>> CombinedGameLoop
                     }
                     if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                     {
@@ -148,6 +111,19 @@ namespace DOL.GS
 
                             npc.StartAttack(target);
                         }
+                    }
+                    if (effect.Value.SpellHandler.Spell.IsConcentration && tick > effect.Value.NextTick)
+                    {
+                        if (!effect.Value.SpellHandler.Caster.IsWithinRadius(effect.Value.Owner, ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000) && !effect.Value.IsDisabled)
+                        {
+                            EffectService.RequestDisableEffect(effect.Value, true);
+                        }
+                        else if (effect.Value.SpellHandler.Caster.IsWithinRadius(effect.Value.Owner, ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000) && effect.Value.IsDisabled)
+                        {
+                            EffectService.RequestDisableEffect(effect.Value, false);
+                        }
+
+                        effect.Value.NextTick += effect.Value.PulseFreq;
                     }
                 }
             }

@@ -27,6 +27,10 @@ namespace DOL.GS
                     if (tick > e.ExpireTick)
                         HandleCancelEffect(e);
                 }
+                else if (e.IsDisabled)
+                {
+                    HandleCancelEffect(e);
+                }
                 else
                 {
                     //switch (e.EffectType)
@@ -121,9 +125,10 @@ namespace DOL.GS
             {
                 if (!(e is ECSImmunityEffect))
                 {                    
-                   if (!e.RenewEffect)
+                    if (!e.RenewEffect || e.SpellHandler.Spell.IsConcentration)
                     {
-                        SendSpellAnimation(e);
+                        if(!e.RenewEffect)
+                            SendSpellAnimation(e);
 
                         if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                         {
@@ -450,7 +455,7 @@ namespace DOL.GS
                                 }
                             }                          
                         }
-                    }
+                   }
                 }
                 //else
                 //{
@@ -477,8 +482,8 @@ namespace DOL.GS
         private static void HandleCancelEffect(ECSGameEffect e)
         {
             Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
-
-            if (!e.Owner.effectListComponent.RemoveEffect(e))
+            
+            if (!e.IsDisabled && !e.Owner.effectListComponent.RemoveEffect(e))
             {
                 Console.WriteLine("Unable to remove effect!");
                 return;
@@ -750,7 +755,7 @@ namespace DOL.GS
             }
 
             // Update the Concentration List if Conc Buff/Song/Chant.
-            if (e.ShouldBeRemovedFromConcentrationList())
+            if (!e.IsDisabled && e.ShouldBeRemovedFromConcentrationList())
             {
                 if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
                 {
@@ -795,6 +800,16 @@ namespace DOL.GS
                 if (effect.SpellHandler.Spell.IsPulsing)
                     effect.Owner.LastPulseCast = null;
             }
+        }
+        /// <summary>
+        /// Enques an ECSGameEffect to be disabled/enabled on next tick
+        /// </summary>
+        /// <param name="effect"></param>
+        /// <param name="disable"></param>
+        public static void RequestDisableEffect(ECSGameEffect effect, bool disable)
+        {           
+            EntityManager.AddEffect(effect);
+            effect.IsDisabled = disable;
         }
         public static void SendSpellAnimation(ECSGameEffect e)
         {

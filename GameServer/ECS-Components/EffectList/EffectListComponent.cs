@@ -29,7 +29,7 @@ namespace DOL.GS
                     if (Effects.TryGetValue(effect.EffectType, out ECSGameEffect existing))
                     {
                         //If this buff is stronger > in list. cancel current buff and add this one- Return true;
-                        if (existing.SpellHandler.Spell.IsPulsing)
+                        if (existing.SpellHandler.Spell.IsPulsing || (existing.SpellHandler.Spell.IsConcentration && effect == existing))
                         {
                             Effects[effect.EffectType] = effect;
                             effect.RenewEffect = true;

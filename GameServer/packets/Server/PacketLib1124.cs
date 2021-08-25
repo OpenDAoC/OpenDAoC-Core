@@ -3919,7 +3919,7 @@ namespace DOL.GS.PacketHandler
 						var gsp = effect as ECSGameEffect;
                         // if (gsp != null && gsp.IsDisabled)
                         // 	ImmunByte = 1;
-                        if (gsp is ECSImmunityEffect)
+                        if (gsp is ECSImmunityEffect || gsp.IsDisabled)
                             ImmunByte = 1;
 						//todo this should be the ImmunByte
 						pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click

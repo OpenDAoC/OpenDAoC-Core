@@ -17,6 +17,7 @@ namespace DOL.GS
         public ushort Icon;
         public bool CancelEffect;
         public bool RenewEffect;
+        public bool IsDisabled;
         public eEffect EffectType;
         public GameLiving Owner;
         public int TickInterval;
@@ -40,6 +41,7 @@ namespace DOL.GS
             Icon = icon;
             CancelEffect = cancelEffect;
             RenewEffect = false;
+            IsDisabled = false;
             EffectType = MapEffect();
             ExpireTick = duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
@@ -57,6 +59,13 @@ namespace DOL.GS
             else if (handler.Spell.SpellType == (byte)eSpellType.Confusion)
             {
                 PulseFreq = 5000;
+            }
+            else if (handler.Spell.IsConcentration)
+            {
+                NextTick = StartTick;
+                // 60 seconds taken from PropertyChangingSpell
+                // Not sure if this is correct
+                PulseFreq = 6000;
             }
         }
         
