@@ -116,11 +116,16 @@ namespace DOL.GS
                     }
                     if (effect.Value.SpellHandler.Spell.IsConcentration && tick > effect.Value.NextTick)
                     {
-                        if (!effect.Value.SpellHandler.Caster.IsWithinRadius(effect.Value.Owner, ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000) && !effect.Value.IsDisabled)
+                        if (!effect.Value.SpellHandler.Caster.
+                            IsWithinRadius(effect.Value.Owner, 
+                            effect.Value.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.Value.SpellHandler.Spell.Range)
+                            && !effect.Value.IsDisabled)
                         {
                             EffectService.RequestDisableEffect(effect.Value, true);
                         }
-                        else if (effect.Value.SpellHandler.Caster.IsWithinRadius(effect.Value.Owner, ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000) && effect.Value.IsDisabled)
+                        else if (effect.Value.SpellHandler.Caster.IsWithinRadius(effect.Value.Owner,
+                            effect.Value.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.Value.SpellHandler.Spell.Range)
+                            && effect.Value.IsDisabled)
                         {
                             EffectService.RequestDisableEffect(effect.Value, false);
                         }
