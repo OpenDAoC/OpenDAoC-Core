@@ -4137,6 +4137,8 @@ namespace DOL.GS
 		/// </summary>
 		public override void Die(GameObject killer)
 		{
+			Brain?.KillFSM();
+
 			FireAmbientSentence(eAmbientTrigger.dieing, killer as GameLiving);
 
 			if (ControlledBrain != null)
@@ -4177,7 +4179,6 @@ namespace DOL.GS
 						}
 					}
 				}
-				//Brain.FSM.KillFSM();
 
 				// deal out exp and realm points based on server rules
 				GameServer.ServerRules.OnNPCKilled(this, killer);

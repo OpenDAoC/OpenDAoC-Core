@@ -40,6 +40,12 @@ public class StandardMobFSM : FSM
     {
         base.Think();
     }
+
+    public override void KillFSM()
+    {
+        SetCurrentState(StandardMobStateType.DEAD);
+        base.KillFSM();
+    }
 }
 
 

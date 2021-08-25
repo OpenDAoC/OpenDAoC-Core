@@ -70,6 +70,7 @@ namespace DOL.AI.Brain
             FSM.Add(new StandardMobFSMState_RETURN_TO_SPAWN(FSM, this));
             FSM.Add(new StandardMobFSMState_PATROLLING(FSM, this));
             FSM.Add(new StandardMobFSMState_ROAMING(FSM, this));
+            FSM.Add(new StandardMobFSMState_DEAD(FSM, this));
 
             FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
         }
@@ -93,6 +94,11 @@ namespace DOL.AI.Brain
             }
 
             return false;
+        }
+
+        public override void KillFSM()
+        {
+            FSM.KillFSM();
         }
 
         #region AI

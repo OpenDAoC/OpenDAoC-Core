@@ -352,6 +352,28 @@ public class StandardMobFSMState_PATROLLING : StandardMobFSMState
     }
 }
 
+public class StandardMobFSMState_DEAD : StandardMobFSMState
+{
+    public StandardMobFSMState_DEAD(FSM fsm, StandardMobBrain brain) : base(fsm, brain)
+    {
+        _id = StandardMobStateType.DEAD;
+    }
+
+    public override void Enter()
+    {
+        Console.WriteLine($"{_brain.Body} has entered DEAD state");
+        _brain.ClearAggroList();
+        base.Enter();
+    }
+
+    public override void Think()
+    {
+        _brain.FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
+        base.Think();
+    }
+}
+
+
 public enum StandardMobStateType
 {
     IDLE = 0,

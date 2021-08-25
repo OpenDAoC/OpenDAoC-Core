@@ -53,7 +53,7 @@ namespace FiniteStateMachine
             }
         }
 
-        public void KillFSM()
+        public virtual void KillFSM()
         {
           
         }

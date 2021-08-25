@@ -144,10 +144,13 @@ namespace DOL.Tests.Unit.Gameserver
         public void SetAggressionState(eAggressionState state) { }
         public void Stay() { }
         public override void Think() { }
+
+        public override void KillFSM() { }
     }
 
     public class FakeBrain : ABrain
     {
         public override void Think() { }
+        public override void KillFSM() { }
     }
 }
