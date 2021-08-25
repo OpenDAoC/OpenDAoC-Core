@@ -40,12 +40,22 @@ namespace FiniteStateMachine
             }
         }
 
+        public State GetCurrentState()
+        {
+            return m_currentState;
+        }
+
         public void Think()
         {
             if (m_currentState != null)
             {
                 m_currentState.Think();
             }
+        }
+
+        public void KillFSM()
+        {
+          
         }
     }
 }

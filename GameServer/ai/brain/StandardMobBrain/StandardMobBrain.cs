@@ -244,6 +244,8 @@ namespace DOL.AI.Brain
 			}*/
         }
 
+        public bool CheckForProximityAggro = true;
+
         public virtual bool HasAggressionTable()
         {
             if (AggroRange > 0)
@@ -275,6 +277,7 @@ namespace DOL.AI.Brain
 
             return HasAggro;
         }
+
 
         public virtual bool IsBeyondTetherRange()
         {
@@ -363,7 +366,7 @@ namespace DOL.AI.Brain
                 if (player.Steed != null)
                     continue; //do not attack players on steed
 
-                if (CalculateAggroLevelToTarget(player) > 0)
+                if (CalculateAggroLevelToTarget(player) > 0 && CheckForProximityAggro)
                 {
                     AddToAggroList(player, player.EffectiveLevel << 1, true);
                 }
@@ -716,7 +719,7 @@ namespace DOL.AI.Brain
                 while (aggros.MoveNext())
                 {
                     GameLiving living = aggros.Current.Key;
-
+                    
                     // check to make sure this target is still valid
                     if (living.IsAlive == false ||
                         living.ObjectState != GameObject.eObjectState.Active ||

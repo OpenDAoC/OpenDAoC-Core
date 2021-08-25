@@ -1,4 +1,5 @@
 ﻿using DOL.AI.Brain;
+using ECS.Debug;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,16 @@ namespace DOL.GS
 {
     public static class NPCThinkService
     {
+        private const string ServiceName = "NPCThinkService";
+
+        static NPCThinkService()
+        {
+            EntityManager.AddService(typeof(NPCThinkService));
+        }
         public static void Tick(long tick)
         {
+            Diagnostics.StartPerfCounter(ServiceName);
+
             foreach (var npc in EntityManager.GetAllNpcs())
             {
                 if (npc == null)
@@ -26,12 +35,12 @@ namespace DOL.GS
                         brain.LastThinkTick = tick;
                     }
                 }
+
+
                 
-
-
-
-
             }
+
+            Diagnostics.StopPerfCounter(ServiceName);
         }
 
 

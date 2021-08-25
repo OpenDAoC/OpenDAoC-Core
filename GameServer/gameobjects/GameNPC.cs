@@ -1444,6 +1444,12 @@ namespace DOL.GS
 				return;
 			}
 
+
+			//update existing component
+			//register moveComponent w/ the movement-to-be-processed queue
+
+
+			//kill everything below this line?
 			CancelWalkToTimer();
 
 			m_Heading = GetHeading(TargetPosition);
@@ -4171,6 +4177,7 @@ namespace DOL.GS
 						}
 					}
 				}
+				//Brain.FSM.KillFSM();
 
 				// deal out exp and realm points based on server rules
 				GameServer.ServerRules.OnNPCKilled(this, killer);
