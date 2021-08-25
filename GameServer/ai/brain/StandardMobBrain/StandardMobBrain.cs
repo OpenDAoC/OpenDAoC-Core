@@ -339,6 +339,11 @@ namespace DOL.AI.Brain
             if (Body.AttackState)
                 return;
 
+            if (!CheckForProximityAggro)
+            {
+                return;
+            }
+
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, Body.CurrentZone.IsDungeon ? false : true))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
@@ -366,7 +371,7 @@ namespace DOL.AI.Brain
                 if (player.Steed != null)
                     continue; //do not attack players on steed
 
-                if (CalculateAggroLevelToTarget(player) > 0 && CheckForProximityAggro)
+                if (CalculateAggroLevelToTarget(player) > 0)
                 {
                     AddToAggroList(player, player.EffectiveLevel << 1, true);
                 }

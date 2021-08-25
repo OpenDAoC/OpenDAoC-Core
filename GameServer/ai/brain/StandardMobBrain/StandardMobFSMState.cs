@@ -161,8 +161,8 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         EntityManager.AddComponent(typeof(CastingComponent), _brain.Body);
 
         Console.WriteLine($"{_brain.Body} is entering AGGRO");
-
         _brain.AttackMostWanted();
+
         base.Enter();
     }
 
@@ -178,6 +178,12 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
 
     public override void Think()
     {
+
+        if (_brain.Body.TargetObject == null)
+        {
+            _brain.AttackMostWanted();
+        }
+
         // check for returning to home if to far away
         if (_brain.IsBeyondTetherRange() && !_brain.Body.IsAttacking)
         {
@@ -190,12 +196,6 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         {
             _brain.FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
             return;
-        }
-
-
-        if (_brain.Body.TargetObject == null)
-        {
-            _brain.AttackMostWanted();
         }
 
         base.Think();
