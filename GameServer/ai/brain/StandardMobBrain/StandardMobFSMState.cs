@@ -161,8 +161,9 @@ public class StandardMobFSMState_AGGRO : StandardMobFSMState
         EntityManager.AddComponent(typeof(CastingComponent), _brain.Body);
 
         Console.WriteLine($"{_brain.Body} is entering AGGRO");
+        _brain.CheckForProximityAggro = true;
         _brain.AttackMostWanted();
-
+        
         base.Enter();
     }
 

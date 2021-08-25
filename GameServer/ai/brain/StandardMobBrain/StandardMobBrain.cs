@@ -956,7 +956,11 @@ namespace DOL.AI.Brain
                 if (ad.AttackResult == eAttackResult.Missed)
                 {
                     AddToAggroList(ad.Attacker, 1);
+                } else
+                {
+                    AddToAggroList(ad.Attacker, 100);
                 }
+
                 FSM.SetCurrentState(StandardMobStateType.AGGRO);
                 FSM.Think();
                 //Body.StartAttack(ad.Attacker);
