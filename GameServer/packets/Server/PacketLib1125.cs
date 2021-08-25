@@ -480,19 +480,33 @@ namespace DOL.GS.PacketHandler
 			if (updateIcons)
 			{
 				pak.WriteByte((byte)(0x80 | living.GroupIndex));
-				lock (living.EffectList)
-				{
-					pak.WriteByte((byte)living.EffectList.OfType<GameSpellEffect>().Count());
-					foreach (var effect in living.EffectList)
-					{
-						if (effect is GameSpellEffect)
-						{
-							pak.WriteByte(0);
-							pak.WriteShort(effect.Icon);
-						}
-					}
-				}
-			}
+				//lock (living.EffectList)
+				//{
+				//	pak.WriteByte((byte)living.EffectList.OfType<GameSpellEffect>().Count());
+				//	foreach (var effect in living.EffectList)
+				//	{
+				//		if (effect is GameSpellEffect)
+				//		{
+				//			pak.WriteByte(0);
+				//			pak.WriteShort(effect.Icon);
+				//		}
+				//	}
+				//}
+                lock (living.effectListComponent.Effects.Values)
+                {
+                    byte i = 0;
+                    foreach (ECSGameEffect effect in living.effectListComponent.Effects.Values)
+                        if (effect is ECSGameEffect)
+                            i++;
+                    pak.WriteByte(i);
+                    foreach (ECSGameEffect effect in living.effectListComponent.Effects.Values)
+                        if (effect is ECSGameEffect)
+                        {
+                            pak.WriteByte(0);
+                            pak.WriteShort(effect.Icon);
+                        }
+                }
+            }
 		}
 
 		/// <summary>
