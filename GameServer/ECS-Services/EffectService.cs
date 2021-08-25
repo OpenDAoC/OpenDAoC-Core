@@ -465,6 +465,12 @@ namespace DOL.GS
                     player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     SendPlayerUpdates(player);
                 }
+                else if (e.Owner is GameNPC)
+                {
+                    IControlledBrain npc = ((GameNPC)e.Owner).Brain as IControlledBrain;
+                    if (npc != null)
+                        npc.UpdatePetWindow();
+                }
             }
         }
 
@@ -758,6 +764,12 @@ namespace DOL.GS
                 //Now update EffectList
                 player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             }
+            else if (e.Owner is GameNPC)
+            {
+                IControlledBrain npc = ((GameNPC)e.Owner).Brain as IControlledBrain;
+                if (npc != null)
+                    npc.UpdatePetWindow();
+            }
         }
 
         /// <summary>
@@ -818,6 +830,11 @@ namespace DOL.GS
             player.UpdateEncumberance();
             player.UpdatePlayerStatus();
             player.Out.SendUpdatePlayer();
+
+            if (player.Group != null)
+            {
+                player.Group.UpdateMember(player, true, false);
+            }
         }
 
         private static List<eProperty> getPropertyFromEffect(eEffect e)
