@@ -38,7 +38,8 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (245, 'AtlasOF_AugCon', 'Augmented Constitution', 505, 'Increases Constitution by the listed amount per level.', 0, 'DOL.GS.RealmAbilities.AtlasOF_RAConstitutionEnhancer', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (246, 'AtlasOF_AugQui', 'Augmented Quickness', 506, 'Increases Quickness by the listed amount per level.', 0, 'DOL.GS.RealmAbilities.AtlasOF_RAQuicknessEnhancer', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (247, 'AtlasOF_AugAcuity', 'Augmented Acuity', 507, 'Increases primary casting stat by the listed amount per level.', 0, 'DOL.GS.RealmAbilities.AtlasOF_RAAcuityEnhancer', '2000-01-01 00:00:00');
-
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (248, 'AtlasOF_LongWind', 'Long Wind', 508, 'Decreases the amount of endurance taken per tick when sprinting, by the number listed.', 0, 'DOL.GS.RealmAbilities.AtlasOF_RALongWind', '2000-01-01 00:00:00');
+        
         -- ADD REALM ABILITES WITH FOREIGN KEY FROM TABLE : ability
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_AugAcuity', '2000-01-01 00:00:00', 'Minstrel1-0-1');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_AugCon', '2000-01-01 00:00:00', 'Minstrel1-0-2');
@@ -47,6 +48,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_AugStr', '2000-01-01 00:00:00', 'Minstrel1-0-5');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_MCL', '2000-01-01 00:00:00', 'Minstrel1-0-6');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Purge', '2000-01-01 00:00:00', 'Minstrel1-0-7');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_LongWind', '2000-01-01 00:00:00', 'Minstrel1-0-8');
 
 
         */
