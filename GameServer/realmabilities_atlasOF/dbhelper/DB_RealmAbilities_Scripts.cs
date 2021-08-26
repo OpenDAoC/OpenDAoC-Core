@@ -14,8 +14,8 @@ namespace realmabilities_atlasOF._temporary_helper
         // --------------------------------------------------------------------------------
         /*
 
-        -- DROP EXISTING TABLE ------------------------------------------------------------
-        DROP TABLE `classxrealmability_atlas`;
+        -- DROP EXISTING TABLE IF ALREADY EXISTS ------------------------------------------
+        DROP TABLE IF EXISTS `classxrealmability_atlas`;
 
 
         -- CREATE NEW EMPTY TABLE ---------------------------------------------------------
