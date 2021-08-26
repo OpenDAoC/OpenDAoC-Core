@@ -114,15 +114,13 @@ public class ControlledNPCState_AGGRO : StandardMobFSMState_AGGRO
         //	when they should be stopping to cast offensive spells.
         if (brain.IsActive && brain.AggressionState != eAggressionState.Passive)
             brain.CheckSpells(eCheckSpellType.Offensive);
-
-        if(brain.Body.TargetObject == null && brain.HasAggressionTable())
-        {
-            brain.AttackMostWanted();
-        }
-
-        if (brain.OrderedAttackTarget == null)
+        
+        if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)
         {
             brain.FSM.SetCurrentState(StandardMobStateType.IDLE);
+        } else
+        {
+            brain.AttackMostWanted();
         }
 
     }

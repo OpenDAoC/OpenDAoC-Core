@@ -1061,6 +1061,8 @@ namespace DOL.AI.Brain
 			}
 			else
 			{
+				FSM.SetCurrentState(StandardMobStateType.IDLE);
+				/*
 				Body.TargetObject = null;
 
 				if (Body.IsAttacking)
@@ -1077,6 +1079,7 @@ namespace DOL.AI.Brain
 				{
 					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
 				}
+				*/
 			}
 		}
 

@@ -961,8 +961,12 @@ namespace DOL.AI.Brain
                     AddToAggroList(ad.Attacker, 100);
                 }
 
-                FSM.SetCurrentState(StandardMobStateType.AGGRO);
-                FSM.Think();
+                if(FSM.GetCurrentState() != FSM.GetState(StandardMobStateType.AGGRO))
+                {
+                    FSM.SetCurrentState(StandardMobStateType.AGGRO);
+                    FSM.Think();
+                }
+                
                 //Body.StartAttack(ad.Attacker);
             }
         }
