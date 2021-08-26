@@ -4,6 +4,7 @@ using System.Reflection;
 using DOL.GS;
 using DOL.GS.Keeps;
 using DOL.GS.Movement;
+using System.Threading.Tasks;
 
 namespace DOL.AI.Brain
 {
@@ -52,6 +53,7 @@ namespace DOL.AI.Brain
 			if (guard == null)
 			{
 				Stop();
+				base.KillFSM();
 				return;
 			}
 
@@ -60,9 +62,11 @@ namespace DOL.AI.Brain
 				// Drop aggro and disengage if the target is out of range.
 				if (Body.IsAttacking && Body.TargetObject is GameLiving living && Body.IsWithinRadius(Body.TargetObject, AggroRange, false) == false)
 				{
-					Body.StopAttack();
+					FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+					//Body.StopAttack();
 					RemoveFromAggroList(living);
-					Body.TargetObject = null;
+					//Body.TargetObject = null;
+					
 				}
 
 				if (guard.AttackState && guard.CanUseRanged)
@@ -79,19 +83,22 @@ namespace DOL.AI.Brain
 
 				if (guard.GetDistanceTo(guard.SpawnPoint, 0) > 50)
 				{
-					guard.WalkToSpawn();
+					FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+					//guard.WalkToSpawn();
 				}
 			}
 			//Eden - Portal Keeps Guards max distance
             if (guard.Level > 200 && !guard.IsWithinRadius(guard.SpawnPoint, 2000))
 			{
-				ClearAggroList();
-				guard.WalkToSpawn();
+				FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+				//ClearAggroList();
+				//guard.WalkToSpawn();
 			}
             else if (guard.InCombat == false && guard.IsWithinRadius(guard.SpawnPoint, 6000) == false)
 			{
-				ClearAggroList();
-				guard.WalkToSpawn();
+				FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+				//ClearAggroList();
+				//guard.WalkToSpawn();
 			}
 
 			// We want guards to check aggro even when they are returning home, which StandardMobBrain does not, so add checks here
@@ -102,8 +109,9 @@ namespace DOL.AI.Brain
 
 				if (HasAggro && Body.IsReturningHome)
 				{
-					Body.StopMoving();
-					AttackMostWanted();
+					FSM.SetCurrentState(StandardMobStateType.AGGRO);
+					//Body.StopMoving();
+					//AttackMostWanted();
 				}
 			}
 
