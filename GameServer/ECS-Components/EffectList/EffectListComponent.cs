@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -45,9 +46,9 @@ namespace DOL.GS
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
 
-                        if (Effects.Count == 1)
+                        if (Effects.Count == 1 && !EntityManager.GetLivingByComponent(typeof(EffectListService)).ToArray().Contains(Owner))
                         {
-                            EntityManager.AddComponent(typeof(EffectListComponent), Owner);
+                            EntityManager.AddComponent(typeof(EffectListService), Owner);
                         }
                     }
                     

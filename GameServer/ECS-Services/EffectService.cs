@@ -853,7 +853,7 @@ namespace DOL.GS
             player.UpdateEncumberance();
             player.UpdatePlayerStatus();
             player.Out.SendUpdatePlayer();
-
+            
             if (player.Group != null)
             {
                 player.Group.UpdateMember(player, true, false);
