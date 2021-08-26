@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.realmabilities_atlasOF._temporary_helper
+namespace realmabilities_atlasOF._temporary_helper
 {
     class DB_RealmAbilities_Scripts
     {
