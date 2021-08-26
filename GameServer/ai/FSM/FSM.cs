@@ -21,6 +21,11 @@ namespace FiniteStateMachine
             m_states.Add(key, state);
         }
 
+        public void ClearStates()
+        {
+            m_states.Clear();
+        }
+
         public State GetState(int key)
         {
             return m_states[key];
