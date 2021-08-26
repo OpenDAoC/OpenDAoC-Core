@@ -141,6 +141,11 @@ namespace DOL.AI.Brain
 			{
 				foreach (Spell spell in Body.Spells)
 				{
+                    if (Body.IsBeingInterrupted)
+                    {
+						m_melee = true;
+						break;
+                    }
 					if (Body.GetSkillDisabledDuration(spell) == 0)
 					{
 						if (spell.CastTime > 0)
