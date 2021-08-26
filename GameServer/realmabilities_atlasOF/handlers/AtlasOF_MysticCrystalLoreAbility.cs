@@ -57,5 +57,16 @@ namespace DOL.GS.RealmAbilities
             list.Add("Target: Self");
             list.Add("Casting time: instant");
         }
-	}
+
+        public override int CostForUpgrade(int level)
+        {
+			switch (level)
+            {
+                case 0: return 3;
+                case 1: return 6;
+                case 2: return 10;
+                default: return 1000;
+            }
+        }
+    }
 }

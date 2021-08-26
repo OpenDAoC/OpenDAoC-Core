@@ -195,23 +195,20 @@ namespace DOL.GS.RealmAbilities
 
         public override int GetReUseDelay(int level)
         {
-            if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            return 1800;
+        }
+
+        public override int MaxLevel
+        {
+            get { return 1; }
+        }
+
+        public override int CostForUpgrade(int level)
+        {
+            switch (level)
             {
-                switch (level)
-                {
-                    case 3:
-                        return 600;
-                    case 4:
-                        return 450;
-                    case 5:
-                        return 300;
-                    default:
-                        return 900;
-                }
-            }
-            else
-            {
-                return (level < 3) ? 900 : 300;
+                case 0: return 14;
+                default: return 1000;
             }
         }
 
