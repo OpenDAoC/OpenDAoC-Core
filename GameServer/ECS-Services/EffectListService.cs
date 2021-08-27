@@ -50,6 +50,7 @@ namespace DOL.GS
 
                             }
                             effect.Value.SpellHandler.StartSpell(null);
+                            effect.Value.ExpireTick += effect.Value.PulseFreq;
                         }
                         else
                         {

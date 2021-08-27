@@ -749,23 +749,23 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-					for (int i = 0; i < m_gameClient.Player.ConcentrationEffects.Count; i++)
-					{
-						IConcentrationEffect effect = m_gameClient.Player.ConcentrationEffects[i];
-						pak.WriteByte((byte)i);
-						pak.WriteByte(0); // unknown
-						pak.WriteByte(effect.Concentration);
-						pak.WriteShort(effect.Icon);
-						if (effect.Name.Length > 14)
-							pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
-						else
-							pak.WritePascalString(effect.Name);
-						if (effect.OwnerName.Length > 14)
-							pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
-						else
-							pak.WritePascalString(effect.OwnerName);
-					}
-				}
+                    for (int i = 0; i < m_gameClient.Player.ConcentrationEffects.Count; i++)
+                    {
+                        IConcentrationEffect effect = m_gameClient.Player.ConcentrationEffects[i];
+                        pak.WriteByte((byte)i);
+                        pak.WriteByte(0); // unknown
+                        pak.WriteByte(effect.Concentration);
+                        pak.WriteShort(effect.Icon);
+                        if (effect.Name.Length > 14)
+                            pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
+                        else
+                            pak.WritePascalString(effect.Name);
+                        if (effect.OwnerName.Length > 14)
+                            pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
+                        else
+                            pak.WritePascalString(effect.OwnerName);
+                    }
+                }
 				SendTCP(pak);
 			}
 
@@ -3895,7 +3895,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.Effects.Values)
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.Effects.Values.Where(e => e.EffectType != eEffect.Pulse))
 				{
 					if (effect.Icon != 0)
 					{

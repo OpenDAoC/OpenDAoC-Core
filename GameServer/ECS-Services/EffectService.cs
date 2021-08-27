@@ -475,8 +475,8 @@ namespace DOL.GS
 
                 if (e.Owner is GamePlayer player)
                 {
-                    player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
-                    SendPlayerUpdates(player);
+                    player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.EffectType != eEffect.Pulse/*ef.Icon != 0*/).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                    SendPlayerUpdates(player);                   
                 }
                 else if (e.Owner is GameNPC)
                 {
@@ -775,7 +775,7 @@ namespace DOL.GS
             {
                 SendPlayerUpdates(player);
                 //Now update EffectList
-                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.EffectType != eEffect.Pulse/*ef.Icon != 0*/).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             }
             else if (e.Owner is GameNPC)
             {
@@ -831,7 +831,7 @@ namespace DOL.GS
 
             if (e.Owner is GamePlayer player1)
             {
-                player1.Out.SendUpdateIcons(player1.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
+                player1.Out.SendUpdateIcons(player1.effectListComponent.Effects.Values.Where(ef => ef.EffectType != eEffect.Pulse/*ef.Icon != 0*/).ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
             }
         }
 

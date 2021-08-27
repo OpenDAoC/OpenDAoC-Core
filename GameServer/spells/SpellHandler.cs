@@ -2065,6 +2065,18 @@ namespace DOL.GS.Spells
             //if (m_spell.Target == "Pet")
             //	SendEffectAnimation(target, 0, false,1);
 
+            if (Spell.IsPulsing)
+            {
+                if (Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var existing))
+                {
+                    Caster.effectListComponent.Effects.Remove(eEffect.Pulse);
+                    Caster.ConcentrationEffects.Remove(existing);
+                }
+
+                CreateECSPulseEffect(Caster, Caster.Effectiveness);
+                Caster.LastPulseCast = Spell;
+            }
+
             //CreateSpellEffects();
             StartSpell(target); // and action
 
@@ -2614,11 +2626,6 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
-            if (Spell.IsPulsing)
-            {
-                CreateECSPulseEffect(Caster, Caster.Effectiveness);
-                Caster.LastPulseCast = Spell;
-            }
 
             // For PBAOE spells always set the target to the caster
 			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))

@@ -24,9 +24,23 @@ namespace DOL.GS
         public long NextTick;
 
         string IConcentrationEffect.Name => SpellHandler.Spell.Name;
-        string IConcentrationEffect.OwnerName => Owner.Name;
+        //string IConcentrationEffect.OwnerName => Owner.Name;
         ushort IConcentrationEffect.Icon => Icon;
         byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
+
+        /// <summary>
+		/// The name of the owner
+		/// </summary>
+		public virtual string OwnerName
+        {
+            get
+            {
+                if (Owner != null)
+                    return Owner.Name;
+
+                return string.Empty;
+            }
+        }
 
         public ECSGameEffect() { }
 
@@ -84,7 +98,7 @@ namespace DOL.GS
 
         public bool ShouldBeAddedToConcentrationList()
         {
-            return SpellHandler.Spell.IsConcentration || (EffectType == eEffect.Pulse && RenewEffect == false);
+            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
         public bool ShouldBeRemovedFromConcentrationList()

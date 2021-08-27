@@ -35,6 +35,7 @@ namespace DOL.GS
                         {
                             Effects[effect.EffectType] = effect;
                             effect.RenewEffect = true;
+
                             return true;
                         }
                         Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
@@ -88,6 +89,7 @@ namespace DOL.GS
                     {
                         EffectIdToEffect.Remove(effect.Icon);
                         Effects.Remove(effect.EffectType);
+
                         if (Effects.Count == 0)
                         {
                             EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
