@@ -14,6 +14,9 @@ namespace realmabilities_atlasOF._temporary_helper
         // --------------------------------------------------------------------------------
         /*
 
+        -- DEFAULT GAME DATABASE SETTINGS FOR TESTING PURPOSES ----------------------------
+        UPDATE `atlas`.`serverproperty` SET `DefaultValue`='True', `Value`='True' WHERE  `Key`='disable_quit_timer';
+
         -- DROP EXISTING TABLE IF ALREADY EXISTS ------------------------------------------
         DROP TABLE IF EXISTS `classxrealmability_atlas`;
 
