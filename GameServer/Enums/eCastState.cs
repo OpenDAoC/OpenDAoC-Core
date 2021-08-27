@@ -6,6 +6,7 @@ namespace DOL.GS
         Casting,
         Interrupted,
         Finished,
+        Focusing,
         Cleanup
     }
 }

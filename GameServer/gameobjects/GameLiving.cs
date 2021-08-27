@@ -4147,8 +4147,19 @@ namespace DOL.GS
                     effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
                 }
             }
+            CancelFocusSpell();
+            
         }
-
+        public void CancelFocusSpell(bool moving = false)
+        {
+            if (effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var focusEffect) && focusEffect.SpellHandler.Spell.IsFocus)
+            {
+                ((SpellHandler)focusEffect.SpellHandler).FocusSpellAction(moving);
+                EffectService.RequestCancelEffect(focusEffect);
+                if (((SpellHandler)focusEffect.SpellHandler).GetTarget().effectListComponent.Effects.TryGetValue(focusEffect.EffectType, out var petEffect))
+                    EffectService.RequestCancelEffect(petEffect);
+            }
+        }
 		/// <summary>
 		/// This method is called at the end of the attack sequence to
 		/// notify objects if they have been attacked/hit by an attack

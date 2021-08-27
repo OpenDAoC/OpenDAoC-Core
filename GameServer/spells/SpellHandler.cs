@@ -278,7 +278,7 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.IsFocus)
 				{
-					FocusSpellAction(null, Caster, null);
+					//FocusSpellAction(null, Caster, null);
 				}
 				MessageToCaster("You do not have enough mana and your spell was cancelled.", eChatType.CT_SpellExpires);
 				effect.Cancel(false);
@@ -601,10 +601,16 @@ namespace DOL.GS.Spells
 			if (Spell.MoveCast)
 				return;
 
-			InterruptCasting();
+			
+            
 			if (Caster is GamePlayer)
-				(Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-		}
+                if (castState != eCastState.Focusing)
+				    (Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                else
+                    Caster.CancelFocusSpell(true);
+
+            InterruptCasting();
+        }
 
 		/// <summary>
 		/// This sends the spell messages to the player/target.
@@ -1030,7 +1036,7 @@ namespace DOL.GS.Spells
 				MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
 				if(Spell.IsFocus && Spell.IsHarmful)
 				{
-					FocusSpellAction(null, Caster, null);
+					FocusSpellAction(/*null, Caster, null*/);
 				}
 			}
 
@@ -1648,13 +1654,23 @@ namespace DOL.GS.Spells
 					SendInterruptCastAnimation();
 					castState = eCastState.Cleanup;
 					break;
-			}
+                case eCastState.Focusing:
+                    if ((Caster is GamePlayer && (Caster as GamePlayer).IsStrafing) || Caster.IsMoving)
+                    {
+                        CasterMoves();
+                        castState = eCastState.Cleanup;
+                    }
+                    break;
+            }
 
 			//Process cast on same tick if finished.
 			if (castState == eCastState.Finished)
 			{
 				FinishSpellCast(m_spellTarget);
-				castState = eCastState.Cleanup;
+                if (Spell.IsFocus)
+                    castState = eCastState.Focusing;
+                else
+				    castState = eCastState.Cleanup;
 			}
 			
 			if (castState == eCastState.Cleanup)
@@ -2867,7 +2883,7 @@ namespace DOL.GS.Spells
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
-                target.OnAttack(ad);
+                //target.OnAttack(ad);
 
                 // Treat non-damaging effects as attacks to trigger an immediate response and BAF
                 if (ad.Damage == 0 && ad.Target is GameNPC)
@@ -3092,7 +3108,7 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.IsFocus)
 				{
-					FocusSpellAction(null, Caster, null);
+					FocusSpellAction(/*null, Caster, null*/);
 				}
 				// Re-Enable Cancellable Effects.
 				var enableEffect = effect.Owner.EffectList.OfType<GameSpellEffect>()
@@ -3351,43 +3367,71 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		/// <summary>
-		/// Hold events for focus spells
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="args"></param>
-		protected virtual void FocusSpellAction(DOLEvent e, object sender, EventArgs args)
-		{
-			GameLiving living = sender as GameLiving;
-			if (living == null) return;
+        /// <summary>
+        /// Hold events for focus spells
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        //protected virtual void FocusSpellAction(DOLEvent e, object sender, EventArgs args)
+        //{
+        //	GameLiving living = sender as GameLiving;
+        //	if (living == null) return;
 
-			GameSpellEffect currentEffect = (GameSpellEffect)living.TempProperties.getProperty<object>(FOCUS_SPELL, null);
-			if (currentEffect == null)
-				return;
+        //	GameSpellEffect currentEffect = (GameSpellEffect)living.TempProperties.getProperty<object>(FOCUS_SPELL, null);
+        //	if (currentEffect == null)
+        //		return;
 
-			//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackFinished, new DOLEventHandler(FocusSpellAction));
-			//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.CastStarting, new DOLEventHandler(FocusSpellAction));
-			//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Moving, new DOLEventHandler(FocusSpellAction));
-			//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-			//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
-			//GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-			Caster.TempProperties.removeProperty(FOCUS_SPELL);
+        //	//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackFinished, new DOLEventHandler(FocusSpellAction));
+        //	//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.CastStarting, new DOLEventHandler(FocusSpellAction));
+        //	//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Moving, new DOLEventHandler(FocusSpellAction));
+        //	//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
+        //	//GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
+        //	//GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
+        //	Caster.TempProperties.removeProperty(FOCUS_SPELL);
 
-			CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
-			currentEffect.Cancel(false);
+        //	CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
+        //	currentEffect.Cancel(false);
 
-			MessageToCaster(String.Format("You lose your focus on your {0} spell.", currentEffect.Spell.Name), eChatType.CT_SpellExpires);
+        //	MessageToCaster(String.Format("You lose your focus on your {0} spell.", currentEffect.Spell.Name), eChatType.CT_SpellExpires);
 
-			if (e == GameLivingEvent.Moving)
-				MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
-		}
-		#endregion
+        //	if (e == GameLivingEvent.Moving)
+        //		MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
+        //}
+        public virtual void FocusSpellAction(bool moving = false)
+        {
+            //GameLiving living = sender as GameLiving;
+            //if (living == null) return;
 
-		/// <summary>
-		/// Ability to cast a spell
-		/// </summary>
-		public ISpellCastingAbilityHandler Ability
+            //GameSpellEffect currentEffect = (GameSpellEffect)Caster.TempProperties.getProperty<object>(FOCUS_SPELL, null);
+            //if (currentEffect == null)
+            //    return;
+
+            //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackFinished, new DOLEventHandler(FocusSpellAction));
+            //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.CastStarting, new DOLEventHandler(FocusSpellAction));
+            //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Moving, new DOLEventHandler(FocusSpellAction));
+            //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
+            //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
+            //GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
+            castState = eCastState.Cleanup;
+            Caster.TempProperties.removeProperty(FOCUS_SPELL);
+            Caster.LastPulseCast = null;
+            
+            //CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
+            //currentEffect.Cancel(false);
+
+            MessageToCaster(String.Format("You lose your focus on your {0} spell.", /*currentEffect.*/Spell.Name), eChatType.CT_SpellExpires);
+
+            //if (e == GameLivingEvent.Moving)
+            if (moving)
+                MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
+        }
+        #endregion
+
+        /// <summary>
+        /// Ability to cast a spell
+        /// </summary>
+        public ISpellCastingAbilityHandler Ability
 		{
 			get { return m_ability; }
 			set { m_ability = value; }
