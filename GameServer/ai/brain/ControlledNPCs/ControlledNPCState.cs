@@ -1,4 +1,5 @@
-﻿using DOL.AI.Brain;
+﻿using DOL.AI;
+using DOL.AI.Brain;
 using DOL.GS;
 using FiniteStateMachine;
 using System;
@@ -8,21 +9,29 @@ using System.Text;
 using System.Threading.Tasks;
 using static DOL.AI.Brain.StandardMobBrain;
 
-public class ControlledNPCState_IDLE : StandardMobFSMState_IDLE
+public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
 {
-    public ControlledNPCState_IDLE(FSM fsm, ControlledNpcBrain brain) : base(fsm, brain)
+    public ControlledNPCState_DEFENSIVE(FSM fsm, ControlledNpcBrain brain) : base(fsm, brain)
     {
-        _id = StandardMobStateType.IDLE;
+        _id = eFSMStateType.IDLE;
     }
 
     public override void Think()
     {
         ControlledNpcBrain brain = (_brain as ControlledNpcBrain);
-        GamePlayer playerowner = brain.GetPlayerOwner();
 
-        //See if the pet is too far away, if so release it!
-        if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
-            (brain.Owner as GamePlayer).CommandNpcRelease();
+        //handle state changes
+        if (brain.AggressionState == eAggressionState.Aggressive)
+        {
+            brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+        }
+
+        if (brain.AggressionState == eAggressionState.Passive)
+        {
+            brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
+        }
+
+        GamePlayer playerowner = brain.GetPlayerOwner();
 
         // Load abilities on first Think cycle.
         if (!brain.checkAbility)
@@ -30,6 +39,10 @@ public class ControlledNPCState_IDLE : StandardMobFSMState_IDLE
             brain.CheckAbilities();
             brain.checkAbility = true;
         }
+
+        //See if the pet is too far away, if so release it!
+        if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
+            (brain.Owner as GamePlayer).CommandNpcRelease();
 
         //Fen: idk what the hell this update Tick does but it was in the other Think() method so I moved it here
         //should probably move it to gameloop instead of GameTimer
@@ -41,12 +54,12 @@ public class ControlledNPCState_IDLE : StandardMobFSMState_IDLE
             playerowner.Out.SendObjectUpdate(brain.Body);
 
         
-
         if(brain.AggressionState == eAggressionState.Aggressive)
         {
-            brain.FSM.SetCurrentState(StandardMobStateType.AGGRO);
+            brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
         }
 
+        //handle pet movement
         if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
             brain.Follow(brain.Owner);
         if(brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
@@ -54,15 +67,14 @@ public class ControlledNPCState_IDLE : StandardMobFSMState_IDLE
             brain.Goto(brain.Body.TargetObject);
         }
 
-        base.Think();
     }
 }
 
-public class ControlledNPCState_AGGRO : StandardMobFSMState_AGGRO
+public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
 {
     public ControlledNPCState_AGGRO(FSM fsm, ControlledNpcBrain brain) : base(fsm, brain)
     {
-        _id = StandardMobStateType.AGGRO;
+        _id = eFSMStateType.AGGRO;
     }
 
     public override void Exit()
@@ -78,10 +90,11 @@ public class ControlledNPCState_AGGRO : StandardMobFSMState_AGGRO
 
         if(brain.AggressionState == eAggressionState.Passive || brain.WalkState == eWalkState.ComeHere)
         {
-            brain.FSM.SetCurrentState(StandardMobStateType.IDLE);
+            brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
             return;
         }
 
+        //See if the pet is too far away, if so release it!
         if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
             (brain.Owner as GamePlayer).CommandNpcRelease();
 
@@ -93,31 +106,31 @@ public class ControlledNPCState_AGGRO : StandardMobFSMState_AGGRO
             brain.AttackMostWanted();
         }
 
-        // Check for buffs, heals, etc, interrupting melee if not being interrupted
-        // Only prevent casting if we are ordering pet to come to us or go to target
-        if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && brain.WalkState != eWalkState.ComeHere && brain.WalkState != eWalkState.GoTarget))
-            brain.CheckSpells(eCheckSpellType.Defensive);
-
-
         // Stop hunting player entering in steath
         if (brain.Body.TargetObject != null && brain.Body.TargetObject is GamePlayer)
         {
             GamePlayer player = brain.Body.TargetObject as GamePlayer;
             if (brain.Body.IsAttacking && player.IsStealthed && !brain.previousIsStealthed)
             {
-                brain.FSM.SetCurrentState(StandardMobStateType.IDLE);
+                brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             }
             brain.previousIsStealthed = player.IsStealthed;
         }
 
+        // Check for buffs, heals, etc, interrupting melee if not being interrupted
+        // Only prevent casting if we are ordering pet to come to us or go to target
+        if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && brain.WalkState != eWalkState.ComeHere && brain.WalkState != eWalkState.GoTarget))
+            brain.CheckSpells(eCheckSpellType.Defensive);
+   
         // Always check offensive spells, or pets in melee will keep blindly melee attacking,
         //	when they should be stopping to cast offensive spells.
         if (brain.IsActive && brain.AggressionState != eAggressionState.Passive)
             brain.CheckSpells(eCheckSpellType.Offensive);
         
+        //return to defensive if our target(s) are dead
         if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)
         {
-            brain.FSM.SetCurrentState(StandardMobStateType.IDLE);
+            brain.FSM.SetCurrentState(eFSMStateType.IDLE);
         } else
         {
             brain.AttackMostWanted();
@@ -126,15 +139,44 @@ public class ControlledNPCState_AGGRO : StandardMobFSMState_AGGRO
     }
 }
 
-public class ControlledNPCState_WAKING_UP : StandardMobFSMState_WAKING_UP
+public class ControlledNPCState_PASSIVE : StandardMobState
 {
-    public ControlledNPCState_WAKING_UP(FSM fsm, ControlledNpcBrain brain) : base(fsm, brain)
+    public ControlledNPCState_PASSIVE(FSM fsm, ControlledNpcBrain brain) : base(fsm, brain)
     {
-        _id = StandardMobStateType.WAKING_UP;
+        _id = eFSMStateType.PASSIVE;
+    }
+
+    public override void Enter()
+    {
+        Console.WriteLine($"{ _brain.Body} is entering PASSIVE");
+        base.Enter();
     }
 
     public override void Think()
-    {
+{
+        ControlledNpcBrain brain = (_brain as ControlledNpcBrain);
 
+        //See if the pet is too far away, if so release it!
+        if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
+            (brain.Owner as GamePlayer).CommandNpcRelease();
+
+        //handle state changes
+        if (brain.AggressionState == eAggressionState.Aggressive)
+        {
+            brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+        }
+
+        if(brain.AggressionState == eAggressionState.Defensive)
+        {
+            brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+        }
+
+        //handle pet movement
+        if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
+            brain.Follow(brain.Owner);
+        if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
+        {
+            brain.Goto(brain.Body.TargetObject);
+        }
     }
 }

@@ -95,12 +95,11 @@ namespace DOL.AI.Brain
 
 			FSM.ClearStates();
 
-			//FSM.Add(new ControlledNPCState_WAKING_UP(FSM, this));
-			FSM.Add(new ControlledNPCState_IDLE(FSM, this));
+			FSM.Add(new ControlledNPCState_PASSIVE(FSM, this));
+			FSM.Add(new ControlledNPCState_DEFENSIVE(FSM, this));
 			FSM.Add(new ControlledNPCState_AGGRO(FSM, this));
-			FSM.Add(new StandardMobFSMState_DEAD(FSM, this));
 
-			FSM.SetCurrentState(StandardMobStateType.IDLE);
+			FSM.SetCurrentState(eFSMStateType.IDLE);
 		}
 
 		protected bool m_isMainPet = true;
@@ -244,14 +243,14 @@ namespace DOL.AI.Brain
 					Body.StopAttack();
 					Body.TargetObject = null;
 
-					FSM.SetCurrentState(StandardMobStateType.IDLE);
+					FSM.SetCurrentState(eFSMStateType.PASSIVE);
 
 					if (WalkState == eWalkState.Follow)
 						FollowOwner();
 					else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
 						Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
 				}
-				AttackMostWanted();
+				//AttackMostWanted();
 			}
 		}
 
@@ -271,7 +270,7 @@ namespace DOL.AI.Brain
 			if (target is GamePlayer) 
 				previousIsStealthed = (target as GamePlayer).IsStealthed;
 
-			FSM.SetCurrentState(StandardMobStateType.AGGRO);
+			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()){	FSM.SetCurrentState(eFSMStateType.AGGRO);}
 			AttackMostWanted();
 		}
 
@@ -1061,8 +1060,6 @@ namespace DOL.AI.Brain
 			}
 			else
 			{
-				FSM.SetCurrentState(StandardMobStateType.IDLE);
-				/*
 				Body.TargetObject = null;
 
 				if (Body.IsAttacking)
@@ -1079,7 +1076,6 @@ namespace DOL.AI.Brain
 				{
 					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
 				}
-				*/
 			}
 		}
 
@@ -1091,6 +1087,8 @@ namespace DOL.AI.Brain
 		/// <param name="arguments"></param>
 		protected virtual void OnOwnerAttacked(DOLEvent e, object sender, EventArgs arguments)
 		{
+			if(FSM.GetState(eFSMStateType.PASSIVE) == FSM.GetCurrentState()) { return; }
+
 			// theurgist pets don't help their owner
 			//edit for BD - possibly add support for Theurgist GameNPCs
 			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)eCharacterClass.Theurgist)
@@ -1113,6 +1111,8 @@ namespace DOL.AI.Brain
 					AddToAggroList(args.AttackData.Attacker, args.AttackData.Attacker.EffectiveLevel + args.AttackData.Damage + args.AttackData.CriticalDamage);
 					break;
 			}
+
+			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
 			AttackMostWanted();
 		}
 
