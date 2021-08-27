@@ -10,7 +10,7 @@ The following sections outline the process of preparing your environment to buil
 
 1. [Environment Requirements](#environment-requirements)
    1. [Considerations for IDEs](#considerations-for-ides)
-3. [Setting Up on Ubuntu](#setting-up-on-ubuntu)
+2. [Setting Up on Ubuntu](#setting-up-on-ubuntu)
    1. [Installing .NET 5.0](#installing-net-50-ubuntu)
    2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
       1. [Preparing Your Database](#preparing-your-database-ubuntu)
@@ -25,7 +25,7 @@ The following sections outline the process of preparing your environment to buil
    4. [Installing Git](#installing-git-ubuntu)
    5. [Cloning Atlas' Repos](#cloning-the-repository-ubuntu)
    6. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
-4. [Setting Up on Windows](#setting-up-on-windows)
+3. [Setting Up on Windows](#setting-up-on-windows)
    1. [Installing .NET 5.0](#installing-net-50-win)
    2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
       1. [Preparing Your Database](#preparing-your-database-win)
@@ -40,11 +40,13 @@ The following sections outline the process of preparing your environment to buil
    4. [Installing Git](#installing-git-win)
    5. [Cloning Atlas' Repos](#cloning-the-repository-win)
    6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
-5. [Building Your DoL Server Locally](#building-your-dol-server-locally)
-6. [Testing](#testing)
+4. [Building Your DoL Server Locally](#building-your-dol-server-locally)
+5. [Accessing Local Servers](#accessing-local-servers)
+6. [Accessing the World Builders' Server](#accessing-the-world-builders-server)
+7. [Testing](#testing)
    1. [In-Game Testing](#in-game-testing)
    2. [Recommended Extensions for Testing](#recommended-extensions-for-testing)
-7. [Logging](#logging)
+8. [Logging](#logging)
 
 ## Environment Requirements
 
@@ -249,18 +251,17 @@ If you have not already installed Git on your machine, launch the Terminal app a
 
 ### Cloning the Repository (Ubuntu)
 
-With Git ready, it's time to clone the `AtlasScripts` and `AtlasCore` repositories.
+With Git ready, it's time to clone the `AtlasCore` repository.
 
 1. From the Terminal, navigate to the desired directory to house the repos.
 2. In a browser, navigate to [GitLab](https://www.gitlab.com) and open the desired repo.
 3. Click the **Clone** button at the top-right corner.
 4. If you're configured with a [Personal Access Token](#setting-up-a-personal-access-token-ubuntu), copy the HTTPS URL. If you configured with [SSH](#setting-up-ssh-tunneling-ubuntu), then copy the SSH address.
 5. Returning to the Terminal, (and from your desired directory) type `git clone (PASTE THE ADDRESS)`. Enter your credentials when prompted, or the SSH key passphrase.
-6. Perform these steps for each repo.
 
 ### Altering `serverconfig.xml` (Ubuntu)
 
-With the repos on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building Atlas locally.
+With the repo on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building Atlas locally.
 
 1. Copy the file `/AtlasCore/Net5/DOLServer/config/serverconfig.example.xml` to `/AtlasCore/Net5/DOLServer/config/serverconfig.xml`.
 2. Open the `serverconfig.xml` file.
@@ -469,10 +470,56 @@ Now you're ready to [run your own instance of Atlas](#building-your-dol-server-l
 
 This section provides the commands necessary for both building and running a DoL server locally.
 
-1. Launch the Terminal or PowerShell, navigate to `/AtlasCore/Net5/` and type `dotnet build DOLdotnetLinux.sln`. This builds and launches an instance of DoL on your machine. <!-- This may take around 1-2 minutes to complete. Don't panic if you see multiple warnings and errors. -->
-2. Enter the command `dotnet run --project DOLServer`. <!-- This may take several minutes to complete. -->
+1. Launch the Terminal or PowerShell, navigate to `/AtlasCore/Net5/` and type `dotnet build DOLdotnetLinux.sln`. This builds the DoL server on your machine. <!-- This may take around 1-2 minutes to complete. Don't panic if you see multiple warnings and errors. -->
+2. Enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
 
 Congratulations! You're now running an instance of Atlas on your machine.
+
+## Preparing the DAoC Client
+
+In order to access either local builds of Atlas or the World Builders' server, you need to have the DAoC client installed and equipped with the right files.
+
+1. Download the full [DAoC Client](https://darkageofcamelot.com/sites/daoc/files/downloads/DAoCSetup.exe).
+2. Install it, launch the application, and then download all patches. 
+3. Log in on the Atlas forums and download the [AtlasPack](https://www.atlasfreeshard.com/files/AtlasPack-0.2.zip) and [AtlasDF](https://www.atlasfreeshard.com/files/AtlasDF.zip).
+Extract the files. 
+4. Place everything from `AtlasPack` into the base directory (e.g., `C:\Program Files (x86)\Electronic Arts\Dark Age of Camelot\`). Replace any files affected when prompted. 
+5. Place the `zones` folder from `AtlasDF` onto the `zones` folder in the same directory as was used for `AtlasPack`.
+6. Download the [DAoCPortal](https://sourceforge.net/projects/dolserver/files/DAOC%20Portal/DAoCPortalSetup.msi/download) app and install it.
+
+The client is ready for all Atlas servers.
+
+## Accessing Local Servers
+
+Once you've built your Atlas server and it's running locally, you can now access it using the DAoC client and DAoCPortal.
+
+1. Launch DAoCPortal.
+2. Navigate to the _Custom Shards_ tab.
+3. Right-click in the app and click **Add Server...**.
+4. Enter whatever values you want for **Name** and **Description**.
+5. For **IP or Hostname**, enter `127.0.0.1` if you're accessing the server from the same machine.
+6. Leave the port set to `10300`.
+7. Click **OK**.
+8. Click on the desired server.
+9. Provide a value for **User** (Username) and **Pass** (Password).
+10. Click **Play!**
+
+The DAoC client launches and creates a new account based on the credentials you entered. You should be brought to the character selection screen now.
+
+## Accessing the World Builders' Server
+
+The World Builders all currently access a single live instance of the Atlas server to populate the regions with NPCs, mobs, and so on.
+
+**TO GAIN ACCESS:** You must first request an account from Clait to access this server. He will provide you with a regular (/plvl1) account. Should you require additional capabilities as a GameMaster (/plvl2) or World Builder/Administrator (/plvl3), an additional account will be provided.
+
+**NOTE:** This is not intended as a "play" server, as using GM commands can negatively impact the work of the World Builders. So we would ask that perform tests with caution and respect for the work the Builders have done.
+
+1. From the base directory of the DAoC client, execute the `AtlasLauncher` application.
+2. Enter your login credentials and click **PLAY**.
+
+This should launch the DAoC client and then the character selection screen.
+
+**If you are unable to get past the loading screen**, check the `dol` channel on Discord to see if the server is online.
 
 ## Testing
 
