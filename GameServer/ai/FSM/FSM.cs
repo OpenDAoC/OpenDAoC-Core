@@ -28,7 +28,9 @@ namespace FiniteStateMachine
 
         public State GetState(int key)
         {
-            return m_states[key];
+            if (m_states.ContainsKey(key)){ return m_states[key];} 
+            else { return null; }
+            
         }
 
         public void SetCurrentState(State state)
