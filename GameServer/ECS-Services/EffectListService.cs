@@ -20,7 +20,7 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var living in EntityManager.GetLivingByComponent(typeof(EffectListService)))
+            foreach (var living in EntityManager.GetLivingByComponent(typeof(EffectListComponent)))
             {
                 HandleEffects(tick, living);
             }

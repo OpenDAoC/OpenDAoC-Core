@@ -47,9 +47,9 @@ namespace DOL.GS
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
 
-                        if (Effects.Count == 1 && !EntityManager.GetLivingByComponent(typeof(EffectListService)).ToArray().Contains(Owner))
+                        if (Effects.Count == 1 && !EntityManager.GetLivingByComponent(typeof(EffectListComponent)).ToArray().Contains(Owner))
                         {
-                            EntityManager.AddComponent(typeof(EffectListService), Owner);
+                            EntityManager.AddComponent(typeof(EffectListComponent), Owner);
                         }
                     }
                     

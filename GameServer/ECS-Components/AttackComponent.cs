@@ -55,7 +55,7 @@ namespace DOL.GS
                 if (attacker == owner) return;
                 if (m_attackers.Contains(attacker)) return;
                 m_attackers.Add(attacker);
-                if (m_attackers.Count() == 1)
+                if (m_attackers.Count() > 0 && !EntityManager.GetLivingByComponent(typeof(AttackComponent)).Contains(owner))
                     EntityManager.AddComponent(typeof(AttackComponent), owner);
             }
         }
@@ -70,8 +70,8 @@ namespace DOL.GS
             lock (Attackers)
             {
                 m_attackers.Remove(attacker);
-                if (m_attackers.Count() == 0)
-                    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
+                //if (m_attackers.Count() == 0)
+                //    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
             }
         }
 
@@ -91,8 +91,13 @@ namespace DOL.GS
                     weaponAction.Tick(time);
             }
             if (attackAction != null)
-            {
+            {               
                 attackAction.Tick(time);
+            }
+            else
+            {
+                if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
+                    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
             }
         }
 
@@ -529,6 +534,9 @@ namespace DOL.GS
         /// <param name="attackTarget">the target to attack</param>
         public void StartAttack(GameObject attackTarget)
         {
+            if (!EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
+                EntityManager.AddComponent(typeof(AttackComponent), owner);
+
             var p = owner as GamePlayer;
 
             if (p != null)
