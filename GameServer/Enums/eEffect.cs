@@ -118,6 +118,7 @@ namespace DOL.GS
         FacilitatePainworking,
         MesmerizeDurationBuff,
         FatigueConsumptionBuff,
-        SavageBuff
+        SavageBuff,
+        Pet
     }
 }

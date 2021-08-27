@@ -286,7 +286,18 @@ namespace DOL.GS
                         return eEffect.ColdResistDebuff;
                     else
                         return eEffect.Unknown;
-
+                //pets
+                case (byte)eSpellType.SummonTheurgistPet:
+                case (byte)eSpellType.SummonNoveltyPet:
+                case (byte)eSpellType.SummonAnimistPet:
+                case (byte)eSpellType.SummonAnimistFnF:
+                case (byte)eSpellType.SummonSpiritFighter:
+                case (byte)eSpellType.SummonHunterPet:
+                case (byte)eSpellType.SummonUnderhill:
+                case (byte)eSpellType.SummonDruidPet:
+                case (byte)eSpellType.SummonSimulacrum:
+                case (byte)eSpellType.SummonNecroPet:
+                    return eEffect.Pet;
 
                 #endregion
 

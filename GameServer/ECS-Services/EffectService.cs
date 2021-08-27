@@ -663,6 +663,11 @@ namespace DOL.GS
                                 e.Owner.ChangeHealth(e.Owner, eHealthChangeType.Spell, -cost);
                         }
                     }
+                    else if (e.EffectType == eEffect.Pet)
+                    {
+                        e.Owner.Health = 0; // to send proper remove packet
+                        e.Owner.Delete();
+                    }
                     else if (isDebuff(e.EffectType))
                     {
                         if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
