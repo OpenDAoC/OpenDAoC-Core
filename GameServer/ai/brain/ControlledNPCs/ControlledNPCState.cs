@@ -88,9 +88,15 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
     {
         ControlledNpcBrain brain = (_brain as ControlledNpcBrain);
 
-        if(brain.AggressionState == eAggressionState.Passive || brain.WalkState == eWalkState.ComeHere)
+        if(brain.AggressionState == eAggressionState.Passive)
         {
             brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
+            return;
+        }
+
+        if (brain.WalkState == eWalkState.ComeHere)
+        {
+            brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             return;
         }
 
@@ -99,7 +105,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             (brain.Owner as GamePlayer).CommandNpcRelease();
 
         // if pet is in agressive mode then check aggressive spells and attacks first
-        if (!brain.Body.AttackState && brain.AggressionState == eAggressionState.Aggressive)
+        if (brain.Body.TargetObject == null)
         {
             brain.CheckPlayerAggro();
             brain.CheckNPCAggro();
