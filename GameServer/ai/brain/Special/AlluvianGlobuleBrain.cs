@@ -23,13 +23,13 @@ namespace DOL.AI.Brain
 			FSM.ClearStates();
 			FSM.Add(new AlluvianGlobuleState_IDLE(FSM, this));
 			FSM.Add(new AlluvianGlobuleState_ROAMING(FSM, this));
-			FSM.Add(new StandardMobFSMState_WAKING_UP(FSM, this));
-			FSM.Add(new StandardMobFSMState_AGGRO(FSM, this));
-			FSM.Add(new StandardMobFSMState_RETURN_TO_SPAWN(FSM, this));
-			FSM.Add(new StandardMobFSMState_PATROLLING(FSM, this));
-			FSM.Add(new StandardMobFSMState_DEAD(FSM, this));
+			FSM.Add(new StandardMobState_WAKING_UP(FSM, this));
+			FSM.Add(new StandardMobState_AGGRO(FSM, this));
+			FSM.Add(new StandardMobState_RETURN_TO_SPAWN(FSM, this));
+			FSM.Add(new StandardMobState_PATROLLING(FSM, this));
+			FSM.Add(new StandardMobState_DEAD(FSM, this));
 
-			FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
+			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
 		}
 
 		/// <summary>

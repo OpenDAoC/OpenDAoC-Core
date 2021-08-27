@@ -64,15 +64,15 @@ namespace DOL.AI.Brain
             m_aggroLevel = 0;
             m_aggroMaxRange = 0;
             FSM = new StandardMobFSM();
-            FSM.Add(new StandardMobFSMState_IDLE(FSM, this));
-            FSM.Add(new StandardMobFSMState_WAKING_UP(FSM, this));
-            FSM.Add(new StandardMobFSMState_AGGRO(FSM, this));
-            FSM.Add(new StandardMobFSMState_RETURN_TO_SPAWN(FSM, this));
-            FSM.Add(new StandardMobFSMState_PATROLLING(FSM, this));
-            FSM.Add(new StandardMobFSMState_ROAMING(FSM, this));
-            FSM.Add(new StandardMobFSMState_DEAD(FSM, this));
+            FSM.Add(new StandardMobState_IDLE(FSM, this));
+            FSM.Add(new StandardMobState_WAKING_UP(FSM, this));
+            FSM.Add(new StandardMobState_AGGRO(FSM, this));
+            FSM.Add(new StandardMobState_RETURN_TO_SPAWN(FSM, this));
+            FSM.Add(new StandardMobState_PATROLLING(FSM, this));
+            FSM.Add(new StandardMobState_ROAMING(FSM, this));
+            FSM.Add(new StandardMobState_DEAD(FSM, this));
 
-            FSM.SetCurrentState(StandardMobStateType.WAKING_UP);
+            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
         /// <summary>
@@ -949,6 +949,8 @@ namespace DOL.AI.Brain
         /// <param name="ad"></param>
         protected virtual void OnAttackedByEnemy(AttackData ad)
         {
+            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)){ return; }
+
             if (!Body.AttackState
                 && Body.IsAlive
                 && Body.ObjectState == GameObject.eObjectState.Active)
@@ -961,9 +963,9 @@ namespace DOL.AI.Brain
                     AddToAggroList(ad.Attacker, 100);
                 }
 
-                if(FSM.GetCurrentState() != FSM.GetState(StandardMobStateType.AGGRO))
+                if(FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
                 {
-                    FSM.SetCurrentState(StandardMobStateType.AGGRO);
+                    FSM.SetCurrentState(eFSMStateType.AGGRO);
                     FSM.Think();
                 }
                 

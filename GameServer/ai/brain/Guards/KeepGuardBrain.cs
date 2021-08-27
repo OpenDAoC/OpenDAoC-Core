@@ -62,7 +62,7 @@ namespace DOL.AI.Brain
 				// Drop aggro and disengage if the target is out of range.
 				if (Body.IsAttacking && Body.TargetObject is GameLiving living && Body.IsWithinRadius(Body.TargetObject, AggroRange, false) == false)
 				{
-					FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 					//Body.StopAttack();
 					RemoveFromAggroList(living);
 					//Body.TargetObject = null;
@@ -83,20 +83,20 @@ namespace DOL.AI.Brain
 
 				if (guard.GetDistanceTo(guard.SpawnPoint, 0) > 50)
 				{
-					FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 					//guard.WalkToSpawn();
 				}
 			}
 			//Eden - Portal Keeps Guards max distance
             if (guard.Level > 200 && !guard.IsWithinRadius(guard.SpawnPoint, 2000))
 			{
-				FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				//ClearAggroList();
 				//guard.WalkToSpawn();
 			}
             else if (guard.InCombat == false && guard.IsWithinRadius(guard.SpawnPoint, 6000) == false)
 			{
-				FSM.SetCurrentState(StandardMobStateType.RETURN_TO_SPAWN);
+				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				//ClearAggroList();
 				//guard.WalkToSpawn();
 			}
@@ -109,7 +109,7 @@ namespace DOL.AI.Brain
 
 				if (HasAggro && Body.IsReturningHome)
 				{
-					FSM.SetCurrentState(StandardMobStateType.AGGRO);
+					FSM.SetCurrentState(eFSMStateType.AGGRO);
 					//Body.StopMoving();
 					//AttackMostWanted();
 				}

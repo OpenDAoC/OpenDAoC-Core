@@ -9,11 +9,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using static DOL.AI.Brain.StandardMobBrain;
 
-public class AlluvianGlobuleState_IDLE : StandardMobFSMState_IDLE
+public class AlluvianGlobuleState_IDLE : StandardMobState_IDLE
 {
     public AlluvianGlobuleState_IDLE(FSM fsm, AlluvianGlobuleBrain brain) : base(fsm, brain)
     {
-        _id = StandardMobStateType.IDLE;
+        _id = eFSMStateType.IDLE;
     }
 
     public override void Enter()
@@ -35,11 +35,11 @@ public class AlluvianGlobuleState_IDLE : StandardMobFSMState_IDLE
     }
 }
 
-public class AlluvianGlobuleState_ROAMING : StandardMobFSMState_ROAMING
+public class AlluvianGlobuleState_ROAMING : StandardMobState_ROAMING
 {
     public AlluvianGlobuleState_ROAMING(FSM fsm, AlluvianGlobuleBrain brain) : base(fsm, brain)
     {
-        _id = StandardMobStateType.ROAMING;
+        _id = eFSMStateType.ROAMING;
     }
 
     public override void Enter()
