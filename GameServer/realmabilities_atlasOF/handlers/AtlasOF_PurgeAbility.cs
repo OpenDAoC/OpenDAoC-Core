@@ -205,11 +205,7 @@ namespace DOL.GS.RealmAbilities
 
         public override int CostForUpgrade(int level)
         {
-            switch (level)
-            {
-                case 0: return 14;
-                default: return 1000;
-            }
+            return 14;
         }
 
         public override void AddEffectsInfo(IList<string> list)

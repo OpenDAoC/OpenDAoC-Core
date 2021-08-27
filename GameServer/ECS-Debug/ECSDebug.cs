@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DOL.Database;
 
 namespace ECS.Debug
 {
@@ -109,6 +110,80 @@ namespace DOL.GS.Commands
                     DisplayMessage(client, "Performance diagnostics logging turned off.");
                 }
             }
+        }
+    }
+
+    // This should be moved outside of this file if we want this as a real player-facing feature.
+    [CmdAttribute(
+        "&charstats",
+        ePrivLevel.GM,
+        "Shows normally hidden character stats.")]
+    public class AtlasCharStatsCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
+        public void OnCommand(GameClient client, string[] args)
+        {
+            var messages = new List<string>();
+            string header = "Hidden Character Stats";
+
+            GamePlayer player = client.Player;
+
+            InventoryItem lefthand = null;
+            lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+
+            // Block Chance
+            if (player.HasAbility(Abilities.Shield))
+            {
+                if (lefthand == null)
+                {
+                    messages.Add($"Block Chance: No Shield Equipped!");
+                }
+                else
+                {
+                    double blockChance = player.GetBlockChance();
+                    messages.Add($"Block Chance: {blockChance}");
+                }
+            }
+
+            // Parry Chance
+            if (player.HasSpecialization(Specs.Parry))
+            {
+                double parryChance = player.GetParryChance();
+                messages.Add($"Parry Chance: {parryChance}");
+            }
+
+            // Evade Chance
+            if (player.HasAbility(Abilities.Evade))
+            {
+                double evadeChance = player.GetEvadeChance();
+                messages.Add($"Evade Chance: {evadeChance}");
+            }
+
+            // Melee Crit Chance
+            int meleeCritChance = player.GetModified(eProperty.CriticalMeleeHitChance);
+            messages.Add($"Melee Crit Chance: {meleeCritChance}");
+
+            // Spell Crit Chance
+            int spellCritChance = player.GetModified(eProperty.CriticalSpellHitChance);
+            messages.Add($"Spell Crit Chance: {spellCritChance}");
+
+            // Heal Crit Chance
+            int healCritChance = player.GetModified(eProperty.CriticalHealHitChance);
+            messages.Add($"Heal Crit Chance: {healCritChance}");
+
+            // Archery Crit Chance
+            if (player.HasSpecialization(Specs.Archery)
+                || player.HasSpecialization(Specs.CompositeBow)
+                || player.HasSpecialization(Specs.RecurveBow)
+                || player.HasSpecialization(Specs.ShortBow)
+                || player.HasSpecialization(Specs.Crossbow)
+                || player.HasSpecialization(Specs.Longbow))
+            {
+                int archeryCritChance = player.GetModified(eProperty.CriticalArcheryHitChance);
+                messages.Add($"Archery Crit Chance: {archeryCritChance}");
+            }
+
+            // Finalize
+            player.Out.SendCustomTextWindow(header, messages);
         }
     }
 }
