@@ -134,9 +134,9 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			GameSpellEffect effect = CreateSpellEffect(target, effectiveness);
+			//GameSpellEffect effect = CreateSpellEffect(target, effectiveness);            
 
-			IControlledBrain brain = null;
+            IControlledBrain brain = null;
 			if (template.ClassType != null && template.ClassType.Length > 0)
 			{
 				Assembly asm = Assembly.GetExecutingAssembly();
@@ -189,9 +189,10 @@ namespace DOL.GS.Spells
 			if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
 				m_pet.Spells = template.Spells; // Have to scale spells again now that the pet level has been assigned
 
-			effect.Start(m_pet);
+            //effect.Start(m_pet);
+            CreateECSEffect(m_pet, effectiveness);
 
-			Caster.OnPetSummoned(m_pet);
+            Caster.OnPetSummoned(m_pet);
 		}
 
 		public override int CalculateSpellResistChance(GameLiving target)

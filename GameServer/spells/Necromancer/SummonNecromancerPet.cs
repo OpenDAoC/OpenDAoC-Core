@@ -39,8 +39,8 @@ namespace DOL.GS.Spells
 		public SummonNecromancerPet(GameLiving caster, Spell spell, SpellLine line) 
 			: base(caster, spell, line) { }
 
-		private int m_summonConBonus;
-		private int m_summonHitsBonus;
+		public int m_summonConBonus;
+		public int m_summonHitsBonus;
 
 		/// <summary>
 		/// Note bonus constitution and bonus hits from items, then 

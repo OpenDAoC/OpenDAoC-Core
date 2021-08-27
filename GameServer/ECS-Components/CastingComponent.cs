@@ -1,9 +1,11 @@
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PropertyCalc;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
+using System;
 
 namespace DOL.GS
 {
@@ -58,9 +60,21 @@ namespace DOL.GS
                 }
                 
                 queuedSpellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
-            } else
+            }
+            else
             {
                 spellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+
+                //Special CastSpell rules
+                if (spellHandler is SummonNecromancerPet necroPetHandler)
+                {
+                    int hitsCap = MaxHealthCalculator.GetItemBonusCap(necroPetHandler.Caster)
+                        + MaxHealthCalculator.GetItemBonusCapIncrease(necroPetHandler.Caster);
+
+                    necroPetHandler.m_summonConBonus = necroPetHandler.Caster.GetModifiedFromItems(eProperty.Constitution);
+                    necroPetHandler.m_summonHitsBonus = Math.Min(necroPetHandler.Caster.ItemBonus[(int)(eProperty.MaxHealth)], hitsCap)
+                        + necroPetHandler.Caster.AbilityBonus[(int)(eProperty.MaxHealth)];
+                }
             }
 
             // Cancel MoveSpeedBuff=========================May not be the best place for this========================================
