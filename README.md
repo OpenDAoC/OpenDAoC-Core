@@ -6,15 +6,19 @@ The following instructions should act as a guide for properly setting up an Ubun
 
 Instructions currently exist regarding setups for both [Ubuntu](#setting-up-on-ubuntu) and [Windows](#setting-up-on-windows) operating systems.
 
+**IMPORTANT:** Check the [Before You Start](#before-you-start) section first as you will not be able to complete certain sections without the proper resources or privileges.
+
 The following sections outline the process of preparing your environment to build an Atlas server:
 
 1. [Environment Requirements](#environment-requirements)
-   1. [Considerations for IDEs](#considerations-for-ides)
+   1. [Before You Start](#before-you-start)
+   2. [Considerations for IDEs](#considerations-for-ides)
 2. [Setting Up on Ubuntu](#setting-up-on-ubuntu)
    1. [Installing .NET 5.0](#installing-net-50-ubuntu)
    2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
       1. [Preparing Your Database](#preparing-your-database-ubuntu)
       2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
+      3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
    3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
       1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
       2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
@@ -30,6 +34,7 @@ The following sections outline the process of preparing your environment to buil
    2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
       1. [Preparing Your Database](#preparing-your-database-win)
       2. [Configuring `My.ini`](#configuring-myini-win)
+      3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
    3. [Encrypting File Transfers](#encrypting-file-transfers-win)
       1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
       2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
@@ -59,6 +64,14 @@ The following are main OS, tool, and version requirements to consider when setti
 
 _**NOTE:** This walkthrough assumes that you already have an account created on GitLab and have been granted access to Atlas' repos by a senior developer or administrator. If you have not done so already, [create an account on Gitlab](http://gitlab.com/) and send your username to an administrator or lead developer._
 
+### Before You Start
+
+You will need the following files or permissions before you'll be able to complete this process in its entirety. For each of these, please message clait on Discord:
+
+* Download the latest stable copy of `atlasDB.sql`.
+* Receive the `Developer` role on Discord to access team channels.
+* Obtain access to all team forums on the Atlas freeshard website.
+
 ### Considerations for IDEs
 
 Atlas team members are not required to use the same developer tools when working on any DoL-related projects. If you already have access to or prefer a certain tool, we encourage you to use what you're most familiar with. However, we would like to recommend the following tools:
@@ -78,6 +91,7 @@ If you've' already completed a step previously, we recommend that you quickly re
 2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
    1. [Preparing Your Database](#preparing-your-database-ubuntu)
    2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
+   3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
 3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
    1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
    2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
@@ -161,6 +175,17 @@ We recommend that you also make some changes to the `my.cnf` file to avoid poten
 ```
 
 3. Save and exit the file, but **do not change the file name**.
+
+#### Adding `atlasDB.sql` (Ubuntu)
+
+Prior to accomplishing this step, you will need to request a recent copy of the `atlasDB.sql` file. Without it, you cannot successfully build a local Atlas server. After installing MariaDB, you should also notice it installed a program called HeidiSQL, which you'll need to use for this section.
+
+1. Launch the Terminal and type `sudo mysql -u root atlas < ~/path/to/atlasDB.sql`. This copies the file's contents to the `atlas` database.
+2. To check that the import was successful, enter `sudo mysql -u root`. This launches the MariaDB Client.
+3. `use atlas;`
+4. `show tables`
+
+This should list multiple tables, which indicates the import was successful.
 
 ### Encrypting File Transfers (Ubuntu)
 
@@ -272,6 +297,8 @@ With the repo on your local hard drive, you need to alter the `serverconfig.xml`
    
 Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
 
+
+
 ## Setting Up on Windows
 
 This process assumes you do not already have a fully-configured environment with the specific tools or software installed previously.
@@ -282,6 +309,7 @@ If you've already completed a step previously, we recommend that you quickly rev
 2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
    1. [Preparing Your Database](#preparing-your-database-win)
    2. [Configuring `My.ini`](#configuring-myini-win)
+   3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
 3. [Encrypting File Transfers](#encrypting-file-transfers-win)
    1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
    2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
@@ -349,6 +377,22 @@ lower_case_table_names=1
 ```
 
 3. Save and exit the file, but **do not change the file name**.
+
+#### Adding `atlasDB.sql` (Win)
+
+Prior to accomplishing this step, you will need a recent copy of the `atlasDB.sql` file. Without it, you cannot successfully build a local Atlas server. After installing MariaDB, you should also notice a program called HeidiSQL, which you'll need to use for this section.
+
+1. Launch the HeidiSQL app.
+2. At the bottom-left corner. click **New > Session in root folder**.
+3. Enter a root user **Password** if you set one previously.
+4. Click **Save**.
+5. Now click **Open** to start a connection with MariaDB.
+6. Select the `atlas` database you created previously.
+7. Click **File > Load SQL file**.
+8. Navigate to the `atlasDB.sql` file and click **Open**.
+9. Select the **Run file(s) directly** option as loading the file will cause HeidiSQL to crash.
+
+The application will process the entire SQL file. Once done, you should now see tables and data populating the `atlas` database.
 
 ### Encrypting File Transfers (Win)
 
@@ -510,7 +554,7 @@ The DAoC client launches and creates a new account based on the credentials you 
 
 The World Builders all currently access a single live instance of the Atlas server to populate the regions with NPCs, mobs, and so on.
 
-**TO GAIN ACCESS:** You must first request an account from Clait to access this server. He will provide you with a regular (/plvl1) account. Should you require additional capabilities as a GameMaster (/plvl2) or World Builder/Administrator (/plvl3), an additional account will be provided.
+**TO GAIN ACCESS:** You must first request an account from clait to access this server. He will provide you with a regular (/plvl1) account. Should you require additional capabilities as a GameMaster (/plvl2) or World Builder/Administrator (/plvl3), an additional account will be provided.
 
 **NOTE:** This is not intended as a "play" server, as using GM commands can negatively impact the work of the World Builders. So we would ask that perform tests with caution and respect for the work the Builders have done.
 
