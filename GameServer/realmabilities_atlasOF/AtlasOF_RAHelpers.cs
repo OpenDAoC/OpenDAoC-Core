@@ -21,7 +21,7 @@ namespace DOL.GS.RealmAbilities
         }
 
         // Mastery of Arms, Pain, etc. 3% per level.
-        public static int GetMasteryAmountForLevel(int level)
+        public static int GetPropertyEnhancerAmountForLevel(int level)
         {
             if (level < 1) return 0;
 
