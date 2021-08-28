@@ -140,7 +140,7 @@ namespace DOL.GS.Commands
                 else
                 {
                     double blockChance = player.GetBlockChance();
-                    messages.Add($"Block Chance: {blockChance}");
+                    messages.Add($"Block Chance: {blockChance}%");
                 }
             }
 
@@ -148,27 +148,31 @@ namespace DOL.GS.Commands
             if (player.HasSpecialization(Specs.Parry))
             {
                 double parryChance = player.GetParryChance();
-                messages.Add($"Parry Chance: {parryChance}");
+                messages.Add($"Parry Chance: {parryChance}%");
             }
 
             // Evade Chance
             if (player.HasAbility(Abilities.Evade))
             {
                 double evadeChance = player.GetEvadeChance();
-                messages.Add($"Evade Chance: {evadeChance}");
+                messages.Add($"Evade Chance: {evadeChance}%");
             }
 
             // Melee Crit Chance
             int meleeCritChance = player.GetModified(eProperty.CriticalMeleeHitChance);
-            messages.Add($"Melee Crit Chance: {meleeCritChance}");
+            messages.Add($"Melee Crit Chance: {meleeCritChance}%");
 
             // Spell Crit Chance
             int spellCritChance = player.GetModified(eProperty.CriticalSpellHitChance);
             messages.Add($"Spell Crit Chance: {spellCritChance}");
 
+            // Spell Casting Speed Bonus
+            int spellCastSpeed = player.GetModified(eProperty.CastingSpeed);
+            messages.Add($"Spell Casting Speed Bonus: {spellCastSpeed}%");
+
             // Heal Crit Chance
             int healCritChance = player.GetModified(eProperty.CriticalHealHitChance);
-            messages.Add($"Heal Crit Chance: {healCritChance}");
+            messages.Add($"Heal Crit Chance: {healCritChance}%");
 
             // Archery Crit Chance
             if (player.HasSpecialization(Specs.Archery)
@@ -179,7 +183,7 @@ namespace DOL.GS.Commands
                 || player.HasSpecialization(Specs.Longbow))
             {
                 int archeryCritChance = player.GetModified(eProperty.CriticalArcheryHitChance);
-                messages.Add($"Archery Crit Chance: {archeryCritChance}");
+                messages.Add($"Archery Crit Chance: {archeryCritChance}%");
             }
 
             // Finalize
