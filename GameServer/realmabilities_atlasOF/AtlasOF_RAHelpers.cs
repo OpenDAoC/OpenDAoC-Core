@@ -4,7 +4,7 @@ namespace DOL.GS.RealmAbilities
 {
     public static class AtlasRAHelpers
     {
-        // Augmented Str, Dex, etc. 6 points per level.
+        // 6 stat points per level (Augmented Str, Dex, etc).
         public static int GetStatEnhancerAmountForLevel(int level)
         {
             if (level < 1) return 0;
@@ -20,8 +20,8 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
-        // Mastery of Arms, Pain, etc. 3% per level.
-        public static int GetPropertyEnhancerAmountForLevel(int level)
+        // 3% per level.
+        public static int GetPropertyEnhancer3AmountForLevel(int level)
         {
             if (level < 1) return 0;
 
@@ -36,8 +36,24 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
+        // 5% per level.
+        public static int GetPropertyEnhancer5AmountForLevel(int level)
+        {
+            if (level < 1) return 0;
+
+            switch (level)
+            {
+                case 1: return 5;
+                case 2: return 10;
+                case 3: return 15;
+                case 4: return 20;
+                case 5: return 25;
+                default: return 25;
+            }
+        }
+
         // Shared by almost all passive OF Realm Abilities.
-        public static int GetCommonPropertyEnhancerCostForUpgrade(int level)
+        public static int GetCommonPassivesCostForUpgrade(int level)
         {
             switch (level)
             {

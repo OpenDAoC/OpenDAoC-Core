@@ -37,7 +37,7 @@ namespace DOL.GS.PropertyCalc
 			{
 				if (ServerProperties.Properties.EXPAND_WILD_MINION
 					&& pet.Brain is IControlledBrain brainPet && brainPet.GetPlayerOwner() is GamePlayer playerOwner
-					&& playerOwner.GetAbility<RealmAbilities.WildMinionAbility>() is RealmAbilities.WildMinionAbility raWM)
+					&& playerOwner.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>() is RealmAbilities.AtlasOF_WildMinionAbility raWM)
 					chance += raWM.Amount;
 			}
 			
