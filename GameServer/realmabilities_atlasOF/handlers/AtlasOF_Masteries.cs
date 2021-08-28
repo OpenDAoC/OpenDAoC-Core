@@ -3,92 +3,117 @@ using DOL.Database;
 namespace DOL.GS.RealmAbilities
 {
 	/// <summary>
-	/// Base "Mastery of" class.
-	/// </summary>
-	public class AtlasOF_MasteryRA : RAPropertyEnhancer
-	{
-		public AtlasOF_MasteryRA(DBAbility dba, int level, eProperty property)
-			: base(dba, level, property)
-		{
-		}
-
-        public override int GetAmountForLevel(int level)
-        {
-            if (level < 1) return 0;
-
-            switch (level)
-            {
-                case 1: return 3;
-                case 2: return 6;
-                case 3: return 9;
-                case 4: return 12;
-                case 5: return 15;
-                default: return 15;
-            }
-        }
-
-        public override int CostForUpgrade(int level)
-		{
-			switch (level)
-			{
-                case 0: return 1;
-				case 1: return 3;
-				case 2: return 6;
-				case 3: return 10;
-				case 4: return 14;
-				default: return 1000;
-			}
-		}
-
-        protected bool HasAugDex2(GamePlayer player)
-        {
-            AtlasOF_RADexterityEnhancer augdex = player.GetAbility<AtlasOF_RADexterityEnhancer>();
-            if (augdex == null)
-                return false;
-
-            return player.CalculateSkillLevel(augdex) > 1;
-        }
-    }
-
-	/// <summary>
 	/// Mastery of Pain ability
 	/// </summary>
-	public class AtlasOF_MasteryOfPain : AtlasOF_MasteryRA
+	public class AtlasOF_MasteryOfPain : MasteryOfPain
 	{
-		public AtlasOF_MasteryOfPain(DBAbility dba, int level)
-			: base(dba, level, eProperty.CriticalMeleeHitChance)
-		{
-		}
-
-		protected override string ValueUnit { get { return "%"; } }
-        public override bool CheckRequirement(GamePlayer player) { return HasAugDex2(player); }
+		public AtlasOF_MasteryOfPain(DBAbility dba, int level) : base(dba, level) { }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
     }
 
     /// <summary>
     /// Mastery of Parry ability
     /// </summary>
-    public class AtlasOF_MasteryOfParrying : AtlasOF_MasteryRA
+    public class AtlasOF_MasteryOfParrying : MasteryOfParrying
 	{
-		public AtlasOF_MasteryOfParrying(DBAbility dba, int level)
-			: base(dba, level, eProperty.ParryChance)
-		{
-		}
-
-		protected override string ValueUnit { get { return "%"; } }
-        public override bool CheckRequirement(GamePlayer player) { return HasAugDex2(player); }
+        public AtlasOF_MasteryOfParrying(DBAbility dba, int level) : base(dba, level) { }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
     }
 
     /// <summary>
     /// Mastery of Blocking ability
     /// </summary>
-    public class AtlasOF_MasteryOfBlocking : AtlasOF_MasteryRA
-	{
-		public AtlasOF_MasteryOfBlocking(DBAbility dba, int level)
-			: base(dba, level, eProperty.BlockChance)
-		{
-		}
+    public class AtlasOF_MasteryOfBlocking : MasteryOfBlocking
+    {
+        public AtlasOF_MasteryOfBlocking(DBAbility dba, int level) : base(dba, level) { }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
 
-		protected override string ValueUnit { get { return "%"; } }
-        public override bool CheckRequirement(GamePlayer player) { return HasAugDex2(player); }
+    /// <summary>
+    /// Mastery of Healing ability
+    /// </summary>
+    public class AtlasOF_MasteryOfHealing : MasteryOfHealingAbility
+    {
+        public AtlasOF_MasteryOfHealing(DBAbility dba, int level) : base(dba, level) { }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
+
+    /// <summary>
+    /// Mastery of Arms ability
+    /// </summary>
+    public class AtlasOF_MasteryOfArms : RAPropertyEnhancer
+    {
+        public AtlasOF_MasteryOfArms(DBAbility dba, int level) : base(dba, level, eProperty.MeleeSpeed) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugStrLevel(player, 3); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
+
+    /// <summary>
+    /// Mastery of Archery ability
+    /// </summary>
+    public class AtlasOF_MasteryOfArchery : RAPropertyEnhancer
+    {
+        public AtlasOF_MasteryOfArchery(DBAbility dba, int level) : base(dba, level, eProperty.ArcherySpeed) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 3); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
+
+    /// <summary>
+    /// Mastery of the Art ability
+    /// </summary>
+    public class AtlasOF_MasteryOfTheArt : RAPropertyEnhancer
+    {
+        public AtlasOF_MasteryOfTheArt(DBAbility dba, int level) : base(dba, level, eProperty.CastingSpeed) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 3); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
+
+    /// <summary>
+    /// Mastery of Magery ability
+    /// </summary>
+    public class AtlasOF_MasteryOfMagery : RAPropertyEnhancer
+    {
+        public AtlasOF_MasteryOfMagery(DBAbility dba, int level) : base(dba, level, eProperty.SpellDamage) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
+
+    /// <summary>
+    /// Mastery of the Arcane ability
+    /// </summary>
+    public class AtlasOF_MasteryOfTheArcane : RAPropertyEnhancer
+    {
+        public AtlasOF_MasteryOfTheArcane(DBAbility dba, int level) : base(dba, level, eProperty.BuffEffectiveness) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
+    }
+
+    /// <summary>
+    /// Mastery of Water ability. The best of all abilities.
+    /// </summary>
+    public class AtlasOF_MasteryOfWater : RAPropertyEnhancer
+    {
+        public AtlasOF_MasteryOfWater(DBAbility dba, int level) : base(dba, level, eProperty.WaterSpeed) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetMasteryAmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
     }
 }
