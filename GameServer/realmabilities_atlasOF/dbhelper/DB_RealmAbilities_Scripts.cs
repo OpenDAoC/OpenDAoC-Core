@@ -34,6 +34,8 @@ namespace realmabilities_atlasOF._temporary_helper
         ;
 
         -- ADD REALM ABILITES IN TABLE: ability
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (260, 'AtlasOF_WildMinion', 'Wild Minion', 520, 'Increases chance of pet dealing a critical hit with melee, archery, or spells, by the listed percentage.', 0, 'DOL.GS.RealmAbilities.AtlasOF_WildMinion', '2000-01-01 00:00:00');
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (259, 'AtlasOF_WildPower', 'Wild Power', 519, 'Increases chance to deal a critical hit with all spells that do damage, including DoTs, by listed percentage.', 0, 'DOL.GS.RealmAbilities.AtlasOF_WildPower', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (258, 'AtlasOF_MasteryOfHealing', 'Mastery of Healing', 518, 'Increases the effectiveness of healing spells by the listed percentage.', 0, 'DOL.GS.RealmAbilities.AtlasOF_MasteryOfHealing', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (257, 'AtlasOF_MasteryOfTheArcane', 'Mastery of the Arcane', 517, 'Increases effectiveness of your buff spells by the listed percentage.', 0, 'DOL.GS.RealmAbilities.AtlasOF_MasteryOfTheArcane', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (256, 'AtlasOF_MasteryOfTheArt', 'Mastery of the Art', 516, 'Increases spellcasting speed by the listed percentage.', 0, 'DOL.GS.RealmAbilities.AtlasOF_MasteryOfTheArt', '2000-01-01 00:00:00');
@@ -52,6 +54,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (243, 'AtlasOF_AugStr', 'Augmented Strength', 503, 'Increases Strength by the listed amount per level.', 0, 'DOL.GS.RealmAbilities.AtlasOF_RAStrengthEnhancer', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (242, 'AtlasOF_Purge', 'Purge', 502, 'Removes all negative effects but leaves any applicable immunity timers in place.', 3010, 'DOL.GS.RealmAbilities.AtlasOF_PurgeAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (241, 'AtlasOF_MCL', 'Mystic Crystal Lore', 501, 'Grants a refresh of power based on the percentages listed. Cannot be used when in combat.', 3008, 'DOL.GS.RealmAbilities.AtlasOF_MysticCrystalLoreAbility', '2000-01-01 00:00:00');
+
 
         -- ADD REALM ABILITES WITH FOREIGN KEY FROM TABLE : ability
         -- MINSTREL --
@@ -81,6 +84,12 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_AugAcuity', '2000-01-01 00:00:00', 'Sorcerer1-0-4');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_AugDex', '2000-01-01 00:00:00', 'Sorcerer1-0-5');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_MasteryOfMagery', '2000-01-01 00:00:00', 'Sorcerer1-0-6');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_WildPower', '2000-01-01 00:00:00', 'Sorcerer1-0-7');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_WildMinion', '2000-01-01 00:00:00', 'Sorcerer1-0-8');
+
+        -- CABALIST --
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (13, 'AtlasOF_AugAcuity', '2000-01-01 00:00:00', 'Cabalist1-0-1');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (13, 'AtlasOF_WildMinion', '2000-01-01 00:00:00', 'Cabalist1-0-2');
 
 
         */
