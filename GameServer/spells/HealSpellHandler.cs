@@ -171,6 +171,7 @@ namespace DOL.GS.Spells
                 double minValue = amount / 10;
                 double maxValue = amount / 2 + 1;
                 criticalvalue = Util.RandomDouble() * (maxValue - minValue) + minValue;
+                criticalvalue = Math.Round(criticalvalue, MidpointRounding.ToEven); /// [Atlas - Takii] Round crit value for simplicity and to remove decimals from combat log.
             }
 
             amount += criticalvalue;
@@ -307,7 +308,7 @@ namespace DOL.GS.Spells
                     MessageToCaster(target.GetName(0, true) + " is fully healed.", eChatType.CT_Spell);
                 }
                 if (heal > 0 && criticalvalue > 0)
-                    MessageToCaster("Your heal criticals for an extra " + criticalvalue + " amount of hit points!", eChatType.CT_Spell);
+                    MessageToCaster("Your heal criticals for an extra " + criticalvalue + " hit points!", eChatType.CT_Spell);
             }
 
             return true;
