@@ -33,7 +33,13 @@ namespace realmabilities_atlasOF._temporary_helper
         ENGINE=MyISAM
         ;
 
+        -- DELETE ALL AtlasOF abilities to keep db consistent during development
+        DELETE FROM `ability` WHERE `AbilityID` > 240;
+
+
         -- ADD REALM ABILITES IN TABLE: ability
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (268, 'AtlasOF AtlasOF_EtherealBond', 'Ethereal Bond (Atlas OF)', '528', 'Increases maximum power by 3% per level of this ability.', '0', 'DOL.GS.RealmAbilities.AtlasOF_EtherealBond', '2000-01-01 00:00:00');
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (267, 'AtlasOF Serenity', 'Serenity', '527', 'Adds to the amount of power regenerated over time.', '0', 'DOL.GS.RealmAbilities.AtlasOF_SerenityAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (266, 'AtlasOF_Dodger', 'Dodger', 526, 'Increases chance to evade by the listed percentage amount.', 0, 'DOL.GS.RealmAbilities.AtlasOF_Dodger', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (265, 'AtlasOF_FalconsEye', 'Falcon\'s Eye', 525, 'Increases the chance of dealing a critical hit with archery by the listed percentage amount.', 0, 'DOL.GS.RealmAbilities.AtlasOF_FalconsEye', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (264, 'AtlasOF_Determination', 'Determination', 524, 'Reduces the duration of all crowd control spells by the listed percentage. Effect is cumulative at each level increase.', 0, 'DOL.GS.RealmAbilities.AtlasOF_DeterminationAbility', '2000-01-01 00:00:00');
@@ -84,6 +90,8 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_MasteryOfHealing', '2000-01-01 00:00:00', 'Minstrel1-1-8');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_AoM', '2000-01-01 00:00:00', 'Minstrel1-1-9');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Dodger', '2000-01-01 00:00:00', 'Minstrel1-2-0');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Serenity', '2000-01-01 00:00:00', 'Minstrel1-2-1');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_EtherealBond', '2000-01-01 00:00:00', 'Minstrel1-2-2');
 
 
         -- SORCERER --
