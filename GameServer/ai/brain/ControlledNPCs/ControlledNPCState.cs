@@ -40,6 +40,14 @@ public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
             brain.checkAbility = true;
         }
 
+        //load spells on first think cycle
+        if (!brain.sortedSpells)
+        {
+            brain.Body.SortSpells();
+            brain.sortedSpells = true;
+
+        }
+
         //See if the pet is too far away, if so release it!
         if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
             (brain.Owner as GamePlayer).CommandNpcRelease();
@@ -66,6 +74,9 @@ public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
         {
             brain.Goto(brain.Body.TargetObject);
         }
+
+        //cast defensive spells if applicable
+        brain.CheckSpells(eCheckSpellType.Defensive);
 
     }
 }
@@ -105,7 +116,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             (brain.Owner as GamePlayer).CommandNpcRelease();
 
         // if pet is in agressive mode then check aggressive spells and attacks first
-        if (brain.Body.TargetObject == null)
+        if (brain.AggressionState == eAggressionState.Aggressive)
         {
             brain.CheckPlayerAggro();
             brain.CheckNPCAggro();
@@ -130,8 +141,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
    
         // Always check offensive spells, or pets in melee will keep blindly melee attacking,
         //	when they should be stopping to cast offensive spells.
-        if (brain.IsActive && brain.AggressionState != eAggressionState.Passive)
-            brain.CheckSpells(eCheckSpellType.Offensive);
+        brain.CheckSpells(eCheckSpellType.Offensive);
         
         //return to defensive if our target(s) are dead
         if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)

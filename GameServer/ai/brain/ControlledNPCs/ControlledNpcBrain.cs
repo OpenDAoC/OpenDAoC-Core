@@ -100,10 +100,12 @@ namespace DOL.AI.Brain
 			FSM.Add(new ControlledNPCState_AGGRO(FSM, this));
 
 			FSM.SetCurrentState(eFSMStateType.IDLE);
+			
 		}
 
 		protected bool m_isMainPet = true;
 		public bool checkAbility;
+		public bool sortedSpells;
 
 		/// <summary>
 		/// Checks if this NPC is a permanent/charmed or timed pet
@@ -409,11 +411,13 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void CheckAbilities()
 		{
+			Console.WriteLine($"Loading abilities for {this}");
 			////load up abilities
 			if (Body.Abilities != null && Body.Abilities.Count > 0)
 			{
 				foreach (Ability ab in Body.Abilities.Values)
 				{
+					Console.WriteLine($"Ability: {ab}");
 					switch (ab.KeyName)
 					{
 						case Abilities.Intercept:
@@ -461,6 +465,7 @@ namespace DOL.AI.Brain
 		/// <returns>True if we are begin to cast or are already casting</returns>
 		public override bool CheckSpells(eCheckSpellType type)
 		{
+			
 			if (Body == null || Body.Spells == null || Body.Spells.Count < 1) return false;
 			
 			bool casted = false;
