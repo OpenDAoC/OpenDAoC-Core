@@ -34,6 +34,8 @@ namespace realmabilities_atlasOF._temporary_helper
         ;
 
         -- ADD REALM ABILITES IN TABLE: ability
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (266, 'AtlasOF_Dodger', 'Dodger', 526, 'Increases chance to evade by the listed percentage amount.', 0, 'DOL.GS.RealmAbilities.AtlasOF_Dodger', '2000-01-01 00:00:00');
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (265, 'AtlasOF_FalconsEye', 'Falcon\'s Eye', 525, 'Increases the chance of dealing a critical hit with archery by the listed percentage amount.', 0, 'DOL.GS.RealmAbilities.AtlasOF_FalconsEye', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (264, 'AtlasOF_Determination', 'Determination', 524, 'Reduces the duration of all crowd control spells by the listed percentage. Effect is cumulative at each level increase.', 0, 'DOL.GS.RealmAbilities.AtlasOF_DeterminationAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (263, 'AtlasOF_AoM', 'Avoidance of Magic', 523, 'Reduces all magic damage taken by the listed percentage. (This only works on damage. Does not work on disease, dots, or debuffs and does not affect the duration of crowd control spells)', 0, 'DOL.GS.RealmAbilities.AtlasOF_AvoidanceOfMagicAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (262, 'AtlasOF_WildArcana', 'Wild Arcana', 522, 'Increases chance to critical with dots and debuffs by the listed percentage.', 0, 'DOL.GS.RealmAbilities.AtlasOF_WildArcanaAbility', '2000-01-01 00:00:00');
@@ -81,6 +83,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_MasteryOfTheArcane', '2000-01-01 00:00:00', 'Minstrel1-1-7');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_MasteryOfHealing', '2000-01-01 00:00:00', 'Minstrel1-1-8');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_AoM', '2000-01-01 00:00:00', 'Minstrel1-1-9');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Dodger', '2000-01-01 00:00:00', 'Minstrel1-2-0');
 
 
         -- SORCERER --
@@ -103,6 +106,10 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (10, 'AtlasOF_MasteryOfParrying', '2000-01-01 00:00:00', 'Friar1-1-4');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (10, 'AtlasOF_MasteryOfTheArcane', '2000-01-01 00:00:00', 'Friar1-0-5');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (10, 'AtlasOF_Determination', '2000-01-01 00:00:00', 'Friar1-0-6');
+
+        -- SCOUT --
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (3, 'AtlasOF_AugDex', '2000-01-01 00:00:00', 'Scout1-0-1');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (3, 'AtlasOF_FalconsEye', '2000-01-01 00:00:00', 'Scout1-0-2');
 
         */
     }

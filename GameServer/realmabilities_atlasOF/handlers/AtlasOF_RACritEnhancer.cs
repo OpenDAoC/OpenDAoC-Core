@@ -64,4 +64,15 @@ namespace DOL.GS.RealmAbilities
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
     }
+
+    /// <summary>
+    /// Archery crit chance %.
+    /// </summary>
+    public class AtlasOF_FalconsEye : RAPropertyEnhancer // We don't want to piggyback on the NF FalconsEye because it increases spell crit chance and not archery for some reason...
+    {
+        public AtlasOF_FalconsEye(DBAbility dba, int level) : base(dba, level, eProperty.CriticalArcheryHitChance) { }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+    }
 }

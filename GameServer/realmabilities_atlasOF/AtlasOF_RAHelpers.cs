@@ -101,5 +101,14 @@ namespace DOL.GS.RealmAbilities
 
             return player.CalculateSkillLevel(augAcuity) >= level;
         }
+
+        public static bool HasAugQuiLevel(GamePlayer player, int level)
+        {
+            AtlasOF_RAQuicknessEnhancer augQui = player.GetAbility<AtlasOF_RAQuicknessEnhancer>();
+            if (augQui == null)
+                return false;
+
+            return player.CalculateSkillLevel(augQui) >= level;
+        }
     }
 }

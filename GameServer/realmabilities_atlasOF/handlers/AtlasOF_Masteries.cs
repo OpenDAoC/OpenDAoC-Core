@@ -118,4 +118,16 @@ namespace DOL.GS.RealmAbilities
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
     }
+
+    /// <summary>
+    /// Dodger.
+    /// </summary>
+    public class AtlasOF_Dodger : RAPropertyEnhancer
+    {
+        public AtlasOF_Dodger(DBAbility dba, int level) : base(dba, level, eProperty.EvadeChance) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugQuiLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+    }
 }
