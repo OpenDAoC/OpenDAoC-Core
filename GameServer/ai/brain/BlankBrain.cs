@@ -35,5 +35,10 @@ namespace DOL.AI.Brain
 		public override void Think()
 		{
 		}
+
+		public override void KillFSM()
+        {
+
+        }
 	}
 }

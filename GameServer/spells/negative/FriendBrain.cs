@@ -13,7 +13,7 @@ namespace DOL.AI.Brain
 			m_spellHandler = spellHandler;
 		}
 
-		protected override void CheckPlayerAggro()
+		public override void CheckPlayerAggro()
 		{
 			//Check if we are already attacking, return if yes
 			if (Body.AttackState)
@@ -39,7 +39,7 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		protected override void CheckNPCAggro()
+		public override void CheckNPCAggro()
 		{
 			if(m_spellHandler!=null)
 			{

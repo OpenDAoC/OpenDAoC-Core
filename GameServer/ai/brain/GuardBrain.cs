@@ -38,7 +38,7 @@ namespace DOL.AI.Brain
 			get { return 750; }
 		}
 
-		protected override void CheckPlayerAggro()
+		public override void CheckPlayerAggro()
 		{
 			//Check if we are already attacking, return if yes
 			if (Body.AttackState)
@@ -62,7 +62,7 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		protected override void CheckNPCAggro()
+		public override void CheckNPCAggro()
 		{
 			//Check if we are already attacking, return if yes
 			if (Body.AttackState)

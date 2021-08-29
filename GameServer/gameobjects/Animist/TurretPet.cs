@@ -56,7 +56,7 @@ namespace DOL.GS
 		}
 
         // Temporarily modified
-        public void StartAttack(GameObject attackTarget)
+        public override void StartAttack(GameObject attackTarget)
         {
             if (attackTarget == null)
                 return;

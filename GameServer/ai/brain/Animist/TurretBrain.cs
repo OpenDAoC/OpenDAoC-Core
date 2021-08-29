@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
 			return false;
 		}
 
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			CheckSpells(eCheckSpellType.Offensive);
 		}

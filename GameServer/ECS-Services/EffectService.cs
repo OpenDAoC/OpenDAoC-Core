@@ -810,6 +810,7 @@ namespace DOL.GS
             if (effect != null)
             {
                 RequestCancelEffect(effect, playerCanceled);
+
                 if (effect.SpellHandler.Spell.IsPulsing)
                     effect.Owner.LastPulseCast = null;
             }
@@ -824,6 +825,7 @@ namespace DOL.GS
             EntityManager.AddEffect(effect);
             effect.IsDisabled = disable;
         }
+
         public static void SendSpellAnimation(ECSGameEffect e)
         {
             GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;

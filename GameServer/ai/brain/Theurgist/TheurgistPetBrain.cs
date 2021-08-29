@@ -93,9 +93,14 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive || !m_active) return;
+			if (Body.attackComponent == null) { Body.attackComponent = new DOL.GS.AttackComponent(Body); }
+			EntityManager.AddComponent(typeof(AttackComponent), Body);
+			if (Body.castingComponent == null) { Body.castingComponent = new DOL.GS.CastingComponent(Body); }
+			EntityManager.AddComponent(typeof(CastingComponent), Body);
+
 			if (m_target == null) m_target = (GameLiving)Body.TempProperties.getProperty<object>("target", null);
 			
 			if (m_target == null || !m_target.IsAlive)
@@ -136,6 +141,11 @@ namespace DOL.AI.Brain
 			{
 				foreach (Spell spell in Body.Spells)
 				{
+                    if (Body.IsBeingInterrupted)
+                    {
+						m_melee = true;
+						break;
+                    }
 					if (Body.GetSkillDisabledDuration(spell) == 0)
 					{
 						if (spell.CastTime > 0)

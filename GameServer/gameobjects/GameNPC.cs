@@ -38,6 +38,7 @@ using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
 using DOL.GS.ServerProperties;
+using FiniteStateMachine;
 
 namespace DOL.GS
 {
@@ -58,6 +59,7 @@ namespace DOL.GS
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
 
+		
 		#region Formations/Spacing
 
 		//Space/Offsets used in formations
@@ -1438,10 +1440,16 @@ namespace DOL.GS
 			{
 				// No need to start walking.
 
-				Notify(GameNPCEvent.ArriveAtTarget, this);
+				//Notify(GameNPCEvent.ArriveAtTarget, this);
 				return;
 			}
 
+
+			//update existing component
+			//register moveComponent w/ the movement-to-be-processed queue
+
+
+			//kill everything below this line?
 			CancelWalkToTimer();
 
 			m_Heading = GetHeading(TargetPosition);
@@ -1476,6 +1484,12 @@ namespace DOL.GS
 			CancelWalkToTimer();
 			IsReturningHome = false;
 			IsReturningToSpawnPoint = false;
+		}
+
+		public bool IsNearSpawn()
+        {
+			return IsWithinRadius(SpawnPoint, CONST_WALKTOTOLERANCE);
+
 		}
 
 		/// <summary>
@@ -4123,6 +4137,8 @@ namespace DOL.GS
 		/// </summary>
 		public override void Die(GameObject killer)
 		{
+			Brain?.KillFSM();
+
 			FireAmbientSentence(eAmbientTrigger.dieing, killer as GameLiving);
 
 			if (ControlledBrain != null)

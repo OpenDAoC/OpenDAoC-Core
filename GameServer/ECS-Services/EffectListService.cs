@@ -133,6 +133,40 @@ namespace DOL.GS
 
                         effect.Value.NextTick += effect.Value.PulseFreq;
                     }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                    {
+                        if (tick > effect.Value.NextTick)
+                        {
+                            double factor = 2.0 - (effect.Value.Duration - effect.Value.GetRemainingTimeForClient()) / (double)(effect.Value.Duration >> 1);
+                            if (factor < 0) factor = 0;
+                            else if (factor > 1) factor = 1;
+
+                            effect.Value.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.Value.SpellHandler, 1.0 - effect.Value.SpellHandler.Spell.Value * factor * 0.01);
+
+                            UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Value.Owner);
+                            effect.Value.NextTick += effect.Value.TickInterval;
+                            if (factor <= 0)
+                                effect.Value.ExpireTick = GameLoop.GameLoopTime - 1;
+                        }
+                    }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.Value.NextTick)
+                    {
+                        (effect.Value.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Value.Owner, effect.Value.Effectiveness);
+                        effect.Value.NextTick += effect.Value.PulseFreq;
+                    }
+                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.Value.NextTick)
+                    {
+                        if ((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                        {
+                            GameNPC npc = effect.Value.Owner as GameNPC;
+                            npc.StopAttack();
+                            npc.StopCurrentSpellcast();
+
+                            GameLiving target = (effect.Value.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
+
+                            npc.StartAttack(target);
+                        }
+                    }
                 }
             }
         }

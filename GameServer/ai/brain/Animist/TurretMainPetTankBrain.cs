@@ -62,7 +62,7 @@ namespace DOL.AI.Brain
 		}
 	}
 
-  	protected override void AttackMostWanted()
+  	public override void AttackMostWanted()
 	{
 		// Force to wait body attack before casting.
 		if(Body.AttackState)

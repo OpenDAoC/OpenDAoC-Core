@@ -4147,6 +4147,7 @@ namespace DOL.GS
                     effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
                 }
             }
+
             CancelFocusSpell();
             
         }

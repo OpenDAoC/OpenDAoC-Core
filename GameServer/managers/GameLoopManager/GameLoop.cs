@@ -33,6 +33,7 @@ namespace DOL.GS
             //Make sure the tick < gameLoopTick
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
+            NPCThinkService.Tick(GameLoopTime);
             AttackService.Tick(GameLoopTime);
             CastingService.Tick(GameLoopTime);
             EffectService.Tick(GameLoopTime);
