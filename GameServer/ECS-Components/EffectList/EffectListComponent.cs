@@ -106,6 +106,27 @@ namespace DOL.GS
             }
         }
 
+        public bool ContainsEffectForEffectType(eEffect effectType)
+        {
+            lock (_effectsLock)
+            {
+                try
+                {
+                    if (Effects.ContainsKey(effectType))
+                    {
+                        return true;
+                    } else
+                    {
+                        return false;
+                    }
+                } catch (Exception e)
+                {
+                    Console.WriteLine($"Error attempting to check effect type");
+                    return false;
+                }
+            }
+        }
+
 
     }
 }

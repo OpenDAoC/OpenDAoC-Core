@@ -1563,6 +1563,8 @@ namespace DOL.AI.Brain
             if (target == null)
                 return true;
 
+            /* all my homies hate vampires
+             * 
             if (target is GamePlayer && (target as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Vampiir)
             {
                 switch (spell.SpellType)
@@ -1576,10 +1578,14 @@ namespace DOL.AI.Brain
 
                         return true;
                 }
-            }
+            }*/
 
-            lock (target.EffectList)
+            lock (target.effectListComponent)
             {
+                if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell))){
+                    return true;
+                }
+                /*
                 //Check through each effect in the target's effect list
                 foreach (IGameEffect effect in target.EffectList)
                 {
@@ -1592,7 +1598,7 @@ namespace DOL.AI.Brain
                     //if the effect effectgroup is the same as the checking spells effectgroup then these are considered the same
                     if (speffect.Spell.EffectGroup == spell.EffectGroup)
                         return true;
-                }
+                }*/
             }
 
             //the answer is no, the effect has not been found

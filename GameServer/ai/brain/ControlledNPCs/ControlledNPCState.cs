@@ -147,7 +147,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)
         {
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-        } else
+        } else if(!brain.Body.IsCasting)
         {
             brain.AttackMostWanted();
         }
