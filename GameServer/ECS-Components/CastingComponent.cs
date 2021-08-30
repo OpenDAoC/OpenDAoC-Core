@@ -77,6 +77,11 @@ namespace DOL.GS
                 }
             }
 
+            if (!spellHandler.SpellLine.IsBaseLine)
+            {
+                spellHandler.Spell.IsSpec = true;
+            }
+
             // Cancel MoveSpeedBuff=========================May not be the best place for this========================================
             owner.OnAttack();
         }

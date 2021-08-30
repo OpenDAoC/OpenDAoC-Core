@@ -892,6 +892,9 @@ namespace DOL.GS
                 case (byte)eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
                 case (byte)eSpellType.ArmorFactorBuff:
+                    if (spell.IsSpec)
+                        return eEffect.SpecAFBuff; 
+                    else
                         return eEffect.BaseAFBuff;
 
                 //resists

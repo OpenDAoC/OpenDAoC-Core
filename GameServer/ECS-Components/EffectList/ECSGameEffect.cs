@@ -108,6 +108,17 @@ namespace DOL.GS
 
         protected eEffect MapEffect()
         {
+            if (SpellHandler.SpellLine.IsBaseLine)
+            {
+                SpellHandler.Spell.IsSpec = false;
+            } else
+            {
+                SpellHandler.Spell.IsSpec = true;
+            }
+
+            return EffectService.GetEffectFromSpell(SpellHandler.Spell);
+
+            /*
             Console.WriteLine("Spell of type: " + ((eSpellType)SpellHandler.Spell.SpellType).ToString());
 
             switch (SpellHandler.Spell.SpellType)
@@ -304,7 +315,7 @@ namespace DOL.GS
                 default:
                     Console.WriteLine($"Unable to map effect for ECSGameEffect! {this}");
                     return eEffect.Unknown;
-            }
+            }*/
         }
     }
 }

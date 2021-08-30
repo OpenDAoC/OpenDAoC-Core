@@ -78,6 +78,8 @@ namespace DOL.GS
 		// params
 		protected Dictionary<string, List<string>> m_paramCache = null;
 
+		protected bool m_isSpec = false;
+
 		public Dictionary<string, List<string>> CustomParamsDictionary
 		{
 			get { return m_paramCache; }
@@ -187,6 +189,11 @@ namespace DOL.GS
 		public virtual byte SpellType
 		{
 			get { return m_spelltype; }
+		}
+
+		public bool IsSpec {
+			get { return m_isSpec; }
+			set { m_isSpec = value; }
 		}
 
 		public int Duration
@@ -696,6 +703,8 @@ namespace DOL.GS
         		return Frequency > 0 && !IsPulsing;
         	}
         }
+
+		
         #endregion
 		#region utils
 
