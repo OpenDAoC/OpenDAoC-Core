@@ -315,71 +315,127 @@ namespace DOL.GS.Spells
 			get { return "OffensiveProc"; }
 		}
 
-		/// <summary>
-		/// Handler fired whenever effect target attacks
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
-		{
-			AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
+        ///// <summary>
+        ///// Handler fired whenever effect target attacks
+        ///// </summary>
+        ///// <param name="e"></param>
+        ///// <param name="sender"></param>
+        ///// <param name="arguments"></param>
+        protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
+		//{
+		//	AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
 			
-			if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
-				return;
+		//	if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
+		//		return;
 			
-			AttackData ad = args.AttackData;
-			if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
-				return;
+		//	AttackData ad = args.AttackData;
+		//	if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+		//		return;
 
-			int baseChance = Spell.Frequency / 100;
+		//	int baseChance = Spell.Frequency / 100;
 
-			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-				baseChance /= 2;
+		//	if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+		//		baseChance /= 2;
 
-			if (baseChance < 1)
-				baseChance = 1;
+		//	if (baseChance < 1)
+		//		baseChance = 1;
 			
-			if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
-			{
-				Spell baseSpell = null;
+		//	if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
+		//	{
+		//		Spell baseSpell = null;
 							
-				GameNPC pet = ad.Attacker as GameNPC;
-				var procSpells = new List<Spell>();
-				foreach (Spell spell in pet.Spells)
-				{
-					if (pet.GetSkillDisabledDuration(spell) == 0)
-					{
-						if (spell.SpellType == (byte)eSpellType.OffensiveProc)
-							procSpells.Add(spell);
-					}
-				}
-				if (procSpells.Count > 0)
-				{
-					baseSpell = procSpells[Util.Random((procSpells.Count - 1))];					
-				}
-				m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
-			}
-			if (Util.Chance(baseChance))
-			{
-				ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
-				if (handler != null)
-				{
-					switch(m_procSpell.Target.ToLower())
-					{
-						case "enemy":
-							handler.StartSpell(ad.Target);
-							break;
-						default:
-							handler.StartSpell(ad.Attacker);
-							break;
-					}
-				}
-			}
-		}
+		//		GameNPC pet = ad.Attacker as GameNPC;
+		//		var procSpells = new List<Spell>();
+		//		foreach (Spell spell in pet.Spells)
+		//		{
+		//			if (pet.GetSkillDisabledDuration(spell) == 0)
+		//			{
+		//				if (spell.SpellType == (byte)eSpellType.OffensiveProc)
+		//					procSpells.Add(spell);
+		//			}
+		//		}
+		//		if (procSpells.Count > 0)
+		//		{
+		//			baseSpell = procSpells[Util.Random((procSpells.Count - 1))];					
+		//		}
+		//		m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
+		//	}
+		//	if (Util.Chance(baseChance))
+		//	{
+		//		ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
+		//		if (handler != null)
+		//		{
+		//			switch(m_procSpell.Target.ToLower())
+		//			{
+		//				case "enemy":
+		//					handler.StartSpell(ad.Target);
+		//					break;
+		//				default:
+		//					handler.StartSpell(ad.Attacker);
+		//					break;
+		//			}
+		//		}
+		//	}
+		//}
+        public  void EventHandler(AttackData ad)
+        {
+            //AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
 
-		// constructor
-		public OffensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+            //if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
+            //    return;
+
+            //AttackData ad = args.AttackData;
+            if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+                return;
+
+            int baseChance = Spell.Frequency / 100;
+
+            if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+                baseChance /= 2;
+
+            if (baseChance < 1)
+                baseChance = 1;
+
+            if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
+            {
+                Spell baseSpell = null;
+				
+                GameNPC pet = ad.Attacker as GameNPC;
+                var procSpells = new List<Spell>();
+                foreach (Spell spell in pet.Spells)
+                {
+                    if (pet.GetSkillDisabledDuration(spell) == 0)
+                    {
+                        if (spell.SpellType == (byte)eSpellType.OffensiveProc)
+                            procSpells.Add(spell);
+                    }
+                }
+                if (procSpells.Count > 0)
+                {
+                    baseSpell = procSpells[Util.Random((procSpells.Count - 1))];
+                }
+                m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
+            }
+            if (Util.Chance(baseChance))
+            {
+                ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)ad.Attacker, m_procSpell, m_procSpellLine);
+                if (handler != null)
+                {
+                    switch (m_procSpell.Target.ToLower())
+                    {
+                        case "enemy":
+                            handler.StartSpell(ad.Target);
+                            break;
+                        default:
+                            handler.StartSpell(ad.Attacker);
+                            break;
+                    }
+                }
+            }
+        }
+
+        // constructor
+        public OffensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	/// <summary>

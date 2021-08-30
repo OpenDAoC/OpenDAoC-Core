@@ -1030,7 +1030,6 @@ namespace DOL.GS
                 }
                 
                 AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness * (1 + p.CharacterClass.WeaponSkillBase / 20.0 / 100.0), interruptDuration, dualWield);
-                owner.OnAttack(ad);
 
                 //Clear the styles for the next round!
                 owner.styleComponent.NextCombatStyle = null;
@@ -1699,6 +1698,7 @@ namespace DOL.GS
             }
 
             ad.Target.StartInterruptTimer(ad, interruptDuration);
+            owner.OnAttack(ad);
             //Return the result
             return ad;
         }

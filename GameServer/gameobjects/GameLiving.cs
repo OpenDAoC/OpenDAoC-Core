@@ -4148,6 +4148,12 @@ namespace DOL.GS
                 }
             }
 
+            //OffensiveProcs
+            if (ad != null && ad.Attacker == this && effectListComponent.Effects.TryGetValue(eEffect.OffensiveProc, out var oProcEffect))
+            {
+				(oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
+            }
+
             CancelFocusSpell();
             
         }

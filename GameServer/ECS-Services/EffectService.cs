@@ -113,6 +113,14 @@ namespace DOL.GS
                 return;
             }
 
+            if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
+            {
+                if (!e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
+                    effectList.AddEffect(e);
+
+                return;
+            }
+
             // Early out if we're trying to add an effect that is already present.
             if (!effectList.AddEffect(e))
             {
@@ -323,8 +331,8 @@ namespace DOL.GS
                             eChatType toOther = (e.SpellHandler.Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
                             (e.SpellHandler as BladeturnSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, toLiving);
                             Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), toOther, e.Owner);
-                        }
-                        if (e.EffectType == eEffect.SavageBuff)
+                        }                       
+                        else if (e.EffectType == eEffect.SavageBuff)
                         {
                             Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
                             ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, (int)e.SpellHandler.Spell.Value, false);
@@ -490,7 +498,15 @@ namespace DOL.GS
         private static void HandleCancelEffect(ECSGameEffect e)
         {
             Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
-            
+
+            if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
+            {
+                if (e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
+                    e.Owner.effectListComponent.RemoveEffect(e);
+                
+                return;
+            }
+
             if (!e.IsDisabled && !e.Owner.effectListComponent.RemoveEffect(e))
             {
                 Console.WriteLine("Unable to remove effect!");
@@ -508,8 +524,11 @@ namespace DOL.GS
                             e.Owner.IsStunned = false;
 
                         // Add Immunity------------Hard coded 60 second Immunity and Icon needs work
-                        var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
-                        EntityManager.AddEffect(immunityEffect);
+                        if (e.EffectType == eEffect.Stun && (e.SpellHandler.Caster as GamePlayer) != null)
+                        {
+                            var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
+                            EntityManager.AddEffect(immunityEffect);
+                        }
 
                         e.Owner.DisableTurning(false);
 
@@ -920,6 +939,10 @@ namespace DOL.GS
                 case (byte)eSpellType.PowerRegenBuff:
                     return eEffect.PowerRegenBuff;
 
+                case (byte)eSpellType.OffensiveProc:
+                    return eEffect.OffensiveProc;
+                case (byte)eSpellType.DefensiveProc:
+                    return eEffect.DefensiveProc;
                 #endregion
 
                 #region Negative Effects

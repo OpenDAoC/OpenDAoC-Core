@@ -119,6 +119,8 @@ namespace DOL.GS
         MesmerizeDurationBuff,
         FatigueConsumptionBuff,
         SavageBuff,
-        Pet
+        Pet,
+        OffensiveProc,
+        DefensiveProc
     }
 }
