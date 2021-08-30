@@ -605,6 +605,7 @@ namespace DOL.AI.Brain
                     {
 						String target;
 
+						spell.IsSpec = true;
 						//Buff self
 						if (!LivingHasEffect(Body, spell))
 						{
