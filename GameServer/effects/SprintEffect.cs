@@ -94,7 +94,7 @@ namespace DOL.GS.Effects
 				{
 					int amount = 5;
 
-					AtlasOF_RALongWindAbility ra = m_owner.GetAbility(typeof(AtlasOF_RALongWindAbility)) as AtlasOF_RALongWindAbility;
+					AtlasOF_LongWindAbility ra = m_owner.GetAbility<AtlasOF_LongWindAbility>();
 					if (ra != null)
 						amount = 5 - ra.GetAmountForLevel(ra.Level);
 

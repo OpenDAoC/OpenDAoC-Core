@@ -110,5 +110,14 @@ namespace DOL.GS.RealmAbilities
 
             return player.CalculateSkillLevel(augQui) >= level;
         }
+
+        public static bool HasSerenityLevel(GamePlayer player, int level)
+        {
+            AtlasOF_SerenityAbility raSerenity = player.GetAbility<AtlasOF_SerenityAbility>();
+            if (raSerenity == null)
+                return false;
+
+            return player.CalculateSkillLevel(raSerenity) >= level;
+        }
     }
 }

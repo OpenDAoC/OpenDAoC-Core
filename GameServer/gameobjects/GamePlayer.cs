@@ -2454,7 +2454,7 @@ namespace DOL.GS
 				if (sprinting && IsMoving)
 				{
 					//TODO : cache LongWind level when char is loaded and on train ability
-					AtlasOF_RALongWindAbility ra = GetAbility<AtlasOF_RALongWindAbility>();
+					AtlasOF_LongWindAbility ra = GetAbility<AtlasOF_LongWindAbility>();
 					if (ra != null)
 						longwind = 6 - (ra.GetAmountForLevel(CalculateSkillLevel(ra)) * 5 / 100);
 					
@@ -2590,6 +2590,16 @@ namespace DOL.GS
 				maxpower = 100; // This is a guess, need feedback
 			}
 
+			// TODO: CHECK IF THIS BLOCK COULD/SHOULD GO ANYWHERE ELSE
+			// AtlasOF_RA ---------------------------------------------------------------
+			// Ethereal Bond (Increases maximum power by 3% per level of this ability.)
+			//		Pre-Requisits : Serenity lvl 2
+			AtlasOF_EtherealBondAbility ra = GetAbility<AtlasOF_EtherealBondAbility>();
+			if (ra != null)
+			{
+				maxpower = maxpower + ((maxpower * ra.GetAmountForLevel(ra.Level)) / 100);
+			}
+			
 			if (maxpower < 0)
 				maxpower = 0;
 

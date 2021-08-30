@@ -11,10 +11,10 @@ namespace DOL.GS.RealmAbilities
     /// <summary>
     /// Long Wind : Decreases the amount of endurance taken per tick when sprinting, by the number listed.
     /// </summary>
-    public class AtlasOF_RALongWindAbility : RAPropertyEnhancer
+    public class AtlasOF_LongWindAbility : RAPropertyEnhancer
     {
 
-        public AtlasOF_RALongWindAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public AtlasOF_LongWindAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
 
         protected override string ValueUnit { get { return "%"; } }
 
