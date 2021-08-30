@@ -4153,8 +4153,13 @@ namespace DOL.GS
             {
 				(oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
             }
+			//DefensiveProcs
+			if (ad != null && ad.Target == this && effectListComponent.Effects.TryGetValue(eEffect.DefensiveProc, out var dProcEffect))
+			{
+				(dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+			}
 
-            CancelFocusSpell();
+			CancelFocusSpell();
             
         }
         public void CancelFocusSpell(bool moving = false)

@@ -466,13 +466,48 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
-		{
-			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
-			if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
-				return;
+		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
+		//{
+		//	AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
+		//	if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
+		//		return;
 
-			AttackData ad = args.AttackData;
+		//	AttackData ad = args.AttackData;
+		//	if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+		//		return;
+
+		//	int baseChance = Spell.Frequency / 100;
+
+		//	if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+		//		baseChance /= 2;
+
+		//	if (baseChance < 1)
+		//		baseChance = 1;			
+
+		//	if (Util.Chance(baseChance))
+		//	{
+		//		ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
+		//		if (handler != null)
+		//		{
+		//			switch(m_procSpell.Target.ToLower())
+		//			{
+		//				case "enemy":
+		//					handler.StartSpell(ad.Attacker);
+		//					break;
+		//				default:
+		//					handler.StartSpell(ad.Target);
+		//					break;
+		//			}
+		//		}
+		//	}
+		//}
+		public void EventHandler(AttackData ad)
+		{
+			//AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
+			//if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
+			//	return;
+
+			//AttackData ad = args.AttackData;
 			if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
 				return;
 
@@ -482,14 +517,14 @@ namespace DOL.GS.Spells
 				baseChance /= 2;
 
 			if (baseChance < 1)
-				baseChance = 1;			
+				baseChance = 1;
 
 			if (Util.Chance(baseChance))
 			{
-				ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
+				ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)ad.Target, m_procSpell, m_procSpellLine);
 				if (handler != null)
 				{
-					switch(m_procSpell.Target.ToLower())
+					switch (m_procSpell.Target.ToLower())
 					{
 						case "enemy":
 							handler.StartSpell(ad.Attacker);
