@@ -38,6 +38,8 @@ namespace realmabilities_atlasOF._temporary_helper
 
 
         -- ADD REALM ABILITES IN TABLE: ability
+        
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (269, 'AtlasOF_Lifter', 'Lifter (Atlas OF)', '529', '20% additional maximum carrying capacity per level.', '0', 'DOL.GS.RealmAbilities.AtlasOF_LifterAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (268, 'AtlasOF_EtherealBond', 'Ethereal Bond (Atlas OF)', '528', 'Increases maximum power by 3% per level of this ability. Pre-Requisits : Serenity lvl 2', '0', 'DOL.GS.RealmAbilities.AtlasOF_EtherealBondAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (267, 'AtlasOF_Serenity', 'Serenity', '527', 'Adds to the amount of power regenerated over time.', '0', 'DOL.GS.RealmAbilities.AtlasOF_SerenityAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (266, 'AtlasOF_Dodger', 'Dodger', 526, 'Increases chance to evade by the listed percentage amount.', 0, 'DOL.GS.RealmAbilities.AtlasOF_Dodger', '2000-01-01 00:00:00');
@@ -66,7 +68,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (243, 'AtlasOF_AugStr', 'Augmented Strength', 503, 'Increases Strength by the listed amount per level.', 0, 'DOL.GS.RealmAbilities.AtlasOF_RAStrengthEnhancer', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (242, 'AtlasOF_Purge', 'Purge', 502, 'Removes all negative effects but leaves any applicable immunity timers in place.', 3010, 'DOL.GS.RealmAbilities.AtlasOF_PurgeAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (241, 'AtlasOF_MCL', 'Mystic Crystal Lore', 501, 'Grants a refresh of power based on the percentages listed. Cannot be used when in combat.', 3008, 'DOL.GS.RealmAbilities.AtlasOF_MysticCrystalLoreAbility', '2000-01-01 00:00:00');
-
+        
 
         -- ADD REALM ABILITES WITH FOREIGN KEY FROM TABLE : ability
         -- MINSTREL --
@@ -92,7 +94,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Dodger', '2000-01-01 00:00:00', 'Minstrel1-2-0');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Serenity', '2000-01-01 00:00:00', 'Minstrel1-2-1');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_EtherealBond', '2000-01-01 00:00:00', 'Minstrel1-2-2');
-
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Lifter', '2000-01-01 00:00:00', 'Minstrel1-2-3');
 
         -- SORCERER --
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_MasteryOfTheArt', '2000-01-01 00:00:00', 'Sorcerer1-0-3');

@@ -2597,7 +2597,7 @@ namespace DOL.GS
 			AtlasOF_EtherealBondAbility ra = GetAbility<AtlasOF_EtherealBondAbility>();
 			if (ra != null)
 			{
-				maxpower = maxpower + ((maxpower * ra.GetAmountForLevel(ra.Level)) / 100);
+				maxpower += ((maxpower * ra.GetAmountForLevel(ra.Level)) / 100);
 			}
 			
 			if (maxpower < 0)
@@ -11183,7 +11183,7 @@ namespace DOL.GS
 			get
 			{
 				double enc = (double)Strength;
-				RAPropertyEnhancer ab = GetAbility<LifterAbility>();
+				RAPropertyEnhancer ab = GetAbility<AtlasOF_LifterAbility>();
 				if (ab != null)
 					enc *= 1 + ((double)ab.Amount / 100);
 
