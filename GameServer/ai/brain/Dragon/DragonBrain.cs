@@ -48,11 +48,13 @@ namespace DOL.AI.Brain
         {
 			FSM.ClearStates();
 
+			FSM.Add(new StandardMobState_WAKING_UP(FSM, this));
 			FSM.Add(new DragonState_RETURN_TO_SPAWN(FSM, this));
 			FSM.Add(new DragonState_IDLE(FSM, this));
 			FSM.Add(new DragonState_AGGRO(FSM, this));
+			FSM.Add(new StandardMobState_DEAD(FSM, this));
 
-			FSM.SetCurrentState(eFSMStateType.IDLE);
+			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
 		}
 
 		/// <summary>

@@ -93,9 +93,9 @@ public class DragonState_AGGRO : DragonState
         if (_brain.PickGlareTarget()) return;
         _brain.PickThrowTarget();
 
-        // If dragon has run out of tether range, clear aggro list and let it 
-        // return to its spawn point.
-        if (_brain.CheckTether())
+        // If dragon has run out of tether range, or has clear aggro list, 
+        // let it return to its spawn point.
+        if (_brain.CheckTether() || !_brain.HasAggressionTable())
         {
             //set state to RETURN TO SPAWN
             _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
