@@ -12,8 +12,9 @@ namespace DOL.GS
         private static List<GamePlayer> _players = new List<GamePlayer>(4000);
         private static object _playersLock = new object();
 
-        private static List<GameLiving> _npcs = new List<GameLiving>(100000);
-        private static object _npcsLock = new object();
+        private static GameLiving[] _npcsArray = new GameLiving[120000];
+        private static int? _npcsLastDeleted = null;
+        private static int _npcsCount = 0;
 
         private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
         private static object _effectsLock = new object();
@@ -24,6 +25,8 @@ namespace DOL.GS
         private static Dictionary<Type, List<GameLiving>> _components = new Dictionary<Type, List<GameLiving>>(5000);
         private static object _componentLock = new object();
 
+        private static bool npcsIsDirty;
+
         public static void AddService(Type t)
         {
             lock (_servicesLock)
@@ -31,7 +34,6 @@ namespace DOL.GS
                 _services.Add(t);
             }
         }
-
         public static Type[] GetServices(Type t)
         {
             lock (_services)
@@ -109,25 +111,67 @@ namespace DOL.GS
 
         public static GameLiving[] GetAllNpcs()
         {
-            lock (_npcs)
+            lock (_npcsArray)
             {
-                return _npcs.ToArray();
+                npcsIsDirty = false;
+                return _npcsArray;
+            }
+        }
+        public static ref GameLiving[] GetAllNpcsArrayRef()
+        {
+            lock (_npcsArray)
+            {
+                npcsIsDirty = false;
+                return ref _npcsArray;
             }
         }
 
-        public static void AddNpc(GameLiving o)
+        public static int? GetSkip(this Array array)
         {
-            lock (_npcsLock)
+            return _npcsLastDeleted;
+        }
+
+        public static bool GetAllNpcsDirty()
+        {
+            lock (_npcsArray)
             {
-                _npcs.Add(o);
+                bool wasDirty = npcsIsDirty;
+                if (npcsIsDirty)
+                    npcsIsDirty = false;
+
+                return wasDirty;
+            }
+        }
+
+        public static int AddNpc(GameLiving o)
+        {
+            lock (_npcsArray)
+            {
+                if (_npcsLastDeleted == null)
+                {
+                    _npcsArray[_npcsCount] = o;
+                    _npcsCount++;
+                    npcsIsDirty = true;
+                    return (_npcsCount - 1);
+                }
+                else
+                {
+                    int last_id = (int)_npcsLastDeleted;
+                    _npcsArray[(int)_npcsLastDeleted] = o;
+                    _npcsLastDeleted = null;
+                    npcsIsDirty = true;
+                    return last_id;
+                }
             }
         }
 
         public static void RemoveNpc(GameLiving o)
         {
-            lock (_npcsLock)
+            lock (_npcsArray)
             {
-                _npcs.Remove(o);
+                _npcsArray[o.id] = null;
+                _npcsLastDeleted = o.id;
+                npcsIsDirty = true;
             }
         }
 

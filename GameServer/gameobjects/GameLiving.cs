@@ -46,7 +46,8 @@ namespace DOL.GS
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AttackComponent attackComponent;
+		public int id;
+		public AttackComponent attackComponent;
         public RangeAttackComponent rangeAttackComponent;
         public StyleComponent styleComponent;
         public Spell LastPulseCast;
@@ -7047,8 +7048,7 @@ namespace DOL.GS
 
             healthComponent = new HealthComponent(this);
 			// damageComponent = new DamageComponent(this);
-			EntityManager.AddNpc(this);
-
+			id = EntityManager.AddNpc(this);
 		}
 	}
 }
