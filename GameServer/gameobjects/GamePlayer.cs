@@ -2590,6 +2590,7 @@ namespace DOL.GS
 				maxpower = 100; // This is a guess, need feedback
 			}
 
+			/*
 			// TODO: CHECK IF THIS BLOCK COULD/SHOULD GO ANYWHERE ELSE
 			// AtlasOF_RA ---------------------------------------------------------------
 			// Ethereal Bond (Increases maximum power by 3% per level of this ability.)
@@ -2599,10 +2600,11 @@ namespace DOL.GS
 			{
 				maxpower += ((maxpower * ra.GetAmountForLevel(ra.Level)) / 100);
 			}
-			
+			*/
+
 			if (maxpower < 0)
 				maxpower = 0;
-
+			
 			return maxpower;
 		}
 

@@ -52,6 +52,7 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
+        
         // Shared by almost all passive OF Realm Abilities.
         public static int GetCommonPassivesCostForUpgrade(int level)
         {

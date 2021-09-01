@@ -16,13 +16,10 @@ namespace DOL.GS.RealmAbilities
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+		// TODO: Chek if this should be changed to eProperty.Strength 
 		public AtlasOF_LifterAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
 		
-		protected override string ValueUnit {
-			get {
-				return "%"; 
-			} 
-		}
+		protected override string ValueUnit { get {	return "%"; } }
 
 		public override int CostForUpgrade(int level) {	return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
 
@@ -38,25 +35,24 @@ namespace DOL.GS.RealmAbilities
 			base.Activate(living, sendUpdates);
 
 			// force UI to refresh encumberence value
-			if (living is GamePlayer player) { player.Out.SendEncumberance(); }
+			if (living is GamePlayer player) { log.Warn("INSIDE Activate"); player.Out.SendEncumberance(); }
 
 		}
 
 		public override void Deactivate(GameLiving living, bool sendUpdates)
         {
-			log.Warn("inside Deactivate");
 			base.Deactivate(living, sendUpdates);
 
 			// force UI to refresh encumberence value
-			if (living is GamePlayer player) { player.Out.SendEncumberance(); }
+			if (living is GamePlayer player) { log.Warn("INSIDE Deactivate"); player.Out.SendEncumberance(); }
 		}
 
-        public override void OnLevelChange(int oldLevel, int newLevel = 0)
-        {
+        public override void OnLevelChange(int oldLevel, int newLevel = 0) 
+		{
 			base.OnLevelChange(oldLevel, newLevel);
 
 			// force UI to refresh encumberence value
-			if (base.m_activeLiving is GamePlayer player) { player.Out.SendEncumberance(); }
+			if (base.m_activeLiving is GamePlayer player) { log.Warn("INSIDE OnLevelChange"); player.Out.SendEncumberance(); }
 
 		}
 		

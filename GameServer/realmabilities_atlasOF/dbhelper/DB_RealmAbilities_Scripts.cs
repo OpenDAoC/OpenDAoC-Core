@@ -38,7 +38,7 @@ namespace realmabilities_atlasOF._temporary_helper
 
 
         -- ADD REALM ABILITES IN TABLE: ability
-        
+        INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (270, 'AtlasOF_Toughness', 'Toughness (Atlas OF)', '529', 'Increases maximum hit points by 3% per level of this ability.', '0', 'DOL.GS.RealmAbilities.AtlasOF_ToughnessAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (269, 'AtlasOF_Lifter', 'Lifter (Atlas OF)', '529', '20% additional maximum carrying capacity per level.', '0', 'DOL.GS.RealmAbilities.AtlasOF_LifterAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (268, 'AtlasOF_EtherealBond', 'Ethereal Bond (Atlas OF)', '528', 'Increases maximum power by 3% per level of this ability. Pre-Requisits : Serenity lvl 2', '0', 'DOL.GS.RealmAbilities.AtlasOF_EtherealBondAbility', '2000-01-01 00:00:00');
         INSERT INTO `ability` (`AbilityID`, `KeyName`, `Name`, `InternalID`, `Description`, `IconID`, `Implementation`, `LastTimeRowUpdated`) VALUES (267, 'AtlasOF_Serenity', 'Serenity', '527', 'Adds to the amount of power regenerated over time.', '0', 'DOL.GS.RealmAbilities.AtlasOF_SerenityAbility', '2000-01-01 00:00:00');
@@ -95,6 +95,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Serenity', '2000-01-01 00:00:00', 'Minstrel1-2-1');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_EtherealBond', '2000-01-01 00:00:00', 'Minstrel1-2-2');
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Lifter', '2000-01-01 00:00:00', 'Minstrel1-2-3');
+        INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (4, 'AtlasOF_Toughness', '2000-01-01 00:00:00', 'Minstrel1-2-4');
 
         -- SORCERER --
         INSERT INTO `classxrealmability_atlas` (`CharClass`, `AbilityKey`, `LastTimeRowUpdated`, `ClassXRealmAbility_Atlas_ID`) VALUES (8, 'AtlasOF_MasteryOfTheArt', '2000-01-01 00:00:00', 'Sorcerer1-0-3');

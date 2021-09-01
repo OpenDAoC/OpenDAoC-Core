@@ -17,7 +17,9 @@ namespace DOL.GS.RealmAbilities
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AtlasOF_EtherealBondAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public AtlasOF_EtherealBondAbility(DBAbility dba, int level) : base(dba, level, eProperty.MaxMana) { }
+
+        protected override string ValueUnit { get { return "%"; } }
 
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasSerenityLevel(player, 2); }
 
@@ -28,34 +30,30 @@ namespace DOL.GS.RealmAbilities
         public override void Activate(GameLiving living, bool sendUpdates)
         {
             log.Warn("inside Activate");
+            log.WarnFormat("1 - inside Activate Current maxmana is {0}", living.MaxMana);
             base.Activate(living, sendUpdates);
-
-            
+            log.WarnFormat("2 - inside Activate Current maxmana is {0}", living.MaxMana);
 
             /*
-            // force UI to refresh encumberence value
-            if (living is GamePlayer player)
-            {
-                player.ChangeMana(player, 2999);
-            }
             // Ethereal Bond : Increases maximum power by 3% per level of this ability.
             // Pre-Requisits : Serenity lvl 2
-            AtlasOF_SerenityAbility ra = living.GetAbility<AtlasOF_SerenityAbility>();
-            if (ra != null)
+            AtlasOF_SerenityAbility raSerenity = living.GetAbility<AtlasOF_SerenityAbility>();
+            if (raSerenity != null)
             {
-                log.WarnFormat("Serenity level is {0}", ra.Level);
+                log.WarnFormat("Serenity level is {0}", raSerenity.Level);
 
-                if (ra.Level < 2)
+                if (raSerenity.Level < 2)
                 {
-                    log.WarnFormat("Serenity level is {0} and pre-requisite needs Serenity to be at least lvl 2 so we CANNOT activate RA ability", ra.Level);
+                    log.WarnFormat("Serenity level is {0} and pre-requisite needs Serenity to be at least lvl 2 so we CANNOT activate RA ability", raSerenity.Level);
                     return;
                 }
                 else
                 {
                     log.WarnFormat("Current MaxMana is {0}", living.MaxMana);
 
-                    living.eProperty.MaxMana = 10000;
+                    AtlasOF_RAMaxManaEnhancer raMana = AtlasOF_RAMaxManaEnhancer(le)
 
+                    log.WarnFormat("Current MaxMana is {0}", living.MaxMana);
                 }
 
             }
@@ -66,6 +64,13 @@ namespace DOL.GS.RealmAbilities
             }
             */
         }
-        
+
+        public override void OnLevelChange(int oldLevel, int newLevel = 0)
+        {
+            log.WarnFormat("1 - inside OnLevelChange, oldLevel {0}, newLevel {1}, Current maxmana is {2}", oldLevel, newLevel, base.m_activeLiving.MaxMana);
+            base.OnLevelChange(oldLevel, newLevel);
+            log.WarnFormat("1 - inside OnLevelChange, oldLevel {0}, newLevel {1}, Current maxmana is {2}", oldLevel, newLevel, base.m_activeLiving.MaxMana);
+        }
+
     }
 }
