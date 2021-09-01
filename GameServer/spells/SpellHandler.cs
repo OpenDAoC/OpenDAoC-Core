@@ -1231,7 +1231,7 @@ namespace DOL.GS.Spells
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
 			{
-				if(false)//Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
+				if(Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
 				{
 					if (!quiet)
 					{
@@ -1623,6 +1623,7 @@ namespace DOL.GS.Spells
 
                     if (CheckBeginCast(m_spellTarget))
 					{
+						m_started = Caster.CurrentRegion.Time;
 						_castStartTick = currentTick;
 						if (Spell.IsInstantCast)
 						{
