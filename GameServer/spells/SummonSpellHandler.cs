@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -243,7 +244,7 @@ namespace DOL.GS.Spells
 
             //GameSpellEffect effect = FindEffectOnTarget(pet, this);
             pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect);
-            EffectService.RequestCancelEffect(petEffect);
+            EffectService.RequestCancelEffect(petEffect.FirstOrDefault());
             //if (effect != null)
             //    effect.Cancel(false);
 

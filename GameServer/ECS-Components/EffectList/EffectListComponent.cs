@@ -14,7 +14,7 @@ namespace DOL.GS
         public int _lastUpdateEffectsCount = 0;
         
         private object _effectsLock = new object(); 
-        public Dictionary<eEffect,ECSGameEffect> Effects = new Dictionary<eEffect, ECSGameEffect>();
+        public Dictionary<eEffect, List<ECSGameEffect>> Effects = new Dictionary<eEffect, List<ECSGameEffect>>();
         public Dictionary<int, ECSGameEffect> EffectIdToEffect = new Dictionary<int, ECSGameEffect>();
 
         public EffectListComponent(GameLiving p)
@@ -28,22 +28,35 @@ namespace DOL.GS
             {
                 try
                 {
-                    if (Effects.TryGetValue(effect.EffectType, out ECSGameEffect existing))
+                    if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
                     {
-                        //If this buff is stronger > in list. cancel current buff and add this one- Return true;
-                        if (existing.SpellHandler.Spell.IsPulsing || (existing.SpellHandler.Spell.IsConcentration && effect == existing))
+                        for (int i = 0; i < existingEffects.Count; i++)
                         {
-                            Effects[effect.EffectType] = effect;
-                            effect.RenewEffect = true;
+                            //If this buff is stronger > in list. cancel current buff and add this one- Return true;
+                            if (existingEffects[i].SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell 
+                               || (existingEffects[i].SpellHandler.Spell.IsConcentration && effect == existingEffects[i]))
+                            {
+                                Effects[effect.EffectType][i] = effect;
+                                effect.RenewEffect = true;
 
-                            return true;
+                                return true;
+                            }
+                            else if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value)
+                            {
+                                EffectService.RequestDisableEffect(existingEffects[i], true);
+                                existingEffects.Add(effect);                                
+                            }
                         }
                         Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
                         return false;
                     }
+                    else if (Effects.ContainsKey(effect.EffectType))
+                    {
+                        Effects[effect.EffectType].Add(effect);
+                    }
                     else
                     {                      
-                        Effects.Add(effect.EffectType, effect);
+                        Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
 
@@ -63,6 +76,19 @@ namespace DOL.GS
                 
             }
             
+        }
+
+        public List<ECSGameEffect> GetAllEffects()
+        {
+            lock (_effectsLock)
+            {
+                var temp = new List<ECSGameEffect>();
+                foreach (var effects in Effects.Values)
+                    foreach (var effect in effects)
+                        temp.Add(effect);
+
+                return temp;
+            }
         }
 
         public ECSGameEffect TryGetEffectFromEffectId(int effectId)
@@ -87,14 +113,30 @@ namespace DOL.GS
                     }
                     else
                     {
-                        EffectIdToEffect.Remove(effect.Icon);
-                        Effects.Remove(effect.EffectType);
+                        //if (effect.CancelEffect)
+                        //{
+                            Effects[effect.EffectType].Remove(effect);
+                            EffectIdToEffect.Remove(effect.Icon);
 
-                        if (Effects.Count == 0)
-                        {
-                            EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
-                        }
-                        return true;
+                            if (Effects[effect.EffectType].Count > 0)
+                            {
+                                if (Effects[effect.EffectType].FirstOrDefault().IsDisabled)
+                                    EffectService.RequestDisableEffect(Effects[effect.EffectType].FirstOrDefault(), false);
+                                //foreach (var eff in Effects[effect.EffectType])
+                                //EffectService.RequestDisableEffect()
+                            }
+                            else
+                            {
+                                EffectIdToEffect.Remove(effect.Icon);
+                                Effects.Remove(effect.EffectType);
+                            }
+
+                            if (Effects.Count == 0)
+                            {
+                                EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
+                            }
+                    //}
+                    return true;
                     }
                 }
                 catch (Exception e)

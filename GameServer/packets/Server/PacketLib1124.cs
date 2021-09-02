@@ -2399,13 +2399,16 @@ namespace DOL.GS.PacketHandler
                     lock (pet.EffectList)
                     {
                         ArrayList icons = new ArrayList();
-                        foreach (ECSGameEffect effect in pet.effectListComponent.Effects.Values)
+                        foreach (var effects in pet.effectListComponent.Effects.Values)
                         {
-                            if (icons.Count >= 8)
-                                break;
-                            if (effect.Icon == 0)
-                                continue;
-                            icons.Add(effect.Icon);
+							foreach (ECSGameEffect effect in effects)
+							{
+								if (icons.Count >= 8)
+									break;
+								if (effect.Icon == 0)
+									continue;
+								icons.Add(effect.Icon);
+							}
                         }
                         pak.WriteByte((byte)icons.Count); // effect count
                                                           // 0x08 - null terminated - (byte) list of shorts - spell icons on pet
@@ -3895,7 +3898,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.Effects.Values.Where(e => e.EffectType != eEffect.Pulse))
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects()/*Effects.Values*/.Where(e => e.EffectType != eEffect.Pulse))
 				{
 					if (effect.Icon != 0)
 					{
@@ -4834,16 +4837,18 @@ namespace DOL.GS.PacketHandler
                 lock (living.effectListComponent.Effects.Values)
                 {
                     byte i = 0;
-                    foreach (ECSGameEffect effect in living.effectListComponent.Effects.Values)
-                        if (effect is ECSGameEffect)
-                            i++;
+                    foreach (var effects in living.effectListComponent.Effects.Values)
+						foreach (ECSGameEffect effect in effects)
+							if (effect is ECSGameEffect)
+								i++;
                     pak.WriteByte(i);
-                    foreach (ECSGameEffect effect in living.effectListComponent.Effects.Values)
-                        if (effect is ECSGameEffect)
-                        {
-                            pak.WriteByte(0);
-                            pak.WriteShort(effect.Icon);
-                        }
+                    foreach (var effects in living.effectListComponent.Effects.Values)
+						foreach (ECSGameEffect effect in effects)
+							if (effect is ECSGameEffect)
+							{
+								pak.WriteByte(0);
+								pak.WriteShort(effect.Icon);
+							}
                 }
             }
 			if (updateMap)

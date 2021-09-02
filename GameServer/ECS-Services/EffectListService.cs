@@ -32,139 +32,152 @@ namespace DOL.GS
         {
             if (living?.effectListComponent?.Effects.Count > 0)
             {
-                foreach (var effect in living.effectListComponent.Effects)
+                foreach (var effects in living.effectListComponent.Effects.Values)
                 {
-                    if (!effect.Value.Owner.IsAlive)
+                    foreach (var effect in effects)
                     {
-                        EffectService.RequestCancelEffect(effect.Value);
-                        continue;
-                    }
-
-                    if (tick > effect.Value.ExpireTick && !effect.Value.SpellHandler.Spell.IsConcentration)
-                    {
-                        if (effect.Value.EffectType == eEffect.Pulse && effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell)
+                        if (!effect.Owner.IsAlive)
                         {
-                            if (effect.Value.SpellHandler.Spell.IsHarmful)
-                            {
-                                ((SpellHandler)effect.Value.SpellHandler).SendCastAnimation();
-
-                            }
-                            effect.Value.SpellHandler.StartSpell(null);
-                            effect.Value.ExpireTick += effect.Value.PulseFreq;
+                            EffectService.RequestCancelEffect(effect);
+                            continue;
                         }
-                        else
-                        {
-                            if (effect.Value.EffectType == eEffect.Bleed)
-                                effect.Value.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
 
-                            if (effect.Value.SpellHandler.Spell.IsPulsing && effect.Value.SpellHandler.Caster.LastPulseCast == effect.Value.SpellHandler.Spell)
+                        if (tick > effect.ExpireTick && !effect.SpellHandler.Spell.IsConcentration)
+                        {
+                            if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                             {
-                                //Add time to effect to make sure the spell refreshes instead of cancels
-                                effect.Value.ExpireTick += GameLoop.TickRate;
+                                if (effect.SpellHandler.Spell.IsHarmful)
+                                {
+                                    ((SpellHandler)effect.SpellHandler).SendCastAnimation();
+
+                                }
+                                effect.SpellHandler.StartSpell(null);
+                                effect.ExpireTick += effect.PulseFreq;
                             }
                             else
                             {
-                                EffectService.RequestCancelEffect(effect.Value);
+                                if (effect.EffectType == eEffect.Bleed)
+                                    effect.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
+
+                                if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
+                                {
+                                    //Add time to effect to make sure the spell refreshes instead of cancels
+                                    effect.ExpireTick += GameLoop.TickRate;
+                                }
+                                else
+                                {
+                                    EffectService.RequestCancelEffect(effect);
+                                }
                             }
                         }
-                    }
-                    if (effect.Value.EffectType == eEffect.DamageOverTime || effect.Value.EffectType == eEffect.Bleed)
-                    {
-                        if (effect.Value.LastTick == 0)
+                        if (effect.EffectType == eEffect.DamageOverTime || effect.EffectType == eEffect.Bleed)
                         {
-                            EffectService.OnEffectPulse(effect.Value);
-                            effect.Value.LastTick = GameLoop.GameLoopTime;
+                            if (effect.LastTick == 0)
+                            {
+                                EffectService.OnEffectPulse(effect);
+                                effect.LastTick = GameLoop.GameLoopTime;
+                            }
+                            else if (tick > effect.PulseFreq + effect.LastTick)
+                            {
+                                EffectService.OnEffectPulse(effect);
+                                effect.LastTick += effect.PulseFreq;
+                            }
                         }
-                        else if (tick > effect.Value.PulseFreq + effect.Value.LastTick)
+                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                         {
-                            EffectService.OnEffectPulse(effect.Value);
-                            effect.Value.LastTick += effect.Value.PulseFreq;
+                            if (tick > effect.NextTick)
+                            {
+                                double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
+                                if (factor < 0) factor = 0;
+                                else if (factor > 1) factor = 1;
+
+                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
+
+                                UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
+                                effect.NextTick += effect.TickInterval;
+                                if (factor <= 0)
+                                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                            }
                         }
-                    }
-                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                    {
-                        if (tick > effect.Value.NextTick)
+                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
                         {
-                            double factor = 2.0 - (effect.Value.Duration - effect.Value.GetRemainingTimeForClient()) / (double)(effect.Value.Duration >> 1);
-                            if (factor < 0) factor = 0;
-                            else if (factor > 1) factor = 1;
-
-                            effect.Value.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.Value.SpellHandler, 1.0 - effect.Value.SpellHandler.Spell.Value * factor * 0.01);
-
-                            UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Value.Owner);
-                            effect.Value.NextTick += effect.Value.TickInterval;
-                            if (factor <= 0)
-                                effect.Value.ExpireTick = GameLoop.GameLoopTime - 1;
+                            (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
+                            effect.NextTick += effect.PulseFreq;
                         }
-                    }
-                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.Value.NextTick)
-                    {
-                        (effect.Value.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Value.Owner, effect.Value.Effectiveness);
-                        effect.Value.NextTick += effect.Value.PulseFreq;
-                    }
-                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.Value.NextTick)
-                    {
-                        if ((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.NextTick)
                         {
-                            GameNPC npc = effect.Value.Owner as GameNPC;
-                            npc.StopAttack();
-                            npc.StopCurrentSpellcast();
+                            if ((effect.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                            {
+                                GameNPC npc = effect.Owner as GameNPC;
+                                npc.StopAttack();
+                                npc.StopCurrentSpellcast();
 
-                            GameLiving target = (effect.Value.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
+                                GameLiving target = (effect.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
 
-                            npc.StartAttack(target);
+                                npc.StartAttack(target);
+                            }
                         }
-                    }
-                    if (effect.Value.SpellHandler.Spell.IsConcentration && tick > effect.Value.NextTick)
-                    {
-                        if (!effect.Value.SpellHandler.Caster.
-                            IsWithinRadius(effect.Value.Owner, 
-                            effect.Value.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.Value.SpellHandler.Spell.Range)
-                            && !effect.Value.IsDisabled)
+                        if (effect.SpellHandler.Spell.IsConcentration && tick > effect.NextTick)
                         {
-                            EffectService.RequestDisableEffect(effect.Value, true);
+                            if (!effect.SpellHandler.Caster.
+                                IsWithinRadius(effect.Owner,
+                                effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
+                                && !effect.IsDisabled)
+                            {
+                                EffectService.RequestDisableEffect(effect, true);
+                            }
+                            else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
+                                effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
+                                && effect.IsDisabled)
+                            {
+                                bool isBest = false;
+                                if (effects.Count > 1)
+                                {                                    
+                                    foreach (var eff in effects)
+                                        if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                            isBest = true;
+                                        else
+                                            isBest = false;
+                                }
+                                if (isBest)
+                                    EffectService.RequestDisableEffect(effect, false);
+                            }
+
+                            effect.NextTick += effect.PulseFreq;
                         }
-                        else if (effect.Value.SpellHandler.Caster.IsWithinRadius(effect.Value.Owner,
-                            effect.Value.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.Value.SpellHandler.Spell.Range)
-                            && effect.Value.IsDisabled)
+                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                         {
-                            EffectService.RequestDisableEffect(effect.Value, false);
+                            if (tick > effect.NextTick)
+                            {
+                                double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
+                                if (factor < 0) factor = 0;
+                                else if (factor > 1) factor = 1;
+
+                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
+
+                                UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
+                                effect.NextTick += effect.TickInterval;
+                                if (factor <= 0)
+                                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                            }
                         }
-
-                        effect.Value.NextTick += effect.Value.PulseFreq;
-                    }
-                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                    {
-                        if (tick > effect.Value.NextTick)
+                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
                         {
-                            double factor = 2.0 - (effect.Value.Duration - effect.Value.GetRemainingTimeForClient()) / (double)(effect.Value.Duration >> 1);
-                            if (factor < 0) factor = 0;
-                            else if (factor > 1) factor = 1;
-
-                            effect.Value.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.Value.SpellHandler, 1.0 - effect.Value.SpellHandler.Spell.Value * factor * 0.01);
-
-                            UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Value.Owner);
-                            effect.Value.NextTick += effect.Value.TickInterval;
-                            if (factor <= 0)
-                                effect.Value.ExpireTick = GameLoop.GameLoopTime - 1;
+                            (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
+                            effect.NextTick += effect.PulseFreq;
                         }
-                    }
-                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.Value.NextTick)
-                    {
-                        (effect.Value.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Value.Owner, effect.Value.Effectiveness);
-                        effect.Value.NextTick += effect.Value.PulseFreq;
-                    }
-                    if (effect.Value.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.Value.NextTick)
-                    {
-                        if ((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.NextTick)
                         {
-                            GameNPC npc = effect.Value.Owner as GameNPC;
-                            npc.StopAttack();
-                            npc.StopCurrentSpellcast();
+                            if ((effect.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
+                            {
+                                GameNPC npc = effect.Owner as GameNPC;
+                                npc.StopAttack();
+                                npc.StopCurrentSpellcast();
 
-                            GameLiving target = (effect.Value.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.Value.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
+                                GameLiving target = (effect.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
 
-                            npc.StartAttack(target);
+                                npc.StartAttack(target);
+                            }
                         }
                     }
                 }

@@ -495,16 +495,18 @@ namespace DOL.GS.PacketHandler
                 lock (living.effectListComponent.Effects.Values)
                 {
                     byte i = 0;
-                    foreach (ECSGameEffect effect in living.effectListComponent.Effects.Values)
-                        if (effect is ECSGameEffect)
-                            i++;
+                    foreach (var effects in living.effectListComponent.Effects.Values)
+						foreach (ECSGameEffect effect in effects)
+							if (effect is ECSGameEffect)
+								i++;
                     pak.WriteByte(i);
-                    foreach (ECSGameEffect effect in living.effectListComponent.Effects.Values)
-                        if (effect is ECSGameEffect)
-                        {
-                            pak.WriteByte(0);
-                            pak.WriteShort(effect.Icon);
-                        }
+                    foreach (var effects in living.effectListComponent.Effects.Values)
+						foreach (ECSGameEffect effect in effects)
+							if (effect is ECSGameEffect)
+							{
+								pak.WriteByte(0);
+								pak.WriteShort(effect.Icon);
+							}
                 }
             }
 		}

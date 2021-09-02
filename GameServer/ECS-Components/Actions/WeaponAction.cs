@@ -176,9 +176,13 @@ namespace DOL.GS
                     {
                         owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
 
-                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out ECSGameEffect dAEffect))
+                        // DamageAdd
+                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
                         {
-                            ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(mainHandAD));
+                            foreach (ECSGameEffect dAEffect in dAEffects)
+                            {
+                                ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(mainHandAD));
+                            }
                         }
 
                         if (mainHandAD.Target is GameLiving)
@@ -258,9 +262,13 @@ namespace DOL.GS
                                     owner.DealDamage(leftHandAD);
                                     if (leftHandAD.IsMeleeAttack)
                                     {
-                                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out ECSGameEffect dAEffect))
+                                        // DamageAdd
+                                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
                                         {
-                                            ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(leftHandAD));
+                                            foreach (ECSGameEffect dAEffect in dAEffects)
+                                            {
+                                                ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(mainHandAD));
+                                            }
                                         }
                                         owner.CheckWeaponMagicalEffect(leftHandAD, leftWeapon);
                                     }

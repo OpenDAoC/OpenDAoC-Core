@@ -390,7 +390,7 @@ namespace DOL.GS
                                     e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
                                     if (mezz != null)
                                     {
-                                        EffectService.RequestCancelEffect(mezz);
+                                        EffectService.RequestCancelEffect(mezz.FirstOrDefault());
 
                                     }
                                     e.Owner.Disease(true);
@@ -415,7 +415,7 @@ namespace DOL.GS
                                     e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
                                     if (mezz != null)
                                     {
-                                        EffectService.RequestCancelEffect(mezz);
+                                        EffectService.RequestCancelEffect(mezz.FirstOrDefault());
                                     }
 
                                     // percent category
@@ -483,7 +483,7 @@ namespace DOL.GS
 
                 if (e.Owner is GamePlayer player)
                 {
-                    player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.EffectType != eEffect.Pulse/*ef.Icon != 0*/).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                    player.Out.SendUpdateIcons(e.Owner.effectListComponent.GetAllEffects(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     SendPlayerUpdates(player);                   
                 }
                 else if (e.Owner is GameNPC)
@@ -507,14 +507,15 @@ namespace DOL.GS
                 return;
             }
 
-            if (!e.IsDisabled && !e.Owner.effectListComponent.RemoveEffect(e))
+            if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 Console.WriteLine("Unable to remove effect!");
                 return;
             }
-            if (e.EffectType != eEffect.Pulse)
+            if (e.CancelEffect && e.IsDisabled) { }
+            else if (e.EffectType != eEffect.Pulse)
             {
-                if (!(e is ECSImmunityEffect))
+                if (!(e is ECSImmunityEffect) )
                 {
                     if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                     {
@@ -787,7 +788,7 @@ namespace DOL.GS
             }
 
             // Update the Concentration List if Conc Buff/Song/Chant.
-            if (!e.IsDisabled && e.ShouldBeRemovedFromConcentrationList())
+            if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
             {
                 if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
                 {
@@ -799,7 +800,7 @@ namespace DOL.GS
             {
                 SendPlayerUpdates(player);
                 //Now update EffectList
-                player.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.EffectType != eEffect.Pulse/*ef.Icon != 0*/).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendUpdateIcons(e.Owner.effectListComponent.GetAllEffects(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             }
             else if (e.Owner is GameNPC)
             {
@@ -857,7 +858,7 @@ namespace DOL.GS
 
             if (e.Owner is GamePlayer player1)
             {
-                player1.Out.SendUpdateIcons(player1.effectListComponent.Effects.Values.Where(ef => ef.EffectType != eEffect.Pulse/*ef.Icon != 0*/).ToList(), ref player1.effectListComponent._lastUpdateEffectsCount);
+                player1.Out.SendUpdateIcons(player1.effectListComponent.GetAllEffects(), ref player1.effectListComponent._lastUpdateEffectsCount);
             }
         }
 
