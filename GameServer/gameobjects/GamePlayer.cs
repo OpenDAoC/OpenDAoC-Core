@@ -2453,12 +2453,17 @@ namespace DOL.GS
 				int longwind = 5;
 				if (sprinting && IsMoving)
 				{
-					//TODO : cache LongWind level when char is loaded and on train ability
-					AtlasOF_LongWindAbility ra = GetAbility<AtlasOF_LongWindAbility>();
-					if (ra != null)
-						longwind = 6 - (ra.GetAmountForLevel(CalculateSkillLevel(ra)) * 5 / 100);
-					
-					regen -= longwind;
+					#region Calculation : AtlasOF_LongWind
+					// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+					AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
+					if (raLongWind != null)
+                    {
+						longwind = 6 - (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
+					}
+                    // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+                    #endregion
+
+                    regen -= longwind;
 					
 					if (endchant > 1) regen = (int)Math.Ceiling(regen * endchant * 0.01);
 					
@@ -2590,19 +2595,20 @@ namespace DOL.GS
 				maxpower = 100; // This is a guess, need feedback
 			}
 
-			/*
-			// TODO: CHECK IF THIS BLOCK COULD/SHOULD GO ANYWHERE ELSE
-			// AtlasOF_RA ---------------------------------------------------------------
-			// Ethereal Bond (Increases maximum power by 3% per level of this ability.)
-			//		Pre-Requisits : Serenity lvl 2
-			AtlasOF_EtherealBondAbility ra = GetAbility<AtlasOF_EtherealBondAbility>();
-			if (ra != null)
+			#region Calculation : AtlasOF_EtheralBond
+			// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+			AtlasOF_EtherealBondAbility raEtherealBond = GetAbility<AtlasOF_EtherealBondAbility>();
+			if (raEtherealBond != null)
 			{
-				maxpower += ((maxpower * ra.GetAmountForLevel(ra.Level)) / 100);
+				if (raEtherealBond.Level > 0)
+                {
+					maxpower += (maxpower * raEtherealBond.Level) / 100;
+				}
 			}
-			*/
+            // --- [ END ] --- AtlasOF_EtherealBond --------------------------------------------------------
+            #endregion
 
-			if (maxpower < 0)
+            if (maxpower < 0)
 				maxpower = 0;
 			
 			return maxpower;

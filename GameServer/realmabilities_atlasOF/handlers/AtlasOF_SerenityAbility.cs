@@ -19,10 +19,21 @@ namespace DOL.GS.RealmAbilities
 
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
 
-        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
 
+        public override int GetAmountForLevel(int level)
+        {
+            if (level < 1) { return 0; }
+            switch (level)
+            {
+                case 1: return 500;
+                case 2: return 1000;
+                case 3: return 1500;
+                case 4: return 2000;
+                case 5: return 2500;
+                default: return 0;
+            }
+        }
 
     }
 }

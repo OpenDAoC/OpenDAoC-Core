@@ -27,12 +27,13 @@ namespace DOL.GS.RealmAbilities
 					case 2: return 6;
 					case 3: return 10;
 					case 4: return 14;
-					default: return 1000;
+					default: return 14;
 				}
         }
 
         public override int GetAmountForLevel(int level)
         {
+            if (level < 1) { return 0; }
             switch (level)
             {
                 case 1: return 20;
@@ -42,7 +43,6 @@ namespace DOL.GS.RealmAbilities
                 case 5: return 100;
                 default: return 0;
             }
-            
         }
 
 	}

@@ -38,7 +38,8 @@ namespace DOL.GS.PropertyCalc
                 }
 				int abilityBonus = living.AbilityBonus[(int)property];
 
-				// --- [START] --- AtlasOF_RAThoughness -------------------------------------------------------
+				#region Calculation : AtlasOF_Thoughness
+				// --- [START] --- AtlasOF_Thoughness ---------------------------------------------------------
 				int raToughnessAmount = 0;
 				AtlasOF_ToughnessAbility raToughness = living.GetAbility<AtlasOF_ToughnessAbility>();
 
@@ -49,9 +50,10 @@ namespace DOL.GS.PropertyCalc
 						raToughnessAmount += (hpBase * raToughness.Level) / 100;
 					}
                 }
-				// --- [ END ] --- AtlasOF_RAThoughness -------------------------------------------------------
+                // --- [ END ] --- AtlasOF_Thoughness ---------------------------------------------------------
+                #endregion
 
-				return Math.Max(hpBase + itemBonus + buffBonus + abilityBonus + raToughnessAmount, 1); // at least 1
+                return Math.Max(hpBase + itemBonus + buffBonus + abilityBonus + raToughnessAmount, 1); // at least 1
 			}
 			else if ( living is GameKeepComponent )
 			{
