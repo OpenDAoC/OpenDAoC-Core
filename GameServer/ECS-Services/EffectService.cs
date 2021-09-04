@@ -1077,6 +1077,9 @@ namespace DOL.GS
 
         private static void SendPlayerUpdates(GamePlayer player)
         {
+            if (player == null)
+                return;
+
             player.Out.SendCharStatsUpdate();
             player.Out.SendCharResistsUpdate();
             player.Out.SendUpdateWeaponAndArmorStats();
