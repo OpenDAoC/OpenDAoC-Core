@@ -175,15 +175,8 @@ namespace DOL.GS
                     if (mainHandAD.IsMeleeAttack)
                     {
                         owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
+                        HandleDamageAdd(owner, mainHandAD);
 
-                        // DamageAdd
-                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
-                        {
-                            foreach (ECSGameEffect dAEffect in dAEffects)
-                            {
-                                ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(mainHandAD));
-                            }
-                        }
 
                         if (mainHandAD.Target is GameLiving)
                         {
@@ -262,14 +255,7 @@ namespace DOL.GS
                                     owner.DealDamage(leftHandAD);
                                     if (leftHandAD.IsMeleeAttack)
                                     {
-                                        // DamageAdd
-                                        if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
-                                        {
-                                            foreach (ECSGameEffect dAEffect in dAEffects)
-                                            {
-                                                ((DamageAddSpellHandler)dAEffect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(mainHandAD));
-                                            }
-                                        }
+
                                         owner.CheckWeaponMagicalEffect(leftHandAD, leftWeapon);
                                     }
                                 }
@@ -353,6 +339,22 @@ namespace DOL.GS
                 //CleanupAttack();
                 
                 return;
+            }
+        }
+
+        private static void HandleDamageAdd(GameLiving owner, AttackData ad)
+        {
+            // DamageAdd
+            if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
+            {
+                dAEffects = dAEffects.OrderByDescending(e => e.SpellHandler.Spell.Damage).ToList();
+                double effectiveness = 1;
+                for (int i = 0; i < dAEffects.Count; i++)
+                {
+                    if (i > 0)
+                        effectiveness *= .5;
+                    ((DamageAddSpellHandler)dAEffects[i].SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), effectiveness);
+                }
             }
         }
 

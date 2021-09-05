@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		public void EventHandler(DOLEvent e, object sender, EventArgs arguments, double effectiveness)
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
@@ -91,7 +91,7 @@ namespace DOL.GS.Spells
 			AttackData ad = new AttackData();
 			ad.Attacker = attacker;
 			ad.Target = target;
-			ad.Damage = (int)(damage + damageResisted);
+			ad.Damage = (int)((damage + damageResisted) * effectiveness);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = Spell.DamageType;
 			ad.AttackType = AttackData.eAttackType.Spell;
@@ -139,8 +139,13 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		// constructor
-		public DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+        public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        // constructor
+        public DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 	}
 
 	/// <summary>

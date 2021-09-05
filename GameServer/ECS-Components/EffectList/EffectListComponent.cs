@@ -30,21 +30,63 @@ namespace DOL.GS
                 {
                     if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
                     {
-                        for (int i = 0; i < existingEffects.Count; i++)
+                        // Effects contains this effect already so refresh it
+                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID).FirstOrDefault() != null)
                         {
-                            //If this buff is stronger > in list. cancel current buff and add this one- Return true;
-                            if (existingEffects[i].SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell 
-                               || (existingEffects[i].SpellHandler.Spell.IsConcentration && effect == existingEffects[i]))
+                            for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                Effects[effect.EffectType][i] = effect;
-                                effect.RenewEffect = true;
+                                // If this buff is stronger > in list. cancel current buff and add this one- Return true;
+                                if (existingEffects[i].SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell
+                                    && existingEffects[i].SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID
+                                    || (existingEffects[i].SpellHandler.Spell.IsConcentration && effect == existingEffects[i])
+                                    || existingEffects[i].SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID)
+                                   
+                                {
+                                    effect.IsDisabled = existingEffects[i].IsDisabled;
+                                    effect.IsBuffActive = existingEffects[i].IsBuffActive;
+                                    
+                                    if (effect.SpellHandler.Spell.IsPulsing)
+                                        effect.RenewEffect = true;
 
-                                return true;
+                                    Effects[effect.EffectType][i] = effect;
+                                    if (!effect.IsDisabled && !effect.IsBuffActive)
+                                        EntityManager.AddEffect(effect);
+                                    return true;
+                                }
                             }
-                            else if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value)
+                        }
+                        else
+                        {
+                            bool addEffect = false;
+                            // Check to see if we can add new Effect
+                            for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                EffectService.RequestDisableEffect(existingEffects[i], true);
-                                existingEffects.Add(effect);                                
+                                // Better Effect so disable the current Effect
+                                if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value)
+                                {
+                                    EffectService.RequestDisableEffect(existingEffects[i], true);
+                                    addEffect = true;
+                                    //existingEffects.Add(effect);
+                                }
+                                else if (effect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value)
+                                {
+                                    //effect.IsDisabled = true;
+                                    EffectService.RequestDisableEffect(effect, true);
+                                    addEffect = true;
+                                }
+                                else if ((effect.SpellHandler.Spell.Group != existingEffects[i].SpellHandler.Spell.Group) 
+                                   /* && (effect.SpellHandler.Spell.EffectGroup == 0 || effect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)*/)
+                                {
+                                    addEffect = true;
+                                    //existingEffects.Add(effect);
+                                }
+                                else if (effect.EffectType == eEffect.DamageAdd)
+                                    addEffect = true;
+                            }
+                            if (addEffect)
+                            {
+                                existingEffects.Add(effect);
+                                return true;
                             }
                         }
                         Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
@@ -85,9 +127,10 @@ namespace DOL.GS
                 var temp = new List<ECSGameEffect>();
                 foreach (var effects in Effects.Values)
                     foreach (var effect in effects)
-                        temp.Add(effect);
+                        if (effect.EffectType != eEffect.Pulse)
+                            temp.Add(effect);
 
-                return temp;
+                return temp.OrderBy(e => e.StartTick).ToList();
             }
         }
 
@@ -113,8 +156,8 @@ namespace DOL.GS
                     }
                     else
                     {
-                        //if (effect.CancelEffect)
-                        //{
+                        if (effect.CancelEffect)
+                        {
                             Effects[effect.EffectType].Remove(effect);
                             EffectIdToEffect.Remove(effect.Icon);
 
@@ -135,8 +178,8 @@ namespace DOL.GS
                             {
                                 EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
                             }
-                    //}
-                    return true;
+                        }
+                        return true;
                     }
                 }
                 catch (Exception e)

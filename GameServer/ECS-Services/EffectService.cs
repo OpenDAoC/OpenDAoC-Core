@@ -140,8 +140,8 @@ namespace DOL.GS
             if (e.EffectType != eEffect.Pulse)
             {
                 if (!(e is ECSImmunityEffect))
-                {                    
-                    if (!e.RenewEffect || e.SpellHandler.Spell.IsConcentration)
+                {
+                    if ((e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
                     {
                         if(!e.RenewEffect)
                             SendSpellAnimation(e);
@@ -457,7 +457,9 @@ namespace DOL.GS
 
                                     if (e.EffectType == eEffect.MovementSpeedBuff)
                                     {
+                                        Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                         e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
+                                        Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                         (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
                                     }
                                     else if (e.EffectType == eEffect.EnduranceRegenBuff)
@@ -471,7 +473,8 @@ namespace DOL.GS
                                 }
                             }                          
                         }
-                   }
+                        e.IsBuffActive = true;
+                    }
                 }
                 //else
                 //{
@@ -480,7 +483,7 @@ namespace DOL.GS
                 //        immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                 //    }
                 //}
-
+                
                 if (e.Owner is GamePlayer player)
                 {
                     player.Out.SendUpdateIcons(e.Owner.effectListComponent.GetAllEffects(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
@@ -512,7 +515,8 @@ namespace DOL.GS
                 Console.WriteLine("Unable to remove effect!");
                 return;
             }
-            if (e.CancelEffect && e.IsDisabled) { }
+            if (!e.IsBuffActive)
+            { }
             else if (e.EffectType != eEffect.Pulse)
             {
                 if (!(e is ECSImmunityEffect) )
@@ -769,7 +773,9 @@ namespace DOL.GS
 
                                 if (e.EffectType == eEffect.MovementSpeedBuff)
                                 {
+                                    Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                     e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                                    Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                     (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
                                 }
                                 else if (e.EffectType == eEffect.EnduranceRegenBuff)
@@ -786,7 +792,7 @@ namespace DOL.GS
                     }
                 }
             }
-
+            e.IsBuffActive = false;
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
             {
@@ -844,6 +850,7 @@ namespace DOL.GS
         {           
             EntityManager.AddEffect(effect);
             effect.IsDisabled = disable;
+            effect.RenewEffect = false;
         }
 
         public static void SendSpellAnimation(ECSGameEffect e)
