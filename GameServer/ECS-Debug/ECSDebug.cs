@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DOL.Database;
+using DOL.Events;
 
 namespace ECS.Debug
 {
@@ -14,6 +15,7 @@ namespace ECS.Debug
         private static bool GameEventMgrNotifyProfilingEnabled = false;
         private static int GameEventMgrNotifyTimerInterval = 0;
         private static long GameEventMgrNotifyTimerStartTick = 0;
+        private static System.Diagnostics.Stopwatch GameEventMgrNotifyStopwatch;
         private static Dictionary<string, List<double>> GameEventMgrNotifyTimes = new Dictionary<string, List<double>>();
 
         public static void TogglePerfCounters(bool enabled)
@@ -78,23 +80,33 @@ namespace ECS.Debug
             }
         }
 
-        public static void AddGameEventMgrNotifyTime(string EventName, double Milliseconds)
+        public static void BeginGameEventMgrNotify()
         {
             if (!GameEventMgrNotifyProfilingEnabled)
                 return;
 
+            GameEventMgrNotifyStopwatch = System.Diagnostics.Stopwatch.StartNew();
+        }
+
+        public static void EndGameEventMgrNotify(DOLEvent e)
+        {
+            if (!GameEventMgrNotifyProfilingEnabled)
+                return;
+
+            GameEventMgrNotifyStopwatch.Stop();
+
             lock (_GameEventMgrNotifyLock)
             {
                 List<double> EventTimeValues;
-                if (GameEventMgrNotifyTimes.TryGetValue(EventName, out EventTimeValues))
+                if (GameEventMgrNotifyTimes.TryGetValue(e.Name, out EventTimeValues))
                 {
-                    EventTimeValues.Add(Milliseconds);
+                    EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
                 }
                 else
                 {
                     EventTimeValues = new List<double>();
-                    EventTimeValues.Add(Milliseconds);
-                    GameEventMgrNotifyTimes.TryAdd(EventName, EventTimeValues);
+                    EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
+                    GameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
                 }
             }
         }
@@ -209,6 +221,27 @@ namespace DOL.GS.Commands
                 {
                     ECS.Debug.Diagnostics.TogglePerfCounters(false);
                     DisplayMessage(client, "Performance diagnostics logging turned off.");
+                }
+            }
+
+            if (args[1].ToLower().Equals("notify"))
+            {
+                if (args[2].ToLower().Equals("on"))
+                {
+                    int interval = Int32.Parse(args[3]);
+                    if (interval <= 0)
+                    {
+                        DisplayMessage(client, "Invalid interval argument. Please specify a value in milliseconds.");
+                        return;
+                    }
+
+                    ECS.Debug.Diagnostics.StartGameEventMgrNotifyTimeReporting(interval);
+                    DisplayMessage(client, "GameEventMgr Notify() logging turned on. WARNING: This will spam the server logs.");
+                }
+                else if (args[2].ToLower().Equals("off"))
+                {
+                    ECS.Debug.Diagnostics.StopGameEventMgrNotifyTimeReporting();
+                    DisplayMessage(client, "GameEventMgr Notify() logging turned off.");
                 }
             }
         }
