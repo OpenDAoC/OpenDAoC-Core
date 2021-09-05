@@ -620,7 +620,7 @@ namespace DOL.GS
                                             ((IOldAggressiveBrain)((GameNPC)obj).Brain).RemoveFromAggroList(npc);
                                     }
 
-                                (e.SpellHandler as CharmSpellHandler).m_controlledBrain.ClearAggroList();
+                                (e?.SpellHandler as CharmSpellHandler)?.m_controlledBrain?.ClearAggroList();
                                 npc.StopFollowing();
 
                                 npc.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, npc.CurrentRegion.Time);
