@@ -484,8 +484,11 @@ namespace DOL.Events
 			if(e == null)
 				throw new ArgumentNullException("e", "No event type given!");
 
-			// notify handlers bounded specifically to the sender
-			if(sender != null)
+			/// [Takii - Atlas] Start Record cost of event for profiling.
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            // notify handlers bounded specifically to the sender
+            if (sender != null)
 			{
 				DOLEventHandlerCollection col;
 
@@ -511,6 +514,11 @@ namespace DOL.Events
 
 			// notify globally-bound handler
 			GlobalHandlerCollection.Notify(e, sender, eArgs);
-		}
+
+
+			/// [Takii - Atlas] Stop Record cost of event for profiling.
+			stopwatch.Stop();
+			ECS.Debug.Diagnostics.AddGameEventMgrNotifyTime(e.Name, stopwatch.Elapsed.TotalMilliseconds);
+        }
 	}
 }
