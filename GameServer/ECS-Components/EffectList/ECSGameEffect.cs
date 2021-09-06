@@ -81,7 +81,7 @@ namespace DOL.GS
                 NextTick = StartTick;
                 // 60 seconds taken from PropertyChangingSpell
                 // Not sure if this is correct
-                PulseFreq = 6000;
+                PulseFreq = 650;
             }
         }
         

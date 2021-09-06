@@ -35,7 +35,6 @@ namespace DOL.GS
                         {
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                // If this buff is stronger > in list. cancel current buff and add this one- Return true;
                                 if (existingEffects[i].SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell
                                     && existingEffects[i].SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID
                                     || (existingEffects[i].SpellHandler.Spell.IsConcentration && effect == existingEffects[i])
@@ -49,8 +48,6 @@ namespace DOL.GS
                                         effect.RenewEffect = true;
 
                                     Effects[effect.EffectType][i] = effect;
-                                    if (!effect.IsDisabled && !effect.IsBuffActive)
-                                        EntityManager.AddEffect(effect);
                                     return true;
                                 }
                             }
@@ -61,24 +58,34 @@ namespace DOL.GS
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                // Better Effect so disable the current Effect
-                                if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value)
+                                if (existingEffects[i].SpellHandler.IsOverwritable(effect))
                                 {
-                                    EffectService.RequestDisableEffect(existingEffects[i], true);
-                                    addEffect = true;
-                                    //existingEffects.Add(effect);
-                                }
-                                else if (effect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value)
+                                    // Better Effect so disable the current Effect
+                                    if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
+                                        effect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
+                                    {
+                                        if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing)
+                                            EffectService.RequestDisableEffect(existingEffects[i], true);
+                                        else
+                                            EffectService.RequestCancelEffect(existingEffects[i]);
+
+                                        addEffect = true;
+                                    }
+                                    else if (effect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
+                                        effect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
+                                    {
+                                        if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing)
+                                        {
+                                            EffectService.RequestDisableEffect(effect, true);
+                                            addEffect = true;
+                                        }
+                                        else
+                                            addEffect = false;
+                                    }
+                                }                                
+                                else if (effect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
                                 {
-                                    //effect.IsDisabled = true;
-                                    EffectService.RequestDisableEffect(effect, true);
                                     addEffect = true;
-                                }
-                                else if ((effect.SpellHandler.Spell.Group != existingEffects[i].SpellHandler.Spell.Group) 
-                                   /* && (effect.SpellHandler.Spell.EffectGroup == 0 || effect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)*/)
-                                {
-                                    addEffect = true;
-                                    //existingEffects.Add(effect);
                                 }
                                 else if (effect.EffectType == eEffect.DamageAdd)
                                     addEffect = true;

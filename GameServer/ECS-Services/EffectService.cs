@@ -141,11 +141,11 @@ namespace DOL.GS
             {
                 if (!(e is ECSImmunityEffect))
                 {
+                    if (!e.RenewEffect)
+                        SendSpellAnimation(e);
+
                     if ((e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
                     {
-                        if(!e.RenewEffect)
-                            SendSpellAnimation(e);
-
                         if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                         {
                             if (e.EffectType == eEffect.Mez)
@@ -591,7 +591,7 @@ namespace DOL.GS
 
                                     npc.StopAttack();
                                     npc.RemoveBrain((e.SpellHandler as CharmSpellHandler).m_controlledBrain);
-                                (e.SpellHandler as CharmSpellHandler).m_isBrainSet = false;
+                                    (e.SpellHandler as CharmSpellHandler).m_isBrainSet = false;
 
 
                                     if (npc.Brain != null && npc.Brain is IOldAggressiveBrain)

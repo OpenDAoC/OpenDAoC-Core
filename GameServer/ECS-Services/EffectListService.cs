@@ -134,10 +134,13 @@ namespace DOL.GS
                             {
                                 bool isBest = false;
                                 if (effects.Count > 1)
-                                {                                    
+                                {
                                     foreach (var eff in effects)
                                         if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                        {
                                             isBest = true;
+                                            break;
+                                        }
                                         else
                                             isBest = false;
                                 }

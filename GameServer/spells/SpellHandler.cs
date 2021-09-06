@@ -2954,6 +2954,14 @@ namespace DOL.GS.Spells
 				return false;
 			return true;
 		}
+		public virtual bool IsOverwritable(ECSGameEffect compare)
+		{
+			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
+			if (compare.SpellHandler.Spell.SpellType != Spell.SpellType)
+				return false;
+			return true;
+		}
 
 		/// <summary>
 		/// Determines wether this spell can be disabled
