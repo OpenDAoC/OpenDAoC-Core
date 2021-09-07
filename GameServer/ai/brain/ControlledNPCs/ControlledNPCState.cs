@@ -182,7 +182,6 @@ public class ControlledNPCState_PASSIVE : StandardMobState
 
     public override void Enter()
     {
-        Console.WriteLine($"{ _brain.Body} is entering PASSIVE");
         base.Enter();
     }
 

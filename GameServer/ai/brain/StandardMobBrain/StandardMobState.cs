@@ -47,7 +47,10 @@ public class StandardMobState_IDLE : StandardMobState
 
     public override void Enter()
     {
-        Console.WriteLine($"{_brain.Body} is entering IDLE");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"{_brain.Body} is entering IDLE");
+        }
         base.Enter();
     }
 
@@ -160,10 +163,13 @@ public class StandardMobState_AGGRO : StandardMobState
         if (_brain.Body.castingComponent == null) { _brain.Body.castingComponent = new DOL.GS.CastingComponent(_brain.Body); }
         EntityManager.AddComponent(typeof(CastingComponent), _brain.Body);
 
-        Console.WriteLine($"{_brain.Body} is entering AGGRO");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"{_brain.Body} is entering AGGRO");
+        }
         _brain.CheckForProximityAggro = true;
         _brain.AttackMostWanted();
-        
+
         base.Enter();
     }
 
@@ -212,7 +218,10 @@ public class StandardMobState_ROAMING : StandardMobState
 
     public override void Enter()
     {
-        Console.WriteLine($"{_brain.Body} is entering ROAM");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"{_brain.Body} is entering ROAM");
+        }
         base.Enter();
     }
 
@@ -273,7 +282,11 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
 
     public override void Enter()
     {
-        Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
+        }
+
         _brain.ClearAggroList();
         _brain.CheckForProximityAggro = false;
         _brain.Body.WalkToSpawn();
@@ -283,6 +296,9 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     public override void Exit()
     {
         _brain.CheckForProximityAggro = true;
+
+        //_brain.Body.ResetHeading();
+
         base.Exit();
     }
 
@@ -314,7 +330,10 @@ public class StandardMobState_PATROLLING : StandardMobState
 
     public override void Enter()
     {
-        Console.WriteLine($"{_brain.Body} is PATROLLING");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"{_brain.Body} is PATROLLING");
+        }
         _brain.ClearAggroList();
         base.Enter();
     }
@@ -362,7 +381,10 @@ public class StandardMobState_DEAD : StandardMobState
 
     public override void Enter()
     {
-        Console.WriteLine($"{_brain.Body} has entered DEAD state");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"{_brain.Body} has entered DEAD state");
+        }
         _brain.ClearAggroList();
         base.Enter();
     }
