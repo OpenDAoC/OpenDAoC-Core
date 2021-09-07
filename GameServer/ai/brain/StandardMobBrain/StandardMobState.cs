@@ -297,7 +297,7 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     {
         _brain.CheckForProximityAggro = true;
 
-        _brain.Body.ResetHeading();
+        //_brain.Body.ResetHeading();
 
         base.Exit();
     }
