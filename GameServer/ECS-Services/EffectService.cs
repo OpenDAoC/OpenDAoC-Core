@@ -625,7 +625,7 @@ namespace DOL.GS
                                             ((IOldAggressiveBrain)((GameNPC)obj).Brain).RemoveFromAggroList(npc);
                                     }
 
-                                (e.SpellHandler as CharmSpellHandler).m_controlledBrain.ClearAggroList();
+                                (e?.SpellHandler as CharmSpellHandler)?.m_controlledBrain?.ClearAggroList();
                                 npc.StopFollowing();
 
                                 npc.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, npc.CurrentRegion.Time);
@@ -1085,6 +1085,9 @@ namespace DOL.GS
 
         private static void SendPlayerUpdates(GamePlayer player)
         {
+            if (player == null)
+                return;
+
             player.Out.SendCharStatsUpdate();
             player.Out.SendCharResistsUpdate();
             player.Out.SendUpdateWeaponAndArmorStats();
