@@ -115,7 +115,7 @@ namespace ECS.Debug
                 {
                     EventTimeValues = new List<double>();
                     EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
-                    //GameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
+                    GameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
                 }
             }
         }
