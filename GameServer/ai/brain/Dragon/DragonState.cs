@@ -27,7 +27,10 @@ public class DragonState_IDLE : DragonState
 
     public override void Enter()
     {
-        Console.WriteLine($"Dragon {_brain.Body} has entered IDLE");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"Dragon {_brain.Body} has entered IDLE");
+        }
         base.Enter();
     }
 
@@ -82,7 +85,10 @@ public class DragonState_AGGRO : DragonState
 
     public override void Enter()
     {
-        Console.WriteLine($"Dragon {_brain.Body} has entered AGGRO on target {_brain.Body.TargetObject}");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"Dragon {_brain.Body} has entered AGGRO on target {_brain.Body.TargetObject}");
+        }
         base.Enter();
     }
 
@@ -112,7 +118,10 @@ public class DragonState_RETURN_TO_SPAWN : DragonState
 
     public override void Enter()
     {
-        Console.WriteLine($"Dragon {_brain.Body} is returning to spawn");
+        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        {
+            Console.WriteLine($"Dragon {_brain.Body} is returning to spawn");
+        }
         _brain.Body.StopFollowing();
         GameDragon dragon = _brain.Body as GameDragon;
         if (dragon != null)

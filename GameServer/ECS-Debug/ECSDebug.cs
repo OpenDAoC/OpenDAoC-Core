@@ -10,6 +10,7 @@ namespace ECS.Debug
     {
         private static object _GameEventMgrNotifyLock = new object();
         private static bool PerfCountersEnabled = false;
+        private static bool stateMachineDebugEnabled = false;
         private static Dictionary<string, System.Diagnostics.Stopwatch> PerfCounters = new Dictionary<string, System.Diagnostics.Stopwatch>();
 
         private static bool GameEventMgrNotifyProfilingEnabled = false;
@@ -18,10 +19,18 @@ namespace ECS.Debug
         private static System.Diagnostics.Stopwatch GameEventMgrNotifyStopwatch;
         private static Dictionary<string, List<double>> GameEventMgrNotifyTimes = new Dictionary<string, List<double>>();
 
+        public static bool StateMachineDebugEnabled { get => stateMachineDebugEnabled; private set => stateMachineDebugEnabled = value; }
+
         public static void TogglePerfCounters(bool enabled)
         {
             PerfCountersEnabled = enabled;
         }
+
+        public static void ToggleStateMachineDebug(bool enabled)
+        {
+            StateMachineDebugEnabled = enabled;
+        }
+
 
         public static void Tick()
         {
@@ -106,7 +115,7 @@ namespace ECS.Debug
                 {
                     EventTimeValues = new List<double>();
                     EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
-                    GameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
+                    //GameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
                 }
             }
         }
@@ -322,6 +331,51 @@ namespace DOL.GS.Commands
 
             // Finalize
             player.Out.SendCustomTextWindow(header, messages);
+        }
+    }
+
+    [CmdAttribute(
+    "&fsm",
+    ePrivLevel.GM,
+    "Toggle server logging of mob FSM states.",
+    "/fsm debug <on|off> to toggle performance diagnostics logging on server.")]
+    public class StateMachineCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
+        public void OnCommand(GameClient client, string[] args)
+        {
+            if (client == null || client.Player == null)
+            {
+                return;
+            }
+
+            if (IsSpammingCommand(client.Player, "fsm"))
+            {
+                return;
+            }
+
+            // extra check to disallow all but server GM's
+            if (client.Account.PrivLevel < 2)
+                return;
+
+            if (args.Length < 3)
+            {
+                DisplaySyntax(client);
+                return;
+            }
+
+            if (args[1].ToLower().Equals("debug"))
+            {
+                if (args[2].ToLower().Equals("on"))
+                {
+                    ECS.Debug.Diagnostics.ToggleStateMachineDebug(true);
+                    DisplayMessage(client, "Mob state logging turned on.");
+                }
+                else if (args[2].ToLower().Equals("off"))
+                {
+                    ECS.Debug.Diagnostics.ToggleStateMachineDebug(false);
+                    DisplayMessage(client, "Mob state logging turned off.");
+                }
+            }
         }
     }
 }
