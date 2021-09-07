@@ -18,7 +18,7 @@ namespace DOL.GS.Commands
        ePrivLevel.Admin,
        "Shutdown the server in next minute",
        "/shutdown on <hour>:<min>  - shutdown on this time",
-       "/shutdown <mins>  - shutdown in minutes")]
+       "/shutdown <secs>  - shutdown in seconds")]
     public class ShutdownCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         /// <summary>
@@ -30,7 +30,7 @@ namespace DOL.GS.Commands
         private static Timer m_timer;
         private static int m_time = 5;
 
-        public static long getShutdownCounter()
+        public static long GetShutdownCounter()
         {
             return m_counter;
         }
@@ -71,34 +71,35 @@ namespace DOL.GS.Commands
                     if (hours > 3) //hours...
                     {
                         if (mins % 60 == 0 && secs % 60 == 0) //every hour..
-                            client.Out.SendMessage("Server reboot in " + hours + " hours!", eChatType.CT_Staff,
+                            client.Out.SendMessage("Server reboot in " + hours + " hours!", eChatType.CT_Broadcast,
                                               eChatLoc.CL_ChatWindow);
                     }
                     else if (hours > 0) //hours
                     {
                         if (mins % 30 == 0 && secs % 60 == 0) //every 30 mins..
-                            client.Out.SendMessage("Server reboot in " + hours + " hours and " + (mins - (hours * 60)) + "minutes", eChatType.CT_Staff,
+                            client.Out.SendMessage("Server reboot in " + hours + " hours and " + (mins - (hours * 60)) + "mins!", eChatType.CT_Staff,
                                               eChatLoc.CL_ChatWindow);
                     }
                     else if (mins >= 10)
                     {
                         if (mins % 15 == 0 && secs % 60 == 0) //every 15 mins..
-                            client.Out.SendMessage("Server reboot in " + mins + " minutes", eChatType.CT_Staff,
+                            client.Out.SendMessage("Server reboot in " + mins + " mins!", eChatType.CT_Staff,
                                               eChatLoc.CL_ChatWindow);
                     }
                     else if (mins >= 3)
                     {
                         if (secs % 60 == 0) //every min...
-                            client.Out.SendMessage("Server reboot in " + mins + " minutes", eChatType.CT_Staff,
+                            client.Out.SendMessage("Server reboot in " + mins + " mins!", eChatType.CT_Staff,
                                               eChatLoc.CL_ChatWindow);
                     }
-                    else if (secs > 60)
+                    else if (secs >= 30)
                     {
-                        client.Out.SendMessage("Server reboot in " + mins + " minutes (" + secs + " secs)", eChatType.CT_Staff,
-                                             eChatLoc.CL_ChatWindow);
+                        if (secs % 10 == 0) //every 10
+                            client.Out.SendMessage("Server reboot in " + secs + " seconds!", eChatType.CT_Staff,
+                                eChatLoc.CL_ChatWindow);
                     }
                     else
-                        client.Out.SendMessage("Server reboot in " + secs + " seconds. Please logout now.", eChatType.CT_Staff,
+                        client.Out.SendMessage("Server reboot in " + secs + " seconds! Please logout!", eChatType.CT_Staff,
                                              eChatLoc.CL_ChatWindow);
                 }
 
@@ -133,7 +134,7 @@ namespace DOL.GS.Commands
                 {
                     try
                     {
-                        m_counter = System.Convert.ToInt32(args[1]) * 60;
+                        m_counter = System.Convert.ToInt32(args[1]);
                     }
                     catch (Exception)
                     {
