@@ -10,7 +10,7 @@
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <OutputType>WinExe</OutputType>
         <AssemblyName>DOLConfig</AssemblyName>
-        <ApplicationIcon>..\..\DOLConfig\icon.ico</ApplicationIcon>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
         <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
         <MapFileExtensions>true</MapFileExtensions>
         <ApplicationRevision>0</ApplicationRevision>
@@ -46,20 +46,20 @@
         <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Update="..\..\DOLConfig\DOLConfig.cs" />
-        <Compile Update="..\..\DOLConfig\ExtraPropertiesEditor.cs" />
-        <Compile Update="..\..\DOLConfig\RegExTextBox.cs" />
-        <Compile Update="..\..\DOLConfig\ServerProperties.cs" />
-        <None Include="..\..\DOLConfig\serverconfig_extraproperties.xml">
+        <Compile Update="DOLConfig.cs" />
+        <Compile Update="ExtraPropertiesEditor.cs" />
+        <Compile Update="RegExTextBox.cs" />
+        <Compile Update="ServerProperties.cs" />
+        <None Include="serverconfig_extraproperties.xml">
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
-        <Content Include="..\..\DOLConfig\icon.ico" />
-        <Compile Include="..\..\DOLConfig\**\*.cs" />
-        <EmbeddedResource Include="..\..\DOLConfig\**\*.resx" />
-        <None Include="..\..\DOLConfig\DOLConfig.exe.config">
+        <Content Include="icon.ico" />
+        <Compile Include=".\**\*.cs" />
+        <EmbeddedResource Include=".\**\*.resx" />
+        <None Include="DOLConfig.exe.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <XmlFiles Include="..\..\DOLConfig\**\*.xml" />
+        <XmlFiles Include=".\**\*.xml" />
     </ItemGroup>
     <Target Name="CopyFiles" AfterTargets="AfterBuild">
         <Copy

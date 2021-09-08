@@ -39,10 +39,10 @@
     <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\GameServer\**\*.cs" />
-    <Compile Remove="..\..\GameServer\gameutils\DOLScriptCompiler.cs" />
-    <EmbeddedResource Include="..\..\GameServer\config\*" />
-    <TranslationFiles Include="..\..\GameServer\language\**\*.txt" />
+    <Compile Include=".\**\*.cs" />
+    <Compile Remove=".\gameutils\DOLScriptCompiler.cs" />
+    <EmbeddedResource Include=".\config\*" />
+    <TranslationFiles Include=".\language\**\*.txt" />
   </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
     <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />

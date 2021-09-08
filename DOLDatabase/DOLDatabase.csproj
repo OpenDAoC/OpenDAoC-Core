@@ -37,7 +37,7 @@
         <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.2" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="..\..\DOLDatabase\**\*.cs" />
+        <Compile Include=".\**\*.cs" />
     </ItemGroup>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

@@ -34,7 +34,7 @@
         <PackageReference Include="log4net" Version="2.0.12" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="..\..\DOLBase\**\*.cs" />
+        <Compile Include=".\**\*.cs" />
     </ItemGroup>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
