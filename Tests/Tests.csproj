@@ -41,7 +41,6 @@
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include=".\**\*.cs" />
         <ScriptFiles Include="..\GameServerScripts\**\*.cs" />
         <DbUpdaterFiles Include="..\GameServerScripts\dbupdater\**\*.xml" />
         <TranslationFiles Include="..\GameServer\language\**\*.txt" />

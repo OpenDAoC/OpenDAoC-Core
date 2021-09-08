@@ -37,9 +37,6 @@
         <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
     </ItemGroup>
-    <ItemGroup>
-        <Compile Include=".\**\*.cs"></Compile>
-    </ItemGroup>
     <Target Name="CopyFiles" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(Compile)" DestinationFiles="@(Compile->'$(MSBuildProjectDirectory)\..\$(Configuration)\scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
         <!-- <Copy 

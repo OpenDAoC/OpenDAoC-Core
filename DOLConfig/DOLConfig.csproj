@@ -54,7 +54,6 @@
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
         <Content Include="icon.ico" />
-        <Compile Include=".\**\*.cs" />
         <EmbeddedResource Include=".\**\*.resx" />
         <None Include="DOLConfig.exe.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

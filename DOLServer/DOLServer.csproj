@@ -41,7 +41,6 @@
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include=".\**\*.cs" />
         <Content Include=".\config\serverconfig.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

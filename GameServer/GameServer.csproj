@@ -39,8 +39,6 @@
     <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include=".\**\*.cs" />
-    <Compile Remove=".\gameutils\DOLScriptCompiler.cs" />
     <EmbeddedResource Include=".\config\*" />
     <TranslationFiles Include=".\language\**\*.txt" />
   </ItemGroup>
