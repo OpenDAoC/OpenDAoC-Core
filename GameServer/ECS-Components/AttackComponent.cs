@@ -1742,7 +1742,8 @@ namespace DOL.GS
             //			BerserkEffect berserk = null;
 
             // get all needed effects in one loop
-            owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out ecsbladeturn);
+            owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out List<ECSGameEffect> btlist);
+            ecsbladeturn = btlist?.FirstOrDefault();
 
             lock (owner.EffectList)
             {
