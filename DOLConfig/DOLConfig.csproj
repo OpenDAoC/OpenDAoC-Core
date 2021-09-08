@@ -54,11 +54,9 @@
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
         <Content Include="icon.ico" />
-        <EmbeddedResource Include=".\**\*.resx" />
         <None Include="DOLConfig.exe.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <XmlFiles Include=".\**\*.xml" />
     </ItemGroup>
     <Target Name="CopyFiles" AfterTargets="AfterBuild">
         <Copy
