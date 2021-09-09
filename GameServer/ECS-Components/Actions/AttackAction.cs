@@ -156,9 +156,9 @@ namespace DOL.GS
                         int PALevel = owner.GetAbilityLevel(Abilities.PenetratingArrow);
                         if ((PALevel > 0) && (owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
                         {
-                            ECSGameEffect bladeturn = null;
-                            ((GameLiving)attackTarget).effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out bladeturn);
-
+                            
+                            ((GameLiving)attackTarget).effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturns);
+                            ECSGameEffect bladeturn = bladeturns.FirstOrDefault();
                             //GameSpellEffect bladeturn = null;
                             //lock (((GameLiving)attackTarget).EffectList)
                             //{
