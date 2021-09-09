@@ -217,8 +217,9 @@ namespace DOL.GS
 
                     ticksToTarget = 1;
                 }
+                int addRange = combatStyle?.Procs?.FirstOrDefault().Item1.SpellType == (byte)eSpellType.StyleRange ? (int)combatStyle.Procs.FirstOrDefault().Item1.Value - owner.attackComponent.AttackRange : 0;
 
-                if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.attackComponent.AttackRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.attackComponent.AttackRange + addRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
                     if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain && ((owner as GameNPC).Brain as StandardMobBrain).AggroTable.Count > 0 && (owner as GameNPC).Brain is IControlledBrain == false)
                     {

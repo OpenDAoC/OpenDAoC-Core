@@ -1240,6 +1240,8 @@ namespace DOL.GS
             ad.Weapon = weapon;
             ad.IsOffHand = weapon == null ? false : weapon.Hand == 2;
 
+            // Asp style range add
+            int addRange = style?.Procs?.FirstOrDefault().Item1.SpellType == (byte)eSpellType.StyleRange ? (int)style.Procs.FirstOrDefault().Item1.Value - AttackRange: 0;
 
             if (dualWield)
                 ad.AttackType = AttackData.eAttackType.MeleeDualWield;
@@ -1283,7 +1285,7 @@ namespace DOL.GS
                 return ad;
             }
             //We have no attacking distance!
-            if (!owner.IsWithinRadius(ad.Target, ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard ? Math.Max(AttackRange, ad.Target.attackComponent.AttackRange) : AttackRange))
+            if (!owner.IsWithinRadius(ad.Target, ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard ? Math.Max(AttackRange + addRange, ad.Target.attackComponent.AttackRange + addRange) : AttackRange + addRange))
             {
                 ad.AttackResult = eAttackResult.OutOfRange;
                 return ad;
