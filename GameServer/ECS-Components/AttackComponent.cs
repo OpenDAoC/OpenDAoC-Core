@@ -1241,7 +1241,7 @@ namespace DOL.GS
             ad.IsOffHand = weapon == null ? false : weapon.Hand == 2;
 
             // Asp style range add
-            int addRange = style?.Procs?.FirstOrDefault().Item1.SpellType == (byte)eSpellType.StyleRange ? (int)style.Procs.FirstOrDefault().Item1.Value - AttackRange: 0;
+            int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)style?.Procs?.FirstOrDefault()?.Item1.Value - AttackRange: 0;
 
             if (dualWield)
                 ad.AttackType = AttackData.eAttackType.MeleeDualWield;
