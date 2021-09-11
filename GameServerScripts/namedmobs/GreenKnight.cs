@@ -33,9 +33,10 @@ namespace DOL.GS.Scripts
 			this.GuildName = "";
 			this.Model = 380;
 			this.Size = 120;
-			this.Level = 60;
+			this.Level = 75;
 			this.EquipmentTemplateID = "Green";
-			this.Realm = eRealm.Albion;
+			this.Realm = eRealm.None;
+			this.Faction = FactionMgr.GetFactionByID(62);
 			base.AddToWorld();
 			return true;
 		}
