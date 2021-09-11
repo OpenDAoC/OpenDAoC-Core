@@ -36,6 +36,7 @@ namespace DOL.GS.Scripts
 			this.Level = 75;
 			this.EquipmentTemplateID = "Green";
 			this.Realm = eRealm.None;
+			Flags &= eFlags.PEACE;
 			this.Faction = FactionMgr.GetFactionByID(62);
 			base.AddToWorld();
 			return true;
