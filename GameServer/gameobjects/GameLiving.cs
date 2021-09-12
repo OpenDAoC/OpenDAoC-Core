@@ -5232,6 +5232,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartPowerRegeneration()
 		{
+			
 			if (ObjectState != eObjectState.Active)
 				return;
 			lock (m_regenTimerLock)
@@ -5378,12 +5379,16 @@ namespace DOL.GS
 		/// <param name="selfRegenerationTimer">timer calling this function</param>
 		protected virtual int PowerRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
 		{
+			
 			if (this is GamePlayer &&
 			    (((GamePlayer)this).CharacterClass.ID == (int)eCharacterClass.Vampiir ||
 			     (((GamePlayer)this).CharacterClass.ID > 59 && ((GamePlayer)this).CharacterClass.ID < 63))) // Maulers
 			{
 				double MinMana = MaxMana * 0.15;
 				double OnePercMana = Math.Ceiling(MaxMana * 0.01);
+				log.WarnFormat("current MaxMana is {0} and OnePercMana is {1}", MaxMana, OnePercMana);
+
+				
 
 				if (!InCombat)
 				{
@@ -5420,6 +5425,20 @@ namespace DOL.GS
 			{
 				return (int)(PowerRegenerationPeriod * 3.4);
 			}
+
+			
+			#region Calculation : AtlasOF_Serenity
+			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------
+			AtlasOF_SerenityAbility raSerenity = GetAbility<AtlasOF_SerenityAbility>();
+			if (raSerenity != null)
+			{
+				if (raSerenity.Level > 0)
+				{
+					return PowerRegenerationPeriod - (raSerenity.GetAmountForLevel(raSerenity.Level));
+				}
+			}
+			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------
+			#endregion
 
 			//regen at standard rate
 			return PowerRegenerationPeriod;
