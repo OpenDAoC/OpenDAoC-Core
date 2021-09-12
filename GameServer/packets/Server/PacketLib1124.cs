@@ -3816,7 +3816,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte((byte)ra.CostForUpgrade(i));
 
 					if (ra.CheckRequirement(m_gameClient.Player))
-						pak.WritePascalString(ra.KeyName);
+						pak.WritePascalString(ra.Name);
 					else
 						pak.WritePascalString(string.Format("[{0}]", ra.Name));
 				}
