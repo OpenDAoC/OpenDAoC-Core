@@ -28,9 +28,24 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
+				// Is Quickcast actually on Cooldown?
+				if (player.GetSkillDisabledDuration(player.GetAbility(Abilities.Quickcast)) > 0)
+                {
+                    player.TempProperties.setProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, 0);
+                    player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
+                    DisableSkill(living);
+
+					// Force the icon in the client to re-enable by updating its disabled time to 1ms
+                    var disables = new List<Tuple<Skill, int>>();
+                    disables.Add(new Tuple<Skill, int>(player.GetAbility(Abilities.Quickcast), 1));
+                    player.Out.SendDisableSkill(disables);
+                }
+                else
+                {
+					// Disable for only 5s if no Quickcast cooldown was actually consumed
+					player.DisableSkill(this, 5000);
+                }
 			}
-			DisableSkill(living);
 		}
 
 		public override int GetReUseDelay(int level)
