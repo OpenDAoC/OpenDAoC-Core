@@ -148,7 +148,7 @@ namespace DOL.GS.Spells
             if (moc != null)
             {
                 GamePlayer playerCaster = Caster as GamePlayer;
-                MasteryofConcentrationAbility ra = playerCaster.GetAbility<MasteryofConcentrationAbility>();
+                AtlasOF_MasteryofConcentration ra = playerCaster.GetAbility<AtlasOF_MasteryofConcentration>();
                 if (ra != null)
                 	mocFactor = (double)ra.GetAmountForLevel(ra.Level) / 100.0;
                 amount = amount * mocFactor;
