@@ -461,7 +461,8 @@ namespace DOL.GS
                                         if (!e.Owner.InCombat)
                                         {
                                             Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                            e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
+                                            //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
+                                            e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.EffectType, e.SpellHandler.Spell.Value / 100.0);
                                             Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                             (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
                                         }
@@ -520,7 +521,9 @@ namespace DOL.GS
                 return;
             }
             if (!e.IsBuffActive)
-            { }
+            {
+                Console.WriteLine("Buff not active! {0} on {1}", e.SpellHandler.Spell.Name, e.Owner.Name);
+            }
             else if (e.EffectType != eEffect.Pulse)
             {
                 if (!(e is ECSImmunityEffect) )
@@ -777,10 +780,14 @@ namespace DOL.GS
 
                                 if (e.EffectType == eEffect.MovementSpeedBuff)
                                 {
-                                    Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                    e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
-                                    Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                    (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                                    if (e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed) == e.SpellHandler.Spell.Value)
+                                    {
+                                        Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                                        //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                                        e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
+                                        Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                                        (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                                    }
                                 }
                                 else if (e.EffectType == eEffect.EnduranceRegenBuff)
                                 {

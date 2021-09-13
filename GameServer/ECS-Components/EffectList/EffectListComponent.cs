@@ -64,7 +64,8 @@ namespace DOL.GS
                                     if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
                                         effect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
                                     {
-                                        if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing)
+                                        if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing ||
+                                            effect.SpellHandler.Spell.IsConcentration || effect.SpellHandler.Spell.IsPulsing)
                                             EffectService.RequestDisableEffect(existingEffects[i], true);
                                         else
                                             EffectService.RequestCancelEffect(existingEffects[i]);
@@ -170,7 +171,7 @@ namespace DOL.GS
 
                             if (Effects[effect.EffectType].Count > 0)
                             {
-                                if (Effects[effect.EffectType].FirstOrDefault().IsDisabled)
+                                if (Effects[effect.EffectType].OrderBy(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
                                     EffectService.RequestDisableEffect(Effects[effect.EffectType].FirstOrDefault(), false);
                                 //foreach (var eff in Effects[effect.EffectType])
                                 //EffectService.RequestDisableEffect()
