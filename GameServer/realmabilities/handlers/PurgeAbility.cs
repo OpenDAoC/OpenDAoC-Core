@@ -69,7 +69,7 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
-        protected static bool RemoveNegativeEffects(GameLiving living, PurgeAbility purge)
+        protected static bool RemoveNegativeEffects(GameLiving living, PurgeAbility purge, bool isFromGroupPurge = false)
         {
             bool removed = false;
             ArrayList effects = new ArrayList();
@@ -143,7 +143,7 @@ namespace DOL.GS.RealmAbilities
                 {
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.RemoveNegativeEffects.FallFromYou"), eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
                 }
-                else
+                else if (!isFromGroupPurge)
                 {
                     player.DisableSkill(purge, 5);
                 }
