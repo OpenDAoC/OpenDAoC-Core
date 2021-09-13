@@ -9,6 +9,7 @@ using DOL.GS.PropertyCalc;
 using DOL.GS.ServerProperties;
 using DOL.GS.SpellEffects;
 using DOL.GS.Spells;
+using DOL.Language;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -836,6 +837,16 @@ namespace DOL.GS
         /// </summary>
         public static void RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
+            // Player can't remove negative effect or Effect in Immunity State
+            if (playerCanceled && ((effect.SpellHandler != null && !effect.SpellHandler.HasPositiveEffect) || effect is ECSImmunityEffect))
+            {
+                GamePlayer player = effect.Owner as GamePlayer;
+                if (player != null)
+                    player.Out.SendMessage(LanguageMgr.GetTranslation((effect.Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                return;
+            }
+
             // playerCanceled param isn't used but it's there in case we eventually want to...
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
