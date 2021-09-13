@@ -1,6 +1,7 @@
 using System;
 
 using DOL.GS.Keeps;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -16,6 +17,8 @@ namespace DOL.GS.PropertyCalc
 	[PropertyCalculator(eProperty.MaxHealth)]
 	public class MaxHealthCalculator : PropertyCalculator
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
 			if (living is GamePlayer)
@@ -35,7 +38,22 @@ namespace DOL.GS.PropertyCalc
                 }
 				int abilityBonus = living.AbilityBonus[(int)property];
 
-				return Math.Max(hpBase + itemBonus + buffBonus + abilityBonus, 1); // at least 1
+				#region Calculation : AtlasOF_Thoughness
+				// --- [START] --- AtlasOF_Thoughness ---------------------------------------------------------
+				int raToughnessAmount = 0;
+				AtlasOF_ToughnessAbility raToughness = living.GetAbility<AtlasOF_ToughnessAbility>();
+
+				if (raToughness != null)
+                {
+					if (raToughness.Level > 0)
+                    {
+						raToughnessAmount += (hpBase * raToughness.Level) / 100;
+					}
+                }
+                // --- [ END ] --- AtlasOF_Thoughness ---------------------------------------------------------
+                #endregion
+
+                return Math.Max(hpBase + itemBonus + buffBonus + abilityBonus + raToughnessAmount, 1); // at least 1
 			}
 			else if ( living is GameKeepComponent )
 			{

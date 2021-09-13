@@ -2662,7 +2662,7 @@ namespace DOL.GS.Spells
 
 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
 			{
-				MasteryofConcentrationAbility ra = Caster.GetAbility<MasteryofConcentrationAbility>();
+				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
 				if (ra != null && ra.Level > 0)
 				{
 					effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
@@ -2674,7 +2674,7 @@ namespace DOL.GS.Spells
 			{
 				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
 				{
-					MasteryofConcentrationAbility necroRA = (Caster as NecromancerPet).Owner.GetAbility<MasteryofConcentrationAbility>();
+					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
 					if (necroRA != null && necroRA.Level > 0)
 					{
 						effectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);

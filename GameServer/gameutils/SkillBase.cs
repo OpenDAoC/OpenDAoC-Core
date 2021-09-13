@@ -2295,16 +2295,18 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-						
-			return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().OrderByDescending(el => el.MaxLevel).ThenBy(el => el.KeyName).ToList();
-		}
 
-		/// <summary>
-		/// Return this character class RR5 Ability Level 1 or null
-		/// </summary>
-		/// <param name="charclass"></param>
-		/// <returns></returns>
-		public static Ability GetClassRR5Ability(int charclass)
+            /// [Atlas - Takii] Order RAs by their PrimaryKey in the DB so we have control over their order, instead of base DOL implementation.
+            //return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().OrderByDescending(el => el.MaxLevel).ThenBy(el => el.KeyName).ToList();
+            return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().ToList();
+        }
+
+        /// <summary>
+        /// Return this character class RR5 Ability Level 1 or null
+        /// </summary>
+        /// <param name="charclass"></param>
+        /// <returns></returns>
+        public static Ability GetClassRR5Ability(int charclass)
 		{
 			return GetClassRealmAbilities(charclass).Where(ab => ab is RR5RealmAbility).FirstOrDefault();
 		}

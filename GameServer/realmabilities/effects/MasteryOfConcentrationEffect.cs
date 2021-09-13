@@ -14,8 +14,8 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// Default constructor for MasteryofConcentrationEffect
 		/// </summary>
-		public MasteryofConcentrationEffect()
-			: base(RealmAbilities.MasteryofConcentrationAbility.Duration)
+		public MasteryofConcentrationEffect(int Duration)
+			: base(Duration)
 		{
 		}
 

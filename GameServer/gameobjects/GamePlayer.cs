@@ -2453,14 +2453,20 @@ namespace DOL.GS
 				int longwind = 5;
 				if (sprinting && IsMoving)
 				{
-					//TODO : cache LongWind level when char is loaded and on train ability
-					LongWindAbility ra = GetAbility<LongWindAbility>();
-					if (ra != null)
-						longwind = 5 - (ra.GetAmountForLevel(CalculateSkillLevel(ra)) * 5 / 100);
+					#region Calculation : AtlasOF_LongWind
+					// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+					AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
+					if (raLongWind != null)
+                    {
+						longwind = 6 - (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
+					}
+                    // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+                    #endregion
 
-					regen -= longwind;
+                    regen -= longwind;
 					
 					if (endchant > 1) regen = (int)Math.Ceiling(regen * endchant * 0.01);
+					
 					if (Endurance + regen > MaxEndurance - longwind)
 					{
 						regen -= (Endurance + regen) - (MaxEndurance - longwind);
@@ -2589,9 +2595,22 @@ namespace DOL.GS
 				maxpower = 100; // This is a guess, need feedback
 			}
 
-			if (maxpower < 0)
-				maxpower = 0;
+			#region Calculation : AtlasOF_EtheralBond
+			// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+			AtlasOF_EtherealBondAbility raEtherealBond = GetAbility<AtlasOF_EtherealBondAbility>();
+			if (raEtherealBond != null)
+			{
+				if (raEtherealBond.Level > 0)
+                {
+					maxpower += (maxpower * raEtherealBond.Level) / 100;
+				}
+			}
+            // --- [ END ] --- AtlasOF_EtherealBond --------------------------------------------------------
+            #endregion
 
+            if (maxpower < 0)
+				maxpower = 0;
+			
 			return maxpower;
 		}
 
@@ -11172,7 +11191,7 @@ namespace DOL.GS
 			get
 			{
 				double enc = (double)Strength;
-				RAPropertyEnhancer ab = GetAbility<LifterAbility>();
+				RAPropertyEnhancer ab = GetAbility<AtlasOF_LifterAbility>();
 				if (ab != null)
 					enc *= 1 + ((double)ab.Amount / 100);
 

@@ -59,7 +59,7 @@ namespace DOL.GS.PropertyCalc
 			else if (living is GamePet pet)
 			{
 				if (pet.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player
-					&& player.GetAbility<RealmAbilities.WildMinionAbility>() is RealmAbilities.WildMinionAbility raWM)
+					&& player.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>() is RealmAbilities.AtlasOF_WildMinionAbility raWM)
 					chance += raWM.Amount;
 			}
 			else // not a pet

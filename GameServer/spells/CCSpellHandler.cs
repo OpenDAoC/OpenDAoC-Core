@@ -124,9 +124,9 @@ namespace DOL.GS.Spells
 			MasteryofConcentrationEffect moc = Caster.EffectList.GetOfType<MasteryofConcentrationEffect>();
 			if (moc != null)
 			{
-				MasteryofConcentrationAbility ra = Caster.GetAbility<MasteryofConcentrationAbility>();
+				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
 				if (ra != null)
-					mocFactor = System.Math.Round((double)ra.GetAmountForLevel(ra.Level) * 25 / 100, 2);
+					mocFactor = System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
 				duration = (double)Math.Round(duration * mocFactor);
 			}
 
