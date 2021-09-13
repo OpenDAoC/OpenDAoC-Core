@@ -110,11 +110,11 @@ namespace DOL.GS.Spells
             {
                 ApplyEffectOnTarget(target, 1);
             }
-            if (Spell.IsPulsing)
-            {
-                CreateECSPulseEffect(Caster, 1);
-                Caster.LastPulseCast = Spell;
-            }
+            //if (Spell.IsPulsing)
+            //{
+            //    CreateECSPulseEffect(Caster, 1);
+            //    Caster.LastPulseCast = Spell;
+            //}
             return true;
         }
 

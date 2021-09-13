@@ -794,7 +794,19 @@ namespace DOL.GS
                         }
                     }
                 }
-            }           
+            }
+
+            if (e.EffectType == eEffect.Pulse && e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
+            {
+                List<ECSGameEffect> charmEffects = new List<ECSGameEffect>();
+                if ((bool)(e?.SpellHandler as CharmSpellHandler)?.m_controlledBrain?.Body?.effectListComponent?.Effects.TryGetValue(eEffect.Charm, out charmEffects))
+                {
+                    var charmEffect = charmEffects?.FirstOrDefault();
+                    if (charmEffect != null)
+                        charmEffect.ExpireTick = 0;
+                }
+            }
+
             e.IsBuffActive = false;
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
