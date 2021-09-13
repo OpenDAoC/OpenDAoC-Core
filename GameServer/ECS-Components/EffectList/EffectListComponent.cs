@@ -171,8 +171,8 @@ namespace DOL.GS
 
                             if (Effects[effect.EffectType].Count > 0)
                             {
-                                if (Effects[effect.EffectType].OrderBy(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
-                                    EffectService.RequestDisableEffect(Effects[effect.EffectType].FirstOrDefault(), false);
+                                if (Effects[effect.EffectType].OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
+                                    EffectService.RequestDisableEffect(Effects[effect.EffectType].OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault(), false);
                                 //foreach (var eff in Effects[effect.EffectType])
                                 //EffectService.RequestDisableEffect()
                             }
