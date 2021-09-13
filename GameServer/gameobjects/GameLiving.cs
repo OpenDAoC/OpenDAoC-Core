@@ -4045,8 +4045,7 @@ namespace DOL.GS
         public void OnAttack(AttackData ad = null)
         {
             if (effectListComponent is null)
-                return;
-
+                return;            
             
             // Cancel MoveSpeedBuff
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff) && ad != null)

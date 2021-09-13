@@ -457,10 +457,13 @@ namespace DOL.GS
 
                                     if (e.EffectType == eEffect.MovementSpeedBuff)
                                     {
-                                        Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                        e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
-                                        Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                        (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                                        if (!e.Owner.InCombat)
+                                        {
+                                            Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                                            e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
+                                            Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                                            (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
+                                        }
                                     }
                                     else if (e.EffectType == eEffect.EnduranceRegenBuff)
                                     {
@@ -791,7 +794,7 @@ namespace DOL.GS
                         }
                     }
                 }
-            }
+            }           
             e.IsBuffActive = false;
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
