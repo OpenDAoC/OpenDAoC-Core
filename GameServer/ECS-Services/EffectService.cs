@@ -780,7 +780,7 @@ namespace DOL.GS
 
                                 if (e.EffectType == eEffect.MovementSpeedBuff)
                                 {
-                                    if (e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed) == e.SpellHandler.Spell.Value)
+                                    if (e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed) == e.SpellHandler.Spell.Value || e.Owner.InCombat)
                                     {
                                         Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                         //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
@@ -807,7 +807,7 @@ namespace DOL.GS
             if (e.EffectType == eEffect.Pulse && e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
             {
                 List<ECSGameEffect> charmEffects = new List<ECSGameEffect>();
-                if ((bool)(e?.SpellHandler as CharmSpellHandler)?.m_controlledBrain?.Body?.effectListComponent?.Effects.TryGetValue(eEffect.Charm, out charmEffects))
+                if ((bool)(e?.SpellHandler as CharmSpellHandler)?.m_controlledBrain?.Body?.effectListComponent?.Effects?.TryGetValue(eEffect.Charm, out charmEffects))
                 {
                     var charmEffect = charmEffects?.FirstOrDefault();
                     if (charmEffect != null)
