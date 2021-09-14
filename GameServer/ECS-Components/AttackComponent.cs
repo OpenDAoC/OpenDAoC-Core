@@ -96,7 +96,7 @@ namespace DOL.GS
             {               
                 attackAction.Tick(time);
             }
-            else
+            if (weaponAction is null && attackAction is null)
             {
                 if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
                     EntityManager.RemoveComponent(typeof(AttackComponent), owner);
