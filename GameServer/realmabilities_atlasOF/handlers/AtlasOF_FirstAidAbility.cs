@@ -49,8 +49,7 @@ namespace DOL.GS.RealmAbilities
 
 			int currentLevelAbility = living.GetAbility<AtlasOF_FirstAidAbility>().Level;
 			int currentCharMaxHealth = living.MaxHealth;
-			int currentCharHealth = living.Health;
-
+			
 			// Minor % based Self Heal -  30 / lvl
 			healAmount = ((currentLevelAbility * 30) * currentCharMaxHealth) / 100;
 			log.InfoFormat("healAmount is {0}", healAmount);
