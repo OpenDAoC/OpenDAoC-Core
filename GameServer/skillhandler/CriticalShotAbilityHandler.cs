@@ -56,7 +56,7 @@ namespace DOL.GS.SkillHandler
 			if (trueshot != null)
 				trueshot.Cancel(false);
 
-			if (player.AttackState)
+			if (player.attackComponent.AttackState)
 			{
 				if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
 				{

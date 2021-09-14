@@ -158,7 +158,7 @@ namespace DOL.GS
                         {
                             
                             ((GameLiving)attackTarget).effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturns);
-                            ECSGameEffect bladeturn = bladeturns.FirstOrDefault();
+                            ECSGameEffect bladeturn = bladeturns?.FirstOrDefault();
                             //GameSpellEffect bladeturn = null;
                             //lock (((GameLiving)attackTarget).EffectList)
                             //{

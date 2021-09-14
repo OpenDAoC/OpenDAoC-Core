@@ -69,14 +69,14 @@ namespace DOL.AI.Brain
 					
 				}
 
-				if (guard.AttackState && guard.CanUseRanged)
+				if (guard.attackComponent.AttackState && guard.CanUseRanged)
 				{
 					guard.SwitchToRanged(guard.TargetObject);
 				}
 			}
 
 			//if we are not doing an action, let us see if we should move somewhere
-			if (guard.CurrentSpellHandler == null && !guard.IsMoving && !guard.AttackState && !guard.InCombat)
+			if (guard.CurrentSpellHandler == null && !guard.IsMoving && !guard.attackComponent.AttackState && !guard.InCombat)
 			{
 				// Tolakram - always clear the aggro list so if this is done by mistake the list will correctly re-fill on next think
 				ClearAggroList();
@@ -102,7 +102,7 @@ namespace DOL.AI.Brain
 			}
 
 			// We want guards to check aggro even when they are returning home, which StandardMobBrain does not, so add checks here
-			if (guard.CurrentSpellHandler == null && !guard.AttackState && !guard.InCombat)
+			if (guard.CurrentSpellHandler == null && !guard.attackComponent.AttackState && !guard.InCombat)
 			{
 				CheckPlayerAggro();
 				CheckNPCAggro();
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void CheckPlayerAggro()
 		{
-			if (Body.AttackState || Body.CurrentSpellHandler != null)
+			if (Body.attackComponent.AttackState || Body.CurrentSpellHandler != null)
 			{
 				return;
 			}
@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void CheckNPCAggro()
 		{
-			if (Body.AttackState || Body.CurrentSpellHandler != null)
+			if (Body.attackComponent.AttackState || Body.CurrentSpellHandler != null)
 				return;
 
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))

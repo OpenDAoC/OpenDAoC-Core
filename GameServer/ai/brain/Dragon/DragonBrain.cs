@@ -125,7 +125,7 @@ namespace DOL.AI.Brain
 
 		public override void CheckNPCAggro()
 		{
-			if (Body.AttackState)
+			if (Body.attackComponent.AttackState)
 				return;
 
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))

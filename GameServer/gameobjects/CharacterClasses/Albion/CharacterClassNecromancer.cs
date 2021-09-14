@@ -156,7 +156,7 @@ namespace DOL.GS
 						if (obj is GameNPC)
 						{
 							GameNPC npc = (GameNPC) obj;
-							if (npc.TargetObject == Player && npc.AttackState)
+							if (npc.TargetObject == Player && npc.attackComponent.AttackState)
 							{
 								IOldAggressiveBrain brain = npc.Brain as IOldAggressiveBrain;
 								if (brain != null)

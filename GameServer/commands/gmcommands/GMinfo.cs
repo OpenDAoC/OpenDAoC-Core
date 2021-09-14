@@ -248,11 +248,11 @@ namespace DOL.GS.Commands
 					}
 
 					info.Add("InCombat: " + target.InCombat);
-					info.Add("AttackState: " + target.AttackState);
+					info.Add("AttackState: " + target.attackComponent.AttackState);
 					info.Add("LastCombatPVE: " + target.LastAttackedByEnemyTickPvE);
 					info.Add("LastCombatPVP: " + target.LastAttackedByEnemyTickPvP);
 
-					if (target.InCombat || target.AttackState)
+					if (target.InCombat || target.attackComponent.AttackState)
 						info.Add("RegionTick: " + target.CurrentRegion.Time);
 
 					info.Add("");

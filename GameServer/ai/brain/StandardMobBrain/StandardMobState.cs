@@ -115,7 +115,7 @@ public class StandardMobState_WAKING_UP : StandardMobState
         //Console.WriteLine($"{_brain.Body} is WAKING_UP");
         //if allowed to roam,
         //set state == ROAMING
-        if (!_brain.Body.AttackState && _brain.CanRandomWalk)
+        if (!_brain.Body.attackComponent.AttackState && _brain.CanRandomWalk)
         {
             _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
             return;
@@ -175,7 +175,7 @@ public class StandardMobState_AGGRO : StandardMobState
 
     public override void Exit()
     {
-        if (_brain.Body.AttackState)
+        if (_brain.Body.attackComponent.AttackState)
             _brain.Body.StopAttack();
 
         _brain.Body.TargetObject = null;

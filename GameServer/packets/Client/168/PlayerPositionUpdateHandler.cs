@@ -650,7 +650,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak.WriteByte(flagcontent);
 
 			// Write health + Attack
-			outpak.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 
 			// Write Remainings.
 			outpak.WriteByte(client.Player.ManaPercent);
@@ -696,7 +696,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(playerAction);
 			outpak1124.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1124.WriteByte(0);
-			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1124.WriteByte(client.Player.ManaPercent);
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WritePacketLength();
@@ -1195,7 +1195,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(playerOutAction);
 			outpak1124.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1124.WriteByte(0);
-			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1124.WriteByte(client.Player.ManaPercent);
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WritePacketLength();
@@ -1210,7 +1210,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1127.WriteByte(playerOutAction);
 			outpak1127.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1127.WriteByte(0);
-			outpak1127.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1127.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1127.WriteByte(client.Player.ManaPercent);
 			outpak1127.WriteByte(client.Player.EndurancePercent);
 			outpak1127.WriteShort(0);
@@ -1228,7 +1228,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak190.WriteShort(newHeading);
 			outpak190.WriteShort(steedSeatPosition);
 			outpak190.WriteByte(playerAction);
-			outpak190.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak190.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak190.WriteByte(client.Player.ManaPercent);
 			outpak190.WriteByte(client.Player.EndurancePercent);
 

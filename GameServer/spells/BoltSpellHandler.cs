@@ -222,7 +222,7 @@ namespace DOL.GS.Spells
 							if (target.IsEngaging)
 							{
 								EngageEffect engage = target.EffectList.GetOfType<EngageEffect>();
-								if (engage != null && target.AttackState && engage.EngageTarget == caster)
+								if (engage != null && target.attackComponent.AttackState && engage.EngageTarget == caster)
 								{
 									// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate							
 									// You cannot engage a mob that was attacked within the last X seconds...

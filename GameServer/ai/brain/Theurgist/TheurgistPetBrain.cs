@@ -163,7 +163,7 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (this is IControlledBrain && !Body.AttackState)
+			if (this is IControlledBrain && !Body.attackComponent.AttackState)
 				((IControlledBrain)this).Follow(((IControlledBrain)this).Owner);
 			return casted;
 		}

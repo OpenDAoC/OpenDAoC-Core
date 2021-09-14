@@ -517,7 +517,7 @@ namespace DOL.GS
 		/// </summary>
 		private void Empower()
 		{
-			if (AttackState) return;
+			if (attackComponent.AttackState) return;
 
 			SpellLine buffLine = SkillBase.GetSpellLine(PetInstaSpellLine);
 			if (buffLine == null)

@@ -2296,7 +2296,7 @@ namespace DOL.GS.PacketHandler
 				}
 
 				GameObject target = npc.TargetObject;
-				if (npc.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
+				if (npc.attackComponent.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
 					targetOID = (ushort)target.ObjectID;
 			}
 

@@ -3080,11 +3080,11 @@ namespace DOL.GS.Commands
 			}
 
 			text.Add("InCombat: " + targetMob.InCombat);
-			text.Add("AttackState: " + targetMob.AttackState);
+			text.Add("AttackState: " + targetMob.attackComponent.AttackState);
 			text.Add("LastCombatPVE: " + targetMob.LastAttackedByEnemyTickPvE);
 			text.Add("LastCombatPVP: " + targetMob.LastAttackedByEnemyTickPvP);
 
-			if (targetMob.InCombat || targetMob.AttackState)
+			if (targetMob.InCombat || targetMob.attackComponent.AttackState)
 			{
 				text.Add("RegionTick: " + targetMob.CurrentRegion.Time);
 			}

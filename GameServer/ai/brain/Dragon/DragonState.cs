@@ -59,7 +59,7 @@ public class DragonState_IDLE : DragonState
             }
             else
             {
-                if (_brain.Body.AttackState)
+                if (_brain.Body.attackComponent.AttackState)
                     _brain.Body.StopAttack();
 
                 _brain.Body.TargetObject = null;

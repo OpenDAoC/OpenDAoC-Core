@@ -778,7 +778,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster.AttackState && m_spell.CastTime != 0)
+			if (m_caster.attackComponent.AttackState && m_spell.CastTime != 0)
 			{
 				if (m_caster.CanCastInCombat(Spell) == false)
 				{

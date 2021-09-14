@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
                 {
                     if (target != null)
                     {
-                        if (!Body.AttackState && AggressionState != eAggressionState.Passive)
+                        if (!Body.attackComponent.AttackState && AggressionState != eAggressionState.Passive)
                         {
                             (Body as NecromancerPet).DrawWeapon();
                             AddToAggroList(target, 1);

@@ -42,7 +42,7 @@ namespace DOL.GS.RealmAbilities
 			}
 
 			this.m_player = caster;
-			if (caster.AttackState)
+			if (caster.attackComponent.AttackState)
 			{
 				caster.attackComponent.LivingStopAttack();
 			}

@@ -668,7 +668,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(flagcontent);
 
 				// Write health + Attack
-				byte healthcontent = (byte)(player.HealthPercent + (player.AttackState ? 0x80 : 0));
+				byte healthcontent = (byte)(player.HealthPercent + (player.attackComponent.AttackState ? 0x80 : 0));
 			
 				pak.WriteByte(healthcontent);
 				

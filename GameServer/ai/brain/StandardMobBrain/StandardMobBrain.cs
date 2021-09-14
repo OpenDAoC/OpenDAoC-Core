@@ -301,7 +301,7 @@ namespace DOL.AI.Brain
         public virtual bool HasPatrolPath()
         {
             if (Body.MaxSpeedBase > 0 && Body.CurrentSpellHandler == null && !Body.IsMoving
-                && !Body.AttackState && !Body.InCombat && !Body.IsMovingOnPath
+                && !Body.attackComponent.AttackState && !Body.InCombat && !Body.IsMovingOnPath
                 && Body.PathID != null && Body.PathID != "" && Body.PathID != "NULL")
             {
                 return true;
@@ -313,7 +313,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckNPCAggro()
         {
-            if (Body.AttackState)
+            if (Body.attackComponent.AttackState)
                 return;
 
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
@@ -342,7 +342,7 @@ namespace DOL.AI.Brain
         public virtual void CheckPlayerAggro()
         {
             //Check if we are already attacking, return if yes
-            if (Body.AttackState)
+            if (Body.attackComponent.AttackState)
                 return;
 
             if (!CheckForProximityAggro)
@@ -939,7 +939,7 @@ namespace DOL.AI.Brain
         protected virtual void OnFollowLostTarget(GameObject target)
         {
             AttackMostWanted();
-            if (!Body.AttackState)
+            if (!Body.attackComponent.AttackState)
                 Body.WalkToSpawn();
         }
 
@@ -951,7 +951,7 @@ namespace DOL.AI.Brain
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)){ return; }
 
-            if (!Body.AttackState
+            if (!Body.attackComponent.AttackState
                 && Body.IsAlive
                 && Body.ObjectState == GameObject.eObjectState.Active)
             {
@@ -1323,7 +1323,7 @@ namespace DOL.AI.Brain
                     {
                         // Buff self, if not in melee, but not each and every mob
                         // at the same time, because it looks silly.
-                        if (!LivingHasEffect(Body, spell) && !Body.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
+                        if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
                         {
                             Body.TargetObject = Body;
                             break;

@@ -77,7 +77,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					player.attackComponent.StartAttack(player.TargetObject);
 					// unstealth right after entering combat mode if anything is targeted
-					if (player.AttackState && player.TargetObject != null)
+					if (player.attackComponent.AttackState && player.TargetObject != null)
 						player.Stealth(false);
 				}
 				else

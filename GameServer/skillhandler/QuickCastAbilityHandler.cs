@@ -63,7 +63,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// Can't quick cast if in attack mode
-			if(player.AttackState)
+			if(player.attackComponent.AttackState)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseInMeleeCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
