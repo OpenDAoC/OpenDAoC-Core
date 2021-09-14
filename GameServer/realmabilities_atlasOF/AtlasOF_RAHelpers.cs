@@ -120,5 +120,14 @@ namespace DOL.GS.RealmAbilities
 
             return player.CalculateSkillLevel(raSerenity) >= level;
         }
+
+        public static bool HasFirstAidLevel(GamePlayer player, int level)
+        {
+            AtlasOF_FirstAidAbility raFirstAid = player.GetAbility<AtlasOF_FirstAidAbility>();
+            if (raFirstAid == null)
+                return false;
+
+            return player.CalculateSkillLevel(raFirstAid) >= level;
+        }
     }
 }

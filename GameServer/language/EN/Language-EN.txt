@@ -229,9 +229,9 @@ DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type
 DashingDefenseAbility.Execute.MustInGroup:		You must be in a group to use this ability!
 
 # /FirstAidAbility
-FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 25%
+FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 30%
 FirstAidAbility.AddEffectsInfo.Info2:			Level 2: Value: 60%
-FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 100%
+FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 90%
 FirstAidAbility.AddEffectsInfo.Info4:			Target: Self
 FirstAidAbility.AddEffectsInfo.Info5:			Casting time: instant
 FirstAidAbility.AddEffectsInfo.Info6:			
