@@ -1097,6 +1097,8 @@ namespace DOL.GS
                 case (byte)eSpellType.SummonDruidPet:
                 case (byte)eSpellType.SummonSimulacrum:
                 case (byte)eSpellType.SummonNecroPet:
+                case (byte)eSpellType.SummonCommander:
+                case (byte)eSpellType.SummonMinion:
                     return eEffect.Pet;
 
                 #endregion
