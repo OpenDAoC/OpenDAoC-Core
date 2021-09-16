@@ -4283,9 +4283,8 @@ namespace DOL.GS.Spells
 		{
 			if (dw == null)
 				return;
-			
-			dw.AddKeyValuePair("Function", "light"); // Function of type "light" allows custom description to show with no hardcoded text.  Temporary Fix - tolakram
-			//.Value("Function", spellHandler.FunctionName ?? "0")
+
+			dw.AddKeyValuePair("Function", GetDelveType((eSpellType)Spell.SpellType));
 			dw.AddKeyValuePair("Index", unchecked((ushort)Spell.InternalID));
 			dw.AddKeyValuePair("Name", Spell.Name);
 			
@@ -4296,48 +4295,550 @@ namespace DOL.GS.Spells
 			
 			if (Spell.IsInstantCast)
 				dw.AddKeyValuePair("instant","1");
-			//.Value("damage", spellHandler.GetDelveValueDamage, spellHandler.GetDelveValueDamage != 0)
 			if ((int)Spell.DamageType > 0)
-				dw.AddKeyValuePair("damage_type", (int) Spell.DamageType + 1); // Damagetype not the same as dol
-			//.Value("type1", spellHandler.GetDelveValueType1, spellHandler.GetDelveValueType1 > 0)
+			{
+				//Added to fix the mis-match between client and server
+				int addTo = 1;
+				switch ((int)Spell.DamageType)
+                {
+					case 10:
+						addTo = 6;
+						break;
+					case 12:
+						addTo = 10;
+						break;
+					case 15:
+						addTo = 2;
+						break;
+					default:
+						addTo = 1;
+						break;
+				}
+				dw.AddKeyValuePair("damage_type", (int)Spell.DamageType + addTo); // Damagetype not the same as dol
+			}
 			if (Spell.Level > 0)
 			{
 				dw.AddKeyValuePair("level", Spell.Level);
 				dw.AddKeyValuePair("power_level", Spell.Level);
 			}
-
 			if (Spell.CostPower)
 				dw.AddKeyValuePair("power_cost", Spell.Power);
-			//.Value("round_cost",spellHandler.GetDelveValueRoundCost,spellHandler.GetDelveValueRoundCost!=0)
-			//.Value("power_level", spellHandler.GetDelveValuePowerLevel,spellHandler.GetDelveValuePowerLevel!=0)
 			if (Spell.Range > 0)
 				dw.AddKeyValuePair("range", Spell.Range);
 			if (Spell.Duration > 0)
-				dw.AddKeyValuePair("duration", Spell.Duration/1000); //seconds
+				dw.AddKeyValuePair("duration", Spell.Duration / 1000); //seconds
 			if (GetDurationType() > 0)
 				dw.AddKeyValuePair("dur_type", GetDurationType());
-			//.Value("parm",spellHandler.GetDelveValueParm,spellHandler.GetDelveValueParm>0)
 			if (Spell.HasRecastDelay)
-				dw.AddKeyValuePair("timer_value", Spell.RecastDelay/1000);
-			//.Value("bonus", spellHandler.GetDelveValueBonus, spellHandler.GetDelveValueBonus > 0)
-			//.Value("no_combat"," ",Util.Chance(50))//TODO
-			//.Value("link",14000)
-			//.Value("ability",4) // ??
-			//.Value("use_timer",4)
+				dw.AddKeyValuePair("timer_value", Spell.RecastDelay / 1000);
+			
 			if (GetSpellTargetType() > 0)
 				dw.AddKeyValuePair("target", GetSpellTargetType());
-			//.Value("frequency", spellHandler.GetDelveValueFrequency, spellHandler.GetDelveValueFrequency != 0)
-			if (!string.IsNullOrEmpty(Spell.Description))
-				dw.AddKeyValuePair("description_string", Spell.Description);
+
+			//if (!string.IsNullOrEmpty(Spell.Description))
+			//	dw.AddKeyValuePair("description_string", Spell.Description);
+
 			if (Spell.IsAoE)
 				dw.AddKeyValuePair("radius", Spell.Radius);
 			if (Spell.IsConcentration)
 				dw.AddKeyValuePair("concentration_points", Spell.Concentration);
-			//.Value("num_targets", spellHandler.GetDelveValueNumTargets, spellHandler.GetDelveValueNumTargets>0)
-			//.Value("no_interrupt", spell.Interruptable ? (char)0 : (char)1) //Buggy?
-			//log.Info(dw.ToString());
+			if (Spell.Frequency > 0)
+				dw.AddKeyValuePair("frequency", Spell.Frequency);
+
+			if (Spell.HasSubSpell)
+				dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
+
+			WriteBonus(ref dw);
+			WriteParm(ref dw);
+			WriteDamage(ref dw);
+			WriteSpecial(ref dw);
+
+			if (!dw.Values.ContainsKey("parm") && (eSpellType)Spell.SpellType != eSpellType.MesmerizeDurationBuff)
+				dw.AddKeyValuePair("parm", "1");
 		}
-		
+
+		private string GetDelveType(eSpellType spellType)
+        {
+			switch (spellType)
+            {
+				case eSpellType.AblativeArmor:
+					return "hit_buffer";
+				case eSpellType.AcuityBuff:
+				case eSpellType.DexterityQuicknessBuff:
+				case eSpellType.StrengthConstitutionBuff:
+					return "twostat";
+				case eSpellType.ArmorAbsorptionBuff:
+					return "absorb";
+				case eSpellType.ArmorAbsorptionDebuff:
+					return "nabsorb";
+				case eSpellType.ArmorFactorBuff:
+				case eSpellType.PaladinArmorFactorBuff:
+					return "shield";
+				case eSpellType.Bladeturn:
+				case eSpellType.CelerityBuff:
+				case eSpellType.CombatSpeedBuff:
+				case eSpellType.CombatSpeedDebuff:
+				case eSpellType.Confusion:
+				case eSpellType.Mesmerize:
+				case eSpellType.Mez:
+				case eSpellType.Nearsight:
+				case eSpellType.SavageCombatSpeedBuff:
+				case eSpellType.SavageEvadeBuff:
+				case eSpellType.SavageParryBuff:
+				case eSpellType.SpeedEnhancement:
+					return "combat";
+				case eSpellType.BodyResistBuff:
+				case eSpellType.ColdResistBuff:
+				case eSpellType.EnergyResistBuff:
+				case eSpellType.HeatColdMatterBuff:
+				case eSpellType.HeatResistBuff:
+				case eSpellType.MatterResistBuff:
+				case eSpellType.SavageCrushResistanceBuff:
+				case eSpellType.SavageSlashResistanceBuff:
+				case eSpellType.SavageThrustResistanceBuff:
+				case eSpellType.SpiritResistBuff:
+					return "resistance";
+				case eSpellType.BodyResistDebuff:
+				case eSpellType.ColdResistDebuff:
+				case eSpellType.EnergyResistDebuff:
+				case eSpellType.HeatResistDebuff:
+				case eSpellType.MatterResistDebuff:
+				case eSpellType.SpiritResistDebuff:
+					return "nresistance";
+				case eSpellType.Bomber:
+				case eSpellType.SummonAnimistFnF:
+				case eSpellType.SummonTheurgistPet:
+					return "dsummon";
+				case eSpellType.CombatHeal:
+				case eSpellType.Heal:
+					return "heal";
+				case eSpellType.ConstitutionBuff:
+				case eSpellType.DexterityBuff:
+				case eSpellType.StrengthBuff:
+					return "stat";
+				case eSpellType.ConstitutionDebuff:
+				case eSpellType.DexterityDebuff:
+				case eSpellType.StrengthDebuff:
+					return "nstat";
+				case eSpellType.CureDisease:
+				case eSpellType.CurePoison:
+				case eSpellType.CureNearsightCustom:
+					return "rem_eff_ty";
+				case eSpellType.CureMezz:
+					return "remove_eff";
+				case eSpellType.DamageAdd:
+					return "dmg_add";
+				case eSpellType.DamageOverTime:
+				case eSpellType.StyleBleeding:
+					return "dot";
+				case eSpellType.DamageShield:
+					return "dmg_shield";
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.SpeedDecrease:
+					return "snare";
+				case eSpellType.DefensiveProc:
+					return "def_proc";
+				case eSpellType.DexterityQuicknessDebuff:
+				case eSpellType.StrengthConstitutionDebuff:
+					return "ntwostat";
+				case eSpellType.DirectDamage:
+					return "direct";
+				case eSpellType.DirectDamageWithDebuff:
+					return "nresist_dam";
+				case eSpellType.EnduranceRegenBuff:
+				case eSpellType.HealthRegenBuff:
+				case eSpellType.PowerRegenBuff:
+					return "enhancement";
+				case eSpellType.HealOverTime:
+					return "regen";
+				case eSpellType.LifeTransfer:
+					return "transfer";
+				case eSpellType.MeleeDamageDebuff:
+					return "ndamage";
+				case eSpellType.MesmerizeDurationBuff:
+					return "mez_dampen";
+				case eSpellType.OffensiveProc:
+					return "off_proc";
+				case eSpellType.PetConversion:
+					return "reclaim";
+				case eSpellType.Resurrect:
+					return "raise_dead";
+				case eSpellType.SavageEnduranceHeal:
+					return "fat_heal";
+				case eSpellType.Stun:
+					return "paralyze";
+				case eSpellType.SummonAnimistPet:
+				case eSpellType.SummonCommander:
+				case eSpellType.SummonDruidPet:
+				case eSpellType.SummonHunterPet:
+				case eSpellType.SummonSimulacrum:
+				case eSpellType.SummonSpiritFighter:
+				case eSpellType.SummonUnderhill:
+					return "summon";
+				case eSpellType.SummonMinion:
+					return "gsummon";
+				case eSpellType.SummonNecroPet:
+					return "ssummon";
+				case eSpellType.StyleCombatSpeedDebuff:
+				case eSpellType.StyleStun:
+				case eSpellType.StyleSpeedDecrease:				
+					return "add_effect";
+				case eSpellType.StyleTaunt:
+					if (Spell.Value > 0)
+						return "taunt";
+					else
+						return "detaunt";
+				case eSpellType.PetLifedrain:
+					return "lifedrain";
+				case eSpellType.PowerDrainPet:
+					return "powerdrain";
+				case eSpellType.PowerTransferPet:
+					return "power_xfer";
+				case eSpellType.ArmorFactorDebuff:
+					return "nshield";
+				default:
+					return spellType.ToString().ToLower();
+            }
+        }
+
+		private void WriteBonus(ref MiniDelveWriter dw)
+        {
+			switch ((eSpellType)Spell.SpellType)
+			{
+				case eSpellType.AblativeArmor:
+					dw.AddKeyValuePair("bonus", Spell.Damage > 0 ? Spell.Damage : 25);
+					break;
+				case eSpellType.AcuityBuff:
+				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.ArmorFactorBuff:
+				case eSpellType.BodyResistBuff:
+				case eSpellType.BodyResistDebuff:
+				case eSpellType.BodySpiritEnergyBuff:
+				case eSpellType.ColdResistBuff:
+				case eSpellType.ColdResistDebuff:
+				case eSpellType.CombatSpeedBuff:
+				case eSpellType.CelerityBuff:
+				case eSpellType.ConstitutionBuff:
+				case eSpellType.ConstitutionDebuff:
+				case eSpellType.DexterityBuff:
+				case eSpellType.DexterityDebuff:
+				case eSpellType.DexterityQuicknessBuff:
+				case eSpellType.DexterityQuicknessDebuff:
+				case eSpellType.DirectDamageWithDebuff:
+				case eSpellType.EnergyResistBuff:
+				case eSpellType.EnergyResistDebuff:
+				case eSpellType.HealOverTime:
+				case eSpellType.HeatColdMatterBuff:
+				case eSpellType.HeatResistBuff:
+				case eSpellType.HeatResistDebuff:
+				case eSpellType.MatterResistBuff:
+				case eSpellType.MatterResistDebuff:
+				case eSpellType.MeleeDamageBuff:
+				case eSpellType.MeleeDamageDebuff:
+				case eSpellType.MesmerizeDurationBuff:
+				case eSpellType.PaladinArmorFactorBuff:
+				case eSpellType.PetConversion:
+				case eSpellType.SavageCombatSpeedBuff:
+				case eSpellType.SavageCrushResistanceBuff:
+				case eSpellType.SavageDPSBuff:
+				case eSpellType.SavageEvadeBuff:
+				case eSpellType.SavageParryBuff:
+				case eSpellType.SavageSlashResistanceBuff:
+				case eSpellType.SavageThrustResistanceBuff:
+				case eSpellType.SpeedEnhancement:
+				case eSpellType.SpeedOfTheRealm:
+				case eSpellType.SpiritResistBuff:
+				case eSpellType.SpiritResistDebuff:
+				case eSpellType.StrengthBuff:
+				case eSpellType.StrengthConstitutionBuff:
+				case eSpellType.StrengthConstitutionDebuff:
+				case eSpellType.StrengthDebuff:
+				case eSpellType.ToHitBuff:
+				case eSpellType.FumbleChanceDebuff:
+				case eSpellType.AllStatsPercentDebuff:
+				case eSpellType.CrushSlashThrustDebuff:
+				case eSpellType.EffectivenessDebuff:
+				case eSpellType.ParryBuff:
+				case eSpellType.SavageEnduranceHeal:
+				case eSpellType.SlashResistDebuff:
+				case eSpellType.ArmorFactorDebuff:
+				case eSpellType.WeaponSkillBuff:
+				case eSpellType.FlexibleSkillBuff:
+					dw.AddKeyValuePair("bonus", Spell.Value);
+					break;
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.SpeedDecrease:
+				case eSpellType.StyleSpeedDecrease:
+					dw.AddKeyValuePair("bonus", 100 - Spell.Value);
+					break;
+				case eSpellType.DefensiveProc:
+				case eSpellType.OffensiveProc:
+					dw.AddKeyValuePair("bonus", Spell.Frequency);
+					break;
+				case eSpellType.Lifedrain:
+				case eSpellType.PetLifedrain:
+					dw.AddKeyValuePair("bonus", Spell.LifeDrainReturn / 10);
+					break;
+				case eSpellType.PowerDrainPet:
+					dw.AddKeyValuePair("bonus", Spell.LifeDrainReturn);
+					break;
+				case eSpellType.Resurrect:
+					dw.AddKeyValuePair("bonus", Spell.ResurrectMana);
+					break;
+			}
+		}
+
+		private void WriteParm(ref MiniDelveWriter dw)
+        {
+			string parm = "parm";
+			switch ((eSpellType)Spell.SpellType)
+            {
+				case eSpellType.CombatSpeedDebuff:
+				case eSpellType.DexterityBuff:
+				case eSpellType.DexterityDebuff:
+				case eSpellType.DexterityQuicknessBuff:
+				case eSpellType.DexterityQuicknessDebuff:
+				case eSpellType.PowerRegenBuff:
+				case eSpellType.StyleCombatSpeedDebuff:
+					dw.AddKeyValuePair(parm, "2");
+					break;
+				case eSpellType.AcuityBuff:
+				case eSpellType.ConstitutionBuff:
+				case eSpellType.ConstitutionDebuff:
+				case eSpellType.EnduranceRegenBuff:
+					dw.AddKeyValuePair(parm, "3");
+					break;
+				case eSpellType.Confusion:
+					dw.AddKeyValuePair(parm, "5");
+					break;
+				case eSpellType.CureMezz:
+				case eSpellType.Mesmerize:
+					dw.AddKeyValuePair(parm, "6");
+					break;
+				case eSpellType.Bladeturn:
+					dw.AddKeyValuePair(parm, "9");
+					break;
+				case eSpellType.HeatResistBuff:
+				case eSpellType.HeatResistDebuff:
+				case eSpellType.SpeedEnhancement:
+					dw.AddKeyValuePair(parm, "10");
+					break;
+				case eSpellType.ColdResistBuff:
+				case eSpellType.ColdResistDebuff:
+				case eSpellType.CurePoison:
+				case eSpellType.Nearsight:
+				case eSpellType.CureNearsightCustom:
+					dw.AddKeyValuePair(parm, "12");
+					break;
+				case eSpellType.MatterResistBuff:
+				case eSpellType.MatterResistDebuff:
+				case eSpellType.SavageParryBuff:
+					dw.AddKeyValuePair(parm, "15");
+					break;
+				case eSpellType.BodyResistBuff:
+				case eSpellType.BodyResistDebuff:
+				case eSpellType.SavageEvadeBuff:
+					dw.AddKeyValuePair(parm, "16");
+					break;
+				case eSpellType.SpiritResistBuff:
+				case eSpellType.SpiritResistDebuff:
+					dw.AddKeyValuePair(parm, "17");
+					break;
+				case eSpellType.StyleBleeding:
+					dw.AddKeyValuePair(parm, "20");
+					break;
+				case eSpellType.EnergyResistBuff:
+				case eSpellType.EnergyResistDebuff:
+					dw.AddKeyValuePair(parm, "22");
+					break;
+				case eSpellType.SpeedOfTheRealm:
+					dw.AddKeyValuePair(parm, "35");
+					break;
+				case eSpellType.CelerityBuff:
+				case eSpellType.SavageCombatSpeedBuff:
+					dw.AddKeyValuePair(parm, "36");
+					break;
+				case eSpellType.HeatColdMatterBuff:
+					dw.AddKeyValuePair(parm, "97");
+					break;
+				case eSpellType.BodySpiritEnergyBuff:
+					dw.AddKeyValuePair(parm, "98");
+					break;
+				case eSpellType.DirectDamageWithDebuff:
+					dw.AddKeyValuePair(parm, Spell.DamageType + 1);
+					break;
+				case eSpellType.SavageCrushResistanceBuff:
+					dw.AddKeyValuePair(parm, (int)eDamageType.Crush);
+					break;
+				case eSpellType.SavageSlashResistanceBuff:
+					dw.AddKeyValuePair(parm, (int)eDamageType.Slash);
+					break;
+				case eSpellType.SavageThrustResistanceBuff:
+					dw.AddKeyValuePair(parm, (int)eDamageType.Thrust);
+					break;
+			}
+        }
+
+		private void WriteDamage(ref MiniDelveWriter dw)
+        {
+			switch ((eSpellType)Spell.SpellType)
+            {
+				case eSpellType.AblativeArmor:
+				case eSpellType.CombatHeal:
+				case eSpellType.EnduranceRegenBuff:
+				case eSpellType.Heal:
+				case eSpellType.HealOverTime:
+				case eSpellType.HealthRegenBuff:
+				case eSpellType.LifeTransfer:
+				case eSpellType.PowerRegenBuff:
+				case eSpellType.SavageEnduranceHeal:
+				case eSpellType.SpreadHeal:
+				case eSpellType.Taunt:
+					dw.AddKeyValuePair("damage", Spell.Value);
+					break;
+				case eSpellType.Bolt:
+				case eSpellType.DamageAdd:
+				case eSpellType.DamageShield:
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.DirectDamage:
+				case eSpellType.DirectDamageWithDebuff:
+				case eSpellType.Lifedrain:
+				case eSpellType.PetLifedrain:
+				case eSpellType.PowerDrainPet:
+					dw.AddKeyValuePair("damage", Spell.Damage * 10);
+					break;
+				case eSpellType.DamageOverTime:
+				case eSpellType.StyleBleeding:
+					dw.AddKeyValuePair("damage", Spell.Damage);
+					break;
+				case eSpellType.Resurrect:
+					dw.AddKeyValuePair("damage", Spell.ResurrectHealth);
+					break;
+				case eSpellType.StyleTaunt:
+					dw.AddKeyValuePair("damage", Spell.Value < 0 ? -Spell.Value : Spell.Value);
+					break;
+				case eSpellType.PowerTransferPet:
+					dw.AddKeyValuePair("damage", Spell.Value * 10);
+					break;
+			}
+        }
+
+		private void WriteSpecial(ref MiniDelveWriter dw)
+		{
+			switch ((eSpellType)Spell.SpellType)
+			{
+				case eSpellType.Charm:
+					dw.AddKeyValuePair("power_level", Spell.Value);
+
+					var baseMessage = "Attempts to bring the target monster under the caster's control.";
+					switch ((CharmSpellHandler.eCharmType)Spell.AmnesiaChance)
+					{
+						case CharmSpellHandler.eCharmType.All:
+							dw.AddKeyValuePair("delve_string", baseMessage);
+							break;
+						case CharmSpellHandler.eCharmType.Animal:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on animals.");
+							break;
+						case CharmSpellHandler.eCharmType.Humanoid:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids.");
+							break;
+						case CharmSpellHandler.eCharmType.Insect:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on insects.");
+							break;
+						case CharmSpellHandler.eCharmType.Reptile:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on reptiles.");
+							break;
+						case CharmSpellHandler.eCharmType.HumanoidAnimal:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids and animals.");
+							break;
+						case CharmSpellHandler.eCharmType.HumanoidAnimalInsect:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids, insects, and animals.");
+							break;
+						case CharmSpellHandler.eCharmType.HumanoidAnimalInsectMagical:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids, insects, magical, and animals.");
+							break;
+						case CharmSpellHandler.eCharmType.HumanoidAnimalInsectMagicalUndead:
+							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids, insects, magical, undead, and animals.");
+							break;
+					}
+					break;
+				case eSpellType.CelerityBuff:
+					dw.AddKeyValuePair("power_level", Spell.Value * 2);
+					break;
+				case eSpellType.CombatSpeedDebuff:
+					dw.AddKeyValuePair("power_level", -Spell.Value);
+					break;
+				case eSpellType.CureMezz:
+					dw.AddKeyValuePair("type1", "8");
+					break;
+				case eSpellType.Disease:
+					dw.AddKeyValuePair("delve_string", "Inflicts a wasting disease on the target that slows target by 15 %, reduces strength by 7.5 % and inhibits healing by 50 %");
+					break;
+				case eSpellType.FatigueConsumptionBuff:
+					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% less endurance.");
+					break;
+				case eSpellType.MeleeDamageBuff:
+					dw.AddKeyValuePair("delve_string", $"Increases your melee damage by {(int)Spell.Value}%.");
+					break;
+				case eSpellType.MesmerizeDurationBuff:
+					dw.AddKeyValuePair("damage_type", "22");
+					dw.AddKeyValuePair("dur_type", "2");
+					dw.AddKeyValuePair("power_level", "29");
+					break;
+				case eSpellType.Nearsight:
+					dw.AddKeyValuePair("power_level", Spell.Value);
+					break;
+				case eSpellType.PetConversion:
+					dw.AddKeyValuePair("delve_string", "Banishes the caster's pet and reclaims some of its energy.");
+					break;
+				case eSpellType.Resurrect:
+					dw.AddKeyValuePair("amount_increase", Spell.ResurrectMana);
+					dw.AddKeyValuePair("type1", "65");
+					dw.Values["target"] = 8.ToString();
+					break;
+				case eSpellType.SavageCombatSpeedBuff:
+					dw.AddKeyValuePair("cost_type", "2");
+					dw.AddKeyValuePair("power_level", Spell.Value * 2);
+					break;
+				case eSpellType.SavageCrushResistanceBuff:
+				case eSpellType.SavageEnduranceHeal:
+				case eSpellType.SavageParryBuff:
+				case eSpellType.SavageSlashResistanceBuff:
+				case eSpellType.SavageThrustResistanceBuff:
+					dw.AddKeyValuePair("cost_type", "2");
+					break;
+				case eSpellType.SavageDPSBuff:
+					dw.AddKeyValuePair("cost_type", "2");
+					dw.AddKeyValuePair("delve_string", $"Increases your melee damage by {(int)Spell.Value}%.");
+					break;
+				case eSpellType.SavageEvadeBuff:
+					dw.AddKeyValuePair("cost_type", "2");
+					dw.AddKeyValuePair("delve_string", $"Increases your chance to evade by {(int)Spell.Value}%.");
+					break;
+				case eSpellType.SummonAnimistPet:
+				case eSpellType.SummonCommander:
+				case eSpellType.SummonDruidPet:
+				case eSpellType.SummonHunterPet:
+				case eSpellType.SummonNecroPet:
+				case eSpellType.SummonSimulacrum:
+				case eSpellType.SummonSpiritFighter:
+				case eSpellType.SummonUnderhill:
+					dw.AddKeyValuePair("power_level", -100);
+					dw.AddKeyValuePair("delve_string", "Summons a Pet to serve you.");
+					break;
+				case eSpellType.StyleStun:
+					dw.AddKeyValuePair("type1", "22");
+					break;
+				case eSpellType.StyleSpeedDecrease:
+					dw.AddKeyValuePair("type1", "39");
+					break;
+				case eSpellType.StyleCombatSpeedDebuff:
+					dw.AddKeyValuePair("type1", "8");
+					dw.AddKeyValuePair("power_level", -Spell.Value);
+					break;
+			}
+		}
+
 		/// <summary>
 		/// Returns delve code for target
 		/// </summary>

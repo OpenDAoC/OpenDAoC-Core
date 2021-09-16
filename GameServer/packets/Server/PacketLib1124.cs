@@ -3872,7 +3872,16 @@ namespace DOL.GS.PacketHandler
 					}
 
 					if (m_gameClient.CanSendTooltip(24, spell.InternalID))
+					{
 						SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, spell));
+						if (spell.HasSubSpell)
+						{
+							if (m_gameClient.CanSendTooltip(24, SkillBase.GetSpellByID(spell.SubSpellID).InternalID))
+								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID(spell.SubSpellID)));
+
+						}
+						
+					}
 				}
 			}
 		}
