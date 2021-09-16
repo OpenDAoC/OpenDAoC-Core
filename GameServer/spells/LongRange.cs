@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace DOL.GS.Spells
 {
-    /// <summary>
-    /// Effect that stays on target and does additional
-    /// damage after each melee attack
-    /// </summary>
     [SpellHandler("StyleRange")]
     public class LongRangeSpellHandler : SpellHandler
     {

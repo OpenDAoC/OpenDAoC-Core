@@ -4392,6 +4392,7 @@ namespace DOL.GS.Spells
 				case eSpellType.SpeedEnhancement:
 					return "combat";
 				case eSpellType.BodyResistBuff:
+				case eSpellType.BodySpiritEnergyBuff:
 				case eSpellType.ColdResistBuff:
 				case eSpellType.EnergyResistBuff:
 				case eSpellType.HeatColdMatterBuff:
@@ -4861,6 +4862,12 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.TurretsRelease:
 					dw.AddKeyValuePair("delve_string", "Unsummons all the animist turret(s) in range.");
+					break;
+				case eSpellType.StyleRange:
+					dw.AddKeyValuePair("delve_string", $"Hits target up to {(int)Spell.Value} units away.");
+					break;
+				case eSpellType.MultiTarget:
+					dw.AddKeyValuePair("delve_string", $"Hits {(int)Spell.Value} additonal target(s) within melee range.");
 					break;
 			}
 		}

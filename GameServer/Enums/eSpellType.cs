@@ -184,8 +184,8 @@ namespace DOL.GS
         Phaseshift = 177,
         Grapple = 178,
         BrittleGuard = 179,
-        StyleRange = 180
-
+        StyleRange = 180,
+        MultiTarget = 181
 
 
 
