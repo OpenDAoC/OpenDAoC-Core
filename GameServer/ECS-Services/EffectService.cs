@@ -696,6 +696,8 @@ namespace DOL.GS
                     }
                     else if (e.EffectType == eEffect.Pet)
                     {
+                        if (e.SpellHandler.Caster.PetCount > 0)
+                            e.SpellHandler.Caster.PetCount--;
                         e.Owner.Health = 0; // to send proper remove packet
                         e.Owner.Delete();
                     }
@@ -985,6 +987,8 @@ namespace DOL.GS
                     return eEffect.OffensiveProc;
                 case (byte)eSpellType.DefensiveProc:
                     return eEffect.DefensiveProc;
+                case (byte)eSpellType.HereticPiercingMagic:
+                    return eEffect.HereticPiercingMagic;
                 #endregion
 
                 #region Negative Effects

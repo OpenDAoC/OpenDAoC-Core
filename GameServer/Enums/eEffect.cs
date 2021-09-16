@@ -121,6 +121,7 @@ namespace DOL.GS
         SavageBuff,
         Pet,
         OffensiveProc,
-        DefensiveProc
+        DefensiveProc,
+        HereticPiercingMagic
     }
 }
