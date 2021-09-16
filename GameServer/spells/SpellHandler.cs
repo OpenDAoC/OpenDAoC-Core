@@ -4345,13 +4345,13 @@ namespace DOL.GS.Spells
 			if (Spell.Frequency > 0)
 				dw.AddKeyValuePair("frequency", Spell.Frequency);
 
-			if (Spell.HasSubSpell)
-				dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
-
 			WriteBonus(ref dw);
 			WriteParm(ref dw);
 			WriteDamage(ref dw);
 			WriteSpecial(ref dw);
+
+			if (Spell.HasSubSpell)
+				dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 
 			if (!dw.Values.ContainsKey("parm") && (eSpellType)Spell.SpellType != eSpellType.MesmerizeDurationBuff)
 				dw.AddKeyValuePair("parm", "1");
@@ -4367,6 +4367,8 @@ namespace DOL.GS.Spells
 				case eSpellType.DexterityQuicknessBuff:
 				case eSpellType.StrengthConstitutionBuff:
 					return "twostat";
+				case eSpellType.Amnesia:
+					return "amnesia";
 				case eSpellType.ArmorAbsorptionBuff:
 					return "absorb";
 				case eSpellType.ArmorAbsorptionDebuff:
@@ -4374,6 +4376,8 @@ namespace DOL.GS.Spells
 				case eSpellType.ArmorFactorBuff:
 				case eSpellType.PaladinArmorFactorBuff:
 					return "shield";
+				case eSpellType.Bolt:
+					return "bolt";
 				case eSpellType.Bladeturn:
 				case eSpellType.CelerityBuff:
 				case eSpellType.CombatSpeedBuff:
@@ -4405,10 +4409,10 @@ namespace DOL.GS.Spells
 				case eSpellType.MatterResistDebuff:
 				case eSpellType.SpiritResistDebuff:
 					return "nresistance";
-				case eSpellType.Bomber:
-				case eSpellType.SummonAnimistFnF:
 				case eSpellType.SummonTheurgistPet:
 					return "dsummon";
+				case eSpellType.Charm:
+					return "charm";
 				case eSpellType.CombatHeal:
 				case eSpellType.Heal:
 					return "heal";
@@ -4445,12 +4449,16 @@ namespace DOL.GS.Spells
 					return "direct";
 				case eSpellType.DirectDamageWithDebuff:
 					return "nresist_dam";
+				case eSpellType.Disease:
+					return "disease";
 				case eSpellType.EnduranceRegenBuff:
 				case eSpellType.HealthRegenBuff:
 				case eSpellType.PowerRegenBuff:
 					return "enhancement";
 				case eSpellType.HealOverTime:
 					return "regen";
+				case eSpellType.Lifedrain:
+					return "lifedrain";
 				case eSpellType.LifeTransfer:
 					return "transfer";
 				case eSpellType.MeleeDamageDebuff:
@@ -4465,9 +4473,10 @@ namespace DOL.GS.Spells
 					return "raise_dead";
 				case eSpellType.SavageEnduranceHeal:
 					return "fat_heal";
+				case eSpellType.SpreadHeal:
+					return "spreadheal";
 				case eSpellType.Stun:
-					return "paralyze";
-				case eSpellType.SummonAnimistPet:
+					return "paralyze";				
 				case eSpellType.SummonCommander:
 				case eSpellType.SummonDruidPet:
 				case eSpellType.SummonHunterPet:
@@ -4488,6 +4497,13 @@ namespace DOL.GS.Spells
 						return "taunt";
 					else
 						return "detaunt";
+				case eSpellType.Taunt:
+					return "taunt";
+				case eSpellType.PetSpell:
+				case eSpellType.Bomber:
+				case eSpellType.SummonAnimistFnF:
+				case eSpellType.SummonAnimistPet:
+					return "petcast";
 				case eSpellType.PetLifedrain:
 					return "lifedrain";
 				case eSpellType.PowerDrainPet:
@@ -4496,9 +4512,12 @@ namespace DOL.GS.Spells
 					return "power_xfer";
 				case eSpellType.ArmorFactorDebuff:
 					return "nshield";
+				case eSpellType.Grapple:
+					return "Grapple";
 				default:
-					return spellType.ToString().ToLower();
-            }
+					return "light";
+
+			}
         }
 
 		private void WriteBonus(ref MiniDelveWriter dw)
@@ -4510,6 +4529,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.AcuityBuff:
 				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.ArmorAbsorptionDebuff:
 				case eSpellType.ArmorFactorBuff:
 				case eSpellType.BodyResistBuff:
 				case eSpellType.BodyResistDebuff:
@@ -4835,6 +4855,12 @@ namespace DOL.GS.Spells
 				case eSpellType.StyleCombatSpeedDebuff:
 					dw.AddKeyValuePair("type1", "8");
 					dw.AddKeyValuePair("power_level", -Spell.Value);
+					break;
+				case eSpellType.TurretPBAoE:
+					dw.AddKeyValuePair("delve_string", $"Target takes {(int)Spell.Damage} damage. Spell affects everyone in the immediate radius of the caster's pet, and does less damage the further away they are from the caster's pet.");
+					break;
+				case eSpellType.TurretsRelease:
+					dw.AddKeyValuePair("delve_string", "Unsummons all the animist turret(s) in range.");
 					break;
 			}
 		}
