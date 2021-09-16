@@ -27,7 +27,7 @@ The following sections outline the process of preparing your environment to buil
     1. [Considerations for IDEs](#considerations-for-ides)
 2. [Setting Up on Ubuntu](#setting-up-on-ubuntu)
     1. [Installing .NET 5.0](#installing-net-50-ubuntu)
-    2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
+    2. [Installing MariaDB](#installing-mariadb-ubuntu)
         1. [Preparing Your Database](#preparing-your-database-ubuntu)
         2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
         3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
@@ -43,7 +43,7 @@ The following sections outline the process of preparing your environment to buil
     6. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 3. [Setting Up on Windows](#setting-up-on-windows)
     1. [Installing .NET 5.0](#installing-net-50-win)
-    2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
+    2. [Installing MariaDB](#installing-mariadb-win)
         1. [Preparing Your Database](#preparing-your-database-win)
         2. [Configuring `My.ini`](#configuring-myini-win)
         3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
@@ -72,7 +72,7 @@ The following are main OS, tool, and version requirements to consider when setti
 * **Operating System:** Ubuntu or Windows
 * **Source-Code Editor:** .NET IDE that supports C#, such as [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) or [Jetbrain Rider](https://www.jetbrains.com/rider/) (if you have a student email address)
 * **Source Control:** Git is recommended for tracking file changes, and [GitLab](http://gitlab.com) is the current file repository
-* **RDBMS:** [MariaDB v.10.5.X](https://mariadb.com/kb/en/changes-improvements-in-mariadb-105/)
+* **RDBMS:** [MariaDB v.10.5.X+](https://mariadb.com/kb/en/changes-improvements-in-mariadb-105/)
 
 > **NOTE:** This walkthrough assumes that you already have an account created on GitLab and have been granted access to Atlas' repos by a senior developer or administrator. If you have not done so already, [create an account on Gitlab](http://gitlab.com/) and send your username to an administrator or lead developer.
 
@@ -92,17 +92,15 @@ This process assumes you do not already have a fully-configured environment with
 If you've' already completed a step previously, we recommend that you quickly review the steps outlined to ensure no special configurations are missed.
 
 1. [Installing .NET 5.0](#installing-net-50-ubuntu)
-2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
+2. [Installing MariaDB](#installing-mariadb-ubuntu)
     1. [Preparing Your Database](#preparing-your-database-ubuntu)
     2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
     3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
 3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
     1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
     2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
-        1. [Enabling SSH](#enabling-ssh-ubuntu)
-        2. [Configuring Your Router](#configuring-your-router-ubuntu)
-        3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
-        4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
+       1. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
+       2. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
     3. [Installing Git](#installing-git-ubuntu)
         1. [Cloning Atlas' repos](#cloning-the-repository-ubuntu)
         2. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
@@ -121,9 +119,9 @@ Perform the following steps from the Terminal:
 6. `dotnet --list-sdks`
 7. `dotnet --list-runtimes`
 
-### Installing MariaDB 10.5 (Ubuntu)
+### Installing MariaDB (Ubuntu)
 
-MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5.
+MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5+. These instructions will specifically install MariaDB 10.5, but you are welcome to pick a later version as desired.
 
 Perform the following steps from the Terminal:
 
@@ -141,14 +139,13 @@ The RDBMS is installed, but needs a user and database for Atlas to access and us
 
 The following steps walk you through the process of adding a user and database using MariaDB.
 
-If you're already familiar with the process and wish to skip it, just remember that the following things are required to run `AtlasCore`:
+If you're already familiar with the process and wish to skip it, just remember that the following values must be updated in `serverconfig.xml`:
 
-* There must be a user named `atlas`.
-* The user's password must be `atlas`.
-* The `atlas` user must have sufficient privileges.
-* A database must exist called `atlas`.
+* The database user (defaulted to `atlas`)
+* The user's password (defaulted to `atlas`)
+* The database name (defaulted to `atlas`)
 
-> **NOTE:** If you set values (user ID, user password, and database name) contrary to those specified here, `DOLServer` builds will fail.
+> **NOTE:** If the database connections are not updated in `serverconfig.xml`, `DOLServer` builds will fail.
 
 1. `sudo mysql -u root` <!-- This allows you to access the MariaDB client-->
 2. `CREATE DATABASE atlas;` <!-- The DB **MUST** be named "atlas" -->
@@ -215,36 +212,12 @@ You may now continue to the next step, [Installing Git](#installing-git-ubuntu).
 
 #### Setting Up SSH Tunneling (Ubuntu)
 
-Enabling Secure Shell (SSH) is a network protocol used to secure connections between client and server. Enabling this requires access to your router's administrator interface.
+Secure Shell (SSH) is a network protocol used to secure connections between client and server. Enabling this requires access to your router's administrator interface.
 
 These are the steps associated with using SSH encryption:
 
-1. [Enabling SSH](#enabling-ssh-ubuntu)
-2. [Configuring Your Router](#configuring-your-router-ubuntu)
-3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
-4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
-
-##### Enabling SSH (Ubuntu)
-
-By default, SSH functionality is not installed/enabled on Ubuntu.
-
-From the Terminal, enter the following commands:
-
-1. `sudo apt update`
-2. `sudo apt install openssh-server`
-3. `sudo systemctl status ssh`
-
-The output should indicate that the service is running and `active`. Now Ubuntu's firewall configuration tool, UFW, must have the SSH port opened:
-
-4. `sudo ufw allow ssh`
-
-##### Configuring Your Router (Ubuntu)
-
-As part of SSH, your router must allow external communication between GitLab and your machine. This process varies depending on the type of router and the web interface used, but the following actions must be performed as part of  SSH tunneling:
-
-1. Identify your device's internal IP address (typically starts with `192`).
-2. Make a DHCP reservation for the IP address (so that you don't have to reconfigure SSH every time your IP updates).
-3. Add a single port forwarding for that IP using port `22`.
+1. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
+2. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
 
 ##### Creating an SSH Key (Ubuntu)
 
@@ -297,6 +270,7 @@ Depending on your needs, you may need to alter the `serverconfig.xml` file. By d
 2. Within the `IP` tags, change the value `127.0.0.1` to one of these:
     1. To test with other computers in your LAN/WAN, enter your server machine's IP address (use the Terminal command `ip a`, and it should start with `192`).
     2. To allow client connections from outside your network, [enter your public IP address](https://api.ipify.org).
+3.  If you created a database, user, and password with different values than `atlas`, update the values in the `<DBConnectionString>` tags.
 
 Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
 
@@ -307,7 +281,7 @@ This process assumes you do not already have a fully-configured environment with
 If you've already completed a step previously, we recommend that you quickly review the steps outlined to ensure no special configurations are missed.
 
 1. [Installing .NET 5.0](#installing-net-50-win)
-2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
+2. [Installing MariaDB](#installing-mariadb-win)
     1. [Preparing Your Database](#preparing-your-database-win)
     2. [Configuring `My.ini`](#configuring-myini-win)
     3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
@@ -315,9 +289,8 @@ If you've already completed a step previously, we recommend that you quickly rev
     1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
     2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
         1. [Enabling SSH](#enabling-ssh-win)
-        2. [Configuring Your Router](#configuring-your-router-win)
-        3. [Creating an SSH Key](#creating-an-ssh-key-win)
-        4. [Adding the SSH Key to Gitlab](#adding-the-ssh-key-to-gitlab-win)
+        2. [Creating an SSH Key](#creating-an-ssh-key-win)
+        3. [Adding the SSH Key to Gitlab](#adding-the-ssh-key-to-gitlab-win)
 4. [Installing Git](#installing-git-win)
 5. [Cloning Atlas' Repos](#cloning-the-repository-win)
 6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
@@ -329,9 +302,9 @@ If you've already completed a step previously, we recommend that you quickly rev
 1. Download the [.NET 5.0 installer](https://dotnet.microsoft.com/download/dotnet/5.0).
 2. Install the tool and make any configurations as needed.
 
-### Installing MariaDB 10.5 (Win)
+### Installing MariaDB (Win)
 
-MariaDB is an open-source relational database management system (RDBMS). Atlas specifically uses v10.5.
+MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5 for Windows development purposes.
 
 1. Download MariaDB:
     1. [32-bit](https://downloads.mariadb.org/interstitial/mariadb-10.5.4/win32-packages/mariadb-10.5.4-win32.zip/from/https%3A//archive.mariadb.org/)
@@ -346,16 +319,15 @@ The RDBMS is installed, but needs a user and database for Atlas to access and us
 
 The following steps walk you through the process of adding a user and database using MariaDB.
 
-If you're already familiar with the process and wish to skip it, just remember that the following things are required to run `AtlasCore`:
+If you're already familiar with the process and wish to skip it, just remember that the following values must be updated in `serverconfig.xml`:
 
-* There must be a user named `atlas`.
-* The user's password must be `atlas`.
-* The `atlas` user must have sufficient privileges.
-* A database must exist called `atlas`.
+* The database user (defaulted to `atlas`)
+* The user's password (defaulted to `atlas`)
+* The database name (defaulted to `atlas`)
 
-> **NOTE:** If you set values (user ID, user password, and database name) contrary to those specified here, `DOLServer` builds will fail.
+> **NOTE:** If the database connections are not updated in `serverconfig.xml`, `DOLServer` builds will fail.
 
-1. Launch the **MySQL Client (MariaDB 10.5)** option from the Start menu.
+1. Launch the **MySQL Client (MariaDB)** option from the Start menu.
 2. `CREATE DATABASE atlas;` <!-- The DB **MUST** be named "atlas" -->
 3. `SHOW DATABASES;` <!-- Verify that the DB exists -->
 4. `CREATE USER 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- Both username and password must be "atlas" -->
@@ -400,7 +372,7 @@ The application will process the entire SQL file. Once done, you should now see 
 GitLab requires encrypted communication between the repository and client machine. You may pick one of two methods to accomplish this:
 
 1. [Personal Access Token](#setting-up-a-personal-access-token-win) (easiest)
-2. [SSH tunneling](#setting-up-ssh-tunneling-win)
+2. [SSH Tunneling](#setting-up-ssh-tunneling-win)
 
 #### Setting Up a Personal Access Token (Win)
 
@@ -423,13 +395,12 @@ Enabling Secure Shell (SSH) is a network protocol used to secure connections bet
 These are the steps associated with using SSH encryption:
 
 1. [Enabling SSH](#enabling-ssh-win)
-2. [Configuring Your Router](#configuring-your-router-win)
-3. [Creating an SSH Key](#creating-an-ssh-key-win)
-4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-win)
+2. [Creating an SSH Key](#creating-an-ssh-key-win)
+3. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-win)
 
 ##### Enabling SSH (Win)
 
-By default, SSH functionality is already installed and enabled on Windows through PowerShell.
+By default, SSH functionality is supposed to be installed and enabled on Windows through PowerShell.
 
 However, you should first verify that the service is installed and running:
 
@@ -439,21 +410,13 @@ However, you should first verify that the service is installed and running:
     1. `NotPresent`, then type: `Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0`.
     2. `Installed`, then continue to the next steps below.
 
-If the SSH client is already installed:
+If the SSH client is installed:
 
 1. Type `Get-Service -Name ssh-agent`. If the **Status** returns as:
     1. `Running`, continue to step 2.
     2. `Stopped`, then type: `Start-Service ssh-agent`.
 2. `Set-Service ssh-agent -StartupType Automatic`
 3. `New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22`
-
-##### Configuring Your Router (Win)
-
-As part of SSH, your router must allow external communication between GitLab and your machine. This process varies depending on the type of router and the web interface used, but the following actions must be performed as part of  SSH tunneling:
-
-1. Identify your device's internal IP address (typically starts with `192`).
-2. Make a DHCP reservation for the IP address (so that you don't have to reconfigure SSH every time your IP updates).
-3. Add a single port forwarding for that IP using internal port `22`.
 
 ##### Creating an SSH Key (Win)
 
@@ -506,6 +469,7 @@ Depending on your needs, you may need to alter the `serverconfig.xml` file. By d
 2. Within the `IP` tags, change the value `127.0.0.1` to one of these:
     1. To test with other computers in your LAN/WAN, enter your server machine's IP address (use the PowerShell command `ipconfig`, and it should start with `192`).
     2. To allow client connections from outside your network, [enter your public IP address](https://api.ipify.org).
+    3. If you created a database, user, and password with different values than `atlas`, update the values in the `<DBConnectionString>` tags.
 
 Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
 
