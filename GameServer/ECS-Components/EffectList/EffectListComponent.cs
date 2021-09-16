@@ -52,8 +52,19 @@ namespace DOL.GS
                                 }
                             }
                         }
-                        else
+                        else if (effect.EffectType == eEffect.SavageBuff)
                         {
+                            // Player doesn't have this buff yet
+                            if (existingEffects.Where(e => e.SpellHandler.Spell.SpellType == effect.SpellHandler.Spell.SpellType).Count() == 0)
+                            {
+                                Effects[effect.EffectType].Add(effect);
+                                EffectIdToEffect.TryAdd(effect.Icon, effect);
+                                return true;
+                            }
+                            return false;
+                        }
+                        else
+                        {                           
                             bool addEffect = false;
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
