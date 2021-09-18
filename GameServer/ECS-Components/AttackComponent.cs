@@ -208,7 +208,23 @@ namespace DOL.GS
                 // base 10% chance of critical for all with melee weapons
                 return 10;
             }
-            else return 0;
+
+            if (owner is GameNPC NPC)
+            {
+                // Player-Summoned pet
+                if (NPC is GamePet summonedPet && summonedPet.Owner is GamePlayer)
+                {
+                    return NPC.GetModified(eProperty.CriticalMeleeHitChance);
+                }
+
+                // Charmed Pet
+                if (NPC.Brain is IControlledBrain charmedPetBrain && charmedPetBrain.GetPlayerOwner() != null)
+                {
+                    return NPC.GetModified(eProperty.CriticalMeleeHitChance);
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
