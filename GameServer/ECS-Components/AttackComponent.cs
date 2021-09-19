@@ -209,6 +209,10 @@ namespace DOL.GS
                 return 10;
             }
 
+            /// [Atlas - Takii] Wild Minion Implementation. We don't want any non-pet NPCs to crit.
+            /// We cannot reliably check melee vs ranged here since archer pets don't necessarily have a proper weapon with the correct slot type assigned.
+            /// Since Wild Minion is the only way for pets to crit and we (currently) want it to affect melee/ranged/spells, we can just rely on the Melee crit chance even for archery attacks
+            /// and as a result we don't actually need to detect melee vs ranged to end up with the correct behavior since all attack types will have the same % chance to crit in the end.
             if (owner is GameNPC NPC)
             {
                 // Player-Summoned pet
