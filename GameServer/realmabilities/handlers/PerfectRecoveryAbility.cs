@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 	public class PerfectRecoveryAbility : TimedRealmAbility
 	{
 		public PerfectRecoveryAbility(DBAbility dba, int level) : base(dba, level) { }
-		private Int32 m_resurrectValue = 5;
+        private Int32 m_resurrectValue = 5;
 		private const String RESURRECT_CASTER_PROPERTY = "RESURRECT_CASTER";
         protected readonly ListDictionary m_resTimersByLiving = new ListDictionary();
 
@@ -30,7 +30,9 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer targetPlayer = null;
 			bool isGoodTarget = true;
 
-			if (player.TargetObject == null)
+            m_resurrectValue = GetResurrectValue();
+
+            if (player.TargetObject == null)
 			{
 				isGoodTarget = false;
 			}
@@ -51,26 +53,6 @@ namespace DOL.GS.RealmAbilities
 				player.Out.SendMessage("You have to target a dead member of your realm!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
 			}
-
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
-			{
-				switch (Level)
-				{
-					case 1: m_resurrectValue = 10; break;
-					case 2: m_resurrectValue = 25; break;
-					case 3: m_resurrectValue = 50; break;
-					case 4: m_resurrectValue = 75; break;
-					case 5: m_resurrectValue = 100; break;
-				}
-			}
-			else
-			{
-				switch (Level)
-				{
-					case 2: m_resurrectValue = 50; break;
-					case 3: m_resurrectValue = 100; break;
-				}
-			}
 			
 			GameLiving resurrectionCaster = targetPlayer.TempProperties.getProperty<object>(RESURRECT_CASTER_PROPERTY, null) as GameLiving;
 			if (resurrectionCaster != null)
@@ -86,7 +68,7 @@ namespace DOL.GS.RealmAbilities
 			}
 			if (targetPlayer != null)
 			{
-				SendCasterSpellEffectAndCastMessage(living, 7019, true);
+				SendCasterSpellEffectAndCastMessage(targetPlayer, 7019, true);
 				DisableSkill(living);
                 //Lifeflight:
                 //don't rez just yet
@@ -104,7 +86,7 @@ namespace DOL.GS.RealmAbilities
 				}
 
 				//send resurrect dialog
-                targetPlayer.Out.SendCustomDialog("Do you allow " + living.GetName(0, true) + " to resurrect you\nwith " + m_resurrectValue +" percent hits?", new CustomDialogResponse(ResurrectResponceHandler));
+                targetPlayer.Out.SendCustomDialog("Do you allow " + living.GetName(0, true) + " to resurrect you\n with " + m_resurrectValue + " percent hits/power (PR)?", new CustomDialogResponse(ResurrectResponceHandler));
 
 			}
 		}
@@ -233,6 +215,30 @@ namespace DOL.GS.RealmAbilities
 		{
 			return 300;
 		}
+
+        protected virtual Int32 GetResurrectValue()
+        {
+            if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            {
+                switch (Level)
+                {
+                    case 1: return 10;
+                    case 2: return 25;
+                    case 3: return 50;
+                    case 4: return 75;
+                    case 5: return 100;
+                }
+            }
+            else
+            {
+                switch (Level)
+                {
+                    case 2: return 50;
+                    case 3: return 100;
+                }
+            }
+            return 5;
+        }
 	}
 }
 
