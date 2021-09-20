@@ -18,7 +18,7 @@ namespace DOL.GS.Effects
 
 
 		/// <summary>
-		/// Default constructor for AmelioratingMelodiesEffect
+		/// Default constructor for BarrierOfFortitudeEffect
 		/// </summary>
 		public BarrierOfFortitudeEffect()
 		{

@@ -74,7 +74,7 @@ namespace DOL.GS.Spells
 				}
 
 				//send resurrect dialog
-				targetPlayer.Out.SendCustomDialog("Do you allow " + m_caster.GetName(0, true) + " to resurrected you\nwith " + m_spell.ResurrectHealth + " percent hits?", new CustomDialogResponse(ResurrectResponceHandler));
+				targetPlayer.Out.SendCustomDialog("Do you allow " + m_caster.GetName(0, true) + " to resurrected you\n with " + m_spell.ResurrectHealth + " percent hits/power?", new CustomDialogResponse(ResurrectResponceHandler));
 			}
 		}
 
