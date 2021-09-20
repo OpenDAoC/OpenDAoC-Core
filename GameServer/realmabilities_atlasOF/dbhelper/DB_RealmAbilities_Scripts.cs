@@ -24,13 +24,13 @@ namespace realmabilities_atlasOF._temporary_helper
         -- CREATE NEW EMPTY TABLE ---------------------------------------------------------
         CREATE TABLE `classxrealmability_atlas` (
         `CharClass` INT(11) NOT NULL,
-        `AbilityKey` TEXT NOT NULL COLLATE 'latin1_swedish_ci',
+        `AbilityKey` TEXT NOT NULL COLLATE 'utf8',
         `LastTimeRowUpdated` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
-        `ClassXRealmAbility_ID` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci' DEFAULT '',
-        `ClassXRealmAbility_Atlas_ID` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci' DEFAULT '',
+        `ClassXRealmAbility_ID` VARCHAR(255) NOT NULL COLLATE 'utf8' DEFAULT '',
+        `ClassXRealmAbility_Atlas_ID` VARCHAR(255) NOT NULL COLLATE 'utf8' DEFAULT '',
         PRIMARY KEY (`ClassXRealmAbility_ID`) USING BTREE
         )
-        COLLATE='latin1_swedish_ci'
+        COLLATE='utf8'
         ENGINE=MyISAM
         ;
 
