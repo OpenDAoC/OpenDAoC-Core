@@ -16,13 +16,10 @@ namespace DOL.GS.RealmAbilities
 
 		public AtlasOF_FirstAid(DBAbility dba, int level) : base(dba, level) { }
 
-		public override int MaxLevel { get { return 1; } }
+		public override int MaxLevel { get { return 3; } }
 
 		public override int CostForUpgrade(int level)
         {
-			if (level < 1) return 0;
-
-			// TODO: CostForUpgrade it's not overriden !!! is always 3/6/9 no matter we override in here. this must be checked !!!
 			switch (level)
             {
 				case 1:
@@ -31,8 +28,8 @@ namespace DOL.GS.RealmAbilities
 					return 6;
 				case 3:
 					return 10;
-                default:
-					return 10;
+                default:	// default must return value for lvl 1
+					return 3;
             }
         }
 
@@ -73,7 +70,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override int GetReUseDelay(int level)
 		{
-			return 900;	// 15 min
+			return 900;	// 900 = 15 min / 1800 = 30 min
 		}
 
 		public override void AddEffectsInfo(IList<string> list)

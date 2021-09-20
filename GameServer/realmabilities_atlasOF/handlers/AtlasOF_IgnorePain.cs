@@ -8,17 +8,27 @@ namespace DOL.GS.RealmAbilities
 	/// <summary>
 	/// Self heal that heals 100% of the user's health, and can be used in combat.
 	/// </summary>
-	public class AtlasOF_IgnorePain : L1RealmAbility
+	public class AtlasOF_IgnorePain : TimedRealmAbility
 	{
 		public AtlasOF_IgnorePain(DBAbility dba, int level) : base(dba, level) { }
 
 		public override int MaxLevel { get { return 1; } }
 
-		public override int GetReUseDelay(int level) { return 1800; } // 30 min
+		public override int GetReUseDelay(int level) { return 1800; } // 900 = 15 min / 1800 = 30 min
 
-		public override int CostForUpgrade(int level) { return 10; }
+		public override int CostForUpgrade(int level) { return 14; }
 
-		public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasFirstAidLevel(player, 2); }
+		public override bool CheckRequirement(GamePlayer player) { 
+
+			if (player.RealmLevel >= 40)
+            {
+				return AtlasRAHelpers.HasFirstAidLevel(player, 2);
+			} else
+            {
+				return false;
+            }
+			
+		}
 
         public override void Execute(GameLiving living)
 		{

@@ -452,7 +452,7 @@ namespace DOL.GS.RealmAbilities
 
 	}
 
-
+	/*
 	public class L1RealmAbility : TimedRealmAbility
 	{
 		public L1RealmAbility(DBAbility ability, int level) : base(ability, level) { }
@@ -476,4 +476,5 @@ namespace DOL.GS.RealmAbilities
 		}
 
 	}
+	*/
 }

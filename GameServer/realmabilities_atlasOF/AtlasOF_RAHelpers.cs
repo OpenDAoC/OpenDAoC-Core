@@ -123,7 +123,7 @@ namespace DOL.GS.RealmAbilities
 
         public static bool HasFirstAidLevel(GamePlayer player, int level)
         {
-            AtlasOF_FirstAidAbility raFirstAid = player.GetAbility<AtlasOF_FirstAidAbility>();
+            AtlasOF_FirstAid raFirstAid = player.GetAbility<AtlasOF_FirstAid>();
             if (raFirstAid == null)
                 return false;
 
