@@ -9,15 +9,16 @@ namespace DOL.GS.RealmAbilities
 	/// <summary>
 	/// Minor % based Self Heal -  30 / lvl
 	/// </summary>
-	public class AtlasOF_FirstAidAbility : TimedRealmAbility
+	public class AtlasOF_FirstAid : TimedRealmAbility
 	{
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public AtlasOF_FirstAidAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_FirstAid(DBAbility dba, int level) : base(dba, level) { }
 
-		
-        public override int CostForUpgrade(int level)
+		public override int MaxLevel { get { return 1; } }
+
+		public override int CostForUpgrade(int level)
         {
 			if (level < 1) return 0;
 
@@ -47,7 +48,7 @@ namespace DOL.GS.RealmAbilities
 
 			int healAmount = 0;
 
-			int currentLevelAbility = living.GetAbility<AtlasOF_FirstAidAbility>().Level;
+			int currentLevelAbility = living.GetAbility<AtlasOF_FirstAid>().Level;
 			int currentCharMaxHealth = living.MaxHealth;
 			
 			// Minor % based Self Heal -  30 / lvl
