@@ -46,10 +46,14 @@ namespace DOL.GS
                         {
                             if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                             {
-                                if (effect.SpellHandler.Spell.IsHarmful)
+                                if (effect.SpellHandler.Spell.IsHarmful && !(effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm))
                                 {
                                     ((SpellHandler)effect.SpellHandler).SendCastAnimation();
 
+                                }
+                                else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
+                                {
+                                    ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
                                 }
                                 effect.SpellHandler.StartSpell(null);
                                 effect.ExpireTick += effect.PulseFreq;
@@ -60,7 +64,7 @@ namespace DOL.GS
                                     effect.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
 
                                 if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
-                                    effect.ExpireTick >= effect.LastTick + effect.PulseFreq)
+                                    effect.ExpireTick >= (effect.LastTick + effect.Duration > 0 ? effect.Duration : effect.PulseFreq))
                                 {
                                     //Add time to effect to make sure the spell refreshes instead of cancels
                                     effect.ExpireTick += GameLoop.TickRate;

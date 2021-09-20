@@ -27,7 +27,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Language;
 using log4net;
-
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -149,11 +149,11 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            //You should be able to chain pulsing charm on the same mob
-            if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body == (GameNPC)selectedTarget))
-            {
-                ((GamePlayer)Caster).CommandNpcRelease();
-            }
+            ////You should be able to chain pulsing charm on the same mob
+            //if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body == (GameNPC)selectedTarget))
+            //{
+            //    //((GamePlayer)Caster).CommandNpcRelease();
+            //}
 
             if (!base.CheckEndCast(selectedTarget)) 
             	return false;
@@ -175,7 +175,7 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
             //You should be able to chain pulsing charm on the same mob
-            if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body == (GameNPC)target))
+            if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body != (GameNPC)target))
             {
                 ((GamePlayer)Caster).CommandNpcRelease();
             }
@@ -410,6 +410,7 @@ namespace DOL.GS.Spells
         /// <param name="arguments"></param>
         public void ReleaseEventHandler(DOLEvent e, object sender, EventArgs arguments)
         {
+            Console.Write("Charm ReleaseEventHandler Called!");
             IControlledBrain npc = null;
             
             if (e == GameLivingEvent.PetReleased)
@@ -420,19 +421,30 @@ namespace DOL.GS.Spells
             if (npc == null) 
             	return;
 
-            PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
-            if (concEffect != null)
-                concEffect.Cancel(false);
+            //PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
 
-            GameSpellEffect charm = FindEffectOnTarget(npc.Body, this);
+            List<ECSGameEffect> pulses = new List<ECSGameEffect>();
+            npc.Owner?.effectListComponent?.Effects?.TryGetValue(eEffect.Pulse, out pulses);
+            var concEffect = pulses?.Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
+
+            if (concEffect != null)
+                EffectService.RequestCancelConcEffect(concEffect);
+                //concEffect.CancelEffect = true;
+                //concEffect.Cancel(false);
+
+            //GameSpellEffect charm = FindEffectOnTarget(npc.Body, this);
+            List<ECSGameEffect> charm = new List<ECSGameEffect>();
+            npc.Body?.effectListComponent?.Effects?.TryGetValue(eEffect.Charm, out charm);
             
-            if (charm == null)
+            if (charm?.Count == 0)// == null)
             {
                 log.Warn("charm effect is already canceled");
                 return;
             }
 
-            charm.Cancel(false);
+            //charm.Cancel(false);
+            //charm.FirstOrDefault().CancelEffect = true;
+            EffectService.RequestCancelEffect(charm?.FirstOrDefault());
         }
 
         /// <summary>

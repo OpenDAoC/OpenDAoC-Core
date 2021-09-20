@@ -275,11 +275,15 @@ namespace DOL.GS
 
                             if (gPlayer != null && npc != null)
                             {
+                                ((CharmSpellHandler)e.SpellHandler).SendEffectAnimation(npc, 0, false, 1);
+                                if (gPlayer.ControlledBrain != null)
+                                    gPlayer.CommandNpcRelease();
 
                                 if ((e.SpellHandler as CharmSpellHandler).m_controlledBrain == null)
                                     (e.SpellHandler as CharmSpellHandler).m_controlledBrain = new ControlledNpcBrain(gPlayer);
 
-                                if (!(e.SpellHandler as CharmSpellHandler).m_isBrainSet)
+                                if (!(e.SpellHandler as CharmSpellHandler).m_isBrainSet && 
+                                    !(e.SpellHandler as CharmSpellHandler).m_controlledBrain.IsActive)
                                 {
 
                                     npc.AddBrain((e.SpellHandler as CharmSpellHandler).m_controlledBrain);
@@ -305,7 +309,7 @@ namespace DOL.GS
 
                                         ply.Out.SendObjectGuildID(npc, gPlayer.Guild);
                                     }
-                                }
+                                }                      
                             }
                             //else
                             //{
@@ -580,6 +584,7 @@ namespace DOL.GS
                     }
                     else if (e.EffectType == eEffect.Charm)
                     {
+                        //Console.WriteLine("Canceling Charm effect on " + e.Owner.Name);
                         GamePlayer gPlayer = e.SpellHandler.Caster as GamePlayer;
                         GameNPC npc = e.Owner as GameNPC;
 
@@ -589,15 +594,17 @@ namespace DOL.GS
                             //{
 
                                 GameEventMgr.RemoveHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler((e.SpellHandler as CharmSpellHandler).ReleaseEventHandler));
-
+                            ControlledNpcBrain oldBrain = (ControlledNpcBrain)gPlayer.ControlledBrain;
                                 gPlayer.SetControlledBrain(null);
+
                                 (e.SpellHandler as CharmSpellHandler).MessageToCaster("You lose control of " + npc.GetName(0, false) + "!", eChatType.CT_SpellExpires);
 
                                 lock (npc.BrainSync)
                                 {
 
                                     npc.StopAttack();
-                                    npc.RemoveBrain((e.SpellHandler as CharmSpellHandler).m_controlledBrain);
+                                    if (npc.RemoveBrain(oldBrain/*(e.SpellHandler as CharmSpellHandler).m_controlledBrain*/))
+                                        Console.WriteLine("NPC brain removed!");
                                     (e.SpellHandler as CharmSpellHandler).m_isBrainSet = false;
 
 
@@ -806,18 +813,6 @@ namespace DOL.GS
                 }
             }
 
-            if (e.EffectType == eEffect.Pulse && e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
-            {
-                List<ECSGameEffect> charmEffects = new List<ECSGameEffect>();
-                if ((e?.SpellHandler as CharmSpellHandler)?.m_controlledBrain != null)
-                {
-                    (e.SpellHandler as CharmSpellHandler).m_controlledBrain.Body?.effectListComponent?.Effects?.TryGetValue(eEffect.Charm, out charmEffects);
-                    var charmEffect = charmEffects?.FirstOrDefault();
-                    if (charmEffect != null)
-                        charmEffect.ExpireTick = 0;
-                }
-            }
-
             e.IsBuffActive = false;
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
@@ -847,6 +842,9 @@ namespace DOL.GS
         /// </summary>
         public static void RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
+            if (effect is null)
+                return;
+
             // Player can't remove negative effect or Effect in Immunity State
             if (playerCanceled && ((effect.SpellHandler != null && !effect.SpellHandler.HasPositiveEffect) || effect is ECSImmunityEffect))
             {
@@ -866,7 +864,7 @@ namespace DOL.GS
         /// <summary>
         /// Enqueues an ECSGameEffect (as a IConcentrationEffect) to be canceled on the next tick.
         /// </summary>
-        public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled)
+        public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
             ECSGameEffect effect = concEffect as ECSGameEffect;
             if (effect != null)
@@ -1113,7 +1111,7 @@ namespace DOL.GS
             }
         }
 
-        private static void SendSpellResistAnimation(ECSGameEffect e)
+        public static void SendSpellResistAnimation(ECSGameEffect e)
         {
             GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

@@ -3342,13 +3342,21 @@ namespace DOL.GS
 		/// <returns>True if brain was found</returns>
 		public virtual bool RemoveBrain(ABrain removeBrain)
 		{
-			if (removeBrain == null) return false;
+			if (removeBrain == null)
+			{
+				//Console.WriteLine("removeBrain is null!");
+				return false;
+			}
 
 			lock (BrainSync)
 			{
 				ArrayList brains = new ArrayList(m_brains);
 				int index = brains.IndexOf(removeBrain);
-				if (index < 0) return false;
+				if (index < 0)
+				{
+					//Console.WriteLine("Brain index < 0");
+					return false;
+				}
 				bool active = brains[index] == Brain;
 				if (active)
 					removeBrain.Stop();

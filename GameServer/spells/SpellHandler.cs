@@ -696,7 +696,7 @@ namespace DOL.GS.Spells
 						
                     if (cancelEffect != null)
                     {
-						EffectService.RequestCancelEffect(cancelEffect);
+						EffectService.RequestCancelConcEffect(cancelEffect);
                         Caster.LastPulseCast = null;
                         Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
@@ -1131,6 +1131,8 @@ namespace DOL.GS.Spells
 				switch (m_spell.Target)
 				{
 					case "Enemy":
+						if (m_spell.SpellType == (byte)eSpellType.Charm)
+							break;
 						//enemys have to be in front and in view for targeted spells
 						if (!m_caster.IsObjectInFront(target, 180))
 						{
@@ -1628,7 +1630,10 @@ namespace DOL.GS.Spells
 						_castStartTick = currentTick;
 						if (Spell.IsInstantCast)
 						{
-							castState = eCastState.Finished;
+							if (!CheckEndCast(m_spellTarget))
+								castState = eCastState.Interrupted;
+							else
+								castState = eCastState.Finished;
 						}
 						else
 						{
@@ -1648,7 +1653,10 @@ namespace DOL.GS.Spells
 					}
 					if (_castStartTick + _calculatedCastTime  < currentTick)
 					{
-						castState = eCastState.Finished;
+						if (!CheckEndCast(m_spellTarget))
+							castState = eCastState.Interrupted;
+						else
+							castState = eCastState.Finished;
 					}
 					break;
 				case eCastState.Interrupted:
