@@ -935,7 +935,7 @@ namespace DOL.GS
 
 				if (handlerConstructor != null)
 				{
-					m_spellhandlerConstructorCache.Add(((eSpellType)spell.SpellType).ToString(), handlerConstructor);
+					m_spellhandlerConstructorCache.TryAdd(((eSpellType)spell.SpellType).ToString(), handlerConstructor);
 				}
 			}
 
