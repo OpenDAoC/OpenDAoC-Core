@@ -58,6 +58,7 @@ namespace DOL.GS.Spells
 			if(target == null || !Caster.IsControlledNPC(target))
 			{
 				target = Caster.ControlledBrain.Body as TurretPet;
+				m_spellTarget = target;
 			}
 			return base.CheckBeginCast(target);
 		}

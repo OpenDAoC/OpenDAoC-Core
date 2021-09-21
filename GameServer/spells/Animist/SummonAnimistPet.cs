@@ -105,7 +105,7 @@ namespace DOL.GS.Spells
 		{
 			base.ApplyEffectOnTarget(target, effectiveness);
 
-			m_pet.Name = Spell.Name;
+			//m_pet.Name = Spell.Name;
 
 			if (m_pet is TurretPet)
 			{

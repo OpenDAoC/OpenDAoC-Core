@@ -4844,7 +4844,7 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair("cost_type", "2");
 					dw.AddKeyValuePair("delve_string", $"Increases your chance to evade by {(int)Spell.Value}%.");
 					break;
-				case eSpellType.SummonAnimistPet:
+				//case eSpellType.SummonAnimistPet:
 				case eSpellType.SummonCommander:
 				case eSpellType.SummonDruidPet:
 				case eSpellType.SummonHunterPet:
