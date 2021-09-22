@@ -304,7 +304,7 @@ namespace DOL.GS
                         if (RangedAttackType == eRangedAttackType.Critical && living != null
                             && (living.CurrentSpeed > 90 //walk speed == 85, hope that's what they mean
                                 || (living.attackComponent.AttackState && living.InCombat) //maybe not 100% correct
-                                || SpellHandler.FindEffectOnTarget(living, "Mesmerize") != null
+                                || EffectListService.GetEffectOnTarget(living, eEffect.Mez) /*SpellHandler.FindEffectOnTarget(living, "Mesmerize")*/ != null
                                ))
                         {
                             /*

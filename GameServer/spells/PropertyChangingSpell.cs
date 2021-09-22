@@ -106,7 +106,8 @@ namespace DOL.GS.Spells
 					}
 					if (this is ArmorFactorBuff)
 					{
-						if (SpellHandler.FindEffectOnTarget(target, "ArmorFactorBuff") != null && m_spellLine.IsBaseLine != true)
+						if (/*SpellHandler.FindEffectOnTarget(target, "ArmorFactorBuff")*/
+							EffectListService.GetEffectOnTarget(target, eEffect.BaseAFBuff) != null && m_spellLine.IsBaseLine != true)
 						{
 							MessageToLiving(target, "You already have this effect!", eChatType.CT_SpellResisted);
 							return;
@@ -118,9 +119,12 @@ namespace DOL.GS.Spells
 				{
 					if (this.Spell.Frequency <= 0)
 					{
-						GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
-						GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
-						GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
+						//GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
+						//GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
+						//GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
+						ECSGameEffect Matter = EffectListService.GetEffectOnTarget(player, eEffect.MatterResistBuff);
+						ECSGameEffect Cold = EffectListService.GetEffectOnTarget(player, eEffect.ColdResistBuff);
+						ECSGameEffect Heat = EffectListService.GetEffectOnTarget(player, eEffect.HeatResistBuff);
 						if (Matter != null || Cold != null || Heat != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
@@ -133,9 +137,12 @@ namespace DOL.GS.Spells
 				{
 					if (this.Spell.Frequency <= 0)
 					{
-						GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
-						GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
-						GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
+						//GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
+						//GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
+						//GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
+						ECSGameEffect Body = EffectListService.GetEffectOnTarget(player, eEffect.BodyResistBuff);
+						ECSGameEffect Spirit = EffectListService.GetEffectOnTarget(player, eEffect.SpiritResistBuff);
+						ECSGameEffect Energy = EffectListService.GetEffectOnTarget(player, eEffect.EnergyResistBuff);
 						if (Body != null || Spirit != null || Energy != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);

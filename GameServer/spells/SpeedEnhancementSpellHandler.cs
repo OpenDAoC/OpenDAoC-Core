@@ -239,9 +239,11 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);
+			//GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);
+			ECSGameEffect speed = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedBuff);
 			if (speed != null)
-				speed.Cancel(false);
+				EffectService.RequestCancelEffect(speed);
+				//speed.Cancel(false);
 		}
 
 		/// <summary>

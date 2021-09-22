@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Numerics;
 using ECS.Debug;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -191,6 +192,19 @@ namespace DOL.GS
                     }
                 }
             }
+        }
+
+        public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
+        {
+            List<ECSGameEffect> effects;
+            target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+
+            if (effects != null && spellType == eSpellType.Null)
+                return effects.FirstOrDefault();
+            else if (effects != null)
+                return effects.Where(e => e.SpellHandler.Spell.SpellType == (byte)spellType).FirstOrDefault();
+            else
+                return null;
         }
     }
 }

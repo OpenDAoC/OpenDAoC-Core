@@ -56,7 +56,8 @@ namespace DOL.AI.Brain
 					if (!Body.IsWithinRadius(living, ((TurretPet)Body).TurretSpell.Range, true))
 						continue;
 
-					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
 						continue;
 
 					if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && living.HasAbility(Abilities.RootImmunity))
@@ -80,8 +81,9 @@ namespace DOL.AI.Brain
                 if (living.IsMezzed || living.IsStealthed)
                     continue;
 
-                if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-                    continue;
+				//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+				if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
+					continue;
 
 				if (LivingHasEffect(living, ((TurretPet)Body).TurretSpell))
 				{
@@ -104,8 +106,9 @@ namespace DOL.AI.Brain
                 if (living.IsMezzed || living.IsStealthed)
                     continue;
 
-                if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-                    continue;
+				//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+				if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
+					continue;
 
                 if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
                     continue;

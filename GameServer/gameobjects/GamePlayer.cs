@@ -8829,11 +8829,13 @@ namespace DOL.GS
 								}
 								// vampiir ~
 								GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
-								GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "SpeedEnhancement");
+								//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "SpeedEnhancement");
+								ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
 								if (effects != null)
 									effects.Cancel(false);
 								if (effect != null)
-									effect.Cancel(false);
+									EffectService.RequestCancelEffect(effect);
+									//effect.Cancel(false);
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
 								m_whistleMountTimer = new RegionTimer(this);
 								m_whistleMountTimer.Callback = new RegionTimerCallback(WhistleMountTimerCallback);
@@ -15887,9 +15889,10 @@ namespace DOL.GS
 		{
 			double evadeChance = 0;
 
-			GameSpellEffect evade = SpellHandler.FindEffectOnTarget(this, "EvadeBuff");
-			if (evade == null)
-				evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
+			//GameSpellEffect evade = SpellHandler.FindEffectOnTarget(this, "EvadeBuff");
+			//if (evade == null)
+			//	evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
+			ECSGameEffect evade = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
 
 			if (HasAbility(Abilities.Advanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
 				evadeChance = GetModified(eProperty.EvadeChance);
@@ -15941,11 +15944,12 @@ namespace DOL.GS
 		public virtual double GetParryChance()
 		{
 			double parryChance = 0;
-			
-			GameSpellEffect parry = SpellHandler.FindEffectOnTarget(this, "ParryBuff");
-			if (parry == null)
-				parry = SpellHandler.FindEffectOnTarget(this, "SavageParryBuff");
-			
+
+			//GameSpellEffect parry = SpellHandler.FindEffectOnTarget(this, "ParryBuff");
+			//if (parry == null)
+			//	parry = SpellHandler.FindEffectOnTarget(this, "SavageParryBuff");
+			ECSGameEffect parry = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
+
 			if ((HasSpecialization(Specs.Parry) || parry != null) && (attackComponent.AttackWeapon != null))
 				parryChance = GetModified(eProperty.ParryChance);
 			else if (EffectList.GetOfType<BladeBarrierEffect>() != null)
