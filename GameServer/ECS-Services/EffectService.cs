@@ -971,6 +971,10 @@ namespace DOL.GS
                     return eEffect.ColdResistBuff;
                 case (byte)eSpellType.MatterResistBuff:
                     return eEffect.MatterResistBuff;
+                case (byte)eSpellType.BodySpiritEnergyBuff:
+                    return eEffect.BodySpiritEnergyBuff;
+                case (byte)eSpellType.HeatColdMatterBuff:
+                    return eEffect.HeatColdMatterBuff;
 
 
                 //regen
