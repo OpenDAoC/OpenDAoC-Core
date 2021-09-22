@@ -4359,6 +4359,9 @@ namespace DOL.GS.Spells
 			WriteSpecial(ref dw);
 
 			if (Spell.HasSubSpell)
+				if (Spell.SpellType == (byte)eSpellType.Bomber || Spell.SpellType == (byte)eSpellType.SummonAnimistFnF)
+					dw.AddKeyValuePair("delve_spell", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
+				else
 				dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 
 			if (!dw.Values.ContainsKey("parm") && (eSpellType)Spell.SpellType != eSpellType.MesmerizeDurationBuff)
@@ -4419,6 +4422,8 @@ namespace DOL.GS.Spells
 				case eSpellType.SpiritResistDebuff:
 					return "nresistance";
 				case eSpellType.SummonTheurgistPet:
+				case eSpellType.Bomber:
+				case eSpellType.SummonAnimistFnF:
 					return "dsummon";
 				case eSpellType.Charm:
 					return "charm";
@@ -4509,8 +4514,6 @@ namespace DOL.GS.Spells
 				case eSpellType.Taunt:
 					return "taunt";
 				case eSpellType.PetSpell:
-				case eSpellType.Bomber:
-				case eSpellType.SummonAnimistFnF:
 				case eSpellType.SummonAnimistPet:
 					return "petcast";
 				case eSpellType.PetLifedrain:
@@ -4773,6 +4776,9 @@ namespace DOL.GS.Spells
 		{
 			switch ((eSpellType)Spell.SpellType)
 			{
+				case eSpellType.Bomber:
+					//dw.AddKeyValuePair("description_string", "Summon an elemental sprit to fight for the caster briefly.");
+						break;
 				case eSpellType.Charm:
 					dw.AddKeyValuePair("power_level", Spell.Value);
 
@@ -4861,7 +4867,7 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair("cost_type", "2");
 					dw.AddKeyValuePair("delve_string", $"Increases your chance to evade by {(int)Spell.Value}%.");
 					break;
-				//case eSpellType.SummonAnimistPet:
+				case eSpellType.SummonAnimistPet:
 				case eSpellType.SummonCommander:
 				case eSpellType.SummonDruidPet:
 				case eSpellType.SummonHunterPet:
@@ -4870,7 +4876,8 @@ namespace DOL.GS.Spells
 				case eSpellType.SummonSpiritFighter:
 				case eSpellType.SummonUnderhill:
 					dw.AddKeyValuePair("power_level", -100);
-					dw.AddKeyValuePair("delve_string", "Summons a Pet to serve you.");
+					//dw.AddKeyValuePair("delve_string", "Summons a Pet to serve you.");
+					dw.AddKeyValuePair("description_string", "Summons a Pet to serve you.");
 					break;
 				case eSpellType.StyleStun:
 					dw.AddKeyValuePair("type1", "22");
