@@ -137,8 +137,12 @@ namespace DOL.GS
                                 effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
                                 && effect.IsDisabled)
                             {
+                                List<ECSGameEffect> concEffects;
+                                effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out concEffects);
                                 bool isBest = false;
-                                if (effects.Count > 1)
+                                if (concEffects.Count == 1)
+                                    isBest = true;
+                                else if (concEffects.Count > 1)
                                 {
                                     foreach (var eff in effects)
                                         if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
@@ -149,6 +153,7 @@ namespace DOL.GS
                                         else
                                             isBest = false;
                                 }
+                                
                                 if (isBest)
                                     EffectService.RequestDisableEffect(effect, false);
                             }
