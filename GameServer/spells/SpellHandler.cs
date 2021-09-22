@@ -4694,7 +4694,24 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair(parm, "98");
 					break;
 				case eSpellType.DirectDamageWithDebuff:
-					dw.AddKeyValuePair(parm, Spell.DamageType + 1);
+					//Added to fix the mis-match between client and server
+					int addTo = 1;
+					switch ((int)Spell.DamageType)
+					{
+						case 10:
+							addTo = 6;
+							break;
+						case 12:
+							addTo = 10;
+							break;
+						case 15:
+							addTo = 2;
+							break;
+						default:
+							addTo = 1;
+							break;
+					}
+					dw.AddKeyValuePair(parm, (int)Spell.DamageType + addTo);
 					break;
 				case eSpellType.SavageCrushResistanceBuff:
 					dw.AddKeyValuePair(parm, (int)eDamageType.Crush);
