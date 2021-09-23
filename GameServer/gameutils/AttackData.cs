@@ -50,6 +50,10 @@ namespace DOL.GS
 		private InventoryItem m_weapon;
 		private bool m_isSpellResisted = false;
 		private bool m_causesCombat = true;
+		private double m_missRate = 0;
+		private double m_parryChance = 0;
+		private double m_evadeChance = 0;
+		private double m_blockChance = 0;
 
 		/// <summary>
 		/// Constructs new AttackData
@@ -58,7 +62,26 @@ namespace DOL.GS
 		{
 			m_styleEffects = new List<ISpellHandler>();
 		}
-
+		public double MissRate
+        {
+			get { return m_missRate; }
+			set { m_missRate = value; }
+        }
+		public double ParryChance
+		{
+			get { return m_parryChance; }
+			set { m_parryChance = value * 100; }
+		}
+		public double EvadeChance
+		{
+			get { return m_evadeChance; }
+			set { m_evadeChance = value * 100; }
+		}
+		public double BlockChance
+		{
+			get { return m_blockChance; }
+			set { m_blockChance = value * 100; }
+		}
 		/// <summary>
 		/// Sets or gets the modifier (resisted damage)
 		/// </summary>

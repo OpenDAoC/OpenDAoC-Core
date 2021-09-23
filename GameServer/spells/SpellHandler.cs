@@ -3292,7 +3292,7 @@ namespace DOL.GS.Spells
 			}
 
 			// Deliver message to the caster as well.
-			this.MessageToCaster(eChatType.CT_SpellResisted, "{0} resists the effect!", target.GetName(0, true));
+			this.MessageToCaster(eChatType.CT_SpellResisted, "{0} resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", target.GetName(0, true));
 		}
 		
 		/// <summary>
