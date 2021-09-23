@@ -4205,9 +4205,12 @@ namespace DOL.GS
                 {
 					for (int i = 0; i < dSEffects.Count; i++)
 					{
-						var dSEffect = dSEffects[i];
+						if (dSEffects[i].IsBuffActive)
+						{
+							var dSEffect = dSEffects[i];
 
-						((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
+							((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
+						}
 					}
                 }
 
