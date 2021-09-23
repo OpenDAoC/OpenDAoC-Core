@@ -107,7 +107,7 @@ namespace DOL.GS
 			{
 				con = (Container)m_buffs.Dequeue();
 
-				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, con.Spell, con.SpellLine);
+				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(con.Target, con.Spell, con.SpellLine);
 
 				if (spellHandler != null)
 				{
