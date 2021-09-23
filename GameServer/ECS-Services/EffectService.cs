@@ -584,6 +584,7 @@ namespace DOL.GS
                                 IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
                                 if (aggroBrain != null)
                                     aggroBrain.AddToAggroList(e.SpellHandler.Caster, 1);
+                                npc.attackComponent.AttackState = true;
                             }
                         }
                     }
