@@ -122,20 +122,20 @@ namespace DOL.GS.Scripts
         {
             base.OnAfterSpellCastSequence(handler);
 
-            InventoryItem necklace = null;
+            InventoryItem medallion = null;
 
             foreach (GamePlayer player in GetPlayersInRadius(300))
             {
                 GameLocation PortLocation = null;
-                necklace = player.Inventory.GetItem(eInventorySlot.Neck);
+                medallion = player.Inventory.GetItem(eInventorySlot.Mythical);
 
                 switch (player.Realm)
                 {
                     case eRealm.Albion:
                         {
-                            if (necklace != null)
+                            if (medallion != null)
                             {
-                                switch (necklace.Id_nb)
+                                switch (medallion.Id_nb)
                                 {
                                     case OdinID: PortLocation = new GameLocation("Odin Alb", 100, 596364, 631509, 5971); break;
                                     case EmainID: PortLocation = new GameLocation("Emain Alb", 200, 475835, 343661, 4080); break;
@@ -148,9 +148,9 @@ namespace DOL.GS.Scripts
                         break;
                     case eRealm.Midgard:
                         {
-                            if (necklace != null)
+                            if (medallion != null)
                             {
-                                switch (necklace.Id_nb)
+                                switch (medallion.Id_nb)
                                 {
                                     case HadrianID: PortLocation = new GameLocation("Hadrian Mid", 1, 655200, 293217, 4879); break;
                                     case EmainID: PortLocation = new GameLocation("Emain Mid", 200, 474107, 295199, 3871); break;
@@ -166,9 +166,9 @@ namespace DOL.GS.Scripts
                         break;
                     case eRealm.Hibernia:
                         {
-                            if (necklace != null)
+                            if (medallion != null)
                             {
-                                switch (necklace.Id_nb)
+                                switch (medallion.Id_nb)
                                 {
                                     case OdinID: PortLocation = new GameLocation("Odin Hib", 100, 596055, 581400, 6031); break;
                                     case HadrianID: PortLocation = new GameLocation("Hadrian Hib", 1, 605743, 293676, 4839); break;
@@ -188,7 +188,7 @@ namespace DOL.GS.Scripts
                 if (PortLocation != null)
                 {
                     //Remove the Necklace.
-                    player.Inventory.RemoveItem(necklace);
+                    player.Inventory.RemoveItem(medallion);
                     player.MoveTo(PortLocation);
                 }
             }
