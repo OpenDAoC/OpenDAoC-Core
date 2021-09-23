@@ -351,9 +351,12 @@ namespace DOL.GS
                 double effectiveness = 1;
                 for (int i = 0; i < dAEffects.Count; i++)
                 {
-                    if (i > 0)
-                        effectiveness *= .5;
-                    ((DamageAddSpellHandler)dAEffects[i].SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), effectiveness);
+                    if (dAEffects[i].IsBuffActive)
+                    {
+                        if (i > 0)
+                            effectiveness *= .5;
+                        ((DamageAddSpellHandler)dAEffects[i].SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), effectiveness);
+                    }
                 }
             }
         }
