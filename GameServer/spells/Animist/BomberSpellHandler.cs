@@ -54,6 +54,11 @@ namespace DOL.GS.Spells
         /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
+            if (Spell.Target.ToLower() == "pet")
+            {
+                target = Caster.ControlledBrain.Body;
+            }
+
             base.ApplyEffectOnTarget(target, effectiveness);
             m_pet.Level = Caster.Level; // No bomber class to override SetPetLevel() in, so set level here
             m_pet.TempProperties.setProperty(BOMBERTARGET, target);

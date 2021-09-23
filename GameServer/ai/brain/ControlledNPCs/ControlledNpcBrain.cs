@@ -970,8 +970,9 @@ namespace DOL.AI.Brain
 					}
 					else
 					{
-						GameSpellEffect root = SpellHandler.FindEffectOnTarget(living, "SpeedDecrease");
-						if (root != null && root.Spell.Value == 99)
+						//GameSpellEffect root = SpellHandler.FindEffectOnTarget(living, "SpeedDecrease");
+						ECSGameEffect root = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+						if (root != null && root.SpellHandler.Spell.Value == 99)
 						{
 							removable.Add(living);
 						}

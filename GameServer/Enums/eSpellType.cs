@@ -185,7 +185,8 @@ namespace DOL.GS
         Grapple = 178,
         BrittleGuard = 179,
         StyleRange = 180,
-        MultiTarget = 181
+        MultiTarget = 181,
+        Null = 200
 
 
 
