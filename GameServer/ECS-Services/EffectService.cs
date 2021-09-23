@@ -336,7 +336,14 @@ namespace DOL.GS
                             eChatType toOther = (e.SpellHandler.Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
                             (e.SpellHandler as BladeturnSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, toLiving);
                             Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), toOther, e.Owner);
-                        }                       
+                        }
+                        else if (e.EffectType == eEffect.PiercingMagic)
+                        {
+                            Console.WriteLine($"Buffing {e.SpellHandler.Spell.Name}");
+                            Console.WriteLine($"Value before: {e.Owner.Effectiveness}");
+                            e.Owner.Effectiveness += (e.SpellHandler.Spell.Value / 100);
+                            Console.WriteLine($"Value after: {e.Owner.Effectiveness}");
+                        }
                         else if (e.EffectType == eEffect.SavageBuff)
                         {
                             Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
@@ -684,6 +691,13 @@ namespace DOL.GS
                     {
                         (e.SpellHandler as BladeturnSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
                         Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
+                    }
+                    else if (e.EffectType == eEffect.PiercingMagic)
+                    {
+                        Console.WriteLine($"Canceling {e.SpellHandler.Spell.Name}");
+                        Console.WriteLine($"Value before: {e.Owner.Effectiveness}");
+                        e.Owner.Effectiveness -= (e.SpellHandler.Spell.Value / 100);
+                        Console.WriteLine($"Value after: {e.Owner.Effectiveness}");                        
                     }
                     else if (e.EffectType == eEffect.SavageBuff)
                     {
@@ -1092,6 +1106,8 @@ namespace DOL.GS
                         return eEffect.ColdResistDebuff;
                     else
                         return eEffect.Unknown;
+                case (byte)eSpellType.PiercingMagic:
+                    return eEffect.PiercingMagic;
                 //pets
                 case (byte)eSpellType.SummonTheurgistPet:
                 case (byte)eSpellType.SummonNoveltyPet:

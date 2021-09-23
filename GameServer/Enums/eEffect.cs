@@ -122,6 +122,7 @@ namespace DOL.GS
         Pet,
         OffensiveProc,
         DefensiveProc,
-        HereticPiercingMagic
+        HereticPiercingMagic,
+        PiercingMagic
     }
 }

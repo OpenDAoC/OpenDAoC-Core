@@ -186,6 +186,7 @@ namespace DOL.GS
         BrittleGuard = 179,
         StyleRange = 180,
         MultiTarget = 181,
+        PiercingMagic = 182,
         Null = 200
 
 

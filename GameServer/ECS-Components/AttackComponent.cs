@@ -1048,7 +1048,7 @@ namespace DOL.GS
                     p.CraftTimer = null;
                     p.Out.SendCloseTimerWindow();
                 }
-                
+
                 AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness * (1 + p.CharacterClass.WeaponSkillBase / 20.0 / 100.0), interruptDuration, dualWield);
 
                 //Clear the styles for the next round!
@@ -1225,8 +1225,10 @@ namespace DOL.GS
                 return (owner as NecromancerPet).MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, false);
             }
             else
+            {
+                effectiveness = 1;
                 return LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
-            
+            }
         }
 
         /// <summary>
