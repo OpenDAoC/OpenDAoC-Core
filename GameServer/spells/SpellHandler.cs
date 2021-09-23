@@ -1193,7 +1193,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != (byte)eSpellType.Archery)
+			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1397,7 +1397,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != (byte)eSpellType.Archery)
+			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1579,7 +1579,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power != 0 && Spell.SpellType != (byte)eSpellType.Archery)
+			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;

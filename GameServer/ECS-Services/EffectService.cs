@@ -491,6 +491,19 @@ namespace DOL.GS
                         }
                         e.IsBuffActive = true;
                     }
+                    else if (e.EffectType == eEffect.SavageBuff)
+                    {
+                        if (e.SpellHandler.Spell.Power != 0)
+                        {
+                            int cost = 0;
+                            if (e.SpellHandler.Spell.Power < 0)
+                                cost = (int)(e.SpellHandler.Caster.MaxHealth * Math.Abs(e.SpellHandler.Spell.Power) * 0.01);
+                            else
+                                cost = e.SpellHandler.Spell.Power;
+                            if (e.Owner.Health > cost)
+                                e.Owner.ChangeHealth(e.Owner, eHealthChangeType.Spell, -cost);
+                        }
+                    }
                 }
                 //else
                 //{
