@@ -4154,7 +4154,7 @@ namespace DOL.GS.Spells
 			if (finalDamage < 0)
 				finalDamage = 0;
 
-			int criticalchance = (m_caster.SpellCriticalChance);
+			int criticalchance = (this as DoTSpellHandler) != null ? m_caster.SpellCriticalChance - 10 :(m_caster.SpellCriticalChance);
 
 			if (Util.Chance(Math.Min(50, criticalchance)) && (finalDamage >= 1))
 			{
@@ -4220,7 +4220,7 @@ namespace DOL.GS.Spells
 				MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
 				                              ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
 			if (ad.CriticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!", eChatType.CT_YouHit);
+				MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!" + " (" + m_caster.SpellCriticalChance + "%)", eChatType.CT_YouHit);
 		}
 
 		/// <summary>

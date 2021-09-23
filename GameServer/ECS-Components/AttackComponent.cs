@@ -2393,7 +2393,7 @@ namespace DOL.GS
                             // critical hit
                             if (ad.CriticalDamage > 0)
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Critical",
-                                    ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                    ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)), ad.CriticalDamage) + " (" + AttackCriticalChance(ad.Weapon) + "%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             break;
                     }
                 }
@@ -2449,7 +2449,7 @@ namespace DOL.GS
 
                             // critical hit
                             if (ad.CriticalDamage > 0)
-                                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Critical", ad.Target.GetName(0, false), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Critical", ad.Target.GetName(0, false), ad.CriticalDamage) + " (" + AttackCriticalChance(ad.Weapon) + "%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             break;
                     }
 
