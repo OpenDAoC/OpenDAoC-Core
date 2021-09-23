@@ -77,11 +77,12 @@ namespace DOL.GS
                                     if (effect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
                                         effect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
                                     {
-                                        if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing ||
-                                            effect.SpellHandler.Spell.IsConcentration || effect.SpellHandler.Spell.IsPulsing)
+                                        //if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing ||
+                                        //    effect.SpellHandler.Spell.IsConcentration || effect.SpellHandler.Spell.IsPulsing || effect.EffectType == eEffect.DamageAdd
+                                        //    || effect.SpellHandler.AllowCoexisting)
                                             EffectService.RequestDisableEffect(existingEffects[i], true);
-                                        else
-                                            EffectService.RequestCancelEffect(existingEffects[i]);
+                                        //else
+                                        //    EffectService.RequestCancelEffect(existingEffects[i]);
 
                                         addEffect = true;
                                     }
@@ -101,8 +102,8 @@ namespace DOL.GS
                                 {
                                     addEffect = true;
                                 }
-                                else if (effect.EffectType == eEffect.DamageAdd)
-                                    addEffect = true;
+                                //else if (effect.EffectType == eEffect.DamageAdd)
+                                //    addEffect = true;
                             }
                             if (addEffect)
                             {
