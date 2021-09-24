@@ -870,12 +870,14 @@ namespace DOL.AI.Brain
                     OnAttackedByEnemy(eArgs.AttackData);
                     return;
                 }
+                /*
                 else if (e == GameLivingEvent.Dying)
                 {
                     // clean aggro table
                     ClearAggroList();
                     return;
                 }
+                */
                 else if (e == GameNPCEvent.FollowLostTarget) // this means we lost the target
                 {
                     FollowLostTargetEventArgs eArgs = args as FollowLostTargetEventArgs;
@@ -925,7 +927,8 @@ namespace DOL.AI.Brain
                     }
 
                     Body.attackComponent.Attackers.Remove(eArgs.Target);
-                    AttackMostWanted();
+                    Body.TargetObject = null;
+                    //AttackMostWanted();
                 }
                 return;
             }
