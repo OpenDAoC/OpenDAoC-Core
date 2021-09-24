@@ -6066,13 +6066,15 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(wd % 100));
 				pak.WritePascalString(" ");
 				// weaponskill
-				int ws = m_gameClient.Player?.DisplayedWeaponSkill;
+				int? ws = m_gameClient.Player?.DisplayedWeaponSkill;
+				if (ws is null) ws = 0;
 				pak.WriteByte((byte)(ws >> 8));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(ws & 0xff));
 				pak.WritePascalString(" ");
 				// overall EAF
-				int eaf = m_gameClient.Player?.EffectiveOverallAF;
+				int? eaf = m_gameClient.Player?.EffectiveOverallAF;
+				if (eaf is null) eaf = 0;
 				pak.WriteByte((byte)(eaf >> 8));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(eaf & 0xff));

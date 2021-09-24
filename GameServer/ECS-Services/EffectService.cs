@@ -138,8 +138,13 @@ namespace DOL.GS
                 }
             }
 
-            if (e.EffectType != eEffect.Pulse)
+            if (e.EffectType == eEffect.Pulse)
             {
+                if (!e.RenewEffect)
+                    ((SpellHandler)e.SpellHandler).SendCastAnimation();
+            }
+            else 
+            { 
                 if (!(e is ECSImmunityEffect))
                 {
                     if (!e.RenewEffect)
