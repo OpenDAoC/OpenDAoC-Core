@@ -53,5 +53,6 @@ namespace DOL.GS
 		/// <param name="npcTemplate"></param>
 		/// <param name="owner"></param>
 		public BDPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
+
 	}
 }
