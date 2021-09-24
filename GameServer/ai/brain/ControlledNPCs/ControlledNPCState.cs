@@ -183,6 +183,7 @@ public class ControlledNPCState_PASSIVE : StandardMobState
 
     public override void Enter()
     {
+        if (_brain.Body.castingComponent.IsCasting) { _brain.Body.StopCurrentSpellcast(); }
         base.Enter();
     }
 

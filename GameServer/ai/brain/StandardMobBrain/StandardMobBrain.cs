@@ -956,7 +956,7 @@ namespace DOL.AI.Brain
 
             if (Body.castingComponent.IsCasting)
             {
-                Body.castingComponent.spellHandler.InterruptCasting();
+                Body.StopCurrentSpellcast();
             }
 
             if (!Body.attackComponent.AttackState
