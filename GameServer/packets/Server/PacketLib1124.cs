@@ -6060,19 +6060,19 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00); //unk
 
 				// weapondamage
-				var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.AttackWeapon) * 100.0);
+				var wd = (int)(m_gameClient.Player?.WeaponDamage(m_gameClient.Player?.AttackWeapon) * 100.0);
 				pak.WriteByte((byte)(wd / 100));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(wd % 100));
 				pak.WritePascalString(" ");
 				// weaponskill
-				int ws = m_gameClient.Player.DisplayedWeaponSkill;
+				int ws = m_gameClient.Player?.DisplayedWeaponSkill;
 				pak.WriteByte((byte)(ws >> 8));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(ws & 0xff));
 				pak.WritePascalString(" ");
 				// overall EAF
-				int eaf = m_gameClient.Player.EffectiveOverallAF;
+				int eaf = m_gameClient.Player?.EffectiveOverallAF;
 				pak.WriteByte((byte)(eaf >> 8));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(eaf & 0xff));
