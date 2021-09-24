@@ -140,7 +140,7 @@ namespace DOL.GS
 
             if (e.EffectType == eEffect.Pulse)
             {
-                if (!e.RenewEffect)
+                if (!e.RenewEffect && e.SpellHandler.Spell.IsInstantCast)
                     ((SpellHandler)e.SpellHandler).SendCastAnimation();
             }
             else 
@@ -384,7 +384,7 @@ namespace DOL.GS
                                     //    mezz.ExpireTick = GameLoop.GameLoopTime - 1;
                                     //    EntityManager.AddEffect(mezz);
                                     //}
-
+                                    Console.WriteLine("Debuffing Speed for " + e.Owner.Name);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - e.SpellHandler.Spell.Value * 0.01);
                                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
 

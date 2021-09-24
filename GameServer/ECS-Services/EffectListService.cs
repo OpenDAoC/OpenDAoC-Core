@@ -47,7 +47,7 @@ namespace DOL.GS
                         {
                             if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                             {
-                                if (effect.SpellHandler.Spell.IsHarmful && !(effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm))
+                                if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
                                 {
                                     ((SpellHandler)effect.SpellHandler).SendCastAnimation();
 
@@ -55,6 +55,10 @@ namespace DOL.GS
                                 else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
                                 {
                                     ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
+                                }
+                                else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                                {
+                                    ((SpeedDecreaseSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
                                 }
                                 effect.SpellHandler.StartSpell(null);
                                 effect.ExpireTick += effect.PulseFreq;
@@ -90,7 +94,7 @@ namespace DOL.GS
                                 effect.LastTick += effect.PulseFreq;
                             }
                         }
-                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                        if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                         {
                             if (tick > effect.NextTick)
                             {
@@ -160,27 +164,27 @@ namespace DOL.GS
 
                             effect.NextTick += effect.PulseFreq;
                         }
-                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                        {
-                            if (tick > effect.NextTick)
-                            {
-                                double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
-                                if (factor < 0) factor = 0;
-                                else if (factor > 1) factor = 1;
+                        //if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                        //{
+                        //    if (tick > effect.NextTick)
+                        //    {
+                        //        double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
+                        //        if (factor < 0) factor = 0;
+                        //        else if (factor > 1) factor = 1;
+                        //        Console.WriteLine("SpeedDecrease Tick for " + effect.Owner.Name);
+                        //        effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
-                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
-
-                                UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
-                                effect.NextTick += effect.TickInterval;
-                                if (factor <= 0)
-                                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                            }
-                        }
-                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
-                        {
-                            (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
-                            effect.NextTick += effect.PulseFreq;
-                        }
+                        //        UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
+                        //        effect.NextTick += effect.TickInterval;
+                        //        if (factor <= 0)
+                        //            effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                        //    }
+                        //}
+                        //if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
+                        //{
+                        //    (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
+                        //    effect.NextTick += effect.PulseFreq;
+                        //}
                         if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.NextTick)
                         {
                             if ((effect.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
