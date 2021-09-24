@@ -636,7 +636,7 @@ namespace DOL.GS
 								      + empower);
 								return true;
 							case "abomination":
-								SayTo(owner, "As one of the chosen warriors of Arawn, I have a mighty arsenal of [weapons] at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. "
+								SayTo(owner, "As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. "
 								      + empower);
 								return true;
 							default:
@@ -667,6 +667,7 @@ namespace DOL.GS
 				case "taunt":
 					ToggleTauntMode();
 					return true;
+					/*
 				case "weapons":
 					{
 						if (Name != "abomination")
@@ -690,6 +691,7 @@ namespace DOL.GS
 							SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
 						return true;
 					}
+					*/
 					default: return false;
 			}
 		}
