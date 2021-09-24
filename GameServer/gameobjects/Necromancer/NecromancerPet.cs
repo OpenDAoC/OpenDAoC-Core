@@ -599,6 +599,12 @@ namespace DOL.GS
 			return WhisperReceive(source, str);
 		}
 
+		public override bool Interact(GamePlayer player)
+		{
+			return WhisperReceive(player, "arawn");
+		}
+
+
 		/// <summary>
 		/// Actions to be taken when the pet receives a whisper.
 		/// </summary>
