@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void OnOwnerAttacked(DOLEvent e, object sender, EventArgs arguments) { }
+		public override void OnOwnerAttacked(AttackData ad) { }
 
 		#endregion
 	}

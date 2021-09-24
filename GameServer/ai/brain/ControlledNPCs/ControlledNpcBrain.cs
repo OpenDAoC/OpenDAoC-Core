@@ -382,7 +382,7 @@ namespace DOL.AI.Brain
 				FollowOwner();
 			// [Ganrod] On supprime la cible du pet au moment  du contrôle.
 			Body.TargetObject = null;
-			GameEventMgr.AddHandler(Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnOwnerAttacked));
+			//GameEventMgr.AddHandler(Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnOwnerAttacked));
 
 			return true;
 		}
@@ -394,7 +394,7 @@ namespace DOL.AI.Brain
 		public override bool Stop()
 		{
 			if (!base.Stop()) return false;
-			GameEventMgr.RemoveHandler(Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnOwnerAttacked));
+			//GameEventMgr.RemoveHandler(Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnOwnerAttacked));
 
 			GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
 			return true;
@@ -1094,7 +1094,7 @@ namespace DOL.AI.Brain
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void OnOwnerAttacked(DOLEvent e, object sender, EventArgs arguments)
+		public virtual void OnOwnerAttacked(AttackData ad)
 		{
 			if(FSM.GetState(eFSMStateType.PASSIVE) == FSM.GetCurrentState()) { return; }
 
@@ -1103,12 +1103,12 @@ namespace DOL.AI.Brain
 			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)eCharacterClass.Theurgist)
 				return;
 
-			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
-			if (args == null) return;
-			if (args.AttackData.Target is GamePlayer && (args.AttackData.Target as GamePlayer).ControlledBrain != this)
+			//AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
+			//if (args == null) return;
+			if (ad.Target is GamePlayer && (ad.Target as GamePlayer).ControlledBrain != this)
 				return;
 			// react only on these attack results
-			switch (args.AttackData.AttackResult)
+			switch (ad.AttackResult)
 			{
 				case eAttackResult.Blocked:
 				case eAttackResult.Evaded:
@@ -1117,7 +1117,7 @@ namespace DOL.AI.Brain
 				case eAttackResult.HitUnstyled:
 				case eAttackResult.Missed:
 				case eAttackResult.Parried:
-					AddToAggroList(args.AttackData.Attacker, args.AttackData.Attacker.EffectiveLevel + args.AttackData.Damage + args.AttackData.CriticalDamage);
+					AddToAggroList(ad.Attacker, ad.Attacker.EffectiveLevel + ad.Damage + ad.CriticalDamage);
 					break;
 			}
 

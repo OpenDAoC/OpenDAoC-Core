@@ -1119,6 +1119,12 @@ namespace DOL.GS
 			}
 		}
 
+		public void ResetHeading()
+		{
+			TurnTo(SpawnHeading);
+			IsReturningToSpawnPoint = false;
+		}
+
 		/// <summary>
 		/// Updates the tick speed for this living.
 		/// </summary>
@@ -5547,14 +5553,6 @@ namespace DOL.GS
 			if (brain != null)
 				brain.Notify(e, sender, args);
 
-			if (e == GameNPCEvent.ArriveAtTarget)
-			{
-				if (IsReturningToSpawnPoint)
-				{
-					TurnTo(SpawnHeading);
-					IsReturningToSpawnPoint = false;
-				}
-			}
 		}
 
 		/// <summary>

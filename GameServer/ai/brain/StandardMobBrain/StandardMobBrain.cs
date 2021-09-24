@@ -870,12 +870,14 @@ namespace DOL.AI.Brain
                     OnAttackedByEnemy(eArgs.AttackData);
                     return;
                 }
+                /*
                 else if (e == GameLivingEvent.Dying)
                 {
                     // clean aggro table
                     ClearAggroList();
                     return;
                 }
+                */
                 else if (e == GameNPCEvent.FollowLostTarget) // this means we lost the target
                 {
                     FollowLostTargetEventArgs eArgs = args as FollowLostTargetEventArgs;
@@ -925,7 +927,8 @@ namespace DOL.AI.Brain
                     }
 
                     Body.attackComponent.Attackers.Remove(eArgs.Target);
-                    AttackMostWanted();
+                    Body.TargetObject = null;
+                    //AttackMostWanted();
                 }
                 return;
             }
@@ -951,6 +954,11 @@ namespace DOL.AI.Brain
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)){ return; }
 
+            if (Body.castingComponent.IsCasting)
+            {
+                Body.StopCurrentSpellcast();
+            }
+
             if (!Body.attackComponent.AttackState
                 && Body.IsAlive
                 && Body.ObjectState == GameObject.eObjectState.Active)
@@ -960,7 +968,7 @@ namespace DOL.AI.Brain
                     AddToAggroList(ad.Attacker, 1);
                 } else
                 {
-                    AddToAggroList(ad.Attacker, 100);
+                    AddToAggroList(ad.Attacker, ad.Damage);
                 }
 
                 if(FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))

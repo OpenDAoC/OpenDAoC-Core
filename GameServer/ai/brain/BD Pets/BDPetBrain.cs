@@ -204,6 +204,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
+			/*
 			GamePlayer playerowner = GetPlayerOwner();
 
 			long lastUpdate = 0;
@@ -242,6 +243,9 @@ namespace DOL.AI.Brain
 
 			if (AggressionState != eAggressionState.Passive)
 				AttackMostWanted();
+			*/
+			CheckSpells(eCheckSpellType.Defensive);
+			base.Think();
 		}
 
 		public override void Attack(GameObject target)

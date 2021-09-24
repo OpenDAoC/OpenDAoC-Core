@@ -24,6 +24,7 @@ public class ControlledNPCState_WAKING_UP : StandardMobState_WAKING_UP
         if (!brain.checkAbility)
         {
             brain.CheckAbilities();
+            brain.Body.SortSpells();
             brain.checkAbility = true;
         }
 
@@ -159,13 +160,13 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
    
         // Always check offensive spells, or pets in melee will keep blindly melee attacking,
         //	when they should be stopping to cast offensive spells.
-        brain.CheckSpells(eCheckSpellType.Offensive);
+        if(!brain.Body.attackComponent.AttackState && brain.CheckSpells(eCheckSpellType.Offensive)) return;
         
         //return to defensive if our target(s) are dead
         if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)
         {
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-        } else if(!brain.Body.IsCasting)
+        } else
         {
             brain.AttackMostWanted();
         }
@@ -182,6 +183,7 @@ public class ControlledNPCState_PASSIVE : StandardMobState
 
     public override void Enter()
     {
+        if (_brain.Body.castingComponent.IsCasting) { _brain.Body.StopCurrentSpellcast(); }
         base.Enter();
     }
 
