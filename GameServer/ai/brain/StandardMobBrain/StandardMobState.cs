@@ -297,8 +297,6 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     {
         _brain.CheckForProximityAggro = true;
 
-        
-
         base.Exit();
     }
 
@@ -308,13 +306,6 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
         {
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
             _brain.Body.ResetHeading();
-            return;
-        }
-
-        if (_brain.HasAggressionTable())
-        {
-            _brain.Body.CancelWalkToSpawn();
-            _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
         }
 
