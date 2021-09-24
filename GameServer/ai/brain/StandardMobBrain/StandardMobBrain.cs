@@ -954,6 +954,11 @@ namespace DOL.AI.Brain
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)){ return; }
 
+            if (Body.castingComponent.IsCasting)
+            {
+                Body.castingComponent.spellHandler.InterruptCasting();
+            }
+
             if (!Body.attackComponent.AttackState
                 && Body.IsAlive
                 && Body.ObjectState == GameObject.eObjectState.Active)

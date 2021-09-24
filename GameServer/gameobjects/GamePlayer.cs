@@ -6569,6 +6569,12 @@ namespace DOL.GS
 				IsOnHorse = false;
 			base.OnAttackedByEnemy(ad);
 
+			if(ControlledBrain != null && ControlledBrain is ControlledNpcBrain)
+            {
+				var brain = (ControlledNpcBrain) ControlledBrain;
+				brain.OnOwnerAttacked(ad);
+            }
+
 			switch (ad.AttackResult)
 			{
 				// is done in game living because of guard
