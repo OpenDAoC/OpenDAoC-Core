@@ -168,7 +168,7 @@ public class StandardMobState_AGGRO : StandardMobState
             Console.WriteLine($"{_brain.Body} is entering AGGRO");
         }
         _brain.CheckForProximityAggro = true;
-        _brain.AttackMostWanted();
+        //_brain.AttackMostWanted();
 
         base.Enter();
     }
@@ -297,7 +297,7 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     {
         _brain.CheckForProximityAggro = true;
 
-        //_brain.Body.ResetHeading();
+        
 
         base.Exit();
     }
@@ -307,6 +307,7 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
         if (_brain.Body.IsNearSpawn())
         {
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            _brain.Body.ResetHeading();
             return;
         }
 
