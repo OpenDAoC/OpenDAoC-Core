@@ -118,12 +118,21 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else if (reuseTime > 0)
 					{
-						player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime/1000 + 1),
-						                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						
-						if (player.Client.Account.PrivLevel < 2) 
+						// Allow Pulse Spells to be canceled while they are on reusetimer
+						if (sk is Spell && (sk as Spell).IsPulsing && player.LastPulseCast == (sk as Spell))
+						{
+							var effect = EffectListService.GetEffectOnTarget(player, eEffect.Pulse);
+							EffectService.RequestCancelConcEffect(effect);
+						}
+						else
+						{
+							player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime / 1000 + 1),
+												   eChatType.CT_System, eChatLoc.CL_SystemWindow);							
+						}
+
+						if (player.Client.Account.PrivLevel < 2)
 							return;
-					}
+				}
 
 					// See what we should do depending on skill type !
 
