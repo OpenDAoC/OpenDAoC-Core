@@ -2631,6 +2631,25 @@ namespace DOL.GS.Spells
 			}
 		}
 
+		public virtual List<GameLiving> GetGroupAndPets()
+        {
+			List<GameLiving> livings = new List<GameLiving>();
+
+			livings.Add(Caster);
+			if (Caster.Group != null)
+			{
+				foreach (GameLiving living in Caster.Group.GetMembersInTheGroup().ToList())
+				{
+					livings.Add(living);
+
+					if (living.ControlledBrain != null)
+						livings.Add(living.ControlledBrain.Body);
+				}
+
+			}
+
+			return livings;
+		}
 
 		/// <summary>
 		/// Tries to start a spell attached to an item (/use with at least 1 charge)
@@ -2664,7 +2683,11 @@ namespace DOL.GS.Spells
 
 			if (m_spellTarget == null) return false;
 
-			var targets = SelectTargets(m_spellTarget);
+			IList<GameLiving> targets;
+			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster)
+				targets = GetGroupAndPets();
+			else
+				targets = SelectTargets(m_spellTarget);
 
 			double effectiveness = Caster.Effectiveness;
 
