@@ -4374,7 +4374,7 @@ namespace DOL.GS.Spells
 			if (Spell.IsConcentration)
 				dw.AddKeyValuePair("concentration_points", Spell.Concentration);
 			if (Spell.Frequency > 0)
-				dw.AddKeyValuePair("frequency", Spell.Frequency);
+				dw.AddKeyValuePair("frequency", Spell.SpellType == (byte)eSpellType.OffensiveProc || Spell.SpellType == (byte)eSpellType.OffensiveProc ? Spell.Frequency / 100 : Spell.Frequency);
 
 			WriteBonus(ref dw);
 			WriteParm(ref dw);
@@ -4628,7 +4628,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.DefensiveProc:
 				case eSpellType.OffensiveProc:
-					dw.AddKeyValuePair("bonus", Spell.Frequency);
+					dw.AddKeyValuePair("bonus", Spell.Frequency / 100);
 					break;
 				case eSpellType.Lifedrain:
 				case eSpellType.PetLifedrain:
@@ -4748,8 +4748,12 @@ namespace DOL.GS.Spells
 				case eSpellType.SavageThrustResistanceBuff:
 					dw.AddKeyValuePair(parm, (int)eDamageType.Thrust);
 					break;
-			}
-        }
+                case eSpellType.DefensiveProc:
+                case eSpellType.OffensiveProc:
+                    dw.AddKeyValuePair(parm, SkillBase.GetSpellByID((int)Spell.Value).InternalID);
+                    break;
+            }
+		}
 
 		private void WriteDamage(ref MiniDelveWriter dw)
         {
@@ -4849,6 +4853,10 @@ namespace DOL.GS.Spells
 				case eSpellType.Disease:
 					dw.AddKeyValuePair("delve_string", "Inflicts a wasting disease on the target that slows target by 15 %, reduces strength by 7.5 % and inhibits healing by 50 %");
 					break;
+				//case eSpellType.DefensiveProc:
+				//case eSpellType.OffensiveProc:
+				//	dw.AddKeyValuePair("delve_spell", Spell.Value);
+				//	break;
 				case eSpellType.FatigueConsumptionBuff:
 					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% less endurance.");
 					break;
@@ -4923,6 +4931,9 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.MultiTarget:
 					dw.AddKeyValuePair("delve_string", $"Hits {(int)Spell.Value} additonal target(s) within melee range.");
+					break;
+				case eSpellType.PiercingMagic:
+					dw.AddKeyValuePair("delve_string", $"Effectiveness of the target's spells is increased by {(int)Spell.Value}%. Against higher level opponents than the target, this should reduce the chance of a full resist.");
 					break;
 			}
 		}

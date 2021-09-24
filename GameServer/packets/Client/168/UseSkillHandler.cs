@@ -123,7 +123,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							var effect = EffectListService.GetEffectOnTarget(player, eEffect.Pulse);
 							EffectService.RequestCancelConcEffect(effect);
-						}
+
+							if ((sk as Spell).InstrumentRequirement == 0)
+								player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+							else
+								player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					}
 						else
 						{
 							player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime / 1000 + 1),
