@@ -960,7 +960,7 @@ namespace DOL.AI.Brain
                     AddToAggroList(ad.Attacker, 1);
                 } else
                 {
-                    AddToAggroList(ad.Attacker, 100);
+                    AddToAggroList(ad.Attacker, ad.Damage);
                 }
 
                 if(FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
