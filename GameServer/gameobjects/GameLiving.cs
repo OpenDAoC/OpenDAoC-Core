@@ -3701,7 +3701,7 @@ namespace DOL.GS
 			}
 			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
 			{
-				evadeChance = Math.Max(evadeChance - 0.25, 0);
+				evadeChance = Math.Max(evadeChance * 0.5, 0);
 			}
 			//Excalibur : infi RR5
 			GamePlayer p = ad.Attacker as GamePlayer;
