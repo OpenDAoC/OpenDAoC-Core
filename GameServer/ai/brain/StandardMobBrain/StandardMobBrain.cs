@@ -29,6 +29,7 @@ using DOL.GS.SkillHandler;
 using DOL.GS.Keeps;
 using DOL.Language;
 using log4net;
+using System.Text;
 
 namespace DOL.AI.Brain
 {
@@ -641,6 +642,15 @@ namespace DOL.AI.Brain
             }
         }
 
+        public void PrintAggroTable()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(GameLiving gl in m_aggroTable.Keys){
+                sb.AppendLine("Living: " + gl.Name + ", aggro: " + m_aggroTable[gl].ToString());
+            }
+            Console.WriteLine(sb.ToString());
+        }
+
         /// <summary>
         /// Get current amount of aggro on aggrotable
         /// </summary>
@@ -703,6 +713,11 @@ namespace DOL.AI.Brain
         {
             if (!IsActive)
                 return;
+
+            if (ECS.Debug.Diagnostics.AggroDebugEnabled)
+            {
+                PrintAggroTable();
+            }
 
             Body.TargetObject = CalculateNextAttackTarget();
 
@@ -968,7 +983,7 @@ namespace DOL.AI.Brain
                     AddToAggroList(ad.Attacker, 1);
                 } else
                 {
-                    AddToAggroList(ad.Attacker, ad.Damage);
+                    AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
                 }
 
                 if(FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
