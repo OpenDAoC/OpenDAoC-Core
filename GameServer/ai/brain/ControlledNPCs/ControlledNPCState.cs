@@ -77,14 +77,7 @@ public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
         if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
             (brain.Owner as GamePlayer).CommandNpcRelease();
 
-        //Fen: idk what the hell this update Tick does but it was in the other Think() method so I moved it here
-        //should probably move it to gameloop instead of GameTimer
-        long lastUpdate;
-        if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(brain.Body.CurrentRegionID, (ushort)brain.Body.ObjectID), out lastUpdate))
-            lastUpdate = 0;
-
-        if (playerowner != null && (GameTimer.GetTickCount() - lastUpdate) > brain.ThinkInterval)
-            playerowner.Out.SendObjectUpdate(brain.Body);
+        brain.GetPlayerOwner().Out.SendObjectUpdate(brain.Body);
 
         //handle pet movement
         if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
@@ -118,7 +111,9 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
     {
         ControlledNpcBrain brain = (_brain as ControlledNpcBrain);
 
-        if(brain.AggressionState == eAggressionState.Passive)
+        brain.GetPlayerOwner().Out.SendObjectUpdate(brain.Body);
+
+        if (brain.AggressionState == eAggressionState.Passive)
         {
             brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
             return;
@@ -190,6 +185,8 @@ public class ControlledNPCState_PASSIVE : StandardMobState
     public override void Think()
 {
         ControlledNpcBrain brain = (_brain as ControlledNpcBrain);
+
+        brain.GetPlayerOwner().Out.SendObjectUpdate(brain.Body);
 
         //See if the pet is too far away, if so release it!
         if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))

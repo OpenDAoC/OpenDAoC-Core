@@ -44,7 +44,16 @@ namespace DOL.AI.Brain
 		public NecromancerPetBrain(GameLiving owner) 
 			: base(owner)
 		{
-		}
+            FSM.ClearStates();
+
+            FSM.Add(new NecromancerPetState_WAKING_UP(FSM, this));
+            FSM.Add(new NecromancerPetState_DEFENSIVE(FSM, this));
+            FSM.Add(new NecromancerPetState_AGGRO(FSM, this));
+            FSM.Add(new NecromancerPetState_PASSIVE(FSM, this));
+            FSM.Add(new StandardMobState_DEAD(FSM, this));
+
+            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+        }
 
 
 		public override int ThinkInterval
@@ -66,7 +75,8 @@ namespace DOL.AI.Brain
 		public override void Think()
 		{
             CheckTether();
-
+            FSM.Think();
+            /*
 			// Necro pets need there own think as they may need to cast a spell in any state
 			if (IsActive)
 			{
@@ -107,7 +117,9 @@ namespace DOL.AI.Brain
 						}
 					}
 				}
-			}
+            }
+            */
+			
 		}
 
 		#region Events
@@ -327,7 +339,7 @@ namespace DOL.AI.Brain
         /// See if there are any spells queued up and if so, get the first one
         /// and cast it.
         /// </summary>
-		private void CheckSpellQueue()
+		public void CheckSpellQueue()
 		{
 			SpellQueueEntry entry = GetSpellFromQueue();
 			if (entry != null)
