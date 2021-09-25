@@ -931,11 +931,16 @@ namespace DOL.AI.Brain
 			return AggroLevel > 100 ? 100 : AggroLevel;
 		}
 
-		/// <summary>
-		/// Returns the best target to attack
-		/// </summary>
-		/// <returns>the best target</returns>
-		protected override GameLiving CalculateNextAttackTarget()
+        public override bool HasAggressionTable()
+        {
+			return AggroTable.Count > 0;   
+        }
+
+        /// <summary>
+        /// Returns the best target to attack
+        /// </summary>
+        /// <returns>the best target</returns>
+        protected override GameLiving CalculateNextAttackTarget()
 		{
 			if (AggressionState == eAggressionState.Passive)
 				return null;
