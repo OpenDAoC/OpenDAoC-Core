@@ -3787,6 +3787,12 @@ namespace DOL.GS
 						parryChance = 0.995;
 				}
 			}
+
+			if (ad.AttackType == AttackData.eAttackType.MeleeTwoHand)
+			{
+				parryChance = Math.Max(parryChance * 0.5, 0);
+			}
+
 			//Excalibur : infi RR5
 			GamePlayer p = ad.Attacker as GamePlayer;
 			if (p != null)
@@ -3895,7 +3901,7 @@ namespace DOL.GS
 			}
 			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
 			{
-				blockChance = Math.Max(blockChance - 0.25, 0);
+				blockChance = Math.Max(blockChance * 0.5, 0);
 			}
 			//Excalibur : infi RR5
 			GamePlayer p = ad.Attacker as GamePlayer;
