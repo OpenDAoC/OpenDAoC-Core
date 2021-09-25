@@ -49,6 +49,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
+			/*
 			GamePlayer playerowner = GetPlayerOwner();
 
 			long lastUpdate = 0;
@@ -62,8 +63,10 @@ namespace DOL.AI.Brain
 			{
 				playerowner.Out.SendObjectUpdate(Body);
 			}
+			*/
+			GetPlayerOwner().Out.SendObjectUpdate(Body); 
 
-			if(!CheckSpells(eCheckSpellType.Defensive))
+			if (!CheckSpells(eCheckSpellType.Defensive))
 			{
 		  		AttackMostWanted();
 			}
