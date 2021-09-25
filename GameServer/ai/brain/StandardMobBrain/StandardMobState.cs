@@ -185,12 +185,6 @@ public class StandardMobState_AGGRO : StandardMobState
 
     public override void Think()
     {
-
-        if (_brain.Body.TargetObject == null)
-        {
-            _brain.AttackMostWanted();
-        }
-
         // check for returning to home if to far away
         if (_brain.IsBeyondTetherRange() && !_brain.Body.IsAttacking)
         {
@@ -204,6 +198,8 @@ public class StandardMobState_AGGRO : StandardMobState
             _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             return;
         }
+
+        _brain.AttackMostWanted();
 
         base.Think();
     }
