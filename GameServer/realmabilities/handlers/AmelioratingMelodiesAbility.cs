@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player == null) return;
 			if (CheckPreconditions(living, DEAD | SITTING | STUNNED | MEZZED | NOTINGROUP)) return;
-			AmelioratingMelodiesEffect ameffect = player.EffectList.GetOfType<AmelioratingMelodiesEffect>();
+			AtlasOF_AmelioratingMelodiesEffect ameffect = player.EffectList.GetOfType<AtlasOF_AmelioratingMelodiesEffect>();
 			if (ameffect != null)
 			{
 				ameffect.Cancel(false);
@@ -36,45 +36,9 @@ namespace DOL.GS.RealmAbilities
 
 			SendCasterSpellEffectAndCastMessage(living, 3021, true);
 
-			int heal = 0;
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
-			{
-				switch (Level)
-				{
-					case 1:
-						heal = 100;
-						break;
-					case 2:
-						heal = 175;
-						break;
-					case 3:
-						heal = 250;
-						break;					
-					case 4:
-						heal = 325;
-						break;					
-					case 5:
-						heal = 400;
-						break;
-				}							
-			}
-			else
-			{
-				switch (Level)
-				{
-					case 1:
-						heal = 100;
-						break;
-					case 2:
-						heal = 250;
-						break;
-					case 3:
-						heal = 400;
-						break;
-				}			
-			}
+			int heal = GetHealAmountPerTick();
 
-			new AmelioratingMelodiesEffect(heal).Start(player);
+			new AtlasOF_AmelioratingMelodiesEffect(heal).Start(player);
 
 			DisableSkill(living);
 		}
@@ -117,5 +81,39 @@ namespace DOL.GS.RealmAbilities
 				list.Add("Casting time: instant");				
 			}
 		}
+
+		protected virtual int GetHealAmountPerTick()
+        {
+            if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            {
+                switch (Level)
+                {
+                    case 1:
+                        return 100;
+                    case 2:
+						return 175;
+                    case 3:
+						return 250;
+                    case 4:
+						return 325;
+                    case 5:
+						return 400;
+                }
+            }
+            else
+            {
+                switch (Level)
+                {
+                    case 1:
+						return 100;
+                    case 2:
+						return 250;
+                    case 3:
+						return 400;
+                }
+            }
+
+			return 0;
+        }
 	}
 }
