@@ -67,7 +67,7 @@ namespace DOL.GS.RealmAbilities
 
             CreateSpell(m_caster);
 
-            if (m_target.IsAlive && m_spell != null)
+            if (m_spell != null)
             {
                 m_caster.castingComponent.StartCastSpell(m_spell, m_spellline, this);
             }
