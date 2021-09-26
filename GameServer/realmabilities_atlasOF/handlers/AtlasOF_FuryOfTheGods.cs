@@ -23,12 +23,12 @@ namespace DOL.GS.RealmAbilities
 
         public override void AddEffectsInfo(IList<string> list)
         {
-            //list.Add("Adds 30dps");
+            list.Add(string.Format("Value: {0} dps", GetDamageAddAmount()));
             list.Add("Target: Group");
             list.Add("Duration: 30 sec");
             list.Add("Casting time: instant");
         }
 
-        protected override double GetDamageAddAmount() { return 15; } // WIP - Not the correct amount, this RA is supposed to be %-based and scale with level according to old CamelotHerald.
+        protected override double GetDamageAddAmount() { return 7.0; }
     }
 }

@@ -344,28 +344,31 @@ namespace DOL.GS
 
         private static void HandleDamageAdd(GameLiving owner, AttackData ad)
         {
-            // DamageAdd
+            /// [Atlas - Takii] This could probably be optimized a bit by doing the split below between "affected/unaffected by stacking"
+            /// when the effect is applied in the EffectListComponent instead of every time we swing our weapon?
             if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
             {
-                dAEffects = dAEffects.OrderByDescending(e => e.SpellHandler.Spell.Damage).ToList();
-                int numDmgAddsAffectedByStackingApplied = 0;
-                for (int i = 0; i < dAEffects.Count; i++)
-                {
-                    if (dAEffects[i].IsBuffActive)
-                    {
-                        double effectiveness = 1;
+                List<ECSGameEffect> dmgAddsUnaffectedByStacking = new List<ECSGameEffect>();
 
-                        // Check if we should halve the effectiveness due to stacking.
-                        if (numDmgAddsAffectedByStackingApplied > 0)
-                        {
-                            // EffectGroup 99999 means it can stack fully with other DmgAdds. Used for RA-based DmgAdd.
-                            if (dAEffects[i].SpellHandler == null || dAEffects[i].SpellHandler.Spell == null || dAEffects[i].SpellHandler?.Spell?.EffectGroup != 99999)
-                            {
-                                effectiveness *= .5;
-                                numDmgAddsAffectedByStackingApplied++;
-                            }
-                        }
-                        ((DamageAddSpellHandler)dAEffects[i].SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), effectiveness);
+                // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
+                foreach (var effect in dAEffects)
+                {
+                    if (effect.SpellHandler.Spell.EffectGroup == 99999)
+                    {
+                        dmgAddsUnaffectedByStacking.Add(effect);
+                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), /* effectiveness = */ 1);
+                    }
+                }
+
+                // 2 - Apply regular damage adds. We only start reducing to 50% effectiveness if there is more than one regular damage add being applied.
+                // "Unaffected by stacking" dmg adds also dont reduce subsequence damage adds; they are effectively outside of the stacking mechanism.
+                int numRegularDmgAddsApplied = 0;
+                foreach (var effect in dAEffects.Except(dmgAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
+                {
+                    if (effect.IsBuffActive)
+                    {
+                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
+                        numRegularDmgAddsApplied++;
                     }
                 }
             }
@@ -375,7 +378,6 @@ namespace DOL.GS
         {
             if (owner is GamePlayer p)
             {
-                
                 p.attackComponent.weaponAction = null;
             }
         }} 
