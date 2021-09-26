@@ -41,7 +41,7 @@ namespace DOL.GS
         }
         
         
-        public void StartCastSpell(Spell spell, SpellLine line)
+        public void StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
             //Check for Conditions to Cast
             if (owner is GamePlayer p)
@@ -52,18 +52,23 @@ namespace DOL.GS
                 }
             }
 
-            if(spellHandler != null)
+            ISpellHandler m_newSpellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+
+            // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
+            m_newSpellHandler.Ability = spellCastingAbilityHandler;
+
+            if (spellHandler != null)
             {
                 if(owner is GamePlayer pl)
                 {
                     pl.Out.SendMessage("You begin casting this spell as a follow-up!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                 }
-                
-                queuedSpellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+
+                queuedSpellHandler = m_newSpellHandler;
             }
             else
             {
-                spellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
+                spellHandler = m_newSpellHandler;
 
                 //Special CastSpell rules
                 if (spellHandler is SummonNecromancerPet necroPetHandler)
