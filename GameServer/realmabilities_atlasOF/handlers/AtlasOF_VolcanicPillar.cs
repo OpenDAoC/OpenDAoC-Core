@@ -18,7 +18,7 @@ namespace DOL.GS.RealmAbilities
         public SpellLine SpellLine { get { return m_spellline; } }
         public Ability Ability { get { return this; } }
 
-        private const int m_dmgValue = 700; // Takii - Temp value. Unclear what the real OF value was.
+        private const int m_dmgValue = 900; // Takii - Temp value. Unclear what the real OF value was.
 		private const int m_range = 1875; // bolt range
         private const int m_radius = 500; // post-1.62 nerf value (was 700)
 
