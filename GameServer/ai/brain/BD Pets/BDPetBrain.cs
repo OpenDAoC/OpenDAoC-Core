@@ -244,6 +244,7 @@ namespace DOL.AI.Brain
 			if (AggressionState != eAggressionState.Passive)
 				AttackMostWanted();
 			*/
+			CheckAbilities();
 			CheckSpells(eCheckSpellType.Defensive);
 			base.Think();
 		}
