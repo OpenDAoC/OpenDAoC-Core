@@ -2686,7 +2686,7 @@ namespace DOL.GS.Spells
 			if (m_spellTarget == null) return false;
 
 			IList<GameLiving> targets;
-			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster)
+			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster && !Spell.IsHealing)
 				targets = GetGroupAndPets();
 			else
 				targets = SelectTargets(m_spellTarget);
