@@ -74,63 +74,6 @@ namespace DOL.GS.RealmAbilities
 
             // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
-
-            // 			if (m_caster.TargetObject == null)
-            // 			{
-            // 				m_caster.Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            // 				m_caster.DisableSkill(this, 3 * 1000);
-            // 				return;
-            // 			}
-            // 
-            // 			if ( !m_caster.IsWithinRadius( m_caster.TargetObject, (int)(m_range * m_caster.GetModified(eProperty.SpellRange) * 0.01 ) ) )
-            // 			{
-            // 				m_caster.Out.SendMessage(m_caster.TargetObject + " is too far away.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-            // 				return;
-            // 			}
-            // 
-            // 			foreach (GamePlayer i_player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-            // 			{
-            // 				if (i_player == m_caster)
-            // 				{
-            // 					i_player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
-            // 				}
-            // 				else
-            // 				{
-            // 					i_player.MessageFromArea(m_caster, m_caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-            // 				}
-            // 			}
-            // 
-            // 			foreach (GamePlayer player in m_caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            // 			{
-            // 				player.Out.SendSpellEffectAnimation(m_caster, (m_caster.TargetObject as GameLiving), 7025, 0, false, 1);
-            // 			}
-            // 
-            // 			foreach (GameNPC mob in m_caster.TargetObject.GetNPCsInRadius(m_radius))
-            // 			{
-            // 				if (!GameServer.ServerRules.IsAllowedToAttack(m_caster, mob, true))
-            // 					continue;
-            // 
-            // 				mob.TakeDamage(m_caster, eDamageType.Heat, m_dmgValue, 0);
-            // 				m_caster.Out.SendMessage("You hit the " + mob.Name + " for " + m_dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-            // 				foreach (GamePlayer player2 in m_caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            // 				{
-            // 					player2.Out.SendSpellEffectAnimation(m_caster, mob, 7025, 0, false, 1);
-            // 				}
-            // 			}
-            // 
-            // 			foreach (GamePlayer aeplayer in m_caster.TargetObject.GetPlayersInRadius(500))
-            // 			{
-            // 				if (!GameServer.ServerRules.IsAllowedToAttack(m_caster, aeplayer, true))
-            // 					continue;
-            // 
-            // 				aeplayer.TakeDamage(m_caster, eDamageType.Heat, m_dmgValue, 0);
-            // 				m_caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + m_dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-            // 				aeplayer.Out.SendMessage(m_caster.Name + " hits you for " + m_dmgValue + " damage.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow); 
-            // 				foreach (GamePlayer player3 in m_caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            // 				{
-            // 					player3.Out.SendSpellEffectAnimation(m_caster, aeplayer, 7025, 0, false, 1);
-            // 				}
-            // 			}
 		}
 	}
 }
