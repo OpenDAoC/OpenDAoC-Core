@@ -255,8 +255,8 @@ namespace DOL.GS
                                     owner.DealDamage(leftHandAD);
                                     if (leftHandAD.IsMeleeAttack)
                                     {
-
                                         owner.CheckWeaponMagicalEffect(leftHandAD, leftWeapon);
+                                        HandleDamageAdd(owner, leftHandAD);
                                     }
                                 }
 
