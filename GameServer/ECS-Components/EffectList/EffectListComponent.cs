@@ -80,7 +80,7 @@ namespace DOL.GS
                                         //if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing ||
                                         //    effect.SpellHandler.Spell.IsConcentration || effect.SpellHandler.Spell.IsPulsing || effect.EffectType == eEffect.DamageAdd
                                         //    || effect.SpellHandler.AllowCoexisting)
-                                        if (effect.SpellHandler.Spell.IsHelpful)
+                                        if (effect.SpellHandler.Spell.IsHelpful && effect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
                                             EffectService.RequestDisableEffect(existingEffects[i], true);
                                         else
                                             EffectService.RequestCancelEffect(existingEffects[i]);
