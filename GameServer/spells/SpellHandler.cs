@@ -2072,7 +2072,7 @@ namespace DOL.GS.Spells
 			}
 
 			// messages
-			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0 && Spell.CastTime > 0)
+			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0) // && Spell.CastTime > 0 - Takii - Commented this out since we do want cast messages even for insta spells...
 			{
 				MessageToCaster("You cast a " + m_spell.Name + " spell!", eChatType.CT_Spell);
 				foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
