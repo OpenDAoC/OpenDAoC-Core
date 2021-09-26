@@ -42,53 +42,6 @@ namespace DOL.GS
                 }
                 else
                 {
-                    //switch (e.EffectType)
-                    //{
-                    //    //buffs
-                    //    case eEffect.StrengthBuff:
-                    //    case eEffect.DexterityBuff:
-                    //    case eEffect.ConstitutionBuff:
-                    //    case eEffect.QuicknessBuff:
-                    //    case eEffect.AcuityBuff:
-                    //    case eEffect.StrengthConBuff:
-                    //    case eEffect.DexQuickBuff:
-                    //    case eEffect.BaseAFBuff:
-                    //    case eEffect.ArmorAbsorptionBuff:
-
-                    //    case eEffect.BodyResistBuff:
-                    //    case eEffect.SpiritResistBuff:
-                    //    case eEffect.EnergyResistBuff:
-                    //    case eEffect.HeatResistBuff:
-                    //    case eEffect.ColdResistBuff:
-                    //    case eEffect.MatterResistBuff:
-                    //    case eEffect.BodySpiritEnergyBuff:
-                    //    case eEffect.HeatColdMatterBuff:
-                    //    case eEffect.AllMagicResistsBuff:
-                    //    case eEffect.AllMeleeResistsBuff:
-                    //    case eEffect.AllResistsBuff:
-
-                    //    //debuffs
-                    //    case eEffect.StrengthDebuff:
-                    //    case eEffect.DexterityDebuff:
-                    //    case eEffect.ConstitutionDebuff:
-                    //    case eEffect.QuicknessDebuff:
-                    //    case eEffect.AcuityDebuff:
-                    //    case eEffect.StrConDebuff:
-                    //    case eEffect.DexQuiDebuff:
-                    //    case eEffect.ArmorAbsorptionDebuff:
-                    //    case eEffect.ArmorFactorDebuff:
-
-                    //    case eEffect.BodyResistDebuff:
-                    //    case eEffect.ColdResistDebuff:
-                    //    case eEffect.EnergyResistDebuff:
-                    //    case eEffect.HeatResistDebuff:
-                    //    case eEffect.MatterResistDebuff:
-                    //    case eEffect.SpiritResistDebuff:
-                    //    case eEffect.AllMeleeResistsDebuff:
-                    //    case eEffect.NaturalResistDebuff:
-                    //        HandlePropertyModification(e);
-                    //        break;
-                    //}
                     HandlePropertyModification(e);
                 }
 
