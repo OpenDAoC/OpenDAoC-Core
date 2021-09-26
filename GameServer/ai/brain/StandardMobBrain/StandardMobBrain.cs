@@ -359,6 +359,11 @@ namespace DOL.AI.Brain
                 if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                     continue;
 
+                if (Body.CurrentZone.IsDungeon && player != null)
+                {
+                    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
+                }
+
                 int aggrolevel = 0;
 
                 if (Body.Faction != null)
@@ -380,6 +385,7 @@ namespace DOL.AI.Brain
 
                 if (CalculateAggroLevelToTarget(player) > 0)
                 {
+                    if (!AggroLOS) return;
                     AddToAggroList(player, player.EffectiveLevel << 1, true);
                 }
             }
@@ -645,7 +651,8 @@ namespace DOL.AI.Brain
         public void PrintAggroTable()
         {
             StringBuilder sb = new StringBuilder();
-            foreach(GameLiving gl in m_aggroTable.Keys){
+            foreach (GameLiving gl in m_aggroTable.Keys)
+            {
                 sb.AppendLine("Living: " + gl.Name + ", aggro: " + m_aggroTable[gl].ToString());
             }
             Console.WriteLine(sb.ToString());
@@ -745,7 +752,7 @@ namespace DOL.AI.Brain
                 while (aggros.MoveNext())
                 {
                     GameLiving living = aggros.Current.Key;
-                    
+
                     // check to make sure this target is still valid
                     if (living.IsAlive == false ||
                         living.ObjectState != GameObject.eObjectState.Active ||
@@ -967,7 +974,7 @@ namespace DOL.AI.Brain
         /// <param name="ad"></param>
         protected virtual void OnAttackedByEnemy(AttackData ad)
         {
-            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)){ return; }
+            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)) { return; }
 
             if (Body.castingComponent.IsCasting)
             {
@@ -981,17 +988,18 @@ namespace DOL.AI.Brain
                 if (ad.AttackResult == eAttackResult.Missed)
                 {
                     AddToAggroList(ad.Attacker, 1);
-                } else
+                }
+                else
                 {
                     AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
                 }
 
-                if(FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
+                if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
                 {
                     FSM.SetCurrentState(eFSMStateType.AGGRO);
                     FSM.Think();
                 }
-                
+
                 //Body.StartAttack(ad.Attacker);
             }
         }
