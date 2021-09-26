@@ -1639,6 +1639,7 @@ namespace DOL.GS.Spells
 						{
 							SendCastAnimation();
 							castState = eCastState.Casting;
+							Caster.CurrentSpellHandler = this;
 						}
 					}
 					else
@@ -1704,6 +1705,7 @@ namespace DOL.GS.Spells
 				}
 				
 			}
+			Caster.CurrentSpellHandler = null;
 		}
 
 		
