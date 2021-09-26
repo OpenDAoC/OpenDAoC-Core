@@ -348,13 +348,23 @@ namespace DOL.GS
             if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
             {
                 dAEffects = dAEffects.OrderByDescending(e => e.SpellHandler.Spell.Damage).ToList();
-                double effectiveness = 1;
+                int numDmgAddsAffectedByStackingApplied = 0;
                 for (int i = 0; i < dAEffects.Count; i++)
                 {
                     if (dAEffects[i].IsBuffActive)
                     {
-                        if (i > 0)
-                            effectiveness *= .5;
+                        double effectiveness = 1;
+
+                        // Check if we should halve the effectiveness due to stacking.
+                        if (numDmgAddsAffectedByStackingApplied > 0)
+                        {
+                            // EffectGroup 99999 means it can stack fully with other DmgAdds. Used for RA-based DmgAdd.
+                            if (dAEffects[i].SpellHandler == null || dAEffects[i].SpellHandler.Spell == null || dAEffects[i].SpellHandler?.Spell?.EffectGroup != 99999)
+                            {
+                                effectiveness *= .5;
+                                numDmgAddsAffectedByStackingApplied++;
+                            }
+                        }
                         ((DamageAddSpellHandler)dAEffects[i].SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), effectiveness);
                     }
                 }
@@ -368,6 +378,5 @@ namespace DOL.GS
                 
                 p.attackComponent.weaponAction = null;
             }
-        }
-    } 
+        }} 
 }
