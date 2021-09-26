@@ -188,13 +188,6 @@ namespace DOL.GS.Spells
 			// calc damage
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
 
-			//if damageComponent = null, add a new component
-			//but that will have to wait until we implement a ComponentManager
-			// if (target.damageComponent != null){
-			//     target.damageComponent.DamageToDeal += ad.Damage;
-			//     target.damageComponent.lastEntityToDamageThisEntity = Caster;
-			// }
-
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
 			

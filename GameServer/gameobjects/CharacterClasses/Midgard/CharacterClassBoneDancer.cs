@@ -39,6 +39,8 @@ namespace DOL.GS
 			if (subpet != null && subpet.Brain is BDPetBrain && Player.ControlledBrain is CommanderBrain && (Player.ControlledBrain as CommanderBrain).FindPet(subpet.Brain as IControlledBrain))
 			{
 				Player.Notify(GameLivingEvent.PetReleased, subpet);
+				CommanderPet commander = (subpet.Brain as IControlledBrain).Owner as CommanderPet;
+				commander.RemoveControlledNpc(subpet.Brain as IControlledBrain);
 				return;
 			}
 
