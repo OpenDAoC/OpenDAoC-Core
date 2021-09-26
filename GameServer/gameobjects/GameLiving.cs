@@ -1121,7 +1121,7 @@ namespace DOL.GS
 				if (LastCombatTickPvP == 0)
 					return false;
 
-				return LastCombatTickPvP + 10000 >= region.Time;
+				return LastCombatTickPvP + 10000 >= GameLoop.GameLoopTime;
 			}
 		}
 
@@ -1137,7 +1137,7 @@ namespace DOL.GS
 			if (LastCombatTickPvP == 0)
 				return false;
 
-			return LastCombatTickPvP + milliseconds >= region.Time;
+			return LastCombatTickPvP + milliseconds >= GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -1157,7 +1157,7 @@ namespace DOL.GS
 				//if (LastCombatTickPvE + 10000 - region.Time > 0 && this is GameNPC && (this as GameNPC).Brain is IControlledBrain)
 				//	log.Debug(Name + " in combat " + (LastCombatTickPvE + 10000 - region.Time));
 
-				return LastCombatTickPvE + 10000 >= region.Time;
+				return LastCombatTickPvE + 10000 >= GameLoop.GameLoopTime;
 			}
 		}
 
@@ -1176,7 +1176,7 @@ namespace DOL.GS
 			//if (LastCombatTickPvE + 10000 - region.Time > 0 && this is GameNPC && (this as GameNPC).Brain is IControlledBrain)
 			//	log.Debug(Name + " in combat " + (LastCombatTickPvE + 10000 - region.Time));
 
-			return LastCombatTickPvE + milliseconds >= region.Time;
+			return LastCombatTickPvE + milliseconds >= GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -4229,13 +4229,13 @@ namespace DOL.GS
 
 				if (ad.Attacker.Realm == 0 || this.Realm == 0)
 				{
-					LastAttackedByEnemyTickPvE = CurrentRegion.Time;
-					ad.Attacker.LastAttackTickPvE = CurrentRegion.Time;
+					LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
 				}
 				else
 				{
-					LastAttackedByEnemyTickPvP = CurrentRegion.Time;
-					ad.Attacker.LastAttackTickPvP = CurrentRegion.Time;
+					LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+					ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
 				}
 
 			}
