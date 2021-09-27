@@ -30,7 +30,7 @@ namespace DOL.GS.PropertyCalc
 				int strengthPerMeleeDamagePercent = 8;
 				var strengthBuffBonus = living.BaseBuffBonusCategory[eProperty.Strength] + living.SpecBuffBonusCategory[eProperty.Strength];
 				var strengthDebuffMalus = living.DebuffCategory[eProperty.Strength] + living.SpecDebuffCategory[eProperty.Strength];
-				return living.AbilityBonus[property] + (strengthBuffBonus - strengthDebuffMalus) / strengthPerMeleeDamagePercent;
+				return ((living as GameNPC).Strength + (strengthBuffBonus - strengthDebuffMalus)) / strengthPerMeleeDamagePercent;
 			}
 
 			int hardCap = 10;
