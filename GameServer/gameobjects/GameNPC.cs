@@ -3928,6 +3928,7 @@ namespace DOL.GS
 
 		//}
 
+		private int scalingFactor = 19;
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
@@ -3941,7 +3942,7 @@ namespace DOL.GS
 			int weaponskill = 0;
 
 			weaponskill = (Level + 1) 
-				* 19 //scaling factor. Higher = more difficult
+				* ScalingFactor //scaling factor. Higher = more difficult
 				* (200 + GetModified(eProperty.MeleeDamage)) / 500 //melee damage buffs
 				* ((100 + Strength) / 100) //NPCs only use STR to calculate, can skip str or str/dex check
 				* ((100 + GetModified(eProperty.WeaponSkill)) / 100); //weaponskill buffs
@@ -5944,5 +5945,7 @@ namespace DOL.GS
 				m_campBonus = value;
 			}
 		}
-	}
+
+        public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
+    }
 }
