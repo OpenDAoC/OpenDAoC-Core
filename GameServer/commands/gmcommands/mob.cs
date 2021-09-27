@@ -78,6 +78,7 @@ namespace DOL.GS.Commands
 	     "'/mob speed <speed>' set the mob's max speed.",
 	     "'/mob level <level>' set the mob's level.",
 	     "'/mob levela <level>' set the mob's level and auto adjust stats.",
+	     "'/mob autostats' auto adjust the mobs stats according to level.",
 	     "'/mob brain <ClassName>' set the mob's brain.",
 	     "'/mob respawn <duration>' set the mob's respawn time (in ms).",
 	     "'/mob questinfo' show mob's quest info.",
@@ -218,6 +219,7 @@ namespace DOL.GS.Commands
 						case "speed": speed(client, targetMob, args); break;
 						case "level": level(client, targetMob, args); break;
 						case "levela": levela(client, targetMob, args); break;
+						case "autostats": autostats(client, targetMob); break;
 						case "brain": brain(client, targetMob, args); break;
 						case "respawn": respawn(client, targetMob, args); break;
 						case "questinfo": questinfo(client, targetMob, args); break;
@@ -1510,13 +1512,29 @@ namespace DOL.GS.Commands
 			try
 			{
 				level = Convert.ToByte(args[2]);
-				targetMob.Level = level; // Also calls AutoSetStats()
+				targetMob.Level = level;
+				targetMob.AutoSetStats();
 				targetMob.SaveIntoDatabase();
 				client.Out.SendMessage("Mob level changed to: " + targetMob.Level + " and stats adjusted", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			catch (Exception)
 			{
 				DisplaySyntax(client, args[1]);
+			}
+		}
+		
+		private void autostats(GameClient client, GameNPC targetMob)
+		{
+
+			try
+			{
+				targetMob.AutoSetStats();
+				targetMob.SaveIntoDatabase();
+				client.Out.SendMessage("Mob stats adjusted to level " + targetMob.Level, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			catch (Exception)
+			{
+				DisplaySyntax(client);
 			}
 		}
 
