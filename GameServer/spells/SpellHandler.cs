@@ -3508,7 +3508,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public bool IsCasting
 		{
-			get { return m_castTimer != null && m_castTimer.IsAlive; }
+			get { return castState == eCastState.Casting; }//return m_castTimer != null && m_castTimer.IsAlive; }
 		}
 
 		/// <summary>
