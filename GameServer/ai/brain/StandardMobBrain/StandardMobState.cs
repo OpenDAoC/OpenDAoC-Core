@@ -51,6 +51,7 @@ public class StandardMobState_IDLE : StandardMobState
         {
             Console.WriteLine($"{_brain.Body} is entering IDLE");
         }
+        _brain.CheckForProximityAggro = true;
         base.Enter();
     }
 
