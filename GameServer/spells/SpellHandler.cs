@@ -4798,6 +4798,16 @@ namespace DOL.GS.Spells
 				case eSpellType.PowerTransferPet:
 					dw.AddKeyValuePair("damage", Spell.Value * 10);
 					break;
+				case eSpellType.SummonCommander:				
+				case eSpellType.SummonHunterPet:
+				case eSpellType.SummonSimulacrum:
+				case eSpellType.SummonSpiritFighter:
+				case eSpellType.SummonUnderhill:
+					dw.AddKeyValuePair("damage", 44);
+					break;
+				case eSpellType.SummonDruidPet:
+					dw.AddKeyValuePair("damage", Spell.Value);
+					break;
 			}
         }
 
