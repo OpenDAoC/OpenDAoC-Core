@@ -18,6 +18,17 @@ public class DragonState : StandardMobState
     }
 }
 
+public class DragonState_WAKING_UP : DragonState {
+    public DragonState_WAKING_UP(FSM fsm, DragonBrain brain) : base(fsm, brain) {
+        _id = eFSMStateType.WAKING_UP;
+    }
+
+    public override void Think() {
+        _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+        base.Think();
+    }
+}
+
 public class DragonState_IDLE : DragonState
 {
     public DragonState_IDLE(FSM fsm, DragonBrain brain) : base(fsm, brain)
