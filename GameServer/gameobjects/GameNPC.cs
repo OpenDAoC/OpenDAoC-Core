@@ -3938,6 +3938,27 @@ namespace DOL.GS
 
 		//}
 
+		
+		public override double GetWeaponSkill(InventoryItem weapon)
+		{
+			/*
+			 * https://camelotherald.fandom.com/wiki/Weapon_Skill
+			[[[[LEVEL *DAMAGE_TABLE * (200 + BONUS * ITEM_BONUS) / 500]
+			*(100 + STAT) / 100]
+			*(100 + SPEC) / 100]
+			*(100 + WEAPONSKILL_BONUS) / 100]
+			*/
+			int weaponskill = 0;
+
+			weaponskill = (Level + 1) 
+				* 19 //scaling factor. Higher = more difficult
+				* (200 + GetModified(eProperty.MeleeDamage)) / 500 //melee damage buffs
+				* ((100 + Strength) / 100) //NPCs only use STR to calculate, can skip str or str/dex check
+				* ((100 + GetModified(eProperty.WeaponSkill)) / 100); //weaponskill buffs
+
+			return weaponskill;
+        }
+		
 
 		public override void RangedAttackFinished()
 		{
