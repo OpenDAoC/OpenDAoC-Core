@@ -260,7 +260,10 @@ namespace DOL.GS
                         return (eDamageType)weapon.Type_Damage;
                 }
             }
-            else return eDamageType.Natural;
+            else if (owner is GameNPC)
+            {
+                return (owner as GameNPC).MeleeDamageType;
+            } else return eDamageType.Natural;
         }
 
         /// <summary>

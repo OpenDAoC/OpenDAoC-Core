@@ -291,50 +291,40 @@ namespace DOL.GS
 					Charisma = 0;
 				}
 			}
-
-			if (Strength < 1)
-			{
-				Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short)1;
-				if (Level > 1)
-					Strength += (byte)(10.0 * (Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
-			}
-
-			if (Constitution < 1)
-			{
-				Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short)1;
-				if (Level > 1)
-					Constitution += (byte)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
-			}
-
-			if (Quickness < 1)
-			{
-				Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short)1;
-				if (Level > 1)
-					Quickness += (byte)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
-			}
-
-			if (Dexterity < 1)
-			{
-				Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short)1;
-				if (Level > 1)
-					Dexterity += (byte)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
-			}
-
-			if (Intelligence < 1)
-			{
-				Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short)1;
-				if (Level > 1)
-					Intelligence += (byte)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
-			}
-
-			if (Empathy < 1)
-				Empathy = (short)(29 + Level);
-
-			if (Piety < 1)
-				Piety = (short)(29 + Level);
-
-			if (Charisma < 1)
-				Charisma = (short)(29 + Level);
+			
+			// STR
+			Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
+			if (Level > 1)
+				Strength += (byte)(10.0 * (Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+			
+			// CON
+			Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
+			if (Level > 1)
+				Constitution += (byte)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+			
+			// QUI
+			Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short) 1;
+			if (Level > 1)
+				Quickness += (byte)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+			
+			// DEX
+			Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short) 1;
+			if (Level > 1)
+				Dexterity += (byte)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+			
+			// INT
+			Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short) 1;
+			if (Level > 1)
+				Intelligence += (byte)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+			
+			// EMP
+			Empathy = (short)(29 + Level);
+			
+			// PIE
+			Piety = (short)(29 + Level);
+			
+			// CHA
+			Charisma = (short)(29 + Level);
 		}
 
 		/// <summary>
@@ -3938,6 +3928,28 @@ namespace DOL.GS
 
 		//}
 
+		private int scalingFactor = 19;
+		
+		public override double GetWeaponSkill(InventoryItem weapon)
+		{
+			/*
+			 * https://camelotherald.fandom.com/wiki/Weapon_Skill
+			[[[[LEVEL *DAMAGE_TABLE * (200 + BONUS * ITEM_BONUS) / 500]
+			*(100 + STAT) / 100]
+			*(100 + SPEC) / 100]
+			*(100 + WEAPONSKILL_BONUS) / 100]
+			*/
+			int weaponskill = 0;
+
+			weaponskill = (Level + 1) 
+				* ScalingFactor //scaling factor. Higher = more difficult
+				* (200 + GetModified(eProperty.MeleeDamage)) / 500 //melee damage buffs
+				* ((100 + Strength) / 100) //NPCs only use STR to calculate, can skip str or str/dex check
+				* ((100 + GetModified(eProperty.WeaponSkill)) / 100); //weaponskill buffs
+
+			return weaponskill;
+        }
+		
 
 		public override void RangedAttackFinished()
 		{
@@ -5933,5 +5945,7 @@ namespace DOL.GS
 				m_campBonus = value;
 			}
 		}
-	}
+
+        public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
+    }
 }
