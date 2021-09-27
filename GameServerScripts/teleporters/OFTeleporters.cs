@@ -50,6 +50,8 @@ namespace DOL.GS.Scripts
 
             }
 
+            SetOwnBrain(new AssistantTeleporterBrain());
+
             return true;
         }
         public void CastEffect()
@@ -101,6 +103,7 @@ namespace DOL.GS.Scripts
                 m_buffSpell.Target = "Self";
                 m_buffSpell.Type = "ArmorFactorBuff";
                 m_buffSpell.Name = "TELEPORTER_EFFECT";
+                m_buffSpell.RecastDelay = ReportInterval;
                 m_portSpell = new Spell(m_buffSpell, 0);
                 return m_portSpell;
             }
@@ -108,11 +111,11 @@ namespace DOL.GS.Scripts
         }
         public void StartTeleporting()
         {
-            CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
             foreach (GameNPC assistant in GetNPCsInRadius(5000))
             {
-                if (assistant is OFAssistant)
+                if (assistant is OFAssistant && cast)
                 {
                     (assistant as OFAssistant).CastEffect();
                 }
@@ -256,6 +259,12 @@ namespace DOL.GS.Scripts
             teleporter.StartTeleporting();
             
             base.Think();
+        }
+    }
+
+    public class AssistantTeleporterBrain : StandardMobBrain {
+        public override void Think() {
+            //do nothing
         }
     }
 }
