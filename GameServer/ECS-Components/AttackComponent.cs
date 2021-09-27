@@ -1725,6 +1725,8 @@ namespace DOL.GS
             }
 
             ad.Target.StartInterruptTimer(ad, interruptDuration);
+            if (ad.AttackType != AttackData.eAttackType.Spell)
+                ad.Attacker.StartInterruptTimer(ad, interruptDuration);
             owner.OnAttack(ad);
             //Return the result
             return ad;
