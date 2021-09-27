@@ -4918,9 +4918,9 @@ namespace DOL.GS.Spells
 				case eSpellType.SummonSimulacrum:
 				case eSpellType.SummonSpiritFighter:
 				case eSpellType.SummonUnderhill:
-					dw.AddKeyValuePair("power_level", -100);
+					dw.AddKeyValuePair("power_level", Spell.Damage);
 					//dw.AddKeyValuePair("delve_string", "Summons a Pet to serve you.");
-					dw.AddKeyValuePair("description_string", "Summons a Pet to serve you.");
+					//dw.AddKeyValuePair("description_string", "Summons a Pet to serve you.");
 					break;
 				case eSpellType.StyleStun:
 					dw.AddKeyValuePair("type1", "22");
