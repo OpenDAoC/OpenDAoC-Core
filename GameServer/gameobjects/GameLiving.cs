@@ -2170,7 +2170,7 @@ namespace DOL.GS
 		/// Creates an attack action for this living
 		/// </summary>
 		/// <returns></returns>
-		protected virtual AttackAction CreateAttackAction()
+		public virtual AttackAction CreateAttackAction()
 		{
 			//return m_attackAction ?? new AttackAction(this);
             return attackComponent.attackAction ?? new AttackAction(this);

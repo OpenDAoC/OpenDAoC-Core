@@ -806,7 +806,8 @@ namespace DOL.GS
             if (speed > 0)
             {
                 //m_attackAction = CreateAttackAction();
-                attackAction = new AttackAction(owner);
+                //attackAction = new AttackAction(owner);
+                owner.CreateAttackAction();
 
                 if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
