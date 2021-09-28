@@ -5407,14 +5407,15 @@ namespace DOL.GS
 		/// <param name="spell"></param>
 		/// <param name="line"></param>
 		/// <param name="checkLOS"></param>
-		public virtual void CastSpell(Spell spell, SpellLine line, bool checkLOS)
+		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
 		{
+			bool cast = false;
 			if (IsIncapacitated)
-				return;
+				return false;
 
 			if (checkLOS)
 			{
-				CastSpell(spell, line);
+				cast = CastSpell(spell, line);
 			}
 			else
 			{
@@ -5431,8 +5432,10 @@ namespace DOL.GS
 					spellToCast = spell;
 				}
 
-				base.CastSpell(spellToCast, line);
+				cast = base.CastSpell(spellToCast, line);
 			}
+
+			return cast;
 		}
 
 		/// <summary>

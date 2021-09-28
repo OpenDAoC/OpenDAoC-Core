@@ -65,7 +65,7 @@ namespace DOL.GS.Scripts
     public class OFTeleporter : GameNPC
     {
         //Re-Port every 45 seconds.
-        public const int ReportInterval = 45;
+        public const int ReportInterval = 15;
         //RvR medallions
         public const string HadrianID = "hadrian_necklace";
         public const string EmainID = "emain_necklace";
@@ -111,13 +111,27 @@ namespace DOL.GS.Scripts
         }
         public void StartTeleporting()
         {
-            bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 
-            foreach (GameNPC assistant in GetNPCsInRadius(5000))
-            {
-                if (assistant is OFAssistant && cast)
-                {
-                    (assistant as OFAssistant).CastEffect();
+            if (Assistants == null) {
+                Assistants = new List<OFAssistant>();
+            }
+
+            if (Assistants.Count < 5) {
+                //cache our assistants on first run
+                foreach (GameNPC assistant in GetNPCsInRadius(5000)) {
+                    if (assistant is OFAssistant) {
+                        Assistants.Add(assistant as OFAssistant);
+                        Console.WriteLine($"Adding assistant {assistant}");
+                    }
+                }
+
+                Console.WriteLine(Assistants.ToString());
+            }
+
+            if (cast) {
+                foreach(OFAssistant assi in Assistants) {
+                    assi.CastEffect();
                 }
             }
         }
@@ -257,8 +271,6 @@ namespace DOL.GS.Scripts
                 return;
 
             teleporter.StartTeleporting();
-            
-            base.Think();
         }
     }
 
