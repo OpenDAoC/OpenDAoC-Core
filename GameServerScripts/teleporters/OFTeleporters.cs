@@ -27,28 +27,30 @@ namespace DOL.GS.Scripts
             {
                 case eRealm.Albion:
                     {
-                        Name = "Master Wizard";
+                        Name = "Master Elementalist";
                         Model = 61;
-                        LoadEquipmentTemplateFromDatabase("wizard");
+                        LoadEquipmentTemplateFromDatabase("master_elementalist");
 
                     }
                     break;
                 case eRealm.Hibernia:
                     {
-                        Name = "Master Enchanter";
+                        Name = "Seoltoir";
                         Model = 342;
-                        LoadEquipmentTemplateFromDatabase("mentalist");
+                        LoadEquipmentTemplateFromDatabase("seoltoir");
                     }
                     break;
                 case eRealm.Midgard:
                     {
                         Name = "Master Runemaster";
                         Model = 153;
-                        LoadEquipmentTemplateFromDatabase("runemaster");
+                        LoadEquipmentTemplateFromDatabase("master_runemaster");
                     }
                     break;
 
             }
+
+            SetOwnBrain(new AssistantTeleporterBrain());
 
             return true;
         }
@@ -101,6 +103,7 @@ namespace DOL.GS.Scripts
                 m_buffSpell.Target = "Self";
                 m_buffSpell.Type = "ArmorFactorBuff";
                 m_buffSpell.Name = "TELEPORTER_EFFECT";
+                m_buffSpell.RecastDelay = ReportInterval;
                 m_portSpell = new Spell(m_buffSpell, 0);
                 return m_portSpell;
             }
@@ -108,13 +111,27 @@ namespace DOL.GS.Scripts
         }
         public void StartTeleporting()
         {
-            CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 
-            foreach (GameNPC assistant in GetNPCsInRadius(5000))
-            {
-                if (assistant is OFAssistant)
-                {
-                    (assistant as OFAssistant).CastEffect();
+            if (Assistants == null) {
+                Assistants = new List<OFAssistant>();
+            }
+
+            if (Assistants.Count < 5) {
+                //cache our assistants on first run
+                foreach (GameNPC assistant in GetNPCsInRadius(5000)) {
+                    if (assistant is OFAssistant) {
+                        Assistants.Add(assistant as OFAssistant);
+                        Console.WriteLine($"Adding assistant {assistant}");
+                    }
+                }
+
+                Console.WriteLine(Assistants.ToString());
+            }
+
+            if (cast) {
+                foreach(OFAssistant assi in Assistants) {
+                    assi.CastEffect();
                 }
             }
         }
@@ -209,7 +226,7 @@ namespace DOL.GS.Scripts
                     {
                         Name = "Master Visur";
                         Model = 63; 
-                        LoadEquipmentTemplateFromDatabase("wizard");
+                        LoadEquipmentTemplateFromDatabase("visur");
 
                     }
                     break;
@@ -217,14 +234,14 @@ namespace DOL.GS.Scripts
                     {
                         Name = "Glasny";
                         Model = 342;
-                        LoadEquipmentTemplateFromDatabase("mentalist");
+                        LoadEquipmentTemplateFromDatabase("glasny");
                     }
                     break;
                 case eRealm.Midgard:
                     {
                         Name = "Stor Gothi";
                         Model = 153;
-                        LoadEquipmentTemplateFromDatabase("runemaster");
+                        LoadEquipmentTemplateFromDatabase("stor_gothi");
                     }
                     break;
             }
@@ -254,8 +271,12 @@ namespace DOL.GS.Scripts
                 return;
 
             teleporter.StartTeleporting();
-            
-            base.Think();
+        }
+    }
+
+    public class AssistantTeleporterBrain : StandardMobBrain {
+        public override void Think() {
+            //do nothing
         }
     }
 }

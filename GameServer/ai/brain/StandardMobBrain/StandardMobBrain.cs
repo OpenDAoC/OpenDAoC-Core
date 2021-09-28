@@ -385,7 +385,7 @@ namespace DOL.AI.Brain
 
                 if (CalculateAggroLevelToTarget(player) > 0)
                 {
-                    if (!AggroLOS) return;
+                    if (Body.CurrentZone.IsDungeon && !AggroLOS) return;
                     AddToAggroList(player, player.EffectiveLevel << 1, true);
                 }
             }

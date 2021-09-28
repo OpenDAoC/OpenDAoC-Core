@@ -262,7 +262,7 @@ namespace DOL.GS
 			{
 				Mob mob = dbMob;
 
-				if (mob == null && !String.IsNullOrEmpty(InternalID))
+				if (mob == null && !string.IsNullOrEmpty(InternalID))
 					// This should only happen when a GM command changes level on a mob with no npcTemplate,
 					mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
 
@@ -295,7 +295,7 @@ namespace DOL.GS
 			// STR
 			Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
 			if (Level > 1)
-				Strength += (byte)(10.0 * (Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+				Strength += (byte)((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
 			
 			// CON
 			Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
@@ -5423,14 +5423,15 @@ namespace DOL.GS
 		/// <param name="spell"></param>
 		/// <param name="line"></param>
 		/// <param name="checkLOS"></param>
-		public virtual void CastSpell(Spell spell, SpellLine line, bool checkLOS)
+		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
 		{
+			bool cast = false;
 			if (IsIncapacitated)
-				return;
+				return false;
 
 			if (checkLOS)
 			{
-				CastSpell(spell, line);
+				cast = CastSpell(spell, line);
 			}
 			else
 			{
@@ -5447,8 +5448,10 @@ namespace DOL.GS
 					spellToCast = spell;
 				}
 
-				base.CastSpell(spellToCast, line);
+				cast = base.CastSpell(spellToCast, line);
 			}
+
+			return cast;
 		}
 
 		/// <summary>

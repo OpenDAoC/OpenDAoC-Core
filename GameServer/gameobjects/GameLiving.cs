@@ -6581,7 +6581,7 @@ namespace DOL.GS
 				if (m_disabledSkills.ContainsKey(key))
 				{
 					long timeout = m_disabledSkills[key].Key;
-					long left = timeout - CurrentRegion.Time;
+					long left = timeout - GameLoop.GameLoopTime;
 					if (left <= 0)
 					{
 						left = 0;
@@ -6622,7 +6622,7 @@ namespace DOL.GS
 				KeyValuePair<int, Type> key = new KeyValuePair<int, Type>(skill.ID, skill.GetType());
 				if (duration > 0)
 				{
-					m_disabledSkills[key] = new KeyValuePair<long, Skill>(CurrentRegion.Time + duration, skill);
+					m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
 				}
 				else
 				{
