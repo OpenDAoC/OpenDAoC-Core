@@ -5562,6 +5562,13 @@ namespace DOL.GS
 				StopCurrentSpellcast();
 			}
 
+			var song = EffectListService.GetEffectOnTarget(this, eEffect.Pulse);
+			if (song != null && song.SpellHandler.Spell.InstrumentRequirement != 0)
+            {
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				EffectService.RequestCancelConcEffect(song);
+			}
+
 			switch (slot)
 			{
 				//case eActiveWeaponSlot.Standard:
