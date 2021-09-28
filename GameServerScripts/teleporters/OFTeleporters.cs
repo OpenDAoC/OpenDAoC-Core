@@ -27,24 +27,24 @@ namespace DOL.GS.Scripts
             {
                 case eRealm.Albion:
                     {
-                        Name = "Master Wizard";
+                        Name = "Master Elementalist";
                         Model = 61;
-                        LoadEquipmentTemplateFromDatabase("wizard");
+                        LoadEquipmentTemplateFromDatabase("master_elementalist");
 
                     }
                     break;
                 case eRealm.Hibernia:
                     {
-                        Name = "Master Enchanter";
+                        Name = "Seoltoir";
                         Model = 342;
-                        LoadEquipmentTemplateFromDatabase("mentalist");
+                        LoadEquipmentTemplateFromDatabase("seoltoir");
                     }
                     break;
                 case eRealm.Midgard:
                     {
                         Name = "Master Runemaster";
                         Model = 153;
-                        LoadEquipmentTemplateFromDatabase("runemaster");
+                        LoadEquipmentTemplateFromDatabase("master_runemaster");
                     }
                     break;
 
@@ -212,7 +212,7 @@ namespace DOL.GS.Scripts
                     {
                         Name = "Master Visur";
                         Model = 63; 
-                        LoadEquipmentTemplateFromDatabase("wizard");
+                        LoadEquipmentTemplateFromDatabase("visur");
 
                     }
                     break;
@@ -220,14 +220,14 @@ namespace DOL.GS.Scripts
                     {
                         Name = "Glasny";
                         Model = 342;
-                        LoadEquipmentTemplateFromDatabase("mentalist");
+                        LoadEquipmentTemplateFromDatabase("glasny");
                     }
                     break;
                 case eRealm.Midgard:
                     {
                         Name = "Stor Gothi";
                         Model = 153;
-                        LoadEquipmentTemplateFromDatabase("runemaster");
+                        LoadEquipmentTemplateFromDatabase("stor_gothi");
                     }
                     break;
             }
