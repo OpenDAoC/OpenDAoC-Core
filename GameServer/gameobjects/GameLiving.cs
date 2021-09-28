@@ -4204,21 +4204,7 @@ namespace DOL.GS
 		{
 			if (ad.IsHit && ad.CausesCombat)
 			{
-				Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));
-
-                // Handle DamageShield damage
-                if (effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out List<ECSGameEffect> dSEffects))
-                {
-					for (int i = 0; i < dSEffects.Count; i++)
-					{
-						if (dSEffects[i].IsBuffActive)
-						{
-							var dSEffect = dSEffects[i];
-
-							((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
-						}
-					}
-                }
+				Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
 
                 OnAttack(ad);
 
@@ -4238,6 +4224,23 @@ namespace DOL.GS
 					ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
 				}
 
+			}
+		}
+
+		public void HandleDamageShields(AttackData ad)
+        {
+			// Handle DamageShield damage
+			if (effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out List<ECSGameEffect> dSEffects))
+			{
+				for (int i = 0; i < dSEffects.Count; i++)
+				{
+					if (dSEffects[i].IsBuffActive)
+					{
+						var dSEffect = dSEffects[i];
+
+						((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
+					}
+				}
 			}
 		}
 

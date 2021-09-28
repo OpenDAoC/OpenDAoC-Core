@@ -214,6 +214,7 @@ namespace DOL.GS
 
                 //Send the proper attacking messages to ourself
                 owner.SendAttackingCombatMessages(mainHandAD);
+                mainHandAD.Target.HandleDamageShields(mainHandAD);
 
                 //Notify ourself about the attack
                 //owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(mainHandAD));
@@ -264,7 +265,7 @@ namespace DOL.GS
 
                                 //Send messages about our left hand attack now
                                 owner.SendAttackingCombatMessages(leftHandAD);
-
+                                leftHandAD.Target.HandleDamageShields(leftHandAD);
                                 //Notify ourself about the attack
                                 //owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(leftHandAD));
                             }
