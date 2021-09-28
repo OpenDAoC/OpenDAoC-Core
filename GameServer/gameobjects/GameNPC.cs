@@ -2463,6 +2463,22 @@ namespace DOL.GS
 					this.Inventory = new GameNPCInventory(equip);
 					if (this.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
 						this.SwitchWeapon(eActiveWeaponSlot.Distance);
+					else
+                    {
+						InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+						InventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+
+						if (twohand != null && onehand != null)
+							//Let's add some random chance
+							SwitchWeapon(Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
+						else if (twohand != null)
+							//Hmm our right hand weapon may have been null
+							SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+						else if (onehand != null)
+							//Hmm twohand was null lets default down here
+							SwitchWeapon(eActiveWeaponSlot.Standard);
+
+					}
 				}
 
 				if (template.VisibleActiveWeaponSlot > 0)
