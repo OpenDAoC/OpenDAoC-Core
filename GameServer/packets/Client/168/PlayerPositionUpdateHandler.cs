@@ -177,6 +177,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                 client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 
 				client.Player.LastPositionUpdateZone = newZone;
+
+				if (client.Player.GMStealthed)
+					client.Player.Stealth(true);
 			}
 
 			int coordsPerSec = 0;
@@ -870,6 +873,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 
 				client.Player.LastPositionUpdateZone = newZone;
+
+				if (client.Player.GMStealthed)
+					client.Player.Stealth(true);
 			}
 
 			int coordsPerSec = 0;
