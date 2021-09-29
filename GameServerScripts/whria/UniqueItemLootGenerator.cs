@@ -52,7 +52,7 @@ namespace DOL.GS
 		[CmdAttribute(
 			"&genuniques",
 			ePrivLevel.GM,
-			"/genuniques ([TOA] || [L51] || [objecttype]) [itemtype] : generate 8 unique items")]
+			"/genuniques ([TOA] || [L51] || [self] || [objecttype]) [itemtype] : generate 8 unique items")]
 		public class LootGeneratorUniqueObjectCommandHandler : DOL.GS.Commands.AbstractCommandHandler, DOL.GS.Commands.ICommandHandler
 		{
 			public void OnCommand(GameClient client, string[] args)
@@ -76,7 +76,11 @@ namespace DOL.GS
 							{
 								item = new GeneratedUniqueItem(client.Player.Realm,(eCharacterClass)client.Player.CharacterClass.ID, 51);
 								item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 50));
-							}
+							} 
+							else if (Convert.ToString(args[1]).ToUpper() == "SELF") {
+								item = new GeneratedUniqueItem(client.Player.Realm, (eCharacterClass)client.Player.CharacterClass.ID, client.Player.Level);
+								//item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 50));
+							} 
 							else
 							{
 								if (args.Length > 2)
