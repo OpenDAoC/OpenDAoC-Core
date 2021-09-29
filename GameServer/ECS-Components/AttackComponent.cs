@@ -807,8 +807,8 @@ namespace DOL.GS
             {
                 //m_attackAction = CreateAttackAction();
                 //attackAction = new AttackAction(owner);
-                owner.CreateAttackAction();
-
+                attackAction = owner.CreateAttackAction();
+               
                 if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
                     // only start another attack action if we aren't already aiming to shoot
