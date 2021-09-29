@@ -1754,13 +1754,18 @@ namespace DOL.GS
 			newX = (int)(followTarget.X - diffx);
 			newY = (int)(followTarget.Y - diffy);
 			newZ = (int)(followTarget.Z - diffz);
-			//WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-			if (InCombat || Brain is BomberBrain)
-				WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-			else if (MaxSpeed < GetDistance(new Point2D(newX, newY)))
-				WalkTo(newX, newY, (ushort)newZ, (short)Math.Min(MaxSpeed, followLiving.CurrentSpeed + 50));
+			
+			if (Brain is ControlledNpcBrain)
+			{
+				if (InCombat || Brain is BomberBrain)
+					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
+				else if (MaxSpeed < GetDistance(new Point2D(newX, newY)))
+					WalkTo(newX, newY, (ushort)newZ, (short)Math.Min(MaxSpeed, followLiving.CurrentSpeed + 50));
+				else
+					WalkTo(newX, newY, (ushort)newZ, (short)GetDistance(new Point2D(newX, newY)));
+			}
 			else
-				WalkTo(newX, newY, (ushort)newZ, (short)GetDistance(new Point2D(newX, newY)));
+				WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
 			return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
 		}
 
