@@ -348,13 +348,13 @@ namespace DOL.GS
                                 {
                                     if (e.Owner.Realm == 0 || e.SpellHandler.Caster.Realm == 0)
                                     {
-                                        e.Owner.LastAttackedByEnemyTickPvE = e.Owner.CurrentRegion.Time;
-                                        e.SpellHandler.Caster.LastAttackTickPvE = e.SpellHandler.Caster.CurrentRegion.Time;
+                                        e.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                                        e.SpellHandler.Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
                                     }
                                     else
                                     {
-                                        e.Owner.LastAttackedByEnemyTickPvP = e.Owner.CurrentRegion.Time;
-                                        e.SpellHandler.Caster.LastAttackTickPvP = e.SpellHandler.Caster.CurrentRegion.Time;
+                                        e.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                                        e.SpellHandler.Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
                                     }
 
                                     e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);

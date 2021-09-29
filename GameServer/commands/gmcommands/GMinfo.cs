@@ -260,7 +260,7 @@ namespace DOL.GS.Commands
 					info.Add("LastCombatPVP: " + target.LastAttackedByEnemyTickPvP);
 
 					if (target.InCombat || target.attackComponent.AttackState)
-						info.Add("RegionTick: " + target.CurrentRegion.Time);
+						info.Add("RegionTick: " + GameLoop.GameLoopTime);
 
 					info.Add("");
 

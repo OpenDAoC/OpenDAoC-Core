@@ -58,8 +58,8 @@ namespace DOL.GS.Spells
 
 			//have to do it here because OnAttackedByEnemy is not called to not get aggro
 			if (target.Realm == 0 || Caster.Realm == 0)
-				target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-			else target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
+				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+			else target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
 			SendEffectAnimation(target, 0, false, 1);
 
 			if (target is GamePlayer)

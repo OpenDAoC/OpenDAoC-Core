@@ -337,14 +337,14 @@ namespace DOL.GS.Spells
 			if (Spell.Target.ToLower() == "area")
 			{
 				// always put archer into combat when using area (volley)
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
+				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 
 				foreach (GameLiving npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
 				{
 					if (npc.Realm == 0 || Caster.Realm == 0)
 					{
-						npc.LastAttackedByEnemyTickPvE = npc.CurrentRegion.Time;
+						npc.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
 					}
 				}
 			}
@@ -352,13 +352,13 @@ namespace DOL.GS.Spells
 			{
 				if (target.Realm == 0 || Caster.Realm == 0)
 				{
-					target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-					Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
+					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
 				}
 				else
 				{
-					target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-					Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
+					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 				}
 			}
 
