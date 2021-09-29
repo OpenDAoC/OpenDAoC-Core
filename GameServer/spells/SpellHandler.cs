@@ -4797,15 +4797,16 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.PowerTransferPet:
 					dw.AddKeyValuePair("damage", Spell.Value * 10);
-					break;
-				case eSpellType.SummonCommander:				
+					break;								
 				case eSpellType.SummonHunterPet:
 				case eSpellType.SummonSimulacrum:
 				case eSpellType.SummonSpiritFighter:
 				case eSpellType.SummonUnderhill:
 					dw.AddKeyValuePair("damage", 44);
 					break;
+				case eSpellType.SummonCommander:
 				case eSpellType.SummonDruidPet:
+				case eSpellType.SummonMinion:
 					dw.AddKeyValuePair("damage", Spell.Value);
 					break;
 			}
@@ -4921,6 +4922,9 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair("power_level", Spell.Damage);
 					//dw.AddKeyValuePair("delve_string", "Summons a Pet to serve you.");
 					//dw.AddKeyValuePair("description_string", "Summons a Pet to serve you.");
+					break;
+				case eSpellType.SummonMinion:
+					dw.AddKeyValuePair("power_level", Spell.Value);
 					break;
 				case eSpellType.StyleStun:
 					dw.AddKeyValuePair("type1", "22");
