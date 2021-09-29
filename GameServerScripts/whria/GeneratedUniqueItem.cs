@@ -2180,8 +2180,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return MidgardArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return MidgardWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GenerateMidgardClassWeapon(charClass);//MidgardArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GenerateMidgardClassArmor(charClass, level);//MidgardWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2382,7 +2382,152 @@ namespace DOL.GS
 			}
         }
 
-        private static eInventorySlot GenerateItemType(eObjectType type)
+		private static eObjectType GenerateMidgardClassWeapon(eCharacterClass charClass) {
+			Console.WriteLine($"Albion specific weapon generating for class {charClass}");
+			List<eObjectType> weaponTypes = new List<eObjectType>();
+			/*
+			 * Midgard Weapons
+			eObjectType.Sword,
+			eObjectType.Hammer,
+			eObjectType.Axe,
+			eObjectType.Shield,
+			eObjectType.Staff,
+			eObjectType.Spear,
+			eObjectType.CompositeBow ,
+			eObjectType.LeftAxe,
+			eObjectType.HandToHand,
+			eObjectType.FistWraps,//Maulers
+			eObjectType.MaulerStaff,//Maulers
+			*/
+			switch (charClass) {
+				//staff classes
+				case eCharacterClass.Bonedancer:
+				case eCharacterClass.Runemaster:
+				case eCharacterClass.Spiritmaster:
+					weaponTypes.Add(eObjectType.Staff);
+					break;
+				case eCharacterClass.Healer:
+				case eCharacterClass.Shaman:
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Hammer);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Hunter:
+					weaponTypes.Add(eObjectType.Spear);
+					weaponTypes.Add(eObjectType.Longbow);
+					weaponTypes.Add(eObjectType.Sword);
+					break;
+				case eCharacterClass.Savage:
+					weaponTypes.Add(eObjectType.HandToHand);
+					weaponTypes.Add(eObjectType.Sword);
+					weaponTypes.Add(eObjectType.Axe);
+					weaponTypes.Add(eObjectType.Hammer);
+					break;
+				case eCharacterClass.Shadowblade:
+					weaponTypes.Add(eObjectType.Sword);
+					weaponTypes.Add(eObjectType.Axe);
+					weaponTypes.Add(eObjectType.LeftAxe);
+					break;
+				case eCharacterClass.Berserker:
+					weaponTypes.Add(eObjectType.LeftAxe);
+					weaponTypes.Add(eObjectType.Sword);
+					weaponTypes.Add(eObjectType.Axe);
+					weaponTypes.Add(eObjectType.Hammer);
+					break;
+				case eCharacterClass.Thane:
+				case eCharacterClass.Warrior:
+					weaponTypes.Add(eObjectType.Sword);
+					weaponTypes.Add(eObjectType.Axe);
+					weaponTypes.Add(eObjectType.Hammer);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Skald:
+					//hi Catkain <3
+					weaponTypes.Add(eObjectType.Sword);
+					weaponTypes.Add(eObjectType.Axe);
+					weaponTypes.Add(eObjectType.Hammer);
+					break;
+				default:
+					return eObjectType.Staff;
+			}
+
+			//this list nonsense is kind of weird but we need to duplicate the 
+			//items in the list to avoid apparent mid-number bias for random number gen
+
+			//clone existing list
+			List<eObjectType> outputList = new List<eObjectType>(weaponTypes);
+
+			//add duplicate values
+			foreach (eObjectType type in weaponTypes) {
+				outputList.Add(type);
+			}
+
+			//get our random value from the list
+			int randomGrab = Util.Random(0, outputList.Count - 1);
+
+			Console.WriteLine($"Grabbing index {randomGrab} and got item {outputList[randomGrab]}");
+			//return a random type from our list of valid weapons
+			return outputList[randomGrab];
+
+		}
+
+		private static eObjectType GenerateMidgardClassArmor(eCharacterClass charClass, byte level) {
+			Console.WriteLine($"Albion specific armor generating for class {charClass}");
+
+			switch (charClass) {
+				//staff classes
+				case eCharacterClass.Bonedancer:
+				case eCharacterClass.Runemaster:
+				case eCharacterClass.Spiritmaster:
+					return eObjectType.Cloth;
+
+				case eCharacterClass.Shadowblade:
+					return eObjectType.Leather;
+
+				case eCharacterClass.Hunter:
+					if (level < 10) {
+						return eObjectType.Leather;
+					}else { 
+						return eObjectType.Studded;
+					}
+
+				case eCharacterClass.Berserker:
+				case eCharacterClass.Savage:
+					return eObjectType.Studded;
+
+				case eCharacterClass.Shaman:
+				case eCharacterClass.Healer:
+					if(level < 10) {
+						return eObjectType.Leather;
+                    } else if(level < 20) {
+						return eObjectType.Studded;
+                    } else { 
+						return eObjectType.Chain; 
+					}
+
+				case eCharacterClass.Skald:
+					if(level < 20) {
+						return eObjectType.Studded;
+                    } else { return eObjectType.Chain;}
+
+				case eCharacterClass.Warrior:
+					if (level < 10) {
+						return eObjectType.Studded;
+                    } else { return eObjectType.Chain; }
+
+				case eCharacterClass.Thane:
+					if(level < 12) {
+						return eObjectType.Studded;
+                    } else { 
+						return eObjectType.Chain; 
+					}
+
+				default:
+					return eObjectType.Cloth;
+			}
+		}
+
+		private static eInventorySlot GenerateItemType(eObjectType type)
 		{
 			if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
 				return (eInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
