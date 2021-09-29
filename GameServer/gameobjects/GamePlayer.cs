@@ -712,7 +712,8 @@ namespace DOL.GS
 					return 1000;
 				}
 			}
-
+			if (CharacterClass.ID == (int)eCharacterClass.Necromancer && IsShade)
+				Shade(false);
 			Out.SendPlayerQuit(false);
 			Quit(true);
 			SaveIntoDatabase();
