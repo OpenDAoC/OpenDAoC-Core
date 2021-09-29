@@ -37,6 +37,7 @@ using System.Reflection;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using static DOL.GS.CommanderPet;
 
 namespace DOL.GS
 {
@@ -83,7 +84,7 @@ namespace DOL.GS
 		}
 		
 		public GeneratedUniqueItem()
-			:this((eRealm)Util.Random(1,3), (byte)Util.Random(1,50))
+			:this((eRealm)Util.Random(1,3), (eCharacterClass)Util.Random(1,32), (byte)Util.Random(1,50))
 		{
 			
 		}
@@ -91,55 +92,55 @@ namespace DOL.GS
 		#region Constructor Randomized
 		
 		
-		public GeneratedUniqueItem(eRealm realm, byte level)
-			:this(realm, level, GenerateObjectType(realm, level))
+		public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level)
+			:this(realm, charClass, level, GenerateObjectType(realm, charClass, level))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(eRealm realm, byte level, eObjectType type)
-			:this(realm, level, type, GenerateItemType(type))
+		public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type)
+			:this(realm, charClass,  level, type, GenerateItemType(type))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(eRealm realm, byte level, eObjectType type, eInventorySlot slot)
-			:this(realm, level, type, slot, GenerateDamageType(type))
+		public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot)
+			:this(realm, charClass, level, type, slot, GenerateDamageType(type))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(eRealm realm, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg)
-			:this(Util.Chance(ROG_TOA_ITEM_CHANCE), realm, level, type, slot, dmg)
+		public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg)
+			:this(Util.Chance(ROG_TOA_ITEM_CHANCE), realm, charClass, level, type, slot, dmg)
 		{
 
 		}
 		
 		public GeneratedUniqueItem(bool toa)
-			:this(toa, (eRealm)Util.Random(1,3), (byte)Util.Random(1,50))
+			:this(toa, (eRealm)Util.Random(1,3), (eCharacterClass)Util.Random(1, 32), (byte)Util.Random(1,50))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(bool toa, eRealm realm, byte level)
-			:this(toa, realm, level, GenerateObjectType(realm, level))
+		public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level)
+			:this(toa, realm, charClass, level, GenerateObjectType(realm, charClass, level))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(bool toa, eRealm realm, byte level, eObjectType type)
-			:this(toa, realm, level, type, GenerateItemType(type))
+		public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type)
+			:this(toa, realm, charClass, level, type, GenerateItemType(type))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(bool toa, eRealm realm, byte level, eObjectType type, eInventorySlot slot)
-			:this(toa, realm, level, type, slot, GenerateDamageType(type))
+		public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot)
+			:this(toa, realm, charClass, level, type, slot, GenerateDamageType(type))
 		{
 
 		}
 		
-		public GeneratedUniqueItem(bool toa, eRealm realm, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg)
+		public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg)
 			:base()
 		{
 			this.Realm = (int)realm;
@@ -147,6 +148,7 @@ namespace DOL.GS
 			this.Object_Type = (int)type;
 			this.Item_Type = (int)slot;
 			this.Type_Damage = (int)dmg;
+			
 			
 			// shouldn't need more Randomized public set values
 			
@@ -2132,7 +2134,7 @@ namespace DOL.GS
 		#region generate item type
 		
 		
-		private static eObjectType GenerateObjectType(eRealm realm, byte level)
+		private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
 		{
 			eGenerateType type = eGenerateType.None;
 			if (Util.Chance(ROG_ARMOR_CHANCE)) type = eGenerateType.Armor;
@@ -2157,8 +2159,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return AlbionArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return AlbionWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GenerateAlbionClassArmor(charClass, level);//AlbionArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GenerateAlbionClassWeapon(charClass);//AlbionWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2209,7 +2211,178 @@ namespace DOL.GS
 			return eObjectType.GenericItem;
 		}
 
-		private static eInventorySlot GenerateItemType(eObjectType type)
+        private static eObjectType GenerateAlbionClassWeapon(eCharacterClass charClass) {
+			Console.WriteLine($"Albion specific weapon generating for class {charClass}");
+			List<eObjectType> weaponTypes = new List<eObjectType>();
+			/*
+			 * Albion Weapons
+			eObjectType.ThrustWeapon,
+			eObjectType.CrushingWeapon,
+			eObjectType.SlashingWeapon, 
+			eObjectType.Shield,
+			eObjectType.Staff,//
+			eObjectType.TwoHandedWeapon,
+			eObjectType.Longbow,//
+			eObjectType.Flexible,//
+			eObjectType.PolearmWeapon,
+			eObjectType.FistWraps, //Maulers//
+			eObjectType.MaulerStaff,//Maulers//
+			eObjectType.Instrument,//
+			eObjectType.Crossbow,
+			*/
+			switch (charClass) {
+				//staff classes
+				case eCharacterClass.Cabalist:
+				case eCharacterClass.Friar:
+				case eCharacterClass.Necromancer:
+				case eCharacterClass.Sorcerer:
+				case eCharacterClass.Theurgist:
+				case eCharacterClass.Wizard:
+					weaponTypes.Add(eObjectType.Staff);
+					break;
+				case eCharacterClass.Armsman:
+					weaponTypes.Add(eObjectType.PolearmWeapon);
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.TwoHandedWeapon);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Paladin:
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.TwoHandedWeapon);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Reaver:
+					weaponTypes.Add(eObjectType.Flexible);
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Infiltrator:
+				case eCharacterClass.Minstrel:
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					//should we include crush? should we weight towards thrust?
+					break;
+				case eCharacterClass.Scout:
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Longbow);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Mercenary:
+					weaponTypes.Add(eObjectType.Fired); //shortbow
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Cleric:
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				default:
+					return eObjectType.Staff;
+            }
+
+			//this list nonsense is kind of weird but we need to duplicate the 
+			//items in the list to avoid apparent mid-number bias for random number gen
+
+			//clone existing list
+			List<eObjectType> outputList = new List<eObjectType>(weaponTypes);
+			
+			//add duplicate values
+			foreach (eObjectType type in weaponTypes) {
+				outputList.Add(type);
+            }
+
+			//get our random value from the list
+			int randomGrab = Util.Random(0, outputList.Count - 1);
+			
+			Console.WriteLine($"Grabbing index {randomGrab} and got item {outputList[randomGrab]}");
+			//return a random type from our list of valid weapons
+			return outputList[randomGrab];
+
+		}
+
+        private static eObjectType GenerateAlbionClassArmor(eCharacterClass charClass, byte level) {
+			Console.WriteLine($"Albion specific armor generating for class {charClass}");
+
+			switch (charClass) {
+				//staff classes
+				case eCharacterClass.Cabalist:
+				case eCharacterClass.Necromancer:
+				case eCharacterClass.Sorcerer:
+				case eCharacterClass.Theurgist:
+				case eCharacterClass.Wizard:
+					return eObjectType.Cloth;
+
+				case eCharacterClass.Friar:
+				case eCharacterClass.Infiltrator:
+					return eObjectType.Leather;
+
+				case eCharacterClass.Armsman:
+					if (level < 5) {
+						return eObjectType.Studded;
+					} else if (level < 15) {
+						return eObjectType.Chain;
+					} else {
+						return eObjectType.Plate;
+					}
+
+				case eCharacterClass.Paladin:
+					if (level < 10) {
+						return eObjectType.Studded;
+					} else if (level < 20) {
+						return eObjectType.Chain;
+					} else { 
+						return eObjectType.Plate; 
+					}
+
+				case eCharacterClass.Reaver:
+				case eCharacterClass.Mercenary:
+					if (level < 10) {
+						return eObjectType.Studded;						
+					} else {
+						return eObjectType.Chain;
+					}
+
+				case eCharacterClass.Minstrel:
+					if (level < 10) {
+						return eObjectType.Leather;
+					} else if (level < 20) {
+						return eObjectType.Studded;
+                    }
+					else {
+						return eObjectType.Chain;
+					}
+
+				case eCharacterClass.Scout:
+					if(level < 10) {
+						return eObjectType.Leather;
+                    } else { return eObjectType.Studded;}
+
+				case eCharacterClass.Cleric:
+					if (level < 10) {
+						return eObjectType.Leather;
+					} else if(level < 20) {
+						return eObjectType.Studded;
+                    }else {
+						return eObjectType.Chain;
+					}
+				default:
+					return eObjectType.Cloth;
+			}
+        }
+
+        private static eInventorySlot GenerateItemType(eObjectType type)
 		{
 			if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
 				return (eInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
