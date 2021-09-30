@@ -52,7 +52,7 @@ namespace DOL.GS
 		[CmdAttribute(
 			"&genuniques",
 			ePrivLevel.GM,
-			"/genuniques ([TOA] || [L51] || [objecttype]) [itemtype] : generate 8 unique items")]
+			"/genuniques ([TOA] || [L51] || [self] || [objecttype]) [itemtype] : generate 8 unique items")]
 		public class LootGeneratorUniqueObjectCommandHandler : DOL.GS.Commands.AbstractCommandHandler, DOL.GS.Commands.ICommandHandler
 		{
 			public void OnCommand(GameClient client, string[] args)
@@ -69,20 +69,24 @@ namespace DOL.GS
 						{
 							if (Convert.ToString(args[1]).ToUpper() == "TOA")
 							{
-								item = new GeneratedUniqueItem(true, client.Player.Realm, 51);
+								item = new GeneratedUniqueItem(true, client.Player.Realm, (eCharacterClass)client.Player.CharacterClass.ID, 51);
 								item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 60));
 							}
 							else if (Convert.ToString(args[1]).ToUpper() == "L51")
 							{
-								item = new GeneratedUniqueItem(client.Player.Realm, 51);
+								item = new GeneratedUniqueItem(client.Player.Realm,(eCharacterClass)client.Player.CharacterClass.ID, 51);
 								item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 50));
-							}
+							} 
+							else if (Convert.ToString(args[1]).ToUpper() == "SELF") {
+								item = new GeneratedUniqueItem(client.Player.Realm, (eCharacterClass)client.Player.CharacterClass.ID, client.Player.Level);
+								//item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 50));
+							} 
 							else
 							{
 								if (args.Length > 2)
-									item = new GeneratedUniqueItem(client.Player.Realm, client.Player.Level, (eObjectType)Convert.ToInt32(args[1]), (eInventorySlot)Convert.ToInt32(args[2]));
+									item = new GeneratedUniqueItem(client.Player.Realm, (eCharacterClass)client.Player.CharacterClass.ID, client.Player.Level, (eObjectType)Convert.ToInt32(args[1]), (eInventorySlot)Convert.ToInt32(args[2]));
 								else
-									item = new GeneratedUniqueItem(client.Player.Realm, client.Player.Level, (eObjectType)Convert.ToInt32(args[1]));
+									item = new GeneratedUniqueItem(client.Player.Realm, (eCharacterClass)client.Player.CharacterClass.ID, client.Player.Level, (eObjectType)Convert.ToInt32(args[1]));
 							}
 						}
 						
@@ -185,8 +189,10 @@ namespace DOL.GS
 				{
 					chance += NAMED_ROG_CHANCE;
 				}
-			
-				GeneratedUniqueItem item = new GeneratedUniqueItem(toachance, player.Realm, (byte)Math.Min(mob.Level+1, 51));
+
+				Console.WriteLine($"Generating loot for class ID: {player.CharacterClass.ID}");
+				GeneratedUniqueItem item = new GeneratedUniqueItem(toachance, player.Realm, (eCharacterClass)player.CharacterClass.ID, (byte)Math.Min(mob.Level+1, 51));
+				
 				item.AllowAdd = true;
 				item.GenerateItemQuality(killedCon);
 			
@@ -206,8 +212,8 @@ namespace DOL.GS
 		
 		public static bool IsMobInTOA(GameNPC mob)
 		{
-			if (mob.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
-					return true;
+			//if (mob.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
+				//	return true;
 
 			return false;
 		}	
