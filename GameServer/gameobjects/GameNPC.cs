@@ -5476,7 +5476,7 @@ namespace DOL.GS
 			if (IsIncapacitated)
 				return false;
 
-			if ( (m_runningSpellHandler != null && !spell.IsInstantCast) || TempProperties.getProperty<Spell>(LOSCURRENTSPELL, null) != null)
+			if ((m_runningSpellHandler != null && !spell.IsInstantCast) || TempProperties.getProperty<Spell>(LOSCURRENTSPELL, null) != null)
 				return false;
 
 			bool casted = false;

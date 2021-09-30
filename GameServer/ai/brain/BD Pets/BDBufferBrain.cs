@@ -130,7 +130,8 @@ namespace DOL.AI.Brain
 					Body.StopFollowing();
 				Body.TurnTo(Body.TargetObject);
 				Body.CastSpell(spell, m_mobSpellLine);
-				Body.TargetObject = lastTarget;
+				//if (lastTarget != null)
+				//	Body.TargetObject = lastTarget;
 				return true;
 			}
 			Body.TargetObject = lastTarget;

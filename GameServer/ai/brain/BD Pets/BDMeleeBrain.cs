@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
 				if (LivingHasEffect((GameLiving)Body.TargetObject, spell))
 					return false;
 				Body.CastSpell(spell, m_mobSpellLine);
-				Body.TargetObject = lastTarget;
+				//Body.TargetObject = lastTarget;
 				return true;
 			}
 			Body.TargetObject = lastTarget;
