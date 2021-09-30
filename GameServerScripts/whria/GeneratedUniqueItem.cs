@@ -111,7 +111,7 @@ namespace DOL.GS
 		}
 		
 		public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg)
-			:this(Util.Chance(ROG_TOA_ITEM_CHANCE), realm, charClass, level, type, slot, dmg)
+			:this(false, realm, charClass, level, type, slot, dmg)
 		{
 
 		}
