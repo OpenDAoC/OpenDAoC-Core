@@ -6,6 +6,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using System;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -43,6 +44,8 @@ namespace DOL.GS
         
         public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
+            if (!EntityManager.GetLivingByComponent(typeof(CastingComponent)).Contains(owner))
+                EntityManager.AddComponent(typeof(CastingComponent), owner);
             //Check for Conditions to Cast
             if (owner is GamePlayer p)
             {
