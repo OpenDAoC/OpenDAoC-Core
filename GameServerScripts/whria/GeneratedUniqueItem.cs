@@ -2201,8 +2201,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return HiberniaArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return HiberniaWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GenerateHiberniaClassWeapon(charClass);//HiberniaArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GenerateHiberniaClassArmor(charClass, level);//HiberniaWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2262,8 +2262,14 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.CrushingWeapon);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
-				case eCharacterClass.Infiltrator:
 				case eCharacterClass.Minstrel:
+					weaponTypes.Add(eObjectType.Instrument);
+					weaponTypes.Add(eObjectType.SlashingWeapon);
+					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Infiltrator:
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
 					weaponTypes.Add(eObjectType.CrushingWeapon);
@@ -2383,7 +2389,7 @@ namespace DOL.GS
         }
 
 		private static eObjectType GenerateMidgardClassWeapon(eCharacterClass charClass) {
-			Console.WriteLine($"Albion specific weapon generating for class {charClass}");
+			Console.WriteLine($"Midgard specific weapon generating for class {charClass}");
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
 			 * Midgard Weapons
@@ -2393,7 +2399,7 @@ namespace DOL.GS
 			eObjectType.Shield,
 			eObjectType.Staff,
 			eObjectType.Spear,
-			eObjectType.CompositeBow ,
+			eObjectType.CompositeBow,
 			eObjectType.LeftAxe,
 			eObjectType.HandToHand,
 			eObjectType.FistWraps,//Maulers
@@ -2414,7 +2420,7 @@ namespace DOL.GS
 					break;
 				case eCharacterClass.Hunter:
 					weaponTypes.Add(eObjectType.Spear);
-					weaponTypes.Add(eObjectType.Longbow);
+					weaponTypes.Add(eObjectType.CompositeBow);
 					weaponTypes.Add(eObjectType.Sword);
 					break;
 				case eCharacterClass.Savage:
@@ -2472,7 +2478,7 @@ namespace DOL.GS
 		}
 
 		private static eObjectType GenerateMidgardClassArmor(eCharacterClass charClass, byte level) {
-			Console.WriteLine($"Albion specific armor generating for class {charClass}");
+			Console.WriteLine($"Midgard specific armor generating for class {charClass}");
 
 			switch (charClass) {
 				//staff classes
@@ -2521,6 +2527,172 @@ namespace DOL.GS
                     } else { 
 						return eObjectType.Chain; 
 					}
+
+				default:
+					return eObjectType.Cloth;
+			}
+		}
+
+		private static eObjectType GenerateHiberniaClassWeapon(eCharacterClass charClass) {
+			Console.WriteLine($"Hibernia specific weapon generating for class {charClass}");
+			List<eObjectType> weaponTypes = new List<eObjectType>();
+			/*
+			 * Hibernia Weapons
+			eObjectType.Blades,
+			eObjectType.Blunt,
+			eObjectType.Piercing,
+			eObjectType.Shield,
+			eObjectType.Staff,
+			eObjectType.LargeWeapons,
+			eObjectType.CelticSpear,
+			eObjectType.Scythe,
+			eObjectType.RecurvedBow,
+			eObjectType.Instrument,
+			eObjectType.FistWraps,//Maulers
+			eObjectType.MaulerStaff,//Maulers
+			*/
+			switch (charClass) {
+				//staff classes
+				case eCharacterClass.Eldritch:
+				case eCharacterClass.Enchanter:
+				case eCharacterClass.Mentalist:
+				case eCharacterClass.Animist:
+					weaponTypes.Add(eObjectType.Staff);
+					break;
+				case eCharacterClass.Valewalker:
+					weaponTypes.Add(eObjectType.Scythe);
+					break;
+				case eCharacterClass.Nightshade:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Piercing);
+					break;
+				case eCharacterClass.Ranger:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Piercing);
+					weaponTypes.Add(eObjectType.RecurvedBow);
+					break;
+				case eCharacterClass.Champion:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Piercing);
+					weaponTypes.Add(eObjectType.Blunt);
+					weaponTypes.Add(eObjectType.LargeWeapons);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Hero:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Piercing);
+					weaponTypes.Add(eObjectType.Blunt);
+					weaponTypes.Add(eObjectType.LargeWeapons);
+					weaponTypes.Add(eObjectType.CelticSpear);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Blademaster:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Piercing);
+					weaponTypes.Add(eObjectType.Blunt);
+					weaponTypes.Add(eObjectType.Fired);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Warden:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Blunt);
+					weaponTypes.Add(eObjectType.Shield);
+					weaponTypes.Add(eObjectType.Fired);
+					break;
+				case eCharacterClass.Druid:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Blunt);
+					weaponTypes.Add(eObjectType.Shield);
+					break;
+				case eCharacterClass.Bard:
+					weaponTypes.Add(eObjectType.Blades);
+					weaponTypes.Add(eObjectType.Blunt);
+					weaponTypes.Add(eObjectType.Shield);
+					weaponTypes.Add(eObjectType.Instrument);
+					break;
+				default:
+					return eObjectType.Staff;
+			}
+
+			//this list nonsense is kind of weird but we need to duplicate the 
+			//items in the list to avoid apparent mid-number bias for random number gen
+
+			//clone existing list
+			List<eObjectType> outputList = new List<eObjectType>(weaponTypes);
+
+			//add duplicate values
+			foreach (eObjectType type in weaponTypes) {
+				outputList.Add(type);
+			}
+
+			//get our random value from the list
+			int randomGrab = Util.Random(0, outputList.Count - 1);
+
+			Console.WriteLine($"Grabbing index {randomGrab} and got item {outputList[randomGrab]}");
+			//return a random type from our list of valid weapons
+			return outputList[randomGrab];
+
+		}
+
+		private static eObjectType GenerateHiberniaClassArmor(eCharacterClass charClass, byte level) {
+			Console.WriteLine($"Hibernia specific armor generating for class {charClass}");
+
+			/* Hib Armor
+			eObjectType.Cloth,
+			eObjectType.Leather,
+			eObjectType.Reinforced,
+			eObjectType.Scale,
+			 */
+			switch (charClass) {
+				//staff classes
+				case eCharacterClass.Valewalker:
+				case eCharacterClass.Animist:
+				case eCharacterClass.Mentalist:
+				case eCharacterClass.Enchanter:
+				case eCharacterClass.Eldritch:
+					return eObjectType.Cloth;
+
+				case eCharacterClass.Nightshade:
+					return eObjectType.Leather;
+
+				case eCharacterClass.Blademaster:
+					return eObjectType.Reinforced;
+
+				case eCharacterClass.Ranger:
+					if (level < 10) {
+						return eObjectType.Leather;
+					} else {
+						return eObjectType.Reinforced;
+					}
+
+				case eCharacterClass.Champion:
+					if (level < 20) {
+						return eObjectType.Reinforced;
+					} else { return eObjectType.Scale; }
+
+				case eCharacterClass.Hero:
+					if (level < 15) {
+						return eObjectType.Reinforced;
+					} else { return eObjectType.Scale; }
+
+				case eCharacterClass.Warden:
+					if(level < 10) {
+						return eObjectType.Leather;
+                    } else if (level < 20) {
+						return eObjectType.Reinforced;
+                    } else { return eObjectType.Scale;}
+
+				case eCharacterClass.Druid:
+					if(level < 10) {
+						return eObjectType.Leather;
+                    }else if(level < 20) {
+						return eObjectType.Reinforced;
+                    } else { return eObjectType.Scale; }
+
+				case eCharacterClass.Bard:
+					if (level < 15) {
+						return eObjectType.Leather;
+					} else { return eObjectType.Reinforced;}
 
 				default:
 					return eObjectType.Cloth;
