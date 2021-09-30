@@ -1705,6 +1705,10 @@ namespace DOL.GS.Spells
 				}
 				
 			}
+			else
+            {
+				Caster.castingComponent.spellHandler = null;
+            }
 			Caster.CurrentSpellHandler = null;
 		}
 

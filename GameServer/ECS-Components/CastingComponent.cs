@@ -41,14 +41,14 @@ namespace DOL.GS
         }
         
         
-        public void StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
+        public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
             //Check for Conditions to Cast
             if (owner is GamePlayer p)
             {
                 if (!CanCastSpell(p))
                 {
-                    return; 
+                    return false; 
                 }
             }
 
@@ -89,10 +89,12 @@ namespace DOL.GS
 
             // Cancel MoveSpeedBuff=========================May not be the best place for this========================================
             owner.OnAttack();
+            return true;
         }
 
-        private bool CanCastSpell(GamePlayer p)
+        private bool CanCastSpell(GameLiving living)
         {
+            var p = living as GamePlayer;
             /*
             if (spellHandler != null)
             {
@@ -100,30 +102,32 @@ namespace DOL.GS
                 return false;
             }*/
 
-            if (p.IsCrafting)
+            if (p != null && p.IsCrafting)
             {
                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 p.CraftTimer = null;
                 p.Out.SendCloseTimerWindow();
             }
-            
-            if (p.IsStunned)
-            {
-                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.CastSpell.CantCastStunned"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-            if (p.IsMezzed)
-            {
-                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.CastSpell.CantCastMezzed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return false;
-            }
 
-            if (p.IsSilenced)
+            if (living != null)
             {
-                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.CastSpell.CantCastFumblingWords"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                return false;
+                if (living.IsStunned)
+                {
+                    p?.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.CastSpell.CantCastStunned"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+                if (living.IsMezzed)
+                {
+                    p?.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.CastSpell.CantCastMezzed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (living.IsSilenced)
+                {
+                    p?.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.CastSpell.CantCastFumblingWords"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
             }
-            
             return true;
         }
 

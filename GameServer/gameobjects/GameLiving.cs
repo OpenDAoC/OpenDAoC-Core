@@ -6865,23 +6865,26 @@ namespace DOL.GS
 				return false;
 			}
 
-			ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
-			if (spellhandler != null)
-			{
-				if (spell.CastTime > 0)
-				{
-					m_runningSpellHandler = spellhandler;
-					spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-				}
-				return spellhandler.CastSpell();
-			}
-			else
-			{
-				if (log.IsWarnEnabled)
-					log.Warn(Name + " wants to cast but spell " + spell.Name + " not implemented yet");
-			}
+			//ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
+			bool cast = castingComponent.StartCastSpell(spell, line);
+			
+			//if (spellhandler != null)
+			//{
+			//	if (spell.CastTime > 0)
+			//	{
+			//		m_runningSpellHandler = spellhandler;
+			//		spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+			//	}
+			//	return spellhandler.CastSpell();
+			//}
+			//else
+			//{
+			//	if (log.IsWarnEnabled)
+			//		log.Warn(Name + " wants to cast but spell " + spell.Name + " not implemented yet");
+			//}
 
-			return false;
+			//return false;
+			return cast;
 		}
 
 		public virtual bool CastSpell(ISpellCastingAbilityHandler ab)

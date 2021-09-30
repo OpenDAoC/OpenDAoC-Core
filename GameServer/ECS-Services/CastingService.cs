@@ -15,7 +15,7 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var p in EntityManager.GetAllPlayers())
+            foreach (var p in EntityManager.GetLivingByComponent(typeof(CastingComponent)))//.GetAllPlayers())
             {
                 if (p == null)
                     continue;
