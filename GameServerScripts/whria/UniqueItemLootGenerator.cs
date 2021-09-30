@@ -212,8 +212,8 @@ namespace DOL.GS
 		
 		public static bool IsMobInTOA(GameNPC mob)
 		{
-			if (mob.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
-					return true;
+			//if (mob.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
+				//	return true;
 
 			return false;
 		}	
