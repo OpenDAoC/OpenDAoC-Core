@@ -592,7 +592,8 @@ namespace DOL.GS
 
                                         ((IOldAggressiveBrain)npc.Brain).ClearAggroList();
 
-                                        if (e.SpellHandler.Spell.Pulse != 0 && e.SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active && e.SpellHandler.Caster.IsAlive)
+                                        if (e.SpellHandler.Spell.Pulse != 0 && e.SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active && e.SpellHandler.Caster.IsAlive
+                                        && !e.SpellHandler.Caster.IsStealthed)
                                         {
                                             ((IOldAggressiveBrain)npc.Brain).AddToAggroList(e.SpellHandler.Caster, e.SpellHandler.Caster.Level * 10);
                                             npc.StartAttack(e.SpellHandler.Caster);
