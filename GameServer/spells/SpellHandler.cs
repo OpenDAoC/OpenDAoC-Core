@@ -1622,6 +1622,11 @@ namespace DOL.GS.Spells
                     else
                     {
 						m_spellTarget = Caster?.TargetObject as GameLiving;
+						
+						if (m_spellTarget is null && Caster is NecromancerPet nPet)
+                        {
+							m_spellTarget = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
+                        }
                     }
 
                     if (CheckBeginCast(m_spellTarget))
@@ -1705,7 +1710,15 @@ namespace DOL.GS.Spells
 				}
 				
 			}
-			else
+            else if (Caster is NecromancerPet nPet)
+            {
+                if (nPet.Brain is NecromancerPetBrain necroBrain)
+                {
+					necroBrain.RemoveSpellFromQueue();
+					Caster.castingComponent.spellHandler = null;
+                }
+            }
+            else
             {
 				Caster.castingComponent.spellHandler = null;
             }

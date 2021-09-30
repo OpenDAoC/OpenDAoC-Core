@@ -382,12 +382,11 @@ namespace DOL.GS
 				ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
 			{
 				if (Brain is NecromancerPetBrain necroBrain)
-				{
-					StopCurrentSpellcast();
+				{					
                     if (Brain.Body.IsCasting)
 					    necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
-
-					if(necroBrain.SpellsQueued)
+					StopCurrentSpellcast();
+					if (necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
 				}
 			}
@@ -402,13 +401,11 @@ namespace DOL.GS
 		{
 			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/)
 			{
-				StopCurrentSpellcast();
-
 				if (Brain is NecromancerPetBrain necroBrain)
 				{
                     if (Brain.Body.IsCasting)
 					    necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
-
+					StopCurrentSpellcast();
 					if (necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
 				}
@@ -452,27 +449,28 @@ namespace DOL.GS
 				return false;
 			}
 
-			ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
-			if (spellhandler != null)
+			bool cast = castingComponent.StartCastSpell(spell, line);
+			//ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
+			if (castingComponent.spellHandler != null)
 			{
-				int power = spellhandler.PowerCost(Owner);
+				int power = castingComponent.spellHandler.PowerCost(Owner);
 
 				if (Owner.Mana < power)
 				{
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.NotEnoughPower));
 					return false;
 				}
-
-				m_runningSpellHandler = spellhandler;
-				spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-				return spellhandler.CastSpell();
 			}
-			else
-			{
-				if (log.IsWarnEnabled)
-					log.Warn(Name + " wants to cast but spell " + spell.Name + " not implemented yet");
-				return false;
-			}
+            	m_runningSpellHandler = castingComponent.spellHandler;
+            	castingComponent.spellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+            //	return spellhandler.CastSpell();
+            //}
+            //else
+            //{
+            //	if (log.IsWarnEnabled)
+            //		log.Warn(Name + " wants to cast but spell " + spell.Name + " not implemented yet");
+            return cast;
+			//}
 		}
 
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)

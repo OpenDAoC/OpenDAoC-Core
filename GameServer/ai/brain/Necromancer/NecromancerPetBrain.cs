@@ -348,6 +348,13 @@ namespace DOL.AI.Brain
 					RemoveSpellFromQueue();
 		}
 
+        public GameLiving GetSpellTarget()
+        {
+            SpellQueueEntry entry = GetSpellFromQueue();
+            if (entry != null)
+                return entry.Target;
+            else return null;
+        }
 
         /// <summary>
         /// See if there are any spells queued up and if so, get the first one
@@ -384,10 +391,10 @@ namespace DOL.AI.Brain
 
 				Body.CastSpell(spell, line);
 
-				if (previousTarget != null)
-					Body.TargetObject = previousTarget;
+                if (previousTarget != null)
+                    Body.TargetObject = previousTarget;
 
-				return true;
+                return true;
 			}
 			else
 			{
@@ -515,7 +522,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Removes the spell that is first in the queue.
         /// </summary>
-        private void RemoveSpellFromQueue()
+        public void RemoveSpellFromQueue()
 		{
 			lock (m_spellQueue)
 			{
