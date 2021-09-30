@@ -2233,12 +2233,16 @@ namespace DOL.GS
 			switch (charClass) {
 				//staff classes
 				case eCharacterClass.Cabalist:
-				case eCharacterClass.Friar:
 				case eCharacterClass.Necromancer:
 				case eCharacterClass.Sorcerer:
 				case eCharacterClass.Theurgist:
 				case eCharacterClass.Wizard:
 					weaponTypes.Add(eObjectType.Staff);
+					break;
+				case eCharacterClass.Friar:
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Armsman:
 					weaponTypes.Add(eObjectType.PolearmWeapon);
@@ -2260,25 +2264,23 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
 					weaponTypes.Add(eObjectType.CrushingWeapon);
+					weaponTypes.Add(eObjectType.Staff);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Minstrel:
 					weaponTypes.Add(eObjectType.Instrument);
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
-					weaponTypes.Add(eObjectType.CrushingWeapon);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Infiltrator:
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
-					weaponTypes.Add(eObjectType.CrushingWeapon);
-					//should we include crush? should we weight towards thrust?
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Scout:
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
-					weaponTypes.Add(eObjectType.CrushingWeapon);
 					weaponTypes.Add(eObjectType.Longbow);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
@@ -2422,6 +2424,7 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.Spear);
 					weaponTypes.Add(eObjectType.CompositeBow);
 					weaponTypes.Add(eObjectType.Sword);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				case eCharacterClass.Savage:
 					weaponTypes.Add(eObjectType.HandToHand);
@@ -2433,12 +2436,15 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.Sword);
 					weaponTypes.Add(eObjectType.Axe);
 					weaponTypes.Add(eObjectType.LeftAxe);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				case eCharacterClass.Berserker:
 					weaponTypes.Add(eObjectType.LeftAxe);
 					weaponTypes.Add(eObjectType.Sword);
 					weaponTypes.Add(eObjectType.Axe);
 					weaponTypes.Add(eObjectType.Hammer);
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Thane:
 				case eCharacterClass.Warrior:
@@ -2446,12 +2452,15 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.Axe);
 					weaponTypes.Add(eObjectType.Hammer);
 					weaponTypes.Add(eObjectType.Shield);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				case eCharacterClass.Skald:
 					//hi Catkain <3
 					weaponTypes.Add(eObjectType.Sword);
 					weaponTypes.Add(eObjectType.Axe);
 					weaponTypes.Add(eObjectType.Hammer);
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				default:
 					return eObjectType.Staff;
@@ -2561,21 +2570,27 @@ namespace DOL.GS
 					break;
 				case eCharacterClass.Valewalker:
 					weaponTypes.Add(eObjectType.Scythe);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				case eCharacterClass.Nightshade:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Piercing);
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Ranger:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Piercing);
 					weaponTypes.Add(eObjectType.RecurvedBow);
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Champion:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Piercing);
 					weaponTypes.Add(eObjectType.Blunt);
 					weaponTypes.Add(eObjectType.LargeWeapons);
+					weaponTypes.Add(eObjectType.Staff);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Hero:
@@ -2584,31 +2599,37 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.Blunt);
 					weaponTypes.Add(eObjectType.LargeWeapons);
 					weaponTypes.Add(eObjectType.CelticSpear);
+					weaponTypes.Add(eObjectType.Staff);
 					weaponTypes.Add(eObjectType.Shield);
+					weaponTypes.Add(eObjectType.Fired); //shortbow
 					break;
 				case eCharacterClass.Blademaster:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Piercing);
 					weaponTypes.Add(eObjectType.Blunt);
-					weaponTypes.Add(eObjectType.Fired);
+					weaponTypes.Add(eObjectType.Fired); //shortbow
 					weaponTypes.Add(eObjectType.Shield);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				case eCharacterClass.Warden:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Blunt);
 					weaponTypes.Add(eObjectType.Shield);
-					weaponTypes.Add(eObjectType.Fired);
+					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Fired); //shortbow
 					break;
 				case eCharacterClass.Druid:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Blunt);
 					weaponTypes.Add(eObjectType.Shield);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				case eCharacterClass.Bard:
 					weaponTypes.Add(eObjectType.Blades);
 					weaponTypes.Add(eObjectType.Blunt);
 					weaponTypes.Add(eObjectType.Shield);
 					weaponTypes.Add(eObjectType.Instrument);
+					weaponTypes.Add(eObjectType.Staff);
 					break;
 				default:
 					return eObjectType.Staff;
