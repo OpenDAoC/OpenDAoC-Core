@@ -3805,29 +3805,32 @@ namespace DOL.GS
 						switch (this.DPS_AF)
 						{
 							case 0:
+							case 1:
+							case 2:
+							case 3: 
 								{
 									name = "Harp";
 									model = 3688;
 									break;
 								}
-							case 1:
+							/*
 								{
 									name = "Drum";
 									model = 228;
 									break;
 								}
-							case 2:
+							
 								{
 									name = "Lute";
 									model = 227;
 									break;
 								}
-							case 3:
+							
 								{
 									name = "Flute";
 									model = 325;
 									break;
-								}
+								}*/
 						}
 						break;
 					}
