@@ -5177,7 +5177,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The default frequency of regenerating health in milliseconds
 		/// </summary>
-		protected const ushort m_healthRegenerationPeriod = 3000;
+		protected const ushort m_healthRegenerationPeriod = 6000;
 
 		/// <summary>
 		/// Interval for health regeneration tics
@@ -5190,7 +5190,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The default frequency of regenerating power in milliseconds
 		/// </summary>
-		protected const ushort m_powerRegenerationPeriod = 3000;
+		protected const ushort m_powerRegenerationPeriod = 6000;
 
 		/// <summary>
 		/// Interval for power regeneration tics
@@ -5436,9 +5436,13 @@ namespace DOL.GS
 			//If we were hit before we regenerated, we regenerate slower the next time
 			if (InCombat)
 			{
-				return (int)(PowerRegenerationPeriod * 3.4);
+				return (int)(PowerRegenerationPeriod * 2);//3.4);
 			}
 
+			if (IsSitting)
+            {
+				return (int)(PowerRegenerationPeriod / 2);
+            }
 			
 			#region Calculation : AtlasOF_Serenity
 			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------

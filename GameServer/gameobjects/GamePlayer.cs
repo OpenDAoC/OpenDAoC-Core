@@ -2417,6 +2417,11 @@ namespace DOL.GS
 				return HealthRegenerationPeriod * 2;
 			}
 
+			if (IsSitting)
+            {
+				return HealthRegenerationPeriod / 2;
+            }
+
 			//Heal at standard rate
 			return HealthRegenerationPeriod;
 		}
@@ -2478,7 +2483,7 @@ namespace DOL.GS
 
 				if (regen != 0)
 				{
-					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
+					Console.WriteLine("Endurance Regen: " + ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen));
 				}
 			}
 			if (!sprinting)
