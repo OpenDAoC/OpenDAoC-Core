@@ -2159,8 +2159,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return GenerateAlbionClassArmor(charClass, level);//AlbionArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return GenerateAlbionClassWeapon(charClass);//AlbionWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GetAlbionArmorType(charClass, level);//AlbionArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GetAlbionWeapon(charClass);//AlbionWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2180,8 +2180,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return GenerateMidgardClassWeapon(charClass);//MidgardArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return GenerateMidgardClassArmor(charClass, level);//MidgardWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GetMidgardWeapon(charClass);//MidgardArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GetMidgardArmorType(charClass, level);//MidgardWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2201,8 +2201,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return GenerateHiberniaClassWeapon(charClass);//HiberniaArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return GenerateHiberniaClassArmor(charClass, level);//HiberniaWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GetHiberniaWeapon(charClass);//HiberniaArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GetHiberniaArmorType(charClass, level);//HiberniaWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2211,7 +2211,7 @@ namespace DOL.GS
 			return eObjectType.GenericItem;
 		}
 
-        private static eObjectType GenerateAlbionClassWeapon(eCharacterClass charClass) {
+        public static eObjectType GetAlbionWeapon(eCharacterClass charClass) {
 			Console.WriteLine($"Albion specific weapon generating for class {charClass}");
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
@@ -2320,7 +2320,7 @@ namespace DOL.GS
 
 		}
 
-        private static eObjectType GenerateAlbionClassArmor(eCharacterClass charClass, byte level) {
+        public static eObjectType GetAlbionArmorType(eCharacterClass charClass, byte level) {
 			Console.WriteLine($"Albion specific armor generating for class {charClass}");
 
 			switch (charClass) {
@@ -2390,7 +2390,7 @@ namespace DOL.GS
 			}
         }
 
-		private static eObjectType GenerateMidgardClassWeapon(eCharacterClass charClass) {
+		public static eObjectType GetMidgardWeapon(eCharacterClass charClass) {
 			Console.WriteLine($"Midgard specific weapon generating for class {charClass}");
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
@@ -2486,7 +2486,7 @@ namespace DOL.GS
 
 		}
 
-		private static eObjectType GenerateMidgardClassArmor(eCharacterClass charClass, byte level) {
+		public static eObjectType GetMidgardArmorType(eCharacterClass charClass, byte level) {
 			Console.WriteLine($"Midgard specific armor generating for class {charClass}");
 
 			switch (charClass) {
@@ -2542,7 +2542,7 @@ namespace DOL.GS
 			}
 		}
 
-		private static eObjectType GenerateHiberniaClassWeapon(eCharacterClass charClass) {
+		public static eObjectType GetHiberniaWeapon(eCharacterClass charClass) {
 			Console.WriteLine($"Hibernia specific weapon generating for class {charClass}");
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
@@ -2655,7 +2655,7 @@ namespace DOL.GS
 
 		}
 
-		private static eObjectType GenerateHiberniaClassArmor(eCharacterClass charClass, byte level) {
+		public static eObjectType GetHiberniaArmorType(eCharacterClass charClass, byte level) {
 			Console.WriteLine($"Hibernia specific armor generating for class {charClass}");
 
 			/* Hib Armor
@@ -2720,7 +2720,7 @@ namespace DOL.GS
 			}
 		}
 
-		private static eInventorySlot GenerateItemType(eObjectType type)
+		public static eInventorySlot GenerateItemType(eObjectType type)
 		{
 			if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
 				return (eInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
