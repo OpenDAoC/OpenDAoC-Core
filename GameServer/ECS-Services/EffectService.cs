@@ -461,23 +461,7 @@ namespace DOL.GS
                             if (e.Owner.Health > cost)
                                 e.Owner.ChangeHealth(e.Owner, eHealthChangeType.Spell, -cost);
                         }
-                    }
-                    else if (e.SpellHandler.Spell.PulsePower > 0)
-                    {
-                        if (e.SpellHandler.Caster.Mana >= e.SpellHandler.Spell.PulsePower)
-                        {
-                            e.SpellHandler.Caster.Mana -= e.SpellHandler.Spell.PulsePower;
-                            //if (Spell.InstrumentRequirement != 0 || !HasPositiveEffect)
-                            //{
-                            //    SendEffectAnimation(Caster, 0, true, 1); // pulsing auras or songs
-                            //}
-                        }
-                        else
-                        {
-                            ((SpellHandler)e.SpellHandler).MessageToCaster("You do not have enough mana and your spell was cancelled.", eChatType.CT_SpellExpires);
-                            RequestCancelConcEffect(e);
-                        }
-                    }
+                    }                    
                 }
                 //else
                 //{

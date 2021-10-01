@@ -4,6 +4,7 @@ using System;
 using System.Numerics;
 using ECS.Debug;
 using System.Linq;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -47,21 +48,40 @@ namespace DOL.GS
                         {
                             if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                             {
-                                if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
-                                {
-                                    ((SpellHandler)effect.SpellHandler).SendCastAnimation();
+                                
 
-                                }
-                                else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
+                                if (effect.SpellHandler.Spell.PulsePower > 0)
                                 {
-                                    ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
+                                    if (effect.SpellHandler.Caster.Mana >= effect.SpellHandler.Spell.PulsePower)
+                                    {
+                                        effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;
+                                        //if (Spell.InstrumentRequirement != 0 || !HasPositiveEffect)
+                                        //{
+                                        //    SendEffectAnimation(Caster, 0, true, 1); // pulsing auras or songs
+                                        //}
+
+                                        if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
+                                        {
+                                            ((SpellHandler)effect.SpellHandler).SendCastAnimation();
+
+                                        }
+                                        else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
+                                        {
+                                            ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
+                                        }
+                                        else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                                        {
+                                            ((SpeedDecreaseSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
+                                        }
+                                        effect.SpellHandler.StartSpell(null);
+                                        effect.ExpireTick += effect.PulseFreq;
+                                    }
+                                    else
+                                    {
+                                        ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough mana and your spell was cancelled.", eChatType.CT_SpellExpires);
+                                        EffectService.RequestCancelConcEffect(effect);
+                                    }
                                 }
-                                else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                                {
-                                    ((SpeedDecreaseSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
-                                }
-                                effect.SpellHandler.StartSpell(null);
-                                effect.ExpireTick += effect.PulseFreq;
                             }
                             else
                             {
