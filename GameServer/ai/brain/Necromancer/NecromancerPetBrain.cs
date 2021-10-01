@@ -538,7 +538,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Removes the spell that is first in the queue.
         /// </summary>
-        private void RemoveSpellFromAttackQueue()
+        public void RemoveSpellFromAttackQueue()
         {
             lock (m_attackSpellQueue)
             {
