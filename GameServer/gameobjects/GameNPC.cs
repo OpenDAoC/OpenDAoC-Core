@@ -1757,7 +1757,7 @@ namespace DOL.GS
 			
 			if (Brain is ControlledNpcBrain)
 			{
-				if (InCombat || Brain is BomberBrain)
+				if (InCombat || Brain is BomberBrain || TargetObject != null)
 					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
 				else if (!IsWithinRadius(new Point2D(newX, newY), MaxSpeed))// MaxSpeed < GetDistance(new Point2D(newX, newY)))
 					WalkTo(newX, newY, (ushort)newZ, (short)Math.Min(MaxSpeed, followLiving.CurrentSpeed + 50));
