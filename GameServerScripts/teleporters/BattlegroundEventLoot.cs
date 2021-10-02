@@ -34,8 +34,9 @@ namespace DOL.GS.Scripts
 				realmName = "Hibernia";
             }
 			TurnTo(player.X, player.Y);
-			player.Out.SendMessage("Hello " + player.Name + "! We're happy to see you here, supporting your realm.\n\n" +
-				"For your efforts, " + realmName + " has procured a [full suit] of equipment. \n\n" +
+			player.Out.SendMessage("Hello " + player.Name + "! We're happy to see you here, supporting your realm.\n" +
+				"For your efforts, " + realmName + " has procured a [full suit] of equipment. \n" +
+				"Additionally, I can provide you with some [weapons]. \n\n" +
 				"Go forth, and do battle!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			return true;
 		}
@@ -51,13 +52,13 @@ namespace DOL.GS.Scripts
 
 			switch (realm) {
 				case eRealm.Hibernia:
-					color = eColor.Green_4;
+					color = eColor.Green_3;
 					break;
 				case eRealm.Albion:
-					color = eColor.Red_4;
+					color = eColor.Red_3;
 					break;
 				case eRealm.Midgard:
-					color = eColor.Blue_4;
+					color = eColor.Blue_3;
 					break;
 			}
 			if (str.Equals("full suit")) {
@@ -80,28 +81,12 @@ namespace DOL.GS.Scripts
 					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 			} 
-			else if (str.Equals("weapon")) {
-				List<eInventorySlot> weapons = GetWeaponsByClass(charclass);
-				int randMin = 0;
-				int randMax = 0;
-                switch (realm) {
-					case eRealm.Hibernia:
-						randMin = 18;
-						randMax = 26;
-						break;
-					case eRealm.Albion:
-						randMin = 2;
-						randMax = 10;
-						break;
-					case eRealm.Midgard:
-						randMin = 11;
-						randMax = 17;
-						break;
-                }
-
-				foreach (eInventorySlot islot in weapons) {
+			else if (str.Equals("weapons")) {
+				List<eObjectType> weapons = GetWeaponsByClass(charclass);
+				
+				foreach (eObjectType wepType in weapons) {
 					GeneratedUniqueItem item = null;
-					item = new GeneratedUniqueItem(realm, charclass, player.Level, (eObjectType)Util.Random(randMin, randMax), islot);
+					item = new GeneratedUniqueItem(realm, charclass, player.Level, wepType);
 					item.AllowAdd = true;
 					item.Color = (int)color;
 					GameServer.Database.AddObject(item);
@@ -109,17 +94,33 @@ namespace DOL.GS.Scripts
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
-
-				if(charclass == eCharacterClass.Reaver) {
+				
+				//guarantee an offhand weapon
+				if(charclass == eCharacterClass.Infiltrator || 
+					charclass == eCharacterClass.Nightshade ||
+					charclass == eCharacterClass.Ranger || 
+					charclass == eCharacterClass.Blademaster ||
+					charclass == eCharacterClass.Mercenary ||
+					charclass == eCharacterClass.Shadowblade ||
+					charclass == eCharacterClass.Berserker) {
 					GeneratedUniqueItem item = null;
-					item = new GeneratedUniqueItem(realm, charclass, player.Level, eObjectType.Flexible, eInventorySlot.RightHandWeapon);
+					eObjectType wepType = eObjectType.GenericWeapon;
+					if(realm == eRealm.Hibernia) {
+						wepType = (eObjectType) Util.Random(19, 20);
+                    } else if (realm == eRealm.Albion) {
+						wepType = (eObjectType)Util.Random(3, 4);
+                    } else {
+						wepType = eObjectType.LeftAxe;
+                    }
+					item = new GeneratedUniqueItem(realm, charclass, player.Level, wepType, eInventorySlot.LeftHandWeapon);
 					item.AllowAdd = true;
+					item.Color = (int)color;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
-
+				/*
 				if (charclass == eCharacterClass.Savage) {
 					GeneratedUniqueItem item = null;
 					item = new GeneratedUniqueItem(realm, charclass, player.Level, eObjectType.HandToHand, eInventorySlot.RightHandWeapon);
@@ -128,7 +129,8 @@ namespace DOL.GS.Scripts
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				}
+				}*/
+				
 			}
 			
 			//GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot);
@@ -160,8 +162,8 @@ namespace DOL.GS.Scripts
             log.Info("\t BG Loot NPC initialized: true");
         }
 		
-		private List<eInventorySlot> GetWeaponsByClass(eCharacterClass charClass) {
-			List<eInventorySlot> weapons = new List<eInventorySlot>();
+		private List<eObjectType> GetWeaponsByClass(eCharacterClass charClass) {
+			List<eObjectType> weapons = new List<eObjectType>();
 
             switch (charClass) {
 				case eCharacterClass.Friar:
@@ -171,20 +173,161 @@ namespace DOL.GS.Scripts
 				case eCharacterClass.Wizard:
 				case eCharacterClass.Necromancer:
 				case eCharacterClass.Animist:
-				case eCharacterClass.Valewalker:
 				case eCharacterClass.Eldritch:
 				case eCharacterClass.Enchanter:
 				case eCharacterClass.Mentalist:
 				case eCharacterClass.Runemaster:
 				case eCharacterClass.Spiritmaster:
 				case eCharacterClass.Bonedancer:
-					weapons.Add(eInventorySlot.TwoHandWeapon);
+					weapons.Add(eObjectType.Staff);
 					break;
 
+				case eCharacterClass.Valewalker:
+					weapons.Add(eObjectType.Scythe);
+					break;
+
+				case eCharacterClass.Reaver:
+					weapons.Add(eObjectType.Flexible);
+					weapons.Add(eObjectType.Shield);
+					break;
+
+				case eCharacterClass.Savage:
+					weapons.Add(eObjectType.HandToHand);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					break;
+
+				case eCharacterClass.Berserker:
+					weapons.Add(eObjectType.Hammer);
+					goto case eCharacterClass.Shadowblade;
+
+				case eCharacterClass.Shadowblade:
+					weapons.Add(eObjectType.Axe);
+					weapons.Add(eObjectType.Sword);
+					weapons.Add(eObjectType.LeftAxe);
+					break;
+
+				case eCharacterClass.Warrior:
+				case eCharacterClass.Thane:
+					weapons.Add(eObjectType.Shield);
+					goto case eCharacterClass.Skald;
+
+				case eCharacterClass.Skald:
+					weapons.Add(eObjectType.Axe);
+					weapons.Add(eObjectType.Sword);
+					weapons.Add(eObjectType.Hammer);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					break;
+
+				case eCharacterClass.Hunter:
+					weapons.Add(eObjectType.Axe);
+					weapons.Add(eObjectType.Sword);
+					weapons.Add(eObjectType.Hammer);
+					weapons.Add(eObjectType.Spear);
+					weapons.Add(eObjectType.CompositeBow);
+					break;
+
+				case eCharacterClass.Healer:
+				case eCharacterClass.Shaman:
+					weapons.Add(eObjectType.Hammer);
+					weapons.Add(eObjectType.Shield);
+					weapons.Add(eObjectType.Staff);
+					break;
+
+				case eCharacterClass.Bard:
+					weapons.Add(eObjectType.Instrument);
+					weapons.Add(eObjectType.Blunt);
+					weapons.Add(eObjectType.Blades);
+					weapons.Add(eObjectType.Shield);
+					break;
+
+				case eCharacterClass.Warden:
+					weapons.Add(eObjectType.Fired);
+					weapons.Add(eObjectType.Shield);
+					weapons.Add(eObjectType.Blunt);
+					weapons.Add(eObjectType.Blades);
+					break;
+
+				case eCharacterClass.Druid:
+					weapons.Add(eObjectType.Shield);
+					weapons.Add(eObjectType.Staff);
+					weapons.Add(eObjectType.Blades);
+					weapons.Add(eObjectType.Blunt);
+					break;
+
+				case eCharacterClass.Blademaster:
+					weapons.Add(eObjectType.Blades);
+					weapons.Add(eObjectType.Blunt);
+					weapons.Add(eObjectType.Piercing);
+					weapons.Add(eObjectType.Fired);
+					break;
+
+				case eCharacterClass.Hero:
+					weapons.Add(eObjectType.Shield);
+					weapons.Add(eObjectType.Blunt);
+					weapons.Add(eObjectType.Blades);
+					weapons.Add(eObjectType.Piercing);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					weapons.Add(eObjectType.CelticSpear);
+					break;
+
+				case eCharacterClass.Champion:
+					weapons.Add(eObjectType.Shield);
+					weapons.Add(eObjectType.Blunt);
+					weapons.Add(eObjectType.Blades);
+					weapons.Add(eObjectType.Piercing);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					break;
+
+				case eCharacterClass.Ranger:
+					weapons.Add(eObjectType.RecurvedBow);
+					goto case eCharacterClass.Nightshade;
+
+				case eCharacterClass.Nightshade:
+					weapons.Add(eObjectType.Blades);
+					weapons.Add(eObjectType.Piercing);
+					break;
+
+				case eCharacterClass.Scout:
+					weapons.Add(eObjectType.Longbow);
+					weapons.Add(eObjectType.Shield);
+					goto case eCharacterClass.Infiltrator;
+
+				case eCharacterClass.Minstrel:
+					weapons.Add(eObjectType.Instrument);
+					goto case eCharacterClass.Infiltrator;
+
+				case eCharacterClass.Infiltrator:
+					weapons.Add(eObjectType.SlashingWeapon);
+					weapons.Add(eObjectType.ThrustWeapon);
+					break;
+
+				case eCharacterClass.Cleric:
+					weapons.Add(eObjectType.CrushingWeapon);
+					weapons.Add(eObjectType.Shield);
+					break;
+
+				case eCharacterClass.Armsman:
+					weapons.Add(eObjectType.PolearmWeapon);
+					weapons.Add(eObjectType.PolearmWeapon);
+					goto case eCharacterClass.Paladin;
+
+				case eCharacterClass.Paladin:
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					weapons.Add(eObjectType.TwoHandedWeapon);
+					weapons.Add(eObjectType.Shield);
+					goto case eCharacterClass.Mercenary;
+
+				case eCharacterClass.Mercenary:
+					weapons.Add(eObjectType.CrushingWeapon);
+					weapons.Add(eObjectType.SlashingWeapon);
+					weapons.Add(eObjectType.ThrustWeapon);
+					break;
+
+
 				default:
-					weapons.Add(eInventorySlot.TwoHandWeapon);
-					weapons.Add(eInventorySlot.RightHandWeapon);
-					weapons.Add(eInventorySlot.LeftHandWeapon);
+					weapons.Add(eObjectType.GenericWeapon);
 					break;
 					
             }
