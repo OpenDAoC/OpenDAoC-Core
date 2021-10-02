@@ -22,9 +22,9 @@ namespace DOL.GS.RealmAbilities
 		{
 			switch (level)
 			{
-				case 0: return 6;
-				case 1: return 10;
-				case 2: return 14;
+				case 0: return 3;
+				case 1: return 6;
+				case 2: return 10;
 				default: return 1000;
 			}
 		}
@@ -33,9 +33,9 @@ namespace DOL.GS.RealmAbilities
         {
             switch (Level)
             {
-                case 1: return 10;
-                case 2: return 20;
-                case 3: return 30;
+                case 1: return 5;
+                case 2: return 10;
+                case 3: return 15;
                 default: return 0;
             }
         }
