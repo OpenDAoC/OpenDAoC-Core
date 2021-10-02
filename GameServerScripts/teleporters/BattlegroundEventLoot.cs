@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
             }
 			TurnTo(player.X, player.Y);
 			player.Out.SendMessage("Hello " + player.Name + "! We're happy to see you here, supporting your realm.\n" +
-				"For your efforts, " + realmName + " has procured a [full suit] of equipment. \n" +
+				"For your efforts, " + realmName + " has procured a [full suit] of equipment. " +
 				"Additionally, I can provide you with some [weapons]. \n\n" +
 				"Go forth, and do battle!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			return true;
@@ -52,13 +52,13 @@ namespace DOL.GS.Scripts
 
 			switch (realm) {
 				case eRealm.Hibernia:
-					color = eColor.Green_3;
+					color = eColor.Green_4;
 					break;
 				case eRealm.Albion:
-					color = eColor.Red_3;
+					color = eColor.Red_4;
 					break;
 				case eRealm.Midgard:
-					color = eColor.Blue_3;
+					color = eColor.Blue_4;
 					break;
 			}
 			if (str.Equals("full suit")) {
@@ -75,10 +75,13 @@ namespace DOL.GS.Scripts
 					item = new GeneratedUniqueItem(realm, charclass, player.Level, armorType, islot);
 					item.AllowAdd = true;
 					item.Color = (int)color;
+					item.IsTradable = false;
+					item.IsDropable = false;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					invitem.SellPrice = 0;
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 			} 
 			else if (str.Equals("weapons")) {
@@ -89,10 +92,13 @@ namespace DOL.GS.Scripts
 					item = new GeneratedUniqueItem(realm, charclass, player.Level, wepType);
 					item.AllowAdd = true;
 					item.Color = (int)color;
+					item.IsTradable = false;
+					item.IsDropable = false;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					invitem.SellPrice = 0;
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 				
 				//guarantee an offhand weapon
@@ -118,7 +124,7 @@ namespace DOL.GS.Scripts
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 				/*
 				if (charclass == eCharacterClass.Savage) {
