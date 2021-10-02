@@ -47,24 +47,74 @@ namespace DOL.GS.Scripts
 			eRealm realm = player.Realm;
 			eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
 			eObjectType armorType = GetArmorType(realm, charclass, (byte)(player.Level-4));
+			if(str.Equals("full suit")) {
+				List<eInventorySlot> bodySlots = new List<eInventorySlot>();
+				bodySlots.Add(eInventorySlot.ArmsArmor);
+				bodySlots.Add(eInventorySlot.FeetArmor);
+				bodySlots.Add(eInventorySlot.HandsArmor);
+				bodySlots.Add(eInventorySlot.HeadArmor);
+				bodySlots.Add(eInventorySlot.LegsArmor);
+				bodySlots.Add(eInventorySlot.TorsoArmor);
 
-			List<eInventorySlot> bodySlots = new List<eInventorySlot>();
-			bodySlots.Add(eInventorySlot.ArmsArmor);
-			bodySlots.Add(eInventorySlot.FeetArmor);
-			bodySlots.Add(eInventorySlot.HandsArmor);
-			bodySlots.Add(eInventorySlot.HeadArmor);
-			bodySlots.Add(eInventorySlot.LegsArmor);
-			bodySlots.Add(eInventorySlot.TorsoArmor);
+				foreach (eInventorySlot islot in bodySlots) {
+					GeneratedUniqueItem item = null;
+					item = new GeneratedUniqueItem(realm, charclass, player.Level, armorType, islot);
+					item.AllowAdd = true;
+					GameServer.Database.AddObject(item);
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			} else if (str.Equals("weapon")) {
+				List<eInventorySlot> weapons = GetWeaponsByClass(charclass);
+				int randMin = 0;
+				int randMax = 0;
+                switch (realm) {
+					case eRealm.Hibernia:
+						randMin = 18;
+						randMax = 26;
+						break;
+					case eRealm.Albion:
+						randMin = 2;
+						randMax = 10;
+						break;
+					case eRealm.Midgard:
+						randMin = 11;
+						randMax = 17;
+						break;
+                }
 
-			foreach (eInventorySlot islot in bodySlots) {
-				GeneratedUniqueItem item = null;
-				item = new GeneratedUniqueItem(realm, charclass, player.Level, armorType, islot);
-				item.AllowAdd = true;
-				GameServer.Database.AddObject(item);
-				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-				player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				foreach (eInventorySlot islot in weapons) {
+					GeneratedUniqueItem item = null;
+					item = new GeneratedUniqueItem(realm, charclass, player.Level, (eObjectType)Util.Random(randMin, randMax), islot);
+					item.AllowAdd = true;
+					GameServer.Database.AddObject(item);
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				if(charclass == eCharacterClass.Reaver) {
+					GeneratedUniqueItem item = null;
+					item = new GeneratedUniqueItem(realm, charclass, player.Level, eObjectType.Flexible, eInventorySlot.RightHandWeapon);
+					item.AllowAdd = true;
+					GameServer.Database.AddObject(item);
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				if (charclass == eCharacterClass.Savage) {
+					GeneratedUniqueItem item = null;
+					item = new GeneratedUniqueItem(realm, charclass, player.Level, eObjectType.HandToHand, eInventorySlot.RightHandWeapon);
+					item.AllowAdd = true;
+					GameServer.Database.AddObject(item);
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
 			}
+			
 			//GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot);
 			
 			return true;
@@ -92,6 +142,38 @@ namespace DOL.GS.Scripts
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
             log.Info("\t BG Loot NPC initialized: true");
-        }	
+        }
+		
+		private List<eInventorySlot> GetWeaponsByClass(eCharacterClass charClass) {
+			List<eInventorySlot> weapons = new List<eInventorySlot>();
+
+            switch (charClass) {
+				case eCharacterClass.Friar:
+				case eCharacterClass.Cabalist:
+				case eCharacterClass.Sorcerer:
+				case eCharacterClass.Theurgist:
+				case eCharacterClass.Wizard:
+				case eCharacterClass.Necromancer:
+				case eCharacterClass.Animist:
+				case eCharacterClass.Valewalker:
+				case eCharacterClass.Eldritch:
+				case eCharacterClass.Enchanter:
+				case eCharacterClass.Mentalist:
+				case eCharacterClass.Runemaster:
+				case eCharacterClass.Spiritmaster:
+				case eCharacterClass.Bonedancer:
+					weapons.Add(eInventorySlot.TwoHandWeapon);
+					break;
+
+				default:
+					weapons.Add(eInventorySlot.TwoHandWeapon);
+					weapons.Add(eInventorySlot.RightHandWeapon);
+					weapons.Add(eInventorySlot.LeftHandWeapon);
+					break;
+					
+            }
+
+			return weapons;
+		}
     }
 }
