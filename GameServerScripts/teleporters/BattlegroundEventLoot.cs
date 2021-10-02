@@ -47,7 +47,20 @@ namespace DOL.GS.Scripts
 			eRealm realm = player.Realm;
 			eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
 			eObjectType armorType = GetArmorType(realm, charclass, (byte)(player.Level-4));
-			if(str.Equals("full suit")) {
+			eColor color = eColor.White;
+
+			switch (realm) {
+				case eRealm.Hibernia:
+					color = eColor.Green_4;
+					break;
+				case eRealm.Albion:
+					color = eColor.Red_4;
+					break;
+				case eRealm.Midgard:
+					color = eColor.Blue_4;
+					break;
+			}
+			if (str.Equals("full suit")) {
 				List<eInventorySlot> bodySlots = new List<eInventorySlot>();
 				bodySlots.Add(eInventorySlot.ArmsArmor);
 				bodySlots.Add(eInventorySlot.FeetArmor);
@@ -60,12 +73,14 @@ namespace DOL.GS.Scripts
 					GeneratedUniqueItem item = null;
 					item = new GeneratedUniqueItem(realm, charclass, player.Level, armorType, islot);
 					item.AllowAdd = true;
+					item.Color = (int)color;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
-			} else if (str.Equals("weapon")) {
+			} 
+			else if (str.Equals("weapon")) {
 				List<eInventorySlot> weapons = GetWeaponsByClass(charclass);
 				int randMin = 0;
 				int randMax = 0;
@@ -88,6 +103,7 @@ namespace DOL.GS.Scripts
 					GeneratedUniqueItem item = null;
 					item = new GeneratedUniqueItem(realm, charclass, player.Level, (eObjectType)Util.Random(randMin, randMax), islot);
 					item.AllowAdd = true;
+					item.Color = (int)color;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
