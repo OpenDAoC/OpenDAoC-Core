@@ -27,6 +27,13 @@
 // Released to the public on July 12th, 2010
 //
 // Updating to Class by Leodagan on Aug 2013.
+//
+//
+// **** Atlas ROG Generation system ****
+//
+//	Based on the above mentioned software releases
+//	Converted for use by Atlas server by Fen - Sept 2021 
+//
 
 
 using System;
@@ -74,6 +81,8 @@ namespace DOL.GS
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 40;
+
+		private eCharacterClass charClass = eCharacterClass.Unknown;
 		
 		protected static Dictionary<eProperty, string> hPropertyToMagicPrefix = new Dictionary<eProperty, string>();
 
@@ -148,7 +157,7 @@ namespace DOL.GS
 			this.Object_Type = (int)type;
 			this.Item_Type = (int)slot;
 			this.Type_Damage = (int)dmg;
-			
+			this.charClass = charClass;
 			
 			// shouldn't need more Randomized public set values
 			
@@ -689,11 +698,16 @@ namespace DOL.GS
 			int level = this.Level;
 			eRealm realm = (eRealm)this.Realm;
 			eObjectType type = (eObjectType)this.Object_Type;
+			eCharacterClass charClass = this.charClass;
 
 			switch (property)
 			{
 				case eProperty.Skill_Augmentation:
 					{
+						if(charClass != eCharacterClass.Healer && 
+							charClass != eCharacterClass.Shaman) {
+							return false;
+                        }
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -715,6 +729,14 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Axe:
 					{
+						if (charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Shadowblade) {
+							return false;
+						}
 						if (type == eObjectType.Leather || type == eObjectType.Studded)
 							return true;
 						else if (type == eObjectType.Chain && level >= 10)
@@ -724,6 +746,9 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Battlesongs:
 					{
+						if (charClass != eCharacterClass.Skald) {
+							return false;
+						}
 						if (level < 20)
 						{
 							if (type == eObjectType.Studded)
@@ -740,6 +765,9 @@ namespace DOL.GS
 				case eProperty.Skill_Pathfinding:
 				case eProperty.Skill_BeastCraft:
 					{
+						if (charClass != eCharacterClass.Hunter) {
+							return false;
+						}
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -755,12 +783,27 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Blades:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Warden) {
+							return false;
+						}
+
 						if (type == eObjectType.Leather || type == eObjectType.Reinforced || type == eObjectType.Scale)
 							return true;
 						return false;
 					}
 				case eProperty.Skill_Blunt:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Bard &&
+							charClass != eCharacterClass.Warden) {
+							return false;
+						}
+
 						if (type == eObjectType.Leather && level < 10)
 							return true;
 						else if (type == eObjectType.Reinforced || type == eObjectType.Scale)
@@ -768,43 +811,122 @@ namespace DOL.GS
 						return false;
 					}
 				//Cloth skills
-				case eProperty.Skill_Arboreal:
-				case eProperty.Skill_Body:
-				case eProperty.Skill_BoneArmy:
-				case eProperty.Skill_Cold:
-				case eProperty.Skill_Creeping:
-				case eProperty.Skill_Cursing:
-				case eProperty.Skill_Darkness:
+				//witchcraft is unused except as a goto target for cloth checks
+				case eProperty.Skill_Arboreal: 
+						if(charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Animist) {
+							return false;
+                        }
+						goto case eProperty.Skill_Witchcraft;
+                    
+
+				case eProperty.Skill_Matter:
+				case eProperty.Skill_Body: {
+						if (charClass != eCharacterClass.Cabalist &&
+							charClass != eCharacterClass.Sorcerer) {
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+				
+				case eProperty.Skill_Earth:
+				case eProperty.Skill_Cold: {
+						if (charClass != eCharacterClass.Theurgist &&
+							charClass != eCharacterClass.Wizard) {
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+				
+				case eProperty.Skill_Suppression:
+				case eProperty.Skill_Darkness: {
+						if (charClass != eCharacterClass.Spiritmaster &&
+							charClass != eCharacterClass.Runemaster &&
+							charClass != eCharacterClass.Bonedancer) {
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+				
+				case eProperty.Skill_Light:
+				case eProperty.Skill_Mana: {
+						if (charClass != eCharacterClass.Enchanter &&
+							charClass != eCharacterClass.Eldritch &&
+							charClass != eCharacterClass.Mentalist) {
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+				
+				
+				case eProperty.Skill_Mind:
+					if (charClass != eCharacterClass.Sorcerer) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Spirit:
+					if (charClass != eCharacterClass.Cabalist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Wind:
+					if (charClass != eCharacterClass.Theurgist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Fire:
+					if (charClass != eCharacterClass.Wizard) { return false; }
+					goto case eProperty.Skill_Witchcraft;
 				case eProperty.Skill_Death_Servant:
 				case eProperty.Skill_DeathSight:
-				case eProperty.Skill_Earth:
-				case eProperty.Skill_Enchantments:
-				case eProperty.Skill_EtherealShriek:
-				case eProperty.Skill_Fire:
-				case eProperty.Skill_Hexing:
-				case eProperty.Skill_Light:
-				case eProperty.Skill_Mana:
-				case eProperty.Skill_Matter:
-				case eProperty.Skill_Mentalism:
-				case eProperty.Skill_Mind:
 				case eProperty.Skill_Pain_working:
-				case eProperty.Skill_PhantasmalWail:
-				case eProperty.Skill_Runecarving:
-				case eProperty.Skill_SpectralForce:
-				case eProperty.Skill_Spirit:
+					if (charClass != eCharacterClass.Necromancer) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+
 				case eProperty.Skill_Summoning:
-				case eProperty.Skill_Suppression:
-				case eProperty.Skill_Verdant:
+					if (charClass != eCharacterClass.Spiritmaster) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Runecarving:
+					if (charClass != eCharacterClass.Runemaster) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_BoneArmy: 
+						if (charClass != eCharacterClass.Bonedancer) {return false;}
+						goto case eProperty.Skill_Witchcraft;
+
 				case eProperty.Skill_Void:
-				case eProperty.Skill_Wind:
+					if (charClass != eCharacterClass.Eldritch) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Enchantments:
+					if (charClass != eCharacterClass.Enchanter) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Mentalism:
+					if (charClass != eCharacterClass.Mentalist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Creeping:
+				case eProperty.Skill_Verdant: 
+						if (charClass != eCharacterClass.Animist) {return false;}
+						goto case eProperty.Skill_Witchcraft;
+					
+
+
+				case eProperty.Skill_Hexing:
+				case eProperty.Skill_Cursing:
+				case eProperty.Skill_EtherealShriek:
+				case eProperty.Skill_PhantasmalWail:
+				case eProperty.Skill_SpectralForce:
+					return false;
+
 				case eProperty.Skill_Witchcraft:
 					{
+						if(property == eProperty.Skill_Witchcraft) {
+							return false; //we don't want actual Witchcraft skills
+                        }
 						if (type == eObjectType.Cloth)
 							return true;
 						return false;
 					}
 				case eProperty.Skill_Celtic_Dual:
 					{
+						if (charClass != eCharacterClass.Blademaster &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Nightshade) {
+							return false;
+						}
+
 						if (type == eObjectType.Leather ||
 							type == eObjectType.Reinforced)
 							return true;
@@ -812,6 +934,9 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Celtic_Spear:
 					{
+						if (charClass != eCharacterClass.Hero) {
+							return false;
+                        }
 						if (level < 15)
 						{
 							if (type == eObjectType.Reinforced)
@@ -827,6 +952,9 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Chants:
 					{
+						if (charClass != eCharacterClass.Paladin) {
+							return false;
+						}
 						return false;
 					}
 				case eProperty.Skill_Composite:
@@ -834,6 +962,11 @@ namespace DOL.GS
 				case eProperty.Skill_Long_bows:
 				case eProperty.Skill_Archery:
 					{
+						if(charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Scout &&
+							charClass != eCharacterClass.Hunter) {
+							return false;
+                        }
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -856,6 +989,11 @@ namespace DOL.GS
 				case eProperty.Skill_ShadowMastery:
 				case eProperty.Skill_VampiiricEmbrace:
 					{
+						if(charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Shadowblade) {
+							return false;
+                        }
 						if (type == eObjectType.Leather)
 							return true;
 						return false;
@@ -879,6 +1017,12 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Crushing:
 					{
+						if (charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Paladin && 
+							charClass != eCharacterClass.Reaver) {
+							return false;
+						}
 						if (realm == eRealm.Albion && type == eObjectType.Cloth) // heretic
 							return true;
 
@@ -897,6 +1041,11 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Dual_Wield:
 					{
+						if (charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary ) {
+							return false;
+						}
+
 						if (level < 20)
 						{
 							if (type == eObjectType.Leather || type == eObjectType.Studded)
@@ -912,6 +1061,10 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Enhancement:
 					{
+						if (charClass != eCharacterClass.Friar &&
+							charClass != eCharacterClass.Cleric ) {
+							return false;
+						}
 						// friar
 						if (type == eObjectType.Leather)
 							return true;
@@ -931,6 +1084,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Flexible_Weapon:
 					{
+						if (charClass != eCharacterClass.Reaver) { return false; }
 						if (type == eObjectType.Cloth) // Heretic
 							return true;
 
@@ -949,6 +1103,13 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Hammer:
 					{
+						if (charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Skald && 
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior) {
+							return false;
+						}
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -970,12 +1131,14 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_HandToHand:
 					{
+						if(charClass != eCharacterClass.Savage) { return false; }
 						if (type == eObjectType.Studded)
 							return true;
 						return false;
 					}
 				case eProperty.Skill_Instruments:
 					{
+						if(charClass != eCharacterClass.Minstrel) { return false; }
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -997,6 +1160,10 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Large_Weapon:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero) {
+							return false;
+						}
 						if (level < 15)
 						{
 							if (type == eObjectType.Reinforced)
@@ -1014,12 +1181,17 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Left_Axe:
 					{
+						if (charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Shadowblade) {
+							return false;
+						}
 						if (type == eObjectType.Leather || type == eObjectType.Studded)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Music:
 					{
+						if(charClass != eCharacterClass.Bard) { return false; }
 						if (level < 15)
 						{
 							if (type == eObjectType.Leather)
@@ -1035,6 +1207,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Nature:
 					{
+						if(charClass != eCharacterClass.Druid) { return false; }
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -1057,6 +1230,11 @@ namespace DOL.GS
 				case eProperty.Skill_Nurture:
 				case eProperty.Skill_Regrowth:
 					{
+						if(charClass != eCharacterClass.Bard &&
+							charClass != eCharacterClass.Warden &&
+							charClass != eCharacterClass.Druid) {
+							return false;
+                        }
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -1072,6 +1250,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_OdinsWill:
 					{
+						return false;
 						if (level < 10)
 						{
 							if (type == eObjectType.Studded)
@@ -1087,6 +1266,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Pacification:
 					{
+						if(charClass != eCharacterClass.Healer) { return false; }
 						if (level < 10)
 						{
 							if (type == eObjectType.Leather)
@@ -1108,6 +1288,23 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Parry:
 					{
+						if (charClass != eCharacterClass.Berserker && //midgard
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Champion && //hibernia
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Warden &&
+							charClass != eCharacterClass.Armsman && //albion
+							charClass != eCharacterClass.Friar &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver) {
+							return false;
+						}
+
 						if (type == eObjectType.Cloth && realm == eRealm.Hibernia && level >= 5)
 							return true;
 						else if (realm == eRealm.Hibernia && level < 2)
@@ -1129,12 +1326,19 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Piercing:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Ranger) {
+							return false;
+						}
 						if (type == eObjectType.Leather || type == eObjectType.Reinforced)
 							return true;
 						return false;
 					}
 				case eProperty.Skill_Polearms:
 					{
+						if(charClass != eCharacterClass.Armsman) { return false; }
 						if (level < 5 && type == eObjectType.Studded)
 						{
 							return true;
@@ -1156,6 +1360,10 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Rejuvenation:
 					{
+						if (charClass != eCharacterClass.Friar &&
+							charClass != eCharacterClass.Cleric) {
+							return false;
+						}
 						if (type == eObjectType.Cloth)
 							return true;
 						else if (type == eObjectType.Leather)
@@ -1168,18 +1376,32 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Savagery:
 					{
+						if(charClass != eCharacterClass.Savage) { return false; }
 						if (type == eObjectType.Studded)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Scythe:
 					{
+						if(charClass != eCharacterClass.Valewalker) { return false; }
 						if (type == eObjectType.Cloth)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Shields:
 					{
+						if (charClass != eCharacterClass.Thane &&  //midgard
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Champion && //hibernia
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Blademaster &&
+							charClass != eCharacterClass.Armsman && //albion
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.Cloth && realm == eRealm.Albion)
 							return true;
 						else if (type == eObjectType.Studded || type == eObjectType.Chain || type == eObjectType.Reinforced || type == eObjectType.Scale || type == eObjectType.Plate)
@@ -1192,6 +1414,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Smiting:
 					{
+						if(charClass != eCharacterClass.Cleric) { return false; }
 						if (type == eObjectType.Leather && level < 10)
 							return true;
 						else if (type == eObjectType.Studded && level < 20)
@@ -1202,6 +1425,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_SoulRending:
 					{
+						if(charClass != eCharacterClass.Reaver) { return false; }
 						if (type == eObjectType.Studded && level < 10)
 							return true;
 						else if (type == eObjectType.Chain && level >= 10)
@@ -1210,6 +1434,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Spear:
 					{
+						if(charClass != eCharacterClass.Hunter) { return false; }
 						if (type == eObjectType.Leather && level < 10)
 							return true;
 						else if (type == eObjectType.Studded)
@@ -1220,12 +1445,22 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Staff:
 					{
+						if(charClass != eCharacterClass.Friar) { return false; }
 						if (type == eObjectType.Leather && realm == eRealm.Albion)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Stealth:
 					{
+						if (charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Hunter && 
+							charClass != eCharacterClass.Ranger && 
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.Leather || type == eObjectType.Studded || type == eObjectType.Reinforced)
 							return true;
 						else if (realm == eRealm.Albion && level >= 20 && type == eObjectType.Chain)
@@ -1234,6 +1469,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Stormcalling:
 					{
+						if(charClass != eCharacterClass.Thane) { return false; }
 						if (type == eObjectType.Studded && level < 10)
 							return true;
 						else if (type == eObjectType.Chain && level >= 10)
@@ -1242,6 +1478,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Subterranean:
 					{
+						if(charClass != eCharacterClass.Shaman) { return false; }
 						if (type == eObjectType.Leather && level < 10)
 							return true;
 						else if (type == eObjectType.Studded && level < 20)
@@ -1252,24 +1489,58 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Sword:
 					{
+						if (charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior) {
+							return false;
+						}
 						if (type == eObjectType.Studded || type == eObjectType.Chain)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Slashing:
 					{
+						if (charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
+
 						if (type == eObjectType.Leather || type == eObjectType.Studded || type == eObjectType.Chain || type == eObjectType.Plate)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Thrusting:
 					{
+
+						if (charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
+
 						if (type == eObjectType.Leather || type == eObjectType.Studded || type == eObjectType.Chain || type == eObjectType.Plate)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Two_Handed:
 					{
+						if(charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Paladin) {
+							return false;
+                        }
 						if (type == eObjectType.Studded && level < 10)
 							return true;
 						else if (type == eObjectType.Chain && level < 20)
@@ -1280,6 +1551,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Valor:
 					{
+						if(charClass != eCharacterClass.Champion) { return false; }
 						if (type == eObjectType.Reinforced && level < 20)
 							return true;
 						else if (type == eObjectType.Scale)
@@ -1288,6 +1560,11 @@ namespace DOL.GS
 					}
 				case eProperty.AllArcherySkills:
 					{
+						if(charClass != eCharacterClass.Scout &&
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Ranger) {
+							return false;
+                        }
 						if (type == eObjectType.Leather && level < 10)
 							return true;
 						else if (level >= 10 && (type == eObjectType.Reinforced || type == eObjectType.Studded))
@@ -1297,6 +1574,15 @@ namespace DOL.GS
 					}
 				case eProperty.AllDualWieldingSkills:
 					{
+						if (charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary) {
+							return false;
+						}
 						//Dualwielders are always above level 4 and can wear better than cloth from the start.
 						if (type == eObjectType.Cloth)
 							return false;
@@ -1312,6 +1598,23 @@ namespace DOL.GS
 					}
 				case eProperty.AllMagicSkills:
 					{
+						if (charClass != eCharacterClass.Cabalist && //albion
+							charClass != eCharacterClass.Cleric &&
+							charClass != eCharacterClass.Necromancer &&
+							charClass != eCharacterClass.Sorcerer &&
+							charClass != eCharacterClass.Theurgist &&
+							charClass != eCharacterClass.Wizard &&
+							charClass != eCharacterClass.Animist && //hibernia
+							charClass != eCharacterClass.Eldritch &&
+							charClass != eCharacterClass.Enchanter &&
+							charClass != eCharacterClass.Mentalist &&
+							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Bonedancer && //midgard
+							charClass != eCharacterClass.Runemaster &&
+							charClass != eCharacterClass.Spiritmaster) {
+							return false;
+						}
+
 						// not for scouts
 						if (realm == eRealm.Albion && type == eObjectType.Studded && level >= 20)
 							return false;
@@ -1323,6 +1626,31 @@ namespace DOL.GS
 					}
 				case eProperty.AllMeleeWeaponSkills:
 					{
+						if (charClass != eCharacterClass.Berserker &&  //midgard
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Savage && 
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Blademaster && //hibernia
+							charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Warden &&
+							charClass != eCharacterClass.Armsman && //albion
+							charClass != eCharacterClass.Friar &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
+
 						if (realm == eRealm.Midgard && type == eObjectType.Cloth)
 							return false;
 						else if (level >= 5)
@@ -1340,6 +1668,7 @@ namespace DOL.GS
 				case eProperty.Skill_Aura_Manipulation:
 				case eProperty.Skill_FistWraps:
 					{
+						return false;
 						//Maulers
 						if (type == eObjectType.Leather) //Maulers can only wear leather.
 							return true;
@@ -1360,36 +1689,39 @@ namespace DOL.GS
 
 			switch (property)
 			{
+				case eProperty.Skill_SpectralForce:
+				case eProperty.Skill_EtherealShriek:
+				case eProperty.Skill_PhantasmalWail:
+				case eProperty.Skill_Hexing:
+				case eProperty.Skill_Cursing:
+				case eProperty.Skill_Witchcraft:
+					return false;
+
 				case eProperty.Skill_Arboreal:
 				case eProperty.Skill_Body:
 				case eProperty.Skill_BoneArmy:
 				case eProperty.Skill_Cold:
 				case eProperty.Skill_Creeping:
-				case eProperty.Skill_Cursing:
+				
 				case eProperty.Skill_Darkness:
 				case eProperty.Skill_Death_Servant:
 				case eProperty.Skill_DeathSight:
 				case eProperty.Skill_Earth:
-				case eProperty.Skill_Enchantments:
-				case eProperty.Skill_EtherealShriek:
-				case eProperty.Skill_Fire:
-				case eProperty.Skill_Hexing:
+				case eProperty.Skill_Enchantments:				
+				case eProperty.Skill_Fire:				
 				case eProperty.Skill_Light:
 				case eProperty.Skill_Mana:
 				case eProperty.Skill_Matter:
 				case eProperty.Skill_Mentalism:
 				case eProperty.Skill_Mind:
-				case eProperty.Skill_Pain_working:
-				case eProperty.Skill_PhantasmalWail:
-				case eProperty.Skill_Runecarving:
-				case eProperty.Skill_SpectralForce:
+				case eProperty.Skill_Pain_working:				
+				case eProperty.Skill_Runecarving:				
 				case eProperty.Skill_Spirit:
 				case eProperty.Skill_Summoning:
 				case eProperty.Skill_Suppression:
 				case eProperty.Skill_Verdant:
 				case eProperty.Skill_Void:
 				case eProperty.Skill_Wind:
-				case eProperty.Skill_Witchcraft:
 					{
 						if (type == eObjectType.Staff && this.Description != "friar")
 							return true;
@@ -1398,25 +1730,35 @@ namespace DOL.GS
 				//healer things
 				case eProperty.Skill_Smiting:
 					{
-						if ((type == eObjectType.Shield && this.Type_Damage < 3) || type == eObjectType.CrushingWeapon)
+						if (((type == eObjectType.Shield && this.Type_Damage < 3) || type == eObjectType.CrushingWeapon) 
+							&& charClass == eCharacterClass.Cleric)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Enhancement:
 				case eProperty.Skill_Rejuvenation:
 					{
+						if(realm != eRealm.Albion) { return false; }
 						if ((type == eObjectType.Staff && this.Description == "friar") || (type == eObjectType.Shield && this.Type_Damage < 3) || type == eObjectType.CrushingWeapon)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Augmentation:
 				case eProperty.Skill_Mending:
-				case eProperty.Skill_Subterranean:
+				case eProperty.Skill_Subterranean: 
+					{
+						if(realm != eRealm.Midgard) { return false; }
+						if((type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Hammer) {
+							return true;
+                        }
+						break;
+                    }
 				case eProperty.Skill_Nurture:
 				case eProperty.Skill_Nature:
 				case eProperty.Skill_Regrowth:
 					{
-						if (type == eObjectType.Hammer || (type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Blunt || type == eObjectType.Blades)
+						if(realm != eRealm.Hibernia) { return false; }
+						if (type == eObjectType.Blunt || type == eObjectType.Blades || (type == eObjectType.Shield && this.Type_Damage < 2))
 							return true;
 						break;
 					}
@@ -1452,42 +1794,66 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Axe:
 					{
+						if(realm != eRealm.Midgard) { return false; }
 						if (type == eObjectType.Axe || type == eObjectType.LeftAxe || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Battlesongs:
 					{
+						if(charClass != eCharacterClass.Skald) {  return false; }
 						if (type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.Hammer || (type == eObjectType.Shield && this.Type_Damage < 3))
 							return true;
 						break;
 					}
 				case eProperty.Skill_BeastCraft:
 					{
+						if(charClass != eCharacterClass.Hunter) { return false; }
 						if (type == eObjectType.Spear)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Blades:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Warden) {
+							return false;
+						}
+
 						if (type == eObjectType.Blades || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Blunt:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Bard &&
+							charClass != eCharacterClass.Warden) {
+							return false;
+						}
+
 						if (type == eObjectType.Blunt || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Celtic_Dual:
 					{
+						if(charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster) {
+							return false;
+                        }
 						if (type == eObjectType.Piercing || type == eObjectType.Blades || type == eObjectType.Blunt)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Celtic_Spear:
 					{
+						if(charClass != eCharacterClass.Hero) { return false; }
 						if (type == eObjectType.CelticSpear)
 							return true;
 						break;
@@ -1498,6 +1864,11 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Critical_Strike:
 					{
+						if (charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Shadowblade) {
+							return false;
+						}
 						if (type == eObjectType.Piercing || type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Blades || type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.LeftAxe)
 							return true;
 						break;
@@ -1510,6 +1881,7 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Crushing:
 					{
+						if(realm != eRealm.Albion) { return false; }
 						if (type == eObjectType.CrushingWeapon || 
 							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Crush) || 
 							type == eObjectType.Shield)
@@ -1518,96 +1890,148 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Dual_Wield:
 					{
+						if (charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Blademaster &&
+							charClass != eCharacterClass.Berserker) {
+							return false;
+						}
+
 						if (type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.CrushingWeapon)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Envenom:
 					{
+						if (charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Shadowblade) {
+							return false;
+						}
 						if (type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Flexible_Weapon:
 					{
+						if(charClass != eCharacterClass.Reaver) { return false; }
 						if (type == eObjectType.Flexible || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Hammer:
 					{
+						if (charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior) {
+							return false;
+						}
 						if (type == eObjectType.Hammer || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_HandToHand:
 					{
+						if(charClass != eCharacterClass.Savage) { return false; }
 						if (type == eObjectType.HandToHand)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Instruments:
 					{
+						if(charClass != eCharacterClass.Minstrel) { return false; }
 						if (type == eObjectType.Instrument || (type == eObjectType.Shield && this.Type_Damage == 1))
 							return true;
 						break;
 					}
 				case eProperty.Skill_Large_Weapon:
 					{
+						if(charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero) {
+							return false;
+						}
 						if (type == eObjectType.LargeWeapons)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Left_Axe:
 					{
+						if(charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Shadowblade) {
+							return false;
+                        }
 						if (type == eObjectType.Axe || type == eObjectType.LeftAxe)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Music:
 					{
+						if(charClass != eCharacterClass.Bard) {
+							return false;
+                        }
 						if (type == eObjectType.Blades || type == eObjectType.Blunt || (type == eObjectType.Shield && this.Type_Damage == 1) || type == eObjectType.Instrument)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Nightshade:
 					{
+						if(charClass != eCharacterClass.Nightshade) {
+							return false;
+                        }
 						if (type == eObjectType.Blades || type == eObjectType.Piercing || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_OdinsWill:
 					{
+						return false;
 						if (type == eObjectType.Sword || type == eObjectType.Spear || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Pathfinding:
 					{
+						if(charClass != eCharacterClass.Ranger) {
+							return false;
+                        }
 						if (type == eObjectType.RecurvedBow || type == eObjectType.Piercing || type == eObjectType.Blades)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Piercing:
 					{
+						if (charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Ranger) {
+							return false;
+						}
 						if (type == eObjectType.Piercing || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Polearms:
 					{
+						if(charClass != eCharacterClass.Armsman) { return false; }
 						if (type == eObjectType.PolearmWeapon)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Savagery:
 					{
+						if(charClass != eCharacterClass.Savage) { return false; }
 						if (type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.Hammer || type == eObjectType.HandToHand)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Scythe:
 					{
+						if(charClass != eCharacterClass.Valewalker) { return false; }
 						if (type == eObjectType.Scythe)
 							return true;
 						break;
@@ -1616,12 +2040,25 @@ namespace DOL.GS
 				case eProperty.Skill_VampiiricEmbrace:
 				case eProperty.Skill_ShadowMastery:
 					{
+						return false;
 						if (type == eObjectType.Piercing)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Shields:
 					{
+						if (charClass != eCharacterClass.Thane &&  //midgard
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Champion && //hibernia
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Blademaster &&
+							charClass != eCharacterClass.Armsman && //albion
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.SlashingWeapon || type == eObjectType.CrushingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Blunt || type == eObjectType.Blades || type == eObjectType.Piercing || type == eObjectType.Shield || type == eObjectType.Axe || type == eObjectType.Sword || type == eObjectType.Hammer)
 							return true;
 						break;
@@ -1632,6 +2069,15 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Slashing:
 					{
+						if (charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.SlashingWeapon ||
 							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Slash) ||
 							type == eObjectType.Shield)
@@ -1640,36 +2086,66 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_SoulRending:
 					{
+						if(charClass != eCharacterClass.Reaver) { return false; }
 						if (type == eObjectType.SlashingWeapon || type == eObjectType.CrushingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Flexible || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Spear:
 					{
+						if(charClass != eCharacterClass.Hunter) { return false; }
 						if (type == eObjectType.Spear)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Stealth:
 					{
+						if (charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.Longbow || type == eObjectType.RecurvedBow || type == eObjectType.CompositeBow || (realm == eRealm.Albion && type == eObjectType.Shield && this.Type_Damage == 1) || type == eObjectType.Spear || type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.LeftAxe || type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Piercing || type == eObjectType.Blades || (realm == eRealm.Albion && type == eObjectType.Instrument))
 							return true;
 						break;
 					}
 				case eProperty.Skill_Stormcalling:
 					{
+						if(charClass != eCharacterClass.Thane) { return false; }
 						if (type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.Hammer || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Sword:
 					{
+						if (charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior) {
+							return false;
+						}
 						if (type == eObjectType.Sword || type == eObjectType.Shield)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Thrusting:
 					{
+						if (charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.ThrustWeapon ||
 							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Thrust) ||
 							type == eObjectType.Shield)
@@ -1678,12 +2154,17 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Two_Handed:
 					{
+						if (charClass != eCharacterClass.Armsman &&
+							charClass != eCharacterClass.Paladin) {
+							return false;
+						}
 						if (type == eObjectType.TwoHandedWeapon)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Valor:
 					{
+						if(charClass != eCharacterClass.Champion) { return false; }
 						if (type == eObjectType.Blades || type == eObjectType.Piercing || type == eObjectType.Blunt || type == eObjectType.LargeWeapons || type == eObjectType.Shield)
 							return true;
 						break;
@@ -1694,30 +2175,62 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Pacification:
 					{
+						if(charClass != eCharacterClass.Healer) { return false; }
 						if (type == eObjectType.Hammer)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Dementia:
 					{
+						return false;
 						if (type == eObjectType.Piercing)
 							return true;
 						break;
 					}
 				case eProperty.AllArcherySkills:
 					{
+						if (charClass != eCharacterClass.Scout &&
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Ranger) {
+							return false;
+						}
 						if (type == eObjectType.CompositeBow || type == eObjectType.Longbow || type == eObjectType.RecurvedBow)
 							return true;
 						break;
 					}
 				case eProperty.AllDualWieldingSkills:
 					{
+						if (charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Berserker &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary) {
+							return false;
+						}
 						if (type == eObjectType.Axe || type == eObjectType.Sword || type == eObjectType.Hammer || type == eObjectType.LeftAxe || type == eObjectType.SlashingWeapon || type == eObjectType.CrushingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Piercing || type == eObjectType.Blades || type == eObjectType.Blunt)
 							return true;
 						break;
 					}
 				case eProperty.AllMagicSkills:
 					{
+						if (charClass != eCharacterClass.Cabalist && //albion
+							charClass != eCharacterClass.Cleric &&
+							charClass != eCharacterClass.Necromancer &&
+							charClass != eCharacterClass.Sorcerer &&
+							charClass != eCharacterClass.Theurgist &&
+							charClass != eCharacterClass.Wizard &&
+							charClass != eCharacterClass.Animist && //hibernia
+							charClass != eCharacterClass.Eldritch &&
+							charClass != eCharacterClass.Enchanter &&
+							charClass != eCharacterClass.Mentalist &&
+							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Bonedancer && //midgard
+							charClass != eCharacterClass.Runemaster &&
+							charClass != eCharacterClass.Spiritmaster) {
+							return false;
+						}
 						//scouts, armsmen, paladins, mercs, blademasters, heroes, zerks, warriors do not need this.
 						if (type == eObjectType.Longbow || type == eObjectType.CelticSpear || type == eObjectType.PolearmWeapon || type == eObjectType.TwoHandedWeapon || type == eObjectType.Crossbow || (type == eObjectType.Shield && this.Type_Damage > 2))
 							return false;
@@ -1726,7 +2239,30 @@ namespace DOL.GS
 					}
 				case eProperty.AllMeleeWeaponSkills:
 					{
-
+						if (charClass != eCharacterClass.Berserker &&  //midgard
+							charClass != eCharacterClass.Hunter &&
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Shadowblade &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Blademaster && //hibernia
+							charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Ranger &&
+							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Warden &&
+							charClass != eCharacterClass.Armsman && //albion
+							charClass != eCharacterClass.Friar &&
+							charClass != eCharacterClass.Infiltrator &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Minstrel &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver &&
+							charClass != eCharacterClass.Scout) {
+							return false;
+						}
 						if (type == eObjectType.Staff && realm != eRealm.Albion)
 							return false;
 						else if (type == eObjectType.Staff && this.Description != "friar") // do not add if caster staff
@@ -1738,30 +2274,35 @@ namespace DOL.GS
 					}
 				case eProperty.Skill_Aura_Manipulation: //Maulers
 					{
+						return false;
 						if (type == eObjectType.MaulerStaff || type == eObjectType.FistWraps)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Magnetism: //Maulers
 					{
+						return false;
 						if (type == eObjectType.FistWraps || type == eObjectType.MaulerStaff)
 							return true;
 						break;
 					}
 				case eProperty.Skill_MaulerStaff: //Maulers
 					{
+						return false;
 						if (type == eObjectType.MaulerStaff)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Power_Strikes: //Maulers
 					{
+						return false;
 						if (type == eObjectType.MaulerStaff || type == eObjectType.FistWraps)
 							return true;
 						break;
 					}
 				case eProperty.Skill_FistWraps: //Maulers
 					{
+						return false;
 						if (type == eObjectType.FistWraps)
 							return true;
 						break;
