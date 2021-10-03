@@ -2479,6 +2479,14 @@ namespace DOL.GS.ServerProperties
 
 		#endregion
 
+		#region ATLAS
+		/// <summary>
+		/// Allow auto-account creation  This is also set in serverconfig.xml and must be enabled for this property to work.
+		/// </summary>
+		[ServerProperty("atlas", "event_disable_xp", "Disables gaining XP for all player actions", false)]
+		public static bool EVENT_DISABLE_XP;
+
+		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
 			get; private set;

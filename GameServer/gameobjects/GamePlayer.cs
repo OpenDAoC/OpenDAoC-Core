@@ -5030,7 +5030,7 @@ namespace DOL.GS
 				expTotal = ExperienceForCurrentLevel - Experience;
 			}
 
-			if (sendMessage && expTotal > 0)
+			if (sendMessage && expTotal > 0 && !ServerProperties.Properties.EVENT_DISABLE_XP)
 			{
 				System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
 				string totalExpStr = expTotal.ToString("N0", format);

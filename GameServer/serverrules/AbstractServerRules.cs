@@ -1355,14 +1355,13 @@ namespace DOL.GS.ServerRules
 					}
 					totalDamage += (float)de.Value;
 				}
-
+				
 				if (dealNoXP || (killedLiving.ExperienceValue == 0 && killedLiving.RealmPointsValue == 0 && killedLiving.BountyPointsValue == 0))
 				{
 					return;
 				}
-
-
-				long ExpValue = killedLiving.ExperienceValue;
+				
+				long ExpValue = killedLiving.ExperienceValue; 
 				int RPValue = killedLiving.RealmPointsValue;
 				int BPValue = killedLiving.BountyPointsValue;
 
@@ -1451,6 +1450,9 @@ namespace DOL.GS.ServerRules
 						xpSource = eXPSource.Player;
 					}
 
+					if (ServerProperties.Properties.EVENT_DISABLE_XP)
+						xpReward = 0;
+
 					if (xpReward > 0)
 						living.GainExperience(xpSource, xpReward);
 
@@ -1509,6 +1511,16 @@ namespace DOL.GS.ServerRules
 					totalDamage += (float)de.Value;
 				}
 
+				if (ServerProperties.Properties.EVENT_DISABLE_XP)
+				{
+					foreach (DictionaryEntry de in killedPlayer.XPGainers)
+					{
+						GamePlayer player = de.Key as GamePlayer;
+						if (player != null)
+							player.Out.SendMessage("You gain no experience from this kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+				}
+				
 				if (dealNoXP)
 				{
 					foreach (DictionaryEntry de in killedPlayer.XPGainers)
@@ -1519,8 +1531,7 @@ namespace DOL.GS.ServerRules
 					}
 					return;
 				}
-
-
+				
 				long playerExpValue = killedPlayer.ExperienceValue;
 				playerExpValue = (long)(playerExpValue * ServerProperties.Properties.XP_RATE);
 				int playerRPValue = killedPlayer.RealmPointsValue;
