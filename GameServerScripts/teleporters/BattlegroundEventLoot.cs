@@ -76,10 +76,9 @@ namespace DOL.GS.Scripts
 					item.AllowAdd = true;
 					item.Color = (int)color;
 					item.IsTradable = false;
-					item.IsDropable = false;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-					invitem.SellPrice = 0;
+					invitem.SellPrice = 1;
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
@@ -93,10 +92,9 @@ namespace DOL.GS.Scripts
 					item.AllowAdd = true;
 					item.Color = (int)color;
 					item.IsTradable = false;
-					item.IsDropable = false;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-					invitem.SellPrice = 0;
+					invitem.SellPrice = 1;
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
