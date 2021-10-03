@@ -864,15 +864,15 @@ namespace DOL.GS {
             double totalUti = 0;
 
             //based off of eProperty
-            //1-8 == stats
-            //9 == power cap
-            //10 == maxHP
-            //11-19 == resists
-            //20-115 == skill
-            //163 == all magic
-            //164 == all melee
-            //167 == all dual weild
-            //168 == all archery
+            //1-8 == stats = *.6667
+            //9 == power cap = *2
+            //10 == maxHP =  *.25
+            //11-19 == resists = *2
+            //20-115 == skill = *5
+            //163 == all magic = *10
+            //164 == all melee = *10
+            //167 == all dual weild = *10
+            //168 == all archery = *10
             if (Bonus1Type != 0 &&
                 Bonus1 != 0)
             {
@@ -880,7 +880,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus1 * .6667;
                 }
-                else if (Bonus1Type == 9 || Bonus1Type == 10)
+                else if (Bonus1Type == 9)
+                {
+                    totalUti += Bonus1 * 2;
+                }
+                else if (Bonus1Type == 10)
                 {
                     totalUti += Bonus1 * .25;
                 }
@@ -888,13 +892,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus1 * 2;
                 }
-                else if (Bonus1Type < 115
-                  || Bonus1Type == 163
+                else if (Bonus1Type < 115)
+                {
+                    totalUti += Bonus1 * 5;
+                }
+                else if (Bonus1Type == 163
                   || Bonus1Type == 164
                   || Bonus1Type == 167
                   || Bonus1Type == 168)
                 {
-                    totalUti += Bonus1 * 5;
+                    totalUti += Bonus1 * 10;
                 }
             }
 
@@ -905,7 +912,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus2 * .6667;
                 }
-                else if (Bonus2Type == 9 || Bonus2Type == 10)
+                else if (Bonus2Type == 9)
+                {
+                    totalUti += Bonus2 * 2;
+                }
+                else if (Bonus2Type == 10)
                 {
                     totalUti += Bonus2 * .25;
                 }
@@ -913,13 +924,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus2 * 2;
                 }
-                else if (Bonus2Type < 115
-                  || Bonus2Type == 163
+                else if (Bonus2Type < 115)
+                {
+                    totalUti += Bonus2 * 5;
+                }
+                else if (Bonus2Type == 163
                   || Bonus2Type == 164
                   || Bonus2Type == 167
                   || Bonus2Type == 168)
                 {
-                    totalUti += Bonus2 * 5;
+                    totalUti += Bonus2 * 10;
                 }
             }
 
@@ -930,7 +944,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus3 * .6667;
                 }
-                else if (Bonus3Type == 9 || Bonus3Type == 10)
+                else if (Bonus3Type == 9)
+                {
+                    totalUti += Bonus3 * 2;
+                }
+                else if (Bonus3Type == 10)
                 {
                     totalUti += Bonus3 * .25;
                 }
@@ -938,15 +956,17 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus3 * 2;
                 }
-                else if (Bonus3Type < 115
-                  || Bonus3Type == 163
+                else if (Bonus3Type < 115)
+                {
+                    totalUti += Bonus3 * 5;
+                }
+                else if (Bonus3Type == 163
                   || Bonus3Type == 164
                   || Bonus3Type == 167
                   || Bonus3Type == 168)
                 {
-                    totalUti += Bonus3 * 5;
+                    totalUti += Bonus3 * 10;
                 }
-
             }
 
             if (Bonus4Type != 0 &&
@@ -956,7 +976,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus4 * .6667;
                 }
-                else if (Bonus4Type == 9 || Bonus4Type == 10)
+                else if (Bonus4Type == 9)
+                {
+                    totalUti += Bonus4 * 2;
+                }
+                else if (Bonus4Type == 10)
                 {
                     totalUti += Bonus4 * .25;
                 }
@@ -964,15 +988,17 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus4 * 2;
                 }
-                else if (Bonus4Type < 115
-                  || Bonus4Type == 163
+                else if (Bonus4Type < 115)
+                {
+                    totalUti += Bonus4 * 5;
+                }
+                else if (Bonus4Type == 163
                   || Bonus4Type == 164
                   || Bonus4Type == 167
                   || Bonus4Type == 168)
                 {
-                    totalUti += Bonus4 * 5;
+                    totalUti += Bonus4 * 10;
                 }
-
             }
 
             if (Bonus5Type != 0 &&
@@ -982,7 +1008,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus5 * .6667;
                 }
-                else if (Bonus5Type == 9 || Bonus5Type == 10)
+                else if (Bonus5Type == 9)
+                {
+                    totalUti += Bonus5 * 2;
+                }
+                else if (Bonus5Type == 10)
                 {
                     totalUti += Bonus5 * .25;
                 }
@@ -990,15 +1020,17 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus5 * 2;
                 }
-                else if (Bonus5Type < 115
-                  || Bonus5Type == 163
+                else if (Bonus5Type < 115)
+                {
+                    totalUti += Bonus5 * 5;
+                }
+                else if (Bonus5Type == 163
                   || Bonus5Type == 164
                   || Bonus5Type == 167
                   || Bonus5Type == 168)
                 {
-                    totalUti += Bonus5 * 5;
+                    totalUti += Bonus5 * 10;
                 }
-
             }
 
             if (Bonus6Type != 0 &&
@@ -1008,7 +1040,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus6 * .6667;
                 }
-                else if (Bonus6Type == 9 || Bonus6Type == 10)
+                else if (Bonus6Type == 9)
+                {
+                    totalUti += Bonus6 * 2;
+                }
+                else if (Bonus6Type == 10)
                 {
                     totalUti += Bonus6 * .25;
                 }
@@ -1016,13 +1052,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus6 * 2;
                 }
-                else if (Bonus6Type < 115
-                  || Bonus6Type == 163
+                else if (Bonus6Type < 115)
+                {
+                    totalUti += Bonus6 * 5;
+                }
+                else if (Bonus6Type == 163
                   || Bonus6Type == 164
                   || Bonus6Type == 167
                   || Bonus6Type == 168)
                 {
-                    totalUti += Bonus6 * 5;
+                    totalUti += Bonus6 * 10;
                 }
             }
 
@@ -1033,7 +1072,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus7 * .6667;
                 }
-                else if (Bonus7Type == 9 || Bonus7Type == 10)
+                else if (Bonus7Type == 9)
+                {
+                    totalUti += Bonus7 * 2;
+                }
+                else if (Bonus7Type == 10)
                 {
                     totalUti += Bonus7 * .25;
                 }
@@ -1041,13 +1084,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus7 * 2;
                 }
-                else if (Bonus7Type < 115
-                  || Bonus7Type == 163
+                else if (Bonus7Type < 115)
+                {
+                    totalUti += Bonus7 * 5;
+                }
+                else if (Bonus7Type == 163
                   || Bonus7Type == 164
                   || Bonus7Type == 167
                   || Bonus7Type == 168)
                 {
-                    totalUti += Bonus7 * 5;
+                    totalUti += Bonus7 * 10;
                 }
             }
             if (Bonus8Type != 0 &&
@@ -1057,7 +1103,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus8 * .6667;
                 }
-                else if (Bonus8Type == 9 || Bonus8Type == 10)
+                else if (Bonus8Type == 9)
+                {
+                    totalUti += Bonus8 * 2;
+                }
+                else if (Bonus8Type == 10)
                 {
                     totalUti += Bonus8 * .25;
                 }
@@ -1065,13 +1115,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus8 * 2;
                 }
-                else if (Bonus8Type < 115
-                  || Bonus8Type == 163
+                else if (Bonus8Type < 115)
+                {
+                    totalUti += Bonus8 * 5;
+                }
+                else if (Bonus8Type == 163
                   || Bonus8Type == 164
                   || Bonus8Type == 167
                   || Bonus8Type == 168)
                 {
-                    totalUti += Bonus8 * 5;
+                    totalUti += Bonus8 * 10;
                 }
             }
             if (Bonus9Type != 0 &&
@@ -1081,7 +1134,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus9 * .6667;
                 }
-                else if (Bonus9Type == 9 || Bonus9Type == 10)
+                else if (Bonus9Type == 9)
+                {
+                    totalUti += Bonus9 * 2;
+                }
+                else if (Bonus9Type == 10)
                 {
                     totalUti += Bonus9 * .25;
                 }
@@ -1089,13 +1146,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus9 * 2;
                 }
-                else if (Bonus9Type < 115
-                  || Bonus9Type == 163
+                else if (Bonus9Type < 115)
+                {
+                    totalUti += Bonus9 * 5;
+                }
+                else if (Bonus9Type == 163
                   || Bonus9Type == 164
                   || Bonus9Type == 167
                   || Bonus9Type == 168)
                 {
-                    totalUti += Bonus9 * 5;
+                    totalUti += Bonus9 * 10;
                 }
             }
             if (Bonus10Type != 0 &&
@@ -1105,7 +1165,11 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus10 * .6667;
                 }
-                else if (Bonus10Type == 9 || Bonus10Type == 10)
+                else if (Bonus10Type == 9)
+                {
+                    totalUti += Bonus10 * 2;
+                }
+                else if (Bonus10Type == 10)
                 {
                     totalUti += Bonus10 * .25;
                 }
@@ -1113,13 +1177,16 @@ namespace DOL.GS {
                 {
                     totalUti += Bonus10 * 2;
                 }
-                else if (Bonus10Type < 115
-                  || Bonus10Type == 163
+                else if (Bonus10Type < 115)
+                {
+                    totalUti += Bonus10 * 5;
+                }
+                else if (Bonus10Type == 163
                   || Bonus10Type == 164
                   || Bonus10Type == 167
                   || Bonus10Type == 168)
                 {
-                    totalUti += Bonus10 * 5;
+                    totalUti += Bonus10 * 10;
                 }
             }
             if (ExtraBonusType != 0 &&
@@ -1129,7 +1196,11 @@ namespace DOL.GS {
                 {
                     totalUti += ExtraBonus * .6667;
                 }
-                else if (ExtraBonusType == 9 || ExtraBonusType == 10)
+                else if (ExtraBonusType == 9)
+                {
+                    totalUti += ExtraBonus * 2;
+                }
+                else if (ExtraBonusType == 10)
                 {
                     totalUti += ExtraBonus * .25;
                 }
@@ -1137,13 +1208,16 @@ namespace DOL.GS {
                 {
                     totalUti += ExtraBonus * 2;
                 }
-                else if (ExtraBonusType < 115
-                  || ExtraBonusType == 163
+                else if (ExtraBonusType < 115)
+                {
+                    totalUti += ExtraBonus * 5;
+                }
+                else if (ExtraBonusType == 163
                   || ExtraBonusType == 164
                   || ExtraBonusType == 167
                   || ExtraBonusType == 168)
                 {
-                    totalUti += ExtraBonus * 5;
+                    totalUti += ExtraBonus * 10;
                 }
             }
 
