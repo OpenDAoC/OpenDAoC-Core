@@ -9,13 +9,14 @@ using log4net;
 using DOL.Database;
 using DOL.Events;
 
+
 namespace DOL.GS.GameEvents
 {
 	/// <summary>
 	/// This class hold the Character Creation Custom Settings
 	/// This is the best example on how to change Characters parameters on Creation.
 	/// </summary>
-	/// TODO Pass Level and RRCap as serverproperties
+	///
 	public static class ThidrankiEventSettings
 	{
 
@@ -34,11 +35,13 @@ namespace DOL.GS.GameEvents
 		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
-			GameEventMgr.AddHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(OnRRLevelUp));
-			
+			GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
 			if (log.IsInfoEnabled)
 				log.Info("Thidranki Event initialized");
 		}
+		
+		public static int EventLvCap = ServerProperties.Properties.EVENT_LVCAP;
+		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
 		
 		/// <summary>
 		/// Unregister Character Creation Events
@@ -50,7 +53,7 @@ namespace DOL.GS.GameEvents
 		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(OnRRLevelUp));
+			GameEventMgr.RemoveHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
 		}
 		
 		/// <summary>
@@ -63,10 +66,13 @@ namespace DOL.GS.GameEvents
 		{
 			// Check Args
 			var chArgs = args as CharacterEventArgs;
-			
+
 			if (chArgs == null)
 				return;
 			
+			if (EventLvCap == 0)
+				return;
+
 			DOLCharacters ch = chArgs.Character;
 
 			if (ServerProperties.Properties.EVENT_THIDRANKI)
@@ -96,20 +102,23 @@ namespace DOL.GS.GameEvents
 						break;
 				}
 				
-				ch.Experience = GamePlayer.GetExperienceAmountForLevel(23);
-				ch.Level = 24;
+				ch.Experience = GamePlayer.GetExperienceAmountForLevel(EventLvCap - 1);
+				ch.Level = EventLvCap;
 				BindCharacter(ch);
 			}
 		}
 
-		public static void OnRRLevelUp(DOLEvent e, object sender, EventArgs args)
+		public static void OnRPGain(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer p = sender as GamePlayer;
 			
 			if (p == null)
 				return;
+			
+			if (EventRPCap == 0)
+				return;
 
-			if (ServerProperties.Properties.EVENT_THIDRANKI && p.RealmLevel >= 2)
+			if (ServerProperties.Properties.EVENT_THIDRANKI && p.RealmPoints > EventRPCap)
 			{
 				switch (p.Realm)
 				{

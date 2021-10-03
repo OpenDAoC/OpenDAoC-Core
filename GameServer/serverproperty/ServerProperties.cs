@@ -2491,6 +2491,18 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "event_thidranki", "Enables the Thidranki Event (i24 and port to event zone)", false)]
 		public static bool EVENT_THIDRANKI;
+		
+		/// <summary>
+		/// Maximum character level for the active event
+		/// </summary>
+		[ServerProperty("atlas", "event_lvcap", "Maximum character level for the active event", 0)]
+		public static int EVENT_LVCAP;
+		
+		/// <summary>
+		/// Maximum character realm points for the active event
+		/// </summary>
+		[ServerProperty("atlas", "event_rpcap", "Maximum character realm points for the active event", 0)]
+		public static int EVENT_RPCAP;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

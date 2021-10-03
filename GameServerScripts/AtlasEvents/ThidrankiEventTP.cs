@@ -16,7 +16,7 @@ namespace DOL.GS.Scripts
     public class ThidrankiEventTP : GameNPC
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
         public override bool AddToWorld()
         {
             Model = 2026;
@@ -38,6 +38,7 @@ namespace DOL.GS.Scripts
 		{
 			if(!base.WhisperReceive(source,str)) return false;
 		  	if(!(source is GamePlayer)) return false;
+		    if (EventRPCap == 0) return false;
 			GamePlayer t = (GamePlayer) source;
 			TurnTo(t.X,t.Y);
 			switch(str)
@@ -45,7 +46,7 @@ namespace DOL.GS.Scripts
 				case "fight":
 					if (!t.InCombatPvPInLast(20000))
 					{
-						if (t.RealmPoints < 7125)
+						if (t.RealmPoints < EventRPCap)
 						{
 							switch (t.Realm)
 							{
@@ -60,7 +61,7 @@ namespace DOL.GS.Scripts
 									break;
 							}
 						}
-						else { t.Client.Out.SendMessage("You have reached the Realm Rank cap of 2L0", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
+						else { t.Client.Out.SendMessage("You have reached the Realm Rank cap for this event", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					}
 					else { t.Client.Out.SendMessage("You need to wait a little longer before porting again", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					break;
