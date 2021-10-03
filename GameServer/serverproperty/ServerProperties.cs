@@ -2481,10 +2481,16 @@ namespace DOL.GS.ServerProperties
 
 		#region ATLAS
 		/// <summary>
-		/// Allow auto-account creation  This is also set in serverconfig.xml and must be enabled for this property to work.
+		/// Disables all XP gains for PvE and PvP kills
 		/// </summary>
 		[ServerProperty("atlas", "event_disable_xp", "Disables gaining XP for all player actions", false)]
 		public static bool EVENT_DISABLE_XP;
+		
+		/// <summary>
+		/// Moves all newly created characters to the Event Zone and levels them to level 24
+		/// </summary>
+		[ServerProperty("atlas", "event_thidranki", "Enables the Thidranki Event (i24 and port to event zone)", false)]
+		public static bool EVENT_THIDRANKI;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
