@@ -1686,7 +1686,7 @@ namespace DOL.GS.ServerRules
 							money += 20 * money / 100;
 						}
 						//long money = (long)(Money.GetMoney(0, 0, 17, 85, 0) * damagePercent * killedPlayer.Level / 50);
-						player.AddMoney(money, "You recieve {0}");
+						player.AddMoney(money, "You receive {0}");
 						InventoryLogging.LogInventoryAction(killer, player, eInventoryActionType.Other, money);
 					}
 
