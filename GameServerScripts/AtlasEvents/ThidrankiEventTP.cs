@@ -77,7 +77,7 @@ namespace DOL.GS.Scripts
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("\t Thidranki Event Teleporter initialized");
+            log.Info("Thidranki Event Teleporter initialized");
         }	
     }
 }
