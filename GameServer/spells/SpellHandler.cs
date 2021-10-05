@@ -414,7 +414,6 @@ namespace DOL.GS.Spells
 
 		public virtual void CreateECSEffect(GameLiving target, double effectiveness)
 		{
-			
 			//IECSGameEffect effect;
 			int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
@@ -2733,6 +2732,15 @@ namespace DOL.GS.Spells
 					}
 				}
 			}
+
+			if(Caster is GamePet)
+            {
+				//linearly scale pet damage based on level
+				//level 50 = 100% effective
+				//level 25 = 50% effective
+				//level 10 = 20% effective
+				effectiveness *= Math.Round((double)(Caster.Level * 2) / 100, 2); 
+            }
 
 			if (Caster is GamePlayer && (Caster as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Warlock && m_spell.IsSecondary)
 			{

@@ -85,7 +85,7 @@ namespace DOL.Tests.Integration.Server
 				
 				// Check item in Inventory
 				if (player.Inventory.GetFirstItemByName(task.ItemName,eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack) != null)
-					Assert.Fail("Player didn't recieve task item.");
+					Assert.Fail("Player didn't receive task item.");
 				
 				// Now give item tro trainer
 				task.Notify(GamePlayerEvent.GiveItem,player,new GiveItemEventArgs(player,trainer,item));

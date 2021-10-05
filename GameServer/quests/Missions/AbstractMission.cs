@@ -211,7 +211,7 @@ namespace DOL.GS.Quests
 
                 if (RewardMoney > 0)
                 {
-                    player.AddMoney(RewardMoney, "You recieve {0} for completing your task.");
+                    player.AddMoney(RewardMoney, "You receive {0} for completing your task.");
                     InventoryLogging.LogInventoryAction("(MISSION;" + MissionType + ")", player, eInventoryActionType.Quest, RewardMoney);
                 }
 

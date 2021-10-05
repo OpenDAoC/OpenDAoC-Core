@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
 
         /// [Atlas - Takii] Remove the "BoF/SB don't stack" rule from NF by giving them unique names.
         //public const string BofBaSb = "RA_DAMAGE_DECREASE";
-        public const string BofBaSb = "RA_ATLAS_SB";
+        public const string BofBaSb = "RA_ATLAS_BOF";
 
 		int m_range = 1500;
 		int m_duration = 30;

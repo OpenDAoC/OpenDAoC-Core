@@ -173,7 +173,7 @@ namespace DOL.GS.Quests
 					if (((KillTask)player.Task).MobName == target.Name)
 					{
 						((KillTask)player.Task).MobKilled = true;
-						player.Out.SendMessage("You must now return to " + target.Name + " to recieve your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("You must now return to " + target.Name + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					}
 				}

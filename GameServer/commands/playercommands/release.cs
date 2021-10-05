@@ -17,7 +17,9 @@
  *
  */
 
-namespace DOL.GS.Commands
+ using DOL.Database;
+
+ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&release", new string[] { "&rel" },
@@ -35,13 +37,17 @@ namespace DOL.GS.Commands
 			}
 
             if (args.Length > 1 && args[1].ToLower() == "city")
-			{
-					client.Player.Release(eReleaseType.City, false);
+            {
+	            if (ServerProperties.Properties.EVENT_THIDRANKI)
+		            return;
+				client.Player.Release(eReleaseType.City, false);
 					return;
 			}
 
             if (args.Length > 1 && args[1].ToLower() == "house")
             {
+	            if (ServerProperties.Properties.EVENT_THIDRANKI)
+		            return;
                 client.Player.Release(eReleaseType.House, false);
                 return;
             }

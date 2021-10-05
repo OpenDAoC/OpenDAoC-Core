@@ -41,8 +41,8 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// Constructs a new Empty Mind Effect
 		/// </summary>
-		public TheEmptyMindEffect(int effectiveness)
-			: base(RealmAbilities.TheEmptyMindAbility.m_duration)
+		public TheEmptyMindEffect(int effectiveness, Int32 duration)
+			: base(duration)
 		{
 			m_value = effectiveness;
 		}
@@ -114,7 +114,7 @@ namespace DOL.GS.Effects
 			get
 			{
 				var delveInfoList = new List<string>(4);
-				delveInfoList.Add("Grants the user 45 seconds of increased resistances to all magical damage by the percentage listed.");
+				delveInfoList.Add(string.Format("Grants the user {0} seconds of increased resistances to all magical damage by the percentage listed.", (m_duration / 1000).ToString()));
 				foreach (string str in base.DelveInfo)
 					delveInfoList.Add(str);
 

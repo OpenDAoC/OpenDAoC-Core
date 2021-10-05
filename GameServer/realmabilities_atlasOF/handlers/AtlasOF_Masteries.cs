@@ -55,7 +55,18 @@ namespace DOL.GS.RealmAbilities
     {
         public AtlasOF_MasteryOfArms(DBAbility dba, int level) : base(dba, level, eProperty.MeleeSpeed) { }
         protected override string ValueUnit { get { return "%"; } }
-        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugStrLevel(player, 3); }
+
+        public override bool CheckRequirement(GamePlayer player)
+        { 
+            // Atlas custom change - Friar pre-req is AugDex3 instead of a 100% useless AugStr3.
+            if (player.CharacterClass.ID == (byte)eCharacterClass.Friar)
+            {
+                return AtlasRAHelpers.HasAugDexLevel(player, 3);
+            }
+            
+            return AtlasRAHelpers.HasAugStrLevel(player, 3);
+        }
+
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
     }

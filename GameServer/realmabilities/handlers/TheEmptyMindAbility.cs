@@ -14,8 +14,6 @@ namespace DOL.GS.RealmAbilities
 	{
 		public TheEmptyMindAbility(DBAbility dba, int level) : base(dba, level) { }
 
-		public const Int32 m_duration = 45000; //45 seconds
-
 		public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
@@ -31,33 +29,10 @@ namespace DOL.GS.RealmAbilities
 					t_player.Out.SendMessage(living.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				}
 			}
-			
-			int effectiveness = 10;
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
-			{
-				switch (Level)
-				{
-					case 1: effectiveness = 10; break;
-					case 2: effectiveness = 15; break;
-					case 3: effectiveness = 20; break;
-					case 4: effectiveness = 25; break;
-					case 5: effectiveness = 30; break;
-					default: effectiveness = 0; break;
-				}				
-			}
-			else
-			{
-				switch (Level)
-				{
-					case 1: effectiveness = 10; break;
-					case 2: effectiveness = 20; break;
-					case 3: effectiveness = 30; break;
-					default: effectiveness = 0; break;
-				}
-			}
-			
-			
-			new TheEmptyMindEffect(effectiveness).Start(living);
+
+            int effectiveness = GetEffectiveness();
+
+			new TheEmptyMindEffect(effectiveness, GetDuration()).Start(living);
 			DisableSkill(living);
 		}
 
@@ -65,5 +40,36 @@ namespace DOL.GS.RealmAbilities
 		{
 			return 600;
 		}
-	}
+
+        protected virtual int GetDuration()
+        {
+            return 45000;
+        }
+
+        protected virtual int GetEffectiveness()
+        {
+			if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            {
+                switch (Level)
+                {
+                    case 1: return 10;
+                    case 2: return 15;
+                    case 3: return 20;
+                    case 4: return 25;
+                    case 5: return 30;
+                    default: return 0;
+                }
+            }
+            else
+            {
+                switch (Level)
+                {
+                    case 1: return 0;
+                    case 2: return 20;
+                    case 3: return 30;
+                    default: return 0;
+                }
+            }
+        }
+    }
 }
