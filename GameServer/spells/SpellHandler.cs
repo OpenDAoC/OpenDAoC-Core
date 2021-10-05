@@ -2748,7 +2748,7 @@ namespace DOL.GS.Spells
 
                 if (Caster.Name.ToLower().Contains("underhill") && Caster.Level < 40)
                 {
-					effectMod -= .16; //extra damage scaling for enchanter pets
+					effectMod -= .10; //extra damage scaling for enchanter pets
                 }
 
 				effectiveness *= effectMod;
