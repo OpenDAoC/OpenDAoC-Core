@@ -47,7 +47,7 @@ namespace DOL.GS
 			AddStatsToWeapon();
 			BroadcastLivingEquipmentUpdate();
 
-			ScalingFactor = 1;
+			ScalingFactor = 8;
 		}
 
         public GamePet(ABrain brain) : base(brain)
