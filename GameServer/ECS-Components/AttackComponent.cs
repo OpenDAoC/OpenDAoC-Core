@@ -1166,7 +1166,7 @@ namespace DOL.GS
                                     listAvailableTargets.Remove(target);
                                     numTargetsCanHit = (byte)Math.Min(numTargetsCanHit, listAvailableTargets.Count);
 
-                                    if (listAvailableTargets.Count > 1)
+                                    if (listAvailableTargets.Count > 0)
                                     {
                                         while (extraTargets.Count < numTargetsCanHit)
                                         {
