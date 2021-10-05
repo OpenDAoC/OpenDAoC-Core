@@ -2466,7 +2466,7 @@ namespace DOL.GS
 					AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
 					if (raLongWind != null)
                     {
-						longwind = 6 - (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
+						longwind -= (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
 					}
                     // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
                     #endregion
@@ -2483,7 +2483,7 @@ namespace DOL.GS
 
 				if (regen != 0)
 				{
-					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
+					Console.WriteLine("Endo Regen: " + ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen));
 				}
 			}
 			if (!sprinting)
