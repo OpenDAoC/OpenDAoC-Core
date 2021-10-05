@@ -62,12 +62,20 @@ namespace DOL.GS
 
             if (spellHandler != null)
             {
-                if(owner is GamePlayer pl)
+                if (m_newSpellHandler.Spell.IsInstantCast)
                 {
-                    pl.Out.SendMessage("You begin casting this spell as a follow-up!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    queuedSpellHandler = spellHandler;
+                    spellHandler = m_newSpellHandler;
                 }
+                else
+                {
+                    if (owner is GamePlayer pl)
+                    {
+                        pl.Out.SendMessage("You begin casting this spell as a follow-up!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    }
 
-                queuedSpellHandler = m_newSpellHandler;
+                    queuedSpellHandler = m_newSpellHandler;
+                }
             }
             else
             {
