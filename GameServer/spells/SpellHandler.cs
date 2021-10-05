@@ -1637,7 +1637,10 @@ namespace DOL.GS.Spells
 							if (!CheckEndCast(m_spellTarget))
 								castState = eCastState.Interrupted;
 							else
+							{
+								SendCastAnimation(0);
 								castState = eCastState.Finished;
+							}
 						}
 						else
 						{
@@ -1682,10 +1685,10 @@ namespace DOL.GS.Spells
 			if (castState == eCastState.Finished)
 			{
 				FinishSpellCast(m_spellTarget);
-                if (Spell.IsFocus)
-                    castState = eCastState.Focusing;
-                else
-				    castState = eCastState.Cleanup;
+				if (Spell.IsFocus)
+					castState = eCastState.Focusing;
+				else
+					castState = eCastState.Cleanup;
 			}
 			
 			if (castState == eCastState.Cleanup)
