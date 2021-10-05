@@ -71,7 +71,7 @@ namespace DOL.GS
                 {
                     if (owner is GamePlayer pl)
                     {
-                        pl.Out.SendMessage("You begin casting this spell as a follow-up!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                        pl.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
 
                     queuedSpellHandler = m_newSpellHandler;

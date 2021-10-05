@@ -1632,6 +1632,7 @@ namespace DOL.GS.Spells
 					{
 						m_started = Caster.CurrentRegion.Time;
 						_castStartTick = currentTick;
+						SendSpellMessages();
 						if (Spell.IsInstantCast)
 						{
 							if (!CheckEndCast(m_spellTarget))
