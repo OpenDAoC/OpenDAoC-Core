@@ -2948,7 +2948,7 @@ namespace DOL.GS.Spells
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
-                //target.OnAttack(ad);
+                target.OnAttackedByEnemy(ad);
 
                 // Treat non-damaging effects as attacks to trigger an immediate response and BAF
                 if (ad.Damage == 0 && ad.Target is GameNPC)
