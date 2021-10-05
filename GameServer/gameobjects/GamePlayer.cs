@@ -2483,7 +2483,7 @@ namespace DOL.GS
 
 				if (regen != 0)
 				{
-					Console.WriteLine("Endurance Regen: " + ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen));
+					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
 				}
 			}
 			if (!sprinting)
@@ -2497,8 +2497,10 @@ namespace DOL.GS
 				    || Endurance - 5 <= 0)
 					Sprint(false);
 			}
-
-			return 500 + Util.Random(EnduranceRegenerationPeriod);
+			var rate = EnduranceRegenerationPeriod;
+			if (IsSitting)
+				rate /= 2;
+			return 500 + Util.Random(rate);
 		}
 
 		/// <summary>

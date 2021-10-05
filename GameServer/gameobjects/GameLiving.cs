@@ -5203,7 +5203,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The default frequency of regenerating endurance in milliseconds
 		/// </summary>
-		protected const ushort m_enduranceRegenerationPeriod = 1000;
+		protected const ushort m_enduranceRegenerationPeriod = 2000;
 
 		/// <summary>
 		/// Interval for endurance regeneration tics
