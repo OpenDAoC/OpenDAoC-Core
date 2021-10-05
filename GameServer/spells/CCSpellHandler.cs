@@ -311,7 +311,7 @@ namespace DOL.GS.Spells
 			}
 
 			SendEffectAnimation(target, 0, false, 0);
-			MessageToCaster(target.GetName(0, true) + " resists the effect!", eChatType.CT_SpellResisted);
+			MessageToCaster(target.GetName(0, true) + " resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", eChatType.CT_SpellResisted);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 

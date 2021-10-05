@@ -339,7 +339,7 @@ namespace DOL.GS.Spells
                 if (Util.Chance(resistChance))
                 {
                 	
-                    MessageToCaster(target.GetName(0, true) + " resists the charm!", eChatType.CT_SpellResisted);
+                    MessageToCaster(target.GetName(0, true) + " resists the charm!" + " (" + resistChance + "%)" , eChatType.CT_SpellResisted);
                     return;
                 }
             }
