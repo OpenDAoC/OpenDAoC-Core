@@ -523,6 +523,11 @@ namespace DOL.GS
                             var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
                             EntityManager.AddEffect(immunityEffect);
                         }
+                        else if (e.EffectType == eEffect.Mez)
+                        {
+                            var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
+                            EntityManager.AddEffect(immunityEffect);
+                        }
 
                         e.Owner.DisableTurning(false);
 
