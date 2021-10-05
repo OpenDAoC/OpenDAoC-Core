@@ -28,6 +28,7 @@ namespace DOL.GS
             {
                 case (byte)eSpellType.Mesmerize:
                     return eEffect.MezImmunity;
+                case (byte)eSpellType.StyleStun:
                 case (byte)eSpellType.Stun:
                     return eEffect.StunImmunity;
                 case (byte)eSpellType.SpeedDecrease:
