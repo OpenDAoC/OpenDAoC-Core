@@ -4106,7 +4106,7 @@ namespace DOL.GS
                 }
             }
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff) &&
-                effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault().SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault().SpellHandler.Spell.SpellType != (byte)eSpellType.StyleSpeedDecrease)
             {
                 switch (ad.AttackResult)
                 {
