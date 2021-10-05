@@ -4690,6 +4690,7 @@ namespace DOL.GS.Spells
 			switch ((eSpellType)Spell.SpellType)
             {
 				case eSpellType.CombatSpeedDebuff:
+				
 				case eSpellType.DexterityBuff:
 				case eSpellType.DexterityDebuff:
 				case eSpellType.DexterityQuicknessBuff:
@@ -4752,6 +4753,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.CelerityBuff:
 				case eSpellType.SavageCombatSpeedBuff:
+				case eSpellType.CombatSpeedBuff:
 					dw.AddKeyValuePair(parm, "36");
 					break;
 				case eSpellType.HeatColdMatterBuff:
@@ -4895,6 +4897,9 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.CelerityBuff:
 					dw.AddKeyValuePair("power_level", Spell.Value * 2);
+					break;
+				case eSpellType.CombatSpeedBuff:
+					dw.AddKeyValuePair("power_level", Spell.Value);
 					break;
 				case eSpellType.CombatSpeedDebuff:
 					dw.AddKeyValuePair("power_level", -Spell.Value);
