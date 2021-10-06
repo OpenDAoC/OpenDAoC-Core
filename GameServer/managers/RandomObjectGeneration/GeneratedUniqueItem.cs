@@ -3354,12 +3354,12 @@ namespace DOL.GS
 					return (eDamageType)Util.Random(1, 2);
 				//do shields return the shield size?
 				case eObjectType.Shield:
-					//return (eDamageType)GetShieldSizeFromClass(charClass);
-					return (eDamageType)Util.Random(1, 3);
+					return (eDamageType)GetShieldSizeFromClass(charClass);
+					//return (eDamageType)Util.Random(1, 3);
 			}
 			return eDamageType.Natural;
 		}
-		/*
+		
 		private static int GetShieldSizeFromClass(eCharacterClass charClass)
 		{
 			//shield size is based off of damage type
@@ -3399,7 +3399,7 @@ namespace DOL.GS
 					return 3;
 				default: return 1;
 			}
-		}*/
+		}
 
 		#endregion
 
