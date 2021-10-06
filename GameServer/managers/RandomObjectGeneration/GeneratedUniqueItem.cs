@@ -5145,11 +5145,11 @@ namespace DOL.GS
 	        eProperty.Skill_Stealth,
 	        eProperty.Skill_Thrusting,
 	        eProperty.Skill_Wind,
-			eProperty.Skill_Aura_Manipulation, //Maulers
-			eProperty.Skill_FistWraps, //Maulers
-			eProperty.Skill_MaulerStaff, //Maulers
-			eProperty.Skill_Magnetism, //Maulers
-			eProperty.Skill_Power_Strikes, //Maulers
+			//eProperty.Skill_Aura_Manipulation, //Maulers
+			//eProperty.Skill_FistWraps, //Maulers
+			//eProperty.Skill_MaulerStaff, //Maulers
+			//eProperty.Skill_Magnetism, //Maulers
+			//eProperty.Skill_Power_Strikes, //Maulers
         };
 
 
@@ -5182,17 +5182,17 @@ namespace DOL.GS
 	        eProperty.Skill_Scythe,
 	        //eProperty.Skill_Nightshade, // bonus not used
 	        //eProperty.Skill_Pathfinding, // bonus not used
-	        eProperty.Skill_Dementia,
-	        eProperty.Skill_ShadowMastery,
-	        eProperty.Skill_VampiiricEmbrace,
-	        eProperty.Skill_EtherealShriek,
-	        eProperty.Skill_PhantasmalWail,
-	        eProperty.Skill_SpectralForce,
-			eProperty.Skill_Aura_Manipulation, //Maulers
-			eProperty.Skill_FistWraps, //Maulers
-			eProperty.Skill_MaulerStaff, //Maulers
-			eProperty.Skill_Magnetism, //Maulers
-			eProperty.Skill_Power_Strikes, //Maulers
+	        //eProperty.Skill_Dementia,
+	        //eProperty.Skill_ShadowMastery,
+	        //eProperty.Skill_VampiiricEmbrace,
+	        //eProperty.Skill_EtherealShriek,
+	        //eProperty.Skill_PhantasmalWail,
+	        //eProperty.Skill_SpectralForce,
+			//eProperty.Skill_Aura_Manipulation, //Maulers
+			//eProperty.Skill_FistWraps, //Maulers
+			//eProperty.Skill_MaulerStaff, //Maulers
+			//eProperty.Skill_Magnetism, //Maulers
+			//eProperty.Skill_Power_Strikes, //Maulers
         };
 
 		private static eProperty[] MidSkillBonus = new eProperty[] 
@@ -5223,16 +5223,16 @@ namespace DOL.GS
 	        eProperty.Skill_HandToHand,
     		//eProperty.Skill_Pacification,
 	        //eProperty.Skill_Savagery,
-	        eProperty.Skill_OdinsWill,
-	        eProperty.Skill_Cursing,
-	        eProperty.Skill_Hexing,
-	        eProperty.Skill_Witchcraft,
+	        //eProperty.Skill_OdinsWill,
+	        //eProperty.Skill_Cursing,
+	        //eProperty.Skill_Hexing,
+	        //eProperty.Skill_Witchcraft,
     		eProperty.Skill_Summoning,
-			eProperty.Skill_Aura_Manipulation, //Maulers
-			eProperty.Skill_FistWraps, //Maulers
-			eProperty.Skill_MaulerStaff, //Maulers
-			eProperty.Skill_Magnetism, //Maulers
-			eProperty.Skill_Power_Strikes, //Maulers
+			//eProperty.Skill_Aura_Manipulation, //Maulers
+			//eProperty.Skill_FistWraps, //Maulers
+			//eProperty.Skill_MaulerStaff, //Maulers
+			//eProperty.Skill_Magnetism, //Maulers
+			//eProperty.Skill_Power_Strikes, //Maulers
 		};
 
 
@@ -5297,8 +5297,6 @@ namespace DOL.GS
 			eObjectType.CompositeBow ,
 			eObjectType.LeftAxe,
 			eObjectType.HandToHand,
-			eObjectType.FistWraps,//Maulers
-			eObjectType.MaulerStaff,//Maulers
 			eObjectType.Sword,
 			eObjectType.Hammer,
 			eObjectType.Axe,
@@ -5308,8 +5306,6 @@ namespace DOL.GS
 			eObjectType.CompositeBow ,
 			eObjectType.LeftAxe,
 			eObjectType.HandToHand,
-			eObjectType.FistWraps,//Maulers
-			eObjectType.MaulerStaff,//Maulers
 		};
 
 		private static eObjectType[] MidgardArmor = new eObjectType[] 
