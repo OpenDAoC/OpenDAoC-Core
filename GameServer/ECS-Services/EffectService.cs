@@ -714,7 +714,7 @@ namespace DOL.GS
                         {
                             if (e.EffectType == eEffect.MovementSpeedDebuff)
                             {
-                                if (e.SpellHandler.Spell.SpellType != (byte)eSpellType.StyleSpeedDecrease)
+                                if (e.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                                 {
                                     ECSImmunityEffect immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
                                     EntityManager.AddEffect(immunityEffect);

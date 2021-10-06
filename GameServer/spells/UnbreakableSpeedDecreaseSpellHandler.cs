@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
-				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null || EffectListService.GetEffectOnTarget(target, eEffect.MovementSpeedDebuff) != null)
+				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null)// || EffectListService.GetEffectOnTarget(target, eEffect.MovementSpeedDebuff) != null)
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				return;
