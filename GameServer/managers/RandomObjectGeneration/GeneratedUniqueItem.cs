@@ -39,12 +39,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 
 using DOL.Events;
 using DOL.Database;
-using DOL.GS.PacketHandler;
-using static DOL.GS.CommanderPet;
 
 namespace DOL.GS
 {

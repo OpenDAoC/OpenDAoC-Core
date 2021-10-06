@@ -500,7 +500,7 @@ namespace DOL.AI.Brain
             get { return m_AggroLOS; }
             set { m_AggroLOS = value; }
         }
-        private void CheckAggroLOS(GamePlayer player, ushort response, ushort targetOID)
+        protected void CheckAggroLOS(GamePlayer player, ushort response, ushort targetOID)
         {
             if ((response & 0x100) == 0x100)
                 AggroLOS = true;

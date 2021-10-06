@@ -34,7 +34,7 @@ namespace DOL.GS.PlayerClass
 			m_tertiaryStat = eStat.CON;
 			m_manaStat = eStat.PIE;
 			//changed to increase in damage table
-			m_wsbase = 400;
+			m_wsbase = 360;
 			m_baseHP = 720;
 		}
 

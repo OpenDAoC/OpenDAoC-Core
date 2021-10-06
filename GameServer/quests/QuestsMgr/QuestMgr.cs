@@ -24,7 +24,7 @@ using System.Linq;
 
 using log4net;
 
-using DOL.GS.Quests.Atlantis;
+// using DOL.GS.Quests.Atlantis;
 using DOL.Database;
 
 namespace DOL.GS.Quests
@@ -80,15 +80,15 @@ namespace DOL.GS.Quests
                         if (log.IsInfoEnabled)
                             log.Info("Registering quest: " + type.FullName);
                         RegisterQuestType(type);
-						if (type.IsSubclassOf(typeof(ArtifactQuest)))
-						{
-							log.Info(String.Format("Initialising quest: {0}", type.FullName));
-							type.InvokeMember("Init",
-								BindingFlags.InvokeMethod,
-								null,
-								null,
-								new object[] { });
-						}
+						// if (type.IsSubclassOf(typeof(ArtifactQuest)))
+						// {
+						// 	log.Info(String.Format("Initialising quest: {0}", type.FullName));
+						// 	type.InvokeMember("Init",
+						// 		BindingFlags.InvokeMethod,
+						// 		null,
+						// 		null,
+						// 		new object[] { });
+						// }
                     }
                 }
             }

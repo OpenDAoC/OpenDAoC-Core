@@ -17,6 +17,7 @@
  *
  */
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
@@ -46,6 +47,7 @@ namespace DOL.AI.Brain
 
 			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
 			{
+				player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
 				if (m_aggroTable.ContainsKey(player))
 					continue; // add only new players
 				if (!player.IsAlive || player.ObjectState != GameObject.eObjectState.Active || player.IsStealthed)
@@ -55,6 +57,8 @@ namespace DOL.AI.Brain
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
 					continue;
 				if (!Body.IsWithinRadius(player, AggroRange))
+					continue;
+				if (!AggroLOS)
 					continue;
 
 				AddToAggroList(player, player.EffectiveLevel << 1);
