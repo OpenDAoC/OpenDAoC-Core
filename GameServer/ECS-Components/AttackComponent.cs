@@ -1597,7 +1597,7 @@ namespace DOL.GS
                 default: broadcast = false; break;
             }
             SendAttackingCombatMessages(ad);
-            if(owner is GamePlayer)
+            if(owner is GamePlayer && target != null)
             {
                 (owner as GamePlayer).Out.SendObjectUpdate(target);
             }
