@@ -5,6 +5,7 @@ using DOL.GS;
 using DOL.GS.Keeps;
 using DOL.GS.Movement;
 using System.Threading.Tasks;
+using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
@@ -133,7 +134,8 @@ namespace DOL.AI.Brain
                 if (player == null) continue;
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
 				{
-                    if ( !Body.IsWithinRadius( player, AggroRange ) )
+					player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
+					if ( !Body.IsWithinRadius( player, AggroRange ) )
                         continue;
                     if ((Body as GameKeepGuard).Component != null && !GameServer.KeepManager.IsEnemy(Body as GameKeepGuard, player, true))
 						continue;
@@ -146,8 +148,11 @@ namespace DOL.AI.Brain
 					{
 						Body.Say("Want to attack player " + player.Name);
 					}
-
-					AddToAggroList(player, player.EffectiveLevel << 1);
+                    if (AggroLOS)
+                    {
+						AddToAggroList(player, player.EffectiveLevel << 1);
+					}
+					
 					return;
 				}
 			}
