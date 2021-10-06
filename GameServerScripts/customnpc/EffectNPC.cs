@@ -936,6 +936,11 @@ namespace DOL.GS
             if (rps is >= 44625 and < 52725) { player.RealmLevel = 16;} else
             if (rps is >= 52725 and < 61750) { player.RealmLevel = 17;} else
             if (rps is >= 61750 and < 71750) { player.RealmLevel = 18;}
+            
+            player.Out.SendUpdatePlayer();
+            player.Out.SendCharStatsUpdate();
+            player.Out.SendUpdatePoints();
+            player.UpdatePlayerStatus();
         }
         #endregion
         
@@ -990,9 +995,8 @@ namespace DOL.GS
             player.RealmPoints -= price;
             player.RespecRealm();
             SetRealmLevel(player,(int)player.RealmPoints);
-            player.SaveIntoDatabase();
             
-            SendReply(player, "Look at that, the color has come out beautifully. Wear it with pride.");
+            SendReply(player, "Thanks for the donation. The color has come out beautifully, wear it with pride.");
 
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -1058,9 +1062,8 @@ namespace DOL.GS
             player.RealmPoints -= price;
             player.RespecRealm();
             SetRealmLevel(player,(int)player.RealmPoints);
-            player.SaveIntoDatabase();
 
-            SendReply(player, "May the " + item.Name + " lead you to a bright future.");
+            SendReply(player, "Thanks for your donation. May the " + item.Name + " lead you to a bright future.");
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 visplayer.Out.SendSpellCastAnimation(this, spell, 30);
