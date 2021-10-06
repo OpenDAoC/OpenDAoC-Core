@@ -4906,7 +4906,8 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair("power_level", Spell.Value * 2);
 					break;
 				case eSpellType.CombatSpeedBuff:
-					dw.AddKeyValuePair("power_level", Spell.Value);
+				case eSpellType.Confusion:
+					dw.AddKeyValuePair("power_level", Spell.Value > 0 ? Spell.Value : 100);
 					break;
 				case eSpellType.CombatSpeedDebuff:
 					dw.AddKeyValuePair("power_level", -Spell.Value);
@@ -5001,6 +5002,10 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.PiercingMagic:
 					dw.AddKeyValuePair("delve_string", $"Effectiveness of the target's spells is increased by {(int)Spell.Value}%. Against higher level opponents than the target, this should reduce the chance of a full resist.");
+					break;
+				case eSpellType.StyleTaunt:
+					if (Spell.Value < 0)
+						dw.AddKeyValuePair("delve_string", $"Decreases your threat to monster targets by {-(int)Spell.Value} damage.");
 					break;
 			}
 		}
