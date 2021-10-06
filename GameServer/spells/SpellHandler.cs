@@ -2187,6 +2187,11 @@ namespace DOL.GS.Spells
 					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
 			}
 
+			if(Caster is GamePlayer)
+            {
+				(Caster as GamePlayer).Out.SendObjectUpdate(target);
+            }
+
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 		}
 

@@ -1597,6 +1597,10 @@ namespace DOL.GS
                 default: broadcast = false; break;
             }
             SendAttackingCombatMessages(ad);
+            if(owner is GamePlayer)
+            {
+                (owner as GamePlayer).Out.SendObjectUpdate(target);
+            }
             #region Prevent Flight
             if (ad.Attacker is GamePlayer)
             {
