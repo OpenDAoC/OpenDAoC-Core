@@ -37,6 +37,7 @@ namespace DOL.GS.Scripts
 			player.Out.SendMessage("Hello " + player.Name + "! We're happy to see you here, supporting your realm.\n" +
 				"For your efforts, " + realmName + " has procured a [full suit] of equipment. " +
 				"Additionally, I can provide you with some [weapons]. \n\n" +
+                "This is the best gear we could provide on short notice. If you want something better, you'll have to take it from your enemies on the battlefield. " + 
 				"Go forth, and do battle!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			return true;
 		}
@@ -135,11 +136,29 @@ namespace DOL.GS.Scripts
 					color = eColor.Blue_4;
 					break;
 			}
-
-			if(type == eObjectType.HandToHand || type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible)
+			if(type == eObjectType.Shield)
             {
+				int shieldSize = GetShieldSizeFromClass(charClass);
+				GeneratedUniqueItem item = null;
+				item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level - 4), type, invSlot, (eDamageType)shieldSize);
+				item.AllowAdd = true;
+				item.Color = (int)color;
+				item.IsTradable = false;
+				GameServer.Database.AddObject(item);
+				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+				invitem.SellPrice = 1;
+				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+			}
+			else if(type == eObjectType.HandToHand || type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible || type == eObjectType.LargeWeapons)
+            {
+				int endDmgType = 4; //default for all 3, slash/crush/thrust
+				if(type == eObjectType.LargeWeapons || realm == eRealm.Midgard)
+                {
+					endDmgType = 3; //only slash/crush
+                }
+
 				//one for each damage type
-                for (int i = 1; i < 4; i++)
+                for (int i = 1; i < endDmgType; i++)
                 {
 					GeneratedUniqueItem dmgTypeItem = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level - 4), type, invSlot, (eDamageType) i);
 					dmgTypeItem.AllowAdd = true;
@@ -164,7 +183,48 @@ namespace DOL.GS.Scripts
 			}	
 		}
 
-		private List<eObjectType> GenerateWeaponsForClass(eCharacterClass charClass, GameLiving player) {
+        private int GetShieldSizeFromClass(eCharacterClass charClass)
+        {
+			//shield size is based off of damage type
+			//1 = small shield
+			//2 = medium
+			//3 = large
+            switch (charClass)
+            {
+				case eCharacterClass.Berserker:
+				case eCharacterClass.Skald:
+				case eCharacterClass.Savage:
+				case eCharacterClass.Healer:
+				case eCharacterClass.Shaman:
+				case eCharacterClass.Shadowblade:
+				case eCharacterClass.Bard:
+				case eCharacterClass.Druid:
+				case eCharacterClass.Nightshade:
+				case eCharacterClass.Ranger:
+				case eCharacterClass.Infiltrator:
+				case eCharacterClass.Minstrel:
+				case eCharacterClass.Scout:
+					return 1;
+
+				case eCharacterClass.Thane:
+				case eCharacterClass.Warden:
+				case eCharacterClass.Blademaster:
+				case eCharacterClass.Champion:
+				case eCharacterClass.Mercenary:
+				case eCharacterClass.Cleric:
+					return 2;
+
+				case eCharacterClass.Warrior:
+				case eCharacterClass.Hero:
+				case eCharacterClass.Armsman:
+				case eCharacterClass.Paladin:
+				case eCharacterClass.Reaver:
+					return 3;
+				default: return 1;
+            }
+        }
+
+        private List<eObjectType> GenerateWeaponsForClass(eCharacterClass charClass, GameLiving player) {
 			List<eObjectType> weapons = new List<eObjectType>();
 
             switch (charClass) {
@@ -196,7 +256,9 @@ namespace DOL.GS.Scripts
 				case eCharacterClass.Savage:
 					GenerateWeapon(player, charClass, eObjectType.HandToHand, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.HandToHand, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.TwoHandedWeapon, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.TwoHandWeapon);
 					break;
 
 				case eCharacterClass.Berserker:
@@ -204,14 +266,18 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.LeftAxe, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.TwoHandedWeapon, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.TwoHandWeapon);
 					break;
 
 				case eCharacterClass.Shadowblade:
 					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.LeftAxe, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.TwoHandedWeapon, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.TwoHandWeapon);
 					break;
 
 				case eCharacterClass.Warrior:
@@ -230,7 +296,9 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.TwoHandedWeapon, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.TwoHandWeapon);
 					break;
 
 				case eCharacterClass.Hunter:
@@ -246,6 +314,7 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Staff, eInventorySlot.TwoHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
 					break;
 
 				case eCharacterClass.Bard:
