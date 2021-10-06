@@ -387,10 +387,10 @@ namespace DOL.GS
                       "[Ship Lime Green] (" + dyePrice + " RPs)\n" +
                       "[Ship Green] (" + dyePrice + " RPs)\n" +
                       "[Ship Green 2] (" + dyePrice + " RPs)\n" +
-                      "[Light green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Olive green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Sage green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Lime green - crafter only] (" + dyePrice + " RPs)\n" +
+                      "[Light Green - crafter only] (" + dyePrice + " RPs)\n" +
+                      "[Olive Green - crafter only] (" + dyePrice + " RPs)\n" +
+                      "[Sage Green - crafter only] (" + dyePrice + " RPs)\n" +
+                      "[Lime Green - crafter only] (" + dyePrice + " RPs)\n" +
                       "[Forest Green - crafter only] (" + dyePrice + " RPs)\n");
                     break;
                 case "Reds":
@@ -419,8 +419,8 @@ namespace DOL.GS
                         "[Yellow 1] (" + dyePrice + " RPs)\n" +
                         "[Yellow 2] (" + dyePrice + " RPs)\n" +
                         "[Yellow 3] (" + dyePrice + " RPs)\n" +
-                        "[Light gold - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dark gold - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Light Gold - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Dark Gold - crafter only] (" + dyePrice + " RPs)\n" +
                         "[Gold Metal] (" + dyePrice + " RPs)\n" +
                         "[Ship Yellow] (" + dyePrice + " RPs)\n");
                         break;
@@ -440,8 +440,8 @@ namespace DOL.GS
                         "[Ship Purple 2] (" + dyePrice + " RPs)\n" +
                         "[Ship Purple 3] (" + dyePrice + " RPs)\n" +
                         "[Purple - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dark purple - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dusky purple - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Dark Purple - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Dusky Purple - crafter only] (" + dyePrice + " RPs)\n");
                     break;
                 case "Violets":
                     SendReply(player,
@@ -449,8 +449,8 @@ namespace DOL.GS
                         "[-Violet Cloth] (" + dyePrice + " RPs)\n" +
                         "[Violet Cloth] (" + dyePrice + " RPs)\n" +
                         "[Bright Violet Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Hot pink - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dusky rose - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Hot Pink - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Dusky Rose - crafter only] (" + dyePrice + " RPs)\n" +
                         "[Ship Pink] (" + dyePrice + " RPs)\n" +
                         "[Violet] (" + dyePrice + " RPs)\n");
                         break;
@@ -466,7 +466,7 @@ namespace DOL.GS
                         "[Ship Orange] (" + dyePrice + " RPs)\n" +
                         "[Ship Orange 2] (" + dyePrice + " RPs)\n" +
                         "[Orange 3] (" + dyePrice + " RPs)\n" +
-                        "[Dirty orange - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Dirty Orange - crafter only] (" + dyePrice + " RPs)\n");
                     break;
                 case "Blacks":
                     SendReply(player,
@@ -479,9 +479,9 @@ namespace DOL.GS
                         "[Gray] (" + dyePrice + " RPs)\n" +
                         "[Gray 2] (" + dyePrice + " RPs)\n" +
                         "[Gray 3] (" + dyePrice + " RPs)\n" +
-                        "[Light gray - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Light Gray - crafter only] (" + dyePrice + " RPs)\n" +
                         "[Gray  - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Olive gray - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Olive Gray - crafter only] (" + dyePrice + " RPs)\n");
                     break;
                 case "Other":
                     SendReply(player,
@@ -500,7 +500,7 @@ namespace DOL.GS
                         "[Ship Charcoal] (" + dyePrice + " RPs)\n" +
                         "[Ship Charcoal 2] (" + dyePrice + " RPs)\n" +
                         "[Plum - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dark tan - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Dark Tan - crafter only] (" + dyePrice + " RPs)\n" +
                         "[White] (" + dyePrice + " RPs)\n");
                     break;
 
@@ -753,13 +753,13 @@ namespace DOL.GS
                 case "Yellow 2":
                     SetColor(player, 82, dyePrice);
                     break;
-                case "Yelow 3":
+                case "Yellow 3":
                     SetColor(player, 83, dyePrice);
                     break;
                 case "violet":
                     SetColor(player, 84, dyePrice);
                     break;
-                case "mauve":
+                case "Mauve":
                     SetColor(player, 85, dyePrice);
                     break;
                 case "Blue 5":
@@ -795,10 +795,10 @@ namespace DOL.GS
                 case "Ship Green 2":
                     SetColor(player, 108, dyePrice);
                     break;
-                case "Ship Turquiose":
+                case "Ship Turquoise":
                     SetColor(player, 109, dyePrice);
                     break;
-                case "Ship Turqiose 2":
+                case "Ship Turquoise 2":
                     SetColor(player, 110, dyePrice);
                     break;
                 case "Ship Blue":
@@ -828,67 +828,67 @@ namespace DOL.GS
                 case "Ship Charcoal 2":
                     SetColor(player, 119, dyePrice);
                     break;
-                case "red - crafter only":
+                case "Red - crafter only":
                     SetColor(player, 120, dyePrice);
                     break;
-                case "plum - crafter only":
+                case "Plum - crafter only":
                     SetColor(player, 121, dyePrice);
                     break;
-                case "purple - crafter only":
+                case "Purple - crafter only":
                     SetColor(player, 122, dyePrice);
                     break;
-                case "dark purple - crafter only":
+                case "Dark Purple - crafter only":
                     SetColor(player, 123, dyePrice);
                     break;
-                case "dusky purple - crafter only":
+                case "Dusky Purple - crafter only":
                     SetColor(player, 124, dyePrice);
                     break;
-                case "light gold - crafter only":
+                case "Light Gold - crafter only":
                     SetColor(player, 125, dyePrice);
                     break;
-                case "dark gold - crafter only":
+                case "Dark Gold - crafter only":
                     SetColor(player, 126, dyePrice);
                     break;
-                case "dirty orange - crafter only":
+                case "Dirty Orange - crafter only":
                     SetColor(player, 127, dyePrice);
                     break;
-                case "dark tan - crafter only":
+                case "Dark Tan - crafter only":
                     SetColor(player, 128, dyePrice);
                     break;
-                case "brown - crafter only":
+                case "Brown - crafter only":
                     SetColor(player, 129, dyePrice);
                     break;
-                case "light green - crafter only":
+                case "Light Green - crafter only":
                     SetColor(player, 130, dyePrice);
                     break;
-                case "olive green - crafter only":
+                case "Olive Green - crafter only":
                     SetColor(player, 131, dyePrice);
                     break;
-                case "cornflower blue - crafter only":
+                case "Cornflower Blue - crafter only":
                     SetColor(player, 132, dyePrice);
                     break;
-                case "light gray - crafter only":
+                case "Light Gray - crafter only":
                     SetColor(player, 133, dyePrice);
                     break;
-                case "hot pink - crafter only":
+                case "Hot Pink - crafter only":
                     SetColor(player, 134, dyePrice);
                     break;
-                case "dusky rose - crafter only":
+                case "Dusky Rose - crafter only":
                     SetColor(player, 135, dyePrice);
                     break;
-                case "sage green - crafter only":
+                case "Sage Green - crafter only":
                     SetColor(player, 136, dyePrice);
                     break;
-                case "lime green - crafter only":
+                case "Lime Green - crafter only":
                     SetColor(player, 137, dyePrice);
                     break;
-                case "gray teal - crafter only":
+                case "Gray Teal - crafter only":
                     SetColor(player, 138, dyePrice);
                     break;
-                case "gray blue - crafter only":
+                case "Gray Blue - crafter only":
                     SetColor(player, 139, dyePrice);
                     break;
-                case "olive gray - crafter only":
+                case "Olive Gray - crafter only":
                     SetColor(player, 140, dyePrice);
                     break;
                 case "Navy Blue - crafter only":

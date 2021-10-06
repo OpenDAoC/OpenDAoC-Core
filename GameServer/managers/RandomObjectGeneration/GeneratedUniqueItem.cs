@@ -2718,8 +2718,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return GetMidgardWeapon(charClass);//MidgardArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return GetMidgardArmorType(charClass, level);//MidgardWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GetMidgardArmorType(charClass, level); //MidgardArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GetMidgardWeapon(charClass); //MidgardWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
@@ -2739,8 +2739,8 @@ namespace DOL.GS
 
 						switch (type)
 						{
-							case eGenerateType.Armor: return GetHiberniaWeapon(charClass);//HiberniaArmor[Util.Random(0, maxArmor)];
-							case eGenerateType.Weapon: return GetHiberniaArmorType(charClass, level);//HiberniaWeapons[Util.Random(0, maxWeapon)];
+							case eGenerateType.Armor: return GetHiberniaArmorType(charClass, level);//HiberniaArmor[Util.Random(0, maxArmor)];
+							case eGenerateType.Weapon: return GetHiberniaWeapon(charClass);//HiberniaWeapons[Util.Random(0, maxWeapon)];
 							case eGenerateType.Magical: return eObjectType.Magical;
 						}
 						break;
