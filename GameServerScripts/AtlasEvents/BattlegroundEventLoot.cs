@@ -137,10 +137,16 @@ namespace DOL.GS.Scripts
 					break;
 			}
 
-			if(type == eObjectType.HandToHand || type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible)
+			if(type == eObjectType.HandToHand || type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible || type == eObjectType.LargeWeapons)
             {
+				int endDmgType = 4; //default for all 3, slash/crush/thrust
+				if(type == eObjectType.LargeWeapons || realm == eRealm.Midgard)
+                {
+					endDmgType = 3; //only slash/crush
+                }
+
 				//one for each damage type
-                for (int i = 1; i < 4; i++)
+                for (int i = 1; i < endDmgType; i++)
                 {
 					GeneratedUniqueItem dmgTypeItem = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level - 4), type, invSlot, (eDamageType) i);
 					dmgTypeItem.AllowAdd = true;
