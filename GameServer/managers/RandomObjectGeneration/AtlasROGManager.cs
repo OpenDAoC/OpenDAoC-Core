@@ -1,5 +1,7 @@
 ﻿using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +52,7 @@ namespace DOL.GS {
                 GameServer.Database.AddObject(item);
                 InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
 
