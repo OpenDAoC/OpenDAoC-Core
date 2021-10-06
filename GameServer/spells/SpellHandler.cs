@@ -643,7 +643,7 @@ namespace DOL.GS.Spells
 				return false;
 			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0 || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
 				return false;
-			if (IsCasting && Stage < 2)
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2)
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -1230,19 +1230,19 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
-				m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
-			{
-				if(Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
-				{
-					if (!quiet)
-					{
-						if (Caster.LastInterruptMessage != "") MessageToCaster(Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
-						else MessageToCaster("You are interrupted and must wait " + ((Caster.InterruptTime - m_started) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
-					}
-					return false;
-				}
-			}
+			//if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
+			//	m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
+			//{
+			//	if(Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
+			//	{
+			//		if (!quiet)
+			//		{
+			//			if (Caster.LastInterruptMessage != "") MessageToCaster(Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
+			//			else MessageToCaster("You are interrupted and must wait " + ((Caster.InterruptTime - m_started) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
+			//		}
+			//		return false;
+			//	}
+			//}
 
 			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
 			{
@@ -2963,7 +2963,8 @@ namespace DOL.GS.Spells
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
-                target.OnAttackedByEnemy(ad);
+				//target.OnAttackedByEnemy(ad);
+				target.OnAttack(ad);
 
                 // Treat non-damaging effects as attacks to trigger an immediate response and BAF
                 if (ad.Damage == 0 && ad.Target is GameNPC)
@@ -4279,19 +4280,19 @@ namespace DOL.GS.Spells
 		/// <param name="ad"></param>
 		public virtual void SendDamageMessages(AttackData ad)
 		{
-			string modmessage = "";
-			if (ad.Modifier > 0)
-				modmessage = " (+" + ad.Modifier + ")";
-			if (ad.Modifier < 0)
-				modmessage = " (" + ad.Modifier + ")";
-			if (Caster is GamePlayer || Caster is NecromancerPet)
-				MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
-			else if (Caster is GameNPC)
-				MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
-				                              ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
-			if (ad.CriticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!" + " (" + m_caster.SpellCriticalChance + "%)", eChatType.CT_YouHit);
-		}
+            string modmessage = "";
+            if (ad.Modifier > 0)
+                modmessage = " (+" + ad.Modifier + ")";
+            if (ad.Modifier < 0)
+                modmessage = " (" + ad.Modifier + ")";
+            if (Caster is GamePlayer || Caster is NecromancerPet)
+                MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
+            else if (Caster is GameNPC)
+                MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
+                                              ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
+            if (ad.CriticalDamage > 0)
+                MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!" + " (" + m_caster.SpellCriticalChance + "%)", eChatType.CT_YouHit);
+        }
 
 		/// <summary>
 		/// Make damage to target and send spell effect but no messages

@@ -4204,7 +4204,7 @@ namespace DOL.GS
 		{
 			if (ad.IsHit && ad.CausesCombat)
 			{
-				Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
+				//Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
 
                 OnAttack(ad);
 
