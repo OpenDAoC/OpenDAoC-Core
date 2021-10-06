@@ -52,7 +52,7 @@ namespace DOL.GS {
                 GameServer.Database.AddObject(item);
                 InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }
 
