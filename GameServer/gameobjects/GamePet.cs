@@ -225,7 +225,7 @@ namespace DOL.GS
 					//	need to keep the original spells in Spells and only scale sorted copies.
 
 					base.SortSpells();
-
+					
 					if (CanCastHarmfulSpells)
 						for (int i = 0; i < HarmfulSpells.Count; i++)
 						{
@@ -306,7 +306,7 @@ namespace DOL.GS
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
 		{
-			if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1)
+			if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1 || spell.ScaledToPetLevel)
 				return;
 
 			if (casterLevel < 1)
@@ -324,6 +324,7 @@ namespace DOL.GS
 				case eSpellType.StyleBleeding: // Style bleed effect
 				
 					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Value
 				case eSpellType.EnduranceRegenBuff:
@@ -358,6 +359,7 @@ namespace DOL.GS
 				case eSpellType.SavageCombatSpeedBuff:
 				//case eSpellType.OffensiveProc:
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Duration
 				case eSpellType.Disease:
@@ -367,6 +369,7 @@ namespace DOL.GS
 				case eSpellType.StyleStun: // Style stun effet
 				case eSpellType.StyleSpeedDecrease: // Style hinder effet
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Damage and value
 				case eSpellType.DirectDamageWithDebuff:
@@ -377,6 +380,7 @@ namespace DOL.GS
 					 *	For pet level 44-50, the debuff is now 30%.  */
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+					spell.ScaledToPetLevel = true;
 					break;
 				case eSpellType.StyleTaunt: // Style taunt effects already scale with damage
 				case eSpellType.CurePoison:
