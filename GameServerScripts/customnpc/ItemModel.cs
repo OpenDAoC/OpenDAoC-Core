@@ -102,13 +102,13 @@ namespace DOL.GS {
                     switch ((eObjectType)item.Object_Type)
                     {
                         case eObjectType.Cloth:
-                            modelIDToAssign = 3864;   
+                            modelIDToAssign = 3864;
                             break;
-                            
+
                         case eObjectType.Leather:
                             modelIDToAssign = 3862;
                             break;
-                            
+
                         case eObjectType.Studded:
                         case eObjectType.Reinforced:
                             modelIDToAssign = 3863;
@@ -952,85 +952,85 @@ namespace DOL.GS {
                     }
                     break;
                 case "spooky breastplate": //yay halloween
-                  /*  price = festive;
-                    switch ((eObjectType)item.Object_Type)
-                    {
-                        case eObjectType.Cloth:
-                            switch (source.Realm)
-                            {
-                                case eRealm.Albion:
-                                    modelIDToAssign = 2728;
-                                    break;
-                                case eRealm.Hibernia:
-                                    modelIDToAssign = 2759;
-                                    break;
-                                case eRealm.Midgard:
-                                    modelIDToAssign = 2694;
-                                    break;
-                                default:
-                                    modelIDToAssign = 0;
-                                    break;
-                            }
-                            break;
+                    /*  price = festive;
+                      switch ((eObjectType)item.Object_Type)
+                      {
+                          case eObjectType.Cloth:
+                              switch (source.Realm)
+                              {
+                                  case eRealm.Albion:
+                                      modelIDToAssign = 2728;
+                                      break;
+                                  case eRealm.Hibernia:
+                                      modelIDToAssign = 2759;
+                                      break;
+                                  case eRealm.Midgard:
+                                      modelIDToAssign = 2694;
+                                      break;
+                                  default:
+                                      modelIDToAssign = 0;
+                                      break;
+                              }
+                              break;
 
-                        case eObjectType.Leather:
-                            switch (source.Realm)
-                            {
-                                case eRealm.Albion:
-                                    modelIDToAssign = 2735;
-                                    break;
-                                case eRealm.Hibernia:
-                                    modelIDToAssign = 2766;
-                                    break;
-                                case eRealm.Midgard:
-                                    modelIDToAssign = 2701;
-                                    break;
-                                default:
-                                    modelIDToAssign = 0;
-                                    break;
-                            }
-                            break;
+                          case eObjectType.Leather:
+                              switch (source.Realm)
+                              {
+                                  case eRealm.Albion:
+                                      modelIDToAssign = 2735;
+                                      break;
+                                  case eRealm.Hibernia:
+                                      modelIDToAssign = 2766;
+                                      break;
+                                  case eRealm.Midgard:
+                                      modelIDToAssign = 2701;
+                                      break;
+                                  default:
+                                      modelIDToAssign = 0;
+                                      break;
+                              }
+                              break;
 
-                        case eObjectType.Studded:
-                            switch (source.Realm)
-                            {
-                                case eRealm.Albion:
-                                    modelIDToAssign = 2741;
-                                    break;
-                                case eRealm.Midgard:
-                                    modelIDToAssign = 2707;
-                                    break;
-                                default:
-                                    modelIDToAssign = 0;
-                                    break;
-                            }
-                            break;
+                          case eObjectType.Studded:
+                              switch (source.Realm)
+                              {
+                                  case eRealm.Albion:
+                                      modelIDToAssign = 2741;
+                                      break;
+                                  case eRealm.Midgard:
+                                      modelIDToAssign = 2707;
+                                      break;
+                                  default:
+                                      modelIDToAssign = 0;
+                                      break;
+                              }
+                              break;
 
-                        case eObjectType.Reinforced:
-                            modelIDToAssign = 2772;
-                            break;
+                          case eObjectType.Reinforced:
+                              modelIDToAssign = 2772;
+                              break;
 
-                        case eObjectType.Chain:
-                            switch (source.Realm)
-                            {
-                                case eRealm.Albion:
-                                    modelIDToAssign = 2747;
-                                    break;
-                                case eRealm.Midgard:
-                                    modelIDToAssign = 2713;
-                                    break;
-                                default:
-                                    modelIDToAssign = 0;
-                                    break;
-                            }
-                            break;
-                        case eObjectType.Scale:
-                            modelIDToAssign = 2778;
-                            break;
-                        case eObjectType.Plate:
-                            modelIDToAssign = 2753;
-                            break;
-                    }*/
+                          case eObjectType.Chain:
+                              switch (source.Realm)
+                              {
+                                  case eRealm.Albion:
+                                      modelIDToAssign = 2747;
+                                      break;
+                                  case eRealm.Midgard:
+                                      modelIDToAssign = 2713;
+                                      break;
+                                  default:
+                                      modelIDToAssign = 0;
+                                      break;
+                              }
+                              break;
+                          case eObjectType.Scale:
+                              modelIDToAssign = 2778;
+                              break;
+                          case eObjectType.Plate:
+                              modelIDToAssign = 2753;
+                              break;
+                      }*/
                     break;
                 case "class epic chestpiece":
                     price = epic;
@@ -1162,6 +1162,139 @@ namespace DOL.GS {
                     break;
                 #endregion
 
+                    //buckle up
+                    //lets test it boys
+
+                #region weapons
+
+                #region 1h wep
+                case "traitor's dagger 1h":
+                    price = artifact;
+                    modelIDToAssign = 1668;
+                    break;
+                case "traitor's axe 1h":
+                    price = artifact;
+                    modelIDToAssign = 3452;
+                    break;
+                case "croc tooth dagger 1h":
+                    price = artifact;
+                    modelIDToAssign = 1669;
+                    break;
+                case "croc tooth axe 1h":
+                    price = artifact;
+                    modelIDToAssign = 3451;
+                    break;
+                case "golden spear 1h":
+                    price = artifact;
+                    modelIDToAssign = 1807;
+                    break;
+                case "malice axe 1h":
+                    price = artifact;
+                    modelIDToAssign = 2109;
+                    break;
+                case "malice hammer 1h":
+                    price = artifact;
+                    modelIDToAssign = 3447;
+                    break;
+                case "bruiser 1h":
+                    price = artifact;
+                    modelIDToAssign = 1671;
+                    break;
+                case "battler hammer 1h":
+                    price = artifact;
+                    modelIDToAssign = 3453;
+                    break;
+                case "battler sword 1h":
+                    price = artifact;
+                    modelIDToAssign = 1670;
+                    break;
+                case "scepter of the meritorious":
+                    price = artifact;
+                    modelIDToAssign = 1672;
+                    break;
+                case "hilt 1h":
+                    price = epic;
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 673;
+                            break;
+                        case eRealm.Midgard:
+                            modelIDToAssign = 670;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 674;
+                            break;
+                    }
+                    break;
+                case "rolling pin":
+                    price = champion;
+                    modelIDToAssign = 3458;
+                    break;
+
+                /*
+                 * //"[Traitor's Dagger 1h](" + artifact + " RPs)\n" +
+                //    "[Croc Tooth Dagger 1h](" + artifact + "RPs)\n" +
+                 //   "[Golden Spear 1h](" + artifact + "RPs)\n" +
+                  //  "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
+           
+                //    "[Battler Hammer 1h](" + artifact + " RPs)\n" +
+                   // "[Malice 1h](" + artifact + "RPs)\n" +
+                 //   "[Bruiser 1h](" + artifact + "RPs)\n" +
+                  //  "[Scepter of the Meritorious](" + artifact + "RPs)\n" +
+             
+                  //  "[Croc Tooth Axe 1h](" + artifact + " RPs)\n" +
+                 //   "[Traitor's Axe 1h](" + artifact + "RPs)\n" +
+                  //  "[Malice Axe 1h](" + artifact + "RPs)\n" +
+                   // "[Battler Sword 1h](" + artifact + "RPs)\n" +
+                  //  "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +
+                 */
+                #endregion
+
+                #region 2h wep
+                case "malice axe 2h":
+                    price = artifact;
+                    modelIDToAssign = 2110;
+                    break;
+                case "malice hammer 2h":
+                    price = artifact;
+                    modelIDToAssign = 3449;
+                    break;
+                case "golden spear 2h":
+                    price = artifact;
+                    modelIDToAssign = 1662;
+                    break;
+                case "bruiser 2h":
+                    price = artifact;
+                    modelIDToAssign = 2113;
+                    break;
+                case "battler hammer 2h":
+                    price = artifact;
+                    modelIDToAssign = 3448;
+                    break;
+                case "battler sword 2h":
+                    price = artifact;
+                    modelIDToAssign = 1670;
+                    break;
+                case "hilt 2h":
+                    price = epic;
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 672;
+                            break;
+                        case eRealm.Midgard:
+                            modelIDToAssign = 671;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 675;
+                            break;
+                    }
+                    break;
+                #endregion
+
+                #endregion
+
                 #region shields
                 case "aten's shield":
                     price = artifact;
@@ -1178,13 +1311,15 @@ namespace DOL.GS {
                 case "oceanus shield":
                     {
                         price = toageneric;
-                        if(item.Type_Damage == 1)//small shield
+                        if (item.Type_Damage == 1)//small shield
                         {
                             modelIDToAssign = 2192;
-                        } else if (item.Type_Damage == 2)
+                        }
+                        else if (item.Type_Damage == 2)
                         {
                             modelIDToAssign = 2193;
-                        } else if (item.Type_Damage == 3)
+                        }
+                        else if (item.Type_Damage == 3)
                         {
                             modelIDToAssign = 2194;
                         }
@@ -1239,18 +1374,18 @@ namespace DOL.GS {
                     "[Minotaur Shield](" + toageneric + "RPs)\n" +
                  */
                 #endregion
-                    //lets test some shields boys
-                    //love it when it all works first try :D
+                //lets test some shields boys
+                //love it when it all works first try :D
 
                 #region ranged weapons/instruments
                 //case "dragonslayer harp": probably doesn't work
                 //     break;
                 case "class epic harp":
                     price = epic;
-                    if((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Bard)
+                    if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Bard)
                     {
                         modelIDToAssign = 3239;
-                    } 
+                    }
                     else if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Minstrel)
                     {
                         modelIDToAssign = 3280;
@@ -1265,7 +1400,7 @@ namespace DOL.GS {
                     modelIDToAssign = 3731;
                     break;
                 case "class epic bow":
-                    price = epic;
+                    price = champion;
                     if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Scout)
                     {
                         modelIDToAssign = 3275;
@@ -1276,7 +1411,7 @@ namespace DOL.GS {
                     }
                     else if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Ranger)
                     {
-                        modelIDToAssign = 3243; 
+                        modelIDToAssign = 3243;
                     }
                     else
                     {
@@ -1302,7 +1437,7 @@ namespace DOL.GS {
             if (price > 0)
             {
 
-                if(player.RealmPoints < price)
+                if (player.RealmPoints < price)
                 {
                     SendReply(player, "I'm sorry, but you cannot afford my services currently.");
                     return false;
@@ -1319,13 +1454,14 @@ namespace DOL.GS {
                 SetRealmLevel(player, (int)player.RealmPoints);
 
                 return true;
-            } else
+            }
+            else
             {
                 SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over.");
                 return false;
             }
 
-            
+
         }
 
         //lets run it and see what happens
@@ -1361,7 +1497,7 @@ namespace DOL.GS {
                         "[Aerus Helm] (" + toageneric + " RPs)\n" +
                         "");
                     break;
-                    
+
                 case Slot.TORSO:
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
@@ -1375,22 +1511,52 @@ namespace DOL.GS {
                         "[Stygia Breastplate] (" + toageneric + " RPs)\n" +
                         "[Volcanus Breastplate] (" + toageneric + " RPs)\n" +
                         "[Aerus Breastplate] (" + toageneric + " RPs)\n" +
-                       // "[Spooky Breastplate](" + festive + " RPs)\n" +
+                        // "[Spooky Breastplate](" + festive + " RPs)\n" +
                         "");
                     break;
 
 
                 case Slot.RIGHTHAND:
                     SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "[TBD](" + dragon + " RPs)\n" +
-                        "[TBD2](" + epic + "RPs)\n" +
-                        "");
+                        "I can apply the following skins: \n\n");
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Thrust:
+                            SendReply(t,
+                                "[Traitor's Dagger](" + artifact + " RPs)\n" +
+                                "[Crocodile's Tooth](" + artifact + "RPs)\n" +
+                                "[Golden Spear](" + artifact + "RPs)\n" +
+                                "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
+                                "");
+                            break;
+
+                        case eDamageType.Crush:
+                            SendReply(t,
+                                "[Battler Hammer 1h](" + artifact + " RPs)\n" +
+                                "[Malice Hammer 1h](" + artifact + "RPs)\n" +
+                                "[Bruiser Hammer 1h](" + artifact + "RPs)\n" +
+                                "[Scepter of the Meritorious](" + artifact + "RPs)\n" +
+                                "[Rolling Pin](" + champion + "RPs)\n" + //lol 3458 
+                                "");
+                            break;
+
+                        case eDamageType.Slash:
+                            SendReply(t,
+                                "[Croc Tooth Axe 1h](" + artifact + " RPs)\n" +
+                                "[Traitor's Axe 1h](" + artifact + "RPs)\n" +
+                                "[Malice Axe 1h](" + artifact + "RPs)\n" +
+                                "[Battler Sword 1h](" + artifact + "RPs)\n" +
+                                "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +
+                                "");
+                            break;
+                    }
+                    SendReply(t, "Additionally, I can apply an [class epic 1h] " + champion + " skin. \n");
+
                     break;
-  
+
 
                 case Slot.LEFTHAND:
-                    if((eObjectType)item.Object_Type == eObjectType.Shield)
+                    if ((eObjectType)item.Object_Type == eObjectType.Shield)
                     {
                         SendReply(t, "A sturdy barricade to ward the blows of your enemies. \n" +
                         "I can apply the following skins: \n\n" +
@@ -1402,15 +1568,12 @@ namespace DOL.GS {
                         "[Magma Shield](" + toageneric + "RPs)\n" +
                         "[Minotaur Shield](" + toageneric + "RPs)\n" +
                         "");
-                    } else
-                    {
-                        SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "[Traitor's Dagger](" + artifact + " RPs)\n" +
-                        "[Crocodile's Tooth](" + artifact + "RPs)\n" +
-                        "");
                     }
-                    
+                    else
+                    {
+                        goto case Slot.RIGHTHAND;
+                    }
+
                     break;
 
                 case Slot.TWOHAND:
@@ -1422,15 +1585,16 @@ namespace DOL.GS {
                     break;
 
                 case Slot.RANGED:
-                    if((eObjectType)item.Object_Type == eObjectType.Instrument)
+                    if ((eObjectType)item.Object_Type == eObjectType.Instrument)
                     {
                         SendReply(t, "This looks like it plays beautiful music. \n" +
                         "I can apply the following skins: \n\n" +
-                       //"[Dragonslayer Harp](" + dragon + " RPs)\n" +
+                        //"[Dragonslayer Harp](" + dragon + " RPs)\n" +
                         "[Class Epic Harp](" + epic + "RPs)\n" +
                         "[Labyrinth Harp](" + toageneric + "RPs)\n" +
                         "");
-                    } else
+                    }
+                    else
                     {
                         SendReply(t, "Nothing like bringing death from afar. \n" +
                         "I can apply the following skins: \n\n" +
@@ -1442,7 +1606,7 @@ namespace DOL.GS {
                         // I am losing my mind
                         "");
                     }
-                    
+
                     break;
             }
 
