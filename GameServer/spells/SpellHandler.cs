@@ -4904,10 +4904,11 @@ namespace DOL.GS.Spells
 							break;
 					}
 					break;
+				case eSpellType.CombatSpeedBuff:
 				case eSpellType.CelerityBuff:
 					dw.AddKeyValuePair("power_level", Spell.Value * 2);
 					break;
-				case eSpellType.CombatSpeedBuff:
+
 				case eSpellType.Confusion:
 					dw.AddKeyValuePair("power_level", Spell.Value > 0 ? Spell.Value : 100);
 					break;
