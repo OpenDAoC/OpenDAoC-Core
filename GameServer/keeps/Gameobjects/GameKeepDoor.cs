@@ -193,6 +193,9 @@ namespace DOL.GS.Keeps
 							DoorIndex == 2)
 							return true;
 					}
+
+					if (Component.CurrentRegionID == 252)
+						return true;
 				}
 				return false;
 			}
