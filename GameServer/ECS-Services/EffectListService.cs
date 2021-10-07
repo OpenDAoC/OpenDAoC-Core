@@ -82,6 +82,11 @@ namespace DOL.GS
                                         EffectService.RequestCancelConcEffect(effect);
                                     }
                                 }
+                                else
+                                {
+                                    effect.SpellHandler.StartSpell(null);
+                                    effect.ExpireTick += effect.PulseFreq;
+                                }
                             }
                             else
                             {
