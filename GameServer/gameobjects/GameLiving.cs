@@ -4062,6 +4062,13 @@ namespace DOL.GS
                 EffectService.RequestCancelEffect(effect);
             }
 
+			if (this is GamePet pet)
+			{
+				var ownerEffect = EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
+				if (ownerEffect != null)
+					EffectService.RequestCancelEffect(ownerEffect);
+			}
+
             if (effectListComponent.Effects.ContainsKey(eEffect.Mez) && ad != null)
             {
                 if (ad.Attacker != this)
