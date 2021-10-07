@@ -172,6 +172,9 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
+				if (Component.Keep.Region == 252)
+					return true;
+				
 				if (Component == null || Component.Keep == null)
 					return false;
 
