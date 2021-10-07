@@ -149,7 +149,7 @@ namespace DOL.GS.Scripts
 				invitem.SellPrice = 1;
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 			}
-			else if(type == eObjectType.HandToHand || type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible || type == eObjectType.LargeWeapons)
+			else if(type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible || type == eObjectType.LargeWeapons)
             {
 				int endDmgType = 4; //default for all 3, slash/crush/thrust
 				if(type == eObjectType.LargeWeapons || realm == eRealm.Midgard)
