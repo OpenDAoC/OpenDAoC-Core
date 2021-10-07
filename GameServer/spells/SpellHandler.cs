@@ -1072,7 +1072,10 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
-    		if (m_caster.ObjectState != GameLiving.eObjectState.Active)
+			if (Caster is GameNPC casterNPC)
+				casterNPC.TurnTo(target);
+
+			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
 			{
 				return false;
 			}
