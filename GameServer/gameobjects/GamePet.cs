@@ -312,77 +312,75 @@ namespace DOL.GS
 			if (casterLevel < 1)
 				casterLevel = Level;
 
-			switch (spell.SpellType.ToString().ToLower())
+			switch ((eSpellType)spell.SpellType)
 			{
 				// Scale Damage
-				case "damageovertime":
-				case "damageshield":
-				case "damageadd":
-				case "directdamage":
-				case "lifedrain":
-				case "damagespeeddecrease":
-				case "stylebleeding": // Style bleed effect
+				case eSpellType.DamageOverTime:
+				case eSpellType.DamageShield:
+				case eSpellType.DamageAdd:
+				case eSpellType.DirectDamage:
+				case eSpellType.Lifedrain:
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.StyleBleeding: // Style bleed effect
+				
 					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					break;
 				// Scale Value
-				case "enduranceregenbuff":
-				case "enduranceheal":
-				case "endurancedrain":
-				case "powerregenbuff":
-				case "powerheal":
-				case "powerdrain":
-				case "powerhealthenduranceregenbuff":
-				case "combatspeedbuff":
-				case "hastebuff":
-				case "celeritybuff":
-				case "combatspeeddebuff":
-				case "hastedebuff":
-				case "heal":
-				case "combatheal":
-				case "healthregenbuff":
-				case "healovertime":
-				case "constitutionbuff":
-				case "dexteritybuff":
-				case "strengthbuff":
-				case "constitutiondebuff":
-				case "dexteritydebuff":
-				case "strengthdebuff":
-				case "armorfactordebuff":
-				case "armorfactorbuff":
-				case "armorabsorptionbuff":
-				case "armorabsorptiondebuff":
-				case "dexterityquicknessbuff":
-				case "strengthconstitutionbuff":
-				case "dexterityquicknessdebuff":
-				case "strengthconstitutiondebuff":
-				case "taunt":
-				case "unbreakablespeeddecrease":
-				case "speeddecrease":
-				case "stylecombatspeeddebuff": // Style attack speed debuff
+				case eSpellType.EnduranceRegenBuff:
+				case eSpellType.Heal:
+				case eSpellType.StormEnduDrain:
+				case eSpellType.PowerRegenBuff:
+				case eSpellType.PowerHealthEnduranceRegenBuff:
+				case eSpellType.CombatSpeedBuff:
+				case eSpellType.HasteBuff:
+				case eSpellType.CelerityBuff:
+				case eSpellType.CombatSpeedDebuff:
+				case eSpellType.StyleCombatSpeedDebuff:
+				case eSpellType.CombatHeal:
+				case eSpellType.HealthRegenBuff:
+				case eSpellType.HealOverTime:
+				case eSpellType.ConstitutionBuff:
+				case eSpellType.DexterityBuff:
+				case eSpellType.StrengthBuff:
+				case eSpellType.ConstitutionDebuff:
+				case eSpellType.DexterityDebuff:
+				case eSpellType.StrengthDebuff:
+				case eSpellType.ArmorFactorDebuff:
+				case eSpellType.ArmorFactorBuff:
+				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.ArmorAbsorptionDebuff:
+				case eSpellType.DexterityQuicknessBuff:
+				case eSpellType.StrengthConstitutionBuff:
+				case eSpellType.DexterityQuicknessDebuff:
+				case eSpellType.StrengthConstitutionDebuff:
+				case eSpellType.Taunt:
+				case eSpellType.SpeedDecrease:
+				case eSpellType.SavageCombatSpeedBuff:
+				//case eSpellType.OffensiveProc:
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					break;
 				// Scale Duration
-				case "disease":
-				case "stun":
-				case "unrresistablenonimunitystun":
-				case "mesmerize":
-				case "stylestun": // Style stun effect
-				case "stylespeeddecrease": // Style hinder effect
+				case eSpellType.Disease:
+				case eSpellType.Stun:
+				case eSpellType.UnrresistableNonImunityStun:
+				case eSpellType.Mesmerize:
+				case eSpellType.StyleStun: // Style stun effet
+				case eSpellType.StyleSpeedDecrease: // Style hinder effet
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					break;
 				// Scale Damage and value
-				case "directdamagewithdebuff":
+				case eSpellType.DirectDamageWithDebuff:
 					/* Patch 1.123: For Cabalist, Enchanter, and Spiritmaster pets
 					 * The debuff component of its nuke has been as follows:
 					 *	For pet level 1-23, the debuff is now 10%.
 					 *	For pet level 24-43, the debuff is now 20%.
-					 *	For pet level 44-50, the debuff is now 30%. */
+					 *	For pet level 44-50, the debuff is now 30%.  */
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					break;
-				case "styletaunt": // Style taunt effects already scale with damage
-				case "curepoison":
-				case "curedisease":
+				case eSpellType.StyleTaunt: // Style taunt effects already scale with damage
+				case eSpellType.CurePoison:
+				case eSpellType.CureDisease:
 						break;
 				default:
 					break; // Don't mess with types we don't know
