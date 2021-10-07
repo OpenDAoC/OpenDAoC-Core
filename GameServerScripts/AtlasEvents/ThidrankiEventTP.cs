@@ -17,6 +17,8 @@ namespace DOL.GS.Scripts
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
+
+		public static int TeleportDelay = 40000; //value in milliseconds
         public override bool AddToWorld()
         {
             Model = 2026;
@@ -44,7 +46,7 @@ namespace DOL.GS.Scripts
 			switch(str)
 			{
 				case "fight":
-					if (!t.InCombatPvPInLast(20000))
+					if (!t.InCombatPvPInLast(TeleportDelay))
 					{
 						if (t.RealmPoints < EventRPCap)
 						{
@@ -61,9 +63,12 @@ namespace DOL.GS.Scripts
 									break;
 							}
 						}
-						else { t.Client.Out.SendMessage("You have reached the Realm Rank cap for this event", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
+						else { t.Client.Out.SendMessage("You have reached the Realm Rank cap for this event.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					}
-					else { t.Client.Out.SendMessage("You need to wait a little longer before porting again", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
+					else
+					{
+						t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					}
 					break;
 				default: break;
 			}

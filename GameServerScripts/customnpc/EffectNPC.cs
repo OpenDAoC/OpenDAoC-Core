@@ -36,7 +36,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            GuildName = "NEW Effect Master";
+            GuildName = "Effect Master";
             Level = 50;
             base.AddToWorld();
             return true;
@@ -51,9 +51,10 @@ namespace DOL.GS
                 {
                     emoteplayer.Out.SendEmoteAnimation(this, Emotes);
                 }
-                SendReply(player, "Greetings Traveller!\n\n" +
-                                    "I can either change the effect, the speed or the color of your weapons, armors...\n" +
-                                    "Simply give me the item and i will start my work.");
+                SendReply(player, "Greetings " + player.Name + "!\n\n" +
+                                    "I can either change the effect or the color of your weapons, armors...\n" +
+                                    "Simply give me the item and i will start my work.\n" +
+                                    "In exchange for my services, I will gladly take some of your RPs and respec your Realm Abilities..");
                 //"On my countless journeys, i have mastered the art of"+ Didnt like the amount of talking
                 //"focusing the etheral flows to a certain weapon.\n"+  so i slimmed it a  bit o.O
                 //"Using this technique, i can make your weapon glow in"+
