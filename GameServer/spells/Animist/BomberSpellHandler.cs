@@ -56,7 +56,9 @@ namespace DOL.GS.Spells
         {
             if (Spell.Target.ToLower() == "pet")
             {
-                target = Caster.ControlledBrain.Body;
+                target = Caster?.ControlledBrain?.Body;
+                if (target is null)
+                    return;
             }
 
             base.ApplyEffectOnTarget(target, effectiveness);
