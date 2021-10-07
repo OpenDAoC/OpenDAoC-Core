@@ -951,87 +951,6 @@ namespace DOL.GS {
                             break;
                     }
                     break;
-                case "spooky breastplate": //yay halloween
-                    /*  price = festive;
-                      switch ((eObjectType)item.Object_Type)
-                      {
-                          case eObjectType.Cloth:
-                              switch (source.Realm)
-                              {
-                                  case eRealm.Albion:
-                                      modelIDToAssign = 2728;
-                                      break;
-                                  case eRealm.Hibernia:
-                                      modelIDToAssign = 2759;
-                                      break;
-                                  case eRealm.Midgard:
-                                      modelIDToAssign = 2694;
-                                      break;
-                                  default:
-                                      modelIDToAssign = 0;
-                                      break;
-                              }
-                              break;
-
-                          case eObjectType.Leather:
-                              switch (source.Realm)
-                              {
-                                  case eRealm.Albion:
-                                      modelIDToAssign = 2735;
-                                      break;
-                                  case eRealm.Hibernia:
-                                      modelIDToAssign = 2766;
-                                      break;
-                                  case eRealm.Midgard:
-                                      modelIDToAssign = 2701;
-                                      break;
-                                  default:
-                                      modelIDToAssign = 0;
-                                      break;
-                              }
-                              break;
-
-                          case eObjectType.Studded:
-                              switch (source.Realm)
-                              {
-                                  case eRealm.Albion:
-                                      modelIDToAssign = 2741;
-                                      break;
-                                  case eRealm.Midgard:
-                                      modelIDToAssign = 2707;
-                                      break;
-                                  default:
-                                      modelIDToAssign = 0;
-                                      break;
-                              }
-                              break;
-
-                          case eObjectType.Reinforced:
-                              modelIDToAssign = 2772;
-                              break;
-
-                          case eObjectType.Chain:
-                              switch (source.Realm)
-                              {
-                                  case eRealm.Albion:
-                                      modelIDToAssign = 2747;
-                                      break;
-                                  case eRealm.Midgard:
-                                      modelIDToAssign = 2713;
-                                      break;
-                                  default:
-                                      modelIDToAssign = 0;
-                                      break;
-                              }
-                              break;
-                          case eObjectType.Scale:
-                              modelIDToAssign = 2778;
-                              break;
-                          case eObjectType.Plate:
-                              modelIDToAssign = 2753;
-                              break;
-                      }*/
-                    break;
                 case "class epic chestpiece":
                     price = epic;
                     switch ((eCharacterClass)player.CharacterClass.ID)
@@ -1273,7 +1192,7 @@ namespace DOL.GS {
                 #endregion
 
                 #region class weapons
-                    //finally time to test :)
+
                 case "class epic 1h":
                     price = champion;
                     switch ((eCharacterClass)player.CharacterClass.ID)
@@ -1870,10 +1789,6 @@ namespace DOL.GS {
                                             break;
                                     }
                                     break;
-                                        //going to test large weapons and then its bedtime for me
-                                        //thanks for joining me :)
-
-                                    //see you guys friday! :) <3
 
                             }
                             break;
@@ -1958,15 +1873,6 @@ namespace DOL.GS {
                     modelIDToAssign = 3554;
                     break;
 
-                /*
-                 * "[Aten's Shield](" + artifact + " RPs)\n" +
-                    "[Cyclop's Eye](" + artifact + "RPs)\n" +
-                    "[Shield of Khaos](" + artifact + "RPs)\n" +
-                    "[Oceanus Shield](" + toageneric + "RPs)\n" +
-                    "[Aerus Shield](" + toageneric + "RPs)\n" +
-                    "[Magma Shield](" + toageneric + "RPs)\n" +
-                    "[Minotaur Shield](" + toageneric + "RPs)\n" +
-                 */
                 #endregion
 
                 #region ranged weapons/instruments
@@ -2051,7 +1957,8 @@ namespace DOL.GS {
             }
             else
             {
-                SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over.");
+                SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" + 
+                                    "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
                 return false;
             }
 
@@ -2073,8 +1980,6 @@ namespace DOL.GS {
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
-
-            Console.WriteLine($"Item type: {item.Item_Type}");
 
             switch (item.Item_Type)
             {
@@ -2250,31 +2155,40 @@ namespace DOL.GS {
             else
             if (rps is >= 750 and < 1375) { player.RealmLevel = 5; }
             else
-            if (rps is >= 2275 and < 3500) { player.RealmLevel = 6; }
+            if (rps is >= 750 and < 1375) { player.RealmLevel = 6; }
             else
-            if (rps is >= 3500 and < 5100) { player.RealmLevel = 7; }
+            if (rps is >= 2275 and < 3500) { player.RealmLevel = 7; }
             else
-            if (rps is >= 5100 and < 7125) { player.RealmLevel = 8; }
+            if (rps is >= 3500 and < 5100) { player.RealmLevel = 8; }
             else
-            if (rps is >= 7125 and < 9625) { player.RealmLevel = 9; }
+            if (rps is >= 5100 and < 7125) { player.RealmLevel = 9; }
             else
-            if (rps is >= 9625 and < 12650) { player.RealmLevel = 10; }
+            //2l0
+            if (rps is >= 7125 and < 9625) { player.RealmLevel = 10; }
             else
-            if (rps is >= 16250 and < 20475) { player.RealmLevel = 11; }
+            if (rps is >= 9625 and < 12650) { player.RealmLevel = 11; }
             else
-            if (rps is >= 20475 and < 25375) { player.RealmLevel = 12; }
+            if (rps is >= 16250 and < 20475) { player.RealmLevel = 12; }
             else
-            if (rps is >= 25375 and < 31000) { player.RealmLevel = 13; }
+            if (rps is >= 20475 and < 25375) { player.RealmLevel = 13; }
             else
-            if (rps is >= 31000 and < 37400) { player.RealmLevel = 14; }
+            if (rps is >= 25375 and < 31000) { player.RealmLevel = 14; }
             else
-            if (rps is >= 37400 and < 44625) { player.RealmLevel = 15; }
+            if (rps is >= 31000 and < 37400) { player.RealmLevel = 15; }
             else
-            if (rps is >= 44625 and < 52725) { player.RealmLevel = 16; }
+            if (rps is >= 37400 and < 44625) { player.RealmLevel = 16; }
             else
-            if (rps is >= 52725 and < 61750) { player.RealmLevel = 17; }
+            if (rps is >= 44625 and < 52725) { player.RealmLevel = 17; }
             else
-            if (rps is >= 61750 and < 71750) { player.RealmLevel = 18; }
+            if (rps is >= 52725 and < 61750) { player.RealmLevel = 18; }
+            else
+            if (rps is >= 61750 and < 71750) { player.RealmLevel = 19; }
+            else
+            //3l0
+            if (rps is >= 71750) {
+                player.RealmPoints = 71750;
+                player.RealmLevel = 20; }
+
 
             player.Out.SendUpdatePlayer();
             player.Out.SendCharStatsUpdate();
