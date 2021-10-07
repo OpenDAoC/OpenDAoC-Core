@@ -54,30 +54,30 @@ namespace DOL.GS
 		// TOA Chance in %
 		public const ushort ROG_TOA_ITEM_CHANCE = 0;
 		// Armor Chance in %
-		public const ushort ROG_ARMOR_CHANCE = 40;
+		public const ushort ROG_ARMOR_CHANCE = 60;
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 15;
 		
 		// Item lowest quality
-		public const ushort ROG_STARTING_QUAL = 90;
+		public const ushort ROG_STARTING_QUAL = 95;
 		
 		// Item highest quality
 		public const ushort ROG_CAP_QUAL = 99;
 		
 		// Item chance to get a TOA advanced stat in a TOA Item
-		public const ushort ROG_TOA_STAT_CHANCE = 10;
+		public const ushort ROG_TOA_STAT_CHANCE = 0;
 		
 		// Item chance to get stat bonus
 		public const ushort ROG_ITEM_STAT_CHANCE = 50;
 		
 		// Item chance to get resist bonus
-		public const ushort ROG_ITEM_RESIST_CHANCE = 40;
+		public const ushort ROG_ITEM_RESIST_CHANCE = 50;
 		
 		// Item chance to get All skills stat
-		public const ushort ROG_STAT_ALLSKILL_CHANCE = 25;
+		public const ushort ROG_STAT_ALLSKILL_CHANCE = 15;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
-		public const ushort ROG_100_MAGICAL_OFFSET = 40;
+		public const ushort ROG_100_MAGICAL_OFFSET = 50;
 
 		private eCharacterClass charClass = eCharacterClass.Unknown;
 		
@@ -111,7 +111,7 @@ namespace DOL.GS
 		}
 		
 		public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot)
-			:this(realm, charClass, level, type, slot, GenerateDamageType(type))
+			:this(realm, charClass, level, type, slot, GenerateDamageType(type, charClass))
 		{
 
 		}
@@ -141,7 +141,7 @@ namespace DOL.GS
 		}
 		
 		public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot)
-			:this(toa, realm, charClass, level, type, slot, GenerateDamageType(type))
+			:this(toa, realm, charClass, level, type, slot, GenerateDamageType(type, charClass))
 		{
 
 		}
@@ -3310,7 +3310,7 @@ namespace DOL.GS
 			return eInventorySlot.FirstEmptyBackpack;
 		}
 
-		private static eDamageType GenerateDamageType(eObjectType type)
+		private static eDamageType GenerateDamageType(eObjectType type, eCharacterClass charClass)
 		{
 			switch (type)
 			{
@@ -3354,14 +3354,55 @@ namespace DOL.GS
 					return (eDamageType)Util.Random(1, 2);
 				//do shields return the shield size?
 				case eObjectType.Shield:
-					return (eDamageType)Util.Random(1, 3);
-
+					return (eDamageType)GetShieldSizeFromClass(charClass);
+					//return (eDamageType)Util.Random(1, 3);
 			}
 			return eDamageType.Natural;
-		}		
-
-		#endregion		
+		}
 		
+		private static int GetShieldSizeFromClass(eCharacterClass charClass)
+		{
+			//shield size is based off of damage type
+			//1 = small shield
+			//2 = medium
+			//3 = large
+			switch (charClass)
+			{
+				case eCharacterClass.Berserker:
+				case eCharacterClass.Skald:
+				case eCharacterClass.Savage:
+				case eCharacterClass.Healer:
+				case eCharacterClass.Shaman:
+				case eCharacterClass.Shadowblade:
+				case eCharacterClass.Bard:
+				case eCharacterClass.Druid:
+				case eCharacterClass.Nightshade:
+				case eCharacterClass.Ranger:
+				case eCharacterClass.Infiltrator:
+				case eCharacterClass.Minstrel:
+				case eCharacterClass.Scout:
+					return 1;
+
+				case eCharacterClass.Thane:
+				case eCharacterClass.Warden:
+				case eCharacterClass.Blademaster:
+				case eCharacterClass.Champion:
+				case eCharacterClass.Mercenary:
+				case eCharacterClass.Cleric:
+					return 2;
+
+				case eCharacterClass.Warrior:
+				case eCharacterClass.Hero:
+				case eCharacterClass.Armsman:
+				case eCharacterClass.Paladin:
+				case eCharacterClass.Reaver:
+					return 3;
+				default: return 1;
+			}
+		}
+
+		#endregion
+
 		#region generate item speed and abs
 
 		private static int GetAbsorb(eObjectType type)
@@ -5104,11 +5145,11 @@ namespace DOL.GS
 	        eProperty.Skill_Stealth,
 	        eProperty.Skill_Thrusting,
 	        eProperty.Skill_Wind,
-			eProperty.Skill_Aura_Manipulation, //Maulers
-			eProperty.Skill_FistWraps, //Maulers
-			eProperty.Skill_MaulerStaff, //Maulers
-			eProperty.Skill_Magnetism, //Maulers
-			eProperty.Skill_Power_Strikes, //Maulers
+			//eProperty.Skill_Aura_Manipulation, //Maulers
+			//eProperty.Skill_FistWraps, //Maulers
+			//eProperty.Skill_MaulerStaff, //Maulers
+			//eProperty.Skill_Magnetism, //Maulers
+			//eProperty.Skill_Power_Strikes, //Maulers
         };
 
 
@@ -5141,17 +5182,17 @@ namespace DOL.GS
 	        eProperty.Skill_Scythe,
 	        //eProperty.Skill_Nightshade, // bonus not used
 	        //eProperty.Skill_Pathfinding, // bonus not used
-	        eProperty.Skill_Dementia,
-	        eProperty.Skill_ShadowMastery,
-	        eProperty.Skill_VampiiricEmbrace,
-	        eProperty.Skill_EtherealShriek,
-	        eProperty.Skill_PhantasmalWail,
-	        eProperty.Skill_SpectralForce,
-			eProperty.Skill_Aura_Manipulation, //Maulers
-			eProperty.Skill_FistWraps, //Maulers
-			eProperty.Skill_MaulerStaff, //Maulers
-			eProperty.Skill_Magnetism, //Maulers
-			eProperty.Skill_Power_Strikes, //Maulers
+	        //eProperty.Skill_Dementia,
+	        //eProperty.Skill_ShadowMastery,
+	        //eProperty.Skill_VampiiricEmbrace,
+	        //eProperty.Skill_EtherealShriek,
+	        //eProperty.Skill_PhantasmalWail,
+	        //eProperty.Skill_SpectralForce,
+			//eProperty.Skill_Aura_Manipulation, //Maulers
+			//eProperty.Skill_FistWraps, //Maulers
+			//eProperty.Skill_MaulerStaff, //Maulers
+			//eProperty.Skill_Magnetism, //Maulers
+			//eProperty.Skill_Power_Strikes, //Maulers
         };
 
 		private static eProperty[] MidSkillBonus = new eProperty[] 
@@ -5182,16 +5223,16 @@ namespace DOL.GS
 	        eProperty.Skill_HandToHand,
     		//eProperty.Skill_Pacification,
 	        //eProperty.Skill_Savagery,
-	        eProperty.Skill_OdinsWill,
-	        eProperty.Skill_Cursing,
-	        eProperty.Skill_Hexing,
-	        eProperty.Skill_Witchcraft,
+	        //eProperty.Skill_OdinsWill,
+	        //eProperty.Skill_Cursing,
+	        //eProperty.Skill_Hexing,
+	        //eProperty.Skill_Witchcraft,
     		eProperty.Skill_Summoning,
-			eProperty.Skill_Aura_Manipulation, //Maulers
-			eProperty.Skill_FistWraps, //Maulers
-			eProperty.Skill_MaulerStaff, //Maulers
-			eProperty.Skill_Magnetism, //Maulers
-			eProperty.Skill_Power_Strikes, //Maulers
+			//eProperty.Skill_Aura_Manipulation, //Maulers
+			//eProperty.Skill_FistWraps, //Maulers
+			//eProperty.Skill_MaulerStaff, //Maulers
+			//eProperty.Skill_Magnetism, //Maulers
+			//eProperty.Skill_Power_Strikes, //Maulers
 		};
 
 
@@ -5256,8 +5297,6 @@ namespace DOL.GS
 			eObjectType.CompositeBow ,
 			eObjectType.LeftAxe,
 			eObjectType.HandToHand,
-			eObjectType.FistWraps,//Maulers
-			eObjectType.MaulerStaff,//Maulers
 			eObjectType.Sword,
 			eObjectType.Hammer,
 			eObjectType.Axe,
@@ -5267,8 +5306,6 @@ namespace DOL.GS
 			eObjectType.CompositeBow ,
 			eObjectType.LeftAxe,
 			eObjectType.HandToHand,
-			eObjectType.FistWraps,//Maulers
-			eObjectType.MaulerStaff,//Maulers
 		};
 
 		private static eObjectType[] MidgardArmor = new eObjectType[] 

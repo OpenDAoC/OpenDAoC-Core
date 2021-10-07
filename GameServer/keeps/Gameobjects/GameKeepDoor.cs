@@ -172,6 +172,9 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
+				if (Component.Keep.Region == 252)
+					return true;
+				
 				if (Component == null || Component.Keep == null)
 					return false;
 
@@ -193,6 +196,7 @@ namespace DOL.GS.Keeps
 							DoorIndex == 2)
 							return true;
 					}
+					
 				}
 				return false;
 			}

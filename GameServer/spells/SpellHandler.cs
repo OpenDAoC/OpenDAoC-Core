@@ -2187,10 +2187,10 @@ namespace DOL.GS.Spells
 					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
 			}
 
-			if(Caster is GamePlayer)
+			/*if(Caster is GamePlayer && target != null)
             {
 				(Caster as GamePlayer).Out.SendObjectUpdate(target);
-            }
+            }*/
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 		}
@@ -4318,10 +4318,7 @@ namespace DOL.GS.Spells
 				SendEffectAnimation(ad.Target, 0, false, 1);
 			}
 
-			if (ad.Damage > 0)
-				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					player.Out.SendCombatAnimation(ad.Attacker, ad.Target, 0, 0, 0, 0, (byte)attackResult, ad.Target.HealthPercent);
-
+			
 			// send animation before dealing damage else dead livings show no animation
 			ad.Target.OnAttackedByEnemy(ad);
 			ad.Attacker.DealDamage(ad);
@@ -4331,6 +4328,11 @@ namespace DOL.GS.Spells
 				if (aggroBrain != null)
 					aggroBrain.AddToAggroList(Caster, 1);
 			}
+
+			if (ad.Damage > 0)
+				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendCombatAnimation(ad.Attacker, ad.Target, 0, 0, 0, 0, (byte)attackResult, ad.Target.HealthPercent);
+
 
 			m_lastAttackData = ad;
 		}
