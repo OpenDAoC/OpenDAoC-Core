@@ -1162,9 +1162,6 @@ namespace DOL.GS {
                     break;
                 #endregion
 
-                    //buckle up
-                    //lets test it boys
-
                 #region weapons
 
                 #region 1h wep
@@ -1231,24 +1228,6 @@ namespace DOL.GS {
                     price = champion;
                     modelIDToAssign = 3458;
                     break;
-
-                /*
-                 * //"[Traitor's Dagger 1h](" + artifact + " RPs)\n" +
-                //    "[Croc Tooth Dagger 1h](" + artifact + "RPs)\n" +
-                 //   "[Golden Spear 1h](" + artifact + "RPs)\n" +
-                  //  "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
-           
-                //    "[Battler Hammer 1h](" + artifact + " RPs)\n" +
-                   // "[Malice 1h](" + artifact + "RPs)\n" +
-                 //   "[Bruiser 1h](" + artifact + "RPs)\n" +
-                  //  "[Scepter of the Meritorious](" + artifact + "RPs)\n" +
-             
-                  //  "[Croc Tooth Axe 1h](" + artifact + " RPs)\n" +
-                 //   "[Traitor's Axe 1h](" + artifact + "RPs)\n" +
-                  //  "[Malice Axe 1h](" + artifact + "RPs)\n" +
-                   // "[Battler Sword 1h](" + artifact + "RPs)\n" +
-                  //  "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +
-                 */
                 #endregion
 
                 #region 2h wep
@@ -1264,7 +1243,7 @@ namespace DOL.GS {
                     price = artifact;
                     modelIDToAssign = 1662;
                     break;
-                case "bruiser 2h":
+                case "bruiser hammer 2h":
                     price = artifact;
                     modelIDToAssign = 2113;
                     break;
@@ -1289,7 +1268,7 @@ namespace DOL.GS {
                         case eRealm.Hibernia:
                             modelIDToAssign = 675;
                             break;
-                    }
+                    } 
                     break;
                 #endregion
 
@@ -1374,8 +1353,6 @@ namespace DOL.GS {
                     "[Minotaur Shield](" + toageneric + "RPs)\n" +
                  */
                 #endregion
-                //lets test some shields boys
-                //love it when it all works first try :D
 
                 #region ranged weapons/instruments
                 //case "dragonslayer harp": probably doesn't work
@@ -1523,9 +1500,9 @@ namespace DOL.GS {
                     {
                         case eDamageType.Thrust:
                             SendReply(t,
-                                "[Traitor's Dagger](" + artifact + " RPs)\n" +
-                                "[Crocodile's Tooth](" + artifact + "RPs)\n" +
-                                "[Golden Spear](" + artifact + "RPs)\n" +
+                                "[Traitor's Dagger 1h](" + artifact + " RPs)\n" +
+                                "[Croc Tooth Dagger 1h](" + artifact + "RPs)\n" +
+                                "[Golden Spear 1h](" + artifact + "RPs)\n" +
                                 "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
                                 "");
                             break;
@@ -1578,10 +1555,34 @@ namespace DOL.GS {
 
                 case Slot.TWOHAND:
                     SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "[TBD](" + dragon + " RPs)\n" +
-                        "[TBD2](" + epic + "RPs)\n" +
-                        "");
+                        "I can apply the following skins: \n\n");
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Thrust:
+                            SendReply(t,
+                                "[Golden Spear 2h](" + artifact + "RPs)\n" +
+                                "Or, perhaps you'd just prefer a [hilt 2h] " + epic + " \n" +//alb 673/hib 674/mid 670
+                                "");
+                            break;
+
+                        case eDamageType.Crush:
+                            SendReply(t,
+                                "[Battler Hammer 2h](" + artifact + " RPs)\n" +
+                                "[Malice Hammer 2h](" + artifact + "RPs)\n" +
+                                "[Bruiser Hammer 2h](" + artifact + "RPs)\n" +
+                                "");
+                            break;
+
+                        case eDamageType.Slash:
+                            SendReply(t,
+                                "[Malice Axe 2h](" + artifact + "RPs)\n" +
+                                "[Battler Sword 2h](" + artifact + "RPs)\n" +
+                                "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + "RPs) \n" +
+                                "");
+                            break;
+                    }
+                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + "RPs) skin. \n");
+
                     break;
 
                 case Slot.RANGED:
