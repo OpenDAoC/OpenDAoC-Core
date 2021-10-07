@@ -2742,24 +2742,6 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			
-			if(Caster is GamePet && 
-			  (Caster.Name.ToLower().Contains("underhill") || Caster.Name.ToLower().Contains("simulacrum")))
-            {
-				//linearly scale pet damage based on level
-				//level 50 = 100% effective
-				//level 25 = 50% effective
-				//level 10 = 20% effective
-				double effectMod = Math.Round((double)(Caster.Level * 2) / 100, 2);
-
-                if (Caster.Name.ToLower().Contains("underhill") && Caster.Level < 40)
-                {
-					effectMod -= .10; //extra damage scaling for enchanter pets
-                }
-
-				effectiveness *= effectMod;
-            }
-
 			if (Caster is GamePlayer && (Caster as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Warlock && m_spell.IsSecondary)
 			{
 				Spell uninterruptibleSpell = Caster.TempProperties.getProperty<Spell>(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
