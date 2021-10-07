@@ -314,7 +314,7 @@ namespace DOL.GS
                                 foreach (var prop in getPropertyFromEffect(e.EffectType))
                                 {
                                     Console.WriteLine($"Debuffing {prop.ToString()}");
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
                                 }
                             }
                             else
