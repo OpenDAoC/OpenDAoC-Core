@@ -4140,8 +4140,6 @@ namespace DOL.GS
 					return false;
 				if (this.Brain is IControlledBrain)
 					return false;
-				if (ServerProperties.Properties.EVENT_DISABLE_XP)
-				 	return false;
 				lock (m_xpGainers.SyncRoot)
 				{
 					if (m_xpGainers.Keys.Count == 0) return false;
