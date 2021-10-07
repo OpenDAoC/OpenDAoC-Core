@@ -31,6 +31,24 @@ namespace DOL.GS.Spells
 	[SpellHandler("Nearsight")]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+			if (EffectListService.GetEffectOnTarget(target, eEffect.Nearsight) != null)
+            {
+				MessageToCaster(target.Name + " already has this effect!", eChatType.CT_SpellResisted);
+				SendEffectAnimation(target, 0, false, 0);
+				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				return;
+			}
+			if (EffectListService.GetEffectOnTarget(target, eEffect.NearsightImmunity) != null)
+			{
+				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+				SendEffectAnimation(target, 0, false, 0);
+				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				return;
+			}
+			base.ApplyEffectOnTarget(target, effectiveness);
+        }
         /// <summary>
         /// Calculates chance of spell getting resisted
         /// </summary>

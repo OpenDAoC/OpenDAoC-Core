@@ -73,6 +73,7 @@ namespace DOL.GS
         Snare,
         SnareImmunity,
         Nearsight,
+        NearsightImmunity,
 
         //stat debuffs
         StrengthDebuff,

@@ -34,6 +34,8 @@ namespace DOL.GS
                 case (byte)eSpellType.SpeedDecrease:
                 case (byte)eSpellType.DamageSpeedDecrease:
                     return eEffect.SnareImmunity;
+                case (byte)eSpellType.Nearsight:
+                    return eEffect.NearsightImmunity;
                 default:
                     return eEffect.Unknown;
             }
