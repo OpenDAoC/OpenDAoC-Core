@@ -1273,7 +1273,7 @@ namespace DOL.GS {
                 #endregion
 
                 #region class weapons
-
+                    //finally time to test :)
                 case "class epic 1h":
                     price = champion;
                     switch ((eCharacterClass)player.CharacterClass.ID)
@@ -1628,6 +1628,240 @@ namespace DOL.GS {
                     }
                     break;
 
+                case "class epic 2h":
+                    price = champion;
+                    switch ((eCharacterClass)player.CharacterClass.ID)
+                    {
+                        //alb
+                        case eCharacterClass.Armsman:
+                            if((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
+                            {
+                                switch ((eDamageType)item.Type_Damage)
+                                {
+                                    case eDamageType.Thrust:
+                                        modelIDToAssign = 3297;
+                                        break;
+                                    case eDamageType.Slash:
+                                        modelIDToAssign = 3297;
+                                        break;
+                                    case eDamageType.Crush:
+                                        modelIDToAssign = 3298;
+                                        break;
+                                }
+                            }else
+                            {
+                                switch ((eDamageType)item.Type_Damage)
+                                {
+                                    case eDamageType.Thrust:
+                                        modelIDToAssign = 3301;
+                                        break;
+                                    case eDamageType.Slash:
+                                        modelIDToAssign = 3300;
+                                        break;
+                                    case eDamageType.Crush:
+                                        modelIDToAssign = 3302;
+                                        break;
+                                }
+                            }
+                            break;
+                        case eCharacterClass.Cabalist:
+                            modelIDToAssign = 3264;
+                            break;
+                        case eCharacterClass.Cleric:
+                            modelIDToAssign = 3282;
+                            break;
+                        case eCharacterClass.Friar:
+                            modelIDToAssign = 3271;
+                            break;
+                        case eCharacterClass.Necromancer:
+                            modelIDToAssign = 3268;
+                            break;
+                        case eCharacterClass.Paladin:
+                            switch ((eDamageType)item.Type_Damage)
+                            {
+                                case eDamageType.Thrust:
+                                    modelIDToAssign = 3307;
+                                    break;
+                                case eDamageType.Slash:
+                                    modelIDToAssign = 3306;
+                                    break;
+                                case eDamageType.Crush:
+                                    modelIDToAssign = 3308;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Sorcerer:
+                            modelIDToAssign = 3265;
+                            break;
+                        case eCharacterClass.Theurgist:
+                            modelIDToAssign = 3266;
+                            break;
+                        case eCharacterClass.Wizard:
+                            modelIDToAssign = 3267;
+                            break;
+
+                        //mid
+                        case eCharacterClass.Berserker:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Hammer:
+                                    modelIDToAssign = 3324;
+                                    break;
+                                case eObjectType.Axe:
+                                    modelIDToAssign = 3322;
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3326;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Bonedancer:
+                            modelIDToAssign = 3311;
+                            break;
+                        case eCharacterClass.Healer:
+                            modelIDToAssign = 3335;
+                            break;
+                        case eCharacterClass.Hunter:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Spear:
+                                    if ((eDamageType)item.Type_Damage == eDamageType.Thrust)
+                                    {
+                                        modelIDToAssign = 3319;
+                                    }
+                                    else
+                                    {
+                                        modelIDToAssign = 3320;
+                                    }
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3318;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Runemaster:
+                            modelIDToAssign = 3309;
+                            break;
+                        case eCharacterClass.Savage:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Hammer:
+                                    modelIDToAssign = 3330;
+                                    break;
+                                case eObjectType.Axe:
+                                    modelIDToAssign = 3328;
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3332;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Shadowblade:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Axe:
+                                    modelIDToAssign = 3316;
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3314;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Shaman:
+                            modelIDToAssign = 3338;
+                            break;
+                        case eCharacterClass.Skald:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Hammer:
+                                    modelIDToAssign = 3342;
+                                    break;
+                                case eObjectType.Axe:
+                                    modelIDToAssign = 3340;
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3344;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Spiritmaster:
+                            modelIDToAssign = 3310;
+                            break;
+                        case eCharacterClass.Thane:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Hammer:
+                                    modelIDToAssign = 3348;
+                                    break;
+                                case eObjectType.Axe:
+                                    modelIDToAssign = 3346;
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3350;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Warrior:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Hammer:
+                                    modelIDToAssign = 3354;
+                                    break;
+                                case eObjectType.Axe:
+                                    modelIDToAssign = 3352;
+                                    break;
+                                case eObjectType.Sword:
+                                    modelIDToAssign = 3356;
+                                    break;
+                            }
+                            break;
+
+                        //hib
+                        case eCharacterClass.Animist:
+                            modelIDToAssign = 3229;
+                            break;
+                        case eCharacterClass.Champion:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Blades:
+                                    modelIDToAssign = 3254;
+                                    break;
+                                case eObjectType.Blunt:
+                                    modelIDToAssign = 3253;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Eldritch:
+                            modelIDToAssign = 3226;
+                            break;
+                        case eCharacterClass.Enchanter:
+                            modelIDToAssign = 3227;
+                            break;
+                        case eCharacterClass.Hero:
+                            switch ((eObjectType)item.Object_Type)
+                            {
+                                case eObjectType.Blades:
+                                    modelIDToAssign = 3259;
+                                    break;
+                                case eObjectType.Blunt:
+                                    modelIDToAssign = 3260;
+                                    break;
+                                case eObjectType.Piercing:
+                                    modelIDToAssign = 3261;
+                                    break;
+                                case eObjectType.CelticSpear:
+                                    modelIDToAssign = 3263;
+                                    break;
+                            }
+                            break;
+                        case eCharacterClass.Mentalist:
+                            modelIDToAssign = 3228;
+                            break;
+                        case eCharacterClass.Valewalker:
+                            modelIDToAssign = 3231;
+                            break;
+                    }
+                    break;
                 #endregion
 
                 #endregion
