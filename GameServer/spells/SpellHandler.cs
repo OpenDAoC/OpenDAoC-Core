@@ -818,8 +818,8 @@ namespace DOL.GS.Spells
 			
 			//[Ganrod] Nidel: Can cast pet spell on all Pet/Turret/Minion (our pet)
 			if (targetType.Equals("pet"))
-			{
-				if (selectedTarget == null || !Caster.IsControlledNPC(selectedTarget as GameNPC))
+			{ 
+				if (selectedTarget == null || !Caster.IsControlledNPC(selectedTarget as GameNPC) || (selectedTarget != null && selectedTarget != Caster.ControlledBrain?.Body))
 				{
 					if (Caster.ControlledBrain != null && Caster.ControlledBrain.Body != null)
 					{
@@ -4886,10 +4886,11 @@ namespace DOL.GS.Spells
 							break;
 					}
 					break;
+				case eSpellType.CombatSpeedBuff:
 				case eSpellType.CelerityBuff:
 					dw.AddKeyValuePair("power_level", Spell.Value * 2);
 					break;
-				case eSpellType.CombatSpeedBuff:
+
 				case eSpellType.Confusion:
 					dw.AddKeyValuePair("power_level", Spell.Value > 0 ? Spell.Value : 100);
 					break;
