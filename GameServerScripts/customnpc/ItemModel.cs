@@ -1821,12 +1821,15 @@ namespace DOL.GS {
                             modelIDToAssign = 3229;
                             break;
                         case eCharacterClass.Champion:
-                            switch ((eObjectType)item.Object_Type)
+                            switch ((eDamageType)item.Type_Damage)
                             {
-                                case eObjectType.Blades:
+                                case eDamageType.Slash:
                                     modelIDToAssign = 3254;
                                     break;
-                                case eObjectType.Blunt:
+                                case eDamageType.Thrust:
+                                    modelIDToAssign = 3254;
+                                    break;
+                                case eDamageType.Crush:
                                     modelIDToAssign = 3253;
                                     break;
                             }
@@ -1852,6 +1855,26 @@ namespace DOL.GS {
                                 case eObjectType.CelticSpear:
                                     modelIDToAssign = 3263;
                                     break;
+                                case eObjectType.LargeWeapons:
+                                    //yay weird daoc weapon structure
+                                    switch ((eDamageType)item.Type_Damage)
+                                    {
+                                        case eDamageType.Slash:
+                                            modelIDToAssign = 3259;
+                                            break;
+                                        case eDamageType.Thrust:
+                                            modelIDToAssign = 3261;
+                                            break;
+                                        case eDamageType.Crush:
+                                            modelIDToAssign = 3260;
+                                            break;
+                                    }
+                                    break;
+                                        //going to test large weapons and then its bedtime for me
+                                        //thanks for joining me :)
+
+                                    //see you guys friday! :) <3
+
                             }
                             break;
                         case eCharacterClass.Mentalist:
