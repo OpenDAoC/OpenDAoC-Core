@@ -77,9 +77,9 @@ namespace DOL.GS.Scripts
 					item.AllowAdd = true;
 					item.Color = (int)color;
 					item.IsTradable = false;
+					item.Price = 1;
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-					invitem.SellPrice = 1;
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
@@ -144,9 +144,9 @@ namespace DOL.GS.Scripts
 				item.AllowAdd = true;
 				item.Color = (int)color;
 				item.IsTradable = false;
+				item.Price = 1;
 				GameServer.Database.AddObject(item);
 				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-				invitem.SellPrice = 1;
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 			}
 			else if(type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible || type == eObjectType.LargeWeapons)
@@ -164,9 +164,9 @@ namespace DOL.GS.Scripts
 					dmgTypeItem.AllowAdd = true;
 					dmgTypeItem.Color = (int)color;
 					dmgTypeItem.IsTradable = false;
+					dmgTypeItem.Price = 1;
 					GameServer.Database.AddObject(dmgTypeItem);
 					InventoryItem tempItem = GameInventoryItem.Create<ItemUnique>(dmgTypeItem);
-					tempItem.SellPrice = 1;
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem);
 				}	
 			} else
@@ -176,9 +176,9 @@ namespace DOL.GS.Scripts
 				item.AllowAdd = true;
 				item.Color = (int)color;
 				item.IsTradable = false;
+				item.Price = 1;
 				GameServer.Database.AddObject(item);
 				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-				invitem.SellPrice = 1;
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 			}	
 		}
