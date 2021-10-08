@@ -28,6 +28,8 @@ namespace DOL.GS {
         private int epic = 5000;
         private int dragon = 10000;
         private int champion = 20000;
+        private int cloakcheap = 20000;
+        private int cloakexpensive = 61749;
 
         public override bool AddToWorld()
         {
@@ -95,7 +97,7 @@ namespace DOL.GS {
             }
 
             switch (str.ToLower())
-            {
+            { 
                 #region helms
                 case "dragonsworn helm":
                     price = dragon;
@@ -1079,6 +1081,601 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                #endregion
+
+                #region sleeves
+                case "foppish sleeves":
+                    price = artifact;
+                    modelIDToAssign = 1732;
+                    break;
+                case "arms of the wind":
+                    price = artifact;
+                    modelIDToAssign = 1733;
+                    break;
+                case "oceanus sleeves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 1625;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 1639;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1847;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2100;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1770;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2091;
+                            break;
+                    }
+                    break;
+                case "stygia sleeves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2152;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2134;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1756;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1808;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1788;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2123;
+                            break;
+                    }
+                    break;
+                case "volcanus sleeves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2161;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2175;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1779;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1693;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1711;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1702;
+                            break;
+                    }
+                    break;
+                case "aerus sleeves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2237;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2143;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1797;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1735;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1747;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1684;
+                            break;
+                    }
+                    break;
+                #endregion
+
+                #region pants
+                case "wing's dive":
+                    price = artifact;
+                    modelIDToAssign = 1767;
+                    break;
+                case "alvarus' leggings":
+                    price = artifact;
+                    modelIDToAssign = 1744;
+                    break;
+                case "oceanus pants":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 1631;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 1646;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1854;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2107;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1778;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2098;
+                            break;
+                    }
+                    break;
+                case "stygia pants":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2158;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2141;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1763;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1815;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1796;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2130;
+                            break;
+                    }
+                    break;
+                case "volcanus pants":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2167;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2182;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1786;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1700;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1718;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1709;
+                            break;
+                    }
+                    break;
+                case "aerus pants":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2243;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2150;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1804;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1742;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1754;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1691;
+                            break;
+                    }
+                    break;
+                #endregion
+
+                #region boots
+                case "enyalio's boots":
+                    price = artifact;
+                    modelIDToAssign = 2488;
+                    break;
+                case "flamedancer's boots":
+                    price = artifact;
+                    modelIDToAssign = 1731;
+                    break;
+                case "oceanus boots":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 1629;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 1643;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1851;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2104;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1775;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2095;
+                            break;
+                    }
+                    break;
+                case "stygia boots":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2157;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2139;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1761;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1813;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1793;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2127;
+                            break;
+                    }
+                    break;
+                case "volcanus boots":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2166;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2180;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1784;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1698;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1716;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1706;
+                            break;
+                    }
+                    break;
+                case "aerus boots":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2242;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2148;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1802;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1740;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1752;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1688;
+                            break;
+                    }
+                    break;
+                #endregion
+
+                #region gloves
+                case "maddening scalars":
+                    price = artifact;
+                    modelIDToAssign = 1746;
+                    break;
+                case "sharkskin gloves":
+                    price = artifact;
+                    modelIDToAssign = 1734;
+                    break;
+                case "oceanus gloves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 1620;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 1645;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1853;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2106;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1776;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2097;
+                            break;
+                    }
+                    break;
+                case "stygia gloves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2248;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2140;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1762;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1814;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1794;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2129;
+                            break;
+                    }
+                    break;
+                case "volcanus gloves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2249;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2181;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1785;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1699;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1717;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1708;
+                            break;
+                    }
+                    break;
+                case "aerus gloves":
+                    price = toageneric;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2250;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2149;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 1803;
+                            break;
+
+                        case eObjectType.Chain:
+                            modelIDToAssign = 1741;
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 1753;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 1690;
+                            break;
+                    }
+                    break;
+                #endregion
+
+                #region cloaks 
+                // :fademe:
+                //I wish we had the champion cloaks
+
+                case "realm cloak":
+                    price = cloakexpensive;
+                    switch ((eRealm)player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 3800;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 3802;
+                            break;
+                        case eRealm.Midgard:
+                            modelIDToAssign = 3801;
+                            break;
+                    }
+                    break;
+
+                case "dragonslayer cloak":
+                    price = cloakexpensive;
+                    switch ((eRealm)player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 4105;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 4109;
+                            break;
+                        case eRealm.Midgard:
+                            modelIDToAssign = 4107;
+                            break;
+                    }
+                    break;
+
+                case "dragonsworn cloak": 
+                    price = cloakcheap;
+                    modelIDToAssign = 3790;
+                    break;
+
+                case "valentines cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 3752;
+                    break;
+
+                case "winter cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 4115;
+                    break;
+
+                case "clean leather cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 3637;
+                    break;
+
+                case "corrupt leather cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 3634;
+                    break;
+
+                case "cloudsong":
+                    price = cloakcheap;
+                    modelIDToAssign = 1727;
+                    break;
+
+                case "shades of mist": //lol spelled it right here so its broken until I rebuild
+                    price = cloakcheap;
+                    modelIDToAssign = 1726;
+                    break;
+
+                case "magma cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 1725;
+                    break;
+
+                case "stygian cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 1724;
+                    break;
+
+                case "aerus cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 1720;
+                    break;
+
+                case "oceanus cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 1722;
+                    break;
+
+                case "harpy feather cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 1721;
+                    break;
+                  
+                case "healer's embrace":
+                    price = cloakcheap;
+                    modelIDToAssign = 1723;
+                    break;
+
                 #endregion
 
                 #region weapons
@@ -2201,8 +2798,6 @@ namespace DOL.GS {
                     break;
                     #endregion
 
-                 
-
             }
 
             if (price > 0)
@@ -2281,10 +2876,83 @@ namespace DOL.GS {
                         "[Stygia Breastplate] (" + toageneric + " RPs)\n" +
                         "[Volcanus Breastplate] (" + toageneric + " RPs)\n" +
                         "[Aerus Breastplate] (" + toageneric + " RPs)\n" +
-                        // "[Spooky Breastplate](" + festive + " RPs)\n" +
+                        
                         "");
                     break;
 
+                case Slot.ARMS:
+                    SendReply(t, "This looks like it has protected you nicely. \n" +
+                        "I can apply the following skins: \n\n" +
+                        "[Foppish Sleeves] (" + artifact + " RPs)\n" +
+                        "[Arms of the Wind] (" + artifact + " RPs)\n" +
+                        "[Oceanus Sleeves] (" + toageneric + " RPs)\n" +
+                        "[Stygia Sleeves] (" + toageneric + " RPs)\n" +
+                        "[Volcanus Sleeves] (" + toageneric + " RPs)\n" +
+                        "[Aerus Sleeves] (" + toageneric + " RPs)\n" +
+                        
+                        "");
+                    break;
+
+                case Slot.LEGS:
+                    SendReply(t, "This looks like it has protected you nicely. \n" +
+                        "I can apply the following skins: \n\n" +
+                        "[Wings Dive] (" + artifact + " RPs)\n" +
+                        "[Alvarus' Leggings] (" + artifact + " RPs)\n" +
+                        "[Oceanus Pants] (" + toageneric + " RPs)\n" +
+                        "[Stygia Pants] (" + toageneric + " RPs)\n" +
+                        "[Volcanus Pants] (" + toageneric + " RPs)\n" +
+                        "[Aerus Pants] (" + toageneric + " RPs)\n" +
+                        
+                        "");
+                    break;
+
+                case Slot.HANDS:
+                    SendReply(t, "This looks like it has protected you nicely. \n" +
+                        "I can apply the following skins: \n\n" +
+                        "[Maddening Scalars] (" + artifact + " RPs)\n" +
+                        "[Sharkskin Gloves] (" + artifact + " RPs)\n" +
+                        "[Oceanus Gloves] (" + toageneric + " RPs)\n" +
+                        "[Stygia Gloves] (" + toageneric + " RPs)\n" +
+                        "[Volcanus Gloves] (" + toageneric + " RPs)\n" +
+                        "[Aerus Gloves] (" + toageneric + " RPs)\n" +
+                        
+                        "");
+                    break;
+
+                case Slot.FEET:
+                    SendReply(t, "This looks like it has protected you nicely. \n" +
+                        "I can apply the following skins: \n\n" +
+                        "[Enyalio's Boots] (" + artifact + " RPs)\n" +
+                        "[Flamedancer's Boots] (" + artifact + " RPs)\n" +
+                        "[Oceanus Boots] (" + toageneric + " RPs)\n" +
+                        "[Stygia Boots] (" + toageneric + " RPs)\n" +
+                        "[Volcanus Boots] (" + toageneric + " RPs)\n" +
+                        "[Aerus Boots] (" + toageneric + " RPs)\n" +
+                        
+                        "");
+                    break;
+
+                case Slot.CLOAK:
+                    SendReply(t, "This looks like it has protected you nicely. \n" +
+                        "I can apply the following skins: \n\n" +
+                      /*  "[Realm Cloak] (" + cloakexpensive + " RPs)\n" +
+                        "[Dragonslayer Cloak] (" + cloakexpensive + " RPs)\n" +
+                        "[Dragonsworn Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Valentines Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Winter Cloak] (" + cloakcheap + " RPs)\n" + //yep all these IDs are too new too
+                      //another one for the model wizards
+                        "[Clean Leather Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Corrupt Leather Cloak] (" + cloakcheap + " RPs)\n" + */
+                        "[Cloudsong] (" + cloakcheap + " RPs)\n" +
+                        "[Shades of Mist] (" + cloakcheap + " RPs)\n" +
+                        "[Harpy Feather Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Healer's Embrace] (" + cloakcheap + " RPs)\n" +
+                        "[Oceanus Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Magma Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Stygian Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Aerus Cloak] (" + cloakcheap + " RPs)\n" +
+                        "");
+                    break;        
 
                 case Slot.RIGHTHAND:
                     SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
@@ -2296,7 +2964,6 @@ namespace DOL.GS {
                                     "[Snakecharmer's Fist](" + artifact + " RPs)\n" +
                                     "[Scorched Fist](" + toageneric + " RPs)\n" +
                                     "[Dragonsworn Fist](" + dragon + " RPs)\n" +
-                                    //"Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
                                     "");
                     }
                     if ((eObjectType)item.Object_Type == eObjectType.Flexible)
@@ -2455,7 +3122,7 @@ namespace DOL.GS {
                     {
                         SendReply(t, "This looks like it plays beautiful music. \n" +
                         "I can apply the following skins: \n\n" +
-                        //"[Dragonslayer Harp](" + dragon + " RPs)\n" +
+                        //"[Dragonslayer Harp](" + dragon + " RPs)\n" + //these too
                         "[Class Epic Harp](" + epic + " RPs)\n" +
                         "[Labyrinth Harp](" + toageneric + " RPs)\n" +
                         "");
