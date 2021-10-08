@@ -542,7 +542,7 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-			if (target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity))//target.HasAbility(Abilities.StunImmunity))
+			if (target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GamePet)))//target.HasAbility(Abilities.StunImmunity))
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				base.OnSpellResisted(target);
