@@ -1,7 +1,9 @@
 ﻿using DOL.Database;
 using DOL.Events;
+using DOL.GS.Effects;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using DOL.GS.PacketHandler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -168,6 +170,20 @@ namespace DOL.GS
                     mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
                 }
 
+                // Check if Reflex Attack RA should apply. This is checked once here and cached since it is used multiple times below (every swing triggers Reflex Attack).
+                bool targetHasReflexAttackRA = false;
+                GamePlayer targetPlayer = mainHandAD.Target as GamePlayer;
+                if (targetPlayer != null && SpellHelper.FindStaticEffectOnTarget(targetPlayer, typeof(AtlasOF_ReflexAttackEffect)) != null)
+                {
+                    targetHasReflexAttackRA = true;
+                }
+
+                // Reflex Attack - Mainhand
+                if (targetHasReflexAttackRA)
+                {
+                    HandleReflexAttack(owner, mainHandAD.Target, mainHandAD.AttackResult, m_interruptDuration);
+                }
+
                 // deal damage and start effect
                 if (mainHandAD.AttackResult == eAttackResult.HitUnstyled || mainHandAD.AttackResult == eAttackResult.HitStyle)
                 {
@@ -177,18 +193,19 @@ namespace DOL.GS
                         owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
                         HandleDamageAdd(owner, mainHandAD);
 
-
-                        if (mainHandAD.Target is GameLiving)
-                        {
-                            GameLiving living = mainHandAD.Target as GameLiving;
-                            RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
-                            if (ra != null && Util.Chance(ra.Amount))
-                            {
-                                AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.attackComponent.AttackWeapon, null, 1, m_interruptDuration, false, true);
-                                living.DealDamage(ReflexAttackAD);
-                                living.SendAttackingCombatMessages(ReflexAttackAD);
-                            }
-                        }
+                        /// [Atlas - Takii] Reflex Attack NF Implementation commented out.
+//                         if (mainHandAD.Target is GameLiving)
+//                         {
+//                             GameLiving living = mainHandAD.Target as GameLiving;
+// 
+//                             RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
+//                             if (ra != null && Util.Chance(ra.Amount))
+//                             {
+//                                 AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.attackComponent.AttackWeapon, null, 1, m_interruptDuration, false, true);
+//                                 living.DealDamage(ReflexAttackAD);
+//                                 living.SendAttackingCombatMessages(ReflexAttackAD);
+//                             }
+//                         }
                     }
                 }
 
@@ -268,6 +285,12 @@ namespace DOL.GS
                                 leftHandAD.Target.HandleDamageShields(leftHandAD);
                                 //Notify ourself about the attack
                                 //owner.Notify(GameLivingEvent.AttackFinished, owner, new AttackFinishedEventArgs(leftHandAD));
+
+                                // Reflex Attack - Offhand
+                                if (targetHasReflexAttackRA)
+                                {
+                                    HandleReflexAttack(owner, leftHandAD.Target, leftHandAD.AttackResult, m_interruptDuration);
+                                }
                             }
                             break;
                     }
@@ -372,6 +395,32 @@ namespace DOL.GS
                         numRegularDmgAddsApplied++;
                     }
                 }
+            }
+        }
+
+        private static void HandleReflexAttack(GameLiving attacker, GameLiving target, eAttackResult attackResult, int interruptDuration)
+        {
+            // Create an attack where the target hits the attacker back.
+            // Triggers if we actually took a swing at the target, regardless of whether or not we hit.
+            switch (attackResult)
+            {
+                case eAttackResult.HitStyle:
+                case eAttackResult.HitUnstyled:
+                case eAttackResult.Missed:
+                case eAttackResult.Blocked:
+                case eAttackResult.Evaded:
+                case eAttackResult.Parried:
+                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(attacker, target.attackComponent.AttackWeapon, null, 1, interruptDuration, false, true);
+                    target.DealDamage(ReflexAttackAD);
+
+                    // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually
+                    // since it will not be done automatically as this attack is not processed by regular attacking code.
+                    GamePlayer playerAttacker = attacker as GamePlayer;
+                    if (ReflexAttackAD.AttackResult == eAttackResult.HitUnstyled)
+                    {
+                        playerAttacker.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                    }
+                    break;
             }
         }
 
