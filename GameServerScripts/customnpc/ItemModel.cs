@@ -24,7 +24,7 @@ namespace DOL.GS {
         private int lowbie = 500;
         private int festive = 1000;
         private int toageneric = 2000; //effects price in RPs
-        private int artifact = 4000;
+        private int artifact = 6000;
         private int epic = 5000;
         private int dragon = 10000;
         private int champion = 20000;
@@ -1144,9 +1144,55 @@ namespace DOL.GS {
                     }
                     break;
                 case "rolling pin":
-                    price = champion;
+                    price = epic;
                     modelIDToAssign = 3458;
                     break;
+                case "wakazashi":
+                    price = champion;
+                    modelIDToAssign = 2209;
+                    break;
+                case "turkey leg":
+                    price = champion;
+                    modelIDToAssign = 3454;
+                    break;
+                case "key":
+                    price = champion;
+                    modelIDToAssign = 3455;
+                    break;
+                case "cleaver":
+                    price = epic;
+                    modelIDToAssign = 654;
+                    break;
+                case "khopesh":
+                    price = epic;
+                    modelIDToAssign = 2195;
+                    break;
+                case "torch":
+                    price = champion;
+                    modelIDToAssign = 3471;
+                    break;
+                case "stein":
+                    price = champion;
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 3440;
+                            break;
+                        case eRealm.Midgard:
+                            modelIDToAssign = 3443;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 3438;
+                            break;
+                    }
+                    break;
+                case "hot metal rod":
+                    price = champion;
+                    modelIDToAssign = 2984;
+                    break;
+
+                
+
                 #endregion
 
                 #region 2h wep
@@ -1229,11 +1275,12 @@ namespace DOL.GS {
                     price = artifact;
                     modelIDToAssign = 3450;
                     break;
-                case "snakecharmer's scythe":
+                case "snakechamer's scythe":
                     price = artifact;
                     modelIDToAssign = 2111;
                     break;
 
+                    //hand to hand
                 case "snakecharmer's fist":
                     price = artifact;
                     modelIDToAssign = 2469;
@@ -1270,12 +1317,48 @@ namespace DOL.GS {
                             break;
                     }
                     break;
-                /*
-                 *  "[Snakecharmer's Fist](" + artifact + " RPs)\n" +
-                                "[Scorched Fist](" + toageneric + "RPs)\n" +
-                                "[Dragonsworn Fist](" + dragon + "RPs)\n" +
-                 */
 
+                //flex
+                case "snakecharmer's whip":
+                    price = artifact;
+                    modelIDToAssign = 2119;
+                    break;
+
+                case "scorched whip":
+                    price = toageneric;
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Slash:
+                            modelIDToAssign = 3726;
+                            break;
+                        case eDamageType.Crush:
+                            modelIDToAssign = 3728;
+                            break;
+                        case eDamageType.Thrust:
+                            modelIDToAssign = 3730;
+                            break;
+                    }
+                    break;
+
+                case "dragonsworn whip":
+                    price = dragon;
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Slash:
+                            modelIDToAssign = 3726;
+                            break;
+                        case eDamageType.Crush:
+                            modelIDToAssign = 3728;
+                            break;
+                        case eDamageType.Thrust:
+                            modelIDToAssign = 3730;
+                            break;
+                    }
+                    break;
+                /*
+                "[Snakecharmer's Whip](" + artifact + " RPs)\n" +
+                                "[Scorched Whip](" + toageneric + " RPs)\n" +
+                                "[Dragonsworn Whip](" + dragon + " RPs)\n" +*/
                 #endregion
 
                 #region class weapons
@@ -1414,6 +1497,9 @@ namespace DOL.GS {
                                     break;
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3325;
+                                    break;
+                                case eObjectType.LeftAxe:
+                                    modelIDToAssign = 3321;
                                     break;
                             }
                             break;
@@ -2088,7 +2174,7 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "[Dragonsworn Breastplate](" + dragon + " RPs)\n" +
-                        "[Class Epic Chestpiece](" + epic + "RPs)\n" +
+                        "[Class Epic Chestpiece](" + epic + " RPs)\n" +
                         "[Eirene's Chest](" + artifact + " RPs)\n" +
                         "[Naliah's Robe](" + artifact + " RPs)\n" +
                         "[Guard of Valor](" + artifact + " RPs)\n" +
@@ -2110,9 +2196,17 @@ namespace DOL.GS {
                     {
                         SendReply(t,
                                     "[Snakecharmer's Fist](" + artifact + " RPs)\n" +
-                                    "[Scorched Fist](" + toageneric + "RPs)\n" +
-                                    "[Dragonsworn Fist](" + dragon + "RPs)\n" +
+                                    "[Scorched Fist](" + toageneric + " RPs)\n" +
+                                    "[Dragonsworn Fist](" + dragon + " RPs)\n" +
                                     //"Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
+                                    "");
+                    }
+                    if ((eObjectType)item.Object_Type == eObjectType.Flexible)
+                    {
+                        SendReply(t,
+                                    "[Snakecharmer's Whip](" + artifact + " RPs)\n" +
+                                    "[Scorched Whip](" + toageneric + " RPs)\n" +
+                                    "[Dragonsworn Whip](" + dragon + " RPs)\n" +
                                     "");
                     }
                     else
@@ -2122,32 +2216,37 @@ namespace DOL.GS {
                             case eDamageType.Thrust:
                                 SendReply(t,
                                     "[Traitor's Dagger 1h](" + artifact + " RPs)\n" +
-                                    "[Croc Tooth Dagger 1h](" + artifact + "RPs)\n" +
-                                    "[Golden Spear 1h](" + artifact + "RPs)\n" +
-                                    "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +//alb 673/hib 674/mid 670
+                                    "[Croc Tooth Dagger 1h](" + artifact + " RPs)\n" +
+                                    "[Golden Spear 1h](" + artifact + " RPs)\n" +
+                                    "[Wakazashi](" + epic + " RPs)" +
                                     "");
                                 break;
 
                             case eDamageType.Crush:
                                 SendReply(t,
                                     "[Battler Hammer 1h](" + artifact + " RPs)\n" +
-                                    "[Malice Hammer 1h](" + artifact + "RPs)\n" +
-                                    "[Bruiser Hammer 1h](" + artifact + "RPs)\n" +
-                                    "[Scepter of the Meritorious](" + artifact + "RPs)\n" +
-                                    "[Rolling Pin](" + champion + "RPs)\n" + //lol 3458 
+                                    "[Malice Hammer 1h](" + artifact + " RPs)\n" +
+                                    "[Bruiser Hammer 1h](" + artifact + " RPs)\n" +
+                                    "[Scepter of the Meritorious](" + artifact + " RPs)\n" +
+                                    "[Rolling Pin](" + epic + " RPs)\n" +
+                                    "[Stein](" + epic + " RPs)" +
+                                    "[Turkey Leg](" + champion + " RPs)" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
                                     "[Croc Tooth Axe 1h](" + artifact + " RPs)\n" +
-                                    "[Traitor's Axe 1h](" + artifact + "RPs)\n" +
-                                    "[Malice Axe 1h](" + artifact + "RPs)\n" +
-                                    "[Battler Sword 1h](" + artifact + "RPs)\n" +
-                                    "Or, perhaps you'd just prefer a [hilt 1h] " + epic + " \n" +
+                                    "[Traitor's Axe 1h](" + artifact + " RPs)\n" +
+                                    "[Malice Axe 1h](" + artifact + " RPs)\n" +
+                                    "[Battler Sword 1h](" + artifact + " RPs)\n" +
+                                    "[Khopesh](" + epic + " RPs)\n" +
+                                    "[Cleaver](" + epic + " RPs)" +
                                     "");
                                 break;
                         }
+                        SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                     "");
                     }
                     SendReply(t, "Additionally, I can apply an [class epic 1h] " + champion + " skin. \n");
                     break;
@@ -2159,12 +2258,12 @@ namespace DOL.GS {
                         SendReply(t, "A sturdy barricade to ward the blows of your enemies. \n" +
                         "I can apply the following skins: \n\n" +
                         "[Aten's Shield](" + artifact + " RPs)\n" +
-                        "[Cyclop's Eye](" + artifact + "RPs)\n" +
-                        "[Shield of Khaos](" + artifact + "RPs)\n" +
-                        "[Oceanus Shield](" + toageneric + "RPs)\n" +
-                        "[Aerus Shield](" + toageneric + "RPs)\n" +
-                        "[Magma Shield](" + toageneric + "RPs)\n" +
-                        "[Minotaur Shield](" + toageneric + "RPs)\n" +
+                        "[Cyclop's Eye](" + artifact + " RPs)\n" +
+                        "[Shield of Khaos](" + artifact + " RPs)\n" +
+                        "[Oceanus Shield](" + toageneric + " RPs)\n" +
+                        "[Aerus Shield](" + toageneric + " RPs)\n" +
+                        "[Magma Shield](" + toageneric + " RPs)\n" +
+                        "[Minotaur Shield](" + toageneric + " RPs)\n" +
                         "");
                     }
                     else
@@ -2180,20 +2279,20 @@ namespace DOL.GS {
                     if ((eObjectType)item.Object_Type == eObjectType.Staff)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Staff](" + dragon + "RPs)\n" +
+                                    "[Dragonsworn Staff](" + dragon + " RPs)\n" +
                                     "[Traldor's Oracle](" + artifact + " RPs)\n" +
-                                    "[Trident of the Gods](" + artifact + "RPs)\n" +
-                                    "[Tartaros Gift](" + artifact + "RPs)\n" +
-                                    "[Scorched Staff](" + toageneric + "RPs)\n" +
+                                    "[Trident of the Gods](" + artifact + " RPs)\n" +
+                                    "[Tartaros Gift](" + artifact + " RPs)\n" +
+                                    "[Scorched Staff](" + toageneric + " RPs)\n" +
                                     "");
-                    } else if ((eObjectType)item.Item_Type == eObjectType.Scythe)
+                    } else if ((eObjectType)item.Object_Type == eObjectType.Scythe)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Scythe](" + dragon + "RPs)\n" +
+                                    "[Dragonsworn Scythe](" + dragon + " RPs)\n" +
                                     "[Scythe of Kings](" + artifact + " RPs)\n" +
-                                    "[Snakechamer's Scythe](" + artifact + "RPs)\n" +
-                                    "[Magma Scythe](" + toageneric + "RPs)\n" +
-                                    "[Scorched Scythe](" + toageneric + "RPs)\n" +
+                                    "[Snakechamer's Scythe](" + artifact + " RPs)\n" +
+                                    "[Magma Scythe](" + toageneric + " RPs)\n" +
+                                    "[Scorched Scythe](" + toageneric + " RPs)\n" +
                                     "");
                     }
                     else
@@ -2202,7 +2301,7 @@ namespace DOL.GS {
                         {
                             case eDamageType.Thrust:
                                 SendReply(t,
-                                    "[Golden Spear 2h](" + artifact + "RPs)\n" +
+                                    "[Golden Spear 2h](" + artifact + " RPs)\n" +
                                     "Or, perhaps you'd just prefer a [hilt 2h] " + epic + " \n" +//alb 673/hib 674/mid 670
                                     "");
                                 break;
@@ -2210,21 +2309,21 @@ namespace DOL.GS {
                             case eDamageType.Crush:
                                 SendReply(t,
                                     "[Battler Hammer 2h](" + artifact + " RPs)\n" +
-                                    "[Malice Hammer 2h](" + artifact + "RPs)\n" +
-                                    "[Bruiser Hammer 2h](" + artifact + "RPs)\n" +
+                                    "[Malice Hammer 2h](" + artifact + " RPs)\n" +
+                                    "[Bruiser Hammer 2h](" + artifact + " RPs)\n" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
-                                    "[Malice Axe 2h](" + artifact + "RPs)\n" +
-                                    "[Battler Sword 2h](" + artifact + "RPs)\n" +
-                                    "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + "RPs) \n" +
+                                    "[Malice Axe 2h](" + artifact + " RPs)\n" +
+                                    "[Battler Sword 2h](" + artifact + " RPs)\n" +
+                                    "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n" +
                                     "");
                                 break;
                         }
                     }
-                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + "RPs) skin. \n");
+                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
                     break;
 
                 case Slot.RANGED:
@@ -2233,8 +2332,8 @@ namespace DOL.GS {
                         SendReply(t, "This looks like it plays beautiful music. \n" +
                         "I can apply the following skins: \n\n" +
                         //"[Dragonslayer Harp](" + dragon + " RPs)\n" +
-                        "[Class Epic Harp](" + epic + "RPs)\n" +
-                        "[Labyrinth Harp](" + toageneric + "RPs)\n" +
+                        "[Class Epic Harp](" + epic + " RPs)\n" +
+                        "[Labyrinth Harp](" + toageneric + " RPs)\n" +
                         "");
                     }
                     else
@@ -2242,11 +2341,10 @@ namespace DOL.GS {
                         SendReply(t, "Nothing like bringing death from afar. \n" +
                         "I can apply the following skins: \n\n" +
                         //"[Dragonslayer Bow](" + dragon + " RPs)\n" +
-                        "[Class Epic Bow](" + epic + "RPs)\n" +
-                        "[Braggart's Bow](" + artifact + "RPs)\n" +
-                        "[Fool's Bow](" + artifact + "RPs)\n" +
-                        "[Labyrinth Bow](" + toageneric + "RPs)\n" +
-                        // I am losing my mind
+                        "[Class Epic Bow](" + epic + " RPs)\n" +
+                        "[Braggart's Bow](" + artifact + " RPs)\n" +
+                        "[Fool's Bow](" + artifact + " RPs)\n" +
+                        "[Labyrinth Bow](" + toageneric + " RPs)\n" +
                         "");
                     }
 
