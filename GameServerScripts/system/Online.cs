@@ -171,7 +171,7 @@ namespace DOL.GS.Commands
                     || c.Player.ObjectState != GameObject.eObjectState.Active)
                     continue;
 
-                if (bGM)
+                if (c.Account.PrivLevel >= (uint)ePrivLevel.GM)
                 {
                     ++gms;
                     continue;
