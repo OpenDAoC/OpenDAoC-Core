@@ -62,32 +62,62 @@ namespace DOL.GS.Scripts
 					color = eColor.Blue_4;
 					break;
 			}
-			if (str.Equals("full suit")) {
-				List<eInventorySlot> bodySlots = new List<eInventorySlot>();
-				bodySlots.Add(eInventorySlot.ArmsArmor);
-				bodySlots.Add(eInventorySlot.FeetArmor);
-				bodySlots.Add(eInventorySlot.HandsArmor);
-				bodySlots.Add(eInventorySlot.HeadArmor);
-				bodySlots.Add(eInventorySlot.LegsArmor);
-				bodySlots.Add(eInventorySlot.TorsoArmor);
+			if (str.Equals("full suit"))
+			{
+				const string customKey = "free_event_armor";
+				var hasFreeArmor = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
-				foreach (eInventorySlot islot in bodySlots) {
-					GeneratedUniqueItem item = null;
-					item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level - 4), armorType, islot);
-					item.AllowAdd = true;
-					item.Color = (int)color;
-					item.IsTradable = false;
-					item.Price = 1;
-					GameServer.Database.AddObject(item);
-					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if (hasFreeArmor != null)
+				{
+					player.Out.SendMessage("Sorry " + player.Name + ", I don't have enough items left to give you another set.\n\n Go fight for your Realm to get more equipment!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					return false;
 				}
+				
+				List<eInventorySlot> bodySlots = new List<eInventorySlot>();
+					bodySlots.Add(eInventorySlot.ArmsArmor);
+					bodySlots.Add(eInventorySlot.FeetArmor);
+					bodySlots.Add(eInventorySlot.HandsArmor);
+					bodySlots.Add(eInventorySlot.HeadArmor);
+					bodySlots.Add(eInventorySlot.LegsArmor);
+					bodySlots.Add(eInventorySlot.TorsoArmor);
+
+					foreach (eInventorySlot islot in bodySlots) {
+						GeneratedUniqueItem item = null;
+						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level - 4), armorType, islot);
+						item.AllowAdd = true;
+						item.Color = (int)color;
+						item.IsTradable = false;
+						item.Price = 1;
+						GameServer.Database.AddObject(item);
+						InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+						//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+					
+					DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
+					charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
+					charFreeEventEquip.KeyName = customKey;
+					charFreeEventEquip.Value = "1";
+					GameServer.Database.AddObject(charFreeEventEquip);
 			} 
 			else if (str.Equals("weapons")) {
 				
+				const string customKey = "free_event_weapons";
+				var hasFreeWeapons = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+				if (hasFreeWeapons != null)
+				{
+					player.Out.SendMessage("Sorry " + player.Name + ", I don't have enough weapons left to give you another set.\n\n Go fight for your Realm to get more equipment!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					return false;
+				}
+				
 				GenerateWeaponsForClass(charclass, player);
 				
+				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
+				charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
+				charFreeEventEquip.KeyName = customKey;
+				charFreeEventEquip.Value = "1";
+				GameServer.Database.AddObject(charFreeEventEquip);
 			}
 			
 			//GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot);
