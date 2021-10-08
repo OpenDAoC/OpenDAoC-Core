@@ -171,7 +171,7 @@ namespace DOL.GS.Commands
                     || c.Player.ObjectState != GameObject.eObjectState.Active)
                     continue;
 
-                if (c.Account.PrivLevel >= (uint)ePrivLevel.GM)
+                if (bGM)
                 {
                     ++gms;
                     continue;
@@ -436,7 +436,7 @@ namespace DOL.GS.Commands
             Dictionary<string, int> zoneXnumbers = new Dictionary<string, int>();
             foreach (GameClient c in clients)
             {
-                if (c == null)
+                if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null)
                     continue;
 
                 int count = 1;

@@ -6628,6 +6628,11 @@ namespace DOL.GS
 						if (ad.Damage == -1)
 							break;
 
+                        if (IsStealthed)
+                        {
+							Stealth(false);
+						}
+
 						#region Messages
 
 						string hitLocName = null;
@@ -6723,6 +6728,9 @@ namespace DOL.GS
 				CraftTimer = null;
 				Out.SendCloseTimerWindow();
 			}
+
+
+
 		}
 
 
@@ -13169,7 +13177,7 @@ namespace DOL.GS
 				}
 			}
 			Notify(GamePlayerEvent.StealthStateChanged, this, null);
-			if(Client.Account.PrivLevel < (int)ePrivLevel.GM)
+			if(Client.Account.PrivLevel != (int)ePrivLevel.GM || Client.Account.PrivLevel != (int)ePrivLevel.Admin)
             {
 				Out.SendUpdateMaxSpeed();
 			}
