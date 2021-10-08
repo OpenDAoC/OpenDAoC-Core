@@ -54,9 +54,9 @@ namespace DOL.GS
 		// TOA Chance in %
 		public const ushort ROG_TOA_ITEM_CHANCE = 0;
 		// Armor Chance in %
-		public const ushort ROG_ARMOR_CHANCE = 60;
+		public const ushort ROG_ARMOR_CHANCE = 40;
 		// Magical Chance in %
-		public const ushort ROG_MAGICAL_CHANCE = 15;
+		public const ushort ROG_MAGICAL_CHANCE = 35;
 		
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
