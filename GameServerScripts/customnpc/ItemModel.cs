@@ -1191,23 +1191,125 @@ namespace DOL.GS {
                     modelIDToAssign = 2984;
                     break;
 
-                
+                //hand to hand
+                case "snakecharmer's fist":
+                    price = artifact;
+                    modelIDToAssign = 2469;
+                    break;
+
+                case "scorched fist":
+                    price = toageneric;
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Slash:
+                            modelIDToAssign = 3726;
+                            break;
+                        case eDamageType.Crush:
+                            modelIDToAssign = 3728;
+                            break;
+                        case eDamageType.Thrust:
+                            modelIDToAssign = 3730;
+                            break;
+                    }
+                    break;
+
+                case "dragonsworn fist":
+                    price = dragon;
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Slash:
+                            modelIDToAssign = 3843;
+                            break;
+                        case eDamageType.Crush:
+                            modelIDToAssign = 3845;
+                            break;
+                        case eDamageType.Thrust:
+                            modelIDToAssign = 3847;
+                            break;
+                    }
+                    break;
+
+                //flex
+                case "snakecharmer's whip":
+                    price = artifact;
+                    modelIDToAssign = 2119;
+                    break;
+
+                case "scorched whip":
+                    price = toageneric;
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Slash:
+                            modelIDToAssign = 3697;
+                            break;
+                        case eDamageType.Crush:
+                            modelIDToAssign = 3696;
+                            break;
+                        case eDamageType.Thrust:
+                            modelIDToAssign = 3698;
+                            break;
+                    }
+                    break;
+
+                case "dragonsworn whip":
+                    price = dragon;
+                    switch ((eDamageType)item.Type_Damage)
+                    {
+                        case eDamageType.Slash:
+                            modelIDToAssign = 3814;
+                            break;
+                        case eDamageType.Crush:
+                            modelIDToAssign = 3815;
+                            break;
+                        case eDamageType.Thrust:
+                            modelIDToAssign = 3813;
+                            break;
+                    }
+                    break;
+
 
                 #endregion
 
                 #region 2h wep
+
+                case "pickaxe":
+                    price = epic;
+                    modelIDToAssign = 2983;
+                    break;
+
+                    //axe
                 case "malice axe 2h":
                     price = artifact;
                     modelIDToAssign = 2110;
                     break;
-                case "malice hammer 2h":
-                    price = artifact;
-                    modelIDToAssign = 3449;
+                case "scorched axe 2h":
+                    price = toageneric;
+                    modelIDToAssign = 3705;
                     break;
+                case "magma axe 2h":
+                    price = toageneric;
+                    modelIDToAssign = 2217;
+                    break;
+
+                //spears
                 case "golden spear 2h":
                     price = artifact;
                     modelIDToAssign = 1662;
                     break;
+                case "dragon spear 2h":
+                    price = dragon;
+                    modelIDToAssign = 3819;
+                    break;
+                case "scorched spear 2h":
+                    price = toageneric;
+                    modelIDToAssign = 3714;
+                    break;
+                case "trident spear 2h":
+                    price = toageneric;
+                    modelIDToAssign = 2191;
+                    break;
+
+                    //hammers
                 case "bruiser hammer 2h":
                     price = artifact;
                     modelIDToAssign = 2113;
@@ -1216,9 +1318,35 @@ namespace DOL.GS {
                     price = artifact;
                     modelIDToAssign = 3448;
                     break;
+                case "malice hammer 2h":
+                    price = artifact;
+                    modelIDToAssign = 3449;
+                    break;
+                case "scorched hammer 2h":
+                    price = toageneric;
+                    modelIDToAssign = 3704;
+                    break;
+                case "magma hammer 2h":
+                    price = toageneric;
+                    modelIDToAssign = 2215;
+                    break;
+
+                //swords
                 case "battler sword 2h":
                     price = artifact;
                     modelIDToAssign = 1670;
+                    break;
+                case "scorched sword 2h":
+                    price = toageneric;
+                    modelIDToAssign = 3701;
+                    break;
+                case "katana 2h":
+                    price = epic;
+                    modelIDToAssign = 2208;
+                    break;
+                case "khopesh 2h":
+                    price = epic;
+                    modelIDToAssign = 2196;
                     break;
                 case "hilt 2h":
                     price = epic;
@@ -1236,7 +1364,17 @@ namespace DOL.GS {
                     } 
                     break;
 
-                    //staffs
+                //thrust
+                case "scorched thrust 2h":
+                    price = toageneric;
+                    modelIDToAssign = 3700;
+                    break;
+                case "dragon thrust 2h":
+                    price = dragon;
+                    modelIDToAssign = 3817;
+                    break;
+
+                //staffs
                 case "traldor's oracle":
                     price = artifact;
                     modelIDToAssign = 1658;
@@ -1280,85 +1418,45 @@ namespace DOL.GS {
                     modelIDToAssign = 2111;
                     break;
 
-                    //hand to hand
-                case "snakecharmer's fist":
-                    price = artifact;
-                    modelIDToAssign = 2469;
-                    break;
-
-                case "scorched fist":
-                    price = toageneric;
-                    switch((eDamageType)item.Type_Damage)
-                    {
-                        case eDamageType.Slash:
-                            modelIDToAssign = 3726;
-                            break;
-                        case eDamageType.Crush:
-                            modelIDToAssign = 3728;
-                            break;
-                        case eDamageType.Thrust:
-                            modelIDToAssign = 3730;
-                            break;
-                    }
-                    break;
-
-                case "dragonsworn fist":
+                //polearms
+                case "dragonsworn pole":
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
                         case eDamageType.Slash:
-                            modelIDToAssign = 3843;
+                            modelIDToAssign = 3832;
                             break;
                         case eDamageType.Crush:
-                            modelIDToAssign = 3845;
+                            modelIDToAssign = 3833;
                             break;
                         case eDamageType.Thrust:
-                            modelIDToAssign = 3847;
+                            modelIDToAssign = 3831;
                             break;
                     }
                     break;
-
-                //flex
-                case "snakecharmer's whip":
+                case "pole of kings":
                     price = artifact;
-                    modelIDToAssign = 2119;
+                    modelIDToAssign = 1661;
                     break;
-
-                case "scorched whip":
-                    price = toageneric;
+                case "scorched pole":
                     switch ((eDamageType)item.Type_Damage)
                     {
                         case eDamageType.Slash:
-                            modelIDToAssign = 3726;
+                            modelIDToAssign = 3715;
                             break;
                         case eDamageType.Crush:
-                            modelIDToAssign = 3728;
+                            modelIDToAssign = 3716;
                             break;
                         case eDamageType.Thrust:
-                            modelIDToAssign = 3730;
+                            modelIDToAssign = 3714;
                             break;
                     }
+                    break;
+                case "golden pole":
+                    price = artifact;
+                    modelIDToAssign = 1662;
                     break;
 
-                case "dragonsworn whip":
-                    price = dragon;
-                    switch ((eDamageType)item.Type_Damage)
-                    {
-                        case eDamageType.Slash:
-                            modelIDToAssign = 3726;
-                            break;
-                        case eDamageType.Crush:
-                            modelIDToAssign = 3728;
-                            break;
-                        case eDamageType.Thrust:
-                            modelIDToAssign = 3730;
-                            break;
-                    }
-                    break;
-                /*
-                "[Snakecharmer's Whip](" + artifact + " RPs)\n" +
-                                "[Scorched Whip](" + toageneric + " RPs)\n" +
-                                "[Dragonsworn Whip](" + dragon + " RPs)\n" +*/
                 #endregion
 
                 #region class weapons
@@ -2294,6 +2392,23 @@ namespace DOL.GS {
                                     "[Magma Scythe](" + toageneric + " RPs)\n" +
                                     "[Scorched Scythe](" + toageneric + " RPs)\n" +
                                     "");
+                    } else if ((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
+                    {
+                        SendReply(t,
+                                    "[Dragonsworn Pole](" + dragon + " RPs)\n" +
+                                    "[Pole of Kings](" + artifact + " RPs)\n" +
+                                    "[Golden Pole](" + toageneric + " RPs)\n" +
+                                    "[Scorched Pole](" + toageneric + " RPs)\n" +
+                                    "");
+                    }
+                    else if ((eObjectType)item.Object_Type == eObjectType.Spear || (eObjectType)item.Object_Type == eObjectType.CelticSpear)
+                    {
+                        SendReply(t,
+                                    "[Golden Spear 2h](" + artifact + " RPs)\n" +
+                                    "[Dragon Spear 2h](" + dragon + " RPs)\n" +
+                                    "[Scorched Spear 2h](" + toageneric + " RPs)\n" +
+                                    "[Trident Spear 2h](" + toageneric + " RPs)\n" +
+                                    "");
                     }
                     else
                     {
@@ -2301,8 +2416,10 @@ namespace DOL.GS {
                         {
                             case eDamageType.Thrust:
                                 SendReply(t,
-                                    "[Golden Spear 2h](" + artifact + " RPs)\n" +
-                                    "Or, perhaps you'd just prefer a [hilt 2h] " + epic + " \n" +//alb 673/hib 674/mid 670
+                                    "[Scorched Thrust 2h](" + toageneric + " RPs)\n" +
+                                    "[Dragon Thrust 2h](" + toageneric + " RPs)\n" +
+                                    "[Katana 2h](" + epic + " RPs)\n" +
+                                    "[Pickaxe](" + epic + " RPs)\n" +
                                     "");
                                 break;
 
@@ -2311,19 +2428,26 @@ namespace DOL.GS {
                                     "[Battler Hammer 2h](" + artifact + " RPs)\n" +
                                     "[Malice Hammer 2h](" + artifact + " RPs)\n" +
                                     "[Bruiser Hammer 2h](" + artifact + " RPs)\n" +
+                                    "[Scorched Hammer 2h](" + toageneric + " RPs)\n" +
+                                    "[Magma Hammer 2h](" + toageneric + " RPs)\n" +
+                                    "[Pickaxe](" + epic + " RPs)\n" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
                                     "[Malice Axe 2h](" + artifact + " RPs)\n" +
+                                    "[Scorched Axe 2h](" + toageneric + " RPs)\n" +
+                                    "[Magma Axe 2h](" + toageneric + " RPs)\n" +
                                     "[Battler Sword 2h](" + artifact + " RPs)\n" +
-                                    "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n" +
+                                    "[Scorched Sword 2h](" + toageneric + " RPs)\n" +
+                                    "[Katana 2h](" + epic + " RPs)\n" +
                                     "");
                                 break;
                         }
                     }
-                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
+                    SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n" +
+                                "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
                     break;
 
                 case Slot.RANGED:
