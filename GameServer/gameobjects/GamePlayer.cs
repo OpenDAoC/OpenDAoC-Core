@@ -6628,6 +6628,11 @@ namespace DOL.GS
 						if (ad.Damage == -1)
 							break;
 
+                        if (IsStealthed)
+                        {
+							player.Stealth(false);
+						}
+
 						#region Messages
 
 						string hitLocName = null;
@@ -6723,6 +6728,9 @@ namespace DOL.GS
 				CraftTimer = null;
 				Out.SendCloseTimerWindow();
 			}
+
+
+
 		}
 
 
