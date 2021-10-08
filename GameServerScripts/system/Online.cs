@@ -416,23 +416,7 @@ namespace DOL.GS.Commands
 
                 }
             }
-
-
-            if (showDetailedClass == true)
-            {
-                output.Add(string.Format("\n"));
-                lock (classcount)
-                {
-                    classcount.Sort(delegate(ClassToCount ctc1, ClassToCount ctc2) { return ctc1.count.CompareTo(ctc2.count); });
-                    classcount.Reverse();
-                    for (int c = 0; c < classcount.Count; c++)
-                    {
-                        if (classcount[c].count > 0)
-                            output.Add(string.Format("{0}: {1} ({2}%)", classcount[c].name, classcount[c].count.ToString(), (int)(classcount[c].count * 100 / total)));
-                    }
-                }
-            }
-
+            
             Dictionary<string, int> zoneXnumbers = new Dictionary<string, int>();
             foreach (GameClient c in clients)
             {
@@ -450,9 +434,25 @@ namespace DOL.GS.Commands
 
             foreach (KeyValuePair<string, int> kvp in zoneXnumbers)
             {
+                output.Add(string.Format("\n"));
                 output.Add(kvp.Value + " players in " + kvp.Key);
             }
-
+            
+            
+            if (showDetailedClass == true)
+            {
+                output.Add(string.Format("\n"));
+                lock (classcount)
+                {
+                    classcount.Sort(delegate(ClassToCount ctc1, ClassToCount ctc2) { return ctc1.count.CompareTo(ctc2.count); });
+                    classcount.Reverse();
+                    for (int c = 0; c < classcount.Count; c++)
+                    {
+                        if (classcount[c].count > 0)
+                            output.Add(string.Format("{0}: {1} ({2}%)", classcount[c].name, classcount[c].count.ToString(), (int)(classcount[c].count * 100 / total)));
+                    }
+                }
+            }
 
             #endregion
 
