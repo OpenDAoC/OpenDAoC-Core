@@ -4056,7 +4056,7 @@ namespace DOL.GS
                 return;            
             
             // Cancel MoveSpeedBuff
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff) /*&& ad != null*/)
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff) && ad != null)
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
                 EffectService.RequestCancelEffect(effect);
