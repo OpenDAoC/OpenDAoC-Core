@@ -2731,6 +2731,11 @@ namespace DOL.GS.Spells
 
 			double effectiveness = Caster.Effectiveness;
 
+			if(SpellLine.KeyName.Equals("OffensiveProc") &&  Caster is GamePet gpet && !Spell.ScaledToPetLevel)
+            {
+				gpet.ScalePetSpell(Spell);
+			}
+
 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
 			{
 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
