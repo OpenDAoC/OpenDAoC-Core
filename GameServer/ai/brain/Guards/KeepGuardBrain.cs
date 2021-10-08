@@ -40,7 +40,7 @@ namespace DOL.AI.Brain
 		{
 			get
 			{
-				return 1500;
+				return 500;
 			}
 		}
 

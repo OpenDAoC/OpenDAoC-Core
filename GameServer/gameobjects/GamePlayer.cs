@@ -704,7 +704,7 @@ namespace DOL.GS
 				{
 					lastCombatAction = LastAttackTick;
 				}
-				long secondsleft = 60 - (CurrentRegion.Time - lastCombatAction + 500) / 1000; // 500 is for rounding
+				long secondsleft = 60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000; // 500 is for rounding
 				if (secondsleft > 0)
 				{
 					if (secondsleft == 15 || secondsleft == 10 || secondsleft == 5)
@@ -733,17 +733,17 @@ namespace DOL.GS
 				if (m_quitTimer == null)
 				{
 					// dirty trick ;-) (20sec min quit time)
-					if (CurrentRegion.Time - LastAttackTickPvP > 40000)
-						LastAttackTickPvP = CurrentRegion.Time - 40000;
-					if (CurrentRegion.Time - LastAttackTickPvE > 40000)
-						LastAttackTickPvE = CurrentRegion.Time - 40000;
+					if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
+						LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
+					if (GameLoop.GameLoopTime - LastAttackTickPvE > 40000)
+						LastAttackTickPvE = GameLoop.GameLoopTime - 40000;
 				}
 				long lastCombatAction = LastAttackTick;
 				if (lastCombatAction < LastAttackedByEnemyTick)
 				{
 					lastCombatAction = LastAttackedByEnemyTick;
 				}
-				return (int)(60 - (CurrentRegion.Time - lastCombatAction + 500) / 1000); // 500 is for rounding
+				return (int)(60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000); // 500 is for rounding
 			}
 			set
 			{ }
@@ -13124,7 +13124,7 @@ namespace DOL.GS
 				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
                 {
 					Sprint(false);
-					GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
+					//GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					{
 						if (player == null) continue;
@@ -13132,6 +13132,7 @@ namespace DOL.GS
 						if (!player.CanDetect(this))
 							player.Out.SendObjectDelete(this);
 					}
+					Out.SendUpdateMaxSpeed();
 				}
 				
 			}
@@ -13178,7 +13179,7 @@ namespace DOL.GS
 				}
 			}
 			Notify(GamePlayerEvent.StealthStateChanged, this, null);
-			if(Client.Account.PrivLevel != (int)ePrivLevel.GM || Client.Account.PrivLevel != (int)ePrivLevel.Admin)
+			if(Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
             {
 				Out.SendUpdateMaxSpeed();
 			}
