@@ -13123,7 +13123,7 @@ namespace DOL.GS
 				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
                 {
 					Sprint(false);
-					GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
+					//GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					{
 						if (player == null) continue;
@@ -13131,6 +13131,7 @@ namespace DOL.GS
 						if (!player.CanDetect(this))
 							player.Out.SendObjectDelete(this);
 					}
+					Out.SendUpdateMaxSpeed();
 				}
 				
 			}
@@ -13177,7 +13178,7 @@ namespace DOL.GS
 				}
 			}
 			Notify(GamePlayerEvent.StealthStateChanged, this, null);
-			if(Client.Account.PrivLevel != (int)ePrivLevel.GM || Client.Account.PrivLevel != (int)ePrivLevel.Admin)
+			if(Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
             {
 				Out.SendUpdateMaxSpeed();
 			}
