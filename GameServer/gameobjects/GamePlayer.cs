@@ -9515,34 +9515,34 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (toItem.PoisonCharges > 0)
-			{
-				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.ApplyPoison.CantReapplyPoison"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
-			}
+			//if (toItem.PoisonCharges > 0)
+			//{
+			//	Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.ApplyPoison.CantReapplyPoison"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			//	return false;
+			//}
 
-			if (toItem.PoisonSpellID != 0)
-			{
-				bool canApply = false;
-				SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
-				if (poisonLine != null)
-				{
-					List<Spell> spells = SkillBase.GetSpellList(poisonLine.KeyName);
-					foreach (Spell spl in spells)
-					{
-						if (spl.ID == toItem.PoisonSpellID)
-						{
-							canApply = true;
-							break;
-						}
-					}
-				}
-				if (canApply == false)
-				{
-					Out.SendMessage(string.Format("You can't poison your {0}!", toItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					return false;
-				}
-			}
+			//if (toItem.PoisonSpellID != 0)
+			//{
+			//	bool canApply = false;
+			//	SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
+			//	if (poisonLine != null)
+			//	{
+			//		List<Spell> spells = SkillBase.GetSpellList(poisonLine.KeyName);
+			//		foreach (Spell spl in spells)
+			//		{
+			//			if (spl.ID == toItem.PoisonSpellID)
+			//			{
+			//				canApply = true;
+			//				break;
+			//			}
+			//		}
+			//	}
+			//	if (canApply == false)
+			//	{
+			//		Out.SendMessage(string.Format("You can't poison your {0}!", toItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			//		return false;
+			//	}
+			//}
 
 			// Apply poison effect to weapon
 			if (poisonPotion.PoisonSpellID != 0)
