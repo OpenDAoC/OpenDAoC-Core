@@ -13111,15 +13111,20 @@ namespace DOL.GS
 				Out.SendPlayerModelTypeChange(this, 3);
 				m_stealthEffect = new StealthEffect();
 				m_stealthEffect.Start(this);
-				Sprint(false);
-				GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					if (player == null) continue;
-					if (player == this) continue;
-					if (!player.CanDetect(this))
-						player.Out.SendObjectDelete(this);
+
+				if (Client.Account.PrivLevel < (int)ePrivLevel.GM)
+                {
+					Sprint(false);
+					GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					{
+						if (player == null) continue;
+						if (player == this) continue;
+						if (!player.CanDetect(this))
+							player.Out.SendObjectDelete(this);
+					}
 				}
+				
 			}
 			else
 			{
@@ -13164,7 +13169,11 @@ namespace DOL.GS
 				}
 			}
 			Notify(GamePlayerEvent.StealthStateChanged, this, null);
-			Out.SendUpdateMaxSpeed();
+			if(Client.Account.PrivLevel < (int)ePrivLevel.GM)
+            {
+				Out.SendUpdateMaxSpeed();
+			}
+			
 		}
 
 		/// <summary>
