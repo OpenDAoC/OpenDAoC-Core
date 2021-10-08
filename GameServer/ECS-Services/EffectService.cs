@@ -707,7 +707,7 @@ namespace DOL.GS
                             foreach (var prop in getPropertyFromEffect(e.EffectType))
                             {
                                 Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecDebuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
                             }
                         }
                         else
