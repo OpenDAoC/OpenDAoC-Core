@@ -112,7 +112,7 @@ namespace DOL.GS
                                 return true;
                             }
                         }
-                        Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
+                        //Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
                         return false;
                     }
                     else if (Effects.ContainsKey(effect.EffectType))
@@ -135,7 +135,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error adding an Effect {e}");
+                    //Console.WriteLine($"Error adding an Effect {e}");
                     return false;
                 }
                 
@@ -174,7 +174,7 @@ namespace DOL.GS
                 {
                     if (!Effects.ContainsKey(effect.EffectType))
                     {
-                        Console.WriteLine("Effect List does not contain type: " + effect.EffectType.ToString());
+                        //Console.WriteLine("Effect List does not contain type: " + effect.EffectType.ToString());
                         return false;
                     }
                     else
@@ -207,7 +207,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error removing an Effect from EffectList {e}");
+                    //Console.WriteLine($"Error removing an Effect from EffectList {e}");
                     return false;
                 }
 
@@ -229,7 +229,7 @@ namespace DOL.GS
                     }
                 } catch (Exception e)
                 {
-                    Console.WriteLine($"Error attempting to check effect type");
+                    //Console.WriteLine($"Error attempting to check effect type");
                     return false;
                 }
             }
