@@ -2483,7 +2483,7 @@ namespace DOL.GS
 
 				if (regen != 0)
 				{
-					Console.WriteLine("Endo Regen: " + ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen));
+					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
 				}
 			}
 			if (!sprinting)

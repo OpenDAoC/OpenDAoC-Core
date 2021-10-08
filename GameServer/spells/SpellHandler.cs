@@ -697,10 +697,10 @@ namespace DOL.GS.Spells
                     {
 						EffectService.RequestCancelConcEffect(cancelEffect);
                         Caster.LastPulseCast = null;
-                        Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
+                        //Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
-                    else
-                        Console.WriteLine("Error Canceling Effect");
+                    //else
+                        //Console.WriteLine("Error Canceling Effect");
 
                     return false;
                 }
@@ -2036,7 +2036,7 @@ namespace DOL.GS.Spells
 		public virtual void SendCastAnimation(ushort castTime)
 		{
 			_calculatedCastTime = castTime * 100;
-            Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
+            //Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 
             foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
