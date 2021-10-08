@@ -1728,9 +1728,17 @@ namespace DOL.GS.Spells
             }
             else
             {
-				Caster.castingComponent.spellHandler = null;
-            }
-			Caster.CurrentSpellHandler = null;
+				if (Caster.castingComponent.queuedSpellHandler != null)
+				{
+					Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
+					Caster.castingComponent.queuedSpellHandler = null;
+				}
+				else
+				{
+					Caster.castingComponent.spellHandler = null;
+				}
+			}
+			Caster.CurrentSpellHandler = Caster.castingComponent.spellHandler;
 		}
 
 		

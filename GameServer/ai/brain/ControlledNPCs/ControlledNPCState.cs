@@ -125,6 +125,9 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             return;
         }
 
+        brain.CheckSpells(eCheckSpellType.Offensive);
+        
+
         //See if the pet is too far away, if so release it!
         if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
             (brain.Owner as GamePlayer).CommandNpcRelease();
@@ -155,7 +158,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
    
         // Always check offensive spells, or pets in melee will keep blindly melee attacking,
         //	when they should be stopping to cast offensive spells.
-        if(!brain.Body.attackComponent.AttackState && brain.CheckSpells(eCheckSpellType.Offensive)) return;
+        if(brain.Body.CurrentSpellHandler != null) return;
         
         //return to defensive if our target(s) are dead
         if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)

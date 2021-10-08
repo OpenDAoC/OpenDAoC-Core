@@ -4140,8 +4140,6 @@ namespace DOL.GS
 					return false;
 				if (this.Brain is IControlledBrain)
 					return false;
-				if (ServerProperties.Properties.EVENT_DISABLE_XP)
-				 	return false;
 				lock (m_xpGainers.SyncRoot)
 				{
 					if (m_xpGainers.Keys.Count == 0) return false;
@@ -5478,7 +5476,7 @@ namespace DOL.GS
 			if (IsIncapacitated)
 				return false;
 
-			if ((m_runningSpellHandler != null && !spell.IsInstantCast) || TempProperties.getProperty<Spell>(LOSCURRENTSPELL, null) != null)
+			if (TempProperties.getProperty<Spell>(LOSCURRENTSPELL, null) != null)
 				return false;
 
 			bool casted = false;

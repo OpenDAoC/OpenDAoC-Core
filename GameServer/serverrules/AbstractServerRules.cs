@@ -1450,9 +1450,6 @@ namespace DOL.GS.ServerRules
 						xpSource = eXPSource.Player;
 					}
 
-					if (ServerProperties.Properties.EVENT_DISABLE_XP)
-						xpReward = 0;
-
 					if (xpReward > 0)
 						living.GainExperience(xpSource, xpReward);
 
@@ -1511,16 +1508,6 @@ namespace DOL.GS.ServerRules
 					totalDamage += (float)de.Value;
 				}
 
-				if (ServerProperties.Properties.EVENT_DISABLE_XP)
-				{
-					foreach (DictionaryEntry de in killedPlayer.XPGainers)
-					{
-						GamePlayer player = de.Key as GamePlayer;
-						if (player != null)
-							player.Out.SendMessage("You gain no experience from this kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
-				}
-				
 				if (dealNoXP)
 				{
 					foreach (DictionaryEntry de in killedPlayer.XPGainers)
