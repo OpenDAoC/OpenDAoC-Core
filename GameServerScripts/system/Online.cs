@@ -431,10 +431,10 @@ namespace DOL.GS.Commands
                 }
                 zoneXnumbers.Add(c.Player.CurrentZone.Description, count);
             }
-
+            
+            output.Add(string.Format("\n"));
             foreach (KeyValuePair<string, int> kvp in zoneXnumbers)
             {
-                output.Add(string.Format("\n"));
                 output.Add(kvp.Value + " players in " + kvp.Key);
             }
             
