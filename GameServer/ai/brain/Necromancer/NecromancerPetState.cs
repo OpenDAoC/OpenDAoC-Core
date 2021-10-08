@@ -42,9 +42,11 @@ public class NecromancerPetState_DEFENSIVE : ControlledNPCState_DEFENSIVE
             brain.CheckPlayerAggro();
             brain.CheckNPCAggro();
         }
-
-        brain.AttackMostWanted();
-
+        if (!brain.Body.IsCasting)
+        {
+            brain.AttackMostWanted();
+        }
+        
         // Do not discover stealthed players
         if (brain.Body.TargetObject != null)
         {
@@ -89,7 +91,10 @@ public class NecromancerPetState_AGGRO : ControlledNPCState_AGGRO
             brain.CheckNPCAggro();
         }
 
-        brain.AttackMostWanted();
+        if (!brain.Body.IsCasting)
+        {
+            brain.AttackMostWanted();
+        }
 
         // Do not discover stealthed players
         if (brain.Body.TargetObject != null)
