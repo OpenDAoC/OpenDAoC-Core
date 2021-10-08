@@ -174,7 +174,7 @@ namespace DOL.GS
                 }
             }
 
-            base.ScalePetSpell(spell, casterLevel);
+            //base.ScalePetSpell(spell, casterLevel);
         }
 
         public override void Die(GameObject killer)
