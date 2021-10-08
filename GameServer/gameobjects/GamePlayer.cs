@@ -13112,7 +13112,7 @@ namespace DOL.GS
 				m_stealthEffect = new StealthEffect();
 				m_stealthEffect.Start(this);
 
-				if (Client.Account.PrivLevel < (int)ePrivLevel.GM)
+				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
                 {
 					Sprint(false);
 					GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
