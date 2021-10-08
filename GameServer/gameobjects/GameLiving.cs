@@ -4115,7 +4115,7 @@ namespace DOL.GS
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff) &&
                 effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault().SpellHandler.Spell.SpellType != (byte)eSpellType.StyleSpeedDecrease)
             {
-                switch (ad.AttackResult)
+                switch (ad?.AttackResult)
                 {
                     case eAttackResult.HitStyle:
                     case eAttackResult.HitUnstyled:
