@@ -6630,7 +6630,8 @@ namespace DOL.GS
 
                         if (IsStealthed)
                         {
-							Stealth(false);
+							if (!(ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell.SpellType == (byte)eSpellType.DamageOverTime))
+								Stealth(false);
 						}
 
 						#region Messages

@@ -1416,7 +1416,10 @@ namespace DOL.GS
                     handler.MessageToLiving(effect.Owner, effect.SpellHandler.Spell.Message1, eChatType.CT_Spell);
                     // {0} is surrounded by an acidic cloud!
                     Message.SystemToArea(effect.Owner, Util.MakeSentence(effect.SpellHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-                    handler.OnDirectEffect(effect.Owner, effect.Effectiveness);
+                    if (effect.LastTick == 0/*StartTick + effect.TickInterval > GameLoop.GameLoopTime*/)
+                        handler.OnDirectEffect(effect.Owner, effect.Effectiveness, true);
+                    else
+                        handler.OnDirectEffect(effect.Owner, effect.Effectiveness, false);
                 }
                 else if (effect.SpellHandler is StyleBleeding bleedHandler)
                 {

@@ -245,6 +245,20 @@ namespace DOL.GS.Spells
 			// no interrupts on DoT direct effect
 			// calc damage
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			ad.CausesCombat = true;
+			SendDamageMessages(ad);
+			DamageTarget(ad, false);
+		}
+
+		public void OnDirectEffect(GameLiving target, double effectiveness, bool causesCombat)
+		{
+			if (target == null) return;
+			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+
+			// no interrupts on DoT direct effect
+			// calc damage
+			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			ad.CausesCombat = causesCombat;
 			SendDamageMessages(ad);
 			DamageTarget(ad, false);
 		}
