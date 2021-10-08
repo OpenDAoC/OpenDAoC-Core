@@ -6870,11 +6870,12 @@ namespace DOL.GS
 				return false;
 			}
 
+			/*
 			if ((m_runningSpellHandler != null && spell.CastTime > 0))
 			{
 				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.AlreadyCasting));
 				return false;
-			}
+			}*/
 
 			//ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
 			bool cast = castingComponent.StartCastSpell(spell, line);
