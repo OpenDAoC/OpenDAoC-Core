@@ -6630,7 +6630,7 @@ namespace DOL.GS
 
                         if (IsStealthed)
                         {
-							player.Stealth(false);
+							Stealth(false);
 						}
 
 						#region Messages
@@ -13177,7 +13177,7 @@ namespace DOL.GS
 				}
 			}
 			Notify(GamePlayerEvent.StealthStateChanged, this, null);
-			if(Client.Account.PrivLevel < (int)ePrivLevel.GM)
+			if(Client.Account.PrivLevel != (int)ePrivLevel.GM || Client.Account.PrivLevel != (int)ePrivLevel.Admin)
             {
 				Out.SendUpdateMaxSpeed();
 			}
