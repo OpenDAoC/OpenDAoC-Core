@@ -4566,7 +4566,7 @@ namespace DOL.GS
 
 			// cancel all left effects
 			EffectList.CancelAll();
-			effectListComponent.Effects.Clear();
+			effectListComponent.CancelAll();
 
 			// Stop the regeneration timers
 			StopHealthRegeneration();

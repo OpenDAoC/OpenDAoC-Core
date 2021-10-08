@@ -235,6 +235,19 @@ namespace DOL.GS
             }
         }
 
+        public void CancelAll()
+        {
+            lock (_effectsLock)
+            {
+                foreach (var key in Effects)
+                {
+                    foreach (var effect in key.Value)
+                    {
+                        EffectService.RequestCancelEffect(effect);
+                    }
+                }
+            }
+        }
 
     }
 }
