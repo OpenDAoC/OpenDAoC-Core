@@ -35,7 +35,6 @@ namespace DOL.GS.Spells
         protected override void SendUpdates(GameLiving target)
         {
             target.UpdateHealthManaEndu();
-            target.StartHealthRegeneration();
         }
 		
         /// <summary>
@@ -78,7 +77,7 @@ namespace DOL.GS.Spells
             {
                 effectiveness = 1.0;
             }
-
+            target.StartHealthRegeneration();
             base.ApplyEffectOnTarget(target, effectiveness);
         }
 
