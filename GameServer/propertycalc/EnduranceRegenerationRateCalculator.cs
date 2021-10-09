@@ -51,7 +51,6 @@ namespace DOL.GS.PropertyCalc
 				 living.BaseBuffBonusCategory[(int)property]
 				+living.ItemBonus[(int)property];
 			double regen = regenBuff;
-			Console.WriteLine("regen first: " + regen);
 			if (regen == 0 && living is GamePlayer) //&& ((GamePlayer)living).HasAbility(Abilities.Tireless))
 				regen++;
 
@@ -68,7 +67,6 @@ namespace DOL.GS.PropertyCalc
 					if (!((GamePlayer)living).IsSprinting)
 					{
 						regen += 4;
-						Console.WriteLine("regen no combat no sprint: " + regen);
 					}
 				}
 			}
@@ -79,7 +77,6 @@ namespace DOL.GS.PropertyCalc
 					regen = 0.1;
 				if (regenBuff > 0)
 					regen = regenBuff;
-				Console.WriteLine("regen in combat: " + regen);
 			}
 				
 
@@ -96,7 +93,6 @@ namespace DOL.GS.PropertyCalc
 			{
 				regen += 1;	// compensate int rounding error
 			}
-			Console.WriteLine("regen end: " + regen);
 			return (int)regen;
 		}
 	}
