@@ -1200,7 +1200,7 @@ namespace DOL.GS.Spells
 				MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
-			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != (byte)eSpellType.Archery)
+			if (Spell.Power > 0 && m_caster.Mana < PowerCost(target) && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
