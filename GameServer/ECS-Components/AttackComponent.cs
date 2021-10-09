@@ -85,6 +85,10 @@ namespace DOL.GS
 
         public void Tick(long time)
         {
+            if (attackAction != null)
+            {
+                attackAction.Tick(time);
+            }
             if (weaponAction != null)
             {
                 if (weaponAction.AttackFinished)
@@ -92,10 +96,7 @@ namespace DOL.GS
                 else
                     weaponAction.Tick(time);
             }
-            if (attackAction != null)
-            {               
-                attackAction.Tick(time);
-            }
+            
             if (weaponAction is null && attackAction is null)
             {
                 if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
@@ -829,8 +830,8 @@ namespace DOL.GS
                 {
                     //if (m_attackAction.TimeUntilElapsed < 500)
                     //	m_attackAction.Start(500);
-                    if (attackAction.TimeUntilStart < 500)
-                        attackAction.StartTime = 500;
+                    if (attackAction.TimeUntilStart < 100)
+                        attackAction.StartTime = 100;
                 }
             }
         }
