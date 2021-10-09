@@ -67,9 +67,9 @@ namespace DOL.GS
                     queuedSpellHandler = spellHandler;
                     spellHandler = m_newSpellHandler;
                 }
-                else
+                else 
                 {
-                    if (owner is GamePlayer pl)
+                    if (owner is GamePlayer pl && pl.SpellQueue)
                     {
                         pl.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }

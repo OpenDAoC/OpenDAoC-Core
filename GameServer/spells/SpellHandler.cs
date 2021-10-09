@@ -1706,7 +1706,7 @@ namespace DOL.GS.Spells
 		{
 			if (Caster is GamePlayer p)
 			{
-				if(p.castingComponent.queuedSpellHandler != null)
+				if(p.castingComponent.queuedSpellHandler != null && p.SpellQueue)
                 {
 					p.castingComponent.spellHandler = p.castingComponent.queuedSpellHandler;
 					p.castingComponent.queuedSpellHandler = null;
