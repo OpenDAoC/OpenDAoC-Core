@@ -35,6 +35,7 @@ namespace DOL.GS.Spells
         protected override void SendUpdates(GameLiving target)
         {
             target.UpdateHealthManaEndu();
+            target.StartHealthRegeneration();
         }
 		
         /// <summary>
