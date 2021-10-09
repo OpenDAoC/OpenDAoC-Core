@@ -524,6 +524,8 @@ namespace DOL.AI.Brain
 			return casted || Body.IsCasting;
 		}
 
+		
+
 		/// <summary>
 		/// Checks the Positive Spells.  Handles buffs, heals, etc.
 		/// </summary>
@@ -543,7 +545,7 @@ namespace DOL.AI.Brain
 			bool casted = false;
 
 			// clear current target, set target based on spell type, cast spell, return target to original target
-			GameObject lastTarget = Body.TargetObject;
+			Body.CachedTarget = Body.TargetObject;
 			Body.TargetObject = null;
 			GamePlayer player = null;
 			GameLiving owner = null;
@@ -853,7 +855,7 @@ namespace DOL.AI.Brain
 
 			if (Body.TargetObject != null)
             {
-				casted = Body.CastSpell(spell, m_mobSpellLine);
+				casted = Body.CastSpell(spell, m_mobSpellLine, true);
 
 				if (casted && spell.CastTime > 0)
 				{
@@ -865,7 +867,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			Body.TargetObject = lastTarget;
+			
 
 			return casted;
 		}

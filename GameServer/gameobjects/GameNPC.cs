@@ -1109,6 +1109,14 @@ namespace DOL.GS
 			}
 		}
 
+		private GameObject m_cachedTarget;
+
+		public GameObject CachedTarget
+        {
+			get {  return m_cachedTarget; }
+			set {  m_cachedTarget = value; }
+        }
+
 		public void ResetHeading()
 		{
 			TurnTo(SpawnHeading);
@@ -5352,11 +5360,18 @@ namespace DOL.GS
 				}
 			}
 
+			
+
 			if (m_runningSpellHandler != null)
 			{
 				//prevent from relaunch
 				base.OnAfterSpellCastSequence(handler);
 			}
+
+			if(TargetObject == null)
+            {
+				TargetObject = CachedTarget;
+            }
 
 			// Notify Brain of Cast Finishing.
 			if (Brain != null)
