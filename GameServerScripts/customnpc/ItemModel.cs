@@ -2831,12 +2831,7 @@ namespace DOL.GS {
 
         }
 
-        //lets run it and see what happens
-        //load time is way better now
-        //accidentally nuked my environment earlier and
-        //when I got it fixed it was good again
-
-        //shrug
+       
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
