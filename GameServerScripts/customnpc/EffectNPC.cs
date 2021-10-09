@@ -30,7 +30,7 @@ namespace DOL.GS
         private eEmote Emotes = eEmote.Raise;//The Emote the NPC does when Interacted
         private Queue m_timer = new Queue();//Gametimer for casting some spell at the end of the process
         private Queue castplayer = new Queue();//Used to hold the player who the spell gets cast on
-        private int effectPrice = 2000; //effects price in RPs
+        private int effectPrice = 1800; //effects price in RPs
         private int dyePrice = 500; //effects price in RPs
 
 
