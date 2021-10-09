@@ -33,7 +33,7 @@ namespace DOL.GS
                         // Effects contains this effect already so refresh it
                         if (existingEffects.Where(e => e.SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID).FirstOrDefault() != null)
                         {
-                            if (effect.IsConcentrationEffect())
+                            if (effect.IsConcentrationEffect() && !effect.RenewEffect) 
                                 return false;
                             for (int i = 0; i < existingEffects.Count; i++)
                             {

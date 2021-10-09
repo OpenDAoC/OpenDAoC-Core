@@ -877,7 +877,7 @@ namespace DOL.GS
         {           
             EntityManager.AddEffect(effect);
             effect.IsDisabled = disable;
-            //effect.RenewEffect = false;
+            effect.RenewEffect = !disable;
         }
 
         public static void SendSpellAnimation(ECSGameEffect e)
