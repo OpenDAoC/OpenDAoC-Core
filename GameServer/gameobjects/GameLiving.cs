@@ -5675,18 +5675,18 @@ namespace DOL.GS
 		/// <summary>
 		/// Cancels all concentration effects by this living and on this living
 		/// </summary>
-		public void CancelAllConcentrationEffects()
+		public void CancelAllConcentrationEffects(bool updateplayer = true)
 		{
-			CancelAllConcentrationEffects(false);
+			CancelAllConcentrationEffects(false, updateplayer);
 		}
 
 		/// <summary>
 		/// Cancels all concentration effects by this living and on this living
 		/// </summary>
-		public void CancelAllConcentrationEffects(bool leaveSelf)
+		public void CancelAllConcentrationEffects(bool leaveSelf, bool updateplayer)
 		{
 			// cancel conc spells
-			ConcentrationEffects.CancelAll(leaveSelf);
+			ConcentrationEffects.CancelAll(leaveSelf, updateplayer);
 
 			//cancel all active conc spell effects from other casters
 			if (effectListComponent != null)

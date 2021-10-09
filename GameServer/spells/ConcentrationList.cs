@@ -151,15 +151,15 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Cancels all list effects
 		/// </summary>
-		public void CancelAll()
+		public void CancelAll(bool updatePlayer = false)
 		{
-			CancelAll(false);
+			CancelAll(false, updatePlayer);
 		}
 
 		/// <summary>
 		/// Cancels all list effects
 		/// </summary>
-		public void CancelAll(bool leaveself)
+		public void CancelAll(bool leaveself, bool updatePlayer)
 		{
 			if (m_concSpells != null)
 			{
@@ -174,7 +174,8 @@ namespace DOL.GS.Spells
 				{
 					EffectService.RequestCancelConcEffect(fx, false);
 				}
-				CommitChanges();
+				if(updatePlayer)
+					CommitChanges();
 			}
 		}
 

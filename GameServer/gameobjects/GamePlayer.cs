@@ -949,7 +949,7 @@ namespace DOL.GS
 			try
 			{
 				EffectList.SaveAllEffects();
-				CancelAllConcentrationEffects();
+				CancelAllConcentrationEffects(false);
 				EffectList.CancelAll();
 			}
 			catch (Exception e)
