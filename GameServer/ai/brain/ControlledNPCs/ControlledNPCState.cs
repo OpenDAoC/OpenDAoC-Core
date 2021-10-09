@@ -140,6 +140,8 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.AttackMostWanted();
         }
 
+        /* this was added in 1.88 : https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.88
+         * removing to conform to 1.65
         // Stop hunting player entering in steath
         if (brain.Body.TargetObject != null && brain.Body.TargetObject is GamePlayer)
         {
@@ -149,7 +151,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
                 brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             }
             brain.previousIsStealthed = player.IsStealthed;
-        }
+        }*/
 
         // Check for buffs, heals, etc, interrupting melee if not being interrupted
         // Only prevent casting if we are ordering pet to come to us or go to target
