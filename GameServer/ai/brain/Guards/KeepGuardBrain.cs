@@ -210,9 +210,10 @@ namespace DOL.AI.Brain
 			return 0;
 		}
 		
+		/*
 		public override bool AggroLOS
 		{
 			get { return true; }
-		}
+		}*/
 	}
 }
