@@ -30,10 +30,8 @@ namespace DOL.GS.Commands
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			client.Out.SendMessage(GameServer.Instance.Configuration.ServerName, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Atlas", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			AssemblyName an = Assembly.GetAssembly(typeof(GameServer)).GetName();
-			client.Out.SendMessage("version: " + an.Version, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			client.Out.SendMessage("type: " + GameServer.Instance.Configuration.ServerType + " (" + GameServer.ServerRules.RulesDescription() + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage("playing: " + WorldMgr.GetAllPlayingClientsCount(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			if (client.Player != null)
 			{
