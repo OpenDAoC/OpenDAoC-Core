@@ -171,6 +171,11 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.AttackMostWanted();
         }
 
+        if(brain.Body.TargetObject == null && !brain.Body.IsCasting)
+        {
+            brain.FollowOwner();
+        }
+
     }
 }
 
