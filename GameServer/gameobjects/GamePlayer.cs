@@ -1497,7 +1497,35 @@ namespace DOL.GS
 						break;
 					}
 				case eReleaseType.RvR:
-					{
+				{
+
+					if (ServerProperties.Properties.EVENT_THIDRANKI)
+						GamePlayer player = Client.Player as GamePlayer;
+						{
+							switch (player.Realm)
+							{
+								case eRealm.Albion:
+									relRegion = player.CurrentRegion.ID;
+									relX = 38113;
+									relY = 53507;
+									relZ = 4160;
+									break;
+								case eRealm.Midgard:
+									relRegion = player.CurrentRegion.ID;
+									relX = 53568;
+									relY = 23643;
+									relZ = 4530;
+									break;
+								case eRealm.Hibernia:
+									relRegion = player.CurrentRegion.ID;
+									relX = 17367;
+									relY = 18248;
+									relZ = 4320;
+									break;
+							}
+							break;
+						}
+						
 						foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
 						{
 							if (keep.IsPortalKeep && keep.OriginalRealm == Realm)

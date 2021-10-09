@@ -30,7 +30,7 @@
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon)
+			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon || ServerProperties.Properties.EVENT_THIDRANKI)
 			{
 				client.Player.Release(eReleaseType.RvR, false);
 				return;
