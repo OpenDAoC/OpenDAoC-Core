@@ -33,6 +33,13 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.Interact(player)) return false;
 			TurnTo(player.X, player.Y);
+			
+			if (base.CurrentRegionID == 252)
+			{
+				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "If you need so, I can port you back to your Realm's [event zone]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+				return true;
+			}
+			
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			return true;
 		}
@@ -68,6 +75,20 @@ namespace DOL.GS.Scripts
 					else
 					{
 						t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					}
+					break;
+				case "event zone":
+					switch (t.Realm)
+					{
+						case eRealm.Albion:
+							t.MoveTo(330, 52759, 39528, 4677, 36);
+							break;
+						case eRealm.Midgard:
+							t.MoveTo(334, 52160, 39862, 5472, 46);
+							break;
+						case eRealm.Hibernia:
+							t.MoveTo(335, 52836, 40401, 4672, 441);
+							break;
 					}
 					break;
 				default: break;
