@@ -262,7 +262,7 @@ namespace DOL.GS.Spells
                             }
 
                             player.GainRealmPoints(Bonus_RP_Soin, false);
-                            player.Out.SendMessage("Vous gagnez " + Bonus_RP_Soin.ToString() + " points de royaume pour avoir soigné un membre de votre royaume.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage("You gain " + Bonus_RP_Soin.ToString() + " realmpoints for healing a member of your Realm", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         }
                     }
                 }
