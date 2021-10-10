@@ -355,16 +355,16 @@ namespace DOL.GS.Commands
                                       total, playing, entering, leaving));
             if (showAddOnlineInfo == true)
             {
-                output.Add(string.Format("\n  (Connecting:  {0} | CharScreen:  {1} | EnterWorld:  {2} \nPlaying:  {3} | LinkDeath:  {4} | Disconnected:  {5} \nGMs:  {6})",
-                                              connecting, enterworld, charscreen, playing, linkdeath, disconnecting, gms));
+                output.Add(string.Format("\n (Connecting:  {0} | CharScreen:  {1} | EnterWorld:  {2} | Playing:  {3} | GMs:  {4})",
+                                              connecting, enterworld, charscreen, playing, gms));
             }
             if (showRealms == true)
             {
-                output.Add(string.Format("\nAlbion:  {4} ( {5}% )\n  Tanks:  {0} | Casters:  {1} \n  Supporters:  {2} | Stealthers:  {3}",
+                output.Add(string.Format("\nAlbion:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
                                           albTanks, albCasters, albSupport, albStealthers, albTotal, (int)(albTotal * 100 / total)));
-                output.Add(string.Format("\nMidgard:  {4} ( {5}% )\n  Tanks:  {0} | Casters:  {1} \n  Supporters:  {2} | Stealthers:  {3}",
+                output.Add(string.Format("\nMidgard:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
                                               midTanks, midCasters, midSupport, midStealthers, midTotal, (int)(midTotal * 100 / total)));
-                output.Add(string.Format("\nHibernia:  {4} ( {5}% )\n  Tanks:  {0} | Casters:  {1} \n  Supporters:  {2} | Stealthers:  {3}",
+                output.Add(string.Format("\nHibernia:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
                                           hibTanks, hibCasters, hibSupport, hibStealthers, hibTotal, (int)(hibTotal * 100 / total)));
             }
             Zone zone = null;
@@ -398,9 +398,7 @@ namespace DOL.GS.Commands
 
                         if (cir.Player.CurrentZone.Description != zone.Description)
                             continue;
-
-
-
+                        
                         if (cir.Player.Realm == eRealm.Albion)
                             albsinregion++;
                         else if (cir.Player.Realm == eRealm.Midgard)
