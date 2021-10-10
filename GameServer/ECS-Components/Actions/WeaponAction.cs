@@ -81,6 +81,13 @@ namespace DOL.GS
                 //styleHandler?.Tick(time);
                 //GameLiving.WeaponOnTargetAction()
 
+                // Crash fix since its apparently possible to get here with a null target.
+                if (m_target == null)
+                {
+                    CleanupAttack();
+                    return;
+                }
+
                 //GameLiving owner = (GameLiving)m_actionSource;
                 Style style = m_combatStyle;
                 int leftHandSwingCount = 0;
