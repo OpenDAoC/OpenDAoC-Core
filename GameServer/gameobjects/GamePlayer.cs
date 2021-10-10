@@ -13162,6 +13162,11 @@ namespace DOL.GS
 				m_stealthEffect = new StealthEffect();
 				m_stealthEffect.Start(this);
 
+                if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+                {
+					EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), true);
+                }
+
 				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
                 {
 					Sprint(false);
@@ -13218,6 +13223,12 @@ namespace DOL.GS
 						player.Out.SendPlayerCreate(this);
 					player.Out.SendLivingEquipmentUpdate(this);
 				}
+				
+			}
+
+			if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+			{
+				EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), false);
 			}
 			Notify(GamePlayerEvent.StealthStateChanged, this, null);
 			if(Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
