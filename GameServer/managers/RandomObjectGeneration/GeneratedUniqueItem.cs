@@ -54,7 +54,7 @@ namespace DOL.GS
 		// TOA Chance in %
 		public const ushort ROG_TOA_ITEM_CHANCE = 0;
 		// Armor Chance in %
-		public const ushort ROG_ARMOR_CHANCE = 50;
+		public const ushort ROG_ARMOR_CHANCE = 45;
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 35;
 		
@@ -2750,7 +2750,6 @@ namespace DOL.GS
 		}
 
         public static eObjectType GetAlbionWeapon(eCharacterClass charClass) {
-			Console.WriteLine($"Albion specific weapon generating for class {charClass}");
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
 			 * Albion Weapons
@@ -2852,14 +2851,12 @@ namespace DOL.GS
 			//get our random value from the list
 			int randomGrab = Util.Random(0, outputList.Count - 1);
 			
-			Console.WriteLine($"Grabbing index {randomGrab} and got item {outputList[randomGrab]}");
 			//return a random type from our list of valid weapons
 			return outputList[randomGrab];
 
 		}
 
         public static eObjectType GetAlbionArmorType(eCharacterClass charClass, byte level) {
-			Console.WriteLine($"Albion specific armor generating for class {charClass}");
 
 			switch (charClass) {
 				//staff classes
@@ -2929,7 +2926,7 @@ namespace DOL.GS
         }
 
 		public static eObjectType GetMidgardWeapon(eCharacterClass charClass) {
-			Console.WriteLine($"Midgard specific weapon generating for class {charClass}");
+			
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
 			 * Midgard Weapons
@@ -3018,14 +3015,13 @@ namespace DOL.GS
 			//get our random value from the list
 			int randomGrab = Util.Random(0, outputList.Count - 1);
 
-			Console.WriteLine($"Grabbing index {randomGrab} and got item {outputList[randomGrab]}");
+			
 			//return a random type from our list of valid weapons
 			return outputList[randomGrab];
 
 		}
 
 		public static eObjectType GetMidgardArmorType(eCharacterClass charClass, byte level) {
-			Console.WriteLine($"Midgard specific armor generating for class {charClass}");
 
 			switch (charClass) {
 				//staff classes
@@ -3081,7 +3077,6 @@ namespace DOL.GS
 		}
 
 		public static eObjectType GetHiberniaWeapon(eCharacterClass charClass) {
-			Console.WriteLine($"Hibernia specific weapon generating for class {charClass}");
 			List<eObjectType> weaponTypes = new List<eObjectType>();
 			/*
 			 * Hibernia Weapons
@@ -3187,14 +3182,13 @@ namespace DOL.GS
 			//get our random value from the list
 			int randomGrab = Util.Random(0, outputList.Count - 1);
 
-			Console.WriteLine($"Grabbing index {randomGrab} and got item {outputList[randomGrab]}");
+			
 			//return a random type from our list of valid weapons
 			return outputList[randomGrab];
 
 		}
 
 		public static eObjectType GetHiberniaArmorType(eCharacterClass charClass, byte level) {
-			Console.WriteLine($"Hibernia specific armor generating for class {charClass}");
 
 			/* Hib Armor
 			eObjectType.Cloth,
