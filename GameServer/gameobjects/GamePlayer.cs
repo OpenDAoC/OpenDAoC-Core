@@ -548,6 +548,16 @@ namespace DOL.GS
 			get { return DBCharacter != null ? DBCharacter.ShowXFireInfo : false; }
 			set { if (DBCharacter != null) DBCharacter.ShowXFireInfo = value; }
 		}
+		
+		/// <summary>
+		/// Gets/sets the characters option to receive ROGs /eventrog
+		/// (delegate to property in DBCharacter)
+		/// </summary>
+		public bool ReceiveROG
+		{
+			get { return DBCharacter != null ? DBCharacter.ReceiveROG : true; }
+			set { if (DBCharacter != null) DBCharacter.ReceiveROG = value; }
+		}
 
 		/// <summary>
 		/// Gets or sets the BindRegion for this player
