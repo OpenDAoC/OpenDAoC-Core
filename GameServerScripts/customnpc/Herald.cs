@@ -35,7 +35,22 @@ namespace DOL.GS.Scripts
             int count = 1;
             foreach (DOLCharacters chr in chars)
             {
-                string str = "#" + count + ": " + chr.Name + "(" + chr.Realm + ") - " + chr.RealmPoints + " realm points\n";
+                var realm = "";
+                
+                switch (chr.Realm)
+                {
+                    case 1:
+                        realm = "Alb";
+                        break;
+                    case 2:
+                        realm = "Mid";
+                        break;
+                    case 3:
+                        realm = "Hib";
+                        break;
+                }
+
+                string str = "#" + count + ": " + chr.Name + "(" + realm + ") - " + chr.RealmPoints + " realm points\n";
                 count++;
                 list.Add(str);
             }
