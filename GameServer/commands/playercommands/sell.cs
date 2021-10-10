@@ -25,8 +25,8 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&sell",
 		ePrivLevel.Player,
-		"Sell items to a targeted merchant.  Specify a single item, or a first and last item to sell multiple items.",
-		"Use: /sell 4 to sell 4th item\n    /sell 9 16 to sell all items in bag 2")]
+		"Sell items to a targeted merchant.  Specify a single bag or all",
+		"Use: /sell 4 to sell all items in the 4th bag","/sell all to sell all items")]
 	public class SellCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -36,28 +36,44 @@ namespace DOL.GS.Commands
 			switch (args.Length)
             {
 				case 2:
-					if (int.TryParse(args[1], out firstItem))
-						lastItem = firstItem;
-					break;
-				case 3:
-					if (int.TryParse(args[1], out firstItem) && int.TryParse(args[2], out lastItem))
-                    {
-						if (lastItem < firstItem)
-                        {
-							int temp = firstItem;
-							firstItem = lastItem;
-							lastItem = temp;
-                        }
-                    }
+					
+					switch (args[1])
+					{
+						case "1":
+							firstItem = 1;
+							lastItem = 8;
+							break;
+						case "2":
+							firstItem = 9;
+							lastItem = 16;
+							break;
+						case "3":
+							firstItem = 17;
+							lastItem = 24;
+							break;
+						case "4":
+							firstItem = 25;
+							lastItem = 32;
+							break;
+						case "5":
+							firstItem = 33;
+							lastItem = 40;
+							break;
+						case "all":
+							firstItem = 1;
+							lastItem = 40;
+							break;
+						default:
+							client.Out.SendMessage("Use: /sell <bag> or /sell all", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+					}
 					break;
 				default:
-					client.Out.SendMessage("Use: /sell <item> or /sell <first> <last>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage("Use: /sell <bag> or /sell all", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 			}
-
-			if (firstItem < 1 || firstItem > 40 || lastItem < 1 || lastItem > 40)
-				client.Out.SendMessage("Valid item numbers must be between 1 and 40", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			else if (client.Player is GamePlayer player && player.Inventory != null)
+			
+			if (client.Player is GamePlayer player && player.Inventory != null)
             {
 				if (player.TargetObject is GameMerchant merchant)
                 {
