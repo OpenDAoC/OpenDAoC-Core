@@ -1177,6 +1177,7 @@ namespace DOL.GS
                     return list;
                 case eEffect.BaseAFBuff:
                 case eEffect.SpecAFBuff:
+                case eEffect.PaladinAf:
                 case eEffect.ArmorFactorDebuff:
                     list.Add(eProperty.ArmorFactor);
                     return list;
