@@ -34,6 +34,7 @@ namespace DOL.GS.Commands
 		"GMCommands.Jump.Usage.ToXYZRegionID",
 		"/jump to <myhouse | house [#]>",
 		"/jump to region [#] - jump to same location in new region",
+		"/jump <name> to jail  - ports the player to DF jail",
 		"GMCommands.Jump.Usage.PlayerNameToXYZ",
 		"GMCommands.Jump.Usage.PlayerNameToXYZRegID",
 		"GMCommands.Jump.Usage.PlayerNToPlayerN",
@@ -216,6 +217,24 @@ namespace DOL.GS.Commands
 					return;
 				}
 				#endregion Jump to Name Realm
+				#region Jump Name to Jail
+				else if (args.Length == 4 && args[2] == "to" && args[3] == "jail")
+				{
+					GameClient clientc;
+					clientc = WorldMgr.GetClientByPlayerName(args[1], false, true);
+					if (clientc == null)
+					{
+						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Jump.PlayerIsNotInGame", args[1]), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					if (CheckExpansion(clientc, clientc, 249))
+					{
+						clientc.Player.MoveTo(249, 47411, 48694, 25000, 5);
+						return;
+					}
+					return;
+				}
+				#endregion
 				#region Jump to X Y Z
 				else if (args.Length == 5 && args[1] == "to")
 				{
