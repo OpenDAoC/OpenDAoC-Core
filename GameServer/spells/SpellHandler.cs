@@ -3087,7 +3087,7 @@ namespace DOL.GS.Spells
             // eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
             //CreateECSEffect(target, effectiveness);
 
-            CreateECSEffect(target, Caster.Effectiveness);
+            CreateECSEffect(target, effectiveness);
             
             // GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
             //
