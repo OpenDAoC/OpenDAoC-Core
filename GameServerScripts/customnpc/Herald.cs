@@ -28,7 +28,7 @@ namespace DOL.GS.Scripts
             
             TurnTo(player, 500);
 
-            DOLCharacters[] chars = (DOLCharacters[])GameServer.Database.SelectObjects<DOLCharacters>("RealmPoints > 0 ORDER BY RealmPoints DESC LIMIT 25");
+            DOLCharacters[] chars = (DOLCharacters[])GameServer.Database.SelectObjects<DOLCharacters>("RealmPoints > 0 AND RealmPoints < 70000000 ORDER BY RealmPoints DESC LIMIT 25");
             List<string> list = new List<string>();
             
             list.Add("Top 25 Highest Realm Points:\n\n");
