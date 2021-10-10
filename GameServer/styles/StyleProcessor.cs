@@ -660,7 +660,7 @@ namespace DOL.GS.Styles
 		protected static ISpellHandler CreateMagicEffect(GameLiving caster, GameLiving target, int spellID)
 		{
 			SpellLine styleLine = SkillBase.GetSpellLine(GlobalSpellsLines.Combat_Styles_Effect);
-			if (styleLine == null) return null;
+			if (styleLine == null || target == null) return null;
 
 			List<Spell> spells = SkillBase.GetSpellList(styleLine.KeyName);
 
