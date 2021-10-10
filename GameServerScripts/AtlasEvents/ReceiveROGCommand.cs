@@ -18,6 +18,15 @@ namespace DOL.GS.Commands
         {
             if (args.Length < 2)
             {
+                switch (client.Player.ReceiveROG)
+                {
+                    case true:
+                        client.Out.SendMessage("Your Event ROG flag is ON.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        break;
+                    case false:
+                        client.Out.SendMessage("Your Event ROG flag is OFF.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        break;
+                }
                 DisplaySyntax(client);
                 return;
             }
