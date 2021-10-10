@@ -305,8 +305,9 @@ namespace DOL.GS
 
                 if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
                 {
+                    owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon); // proc, poison
+                    HandleDamageAdd(owner, mainHandAD);
                     owner.RangedAttackFinished();
-                    AttackFinished = true;
                 }
 
                 switch (mainHandAD.AttackResult)
