@@ -93,8 +93,6 @@ namespace DOL.GS
             {
                 if (weaponAction.AttackFinished)
                     weaponAction = null;
-                else
-                    weaponAction.Tick(time);
             }
             
             if (weaponAction is null && attackAction is null)
@@ -1183,7 +1181,7 @@ namespace DOL.GS
                                             }
                                             //new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
                                             //if (GameServer.ServerRules.IsAllowedToAttack(this, target as GameLiving, false))
-                                            weaponAction = new WeaponAction(p, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 1000);
+                                            weaponAction = new WeaponAction(p, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null);
                                         }
                                     }
                                 }
