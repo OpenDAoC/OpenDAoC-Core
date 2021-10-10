@@ -30,8 +30,8 @@ namespace DOL.GS.Commands
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (IsSpammingCommand(client.Player, "assist"))
-				return;
+//			if (IsSpammingCommand(client.Player, "assist"))
+//				return;
 
             if (args.Length > 1)
             {
