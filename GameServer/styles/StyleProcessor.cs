@@ -682,6 +682,7 @@ namespace DOL.GS.Styles
 			if (spellHandler == null && styleSpell != null && caster is GamePlayer)
 			{
 				((GamePlayer)caster).Out.SendMessage(styleSpell.Name + " not implemented yet (" + styleSpell.SpellType + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return null;
 			}
 
 			// No negative effects can be applied on a keep door or via attacking a keep door
