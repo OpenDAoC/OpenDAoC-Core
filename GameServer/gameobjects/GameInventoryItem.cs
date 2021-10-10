@@ -533,8 +533,6 @@ namespace DOL.GS {
         {
             int oldCount = output.Count;
 
-            output.Add("Total utility: " + String.Format("{0:0.00}", GetTotalUtility()));
-
             WriteBonusLine(output, client, Bonus1Type, Bonus1);
             WriteBonusLine(output, client, Bonus2Type, Bonus2);
             WriteBonusLine(output, client, Bonus3Type, Bonus3);
@@ -856,6 +854,10 @@ namespace DOL.GS {
                     }
                 }
                 #endregion
+                
+                output.Add("Total utility: " + String.Format("{0:0.00}", GetTotalUtility()));
+                output.Add(" ");
+                
             }
         }
 
