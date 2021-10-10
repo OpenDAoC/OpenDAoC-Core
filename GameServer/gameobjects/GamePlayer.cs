@@ -1860,6 +1860,7 @@ namespace DOL.GS
 		public virtual void OnRevive(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
+			effectListComponent.CancelAll();
 						
 			if (player.IsUnderwater && player.CanBreathUnderWater == false)
 				player.Diving(eWaterBreath.Holding);
@@ -7854,6 +7855,8 @@ namespace DOL.GS
 			GameServer.ServerRules.OnPlayerKilled(this, killer);
 			if (m_releaseType != eReleaseType.Duel)
 				DeathTime = PlayedTime;
+
+			effectListComponent.CancelAll();
 
 			IsSwimming = false;
 		}
