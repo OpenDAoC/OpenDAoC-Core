@@ -3118,7 +3118,7 @@ namespace DOL.GS {
                         SendReply(t, "This looks like it plays beautiful music. \n" +
                         "I can apply the following skins: \n\n" +
                         //"[Dragonslayer Harp](" + dragon + " RPs)\n" + //these too
-                        "[Class Epic Harp](" + epic + " RPs)\n" +
+                        "[Class Epic Harp](" + champion + " RPs)\n" +
                         "[Labyrinth Harp](" + toageneric + " RPs)\n" +
                         "");
                     }
@@ -3127,7 +3127,7 @@ namespace DOL.GS {
                         SendReply(t, "Nothing like bringing death from afar. \n" +
                         "I can apply the following skins: \n\n" +
                         //"[Dragonslayer Bow](" + dragon + " RPs)\n" +
-                        "[Class Epic Bow](" + epic + " RPs)\n" +
+                        "[Class Epic Bow](" + champion + " RPs)\n" +
                         "[Braggart's Bow](" + artifact + " RPs)\n" +
                         "[Fool's Bow](" + artifact + " RPs)\n" +
                         "[Labyrinth Bow](" + toageneric + " RPs)\n" +
