@@ -1730,10 +1730,15 @@ namespace DOL.GS
                 Message.SystemToArea(ad.Attacker, message, eChatType.CT_OthersCombat, (GameObject[])excludes.ToArray(typeof(GameObject)));
             }
 
+            // Interrupt the target of the attack
             ad.Target.StartInterruptTimer(ad, interruptDuration);
-            if (ad.AttackType != AttackData.eAttackType.Spell)
+
+            // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
+            if (ad.AttackType != AttackData.eAttackType.Spell && ad.AttackType != AttackData.eAttackType.Ranged)
                 ad.Attacker.StartInterruptTimer(ad, interruptDuration);
+
             owner.OnAttack(ad);
+
             //Return the result
             return ad;
         }
