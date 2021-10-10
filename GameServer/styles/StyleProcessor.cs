@@ -686,7 +686,7 @@ namespace DOL.GS.Styles
 			}
 
 			// No negative effects can be applied on a keep door or via attacking a keep door
-			if ((target is GameKeepComponent || target is GameKeepDoor) && spellHandler.HasPositiveEffect == false)
+			if ((target is GameKeepComponent || target is GameKeepDoor) && spellHandler?.HasPositiveEffect == false)
 			{
 				return null;
 			}
