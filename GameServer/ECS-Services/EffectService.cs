@@ -477,7 +477,10 @@ namespace DOL.GS
                 
                 if (e.Owner is GamePlayer player)
                 {
-                    player.Out.SendUpdateIcons(e.Owner.effectListComponent.GetAllEffects(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                    List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
+                    ecsList.Add(e);
+
+                    player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     SendPlayerUpdates(player);                   
                 }
                 else if (e.Owner is GameNPC)
@@ -824,7 +827,10 @@ namespace DOL.GS
             {
                 SendPlayerUpdates(player);
                 //Now update EffectList
-                player.Out.SendUpdateIcons(e.Owner.effectListComponent.GetAllEffects(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
+                ecsList.Add(e);
+
+                player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             }
             else if (e.Owner is GameNPC)
             {
@@ -896,7 +902,10 @@ namespace DOL.GS
 
             if (e.Owner is GamePlayer player1)
             {
-                player1.Out.SendUpdateIcons(player1.effectListComponent.GetAllEffects(), ref player1.effectListComponent._lastUpdateEffectsCount);
+                List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
+                ecsList.Add(e);
+
+                player1.Out.SendUpdateIcons(ecsList, ref player1.effectListComponent._lastUpdateEffectsCount);
             }
         }
 
