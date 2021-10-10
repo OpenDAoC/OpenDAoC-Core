@@ -2025,7 +2025,11 @@ namespace DOL.GS.ServerRules
 		{
 			int value = 0;
 
-			if (keep is GameKeep)
+			if (Properties.EVENT_THIDRANKI)
+			{
+				value = 500;
+			}
+			else if (keep is GameKeep)
 			{
 				value = Math.Max(50, ServerProperties.Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * ServerProperties.Properties.KEEP_RP_MULTIPLIER));
 			}
