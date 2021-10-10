@@ -92,6 +92,23 @@ namespace DOL.GS.PacketHandler.Client.v168
 			ushort yOffsetInZone = packet.ReadShort();
 			ushort currentZoneID = packet.ReadShort();
 
+            try
+            {
+				Zone grabZone = WorldMgr.GetZone(currentZoneID);
+            } catch (Exception e)
+            {
+				//if we get a zone that doesn't exist, move player to their bindstone
+				client.Player.MoveTo(
+					(ushort)client.Player.BindRegion,
+					client.Player.BindXpos,
+					client.Player.BindYpos,
+					(ushort)client.Player.BindZpos,
+					(ushort)client.Player.BindHeading
+					);
+				return;
+			
+			}
+			
 
 			//Dinberg - Instance considerations.
 			//Now this gets complicated, so listen up! We have told the client a lie when it comes to the zoneID.
@@ -109,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//outside of the unvierse knows not to listen to whether you say which you are, and knows the truth to the
 			//answer. Then, he need only know what you are doing ;)
 
-			Zone newZone = WorldMgr.GetZone(currentZoneID);
+			Zone newZone = WorldMgr.GetZone(currentZoneID);			
 			if (newZone == null)
 			{
 				if(client.Player==null) return;
