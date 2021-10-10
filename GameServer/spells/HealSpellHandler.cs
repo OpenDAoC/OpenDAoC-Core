@@ -33,6 +33,9 @@ namespace DOL.GS.Spells
     {
         // constructor
         public HealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Execute heal spell
         /// </summary>
@@ -205,6 +208,25 @@ namespace DOL.GS.Spells
             }
 
             amount = Math.Round(amount);
+
+            #region change target to Necromancer Pet, if Necromancer was targeted for heal
+            // check if its a necro in shade mode
+            if (target.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+            {
+                if (target.ControlledBrain != null)
+                {
+                    if (target.ControlledBrain.Body != null)
+                    {
+                        if (target.ControlledBrain.Body is NecromancerPet)
+                        {
+                            //log.Info("Changing target to Necromancer PET");
+                            target = target.ControlledBrain.Body as NecromancerPet;
+                        }
+                    }
+                }
+            }
+            #endregion
+
             int heal = target.ChangeHealth(Caster, eHealthChangeType.Spell, (int)amount);
 
             #region PVP DAMAGE
