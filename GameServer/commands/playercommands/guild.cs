@@ -1252,7 +1252,7 @@ namespace DOL.GS.Commands
 						#region Promote
 						// --------------------------------------------------------------------------------
 						// PROMOTE
-						// /gc promote <rank#> [name]' to promote player to a superior rank
+						// /gc promote [name] <rank#>' to promote player to a superior rank
 						// --------------------------------------------------------------------------------
 					case "promote":
 						{
@@ -1279,7 +1279,7 @@ namespace DOL.GS.Commands
 
 							if (args.Length >= 4)
 							{
-								playerName = args[3];
+								playerName = args[2];
 							}
 
 							if (playerName == string.Empty)
@@ -1354,7 +1354,7 @@ namespace DOL.GS.Commands
 							ushort newrank;
 							try
 							{
-								newrank = Convert.ToUInt16(args[2]);
+								newrank = Convert.ToUInt16(args[3]);
 
 								if (newrank > 9)
 								{
