@@ -435,6 +435,10 @@ namespace DOL.GS
                                             //Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                                             (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
                                         }
+                                        if (e.Owner.IsStealthed)
+                                        {
+                                            EffectService.RequestDisableEffect(e, true);
+                                        }
                                     }
                                     else if (e.EffectType == eEffect.EnduranceRegenBuff)
                                     {
