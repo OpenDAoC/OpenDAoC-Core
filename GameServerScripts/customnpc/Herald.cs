@@ -50,7 +50,7 @@ namespace DOL.GS.Scripts
                         break;
                 }
 
-                string str = "#" + count + ": " + chr.Name + "(" + realm + ") - " + chr.RealmPoints + " realm points\n";
+                string str = "#" + count + ": " + chr.Name + " (" + realm + ") - " + chr.RealmPoints + " realm points\n";
                 count++;
                 list.Add(str);
             }
