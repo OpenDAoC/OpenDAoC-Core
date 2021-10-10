@@ -2027,7 +2027,7 @@ namespace DOL.GS.ServerRules
 
 			if (Properties.EVENT_THIDRANKI)
 			{
-				value = 500;
+				value = 100;
 			}
 			else if (keep is GameKeep)
 			{
