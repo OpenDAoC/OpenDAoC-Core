@@ -65,6 +65,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_LongWind', 'Paladin1-1-7','Paladin1-1-7');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_Tireless', 'Paladin1-1-8','Paladin1-1-8');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_Regeneration', 'Paladin1-1-9','Paladin1-1-9');
+        INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_DeterminationHybrid', 'Paladin1-2-0','Paladin1-2-0');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_Toughness', 'Paladin1-2-1','Paladin1-2-1');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_MasteryOfWater', 'Paladin1-2-2','Paladin1-2-2');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('1', 'AtlasOF_AvoidanceOfMagic', 'Paladin1-2-3','Paladin1-2-3');
@@ -177,6 +178,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_Tireless', 'Reaver1-1-7','Reaver1-1-7');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_Regeneration', 'Reaver1-1-8','Reaver1-1-8');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_Toughness', 'Reaver1-1-9','Reaver1-1-9');
+        INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_DeterminationHybrid', 'Reaver1-2-0','Reaver1-2-0');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_MasteryOfWater', 'Reaver1-2-1','Reaver1-2-1');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_AvoidanceOfMagic', 'Reaver1-2-2','Reaver1-2-2');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('19', 'AtlasOF_Lifter', 'Reaver1-2-3','Reaver1-2-3');
@@ -771,6 +773,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_LongWind', 'Champion1-1-7','Champion1-1-7');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_Tireless', 'Champion1-1-8','Champion1-1-8');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_Regeneration', 'Champion1-1-9','Champion1-1-9');
+        INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_DeterminationHybrid', 'Champion1-2-0','Champion1-2-0');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_Toughness', 'Champion1-2-1','Champion1-2-1');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_MasteryOfWater', 'Champion1-2-2','Champion1-2-2');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_AvoidanceOfMagic', 'Champion1-2-3','Champion1-2-3');
@@ -786,7 +789,6 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_RagingPower', 'Champion1-3-4','Champion1-3-4');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_Purge', 'Champion1-3-5','Champion1-3-5');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('45', 'AtlasOF_WrathOfTheChampion', 'Champion1-3-6','Champion1-3-6');
-
 
         -- ---------------------------------------------------------------------------
         -- ELDRITCH
@@ -1020,6 +1022,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_Tireless', 'Valewalker1-1-7','Valewalker1-1-7');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_Regeneration', 'Valewalker1-1-8','Valewalker1-1-8');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_Toughness', 'Valewalker1-1-9','Valewalker1-1-9');
+        INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_DeterminationHybrid', 'Valewalker1-2-0','Valewalker1-2-0');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_MasteryOfWater', 'Valewalker1-2-1','Valewalker1-2-1');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_AvoidanceOfMagic', 'Valewalker1-2-2','Valewalker1-2-2');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('56', 'AtlasOF_Lifter', 'Valewalker1-2-3','Valewalker1-2-3');
@@ -1175,6 +1178,7 @@ namespace realmabilities_atlasOF._temporary_helper
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_Tireless', 'Thane1-1-7','Thane1-1-7');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_Regeneration', 'Thane1-1-8','Thane1-1-8');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_Toughness', 'Thane1-1-9','Thane1-1-9');
+        INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_DeterminationHybrid', 'Thane1-2-0','Thane1-2-0');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_MasteryOfWater', 'Thane1-2-1','Thane1-2-1');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_AvoidanceOfMagic', 'Thane1-2-2','Thane1-2-2');
         INSERT INTO `atlas`.`classxrealmability_atlas` (`CharClass`, `AbilityKey`, `ClassXRealmAbility_ID`,`ClassXRealmAbility_Atlas_ID`) VALUES ('21', 'AtlasOF_Lifter', 'Thane1-2-3','Thane1-2-3');

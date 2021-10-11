@@ -27,12 +27,16 @@ namespace DOL.GS.RealmAbilities
 				default: return 1000;
 			}
 		}
-
-        public override int GetAmountForLevel(int level)
+		public override int GetAmountForLevel(int level)
 		{
 			if (level < 1) return 0;
 
 			return level * 15;
 		}
+	}
+	public class AtlasOF_DeterminationHybridAbility : AtlasOF_DeterminationAbility
+	{
+		public AtlasOF_DeterminationHybridAbility(DBAbility dba, int level) : base(dba, level) { }
+		public override int MaxLevel { get { return 3; } }
 	}
 }
