@@ -693,8 +693,8 @@ namespace DOL.GS.Spells
                     else
                         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
 
-					Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var pEffects);//.Where(effect => effect.Value.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();        //.FirstOrDefault();
-					ECSGameEffect cancelEffect = pEffects.Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
+					Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var pEffects);
+					ECSGameEffect cancelEffect = pEffects?.Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
 						
                     if (cancelEffect != null)
                     {
