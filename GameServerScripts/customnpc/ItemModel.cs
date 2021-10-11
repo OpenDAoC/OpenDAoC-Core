@@ -1676,6 +1676,11 @@ namespace DOL.GS {
                     modelIDToAssign = 1723;
                     break;
 
+                case "collared cloak":
+                    price = cloakcheap;
+                    modelIDToAssign = 669;
+                    break;
+
                 #endregion
 
                 #region weapons
@@ -2764,7 +2769,7 @@ namespace DOL.GS {
                     break;
                 case "labyrinth harp":
                     price = toageneric;
-                    modelIDToAssign = 3731;
+                    modelIDToAssign = 3688;
                     break;
                 case "class epic bow":
                     price = champion;
@@ -2947,6 +2952,7 @@ namespace DOL.GS {
                         "[Magma Cloak] (" + cloakcheap + " RPs)\n" +
                         "[Stygian Cloak] (" + cloakcheap + " RPs)\n" +
                         "[Aerus Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Collared Cloak] (" + cloakcheap + " RPs)\n" +
                         "");
                     break;        
 
