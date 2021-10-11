@@ -232,6 +232,7 @@ namespace DOL.GS
 
             //Send the proper attacking messages to ourself
             owner.SendAttackingCombatMessages(mainHandAD);
+            if(mainHandAD == null || mainHandAD.Target == null) { return; }
             mainHandAD.Target.HandleDamageShields(mainHandAD);
 
             //Notify ourself about the attack
