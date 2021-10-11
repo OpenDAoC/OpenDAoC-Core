@@ -29,16 +29,13 @@ namespace DOL.GS.Commands
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (!IsSpammingCommand(client.Player, "sprint"))
+			if (client.Player.HasAbility(Abilities.Sprint))
 			{
-				if (client.Player.HasAbility(Abilities.Sprint))
-				{
-					client.Player.Sprint(!client.Player.IsSprinting);
-				}
-				else
-				{
-					client.Out.SendMessage("You do not have a sprint ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				}
+				client.Player.Sprint(!client.Player.IsSprinting);
+			}
+			else
+			{
+				client.Out.SendMessage("You do not have a sprint ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 		}
 	}
