@@ -189,6 +189,8 @@ namespace DOL.GS
         PiercingMagic = 182,
         PveResurrectionIllness = 183,
         RvrResurrectionIllness = 184,
+        UnbreakableSpeedDecrease = 185,
+        WeaponSkillConstitutionDebuff = 186,
 
         Null = 200
 

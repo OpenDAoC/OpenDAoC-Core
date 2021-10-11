@@ -1031,6 +1031,7 @@ namespace DOL.GS
                 case (byte)eSpellType.DamageSpeedDecrease:
                 case (byte)eSpellType.StyleSpeedDecrease:
                 case (byte)eSpellType.SpeedDecrease:
+                case (byte)eSpellType.UnbreakableSpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
                 case (byte)eSpellType.MeleeDamageDebuff:
                     return eEffect.MeleeDamageDebuff;
@@ -1074,6 +1075,8 @@ namespace DOL.GS
                     return eEffect.StrConDebuff;
                 case (byte)eSpellType.DexterityQuicknessDebuff:
                     return eEffect.DexQuiDebuff;
+                case (byte)eSpellType.WeaponSkillConstitutionDebuff:
+                    return eEffect.WsConDebuff;
                 //case (byte)eSpellType.AcuityDebuff: //Not sure what this is yet
                 //return eEffect.Acuity;
                 case (byte)eSpellType.ArmorAbsorptionDebuff:
@@ -1201,6 +1204,10 @@ namespace DOL.GS
                 case eEffect.StrengthConBuff:
                 case eEffect.StrConDebuff:
                     list.Add(eProperty.Strength);
+                    list.Add(eProperty.Constitution);
+                    return list;
+                case eEffect.WsConDebuff:
+                    list.Add(eProperty.WeaponSkill);
                     list.Add(eProperty.Constitution);
                     return list;
                 case eEffect.DexQuickBuff:
