@@ -9556,7 +9556,7 @@ namespace DOL.GS
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantPoisonWeapon"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
-			if (envenomSpec < poisonPotion.Level)
+			if (envenomSpec < poisonPotion.Level || Level < poisonPotion.Level)
 			{
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantUsePoison"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
