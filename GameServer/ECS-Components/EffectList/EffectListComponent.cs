@@ -28,6 +28,10 @@ namespace DOL.GS
             {
                 try
                 {
+                    // dead owners don't get effects
+                    if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
+                        return false;
+
                     if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
                     {
                         // Effects contains this effect already so refresh it
