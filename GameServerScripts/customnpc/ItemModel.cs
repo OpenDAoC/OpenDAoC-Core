@@ -2036,6 +2036,7 @@ namespace DOL.GS {
                     modelIDToAssign = 1661;
                     break;
                 case "scorched pole":
+                    price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
                         case eDamageType.Slash:
