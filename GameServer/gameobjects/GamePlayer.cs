@@ -13216,11 +13216,15 @@ namespace DOL.GS
 					if (player == null) continue;
 					//TODO: more correct way to do it
 					if (player == this) continue;
+
+					/// [Atlas - Takii] This commented code from DOL causes a large (1-2 seconds) delay before the target unstealths.
+					/// It does not seem to cause any issues related to targeting despite the comments.
 					//if a player could see us stealthed, we just update our model to avoid untargetting.
-					if (player.CanDetect(this))
-						player.Out.SendPlayerModelTypeChange(this, 2);
-					else
-						player.Out.SendPlayerCreate(this);
+// 					if (player.CanDetect(this))
+// 						player.Out.SendPlayerModelTypeChange(this, 2);
+// 					else
+// 						player.Out.SendPlayerCreate(this);
+					player.Out.SendPlayerCreate(this);
 					player.Out.SendLivingEquipmentUpdate(this);
 				}
 				if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))

@@ -108,11 +108,19 @@ namespace DOL.GS
                         }
                         if (effect.EffectType == eEffect.DamageOverTime || effect.EffectType == eEffect.Bleed)
                         {
+                            // Initial DoT application
                             if (effect.LastTick == 0)
                             {
+                                // Remove stealth on first application since the code that normally handles removing stealth on
+                                // attack ignores DoT damage, since only the first tick of a DoT should remove stealth.
+                                GamePlayer ownerPlayer = effect.Owner as GamePlayer;
+                                if (ownerPlayer != null)
+                                    ownerPlayer.Stealth(false);
+
                                 EffectService.OnEffectPulse(effect);
                                 effect.LastTick = GameLoop.GameLoopTime;
                             }
+                            // Subsequent DoT ticks
                             else if (tick > effect.PulseFreq + effect.LastTick)
                             {
                                 EffectService.OnEffectPulse(effect);
