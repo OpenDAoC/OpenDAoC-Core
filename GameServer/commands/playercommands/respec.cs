@@ -287,6 +287,19 @@ namespace DOL.GS.Commands
 			player.Out.SendUpdatePlayer();
 			player.SendTrainerWindow();
 			player.SaveIntoDatabase();
+
+			// Remove all self-cast buffs when respeccing to avoid exploits.
+            DisplayMessage(player, "All self-cast buffs have been removed due to a respec.");
+            if (player.effectListComponent != null)
+            {
+				foreach (ECSGameEffect e in player.effectListComponent.GetAllEffects())
+                {
+					if (e.SpellHandler.Caster == player)
+                    {
+						EffectService.RequestCancelEffect(e);
+					}
+                }
+            }
 		}
 	}
 }
