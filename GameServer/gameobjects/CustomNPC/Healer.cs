@@ -77,8 +77,16 @@ namespace DOL.GS
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
                     GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
+            ECSGameEffect rvrEffect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness);
+            if (rvrEffect != null)
+            {
+                //effect.Cancel(false);
+                EffectService.RequestCancelEffect(rvrEffect);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
+                    GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
 
-			if (player.TotalConstitutionLostAtDeath > 0)
+            if (player.TotalConstitutionLostAtDeath > 0)
 			{
 				int oneConCost = GamePlayer.prcRestore[player.Level < GamePlayer.prcRestore.Length ? player.Level : GamePlayer.prcRestore.Length - 1];
 				player.TempProperties.setProperty(COST_BY_PTS, (long)oneConCost);
