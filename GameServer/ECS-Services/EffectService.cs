@@ -307,6 +307,16 @@ namespace DOL.GS
                             //Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
                             ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, (int)e.SpellHandler.Spell.Value, false);
                         }
+                        else if (e.EffectType == eEffect.ResurrectionIllness)
+                        {
+                            GamePlayer gPlayer = e.Owner as GamePlayer;
+                            if (gPlayer != null)
+                            {
+                                gPlayer.Effectiveness -= e.SpellHandler.Spell.Value * 0.01;
+                                gPlayer.Out.SendUpdateWeaponAndArmorStats();
+                                gPlayer.Out.SendStatusUpdate();
+                            }
+                        }
                         else if (isDebuff(e.EffectType))
                         {
                             if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
@@ -707,6 +717,16 @@ namespace DOL.GS
                         e.Owner.Health = 0; // to send proper remove packet
                         e.Owner.Delete();
                     }
+                    else if (e.EffectType == eEffect.ResurrectionIllness)
+                    {
+                        GamePlayer gPlayer = e.Owner as GamePlayer;
+                        if (gPlayer != null)
+                        {
+                            gPlayer.Effectiveness += e.SpellHandler.Spell.Value * 0.01;
+                            gPlayer.Out.SendUpdateWeaponAndArmorStats();
+                            gPlayer.Out.SendStatusUpdate();
+                        }
+                    }
                     else if (isDebuff(e.EffectType))
                     {
                         if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
@@ -1100,6 +1120,10 @@ namespace DOL.GS
                         return eEffect.Unknown;
                 case (byte)eSpellType.PiercingMagic:
                     return eEffect.PiercingMagic;
+                case (byte)eSpellType.PveResurrectionIllness:
+                    return eEffect.ResurrectionIllness;
+                case (byte)eSpellType.RvrResurrectionIllness:
+                    return eEffect.RvrResurrectionIllness;
                 //pets
                 case (byte)eSpellType.SummonTheurgistPet:
                 case (byte)eSpellType.SummonNoveltyPet:

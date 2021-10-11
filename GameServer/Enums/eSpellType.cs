@@ -187,6 +187,9 @@ namespace DOL.GS
         StyleRange = 180,
         MultiTarget = 181,
         PiercingMagic = 182,
+        PveResurrectionIllness = 183,
+        RvrResurrectionIllness = 184,
+
         Null = 200
 
 

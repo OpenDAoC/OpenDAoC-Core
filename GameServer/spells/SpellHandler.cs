@@ -616,10 +616,13 @@ namespace DOL.GS.Spells
 		///</summary>
 		public virtual void SendSpellMessages()
 		{
-			if (Spell.InstrumentRequirement == 0)
-				MessageToCaster("You begin casting a " + Spell.Name + " spell!", eChatType.CT_Spell);
-			else
-				MessageToCaster("You begin playing " + Spell.Name + "!", eChatType.CT_Spell);
+			if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
+			{
+				if (Spell.InstrumentRequirement == 0)
+					MessageToCaster("You begin casting a " + Spell.Name + " spell!", eChatType.CT_Spell);
+				else
+					MessageToCaster("You begin playing " + Spell.Name + "!", eChatType.CT_Spell);
+			}
 		}
 
 		/// <summary>
@@ -2109,11 +2112,14 @@ namespace DOL.GS.Spells
 			// messages
 			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0) // && Spell.CastTime > 0 - Takii - Commented this out since we do want cast messages even for insta spells...
 			{
-				MessageToCaster("You cast a " + m_spell.Name + " spell!", eChatType.CT_Spell);
-				foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+				if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
 				{
-					if (player != m_caster)
-						player.MessageFromArea(m_caster, m_caster.GetName(0, true) + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					MessageToCaster("You cast a " + m_spell.Name + " spell!", eChatType.CT_Spell);
+					foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+					{
+						if (player != m_caster)
+							player.MessageFromArea(m_caster, m_caster.GetName(0, true) + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					}
 				}
 			}
 

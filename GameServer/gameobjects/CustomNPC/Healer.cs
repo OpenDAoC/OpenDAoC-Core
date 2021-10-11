@@ -68,10 +68,12 @@ namespace DOL.GS
 
 			TurnTo(player, 5000);
 
-			GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, CURED_SPELL_TYPE);
+			//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, CURED_SPELL_TYPE);
+            ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness);
 			if (effect != null)
 			{
-				effect.Cancel(false);
+                //effect.Cancel(false);
+                EffectService.RequestCancelEffect(effect);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
                     GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }

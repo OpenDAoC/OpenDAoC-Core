@@ -113,6 +113,8 @@ namespace DOL.GS
         OffensiveProc,
         DefensiveProc,
         HereticPiercingMagic,
-        PiercingMagic
+        PiercingMagic,
+        ResurrectionIllness,
+        RvrResurrectionIllness
     }
 }

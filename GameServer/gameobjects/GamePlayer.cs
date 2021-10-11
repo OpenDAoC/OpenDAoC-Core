@@ -1872,14 +1872,16 @@ namespace DOL.GS
 					    SpellLine rvrsick = SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells);
 					    if (rvrsick == null) return;
 					    Spell rvrillness = SkillBase.FindSpell(8181, rvrsick);
-					    player.CastSpell(rvrillness, rvrsick);
+					    //player.CastSpell(rvrillness, rvrsick);
+						castingComponent.StartCastSpell(rvrillness, rvrsick);
 					    break;
 				    case eDeathType.PvP: //PvP sickness is the same as PvE sickness - Curable
 				    case eDeathType.PvE:
 					    SpellLine pvesick = SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells);
 					    if (pvesick == null) return;
 					    Spell pveillness = SkillBase.FindSpell(2435, pvesick);
-					    player.CastSpell(pveillness, pvesick);
+					    //player.CastSpell(pveillness, pvesick);
+						castingComponent.StartCastSpell(pveillness, pvesick);
 					    break;
 			    }
 			
