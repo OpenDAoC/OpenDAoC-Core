@@ -1364,6 +1364,7 @@ namespace DOL.GS
                 case eEffect.ConstitutionDebuff:
                 case eEffect.AcuityDebuff:
                 case eEffect.StrConDebuff:
+                case eEffect.WsConDebuff:
                 case eEffect.DexQuiDebuff:
                 case eEffect.ArmorFactorDebuff:
                 case eEffect.ArmorAbsorptionDebuff:
