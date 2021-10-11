@@ -13,7 +13,8 @@ namespace DOL.GS.Scripts
     public class BattlegroundEventLoot : GameNPC
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+		private int freeLootLevelOffset = 2;
+		private int playerRewardOffset = 6;
         public override bool AddToWorld()
         {
             Model = 2026;
@@ -48,7 +49,7 @@ namespace DOL.GS.Scripts
 			TurnTo(player.X, player.Y);
 			eRealm realm = player.Realm;
 			eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
-			eObjectType armorType = GetArmorType(realm, charclass, (byte)(player.Level-4));
+			eObjectType armorType = GetArmorType(realm, charclass, (byte)(player.Level));
 			eColor color = eColor.White;
 
 			switch (realm) {
@@ -83,7 +84,7 @@ namespace DOL.GS.Scripts
 
 					foreach (eInventorySlot islot in bodySlots) {
 						GeneratedUniqueItem item = null;
-						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level - 4), armorType, islot);
+						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level), armorType, islot);
 						item.AllowAdd = true;
 						item.Color = (int)color;
 						item.IsTradable = false;
@@ -170,7 +171,7 @@ namespace DOL.GS.Scripts
             {
 				int shieldSize = GetShieldSizeFromClass(charClass);
 				GeneratedUniqueItem item = null;
-				item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level - 4), type, invSlot, (eDamageType)shieldSize);
+				item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, (eDamageType)shieldSize);
 				item.AllowAdd = true;
 				item.Color = (int)color;
 				item.IsTradable = false;
@@ -190,7 +191,7 @@ namespace DOL.GS.Scripts
 				//one for each damage type
                 for (int i = 1; i < endDmgType; i++)
                 {
-					GeneratedUniqueItem dmgTypeItem = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level - 4), type, invSlot, (eDamageType) i);
+					GeneratedUniqueItem dmgTypeItem = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, (eDamageType) i);
 					dmgTypeItem.AllowAdd = true;
 					dmgTypeItem.Color = (int)color;
 					dmgTypeItem.IsTradable = false;
@@ -202,7 +203,7 @@ namespace DOL.GS.Scripts
 			} else
             {
 				GeneratedUniqueItem item = null;
-				item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level - 4), type, invSlot);
+				item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot);
 				item.AllowAdd = true;
 				item.Color = (int)color;
 				item.IsTradable = false;
