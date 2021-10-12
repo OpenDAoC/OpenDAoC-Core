@@ -56,7 +56,7 @@ namespace DOL.GS
 		// Armor Chance in %
 		public const ushort ROG_ARMOR_CHANCE = 40;
 		// Magical Chance in %
-		public const ushort ROG_MAGICAL_CHANCE = 35;
+		public const ushort ROG_MAGICAL_CHANCE = 40;
 		
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
@@ -71,7 +71,7 @@ namespace DOL.GS
 		public const ushort ROG_ITEM_STAT_CHANCE = 50;
 		
 		// Item chance to get resist bonus
-		public const ushort ROG_ITEM_RESIST_CHANCE = 40;
+		public const ushort ROG_ITEM_RESIST_CHANCE = 43;
 		
 		// Item chance to get All skills stat
 		public const ushort ROG_STAT_ALLSKILL_CHANCE = 2;
