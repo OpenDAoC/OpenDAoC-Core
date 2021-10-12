@@ -69,12 +69,18 @@ namespace DOL.GS
                 }
                 else 
                 {
-                    if (owner is GamePlayer pl && pl.SpellQueue)
+                    if (owner is GamePlayer pl)
                     {
-                        pl.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    }
-
-                    queuedSpellHandler = m_newSpellHandler;
+                        if (pl.SpellQueue)
+                        {
+                            pl.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            queuedSpellHandler = m_newSpellHandler;
+                        } 
+                        else
+                        {
+                            pl.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                        }
+                    } 
                 }
             }
             else

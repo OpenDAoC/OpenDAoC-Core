@@ -420,7 +420,7 @@ namespace DOL.GS.Scripts
 				case eCharacterClass.Minstrel:
 					GenerateWeapon(player, charClass, eObjectType.Instrument, eInventorySlot.DistanceWeapon);
 					GenerateWeapon(player, charClass, eObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
 					break;
 
