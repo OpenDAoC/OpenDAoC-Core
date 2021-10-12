@@ -97,7 +97,7 @@ namespace DOL.GS {
             }
 
             switch (str.ToLower())
-            { 
+            {
                 #region helms
                 case "dragonsworn helm":
                     price = dragon;
@@ -516,6 +516,71 @@ namespace DOL.GS {
                             modelIDToAssign = 2430;
                             break;
                     }
+                    break;
+                case "wizard hat":
+                    price = epic;
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 1278;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 1279;
+                            break;
+                        case eRealm.Midgard:
+                            modelIDToAssign = 1280;
+                            break;
+                        default:
+                            modelIDToAssign = 0;
+                            break;
+                    }
+                    break;
+                case "robin hood hat":
+                    price = festive;
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            modelIDToAssign = 1281;
+                            break;
+                        case eRealm.Hibernia:
+                            modelIDToAssign = 1282;
+                            break;
+                        default:
+                            modelIDToAssign = 0;
+                            break;
+                    }
+                    break;
+                case "fur cap":
+                    price = festive;
+                    modelIDToAssign = 1283;
+                    break;
+                case "tarboosh":
+                    price = festive;
+                    modelIDToAssign = 1284;
+                    break;
+                case "leaf hat":
+                    price = festive;
+                    modelIDToAssign = 1285;
+                    break;
+                case "wing hat":
+                    price = festive;
+                    modelIDToAssign = 1286;
+                    break;
+                case "jester hat":
+                    price = festive;
+                    modelIDToAssign = 1287;
+                    break;
+                case "stag helm":
+                    price = festive;
+                    modelIDToAssign = 1288;
+                    break;
+                case "wolf helm":
+                    price = festive;
+                    modelIDToAssign = 1289;
+                    break;
+                case "candle hat":
+                    price = festive;
+                    modelIDToAssign = 4169;
                     break;
                 #endregion
 
@@ -1611,7 +1676,7 @@ namespace DOL.GS {
                     }
                     break;
 
-                case "dragonsworn cloak": 
+                case "dragonsworn cloak":
                     price = cloakcheap;
                     modelIDToAssign = 3790;
                     break;
@@ -1670,7 +1735,7 @@ namespace DOL.GS {
                     price = cloakcheap;
                     modelIDToAssign = 1721;
                     break;
-                  
+
                 case "healer's embrace":
                     price = cloakcheap;
                     modelIDToAssign = 1723;
@@ -1879,7 +1944,7 @@ namespace DOL.GS {
                     modelIDToAssign = 2983;
                     break;
 
-                    //axe
+                //axe
                 case "malice axe 2h":
                     price = artifact;
                     modelIDToAssign = 2110;
@@ -1911,7 +1976,7 @@ namespace DOL.GS {
                     modelIDToAssign = 2191;
                     break;
 
-                    //hammers
+                //hammers
                 case "bruiser hammer 2h":
                     price = artifact;
                     modelIDToAssign = 2113;
@@ -1963,7 +2028,7 @@ namespace DOL.GS {
                         case eRealm.Hibernia:
                             modelIDToAssign = 675;
                             break;
-                    } 
+                    }
                     break;
 
                 //thrust
@@ -1998,7 +2063,7 @@ namespace DOL.GS {
                     modelIDToAssign = 3710;
                     break;
 
-                    //scythes
+                //scythes
                 case "dragonsworn scythe":
                     price = artifact;
                     modelIDToAssign = 3825;
@@ -2090,7 +2155,7 @@ namespace DOL.GS {
                             modelIDToAssign = 3282;
                             break;
                         case eCharacterClass.Friar:
-                            modelIDToAssign = 3272; 
+                            modelIDToAssign = 3272;
                             break;
                         case eCharacterClass.Infiltrator:
                             switch ((eDamageType)item.Type_Damage)
@@ -2146,10 +2211,11 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Reaver:
-                            if((eObjectType)item.Object_Type == eObjectType.Flexible)
+                            if ((eObjectType)item.Object_Type == eObjectType.Flexible)
                             {
                                 modelIDToAssign = 3292;
-                            } else
+                            }
+                            else
                             {
                                 switch ((eDamageType)item.Type_Damage)
                                 {
@@ -2214,11 +2280,14 @@ namespace DOL.GS {
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Spear:
-                                    if((eDamageType)item.Type_Damage == eDamageType.Thrust)
+                                    if ((eDamageType)item.Type_Damage == eDamageType.Thrust)
                                     {
                                         modelIDToAssign = 3319;
-                                    } else { 
-                                        modelIDToAssign = 3320; }
+                                    }
+                                    else
+                                    {
+                                        modelIDToAssign = 3320;
+                                    }
                                     break;
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3317;
@@ -2358,7 +2427,7 @@ namespace DOL.GS {
                                     modelIDToAssign = 3248;
                                     break;
                             }
-                             break;
+                            break;
                         case eCharacterClass.Eldritch:
                             modelIDToAssign = 3226;
                             break;
@@ -2427,7 +2496,7 @@ namespace DOL.GS {
                     {
                         //alb
                         case eCharacterClass.Armsman:
-                            if((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
+                            if ((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
                             {
                                 switch ((eDamageType)item.Type_Damage)
                                 {
@@ -2441,7 +2510,8 @@ namespace DOL.GS {
                                         modelIDToAssign = 3298;
                                         break;
                                 }
-                            }else
+                            }
+                            else
                             {
                                 switch ((eDamageType)item.Type_Damage)
                                 {
@@ -2829,7 +2899,7 @@ namespace DOL.GS {
             }
             else
             {
-                SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" + 
+                SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
                                     "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
                 return false;
             }
@@ -2837,7 +2907,7 @@ namespace DOL.GS {
 
         }
 
-       
+
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
@@ -2861,7 +2931,30 @@ namespace DOL.GS {
                         "[Stygia Helm] (" + toageneric + " RPs)\n" +
                         "[Volcanus Helm] (" + toageneric + " RPs)\n" +
                         "[Aerus Helm] (" + toageneric + " RPs)\n" +
+                        "[Wizard Hat] (" + toageneric + " RPs)\n\n" +
+                        "Additionally, I have some realm specific headgear available:" +
                         "");
+                    switch (source.Realm)
+                    {
+                        case eRealm.Albion:
+                            SendReply(t, "[Robin Hood Hat] (" + festive + " RPs)\n" +
+                                "[Tarboosh] (" + festive + " RPs)\n" +
+                                "[Jester Hat] (" + festive + " RPs)\n" +
+                                "");
+                            break;
+                        case eRealm.Hibernia:
+                            SendReply(t, "[Robin Hood Hat] (" + festive + " RPs)\n" +
+                               "[Leaf Hat] (" + festive + " RPs)\n" +
+                               "[Stag Helm] (" + festive + " RPs)\n" +
+                               "");
+                            break;
+                        case eRealm.Midgard:
+                            SendReply(t, "[Fur Cap] (" + festive + " RPs)\n" +
+                               "[Wing Hat] (" + festive + " RPs)\n" +
+                               "[Wolf Helm] (" + festive + " RPs)\n" +
+                               "");
+                            break;
+                    }
                     break;
 
                 case Slot.TORSO:
@@ -2877,7 +2970,7 @@ namespace DOL.GS {
                         "[Stygia Breastplate] (" + toageneric + " RPs)\n" +
                         "[Volcanus Breastplate] (" + toageneric + " RPs)\n" +
                         "[Aerus Breastplate] (" + toageneric + " RPs)\n" +
-                        
+
                         "");
                     break;
 
@@ -2890,7 +2983,7 @@ namespace DOL.GS {
                         "[Stygia Sleeves] (" + toageneric + " RPs)\n" +
                         "[Volcanus Sleeves] (" + toageneric + " RPs)\n" +
                         "[Aerus Sleeves] (" + toageneric + " RPs)\n" +
-                        
+
                         "");
                     break;
 
@@ -2903,7 +2996,7 @@ namespace DOL.GS {
                         "[Stygia Pants] (" + toageneric + " RPs)\n" +
                         "[Volcanus Pants] (" + toageneric + " RPs)\n" +
                         "[Aerus Pants] (" + toageneric + " RPs)\n" +
-                        
+
                         "");
                     break;
 
@@ -2916,7 +3009,7 @@ namespace DOL.GS {
                         "[Stygia Gloves] (" + toageneric + " RPs)\n" +
                         "[Volcanus Gloves] (" + toageneric + " RPs)\n" +
                         "[Aerus Gloves] (" + toageneric + " RPs)\n" +
-                        
+
                         "");
                     break;
 
@@ -2929,21 +3022,21 @@ namespace DOL.GS {
                         "[Stygia Boots] (" + toageneric + " RPs)\n" +
                         "[Volcanus Boots] (" + toageneric + " RPs)\n" +
                         "[Aerus Boots] (" + toageneric + " RPs)\n" +
-                        
+
                         "");
                     break;
 
                 case Slot.CLOAK:
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
-                      /*  "[Realm Cloak] (" + cloakexpensive + " RPs)\n" +
-                        "[Dragonslayer Cloak] (" + cloakexpensive + " RPs)\n" +
-                        "[Dragonsworn Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Valentines Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Winter Cloak] (" + cloakcheap + " RPs)\n" + //yep all these IDs are too new too
-                      //another one for the model wizards
-                        "[Clean Leather Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Corrupt Leather Cloak] (" + cloakcheap + " RPs)\n" + */
+                        /*  "[Realm Cloak] (" + cloakexpensive + " RPs)\n" +
+                          "[Dragonslayer Cloak] (" + cloakexpensive + " RPs)\n" +
+                          "[Dragonsworn Cloak] (" + cloakcheap + " RPs)\n" +
+                          "[Valentines Cloak] (" + cloakcheap + " RPs)\n" +
+                          "[Winter Cloak] (" + cloakcheap + " RPs)\n" + //yep all these IDs are too new too
+                        //another one for the model wizards
+                          "[Clean Leather Cloak] (" + cloakcheap + " RPs)\n" +
+                          "[Corrupt Leather Cloak] (" + cloakcheap + " RPs)\n" + */
                         "[Cloudsong] (" + cloakcheap + " RPs)\n" +
                         "[Shades of Mist] (" + cloakcheap + " RPs)\n" +
                         "[Harpy Feather Cloak] (" + cloakcheap + " RPs)\n" +
@@ -2954,12 +3047,11 @@ namespace DOL.GS {
                         "[Aerus Cloak] (" + cloakcheap + " RPs)\n" +
                         "[Collared Cloak] (" + cloakcheap + " RPs)\n" +
                         "");
-                    break;        
+                    break;
 
                 case Slot.RIGHTHAND:
                     SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
                         "I can apply the following skins: \n\n");
-                    Console.WriteLine($"Damage type: {(eObjectType)item.Object_Type}");
                     if ((eObjectType)item.Object_Type == eObjectType.HandToHand)
                     {
                         SendReply(t,
@@ -2985,7 +3077,7 @@ namespace DOL.GS {
                                     "[Traitor's Dagger 1h](" + artifact + " RPs)\n" +
                                     "[Croc Tooth Dagger 1h](" + artifact + " RPs)\n" +
                                     "[Golden Spear 1h](" + artifact + " RPs)\n" +
-                                    "[Wakazashi](" + epic + " RPs)" +
+                                    "[Wakazashi](" + epic + " RPs)\n" +
                                     "");
                                 break;
 
@@ -2996,8 +3088,8 @@ namespace DOL.GS {
                                     "[Bruiser Hammer 1h](" + artifact + " RPs)\n" +
                                     "[Scepter of the Meritorious](" + artifact + " RPs)\n" +
                                     "[Rolling Pin](" + epic + " RPs)\n" +
-                                    "[Stein](" + epic + " RPs)" +
-                                    "[Turkey Leg](" + champion + " RPs)" +
+                                    "[Stein](" + epic + " RPs)\n" +
+                                    "[Turkey Leg](" + champion + " RPs)\n" +
                                     "");
                                 break;
 
@@ -3008,7 +3100,7 @@ namespace DOL.GS {
                                     "[Malice Axe 1h](" + artifact + " RPs)\n" +
                                     "[Battler Sword 1h](" + artifact + " RPs)\n" +
                                     "[Khopesh](" + epic + " RPs)\n" +
-                                    "[Cleaver](" + epic + " RPs)" +
+                                    "[Cleaver](" + epic + " RPs)\n" +
                                     "");
                                 break;
                         }
@@ -3052,7 +3144,8 @@ namespace DOL.GS {
                                     "[Tartaros Gift](" + artifact + " RPs)\n" +
                                     "[Scorched Staff](" + toageneric + " RPs)\n" +
                                     "");
-                    } else if ((eObjectType)item.Object_Type == eObjectType.Scythe)
+                    }
+                    else if ((eObjectType)item.Object_Type == eObjectType.Scythe)
                     {
                         SendReply(t,
                                     "[Dragonsworn Scythe](" + dragon + " RPs)\n" +
@@ -3061,7 +3154,8 @@ namespace DOL.GS {
                                     "[Magma Scythe](" + toageneric + " RPs)\n" +
                                     "[Scorched Scythe](" + toageneric + " RPs)\n" +
                                     "");
-                    } else if ((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
+                    }
+                    else if ((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
                     {
                         SendReply(t,
                                     "[Dragonsworn Pole](" + dragon + " RPs)\n" +
@@ -3196,9 +3290,11 @@ namespace DOL.GS {
             if (rps is >= 61750 and < 71750) { player.RealmLevel = 19; }
             else
             //3l0
-            if (rps is >= 71750) {
+            if (rps is >= 71750)
+            {
                 player.RealmPoints = 71750;
-                player.RealmLevel = 20; }
+                player.RealmLevel = 20;
+            }
 
 
             player.Out.SendUpdatePlayer();
