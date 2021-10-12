@@ -30,46 +30,47 @@ namespace DOL.GS.Commands
 		{
 			if (IsSpammingCommand(client.Player, "groundassist"))
 				return;
-
-			GameLiving target = client.Player.TargetObject as GameLiving;
-			if (args.Length > 1)
-			{
-				GameClient myclient;
-				myclient = WorldMgr.GetClientByPlayerName(args[1], true, true);
-				if (myclient == null)
-				{
-					client.Player.Out.SendMessage("No player with this name in game.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-					return;
-				}
-				target = myclient.Player;
-			}
-
-			if (target == client.Player)
-			{
-				client.Out.SendMessage("You can't groundassist yourself.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (target == null)
-				return;
-
-			// can't assist an enemy
-			if (GameServer.ServerRules.IsAllowedToAttack(client.Player, target as GameLiving, true))
-				return;
-
-			if (!client.Player.IsWithinRadius( target, 2048 ))
-			{
-				client.Out.SendMessage("You don't see " + args[1] + " around here!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (target.GroundTarget == null || (target.GroundTarget.X == 0 && target.GroundTarget.Y == 0 && target.GroundTarget.Z == 0))
-			{
-				client.Out.SendMessage(target.Name + " doesn't currently have a ground target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-			client.Player.Out.SendChangeGroundTarget(target.GroundTarget);
-			client.Player.SetGroundTarget(target.GroundTarget.X, target.GroundTarget.Y, target.GroundTarget.Z);
+			DisplayMessage(client, "/groundassist is disabled on this server.");
+			
+			// GameLiving target = client.Player.TargetObject as GameLiving;
+			// if (args.Length > 1)
+			// {
+			// 	GameClient myclient;
+			// 	myclient = WorldMgr.GetClientByPlayerName(args[1], true, true);
+			// 	if (myclient == null)
+			// 	{
+			// 		client.Player.Out.SendMessage("No player with this name in game.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+			// 		return;
+			// 	}
+			// 	target = myclient.Player;
+			// }
+			//
+			// if (target == client.Player)
+			// {
+			// 	client.Out.SendMessage("You can't groundassist yourself.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			// 	return;
+			// }
+			//
+			// if (target == null)
+			// 	return;
+			//
+			// // can't assist an enemy
+			// if (GameServer.ServerRules.IsAllowedToAttack(client.Player, target as GameLiving, true))
+			// 	return;
+			//
+			// if (!client.Player.IsWithinRadius( target, 2048 ))
+			// {
+			// 	client.Out.SendMessage("You don't see " + args[1] + " around here!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			// 	return;
+			// }
+			//
+			// if (target.GroundTarget == null || (target.GroundTarget.X == 0 && target.GroundTarget.Y == 0 && target.GroundTarget.Z == 0))
+			// {
+			// 	client.Out.SendMessage(target.Name + " doesn't currently have a ground target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			// 	return;
+			// }
+			// client.Player.Out.SendChangeGroundTarget(target.GroundTarget);
+			// client.Player.SetGroundTarget(target.GroundTarget.X, target.GroundTarget.Y, target.GroundTarget.Z);
 		}
 	}
 }
