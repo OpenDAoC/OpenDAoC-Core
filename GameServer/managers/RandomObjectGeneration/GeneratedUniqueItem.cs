@@ -54,7 +54,7 @@ namespace DOL.GS
 		// TOA Chance in %
 		public const ushort ROG_TOA_ITEM_CHANCE = 0;
 		// Armor Chance in %
-		public const ushort ROG_ARMOR_CHANCE = 45;
+		public const ushort ROG_ARMOR_CHANCE = 40;
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 35;
 		
