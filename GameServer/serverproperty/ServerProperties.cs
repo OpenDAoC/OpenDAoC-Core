@@ -427,7 +427,13 @@ namespace DOL.GS.ServerProperties
 		/// Webhook ID
 		/// </summary>
 		[ServerProperty("server", "Discord_Webhook_ID", "The id of the webhook", "")]
-		public static string DISCORD_WEBHOOK_ID;		
+		public static string DISCORD_WEBHOOK_ID;
+		
+		/// <summary>
+		/// RvRWebhook ID
+		/// </summary>
+		[ServerProperty("atlas", "Discord_RVR_Webhook_ID", "The id of the webhook for RvR updates", "")]
+		public static string DISCORD_RVR_WEBHOOK_ID;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?
