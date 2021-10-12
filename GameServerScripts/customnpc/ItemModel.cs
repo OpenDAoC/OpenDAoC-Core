@@ -2931,7 +2931,7 @@ namespace DOL.GS {
                         "[Stygia Helm] (" + toageneric + " RPs)\n" +
                         "[Volcanus Helm] (" + toageneric + " RPs)\n" +
                         "[Aerus Helm] (" + toageneric + " RPs)\n" +
-                        "[Wizard Hat] (" + toageneric + " RPs)\n\n" +
+                        "[Wizard Hat] (" + epic + " RPs)\n\n" +
                         "Additionally, I have some realm specific headgear available:" +
                         "");
                     switch (source.Realm)
