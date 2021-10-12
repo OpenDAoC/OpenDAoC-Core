@@ -44,10 +44,22 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		/// <summary>
-		/// Actions to be taken on each Think pulse
-		/// </summary>
-		public override void Think()
+        public override void AttackMostWanted()
+        {
+			if(Body.TargetObject != null && Body.TargetObject is GamePlayer pl)
+            {
+				pl.Out.SendCheckLOS(Body, pl, new CheckLOSResponse(CheckAggroLOS));
+
+                if (!AggroLOS) { return; }
+			}
+
+			base.AttackMostWanted();
+        }
+
+        /// <summary>
+        /// Actions to be taken on each Think pulse
+        /// </summary>
+        public override void Think()
 		{
 			if (guard == null)
 				guard = Body as GameKeepGuard;
@@ -66,7 +78,7 @@ namespace DOL.AI.Brain
 			if ((guard is GuardArcher || guard is GuardStaticArcher || guard is GuardLord))
 			{
 				// Drop aggro and disengage if the target is out of range or out of LoS.
-				if (Body.IsAttacking && Body.TargetObject is GameLiving living && (Body.IsWithinRadius(Body.TargetObject, AggroRange, false) == false || !AggroLOS))
+				if (Body.IsAttacking && Body.TargetObject is GameLiving living && (Body.IsWithinRadius(Body.TargetObject, AggroRange, false) == false)) //|| !AggroLOS))
 				{
 					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 					//Body.StopAttack();
