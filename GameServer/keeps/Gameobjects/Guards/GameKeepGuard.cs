@@ -1102,15 +1102,15 @@ namespace DOL.GS.Keeps
 			{
 				if (Realm == eRealm.None)
 				{
-					MaxSpeedBase = 200;
+					MaxSpeedBase = 250;
 				}
 				else if (Level < 50)
 				{
-					MaxSpeedBase = 210;
+					MaxSpeedBase = 270;
 				}
 				else
 				{
-					MaxSpeedBase = 250;
+					MaxSpeedBase = 350;
 				}
 			}
 			else
