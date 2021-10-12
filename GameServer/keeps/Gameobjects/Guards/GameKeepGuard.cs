@@ -1094,6 +1094,7 @@ namespace DOL.GS.Keeps
 
 		protected virtual void SetSpeed()
 		{
+			FixedSpeed = true;
 			if (IsPortalKeepGuard)
 			{
 				MaxSpeedBase = 575;
