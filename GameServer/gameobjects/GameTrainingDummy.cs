@@ -35,10 +35,16 @@ namespace DOL.GS
 			SetOwnBrain(new BlankBrain());
 		}
 
-		/// <summary>
-		/// Training Dummies never loose health
-		/// </summary>
-		public override int Health
+		
+        public override void StartAttack(GameObject target)
+        {
+            
+        }
+
+        /// <summary>
+        /// Training Dummies never loose health
+        /// </summary>
+        public override int Health
 		{
 			get{ return base.MaxHealth;}
 			set {}
