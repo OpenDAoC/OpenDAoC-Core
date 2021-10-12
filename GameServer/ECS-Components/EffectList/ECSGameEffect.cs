@@ -23,6 +23,7 @@ namespace DOL.GS
         public GameLiving Owner;
         public int TickInterval;
         public long NextTick;
+        public int PreviousPosition = -1;
 
         string IConcentrationEffect.Name => SpellHandler.Spell.Name;
         //string IConcentrationEffect.OwnerName => Owner.Name;
