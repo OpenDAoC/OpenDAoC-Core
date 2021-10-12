@@ -56,7 +56,7 @@ namespace DOL.GS
 		// Armor Chance in %
 		public const ushort ROG_ARMOR_CHANCE = 40;
 		// Magical Chance in %
-		public const ushort ROG_MAGICAL_CHANCE = 40;
+		public const ushort ROG_MAGICAL_CHANCE = 45;
 		
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
