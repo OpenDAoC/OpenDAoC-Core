@@ -86,10 +86,10 @@ namespace DOL.GS
             }
         }
         
-        public ushort GetRemainingTimeForClient()
+       public long GetRemainingTimeForClient()
         {
             if (Duration > 0)
-                return (ushort)(ExpireTick - GameLoop.GameLoopTime);
+                return (ExpireTick - GameLoop.GameLoopTime);
             else
                 return 0;
         }
