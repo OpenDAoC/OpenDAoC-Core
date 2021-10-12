@@ -319,7 +319,7 @@ namespace DOL.GS.Keeps
 
 			if (lastTarget != null && lastTarget == attackTarget)
 			{
-				if (lastTick != 0 && CurrentRegion.Time - lastTick < ServerProperties.Properties.KEEP_GUARD_LOS_CHECK_TIME * 1000)
+				if (lastTick != 0 && GameLoop.GameLoopTime - lastTick < ServerProperties.Properties.KEEP_GUARD_LOS_CHECK_TIME * 1000)
 					return;
 			}
 
@@ -356,7 +356,7 @@ namespace DOL.GS.Keeps
 					log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", Name);
 
 					// Now do a safety check.  If it's been a while since we sent any check we should clear count
-					if (lastTick == 0 || CurrentRegion.Time - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+					if (lastTick == 0 || GameLoop.GameLoopTime - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
 					{
 						log.Debug("LOS count reset!");
 						TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
@@ -369,7 +369,7 @@ namespace DOL.GS.Keeps
 				TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
 
 				TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, attackTarget);
-				TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, CurrentRegion.Time);
+				TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
 				TargetObject = attackTarget;
 			}
 
@@ -701,7 +701,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				return CurrentRegion.Time - LastAttackedByEnemyTick < 10 * 1000;
+				return GameLoop.GameLoopTime - LastAttackedByEnemyTick < 10 * 1000;
 			}
 		}
 		#endregion
@@ -1094,6 +1094,7 @@ namespace DOL.GS.Keeps
 
 		protected virtual void SetSpeed()
 		{
+			FixedSpeed = true;
 			if (IsPortalKeepGuard)
 			{
 				MaxSpeedBase = 575;
@@ -1102,15 +1103,15 @@ namespace DOL.GS.Keeps
 			{
 				if (Realm == eRealm.None)
 				{
-					MaxSpeedBase = 200;
+					MaxSpeedBase = 250;
 				}
 				else if (Level < 50)
 				{
-					MaxSpeedBase = 210;
+					MaxSpeedBase = 270;
 				}
 				else
 				{
-					MaxSpeedBase = 250;
+					MaxSpeedBase = 350;
 				}
 			}
 			else

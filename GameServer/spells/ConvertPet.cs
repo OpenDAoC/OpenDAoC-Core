@@ -39,7 +39,14 @@ namespace DOL.GS.Spells
 		public override bool StartSpell(GameLiving target)
 		{
 			var targets = SelectTargets(target);
-			if (targets.Count <= 0) return false;
+			if (targets.Count <= 0)
+				if (m_caster.ControlledBrain != null)
+					target = m_caster.ControlledBrain as GameLiving;
+				else
+				{
+					return false;
+				}
+			
 			int mana = 0;
 
 			foreach (GameLiving living in targets)

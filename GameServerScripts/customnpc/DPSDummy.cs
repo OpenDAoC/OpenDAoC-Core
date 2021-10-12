@@ -30,7 +30,7 @@ namespace DOL.GS
                 StartCheck = false;
             }
 
-            Damage += ad.Damage;
+            Damage += ad.Damage + ad.CriticalDamage;
             TimePassed = (DateTime.Now - StartTime);
             Name = "Total: " + Damage.ToString() +" DPS: " + (Damage / (TimePassed.TotalSeconds + 1)).ToString("0");
         }

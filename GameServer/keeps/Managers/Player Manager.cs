@@ -86,7 +86,11 @@ namespace DOL.GS.Keeps
 		/// <param name="keep">The keep object</param>
 		public static void BroadcastClaim(AbstractGameKeep keep)
 		{
-			BroadcastMessage(string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastClaim.Claimed", keep.Guild.Name, keep.Name)), (eRealm)keep.Realm);
+
+			string claimMessage = string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,
+				"PlayerManager.BroadcastClaim.Claimed", keep.Guild.Name, keep.Name));
+			
+			BroadcastMessage(claimMessage, (eRealm)keep.Realm);
 		}
 
 		/// <summary>
@@ -95,7 +99,11 @@ namespace DOL.GS.Keeps
 		/// <param name="keep">The keep object</param>
 		public static void BroadcastRelease(AbstractGameKeep keep)
 		{
-			BroadcastMessage(string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRelease.LostControl", keep.Guild.Name, keep.Name)), (eRealm)keep.Realm);
+			string lostClaimMessage = string.Format(LanguageMgr.GetTranslation(
+				ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRelease.LostControl",
+				keep.Guild.Name, keep.Name));
+			
+			BroadcastMessage(lostClaimMessage, (eRealm)keep.Realm);
 		}
 
 		/// <summary>
@@ -115,6 +123,13 @@ namespace DOL.GS.Keeps
 					client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
+			
+			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
+			{
+				var hook = new DolWebHook(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
+				hook.SendMessage(message);
+			}
+			
 		}
 
 		/// <summary>

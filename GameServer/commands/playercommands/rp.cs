@@ -37,17 +37,19 @@ namespace DOL.GS.Commands
 
 			if (IsSpammingCommand(client.Player, "rp"))
 				return;
+			
+			DisplayMessage(client, "/rp is disabled on this server.");
 
-			if (args[1].ToLower().Equals("on"))
-			{
-				client.Player.GainRP = true;
-				client.Out.SendMessage("Your rp flag is ON. You will gain realm points. Use '/rp off' to stop gaining realm points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
-			else if (args[1].ToLower().Equals("off"))
-			{
-				client.Player.GainRP = false;
-				client.Out.SendMessage("Your rp flag is OFF. You will no longer gain realm points. Use '/rp on' to start gaining realm points again.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
+			// if (args[1].ToLower().Equals("on"))
+			// {
+			// 	client.Player.GainRP = true;
+			// 	client.Out.SendMessage("Your rp flag is ON. You will gain realm points. Use '/rp off' to stop gaining realm points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			// }
+			// else if (args[1].ToLower().Equals("off"))
+			// {
+			// 	client.Player.GainRP = false;
+			// 	client.Out.SendMessage("Your rp flag is OFF. You will no longer gain realm points. Use '/rp on' to start gaining realm points again.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			// }
 		}
 	}
 }
