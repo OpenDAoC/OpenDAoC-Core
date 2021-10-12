@@ -53,6 +53,7 @@ namespace DOL.GS
                                     if (effect.SpellHandler.Spell.IsPulsing)
                                         effect.RenewEffect = true;
 
+                                    effect.PreviousPosition = GetAllEffects().IndexOf(existingEffects[i]);
                                     Effects[effect.EffectType][i] = effect;
                                     return true;
                                 }
@@ -134,7 +135,7 @@ namespace DOL.GS
                             EntityManager.AddComponent(typeof(EffectListComponent), Owner);
                         }
                     }
-                    
+
                     return true;
                 }
                 catch (Exception e)

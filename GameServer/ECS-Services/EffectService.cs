@@ -488,7 +488,14 @@ namespace DOL.GS
                 if (e.Owner is GamePlayer player)
                 {
                     List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
-                    ecsList.Add(e);
+
+                    if (e.PreviousPosition >= 0)
+                    {
+                        List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
+                        ecsList.AddRange(playerEffects.Skip(e.PreviousPosition));
+                    }
+                    else
+                        ecsList.Add(e);
 
                     player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                     SendPlayerUpdates(player);                   
@@ -848,7 +855,8 @@ namespace DOL.GS
                 SendPlayerUpdates(player);
                 //Now update EffectList
                 List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
-                ecsList.Add(e);
+                List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
+                ecsList.AddRange(playerEffects.Skip(playerEffects.IndexOf(e)));
 
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
             }
