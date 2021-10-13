@@ -13176,7 +13176,12 @@ namespace DOL.GS
 
                 if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
                 {
-					EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), true);
+                    EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), true);
+                }
+				// Cancel pulse effect
+                if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
+                {
+					EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(this, eEffect.Pulse));
                 }
 
 				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
