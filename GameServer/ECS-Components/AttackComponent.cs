@@ -1733,7 +1733,7 @@ namespace DOL.GS
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
             if (ad.AttackType != AttackData.eAttackType.Spell && ad.AttackType != AttackData.eAttackType.Ranged)
-                ad.Attacker.StartInterruptTimer(ad, interruptDuration);
+                ad.Attacker.StartInterruptTimer(ad, owner.SpellInterruptDuration);
 
             owner.OnAttackEnemy(ad);
 
