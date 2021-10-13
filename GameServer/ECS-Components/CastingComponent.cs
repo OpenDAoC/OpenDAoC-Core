@@ -104,15 +104,6 @@ namespace DOL.GS
                 spellHandler.Spell.IsSpec = true;
             }
 
-            // Cancel MoveSpeedBuff=========================May not be the best place for this========================================
-            AttackData ad = new AttackData();
-            ad.Attacker = owner;
-            ad.Target = owner;
-            ad.AttackType = AttackData.eAttackType.Spell;
-            ad.AttackResult = eAttackResult.HitUnstyled;
-            ad.IsSpellResisted = false;
-            ad.Damage = 0;
-            owner.OnAttack();
             return true;
         }
 

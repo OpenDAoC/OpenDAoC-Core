@@ -338,15 +338,6 @@ namespace DOL.GS
                                     //    return;
                                     //}
 
-
-                                    //// Cancels mezz on the effect owner, if applied
-                                    //e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
-                                    //if (mezz != null)
-                                    //{
-                                    //    mezz.CancelEffect = true;
-                                    //    mezz.ExpireTick = GameLoop.GameLoopTime - 1;
-                                    //    EntityManager.AddEffect(mezz);
-                                    //}
                                     //Console.WriteLine("Debuffing Speed for " + e.Owner.Name);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
                                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
@@ -356,23 +347,17 @@ namespace DOL.GS
                                 }
                                 else if (e.EffectType == eEffect.Disease)
                                 {
-                                    if (e.Owner.Realm == 0 || e.SpellHandler.Caster.Realm == 0)
-                                    {
-                                        e.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                                        e.SpellHandler.Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-                                    }
-                                    else
-                                    {
-                                        e.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-                                        e.SpellHandler.Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-                                    }
+//                                     if (e.Owner.Realm == 0 || e.SpellHandler.Caster.Realm == 0)
+//                                     {
+//                                         e.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+//                                         e.SpellHandler.Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+//                                     }
+//                                     else
+//                                     {
+//                                         e.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+//                                         e.SpellHandler.Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+//                                     }
 
-                                    e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
-                                    if (mezz != null)
-                                    {
-                                        EffectService.RequestCancelEffect(mezz.FirstOrDefault());
-
-                                    }
                                     e.Owner.Disease(true);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - 0.15);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, e.SpellHandler, 1.0 - 0.075);
@@ -392,12 +377,6 @@ namespace DOL.GS
                                 }
                                 else if (e.EffectType == eEffect.Nearsight)
                                 {
-                                    e.Owner.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
-                                    if (mezz != null)
-                                    {
-                                        EffectService.RequestCancelEffect(mezz.FirstOrDefault());
-                                    }
-
                                     // percent category
                                     e.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)e.SpellHandler.Spell.Value;
                                     e.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)e.SpellHandler.Spell.Value;

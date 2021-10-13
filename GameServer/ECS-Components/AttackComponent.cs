@@ -1735,7 +1735,7 @@ namespace DOL.GS
             if (ad.AttackType != AttackData.eAttackType.Spell && ad.AttackType != AttackData.eAttackType.Ranged)
                 ad.Attacker.StartInterruptTimer(ad, interruptDuration);
 
-            owner.OnAttack(ad);
+            owner.OnAttackEnemy(ad);
 
             //Return the result
             return ad;
