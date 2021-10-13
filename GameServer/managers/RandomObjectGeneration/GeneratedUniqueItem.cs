@@ -74,9 +74,12 @@ namespace DOL.GS
 		
 		// Item chance to get resist bonus
 		public const ushort ROG_ITEM_RESIST_CHANCE = 43;
-		
+
+		//item chance to get skills
+		public const ushort ROG_ITEM_SKILL_CHANCE = 20;
+
 		// Item chance to get All skills stat
-		public const ushort ROG_STAT_ALLSKILL_CHANCE = 2;
+		public const ushort ROG_STAT_ALLSKILL_CHANCE = 5;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 50;
@@ -413,22 +416,29 @@ namespace DOL.GS
 			//allfocus
 			if (CanAddFocus())
 				return eBonusType.Focus;
-
+			/*
 			// ToA allows stat cap bonuses
 			if (toa && Util.Chance(ROG_TOA_STAT_CHANCE))
 			{
 				return eBonusType.AdvancedStat;
 			}
-			
+			*/
 
-			//stats
-			if (Util.Chance(ROG_ITEM_STAT_CHANCE))
-				return eBonusType.Stat;
-			//resists
-			if (Util.Chance(ROG_ITEM_RESIST_CHANCE))
-				return eBonusType.Resist;
-			//skills
-			return eBonusType.Skill;
+
+			List<eBonusType> bonTypes = new List<eBonusType>();
+			if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
+			if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
+			if (Util.Chance(ROG_ITEM_SKILL_CHANCE)) { bonTypes.Add(eBonusType.Skill); }
+
+			//if none of the object types were added, default to magical
+			if (bonTypes.Count < 1)
+			{
+				int bonType = Util.Random(3);
+				if (bonType == 1) bonType--; //no toa stats
+				bonTypes.Add((eBonusType)bonType);
+			}
+
+			return bonTypes[Util.Random(bonTypes.Count - 1)];
 		}
 		
 		private bool CanAddFocus()
