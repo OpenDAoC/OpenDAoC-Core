@@ -1603,7 +1603,7 @@ namespace DOL.GS.ServerRules
 							}
 
 							living.GainRealmPoints(realmPoints);
-							if (ServerProperties.Properties.EVENT_THIDRANKI && killerPlayer.ReceiveROG)
+							if (ServerProperties.Properties.EVENT_THIDRANKI && killerPlayer.ReceiveROG && Util.Random(100) < 33)
 								AtlasROGManager.GenerateROG(living, true);
 						}
 					}
