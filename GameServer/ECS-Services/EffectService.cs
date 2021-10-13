@@ -305,7 +305,7 @@ namespace DOL.GS
                         else if (e.EffectType == eEffect.SavageBuff)
                         {
                             //Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
-                            ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, (int)e.SpellHandler.Spell.Value, false);
+                            ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                         }
                         else if (e.EffectType == eEffect.ResurrectionIllness)
                         {
@@ -324,7 +324,7 @@ namespace DOL.GS
                                 foreach (var prop in getPropertyFromEffect(e.EffectType))
                                 {
                                     //Console.WriteLine($"Debuffing {prop.ToString()}");
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                                 }
                             }
                             else
@@ -347,17 +347,6 @@ namespace DOL.GS
                                 }
                                 else if (e.EffectType == eEffect.Disease)
                                 {
-//                                     if (e.Owner.Realm == 0 || e.SpellHandler.Caster.Realm == 0)
-//                                     {
-//                                         e.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-//                                         e.SpellHandler.Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-//                                     }
-//                                     else
-//                                     {
-//                                         e.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-//                                         e.SpellHandler.Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-//                                     }
-
                                     e.Owner.Disease(true);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - 0.15);
                                     e.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, e.SpellHandler, 1.0 - 0.075);
@@ -390,9 +379,9 @@ namespace DOL.GS
                                     {
                                         //Console.WriteLine($"Debuffing {prop.ToString()}");
                                         if (e.EffectType == eEffect.ArmorFactorDebuff)
-                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                                         else
-                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                                     }
                                 }
                             }
@@ -405,7 +394,7 @@ namespace DOL.GS
                                 foreach (var prop in getPropertyFromEffect(e.EffectType))
                                 {
                                     //Console.WriteLine($"Buffing {prop.ToString()}");
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                                 }
                             } 
                             else
@@ -433,10 +422,10 @@ namespace DOL.GS
                                     {
                                         //Console.WriteLine("Applying EnduranceRegenBuff");
                                         var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, false);
+                                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                                     }
                                     else
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                        ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                                 }
                             }                          
                         }
@@ -683,7 +672,7 @@ namespace DOL.GS
                     else if (e.EffectType == eEffect.SavageBuff)
                     {
                         //Console.WriteLine($"Savage Canceling {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
-                        ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, (int)e.SpellHandler.Spell.Value, true);
+                        ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
 
                         if (e.SpellHandler.Spell.Power != 0)
                         {
@@ -720,7 +709,7 @@ namespace DOL.GS
                             foreach (var prop in getPropertyFromEffect(e.EffectType))
                             {
                                 //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                             }
                         }
                         else
@@ -769,9 +758,9 @@ namespace DOL.GS
                                     //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
 
                                     if (e.EffectType == eEffect.ArmorFactorDebuff)
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                                     else
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, (int)e.SpellHandler.Spell.Value, false);
+                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                                 }
                             }
                         }
@@ -783,7 +772,7 @@ namespace DOL.GS
                             foreach (var prop in getPropertyFromEffect(e.EffectType))
                             {
                                 //Console.WriteLine($"Canceling {prop.ToString()}");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                             }
                         }
                         else
@@ -808,10 +797,10 @@ namespace DOL.GS
                                 {
                                     //Console.WriteLine("Removing EnduranceRegenBuff");
                                     var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                                    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, (int)handler.Spell.Value, true);
+                                    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                                 }
                                 else
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, (int)e.SpellHandler.Spell.Value, true);
+                                    ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                               
                             }
                         }
@@ -1385,17 +1374,19 @@ namespace DOL.GS
 		/// <param name="Property"></param>
 		/// <param name="Value"></param>
 		/// <param name="IsSubstracted"></param>
-		private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, int Value, bool IsSubstracted)
+		private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
         {
+            int effectiveValue = (int)(Value * Effectiveness);
+
             IPropertyIndexer tblBonusCat;
             if (Property != eProperty.Undefined)
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
                 //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
                 if (IsSubstracted)
-                    tblBonusCat[(int)Property] -= Value;
+                    tblBonusCat[(int)Property] -= effectiveValue;
                 else
-                    tblBonusCat[(int)Property] += Value;
+                    tblBonusCat[(int)Property] += effectiveValue;
                 //Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
             }
         } 
