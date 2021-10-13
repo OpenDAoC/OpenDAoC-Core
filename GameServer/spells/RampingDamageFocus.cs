@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				MessageToCaster("You do not have enough mana and your spell was cancelled.", eChatType.CT_SpellExpires);
+				MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
 				FocusSpellAction(/*null, Caster, null*/);
 				effect.Cancel(false);
 			}
