@@ -62,7 +62,8 @@ namespace DOL.GS.Commands
 		"/WHO <location> lists players in the <location> area",
 		"/WHO <level> lists players of level <level>",
 		"/WHO <level> <level> lists players in level range",
-		"/WHO BG lists all players leading a public BattleGroup"
+		"/WHO BG lists all players leading a public BattleGroup",
+		"/WHO SOLO lists all ungrouped players"
 	)]
 	public class WhoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
