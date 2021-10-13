@@ -4055,7 +4055,7 @@ namespace DOL.GS
         /// </summary>
         public void OnAttackEnemy(AttackData ad)
         {
-			Console.WriteLine(string.Format("OnAttack called on {0}", this.Name));
+			//Console.WriteLine(string.Format("OnAttack called on {0}", this.Name));
 
 			// Note that this function is called whenever an attack is made, regardless of whether that attack was successful.
 			// i.e. missed melee swings and resisted spells still trigger this.
@@ -4097,7 +4097,7 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public virtual void OnAttackedByEnemy(AttackData ad)
 		{
-            Console.WriteLine(string.Format("OnAttackedByEnemy called on {0}", this.Name));
+            //Console.WriteLine(string.Format("OnAttackedByEnemy called on {0}", this.Name));
 
             // Note that this function is called whenever an attack is received, regardless of whether that attack was successful.
             // i.e. missed melee swings and resisted spells still trigger this.

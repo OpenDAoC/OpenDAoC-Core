@@ -1596,15 +1596,14 @@ namespace DOL.GS.ServerRules
 							realmPoints = rpCap;
 						if (realmPoints > 0)
 						{
-							if (living is GamePlayer)
+							if (living is GamePlayer p)
 							{
 								killedPlayer.LastDeathRealmPoints += realmPoints;
-								playerKillers.Add(new KeyValuePair<GamePlayer, int>(living as GamePlayer, realmPoints));
+								playerKillers.Add(new KeyValuePair<GamePlayer, int>(living as GamePlayer, realmPoints));							
 							}
 
 							living.GainRealmPoints(realmPoints);
-							if (ServerProperties.Properties.EVENT_THIDRANKI && killerPlayer.ReceiveROG && Util.Random(100) < 33)
-								AtlasROGManager.GenerateROG(living, true);
+							
 						}
 					}
 
@@ -1714,6 +1713,29 @@ namespace DOL.GS.ServerRules
 								break;
 						}
 						killedPlayer.DeathsPvP++;
+					}
+				}
+
+				if (ServerProperties.Properties.EVENT_THIDRANKI && killer is GamePlayer k)
+				{
+					List<GamePlayer> validROGTargets = new List<GamePlayer>();
+					if (k.Group != null)
+					{
+						foreach (GamePlayer pl in k.Group.GetPlayersInTheGroup())
+						{
+							if (pl.ReceiveROG) { validROGTargets.Add(pl); }
+						}
+					}
+					else if (k.ReceiveROG)
+					{
+						validROGTargets.Add(k);
+					}
+
+
+					if (validROGTargets.Count > 0)
+					{
+						//grab a random valid target from our list to give the ROG to
+						AtlasROGManager.GenerateROG(validROGTargets[Util.Random(validROGTargets.Count - 1)], true);
 					}
 				}
 

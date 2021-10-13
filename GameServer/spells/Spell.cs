@@ -322,10 +322,13 @@ namespace DOL.GS
             {
 				switch (Target.ToUpper())
 				{
-					case "ENEMY":
+					case "ENEMY":						
 					case "AREA":
 					case "CONE":
-						return true;
+						if (SpellType == (byte)eSpellType.Charm)
+							return false;
+						else
+							return true;
 					default:
 						return false;
 				}

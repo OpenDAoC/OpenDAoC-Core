@@ -9571,6 +9571,11 @@ namespace DOL.GS
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantApplyRecentCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
+			if (EffectListService.GetEffectOnTarget(this, eEffect.Mez) != null)
+            {
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantApplyRecentCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
 
 			//if (toItem.PoisonCharges > 0)
 			//{
@@ -13171,7 +13176,12 @@ namespace DOL.GS
 
                 if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
                 {
-					EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), true);
+                    EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), true);
+                }
+				// Cancel pulse effect
+                if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
+                {
+					EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(this, eEffect.Pulse));
                 }
 
 				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)

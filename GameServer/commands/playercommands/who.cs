@@ -62,7 +62,8 @@ namespace DOL.GS.Commands
 		"/WHO <location> lists players in the <location> area",
 		"/WHO <level> lists players of level <level>",
 		"/WHO <level> <level> lists players in level range",
-		"/WHO BG lists all players leading a public BattleGroup"
+		"/WHO BG lists all players leading a public BattleGroup",
+		"/WHO SOLO lists all ungrouped players"
 	)]
 	public class WhoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
@@ -113,8 +114,7 @@ namespace DOL.GS.Commands
 				DisplayMessage(client, MESSAGE_NO_ARGS);
 				return;
 			}
-
-
+			
 			// any params passed?
 			switch (args[1].ToLower())
 			{
@@ -159,6 +159,10 @@ namespace DOL.GS.Commands
 					filters.Add(new BGFilter());
 					break;
 				}
+				case "solo":
+					filters = new ArrayList();
+					filters.Add(new SoloFilter());
+					break;
 				case "rp":
 					{
 						filters = new ArrayList(1);
@@ -172,7 +176,6 @@ namespace DOL.GS.Commands
 						break;
 					}
 			}
-
 
 			int resultCount = 0;
 			foreach (GameClient clients in clientsList)
@@ -475,6 +478,19 @@ namespace DOL.GS.Commands
 				return player.RPFlag;
 			}
 		}
+		
+		private class SoloFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				if (player.Group == null)
+				{
+					return true;
+				}
+				return false;
+			}
+		}
+		
 		private class BGFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)

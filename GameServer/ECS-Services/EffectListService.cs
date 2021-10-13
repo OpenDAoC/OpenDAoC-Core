@@ -94,7 +94,7 @@ namespace DOL.GS
                                     effect.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
 
                                 if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
-                                    effect.ExpireTick >= (effect.LastTick + effect.Duration > 0 ? effect.Duration : effect.PulseFreq))
+                                    effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                                 {
                                     //Add time to effect to make sure the spell refreshes instead of cancels
                                     effect.ExpireTick += GameLoop.TickRate;
@@ -135,7 +135,7 @@ namespace DOL.GS
                                 if (factor < 0) factor = 0;
                                 else if (factor > 1) factor = 1;
 
-                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
+                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler.Spell.ID, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
                                 effect.NextTick += effect.TickInterval;
