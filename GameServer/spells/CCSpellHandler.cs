@@ -359,8 +359,8 @@ namespace DOL.GS.Spells
                     return;
                 }
 
-                if (target != Caster.TargetObject)
-                    return;
+                //if (target != Caster.TargetObject)
+                //    return;
 
                 if (this.Spell.Range != 0)
                 {
