@@ -98,7 +98,7 @@ namespace DOL.GS.Spells
 			MessageToLiving(ad.Target, string.Format("The damage reduction absorbs {0} damage!", damageAbsorbed), eChatType.CT_Spell);
 			MessageToLiving(ad.Attacker, string.Format("A damage reduction absorbs {0} damage of your attack!", damageAbsorbed), eChatType.CT_Spell);
 			if (damageAbsorbed > 0)
-			MessageToCaster("The barrier returns " + damageAbsorbed + " mana back to you.", eChatType.CT_Spell);
+			MessageToCaster("The barrier returns " + damageAbsorbed + " power back to you.", eChatType.CT_Spell);
 			Caster.Mana = Caster.Mana + damageAbsorbed;
 			if (Caster.Mana == Caster.MaxMana)
 				MessageToCaster("You cannot absorb any more power.", eChatType.CT_SpellResisted);

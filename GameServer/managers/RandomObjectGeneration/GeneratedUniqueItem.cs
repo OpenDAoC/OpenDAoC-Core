@@ -54,10 +54,12 @@ namespace DOL.GS
 		// TOA Chance in %
 		public const ushort ROG_TOA_ITEM_CHANCE = 0;
 		// Armor Chance in %
-		public const ushort ROG_ARMOR_CHANCE = 40;
+		public const ushort ROG_ARMOR_CHANCE = 50;
 		// Magical Chance in %
-		public const ushort ROG_MAGICAL_CHANCE = 35;
-		
+		public const ushort ROG_MAGICAL_CHANCE = 45;
+		// Weapon Chance in %
+		public const ushort ROG_WEAPON_CHANCE = 40;
+
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
 		
@@ -71,10 +73,13 @@ namespace DOL.GS
 		public const ushort ROG_ITEM_STAT_CHANCE = 50;
 		
 		// Item chance to get resist bonus
-		public const ushort ROG_ITEM_RESIST_CHANCE = 40;
-		
+		public const ushort ROG_ITEM_RESIST_CHANCE = 43;
+
+		//item chance to get skills
+		public const ushort ROG_ITEM_SKILL_CHANCE = 20;
+
 		// Item chance to get All skills stat
-		public const ushort ROG_STAT_ALLSKILL_CHANCE = 2;
+		public const ushort ROG_STAT_ALLSKILL_CHANCE = 5;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 50;
@@ -411,22 +416,29 @@ namespace DOL.GS
 			//allfocus
 			if (CanAddFocus())
 				return eBonusType.Focus;
-
+			/*
 			// ToA allows stat cap bonuses
 			if (toa && Util.Chance(ROG_TOA_STAT_CHANCE))
 			{
 				return eBonusType.AdvancedStat;
 			}
-			
+			*/
 
-			//stats
-			if (Util.Chance(ROG_ITEM_STAT_CHANCE))
-				return eBonusType.Stat;
-			//resists
-			if (Util.Chance(ROG_ITEM_RESIST_CHANCE))
-				return eBonusType.Resist;
-			//skills
-			return eBonusType.Skill;
+
+			List<eBonusType> bonTypes = new List<eBonusType>();
+			if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
+			if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
+			if (Util.Chance(ROG_ITEM_SKILL_CHANCE)) { bonTypes.Add(eBonusType.Skill); }
+
+			//if none of the object types were added, default to magical
+			if (bonTypes.Count < 1)
+			{
+				int bonType = Util.Random(3);
+				if (bonType == 1) bonType--; //no toa stats
+				bonTypes.Add((eBonusType)bonType);
+			}
+
+			return bonTypes[Util.Random(bonTypes.Count - 1)];
 		}
 		
 		private bool CanAddFocus()
@@ -2674,10 +2686,7 @@ namespace DOL.GS
 		
 		private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
 		{
-			eGenerateType type = eGenerateType.None;
-			if (Util.Chance(ROG_ARMOR_CHANCE)) type = eGenerateType.Armor;
-			else if (Util.Chance(ROG_MAGICAL_CHANCE)) type = eGenerateType.Magical;
-			else type = eGenerateType.Weapon;
+			eGenerateType type = GetObjectTypeByWeight();
 
 			switch ((eRealm)realm)
 			{
@@ -2747,6 +2756,22 @@ namespace DOL.GS
 					}
 			}
 			return eObjectType.GenericItem;
+		}
+
+		private static eGenerateType GetObjectTypeByWeight()
+		{
+			List<eGenerateType> genTypes = new List<eGenerateType>();
+			if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
+			if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical);	}
+			if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+			
+			//if none of the object types were added, default to magical
+			if(genTypes.Count < 1)
+            {
+				genTypes.Add(eGenerateType.Magical);
+            }
+
+			return genTypes[Util.Random(genTypes.Count-1)];
 		}
 
         public static eObjectType GetAlbionWeapon(eCharacterClass charClass) {

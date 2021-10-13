@@ -180,7 +180,29 @@ namespace DOL.GS.Scripts
 				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 			}
-			else if(type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.Flexible || type == eObjectType.LargeWeapons)
+			else if (type == eObjectType.Flexible)
+            {
+				//slash flex
+				GeneratedUniqueItem dmgTypeItem = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, eDamageType.Slash);
+				dmgTypeItem.AllowAdd = true;
+				dmgTypeItem.Color = (int)color;
+				dmgTypeItem.IsTradable = false;
+				dmgTypeItem.Price = 1;
+				GameServer.Database.AddObject(dmgTypeItem);
+				InventoryItem tempItem = GameInventoryItem.Create<ItemUnique>(dmgTypeItem);
+				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem);
+
+				//crush flex
+				GeneratedUniqueItem dmgTypeItem2 = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, eDamageType.Crush);
+				dmgTypeItem2.AllowAdd = true;
+				dmgTypeItem2.Color = (int)color;
+				dmgTypeItem2.IsTradable = false;
+				dmgTypeItem2.Price = 1;
+				GameServer.Database.AddObject(dmgTypeItem2);
+				InventoryItem tempItem2 = GameInventoryItem.Create<ItemUnique>(dmgTypeItem2);
+				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem2);
+			}
+			else if(type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon || type == eObjectType.LargeWeapons)
             {
 				int endDmgType = 4; //default for all 3, slash/crush/thrust
 				if(type == eObjectType.LargeWeapons || realm == eRealm.Midgard)
@@ -281,6 +303,9 @@ namespace DOL.GS.Scripts
 
 				case eCharacterClass.Reaver:
 					GenerateWeapon(player, charClass, eObjectType.Flexible, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
 					break;
 
@@ -429,6 +454,7 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.SlashingWeapon, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.ThrustWeapon, eInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Crossbow, eInventorySlot.DistanceWeapon);
 					break;
 
 				case eCharacterClass.Cleric:
@@ -438,6 +464,7 @@ namespace DOL.GS.Scripts
 
 				case eCharacterClass.Armsman:
 					GenerateWeapon(player, charClass, eObjectType.PolearmWeapon, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Crossbow, eInventorySlot.DistanceWeapon);
 					goto case eCharacterClass.Paladin;
 
 				case eCharacterClass.Paladin: //hey one guy might get these :')
@@ -455,6 +482,7 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.SlashingWeapon, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.CrushingWeapon, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.ThrustWeapon, eInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Fired, eInventorySlot.DistanceWeapon);
 					break;
 
 

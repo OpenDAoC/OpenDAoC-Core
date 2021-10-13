@@ -315,7 +315,7 @@ namespace DOL.GS.Spells
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line
 				list.Add("Health restored: " + Spell.ResurrectHealth);
-				if(Spell.ResurrectMana != 0) list.Add("Mana restored: " + Spell.ResurrectMana);
+				if(Spell.ResurrectMana != 0) list.Add("Power restored: " + Spell.ResurrectMana);
 				list.Add("Target: " + Spell.Target);
 				if (Spell.Range != 0) list.Add("Range: " + Spell.Range);
 				list.Add("Casting time: " + (Spell.CastTime*0.001).ToString("0.0## sec;-0.0## sec;'instant'"));

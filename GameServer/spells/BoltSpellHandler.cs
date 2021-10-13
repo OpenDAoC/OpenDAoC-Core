@@ -32,11 +32,14 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Bolt")]
 	public class BoltSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// Fire bolt
-		/// </summary>
-		/// <param name="target"></param>
-		public override void FinishSpellCast(GameLiving target)
+        // constructor
+        public BoltSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+        /// <summary>
+        /// Fire bolt
+        /// </summary>
+        /// <param name="target"></param>
+        public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
 			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent) && Spell.SpellType != (byte)eSpellType.SiegeArrow)
@@ -300,15 +303,13 @@ namespace DOL.GS.Spells
 					ad.CriticalDamage = Util.Random(critMax / 10, critMax);
 				}
 
-                //target.damageComponent.DamageToDeal += ad.Damage;
+				//target.damageComponent.DamageToDeal += ad.Damage;
 
-                m_handler.SendDamageMessages(ad);
-				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
-				target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
+				caster.OnAttackEnemy(ad);
+				m_handler.SendDamageMessages(ad);
+                m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
+                target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
 			}
 		}
-
-		// constructor
-		public BoltSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+    }
 }

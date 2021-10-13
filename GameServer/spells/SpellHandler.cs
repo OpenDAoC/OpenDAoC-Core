@@ -280,7 +280,7 @@ namespace DOL.GS.Spells
 				{
 					//FocusSpellAction(null, Caster, null);
 				}
-				MessageToCaster("You do not have enough mana and your spell was cancelled.", eChatType.CT_SpellExpires);
+				MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
 				effect.Cancel(false);
 			}
 		}
@@ -2778,6 +2778,7 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving t in targets)
 			{
+				
 				// Aggressive NPCs will aggro on every target they hit
 				// with an AoE spell, whether it landed or was resisted.
 
@@ -2791,7 +2792,7 @@ namespace DOL.GS.Spells
 					continue;
 				}
 
-				if (Spell.Radius == 0 || HasPositiveEffect)
+                if (Spell.Radius == 0 || HasPositiveEffect)
 				{
 					ApplyEffectOnTarget(t, effectiveness);
 				}
@@ -2967,8 +2968,7 @@ namespace DOL.GS.Spells
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
-				//target.OnAttackedByEnemy(ad);
-				target.OnAttack(ad);
+				Caster.OnAttackEnemy(ad);
 
                 // Treat non-damaging effects as attacks to trigger an immediate response and BAF
                 if (ad.Damage == 0 && ad.Target is GameNPC)
@@ -2976,6 +2976,14 @@ namespace DOL.GS.Spells
 					IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)
 						aggroBrain.AddToAggroList(Caster, 1);
+				}
+
+				// Harmful spells that deal no damage (ie. debuffs) should still trigger OnAttackedByEnemy.
+				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
+				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
+				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != (byte)eSpellType.DamageOverTime)
+                {
+					target.OnAttackedByEnemy(ad);
 				}
 			}
 		}
@@ -3387,7 +3395,7 @@ namespace DOL.GS.Spells
 			ad.AttackResult = eAttackResult.Missed;
 			ad.IsSpellResisted = true;
 			target.OnAttackedByEnemy(ad);
-			
+			Caster.OnAttackEnemy(ad);
 		}
 		
 		/// <summary>

@@ -4050,147 +4050,35 @@ namespace DOL.GS
 			}
 		}
 
-        public void OnAttack(AttackData ad = null)
+        /// <summary>
+        /// Called on the attacker when attacking an enemy.
+        /// </summary>
+        public void OnAttackEnemy(AttackData ad)
         {
-            if (effectListComponent is null)
-                return;            
-            
-            // Cancel MoveSpeedBuff
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff) && ad != null)
-            {
-                var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
-                EffectService.RequestCancelEffect(effect);
-            }
+			//Console.WriteLine(string.Format("OnAttack called on {0}", this.Name));
 
-			if (this is GamePet pet)
-			{
-				var ownerEffect = EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
-				if (ownerEffect != null)
-					EffectService.RequestCancelEffect(ownerEffect);
-			}
+			// Note that this function is called whenever an attack is made, regardless of whether that attack was successful.
+			// i.e. missed melee swings and resisted spells still trigger this.
+			
+			if (effectListComponent is null)
+                return;
 
-            if (effectListComponent.Effects.ContainsKey(eEffect.Mez) && ad != null)
-            {
-                if (ad.Attacker != this)
-                {
-                    bool remove = false;
-
-                    if (ad.AttackType != AttackData.eAttackType.Spell)
-                    {
-                        switch (ad.AttackResult)
-                        {
-                            case eAttackResult.HitStyle:
-                            case eAttackResult.HitUnstyled:
-                            case eAttackResult.Blocked:
-                            case eAttackResult.Evaded:
-                            case eAttackResult.Fumbled:
-                            case eAttackResult.Missed:
-                            case eAttackResult.Parried:
-                                remove = true;
-                                break;
-                        }
-                    }
-                    //If the spell was resisted - then we don't break mezz
-                    else if (!ad.IsSpellResisted)
-                    {
-                        //temporary fix for DirectDamageDebuff not breaking mez
-                        if (ad.SpellHandler is PropertyChangingSpell && ad.SpellHandler.HasPositiveEffect == false && ad.Damage > 0)
-                            remove = true;
-                        //debuffs/shears dont interrupt mez, neither does recasting mez
-                        else if (ad.SpellHandler is PropertyChangingSpell || ad.SpellHandler is MesmerizeSpellHandler
-                                 || ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler.HasPositiveEffect) return;
-
-                        if (ad.AttackResult == eAttackResult.Missed || ad.AttackResult == eAttackResult.HitUnstyled)
-                            remove = true;
-                    }
-
-                    if (remove)
-                    {
-                        // Remove Mez
-                        var effect = effectListComponent.Effects[eEffect.Mez].FirstOrDefault();
-                        EffectService.RequestCancelEffect(effect);
-                    }
-                }
-            }
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff) &&
-                effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault().SpellHandler.Spell.SpellType != (byte)eSpellType.StyleSpeedDecrease)
-            {
-                switch (ad?.AttackResult)
-                {
-                    case eAttackResult.HitStyle:
-                    case eAttackResult.HitUnstyled:
-                        var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault();
-                        EffectService.RequestCancelEffect(effect);
-                        break;
-                }
-            }
-            if (effectListComponent.Effects.ContainsKey(eEffect.AblativeArmor) && ad != null)
-            {
-                var effects = effectListComponent.Effects[eEffect.AblativeArmor];
-				for (int i = 0; i < effects.Count; i++)
-				{
-					var effect = effects[i];
-
-					if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
-
-					int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
-					double absorbPercent = 25;
-					if (effect.SpellHandler.Spell.Damage > 0)
-						absorbPercent = effect.SpellHandler.Spell.Damage;
-					//because albatives can reach 100%
-					if (absorbPercent > 100)
-						absorbPercent = 100;
-					int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
-					if (damageAbsorbed > ablativehp)
-						damageAbsorbed = ablativehp;
-					ablativehp -= damageAbsorbed;
-					ad.Damage -= damageAbsorbed;
-					(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
-
-					if (ad.Target is GamePlayer)
-						(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-					if (ad.Attacker is GamePlayer)
-						(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-					if (ablativehp <= 0)
-					{
-						//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(living, this);
-						//if (effect != null)
-						//    effect.Cancel(false);
-						EffectService.RequestCancelEffect(effect);
-					}
-					else
-					{
-						effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
-					}
-				}
-            }
+			TryCancelMovementSpeedBuffs();
 
             //OffensiveProcs
             if (ad != null && ad.Attacker == this && effectListComponent.Effects.TryGetValue(eEffect.OffensiveProc, out var oProcEffects))
             {
-				for (int i = 0; i < oProcEffects.Count; i++)
-				{
-					var oProcEffect = oProcEffects[i];
+                for (int i = 0; i < oProcEffects.Count; i++)
+                {
+                    var oProcEffect = oProcEffects[i];
 
-					(oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
-				}
+                    (oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
+                }
             }
-			//DefensiveProcs
-			if (ad != null && ad.Target == this && effectListComponent.Effects.TryGetValue(eEffect.DefensiveProc, out var dProcEffects))
-			{
-				for (int i = 0; i < dProcEffects.Count; i++)
-				{
-					var dProcEffect = dProcEffects[i];
 
-					(dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
-				}
-			}
-
-			CancelFocusSpell();
-            
+            CancelFocusSpell();
         }
+
         public void CancelFocusSpell(bool moving = false)
         {
             if (effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var focusEffects) && focusEffects.FirstOrDefault().SpellHandler.Spell.IsFocus)
@@ -4209,13 +4097,23 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public virtual void OnAttackedByEnemy(AttackData ad)
 		{
+            //Console.WriteLine(string.Format("OnAttackedByEnemy called on {0}", this.Name));
+
+            // Note that this function is called whenever an attack is received, regardless of whether that attack was successful.
+            // i.e. missed melee swings and resisted spells still trigger this.
+
+            if (ad == null)
+				return;
+
+			// Must be above the IsHit/Combat check below since things like subsequent DoT ticks don't cause combat but should still break CC.
+			HandleCrowdControlOnAttacked(ad);
+
 			if (ad.IsHit && ad.CausesCombat)
 			{
 				//Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
+				HandleMovementSpeedEffectsOnAttacked(ad);
 
-                OnAttack(ad);
-
-                if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
+				if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
 					((GameNPC)this).SwitchToMelee(ad.Attacker);
 
 				attackComponent.AddAttacker( ad.Attacker );
@@ -4231,7 +4129,62 @@ namespace DOL.GS
 					ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
 				}
 
-			}
+				// Melee Attack that actually caused damage.
+				if (ad.IsMeleeAttack && ad.Damage > 0)
+				{
+					// Handle Ablatives
+					if (effectListComponent.Effects.ContainsKey(eEffect.AblativeArmor))
+					{
+						var effects = effectListComponent.Effects[eEffect.AblativeArmor];
+						for (int i = 0; i < effects.Count; i++)
+						{
+							var effect = effects[i];
+
+							if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
+
+							int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
+							double absorbPercent = 25;
+							if (effect.SpellHandler.Spell.Damage > 0)
+								absorbPercent = effect.SpellHandler.Spell.Damage;
+							//because albatives can reach 100%
+							if (absorbPercent > 100)
+								absorbPercent = 100;
+							int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
+							if (damageAbsorbed > ablativehp)
+								damageAbsorbed = ablativehp;
+							ablativehp -= damageAbsorbed;
+							ad.Damage -= damageAbsorbed;
+							(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+
+							if (ad.Target is GamePlayer)
+								(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+							if (ad.Attacker is GamePlayer)
+								(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+							if (ablativehp <= 0)
+							{
+								EffectService.RequestCancelEffect(effect);
+							}
+							else
+							{
+								effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
+							}
+						}
+					}
+
+                    // Handle DefensiveProcs
+                    if (ad != null && ad.Target == this && effectListComponent.Effects.TryGetValue(eEffect.DefensiveProc, out var dProcEffects))
+                    {
+                        for (int i = 0; i < dProcEffects.Count; i++)
+                        {
+                            var dProcEffect = dProcEffects[i];
+
+                            (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+                        }
+                    }
+                }
+            }
 		}
 
 		public void HandleDamageShields(AttackData ad)
@@ -4251,89 +4204,209 @@ namespace DOL.GS
 			}
 		}
 
-		///// <summary>
-		///// Called to display an attack animation of this living
-		///// </summary>
-		///// <param name="ad">Infos about the attack</param>
-		///// <param name="weapon">The weapon used for attack</param>
-		//public virtual void ShowAttackAnimation(AttackData ad, InventoryItem weapon)
-		//{
-		//	bool showAnim = false;
-		//	switch (ad.AttackResult)
-		//	{
-		//		case eAttackResult.HitUnstyled:
-		//		case eAttackResult.HitStyle:
-		//		case eAttackResult.Evaded:
-		//		case eAttackResult.Parried:
-		//		case eAttackResult.Missed:
-		//		case eAttackResult.Blocked:
-		//		case eAttackResult.Fumbled:
-		//			showAnim = true; break;
-		//	}
-
-		//	if (showAnim && ad.Target != null)
-		//	{
-		//		//http://dolserver.sourceforge.net/forum/showthread.php?s=&threadid=836
-		//		byte resultByte = 0;
-		//		int attackersWeapon = (weapon == null) ? 0 : weapon.Model;
-		//		int defendersWeapon = 0;
-
-		//		switch (ad.AttackResult)
-		//		{
-		//				case eAttackResult.Missed: resultByte = 0; break;
-		//				case eAttackResult.Evaded: resultByte = 3; break;
-		//				case eAttackResult.Fumbled: resultByte = 4; break;
-		//				case eAttackResult.HitUnstyled: resultByte = 10; break;
-		//				case eAttackResult.HitStyle: resultByte = 11; break;
-
-		//			case eAttackResult.Parried:
-		//				resultByte = 1;
-		//				if (ad.Target != null && ad.Target.AttackWeapon != null)
-		//				{
-		//					defendersWeapon = ad.Target.AttackWeapon.Model;
-		//				}
-		//				break;
-
-		//			case eAttackResult.Blocked:
-		//				resultByte = 2;
-		//				if (ad.Target != null && ad.Target.Inventory != null)
-		//				{
-		//					InventoryItem lefthand = ad.Target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-		//					if (lefthand != null && lefthand.Object_Type == (int)eObjectType.Shield)
-		//					{
-		//						defendersWeapon = lefthand.Model;
-		//					}
-		//				}
-		//				break;
-		//		}
-
-		//		foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-		//		{
-		//			if (player == null) continue;
-		//			int animationId;
-		//			switch (ad.AnimationId)
-		//			{
-		//				case -1:
-		//					animationId = player.Out.OneDualWeaponHit;
-		//					break;
-		//				case -2:
-		//					animationId = player.Out.BothDualWeaponHit;
-		//					break;
-		//				default:
-		//					animationId = ad.AnimationId;
-		//					break;
-		//			}
-		//			player.Out.SendCombatAnimation(this, ad.Target, (ushort)attackersWeapon, (ushort)defendersWeapon, animationId, 0, resultByte, ad.Target.HealthPercent);
-		//		}
-		//	}
-		//}
-
 		/// <summary>
-		/// This method is called whenever this living is dealing
-		/// damage to some object
+		/// Attempt to break/remove CC spells on this living. Returns true if any CC spells were removed.
 		/// </summary>
-		/// <param name="ad">AttackData</param>
-		public virtual void DealDamage(AttackData ad)
+		public virtual bool HandleCrowdControlOnAttacked(AttackData ad)
+		{
+			if (effectListComponent == null || ad == null || !ad.IsHit)
+				return false;
+
+			bool removeMez = false;
+			bool removeSnare = false; // Immunity-triggering snare/root spells
+			bool removeMovementSpeedDebuff = false; // Non-immunity snares like focus snare, melee snares, DD+Snare spells, etc.
+
+			// Attack was Melee
+			if (ad.AttackType != AttackData.eAttackType.Spell)
+			{
+				switch (ad.AttackResult)
+				{
+					case eAttackResult.HitStyle:
+					case eAttackResult.HitUnstyled:
+						removeSnare = true;
+						removeMez = true;
+						removeMovementSpeedDebuff = true;
+						break;
+					case eAttackResult.Blocked:
+					case eAttackResult.Evaded:
+					case eAttackResult.Fumbled:
+					case eAttackResult.Missed:
+					case eAttackResult.Parried:
+						// Missed melee swings still break mez.
+						removeMez = true;
+						break;
+				}
+			}
+			// Attack was a Spell. Note that a spell being resisted does not mean it does not break mez.
+			else
+			{
+				// Any damage breaks mez and snare/root.
+				if (ad.Damage > 0)
+				{
+					removeMez = true;
+					removeSnare = true;
+					removeMovementSpeedDebuff = true;
+				}
+				// Most resisted harmful spells break mez. There are some exceptions which can be added here.
+				else if (ad.IsSpellResisted)
+                {
+					removeMez = true;
+                }
+				// Non-Damaging, non-resisted spells that break mez.
+				else if (ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler is AmnesiaSpellHandler || ad.SpellHandler is DiseaseSpellHandler
+						 || ad.SpellHandler is SpeedDecreaseSpellHandler) 
+				{
+					removeMez = true;
+				}
+			}
+
+            // Remove Mez
+            if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
+			{
+				var effect = effectListComponent.Effects[eEffect.Mez].FirstOrDefault();
+				EffectService.RequestCancelEffect(effect);
+			}
+
+			// Remove Snare/Root
+			if (removeSnare && effectListComponent.Effects.ContainsKey(eEffect.Snare))
+			{
+				var effect = effectListComponent.Effects[eEffect.Snare].FirstOrDefault();
+				EffectService.RequestCancelEffect(effect);
+			}
+
+            // Remove MovementSpeedDebuff
+            if (removeMovementSpeedDebuff && effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff))
+            {
+                var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault();
+                EffectService.RequestCancelEffect(effect);
+            }
+
+            return removeMez || removeSnare || removeMovementSpeedDebuff;
+		}
+
+        public virtual bool HandleMovementSpeedEffectsOnAttacked(AttackData ad)
+        {
+            if (effectListComponent == null || ad == null)
+                return false;
+
+			// Cancel movement speed buffs when attacked
+			bool effectRemoved = TryCancelMovementSpeedBuffs();
+
+			
+
+			return effectRemoved;
+		}
+
+        public virtual bool TryCancelMovementSpeedBuffs()
+        {
+            if (effectListComponent == null)
+                return false;
+
+            bool effectRemoved = false;
+
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+            {
+                var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
+                EffectService.RequestCancelEffect(effect);
+                effectRemoved = true;
+            }
+
+            if (this is GamePet pet)
+            {
+                var ownerEffect = EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
+                if (ownerEffect != null)
+                {
+                    EffectService.RequestCancelEffect(ownerEffect);
+                    effectRemoved = true;
+                }
+            }
+
+            return effectRemoved;
+        }
+
+        ///// <summary>
+        ///// Called to display an attack animation of this living
+        ///// </summary>
+        ///// <param name="ad">Infos about the attack</param>
+        ///// <param name="weapon">The weapon used for attack</param>
+        //public virtual void ShowAttackAnimation(AttackData ad, InventoryItem weapon)
+        //{
+        //	bool showAnim = false;
+        //	switch (ad.AttackResult)
+        //	{
+        //		case eAttackResult.HitUnstyled:
+        //		case eAttackResult.HitStyle:
+        //		case eAttackResult.Evaded:
+        //		case eAttackResult.Parried:
+        //		case eAttackResult.Missed:
+        //		case eAttackResult.Blocked:
+        //		case eAttackResult.Fumbled:
+        //			showAnim = true; break;
+        //	}
+
+        //	if (showAnim && ad.Target != null)
+        //	{
+        //		//http://dolserver.sourceforge.net/forum/showthread.php?s=&threadid=836
+        //		byte resultByte = 0;
+        //		int attackersWeapon = (weapon == null) ? 0 : weapon.Model;
+        //		int defendersWeapon = 0;
+
+        //		switch (ad.AttackResult)
+        //		{
+        //				case eAttackResult.Missed: resultByte = 0; break;
+        //				case eAttackResult.Evaded: resultByte = 3; break;
+        //				case eAttackResult.Fumbled: resultByte = 4; break;
+        //				case eAttackResult.HitUnstyled: resultByte = 10; break;
+        //				case eAttackResult.HitStyle: resultByte = 11; break;
+
+        //			case eAttackResult.Parried:
+        //				resultByte = 1;
+        //				if (ad.Target != null && ad.Target.AttackWeapon != null)
+        //				{
+        //					defendersWeapon = ad.Target.AttackWeapon.Model;
+        //				}
+        //				break;
+
+        //			case eAttackResult.Blocked:
+        //				resultByte = 2;
+        //				if (ad.Target != null && ad.Target.Inventory != null)
+        //				{
+        //					InventoryItem lefthand = ad.Target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+        //					if (lefthand != null && lefthand.Object_Type == (int)eObjectType.Shield)
+        //					{
+        //						defendersWeapon = lefthand.Model;
+        //					}
+        //				}
+        //				break;
+        //		}
+
+        //		foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+        //		{
+        //			if (player == null) continue;
+        //			int animationId;
+        //			switch (ad.AnimationId)
+        //			{
+        //				case -1:
+        //					animationId = player.Out.OneDualWeaponHit;
+        //					break;
+        //				case -2:
+        //					animationId = player.Out.BothDualWeaponHit;
+        //					break;
+        //				default:
+        //					animationId = ad.AnimationId;
+        //					break;
+        //			}
+        //			player.Out.SendCombatAnimation(this, ad.Target, (ushort)attackersWeapon, (ushort)defendersWeapon, animationId, 0, resultByte, ad.Target.HealthPercent);
+        //		}
+        //	}
+        //}
+
+        /// <summary>
+        /// This method is called whenever this living is dealing
+        /// damage to some object
+        /// </summary>
+        /// <param name="ad">AttackData</param>
+        public virtual void DealDamage(AttackData ad)
 		{
 			ad.Target.TakeDamage(ad);
 		}
@@ -6385,13 +6458,13 @@ namespace DOL.GS
 			return new GameEffectList(this);
 		}
 
-		#endregion
-		#region Abilities
+        #endregion
+        #region Abilities
 
-		/// <summary>
-		/// Holds all abilities of the living (KeyName -> Ability)
-		/// </summary>
-		protected readonly Dictionary<string, Ability> m_abilities = new Dictionary<string, Ability>();
+        /// <summary>
+        /// Holds all abilities of the living (KeyName -> Ability)
+        /// </summary>
+        protected readonly Dictionary<string, Ability> m_abilities = new Dictionary<string, Ability>();
 
 		protected readonly Object m_lockAbilities = new Object();
 
