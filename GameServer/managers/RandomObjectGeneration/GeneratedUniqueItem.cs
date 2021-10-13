@@ -54,10 +54,12 @@ namespace DOL.GS
 		// TOA Chance in %
 		public const ushort ROG_TOA_ITEM_CHANCE = 0;
 		// Armor Chance in %
-		public const ushort ROG_ARMOR_CHANCE = 40;
+		public const ushort ROG_ARMOR_CHANCE = 50;
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 45;
-		
+		// Weapon Chance in %
+		public const ushort ROG_WEAPON_CHANCE = 40;
+
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
 		
@@ -2674,10 +2676,7 @@ namespace DOL.GS
 		
 		private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
 		{
-			eGenerateType type = eGenerateType.None;
-			if (Util.Chance(ROG_ARMOR_CHANCE)) type = eGenerateType.Armor;
-			else if (Util.Chance(ROG_MAGICAL_CHANCE)) type = eGenerateType.Magical;
-			else type = eGenerateType.Weapon;
+			eGenerateType type = GetObjectTypeByWeight();
 
 			switch ((eRealm)realm)
 			{
@@ -2747,6 +2746,22 @@ namespace DOL.GS
 					}
 			}
 			return eObjectType.GenericItem;
+		}
+
+		private static eGenerateType GetObjectTypeByWeight()
+		{
+			List<eGenerateType> genTypes = new List<eGenerateType>();
+			if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
+			if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical);	}
+			if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+			
+			//if none of the object types were added, default to magical
+			if(genTypes.Count < 1)
+            {
+				genTypes.Add(eGenerateType.Magical);
+            }
+
+			return genTypes[Util.Random(genTypes.Count-1)];
 		}
 
         public static eObjectType GetAlbionWeapon(eCharacterClass charClass) {
