@@ -94,7 +94,7 @@ namespace DOL.GS
                                     effect.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
 
                                 if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
-                                    effect.ExpireTick >= (effect.LastTick + effect.Duration > 0 ? effect.Duration : effect.PulseFreq))
+                                    effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                                 {
                                     //Add time to effect to make sure the spell refreshes instead of cancels
                                     effect.ExpireTick += GameLoop.TickRate;
