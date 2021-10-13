@@ -53,6 +53,10 @@ namespace DOL.GS
                 {
                     return false; 
                 }
+
+                // Unstealth when we start casting (NS/Ranger/Hunter).
+                if (p.IsStealthed)
+                    p.Stealth(false);
             }
 
             ISpellHandler m_newSpellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
