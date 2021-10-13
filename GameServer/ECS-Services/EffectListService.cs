@@ -135,7 +135,7 @@ namespace DOL.GS
                                 if (factor < 0) factor = 0;
                                 else if (factor > 1) factor = 1;
 
-                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
+                                effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler.Spell.ID, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
                                 effect.NextTick += effect.TickInterval;
