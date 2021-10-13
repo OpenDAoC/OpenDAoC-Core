@@ -1139,7 +1139,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm)
 							break;
 						//enemys have to be in front and in view for targeted spells
-						if (!m_caster.IsObjectInFront(target, 180) && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
+						if (!m_caster.IsObjectInFront(target, 180))
 						{
 							MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
