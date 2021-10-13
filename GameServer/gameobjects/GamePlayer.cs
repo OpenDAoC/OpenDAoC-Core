@@ -9566,6 +9566,11 @@ namespace DOL.GS
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantApplyRecentCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
+			if (EffectListService.GetEffectOnTarget(this, eEffect.Mez) != null)
+            {
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantApplyRecentCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
 
 			//if (toItem.PoisonCharges > 0)
 			//{
