@@ -3450,25 +3450,33 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterStatusUpdate)))
-			{
-				pak.WriteByte(m_gameClient.Player.HealthPercent);
-				pak.WriteByte(m_gameClient.Player.ManaPercent);
-				pak.WriteByte(sittingFlag);
-				pak.WriteByte(m_gameClient.Player.EndurancePercent);
-				pak.WriteByte(m_gameClient.Player.ConcentrationPercent);
-				//			pak.WriteShort((byte) (_gameClient.Player.IsAlive ? 0x00 : 0x0f)); // 0x0F if dead ??? where it now ?
-				pak.WriteByte(0);// unk
-				pak.WriteShort((ushort)m_gameClient.Player.MaxMana);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxEndurance);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxConcentration);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
-				pak.WriteShort((ushort)m_gameClient.Player.Health);
-				pak.WriteShort((ushort)m_gameClient.Player.Endurance);
-				pak.WriteShort((ushort)m_gameClient.Player.Mana);
-				pak.WriteShort((ushort)m_gameClient.Player.Concentration);
-				SendTCP(pak);
+            try
+            {
+				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterStatusUpdate)))
+				{
+					pak.WriteByte(m_gameClient.Player.HealthPercent);
+					pak.WriteByte(m_gameClient.Player.ManaPercent);
+					pak.WriteByte(sittingFlag);
+					pak.WriteByte(m_gameClient.Player.EndurancePercent);
+					pak.WriteByte(m_gameClient.Player.ConcentrationPercent);
+					//			pak.WriteShort((byte) (_gameClient.Player.IsAlive ? 0x00 : 0x0f)); // 0x0F if dead ??? where it now ?
+					pak.WriteByte(0);// unk
+					pak.WriteShort((ushort)m_gameClient.Player.MaxMana);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxEndurance);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxConcentration);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
+					pak.WriteShort((ushort)m_gameClient.Player.Health);
+					pak.WriteShort((ushort)m_gameClient.Player.Endurance);
+					pak.WriteShort((ushort)m_gameClient.Player.Mana);
+					pak.WriteShort((ushort)m_gameClient.Player.Concentration);
+					SendTCP(pak);
+				}
 			}
+            catch (NullReferenceException e)
+            {
+				Console.WriteLine($"Error encountered attempting to SendStatusUpdate");                
+            }
+			
 		}
 		protected virtual void SendTaskInfo()
 		{
