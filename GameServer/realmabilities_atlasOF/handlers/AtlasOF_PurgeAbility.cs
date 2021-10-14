@@ -41,7 +41,7 @@ namespace DOL.GS.RealmAbilities
     /// <summary>
     /// Group Purge Ability, removes negative effects from the caster and all group members 
     /// </summary>
-    public class AtlasOF_GroupPurge : PurgeAbility
+    public class AtlasOF_GroupPurge : AtlasOF_PurgeAbility
     {
         public AtlasOF_GroupPurge(DBAbility dba, int level) : base(dba, level) { }
 

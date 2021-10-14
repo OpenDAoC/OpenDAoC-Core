@@ -2874,37 +2874,13 @@ namespace DOL.GS {
                     break;
                     #endregion
 
+                    return true;
             }
-
-            if (price > 0)
-            {
-
-                if (player.RealmPoints < price)
-                {
-                    SendReply(player, "I'm sorry, but you cannot afford my services currently.");
-                    return false;
-                }
-
-                int model = item.Model;
-                if (modelIDToAssign != 0) model = modelIDToAssign;
-                SetModel(player, model);
-                SendReply(player, "Thanks for the donation. " +
-                    "I have changed your item's model, you can now use it. \n\n" +
-                    "I look forward to doing business with you in the future.");
-                player.RealmPoints -= price;
-                player.RespecRealm();
-                SetRealmLevel(player, (int)player.RealmPoints);
-
-                return true;
-            }
-            else
-            {
-                SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
-                                    "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
-                return false;
-            }
-
-
+            
+            int model = item.Model;
+            if (modelIDToAssign != 0) model = modelIDToAssign;
+            SetModel(player, model, price);
+            return true;
         }
 
 
@@ -3309,23 +3285,43 @@ namespace DOL.GS {
             player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
         }
 
-        public void SetModel(GamePlayer player, int number)
+        public void SetModel(GamePlayer player, int number, int price)
         {
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-            player.TempProperties.removeProperty(TempProperty);
+            if (price > 0)
+            {
+                if (player.RealmPoints < price)
+                {
+                    SendReply(player, "I'm sorry, but you cannot afford my services currently.");
+                    return;
+                }
+                
+                SendReply(player, "Thanks for your donation. " +
+                                  "I have changed your item's model, you can now use it. \n\n" +
+                                  "I look forward to doing business with you in the future.");
+                           
+                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
+                player.TempProperties.removeProperty(TempProperty);
 
-            if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
+                if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
+                    return;
+
+                player.Inventory.RemoveItem(item);
+                ItemUnique unique = new ItemUnique(item.Template);
+                unique.Model = number;
+                GameServer.Database.AddObject(unique);
+                InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
+                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+                player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
+                // player.RemoveBountyPoints(300);
+                player.RealmPoints -= price;
+                player.RespecRealm();
+                SetRealmLevel(player, (int)player.RealmPoints);
+                player.SaveIntoDatabase();
                 return;
-
-            player.Inventory.RemoveItem(item);
-            ItemUnique unique = new ItemUnique(item.Template);
-            unique.Model = number;
-            GameServer.Database.AddObject(unique);
-            InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
-            player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-            player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
-            player.RemoveBountyPoints(300);
-            player.SaveIntoDatabase();
+            }
+            
+            SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
+                              "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         }
     }
 }
