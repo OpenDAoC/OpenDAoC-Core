@@ -2726,6 +2726,8 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
+			if (Caster.IsMezzed || Caster.IsStunned)
+				return false;
 
             // For PBAOE spells always set the target to the caster
 			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
