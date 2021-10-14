@@ -339,7 +339,8 @@ namespace DOL.GS
                                     //}
 
                                     //Console.WriteLine("Debuffing Speed for " + e.Owner.Name);
-                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
+                                    //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.EffectType, 1.0 - e.SpellHandler.Spell.Value * 0.01);
                                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
 
                                     (e.SpellHandler as SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
@@ -724,7 +725,8 @@ namespace DOL.GS
                                     EntityManager.AddEffect(immunityEffect);
                                 }
 
-                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
+                                //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
                             }
                             else if (e.EffectType == eEffect.Disease)
