@@ -32,6 +32,7 @@ namespace DOL.GS
         private Queue castplayer = new Queue();//Used to hold the player who the spell gets cast on
         private int effectPrice = 1800; //effects price in RPs
         private int dyePrice = 500; //effects price in RPs
+        private int removePrice = 0; //removal is free
 
 
         public override bool AddToWorld()
@@ -237,7 +238,7 @@ namespace DOL.GS
                     break;
                 
                 //remove all effect
-                case "remove all effects": SetEffect(player, 0, effectPrice); break;
+                case "remove all effects": SetEffect(player, 0, removePrice); break;
                 //Longsword
                 case "longsword - propane-style flame": SetEffect(player, 1, effectPrice); break;
                 case "longsword - regular flame": SetEffect(player, 2, effectPrice); break;
