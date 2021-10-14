@@ -364,7 +364,7 @@ namespace DOL.GS.Spells
 
                 if (this.Spell.Range != 0)
                 {
-                    if (!Caster.IsWithinRadius(target, this.Spell.Range))
+                    if (!Caster.IsWithinRadius(target, this.Spell.Range) && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
                         return;
                 }
 

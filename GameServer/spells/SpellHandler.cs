@@ -2149,8 +2149,12 @@ namespace DOL.GS.Spells
                     Caster.ConcentrationEffects.Remove(existingEffects.FirstOrDefault());
                 }
 
-                CreateECSPulseEffect(Caster, Caster.Effectiveness);
-                Caster.LastPulseCast = Spell;
+
+				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
+				{
+					CreateECSPulseEffect(Caster, Caster.Effectiveness);
+					Caster.LastPulseCast = Spell;
+				}
             }
 
             //CreateSpellEffects();
