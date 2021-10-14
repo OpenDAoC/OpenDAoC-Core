@@ -1669,10 +1669,18 @@ namespace DOL.GS.Spells
 					}
 					if (_castStartTick + _calculatedCastTime  < currentTick)
 					{
-						if (!CheckEndCast(m_spellTarget))
-							castState = eCastState.Interrupted;
+						if (!(m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize))
+						{
+							if (!CheckEndCast(m_spellTarget))
+								castState = eCastState.Interrupted;
+							else
+								castState = eCastState.Finished;
+						}
 						else
-							castState = eCastState.Finished;
+                        {
+							if (CheckEndCast(m_spellTarget))
+								castState = eCastState.Finished;
+                        }
 					}
 					break;
 				case eCastState.Interrupted:
