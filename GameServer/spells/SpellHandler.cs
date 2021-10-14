@@ -2695,6 +2695,8 @@ namespace DOL.GS.Spells
 			List<GameLiving> livings = new List<GameLiving>();
 
 			livings.Add(Caster);
+			if (Caster.ControlledBrain != null)
+				livings.Add(Caster.ControlledBrain.Body);
 			if (Caster.Group != null)
 			{
 				foreach (GameLiving living in Caster.Group.GetMembersInTheGroup().ToList())
