@@ -62,7 +62,8 @@ namespace DOL.GS
 
                                         if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
                                         {
-                                            ((SpellHandler)effect.SpellHandler).SendCastAnimation();
+                                            if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
+                                                ((SpellHandler)effect.SpellHandler).SendCastAnimation();
 
                                         }
                                         else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
