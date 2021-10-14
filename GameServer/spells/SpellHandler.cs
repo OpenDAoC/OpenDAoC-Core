@@ -1669,10 +1669,18 @@ namespace DOL.GS.Spells
 					}
 					if (_castStartTick + _calculatedCastTime  < currentTick)
 					{
-						if (!CheckEndCast(m_spellTarget))
-							castState = eCastState.Interrupted;
+						if (!(m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize))
+						{
+							if (!CheckEndCast(m_spellTarget))
+								castState = eCastState.Interrupted;
+							else
+								castState = eCastState.Finished;
+						}
 						else
-							castState = eCastState.Finished;
+                        {
+							if (CheckEndCast(m_spellTarget))
+								castState = eCastState.Finished;
+                        }
 					}
 					break;
 				case eCastState.Interrupted:
@@ -2141,8 +2149,12 @@ namespace DOL.GS.Spells
                     Caster.ConcentrationEffects.Remove(existingEffects.FirstOrDefault());
                 }
 
-                CreateECSPulseEffect(Caster, Caster.Effectiveness);
-                Caster.LastPulseCast = Spell;
+
+				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
+				{
+					CreateECSPulseEffect(Caster, Caster.Effectiveness);
+					Caster.LastPulseCast = Spell;
+				}
             }
 
             //CreateSpellEffects();
@@ -2683,6 +2695,8 @@ namespace DOL.GS.Spells
 			List<GameLiving> livings = new List<GameLiving>();
 
 			livings.Add(Caster);
+			if (Caster.ControlledBrain != null)
+				livings.Add(Caster.ControlledBrain.Body);
 			if (Caster.Group != null)
 			{
 				foreach (GameLiving living in Caster.Group.GetMembersInTheGroup().ToList())
@@ -2718,6 +2732,8 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
+			if (Caster.IsMezzed || Caster.IsStunned)
+				return false;
 
             // For PBAOE spells always set the target to the caster
 			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))

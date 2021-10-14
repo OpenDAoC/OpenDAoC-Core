@@ -339,7 +339,8 @@ namespace DOL.GS
                                     //}
 
                                     //Console.WriteLine("Debuffing Speed for " + e.Owner.Name);
-                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
+                                    //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.EffectType, 1.0 - e.SpellHandler.Spell.Value * 0.01);
                                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
 
                                     (e.SpellHandler as SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
@@ -348,8 +349,10 @@ namespace DOL.GS
                                 else if (e.EffectType == eEffect.Disease)
                                 {
                                     e.Owner.Disease(true);
-                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - 0.15);
-                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, e.SpellHandler, 1.0 - 0.075);
+                                    //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, 1.0 - 0.15);
+                                    //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, e.SpellHandler, 1.0 - 0.075);
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.EffectType, 1.0 - 0.15);
+                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, e.EffectType, 1.0 - 0.075);
 
                                     (e.SpellHandler as DiseaseSpellHandler).SendUpdates(e);
 
@@ -722,18 +725,21 @@ namespace DOL.GS
                                     EntityManager.AddEffect(immunityEffect);
                                 }
 
-                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
+                                //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
                             }
                             else if (e.EffectType == eEffect.Disease)
                             {
                                 e.Owner.Disease(false);
-                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
-                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, e.SpellHandler);
+                                //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
+                                //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, e.SpellHandler);
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
+                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, e.EffectType);
 
                                 //if (!noMessages)
                                 //{
-                                    ((SpellHandler)e.SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
+                                ((SpellHandler)e.SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
                                     Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, true)), eChatType.CT_SpellExpires, e.Owner);
                                 //}
 
