@@ -943,7 +943,7 @@ namespace DOL.GS
             if (rps is >= 71750) { player.RealmLevel = 20; }
 
 
-                player.Out.SendUpdatePlayer();
+            player.Out.SendUpdatePlayer();
             player.Out.SendCharStatsUpdate();
             player.Out.SendUpdatePoints();
             player.UpdatePlayerStatus();
@@ -1002,7 +1002,7 @@ namespace DOL.GS
             player.RespecRealm();
             SetRealmLevel(player,(int)player.RealmPoints);
             
-            SendReply(player, "Thanks for the donation. The color has come out beautifully, wear it with pride.");
+            SendReply(player, "Thanks for your donation. The color has come out beautifully, wear it with pride.");
 
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
