@@ -1732,7 +1732,11 @@ namespace DOL.GS.ServerRules
 				//pick one member from each group to recieve the ROG
                 foreach (var grp in groupsToAward)
                 {
-					List<GamePlayer> players = (List<GamePlayer>)grp.GetPlayersInTheGroup();
+					List<GamePlayer> players = new List<GamePlayer>();
+					foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
+                    {
+						players.Add(pla);
+                    }
 					GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
 					if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
                 }
