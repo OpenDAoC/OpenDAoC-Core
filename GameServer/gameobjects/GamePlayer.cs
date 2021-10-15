@@ -1861,6 +1861,7 @@ namespace DOL.GS
 		{
 			GamePlayer player = (GamePlayer)sender;
 			effectListComponent.CancelAll();
+			m_isDead = false;
 						
 			if (player.IsUnderwater && player.CanBreathUnderWater == false)
 				player.Diving(eWaterBreath.Holding);
@@ -2352,7 +2353,7 @@ namespace DOL.GS
 		/// </summary>
 		public override void StartHealthRegeneration()
 		{
-			if (ObjectState != eObjectState.Active) return;
+			if (!IsAlive || ObjectState != eObjectState.Active) return;
 			if (m_healthRegenerationTimer.IsAlive) return;
 			m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
 		}

@@ -1035,13 +1035,14 @@ namespace DOL.GS
 				return (ObjectState != eObjectState.Active || !IsAlive || IsStunned || IsMezzed);
 			}
 		}
-		
+		protected bool m_isDead = false;
 		/// <summary>
 		/// returns if this living is alive
 		/// </summary>
 		public virtual bool IsAlive
 		{
-			get { return Health > 0; }
+			//get { return Health > 0; }
+			get { return !m_isDead; }
 		}
 
 		/// <summary>
@@ -5304,7 +5305,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartHealthRegeneration()
 		{
-			if (ObjectState != eObjectState.Active)
+			if (!IsAlive || ObjectState != eObjectState.Active)
 				return;
 			lock (m_regenTimerLock)
 			{
@@ -5619,6 +5620,7 @@ namespace DOL.GS
 				else
 				{
 					m_health = 0;
+					m_isDead = true;
 				}
 
 				if (IsAlive && m_health < maxhealth)
