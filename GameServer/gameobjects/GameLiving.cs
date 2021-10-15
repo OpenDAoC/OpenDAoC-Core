@@ -4067,7 +4067,8 @@ namespace DOL.GS
 			TryCancelMovementSpeedBuffs();
 
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && effectListComponent.Effects.TryGetValue(eEffect.OffensiveProc, out var oProcEffects))
+            if (ad != null && ad.Attacker == this && effectListComponent.Effects.TryGetValue(eEffect.OffensiveProc, out var oProcEffects)
+				&& ad.AttackType != AttackData.eAttackType.Spell)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
@@ -4175,7 +4176,8 @@ namespace DOL.GS
 					}
 
                     // Handle DefensiveProcs
-                    if (ad != null && ad.Target == this && effectListComponent.Effects.TryGetValue(eEffect.DefensiveProc, out var dProcEffects))
+                    if (ad != null && ad.Target == this && effectListComponent.Effects.TryGetValue(eEffect.DefensiveProc, out var dProcEffects)
+						&& ad.AttackType != AttackData.eAttackType.Spell)
                     {
                         for (int i = 0; i < dProcEffects.Count; i++)
                         {
