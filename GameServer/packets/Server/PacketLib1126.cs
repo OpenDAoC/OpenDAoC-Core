@@ -331,35 +331,41 @@ namespace DOL.GS.PacketHandler
 			{
 				return;
 			}
+			try
+			{ 
+				using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+				{
+					pak.WriteByte(0x05); //subcode
+					pak.WriteByte(6); //number of entries
+					pak.WriteByte(0x00); //subtype
+					pak.WriteByte(0x00); //unk
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
-			{
-				pak.WriteByte(0x05); //subcode
-				pak.WriteByte(6); //number of entries
-				pak.WriteByte(0x00); //subtype
-				pak.WriteByte(0x00); //unk
-
-				// weapondamage
-				var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.AttackWeapon) * 100.0);
-				pak.WriteByte((byte)(wd / 100));
-				pak.WriteByte(0x00);
-				pak.WriteByte((byte)(wd % 100));
-				pak.WriteByte(0x00);
-				// weaponskill
-				int ws = m_gameClient.Player.DisplayedWeaponSkill;
-				pak.WriteByte((byte)(ws >> 8));
-				pak.WriteByte(0x00);
-				pak.WriteByte((byte)(ws & 0xff));
-				pak.WriteByte(0x00);
-				// overall EAF
-				int eaf = m_gameClient.Player.EffectiveOverallAF;
-				pak.WriteByte((byte)(eaf >> 8));
-				pak.WriteByte(0x00);
-				pak.WriteByte((byte)(eaf & 0xff));
-				pak.WriteByte(0x00);
-				SendTCP(pak);
+					// weapondamage
+					var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.AttackWeapon) * 100.0);
+					pak.WriteByte((byte)(wd / 100));
+					pak.WriteByte(0x00);
+					pak.WriteByte((byte)(wd % 100));
+					pak.WriteByte(0x00);
+					// weaponskill
+					int ws = m_gameClient.Player.DisplayedWeaponSkill;
+					pak.WriteByte((byte)(ws >> 8));
+					pak.WriteByte(0x00);
+					pak.WriteByte((byte)(ws & 0xff));
+					pak.WriteByte(0x00);
+					// overall EAF
+					int eaf = m_gameClient.Player.EffectiveOverallAF;
+					pak.WriteByte((byte)(eaf >> 8));
+					pak.WriteByte(0x00);
+					pak.WriteByte((byte)(eaf & 0xff));
+					pak.WriteByte(0x00);
+					SendTCP(pak);
+				}
 			}
-		}
+            catch (NullReferenceException e)
+            {
+				Console.WriteLine($"Error encountered attempting to SendUpdateWeaponAndArmorStats");                
+            }
+}
 	}
 }
 
