@@ -37,17 +37,50 @@ namespace DOL.GS
 	public class Util
 	{
 		private static Util soleInstance = new Util();
+		private int lastRandomInt = 0;
+		private double lastRandomDouble = 0.0;
 
 		public static void LoadTestDouble(Util testDouble) { soleInstance = testDouble; }
 
 		protected virtual double RandomDoubleImpl()
 		{
-			return RandomGen.NextDouble();
+			double rand = RandomGen.NextDouble();
+
+			if (lastRandomDouble == 0)
+			{
+				lastRandomDouble = rand;
+				return rand;
+			}
+			else
+			{
+				while (lastRandomDouble == rand)
+				{
+					rand = RandomGen.NextDouble();
+				}
+				lastRandomDouble = rand;
+				return rand;
+			}
+			//return RandomGen.NextDouble();
 		}
 
 		protected virtual int RandomImpl(int min, int max)
 		{
-			return RandomGen.Next(min, max + 1);
+			int rand = RandomGen.Next(min, max + 1);
+
+			if (lastRandomInt == 0)
+			{				
+				lastRandomInt = rand;
+				return rand;
+			}
+			else
+			{				
+				while (lastRandomInt == rand)
+                {
+					rand = RandomGen.Next(min, max + 1);
+				}
+				lastRandomInt = rand;
+				return rand;
+			}
 		}
 
 		#region Random
@@ -185,7 +218,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static int Random(int max)
 		{
-			return RandomGen.Next(max + 1);
+			//return RandomGen.Next(max + 1);
+			return soleInstance.RandomImpl(0, max);
 		}
 
 		/// <summary>
@@ -218,7 +252,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool Chance(int chancePercent)
 		{
-			return chancePercent >= Random(1, 100);
+			//return chancePercent >= Random(1, 100);
+			return chancePercent >= soleInstance.RandomImpl(1, 100);
 		}
 
 		/// <summary>
@@ -228,7 +263,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool ChanceDouble(double chancePercent)
 		{
-			return chancePercent > RandomDouble();
+			//return chancePercent > RandomDouble();
+			return chancePercent > soleInstance.RandomDoubleImpl();
 		}
 
 		#endregion
