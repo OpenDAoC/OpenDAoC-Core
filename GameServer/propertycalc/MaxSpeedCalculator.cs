@@ -37,11 +37,11 @@ namespace DOL.GS.PropertyCalc
 	[PropertyCalculator(eProperty.MaxSpeed)]
 	public class MaxSpeedCalculator : PropertyCalculator
 	{
-		public static readonly double SPEED1 = 1.753;
-		public static readonly double SPEED2 = 1.816;
-		public static readonly double SPEED3 = 1.91;
-		public static readonly double SPEED4 = 1.989;
-		public static readonly double SPEED5 = 2.068;
+		public static readonly double SPEED1 = 1.44;
+		public static readonly double SPEED2 = 1.59;
+		public static readonly double SPEED3 = 1.74;
+		public static readonly double SPEED4 = 1.89;
+		public static readonly double SPEED5 = 2.04;
 
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
