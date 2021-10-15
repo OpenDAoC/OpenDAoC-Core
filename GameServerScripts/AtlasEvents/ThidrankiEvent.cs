@@ -101,9 +101,6 @@ namespace DOL.GS.GameEvents
 						ch.Region = 335;
 						break;
 				}
-				
-				ch.Experience = GamePlayer.GetExperienceAmountForLevel(EventLvCap - 1);
-				ch.Level = EventLvCap;
 				ch.GainXP = false;
 				BindCharacter(ch);
 			}

@@ -22,7 +22,7 @@ namespace DOL.GS.Scripts
         public override bool AddToWorld()
         {
             Model = 2026;
-            Name = "Thidranki Teleporter";
+            Name = "Event Teleporter";
             GuildName = "Atlas Event";
             Level = 50;
             Size = 60;

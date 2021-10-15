@@ -1541,9 +1541,11 @@ namespace DOL.GS.ServerRules
 				long playerMoneyValue = killedPlayer.MoneyValue;
 
 				List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
+                List<Group> groupsToAward = new List<Group>();
+				List<GamePlayer> playersToAward = new List<GamePlayer>();
 
-				//Now deal the XP and RPs to all livings
-				foreach (DictionaryEntry de in killedPlayer.XPGainers)
+                //Now deal the XP and RPs to all livings
+                foreach (DictionaryEntry de in killedPlayer.XPGainers)
 				{
 					GameLiving living = de.Key as GameLiving;
 					GamePlayer expGainPlayer = living as GamePlayer;
@@ -1599,7 +1601,18 @@ namespace DOL.GS.ServerRules
 							if (living is GamePlayer p)
 							{
 								killedPlayer.LastDeathRealmPoints += realmPoints;
-								playerKillers.Add(new KeyValuePair<GamePlayer, int>(living as GamePlayer, realmPoints));							
+								playerKillers.Add(new KeyValuePair<GamePlayer, int>(living as GamePlayer, realmPoints));
+
+								//add group to list if grouped kill 
+								if (p.Group != null && !groupsToAward.Contains(p.Group))
+								{
+									groupsToAward.Add(p.Group);
+								}
+								else if (!playersToAward.Contains(p))
+                                {
+									//else award solo players directly
+									playersToAward.Add(p);	
+                                }
 							}
 
 							living.GainRealmPoints(realmPoints);
@@ -1716,26 +1729,24 @@ namespace DOL.GS.ServerRules
 					}
 				}
 
-				if (ServerProperties.Properties.EVENT_THIDRANKI && killer is GamePlayer k)
+				//pick one member from each group to recieve the ROG
+                foreach (var grp in groupsToAward)
+                {
+					List<GamePlayer> players = new List<GamePlayer>();
+					foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
+                    {
+						players.Add(pla);
+                    }
+					GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
+					if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
+                }
+
+				//distribute ROGs
+				if (ServerProperties.Properties.EVENT_THIDRANKI)
 				{
-					List<GamePlayer> validROGTargets = new List<GamePlayer>();
-					if (k.Group != null)
-					{
-						foreach (GamePlayer pl in k.Group.GetPlayersInTheGroup())
-						{
-							if (pl.ReceiveROG) { validROGTargets.Add(pl); }
-						}
-					}
-					else if (k.ReceiveROG)
-					{
-						validROGTargets.Add(k);
-					}
-
-
-					if (validROGTargets.Count > 0)
-					{
-						//grab a random valid target from our list to give the ROG to
-						AtlasROGManager.GenerateROG(validROGTargets[Util.Random(validROGTargets.Count - 1)], true);
+                    foreach (var player in playersToAward)
+                    {
+						AtlasROGManager.GenerateROG(player, true);
 					}
 				}
 
