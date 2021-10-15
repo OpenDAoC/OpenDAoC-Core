@@ -95,7 +95,8 @@ namespace DOL.GS
                                     else if (effect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
                                         effect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
                                     {
-                                        if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing)
+                                        if ((existingEffects[i].SpellHandler.Spell.IsConcentration && effect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster) 
+                                            || existingEffects[i].SpellHandler.Spell.IsPulsing)
                                         {
                                             EffectService.RequestDisableEffect(effect, true);
                                             addEffect = true;
