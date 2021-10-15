@@ -93,7 +93,7 @@ namespace DOL.GS
                                         addEffect = true;
                                     }
                                     else if (effect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
-                                        effect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
+                                        effect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
                                     {
                                         if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing)
                                         {
@@ -114,6 +114,7 @@ namespace DOL.GS
                             if (addEffect)
                             {
                                 existingEffects.Add(effect);
+                                EffectIdToEffect.TryAdd(effect.Icon, effect);
                                 return true;
                             }
                         }
