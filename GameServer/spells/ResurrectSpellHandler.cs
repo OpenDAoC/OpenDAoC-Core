@@ -160,13 +160,17 @@ namespace DOL.GS.Spells
 			if (m_caster.ObjectState != GameObject.eObjectState.Active) return;
 			if (m_caster.CurrentRegionID != living.CurrentRegionID) return;
 
+			GamePlayer player = living as GamePlayer;
+			if (player != null)
+				player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
+
 			living.Health = living.MaxHealth * m_spell.ResurrectHealth / 100;
-			int tempManaEnd = m_spell.ResurrectMana / 100;
-			living.Mana = living.MaxMana * tempManaEnd;
+			double tempManaEnd = m_spell.ResurrectMana / 100.0;
+			living.Mana = (int)(living.MaxMana * tempManaEnd);
 
 			//The spec rez spells are the only ones that have endurance
 			if (!SpellLine.IsBaseLine)
-				living.Endurance = living.MaxEndurance * tempManaEnd;
+				living.Endurance = (int)(living.MaxEndurance * tempManaEnd);
 			else
 				living.Endurance = 0;
 
@@ -182,18 +186,17 @@ namespace DOL.GS.Spells
 			{
 				resurrectExpiredTimer.Stop();
 			}
-
-			GamePlayer player = living as GamePlayer;
+		
 			if (player != null)
 			{
 				player.StopReleaseTimer();
 				player.Out.SendPlayerRevive(player);
 				player.UpdatePlayerStatus();
 				player.Out.SendMessage("You have been resurrected by " + m_caster.GetName(0, false) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
-                
-                //Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
-                RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
+				//player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
+
+				//Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
+				RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
                 rezImmune.Start(player);
 
 				IList<GameObject> attackers;
