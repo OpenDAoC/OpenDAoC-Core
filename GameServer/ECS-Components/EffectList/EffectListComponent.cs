@@ -47,14 +47,21 @@ namespace DOL.GS
                                     || existingEffects[i].SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID)
                                    
                                 {
-                                    effect.IsDisabled = existingEffects[i].IsDisabled;
-                                    effect.IsBuffActive = existingEffects[i].IsBuffActive;
-                                    
-                                    if (effect.SpellHandler.Spell.IsPulsing)
-                                        effect.RenewEffect = true;
+                                    if (effect.SpellHandler.Spell.IsPoison)
+                                    {
+                                        existingEffects[i].ExpireTick = effect.ExpireTick;
+                                    }
+                                    else
+                                    {
+                                        effect.IsDisabled = existingEffects[i].IsDisabled;
+                                        effect.IsBuffActive = existingEffects[i].IsBuffActive;
 
-                                    effect.PreviousPosition = GetAllEffects().IndexOf(existingEffects[i]);
-                                    Effects[effect.EffectType][i] = effect;
+                                        if (effect.SpellHandler.Spell.IsPulsing)
+                                            effect.RenewEffect = true;
+
+                                        effect.PreviousPosition = GetAllEffects().IndexOf(existingEffects[i]);
+                                        Effects[effect.EffectType][i] = effect;
+                                    }
                                     return true;
                                 }
                             }
