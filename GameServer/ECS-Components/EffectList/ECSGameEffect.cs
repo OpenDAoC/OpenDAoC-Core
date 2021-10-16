@@ -59,6 +59,12 @@ namespace DOL.GS
             }
         }
 
+        /// Whether this effect should trigger an immunity when it expires.
+        public bool TriggersImmunity = false;
+
+        /// Duration of the immunity effect, in milliseconds. Defaults to 60s.
+        public int ImmunityDuration = 60000;
+
         public ECSGameEffect() { }
 
         public ECSGameEffect(ECSGameEffectInitParams initParams)
@@ -137,6 +143,15 @@ namespace DOL.GS
             }
 
             return EffectService.GetEffectFromSpell(SpellHandler.Spell);
+        }
+
+        public virtual void TryApplyImmunity()
+        {
+            if (TriggersImmunity)
+            {
+                ECSImmunityEffect immunityEffect = new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
+                EntityManager.AddEffect(immunityEffect);
+            }
         }
 
         public virtual void OnStartEffect() { }

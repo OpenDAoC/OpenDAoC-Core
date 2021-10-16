@@ -348,15 +348,6 @@ namespace DOL.GS
                                     (e.SpellHandler as SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
                                     Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell, e.Owner);
                                 }
-                                else if (e.EffectType == eEffect.Nearsight)
-                                {
-                                    // percent category
-                                    e.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)e.SpellHandler.Spell.Value;
-                                    e.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)e.SpellHandler.Spell.Value;
-                                    (e.SpellHandler as NearsightSpellHandler).SendEffectAnimation(e.Owner, 0, false, 1);
-                                    (e.SpellHandler as NearsightSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), eChatType.CT_Spell, e.Owner);
-                                }
                                 else
                                 {                                    
                                     foreach (var prop in getPropertyFromEffect(e.EffectType))
@@ -480,6 +471,7 @@ namespace DOL.GS
             }
 
             e.OnStopEffect();
+            e.TryApplyImmunity();
 
             if (!e.IsBuffActive)
             {
@@ -712,18 +704,6 @@ namespace DOL.GS
                                 //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
                                 e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
-                            }
-                            else if (e.EffectType == eEffect.Nearsight)
-                            {
-                                // percent category
-                                e.Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)e.SpellHandler.Spell.Value;
-                                e.Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)e.SpellHandler.Spell.Value;
-
-                                (e.SpellHandler as NearsightSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
-                                Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
-
-                                ECSImmunityEffect immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
-                                EntityManager.AddEffect(immunityEffect);
                             }
                             else
                             {

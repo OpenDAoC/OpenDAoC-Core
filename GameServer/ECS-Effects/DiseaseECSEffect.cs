@@ -1,5 +1,3 @@
-using System;
-using DOL.GS.Effects;
 using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
