@@ -511,6 +511,50 @@ namespace DOL.GS.Commands
 					info.Add(" + Heading : " + target.Heading);
 				}
 
+				if(client.Player.TargetObject is GameKeepDoor)
+                {
+					var target = client.Player.TargetObject as GameKeepDoor;
+
+					string Realmname = "";
+					string statut = "";
+
+					name = target.Name;
+
+					if (target.Realm == eRealm.None)
+						Realmname = "None";
+
+					if (target.Realm == eRealm.Albion)
+						Realmname = "Albion";
+
+					if (target.Realm == eRealm.Midgard)
+						Realmname = "Midgard";
+
+					if (target.Realm == eRealm.Hibernia)
+						Realmname = "Hibernia";
+
+					if (target.Realm == eRealm.Door)
+						Realmname = "All";
+
+					info.Add("Component: " + target.Component);
+					info.Add("Keep: " + target.Component?.Keep);
+
+					info.Add("  ------- DOOR ------\n");
+					info.Add(" ");
+					info.Add(" + Name : " + target.Name);
+					info.Add(" + ID : " + target.DoorID);
+					info.Add(" + Realm : " + (int)target.Realm + " : " + Realmname);
+					info.Add(" + Level : " + target.Level);
+					info.Add(" + Guild : " + target.GuildName);
+					info.Add(" + Health : " + target.Health + " / " + target.MaxHealth);
+					info.Add(" + Statut : " + statut);
+					info.Add(" + Type : " + DoorRequestHandler.m_handlerDoorID / 100000000);
+					info.Add(" ");
+					info.Add(" + X : " + target.X);
+					info.Add(" + Y : " + target.Y);
+					info.Add(" + Z : " + target.Z);
+					info.Add(" + Heading : " + target.Heading);
+				}
+
 				#endregion Door
 
 				#region Keep
