@@ -29,10 +29,15 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Bladeturn")]
 	public class BladeturnSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// Execute buff spell
-		/// </summary>
-		public override void FinishSpellCast(GameLiving target)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new BladeturnECSGameEffect(initParams);
+        }
+
+        /// <summary>
+        /// Execute buff spell
+        /// </summary>
+        public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
