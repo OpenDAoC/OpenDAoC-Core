@@ -415,7 +415,7 @@ namespace DOL.GS.Spells
         public virtual void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			// Base function should be empty once all effects are moved to their own effect class.
-			ECSGameEffect effect = new ECSGameEffect(initParams);
+			new ECSGameEffect(initParams);
         }
 
         public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
