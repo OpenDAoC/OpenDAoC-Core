@@ -28,6 +28,7 @@ using DOL.Config;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerRules;
 using DOL.GS.Spells;
+using DOL.GS.Effects;
 using DOL.GS.Commands;
 using DOL.Events;
 using log4net;
@@ -43,11 +44,12 @@ namespace DOL.GS
 
 		private static Dictionary<string, Assembly> m_compiledScripts = new Dictionary<string, Assembly>();
 		private static Dictionary<string, ConstructorInfo> m_spellhandlerConstructorCache = new Dictionary<string, ConstructorInfo>();
+        private static Dictionary<string, ConstructorInfo> m_ECSGameEffectConstructorCache = new Dictionary<string, ConstructorInfo>();
 
-		/// <summary>
-		/// This class will hold all info about a gamecommand
-		/// </summary>
-		public class GameCommand
+        /// <summary>
+        /// This class will hold all info about a gamecommand
+        /// </summary>
+        public class GameCommand
 		{
 			public String[] Usage { get; set; }
 			public string m_cmd;
@@ -967,12 +969,98 @@ namespace DOL.GS
 			m_spellhandlerConstructorCache.Clear();
 		}
 
-		/// <summary>
-		/// Create server rules handler for specified server type
-		/// </summary>
-		/// <param name="serverType">server type used to look for rules handler</param>
-		/// <returns>server rules handler or normal server type handler if errors</returns>
-		public static IServerRules CreateServerRules(eGameServerType serverType)
+        /// <summary>
+        /// Create a spell handler for caster with given spell
+        /// </summary>
+        /// <param name="caster">caster that uses the spell</param>
+        /// <param name="spell">the spell itself</param>
+        /// <param name="line">the line that spell belongs to or null</param>
+        /// <returns>spellhandler or null if not found</returns>
+        public static ECSGameEffect CreateECSGameEffect(ISpellHandler handler, GameLiving target, int duration, double effectiveness)
+        {
+            if (handler == null || target == null) return null;
+
+            ConstructorInfo effectConstructor = null;
+
+			string effectTypeName = EffectService.GetEffectFromSpell(handler.Spell).ToString();
+
+            if (m_ECSGameEffectConstructorCache.ContainsKey(effectTypeName))
+                effectConstructor = m_ECSGameEffectConstructorCache[effectTypeName];
+
+            // try to find it in assemblies when not in cache
+            if (effectConstructor == null)
+            {
+                Type[] constructorParams = new Type[] { typeof(ISpellHandler), typeof(GameLiving), typeof(int), typeof(double) };
+
+                foreach (Assembly script in GameServerScripts)
+                {
+                    foreach (Type type in script.GetTypes())
+                    {
+                        if (type.IsClass != true) continue;
+
+                        // look for attribute
+                        try
+                        {
+                            object[] objs = type.GetCustomAttributes(typeof(ECSGameEffectAttribute), false);
+                            if (objs.Length == 0) continue;
+
+                            foreach (ECSGameEffectAttribute attrib in objs)
+                            {
+                                if (attrib.EffectType == effectTypeName)
+                                {
+									effectConstructor = type.GetConstructor(constructorParams);
+                                    if (log.IsDebugEnabled)
+                                        log.Debug("Found ECS Game Effect " + type);
+                                    break;
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            if (log.IsErrorEnabled)
+                                log.Error("CreateECSGameEffect", e);
+                        }
+
+                        if (effectConstructor != null)
+                            break;
+                    }
+                }
+
+                if (effectConstructor != null)
+                {
+					m_ECSGameEffectConstructorCache.TryAdd(effectTypeName, effectConstructor);
+                }
+            }
+
+            if (effectConstructor != null)
+            {
+                try
+                {
+                    return (ECSGameEffect)effectConstructor.Invoke(new object[] { handler, target, duration, effectiveness });
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error("Failed to create ECS Game Effect " + effectConstructor, e);
+                }
+            }
+            else
+            {
+				return new ECSGameEffect(handler, target, duration, effectiveness);
+				
+				// This should be re-enabled once we've moved everything to the ECS Game Effect subclasses.
+// 				if (log.IsErrorEnabled)
+//                     log.Error("Couldn't find ECS Game Effect for effect type " + effectTypeName);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Create server rules handler for specified server type
+        /// </summary>
+        /// <param name="serverType">server type used to look for rules handler</param>
+        /// <returns>server rules handler or normal server type handler if errors</returns>
+        public static IServerRules CreateServerRules(eGameServerType serverType)
 		{
 			Type rules = null;
 

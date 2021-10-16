@@ -46,16 +46,55 @@ namespace DOL.GS
 
         public ECSGameEffect() { }
 
-        public ECSGameEffect(GameLiving owner,ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
+//         public ECSGameEffect(GameLiving owner,ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
+//         {
+//             Owner = owner;
+//             SpellHandler = handler;
+//             Duration = duration;
+//             //ExpireTick = 0;
+//             PulseFreq = pulseFreq;
+//             Effectiveness = effectiveness;
+//             Icon = icon;
+//             CancelEffect = cancelEffect;
+//             RenewEffect = false;
+//             IsDisabled = false;
+//             IsBuffActive = false;
+//             EffectType = MapEffect();
+//             ExpireTick = duration + GameLoop.GameLoopTime;
+//             StartTick = GameLoop.GameLoopTime;
+//             LastTick = 0;
+// 
+//             if (handler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+//             {
+//                 TickInterval = 650;
+//                 NextTick = 1 + (duration >> 1) + (int)StartTick;
+//             }
+//             else if (handler.Spell.SpellType == (byte)eSpellType.HealOverTime)
+//             {
+//                 NextTick = StartTick;
+//             }
+//             else if (handler.Spell.SpellType == (byte)eSpellType.Confusion)
+//             {
+//                 PulseFreq = 5000;
+//             }
+//             else if (handler.Spell.IsConcentration)
+//             {
+//                 NextTick = StartTick;
+//                 // 60 seconds taken from PropertyChangingSpell
+//                 // Not sure if this is correct
+//                 PulseFreq = 650;
+//             }
+//         }
+
+        public ECSGameEffect(ISpellHandler handler, GameLiving target, int duration, double effectiveness)
         {
-            Owner = owner;
+            Owner = target;
             SpellHandler = handler;
             Duration = duration;
-            //ExpireTick = 0;
-            PulseFreq = pulseFreq;
+            PulseFreq = handler.Spell != null ? handler.Spell.Frequency : 0;
             Effectiveness = effectiveness;
-            Icon = icon;
-            CancelEffect = cancelEffect;
+            Icon = handler.Spell.Icon;
+            CancelEffect = false;
             RenewEffect = false;
             IsDisabled = false;
             IsBuffActive = false;
@@ -85,8 +124,8 @@ namespace DOL.GS
                 PulseFreq = 650;
             }
         }
-        
-       public long GetRemainingTimeForClient()
+
+        public long GetRemainingTimeForClient()
         {
             if (Duration > 0)
                 return (ExpireTick - GameLoop.GameLoopTime);
@@ -120,7 +159,14 @@ namespace DOL.GS
             }
 
             return EffectService.GetEffectFromSpell(SpellHandler.Spell);
+        }
 
+        public virtual void OnStartEffect()
+        {
+
+        }
+        public virtual void OnStopEffect()
+        {
 
         }
     }

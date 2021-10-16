@@ -36,10 +36,26 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Disease")]
 	public class DiseaseSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// called after normal spell cast is completed and effect has to be started
-		/// </summary>
-		public override void FinishSpellCast(GameLiving target)
+        public override void CreateECSEffect(GameLiving target, double effectiveness)
+        {
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            //IECSGameEffect effect;
+            int freq = Spell != null ? Spell.Frequency : 0;
+            // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
+
+            ECSGameEffect effect = new DiseaseECSGameEffect(this, target, Spell.Duration == 0 ? 0 : CalculateEffectDuration(target, effectiveness), effectiveness);
+            EntityManager.AddEffect(effect);
+
+            stopwatch.Stop();
+            var elapsed = (float)stopwatch.Elapsed.TotalMilliseconds;
+            Console.WriteLine(string.Format("{0}ms", elapsed));
+        }
+
+        /// <summary>
+        /// called after normal spell cast is completed and effect has to be started
+        /// </summary>
+        public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);

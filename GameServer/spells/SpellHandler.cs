@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using System.Text;
 using DOL.AI.Brain;
@@ -411,18 +412,25 @@ namespace DOL.GS.Spells
 			return CastSpell(targetObject);
 		}
 
-
-		public virtual void CreateECSEffect(GameLiving target, double effectiveness)
+        public virtual void CreateECSEffect(GameLiving target, double effectiveness)
 		{
+			System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
 			//IECSGameEffect effect;
 			int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
-            ECSGameEffect effect = new ECSGameEffect(target,this,Spell.Duration == 0 ? 0 : CalculateEffectDuration(target,effectiveness),freq,effectiveness,Spell.Icon);
+//             ECSGameEffect effect = new ECSGameEffect(this, target, Spell.Duration == 0 ? 0 : CalculateEffectDuration(target, effectiveness), effectiveness);
+// 
+// 			EntityManager.AddEffect(effect);
 
+			ECSGameEffect effect = ScriptMgr.CreateECSGameEffect(this, target, Spell.Duration == 0 ? 0 : CalculateEffectDuration(target, effectiveness), effectiveness);
 			EntityManager.AddEffect(effect);
 
-		}
+            stopwatch.Stop();
+            var elapsed = (float)stopwatch.Elapsed.TotalMilliseconds;
+			Console.WriteLine(string.Format("{0}ms", elapsed));
+        }
 
         public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
         {
