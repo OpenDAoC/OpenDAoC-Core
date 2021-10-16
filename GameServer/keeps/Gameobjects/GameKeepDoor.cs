@@ -171,14 +171,14 @@ namespace DOL.GS.Keeps
 		public override bool IsAttackableDoor
 		{
 			get
-			{
-				if (Component.Keep.Region == 252)
-					return true;
-				
+			{				
 				if (Component == null || Component.Keep == null)
 					return false;
 
-				if (Component.Keep is GameKeepTower)
+                if (Component.Keep.Region == 252)
+                    return true;
+
+                if (Component.Keep is GameKeepTower)
 				{
 					if (DoorIndex == 1)
 						return true;
