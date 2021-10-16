@@ -21,7 +21,7 @@ GamePlayer.Attack.Evaded:					{0} evades your attack!
 GamePlayer.Attack.Fumble:					You fumble the attack and take time to recover!	
 GamePlayer.Attack.Fumbled:					{0} fumbled!	
 GamePlayer.Attack.HitsYou:					{0} hits you for {1}{2} damage!	
-GamePlayer.Attack.HitsYouCritical:			{0} critical hits you for an additionnal {1} damage!		
+GamePlayer.Attack.HitsYouCritical:			{0} critical hits you for an additional {1} damage!		
 GamePlayer.Attack.HitsYour:					{0} hits your {1} for {2}{3} damage!	
 GamePlayer.Attack.Intercepted:				{0} steps in front of {1} and takes the blow!	
 GamePlayer.Attack.InterceptedHit:			{0} {1}{2} but hit {3} for {4}{5} damage!		

@@ -2980,6 +2980,8 @@ namespace DOL.GS.Spells
 				ad.SpellHandler = this;
 				ad.AttackResult = eAttackResult.HitUnstyled;
 				ad.IsSpellResisted = false;
+				ad.Damage = (int)Spell.Damage;
+				ad.DamageType = Spell.DamageType;
 
 				m_lastAttackData = ad;
 				Caster.OnAttackEnemy(ad);
