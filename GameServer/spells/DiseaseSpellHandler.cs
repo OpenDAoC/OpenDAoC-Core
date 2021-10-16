@@ -36,20 +36,9 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Disease")]
 	public class DiseaseSpellHandler : SpellHandler
 	{
-        public override void CreateECSEffect(GameLiving target, double effectiveness)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-            //IECSGameEffect effect;
-            int freq = Spell != null ? Spell.Frequency : 0;
-            // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
-
-            ECSGameEffect effect = new DiseaseECSGameEffect(this, target, Spell.Duration == 0 ? 0 : CalculateEffectDuration(target, effectiveness), effectiveness);
-            EntityManager.AddEffect(effect);
-
-            stopwatch.Stop();
-            var elapsed = (float)stopwatch.Elapsed.TotalMilliseconds;
-            Console.WriteLine(string.Format("{0}ms", elapsed));
+            ECSGameEffect effect = new DiseaseECSGameEffect(initParams);
         }
 
         /// <summary>

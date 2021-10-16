@@ -4,6 +4,21 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
+    public struct ECSGameEffectInitParams
+    {
+       public ECSGameEffectInitParams(ISpellHandler handler, GameLiving target, int duration, double effectiveness)
+        {
+            Handler = handler;
+            Target = target;
+            Duration = duration;
+            Effectiveness = effectiveness;
+        }
+        public ISpellHandler Handler { get; set; }
+        public GameLiving Target { get; set; }
+        public int Duration { get; set; }
+        public double Effectiveness { get; set; }
+    }
+    
     public class ECSGameEffect : IConcentrationEffect
     {
         public ISpellHandler SpellHandler;
@@ -46,83 +61,46 @@ namespace DOL.GS
 
         public ECSGameEffect() { }
 
-//         public ECSGameEffect(GameLiving owner,ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
-//         {
-//             Owner = owner;
-//             SpellHandler = handler;
-//             Duration = duration;
-//             //ExpireTick = 0;
-//             PulseFreq = pulseFreq;
-//             Effectiveness = effectiveness;
-//             Icon = icon;
-//             CancelEffect = cancelEffect;
-//             RenewEffect = false;
-//             IsDisabled = false;
-//             IsBuffActive = false;
-//             EffectType = MapEffect();
-//             ExpireTick = duration + GameLoop.GameLoopTime;
-//             StartTick = GameLoop.GameLoopTime;
-//             LastTick = 0;
-// 
-//             if (handler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-//             {
-//                 TickInterval = 650;
-//                 NextTick = 1 + (duration >> 1) + (int)StartTick;
-//             }
-//             else if (handler.Spell.SpellType == (byte)eSpellType.HealOverTime)
-//             {
-//                 NextTick = StartTick;
-//             }
-//             else if (handler.Spell.SpellType == (byte)eSpellType.Confusion)
-//             {
-//                 PulseFreq = 5000;
-//             }
-//             else if (handler.Spell.IsConcentration)
-//             {
-//                 NextTick = StartTick;
-//                 // 60 seconds taken from PropertyChangingSpell
-//                 // Not sure if this is correct
-//                 PulseFreq = 650;
-//             }
-//         }
-
-        public ECSGameEffect(ISpellHandler handler, GameLiving target, int duration, double effectiveness)
+        public ECSGameEffect(ECSGameEffectInitParams initParams)
         {
-            Owner = target;
-            SpellHandler = handler;
-            Duration = duration;
-            PulseFreq = handler.Spell != null ? handler.Spell.Frequency : 0;
-            Effectiveness = effectiveness;
-            Icon = handler.Spell.Icon;
+            Owner = initParams.Target;
+            SpellHandler = initParams.Handler;
+            Duration = initParams.Duration;
+            Effectiveness = initParams.Effectiveness;
+
+            PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
+            Icon = SpellHandler.Spell.Icon;
             CancelEffect = false;
             RenewEffect = false;
             IsDisabled = false;
             IsBuffActive = false;
             EffectType = MapEffect();
-            ExpireTick = duration + GameLoop.GameLoopTime;
+            ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
 
-            if (handler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
             {
                 TickInterval = 650;
-                NextTick = 1 + (duration >> 1) + (int)StartTick;
+                NextTick = 1 + (Duration >> 1) + (int)StartTick;
             }
-            else if (handler.Spell.SpellType == (byte)eSpellType.HealOverTime)
+            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime)
             {
                 NextTick = StartTick;
             }
-            else if (handler.Spell.SpellType == (byte)eSpellType.Confusion)
+            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion)
             {
                 PulseFreq = 5000;
             }
-            else if (handler.Spell.IsConcentration)
+            else if (SpellHandler.Spell.IsConcentration)
             {
                 NextTick = StartTick;
                 // 60 seconds taken from PropertyChangingSpell
                 // Not sure if this is correct
                 PulseFreq = 650;
             }
+
+            EntityManager.AddEffect(this);
         }
 
         public long GetRemainingTimeForClient()
@@ -161,13 +139,7 @@ namespace DOL.GS
             return EffectService.GetEffectFromSpell(SpellHandler.Spell);
         }
 
-        public virtual void OnStartEffect()
-        {
-
-        }
-        public virtual void OnStopEffect()
-        {
-
-        }
+        public virtual void OnStartEffect() { }
+        public virtual void OnStopEffect() { }
     }
 }

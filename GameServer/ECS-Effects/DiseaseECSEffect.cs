@@ -6,15 +6,13 @@ using DOL.AI.Brain;
 
 namespace DOL.GS
 {
-    [ECSGameEffectAttribute("Disease")]
     public class DiseaseECSGameEffect : ECSGameEffect
     {
-        public DiseaseECSGameEffect(ISpellHandler handler, GameLiving target, int duration, double effectiveness)
-            : base(handler, target, duration, effectiveness) { }
+        public DiseaseECSGameEffect(ECSGameEffectInitParams initParams)
+            : base(initParams) { }
 
         public override void OnStartEffect()
         {
-            Console.WriteLine("Disease Start");
             Owner.Disease(true);
             Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, EffectType, 1.0 - 0.15);
             Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, EffectType, 1.0 - 0.075);
@@ -34,7 +32,6 @@ namespace DOL.GS
         }
         public override void OnStopEffect()
         {
-            Console.WriteLine("Disease Stop");
             Owner.Disease(false);
             Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, EffectType);
             Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, EffectType);
