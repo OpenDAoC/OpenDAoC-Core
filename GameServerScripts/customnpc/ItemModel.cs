@@ -1789,7 +1789,7 @@ namespace DOL.GS {
                     break;
                 case "battler sword 1h":
                     price = artifact;
-                    modelIDToAssign = 1670;
+                    modelIDToAssign = 2112;
                     break;
                 case "scepter of the meritorious":
                     price = artifact;
