@@ -845,14 +845,6 @@ namespace DOL.GS
             {
                 player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
             }
-
-            if (e.Owner is GamePlayer player1)
-            {
-                List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
-                ecsList.Add(e);
-
-                player1.Out.SendUpdateIcons(ecsList, ref player1.effectListComponent._lastUpdateEffectsCount);
-            }
         }
 
         public static eEffect GetEffectFromSpell(Spell spell)
