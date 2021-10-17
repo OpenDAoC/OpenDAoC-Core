@@ -44,6 +44,11 @@ namespace DOL.GS
                             continue;
                         }
 
+                        // TEMP - A lot of the code below assumes effects come from spells but many effects come from abilities (Sprint, Stealth, RAs, etc)
+                        // This will need a better refactor later but for now this prevents crashing while working on porting over non-spell based effects to our system.
+                        if (!effect.FromSpell)
+                            continue;
+
                         if (tick > effect.ExpireTick && !effect.SpellHandler.Spell.IsConcentration)
                         {
                             if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
