@@ -30,12 +30,17 @@ namespace DOL.GS.Spells
 	[SpellHandler("SpeedDecrease")]
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
 	{
-		/// <summary>
-		/// Apply the effect.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new StatDebuffECSEffect(initParams);
+        }
+
+        /// <summary>
+        /// Apply the effect.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="effectiveness"></param>
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			// Check for root immunity.
 			if (Spell.Value == 99 && target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity))
