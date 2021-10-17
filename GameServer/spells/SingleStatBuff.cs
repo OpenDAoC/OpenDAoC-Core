@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
 
         public override void CreateECSEffect(ECSGameEffectInitParams initParams)
         {
-            new StatBuffEffect(initParams);
+            new StatBuffECSEffect(initParams);
         }
 
         /// <summary>

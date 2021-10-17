@@ -7,9 +7,9 @@ using DOL.GS.PropertyCalc;
 
 namespace DOL.GS
 {
-    public class StatBuffEffect : ECSGameEffect
+    public class StatBuffECSEffect : ECSGameEffect
     {
-        public StatBuffEffect(ECSGameEffectInitParams initParams)
+        public StatBuffECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
         public override void OnStartEffect()
