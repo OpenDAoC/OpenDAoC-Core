@@ -573,8 +573,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (foundEffect == null)
 							break;
 
-						caption = foundEffect.SpellHandler.Spell.Name;
-						objectInfo.AddRange(foundEffect.SpellHandler.DelveInfo);
+                        // [Takii] This part needs a refactor since it assumes all effects come from spells.
+                        if (!foundEffect.FromSpell)
+                            break;
+
+                        caption = foundEffect.Name;
+						objectInfo.AddRange(foundEffect.SpellHandler.DelveInfo);						
 
 						if (client.Account.PrivLevel > 1 && foundEffect is ECSGameEffect spellEffect && spellEffect.SpellHandler.Spell != null)
 						{

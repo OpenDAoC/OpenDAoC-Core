@@ -106,6 +106,7 @@ namespace DOL.GS
             IsDisabled = false;
             IsBuffActive = false;
 
+            EffectType = MapEffect();
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
@@ -113,7 +114,6 @@ namespace DOL.GS
             if (FromSpell)
             {
                 PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
-                EffectType = MapEffect();
 
                 if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                 {
@@ -163,7 +163,7 @@ namespace DOL.GS
             return !FromSpell ? false : SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
-        protected eEffect MapEffect()
+        protected virtual eEffect MapEffect()
         {
             if (!FromSpell)
                 return eEffect.Unknown;

@@ -116,6 +116,7 @@ namespace DOL.GS
         HereticPiercingMagic,
         PiercingMagic,
         ResurrectionIllness,
-        RvrResurrectionIllness
+        RvrResurrectionIllness,
+        Stealth
     }
 }
