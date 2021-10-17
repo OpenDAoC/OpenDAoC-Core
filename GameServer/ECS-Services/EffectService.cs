@@ -201,6 +201,12 @@ namespace DOL.GS
                                 }
                             }
                         }
+                        else if (e.EffectType == eEffect.EnduranceRegenBuff)
+                        {
+                            //Console.WriteLine("Applying EnduranceRegenBuff");
+                            var handler = e.SpellHandler as EnduranceRegenSpellHandler;
+                            ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
+                        }
                         else if (e.EffectType == eEffect.Charm)
                         {
                             GamePlayer gPlayer = e.SpellHandler.Caster as GamePlayer;
@@ -474,6 +480,12 @@ namespace DOL.GS
                         //                               (Caster == null ? "(null)" : Caster.GetType().ToString()),
                         //                               (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
                         //}
+                    }
+                    else if (e.EffectType == eEffect.EnduranceRegenBuff)
+                    {
+                        //Console.WriteLine("Removing EnduranceRegenBuff");
+                        var handler = e.SpellHandler as EnduranceRegenSpellHandler;
+                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
                     }
                     else if (e.EffectType == eEffect.AblativeArmor)
                     {

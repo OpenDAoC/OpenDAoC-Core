@@ -44,12 +44,7 @@ namespace DOL.GS
                             EffectService.RequestDisableEffect(this, true);
                         }
                     }
-                    else if (EffectType == eEffect.EnduranceRegenBuff)
-                    {
-                        //Console.WriteLine("Applying EnduranceRegenBuff");
-                        var handler = SpellHandler as EnduranceRegenSpellHandler;
-                        ApplyBonus(Owner, handler.BonusCategory1, handler.Property1, SpellHandler.Spell.Value, Effectiveness, false);
-                    }
+                    
                     else
                         ApplyBonus(Owner, eBuffBonusCategory.BaseBuff, prop, SpellHandler.Spell.Value, Effectiveness, false);
                 }
@@ -86,12 +81,7 @@ namespace DOL.GS
                             (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
                         }
                     }
-                    else if (EffectType == eEffect.EnduranceRegenBuff)
-                    {
-                        //Console.WriteLine("Removing EnduranceRegenBuff");
-                        var handler = SpellHandler as EnduranceRegenSpellHandler;
-                        ApplyBonus(Owner, handler.BonusCategory1, handler.Property1, SpellHandler.Spell.Value, Effectiveness, true);
-                    }
+                    
                     else
                         ApplyBonus(Owner, eBuffBonusCategory.BaseBuff, prop, SpellHandler.Spell.Value, Effectiveness, true);
 
