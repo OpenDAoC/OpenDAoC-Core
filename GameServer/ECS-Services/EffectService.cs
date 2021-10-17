@@ -312,91 +312,7 @@ namespace DOL.GS
                                 gPlayer.Out.SendStatusUpdate();
                             }
                         }
-                        else if (isDebuff(e.EffectType))
-                        {
-                            if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
-                            {
-                                foreach (var prop in getPropertyFromEffect(e.EffectType))
-                                {
-                                    //Console.WriteLine($"Debuffing {prop.ToString()}");
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                                }
-                            }
-                            else
-                            {
-                                if (e.EffectType == eEffect.MovementSpeedDebuff)
-                                {
-                                    //// Cannot apply if the effect owner has a charging effect
-                                    //if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.TempProperties.getProperty("Charging", false))
-                                    //{
-                                    //    MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
-                                    //    return;
-                                    //}
-
-                                    //Console.WriteLine("Debuffing Speed for " + e.Owner.Name);
-                                    //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
-                                    e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.EffectType, 1.0 - e.SpellHandler.Spell.Value * 0.01);
-                                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
-
-                                    (e.SpellHandler as SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                                    Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell, e.Owner);
-                                }
-                                else
-                                {                                    
-                                    foreach (var prop in getPropertyFromEffect(e.EffectType))
-                                    {
-                                        //Console.WriteLine($"Debuffing {prop.ToString()}");
-                                        if (e.EffectType == eEffect.ArmorFactorDebuff)
-                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                                        else
-                                            ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                                    }
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
-                            {
-                                foreach (var prop in getPropertyFromEffect(e.EffectType))
-                                {
-                                    //Console.WriteLine($"Buffing {prop.ToString()}");
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                                }
-                            } 
-                            else
-                            {
-                                foreach (var prop in getPropertyFromEffect(e.EffectType))
-                                {
-                                    //Console.WriteLine($"Buffing {prop.ToString()}");
-
-                                    if (e.EffectType == eEffect.MovementSpeedBuff)
-                                    {
-                                        if (!e.Owner.InCombat && !e.Owner.IsStealthed)
-                                        {
-                                            //Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                            //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
-                                            e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.EffectType, e.SpellHandler.Spell.Value / 100.0);
-                                            //Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                            (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
-                                        }
-                                        if (e.Owner.IsStealthed)
-                                        {
-                                            EffectService.RequestDisableEffect(e, true);
-                                        }
-                                    }
-                                    else if (e.EffectType == eEffect.EnduranceRegenBuff)
-                                    {
-                                        //Console.WriteLine("Applying EnduranceRegenBuff");
-                                        var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                                    }
-                                    else
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                                }
-                            }                          
-                        }
+                        
                         e.IsBuffActive = true;
                     }
                     else if (e.EffectType == eEffect.SavageBuff)
@@ -674,84 +590,6 @@ namespace DOL.GS
                             gPlayer.Effectiveness += e.SpellHandler.Spell.Value * 0.01;
                             gPlayer.Out.SendUpdateWeaponAndArmorStats();
                             gPlayer.Out.SendStatusUpdate();
-                        }
-                    }
-                    else if (isDebuff(e.EffectType))
-                    {
-                        if (e.EffectType == eEffect.StrConDebuff || e.EffectType == eEffect.DexQuiDebuff)
-                        {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
-                            {
-                                //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                            }
-                        }
-                        else
-                        {
-                            if (e.EffectType == eEffect.MovementSpeedDebuff)
-                            {
-                                if (e.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                                {
-                                    ECSImmunityEffect immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
-                                    EntityManager.AddEffect(immunityEffect);
-                                }
-
-                                //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
-                                e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
-                                UnbreakableSpeedDecreaseSpellHandler.SendUpdates(e.Owner);
-                            }
-                            else
-                            {
-                                foreach (var prop in getPropertyFromEffect(e.EffectType))
-                                {
-                                    //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-
-                                    if (e.EffectType == eEffect.ArmorFactorDebuff)
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                                    else
-                                        ApplyBonus(e.Owner, eBuffBonusCategory.Debuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (e.EffectType == eEffect.StrengthConBuff || e.EffectType == eEffect.DexQuickBuff || e.EffectType == eEffect.SpecAFBuff)
-                        {
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
-                            {
-                                //Console.WriteLine($"Canceling {prop.ToString()}");
-                                ApplyBonus(e.Owner, eBuffBonusCategory.SpecBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                            }
-                        }
-                        else
-                        {                           
-                            foreach (var prop in getPropertyFromEffect(e.EffectType))
-                            {
-                                //Console.WriteLine($"Canceling {prop.ToString()}");
-
-
-                                if (e.EffectType == eEffect.MovementSpeedBuff)
-                                {
-                                    if (e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed) == e.SpellHandler.Spell.Value / 100 || e.Owner.InCombat)
-                                    {
-                                        //Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                        //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
-                                        e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.EffectType);
-                                        //Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                                        (e.SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(e.Owner);
-                                    }
-                                }
-                                else if (e.EffectType == eEffect.EnduranceRegenBuff)
-                                {
-                                    //Console.WriteLine("Removing EnduranceRegenBuff");
-                                    var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                                    ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                                }
-                                else
-                                    ApplyBonus(e.Owner, eBuffBonusCategory.BaseBuff, prop, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                              
-                            }
                         }
                     }
                 }
@@ -1096,7 +934,7 @@ namespace DOL.GS
             }
         }
 
-        private static List<eProperty> getPropertyFromEffect(eEffect e)
+        public static List<eProperty> GetPropertiesFromEffect(eEffect e)
         {
             List<eProperty> list = new List<eProperty>();
             switch (e)
