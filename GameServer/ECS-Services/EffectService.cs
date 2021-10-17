@@ -107,34 +107,7 @@ namespace DOL.GS
 
                     if ((e.FromSpell && e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
                     {
-                        if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
-                        {
-                            if (e.EffectType == eEffect.Mez)
-                                e.Owner.IsMezzed = true;
-                            else
-                                e.Owner.IsStunned = true;
-
-                            e.Owner.attackComponent.LivingStopAttack();
-                            e.Owner.StopCurrentSpellcast();
-                            e.Owner.DisableTurning(true);
-
-                            ((SpellHandler)e.SpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                            ((SpellHandler)e.SpellHandler).MessageToCaster(Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell);
-                            Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, true)), eChatType.CT_Spell, e.Owner, e.SpellHandler.Caster);
-
-                            GamePlayer gPlayer = e.Owner as GamePlayer;
-                            if (gPlayer != null)
-                            {
-                                gPlayer.Client.Out.SendUpdateMaxSpeed();
-                                if (gPlayer.Group != null)
-                                    gPlayer.Group.UpdateMember(gPlayer, false, false);
-                            }
-                            else
-                            {
-                                e.Owner.attackComponent.LivingStopAttack();
-                            }
-                        }
-                        else if (e.EffectType == eEffect.HealOverTime)
+                        if (e.EffectType == eEffect.HealOverTime)
                         {
                             (e.SpellHandler as HoTSpellHandler).SendEffectAnimation(e.Owner, 0, false, 1);
                             //"{0} seems calm and healthy."
@@ -397,48 +370,7 @@ namespace DOL.GS
             {
                 if (!(e is ECSImmunityEffect) )
                 {
-                    if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
-                    {
-                        if (e.EffectType == eEffect.Mez)
-                            e.Owner.IsMezzed = false;
-                        else
-                            e.Owner.IsStunned = false;
-
-                        // Add Immunity------------Hard coded 60 second Immunity and Icon needs work
-                        if (e.EffectType == eEffect.Stun && (e.SpellHandler.Caster as GamePlayer) != null)
-                        {
-                            var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
-                            EntityManager.AddEffect(immunityEffect);
-                        }
-                        else if (e.EffectType == eEffect.Mez)
-                        {
-                            var immunityEffect = new ECSImmunityEffect(e.Owner, e.SpellHandler, 60000, (int)e.PulseFreq, e.Effectiveness, e.Icon);
-                            EntityManager.AddEffect(immunityEffect);
-                        }
-
-                        e.Owner.DisableTurning(false);
-
-                        GamePlayer gPlayer = e.Owner as GamePlayer;
-
-                        if (gPlayer != null)
-                        {
-                            gPlayer.Client.Out.SendUpdateMaxSpeed();
-                            if (gPlayer.Group != null)
-                                gPlayer.Group.UpdateMember(gPlayer, false, false);
-                        }
-                        else
-                        {
-                            GameNPC npc = e.Owner as GameNPC;
-                            if (npc != null)
-                            {
-                                IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
-                                if (aggroBrain != null)
-                                    aggroBrain.AddToAggroList(e.SpellHandler.Caster, 1);
-                                npc.attackComponent.AttackState = true;
-                            }
-                        }
-                    }
-                    else if (e.EffectType == eEffect.HealOverTime)
+                    if (e.EffectType == eEffect.HealOverTime)
                     {
                         //"Your meditative state fades."
                         (e.SpellHandler as HoTSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);

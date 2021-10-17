@@ -181,7 +181,7 @@ namespace DOL.GS
 
         public virtual void TryApplyImmunity()
         {
-            if (TriggersImmunity)
+            if (TriggersImmunity && OwnerPlayer != null)
             {
                 ECSImmunityEffect immunityEffect = new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
                 EntityManager.AddEffect(immunityEffect);
