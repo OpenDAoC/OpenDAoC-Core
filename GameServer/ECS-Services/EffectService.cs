@@ -33,8 +33,7 @@ namespace DOL.GS
             {
                 if (e.CancelEffect)
                 {
-                    if (tick > e.ExpireTick)
-                        HandleCancelEffect(e);
+                    HandleCancelEffect(e);
                 }
                 else if (e.IsDisabled)
                 {
@@ -44,8 +43,8 @@ namespace DOL.GS
                 {
                     HandlePropertyModification(e);
                 }
-
-                EntityManager.RemoveEffect(e);
+                // EntityManager.RemoveEffect() is called inside the Handle functions to ensure the conditions
+                // above never result in us removing an effect from the queue without attempting to process it.
             }
 
             Diagnostics.StopPerfCounter(ServiceName);
@@ -53,6 +52,7 @@ namespace DOL.GS
 
         private static void HandlePropertyModification(ECSGameEffect e)
         {
+            EntityManager.RemoveEffect(e);
 
             if (e.Owner == null)
             {
@@ -82,8 +82,6 @@ namespace DOL.GS
                 return;
             }
 
-            e.OnStartEffect();
-
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (e.ShouldBeAddedToConcentrationList())
             {
@@ -92,6 +90,8 @@ namespace DOL.GS
                     e.SpellHandler.Caster.ConcentrationEffects.Add(e);
                 }
             }
+
+            e.OnStartEffect();
 
             if (e.EffectType == eEffect.Pulse)
             {
@@ -105,7 +105,7 @@ namespace DOL.GS
                     if (!e.RenewEffect)
                         SendSpellAnimation(e);
 
-                    if ((e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
+                    if ((e.FromSpell && e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
                     {
                         if (e.EffectType == eEffect.Mez || e.EffectType == eEffect.Stun)
                         {
@@ -420,33 +420,40 @@ namespace DOL.GS
                 //        immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                 //    }
                 //}
-                
-                if (e.Owner is GamePlayer player)
-                {
-                    List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
 
-                    if (e.PreviousPosition >= 0)
-                    {
-                        List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
-                        ecsList.AddRange(playerEffects.Skip(e.PreviousPosition));
-                    }
-                    else
-                        ecsList.Add(e);
+                UpdateEffectIcons(e);
+            }
+        }
 
-                    player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
-                    SendPlayerUpdates(player);                   
-                }
-                else if (e.Owner is GameNPC)
+        private static void UpdateEffectIcons(ECSGameEffect e)
+        {
+            if (e.Owner is GamePlayer player)
+            {
+                List<ECSGameEffect> ecsList = new List<ECSGameEffect>();
+
+                if (e.PreviousPosition >= 0)
                 {
-                    IControlledBrain npc = ((GameNPC)e.Owner).Brain as IControlledBrain;
-                    if (npc != null)
-                        npc.UpdatePetWindow();
+                    List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
+                    ecsList.AddRange(playerEffects.Skip(e.PreviousPosition));
                 }
+                else
+                    ecsList.Add(e);
+
+                player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                SendPlayerUpdates(player);
+            }
+            else if (e.Owner is GameNPC)
+            {
+                IControlledBrain npc = ((GameNPC)e.Owner).Brain as IControlledBrain;
+                if (npc != null)
+                    npc.UpdatePetWindow();
             }
         }
 
         private static void HandleCancelEffect(ECSGameEffect e)
         {
+            EntityManager.RemoveEffect(e);
+
             //Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
 
             if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
@@ -822,18 +829,19 @@ namespace DOL.GS
         /// <param name="effect"></param>
         /// <param name="disable"></param>
         public static void RequestDisableEffect(ECSGameEffect effect, bool disable)
-        {           
-            EntityManager.AddEffect(effect);
+        {
             effect.IsDisabled = disable;
             effect.RenewEffect = !disable;
+            EntityManager.AddEffect(effect);
         }
 
         public static void SendSpellAnimation(ECSGameEffect e)
         {
-            GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
-
+            if (!e.FromSpell)
+                return;
+            
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
             }

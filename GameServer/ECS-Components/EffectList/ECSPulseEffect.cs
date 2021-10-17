@@ -21,7 +21,6 @@ namespace DOL.GS
             Duration = duration;
             PulseFreq = pulseFreq;
             Effectiveness = effectiveness;
-            Icon = icon;
             CancelEffect = cancelEffect;
             EffectType = eEffect.Pulse;//MapEffect();
             ExpireTick = pulseFreq + GameLoop.GameLoopTime;

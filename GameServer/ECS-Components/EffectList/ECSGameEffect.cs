@@ -6,17 +6,17 @@ namespace DOL.GS
 {
     public struct ECSGameEffectInitParams
     {
-       public ECSGameEffectInitParams(ISpellHandler handler, GameLiving target, int duration, double effectiveness)
+       public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler handler)
         {
-            Handler = handler;
             Target = target;
             Duration = duration;
             Effectiveness = effectiveness;
+            Handler = handler;
         }
-        public ISpellHandler Handler { get; set; }
         public GameLiving Target { get; set; }
         public int Duration { get; set; }
         public double Effectiveness { get; set; }
+        public ISpellHandler Handler { get; set; }
     }
     
     public class ECSGameEffect : IConcentrationEffect
@@ -29,21 +29,36 @@ namespace DOL.GS
         public long Duration;
         public long PulseFreq;
         public double Effectiveness;
-        public ushort Icon;
         public bool CancelEffect;
         public bool RenewEffect;
         public bool IsDisabled;
         public bool IsBuffActive;
         public eEffect EffectType;
         public GameLiving Owner;
+        public GamePlayer OwnerPlayer;
         public int TickInterval;
         public long NextTick;
         public int PreviousPosition = -1;
 
-        string IConcentrationEffect.Name => SpellHandler.Spell.Name;
-        //string IConcentrationEffect.OwnerName => Owner.Name;
+        string IConcentrationEffect.Name => Name;
         ushort IConcentrationEffect.Icon => Icon;
         byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
+
+        /// <summary>
+		/// The icon for this effect. Try to use the spell's icon by default. Non-spell based effects override this to provide the correct icon.
+		/// </summary>
+        public virtual ushort Icon
+        {
+            get { return SpellHandler == null ? (ushort)0 : SpellHandler.Spell.Icon; }
+        }
+
+        /// <summary>
+        /// The name of this effect. Try to use the spell's name by default. Non-spell based effects override this to provide the correct name.
+        /// </summary>
+        public virtual string Name
+        {
+            get { return SpellHandler == null ? "Default Effect Name" : SpellHandler.Spell.Name; }
+        }
 
         /// <summary>
 		/// The name of the owner
@@ -59,6 +74,16 @@ namespace DOL.GS
             }
         }
 
+        public virtual bool HasPositiveEffect
+        {
+            get { return SpellHandler == null ? false : SpellHandler.HasPositiveEffect; }
+        }
+
+        public bool FromSpell
+        {
+            get { return SpellHandler != null; }
+        }
+
         /// Whether this effect should trigger an immunity when it expires.
         public bool TriggersImmunity = false;
 
@@ -70,40 +95,46 @@ namespace DOL.GS
         public ECSGameEffect(ECSGameEffectInitParams initParams)
         {
             Owner = initParams.Target;
-            SpellHandler = initParams.Handler;
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
+            SpellHandler = initParams.Handler;
 
-            PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
-            Icon = SpellHandler.Spell.Icon;
+            OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
+
             CancelEffect = false;
             RenewEffect = false;
             IsDisabled = false;
             IsBuffActive = false;
-            EffectType = MapEffect();
+
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
 
-            if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            if (FromSpell)
             {
-                TickInterval = 650;
-                NextTick = 1 + (Duration >> 1) + (int)StartTick;
-            }
-            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime)
-            {
-                NextTick = StartTick;
-            }
-            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion)
-            {
-                PulseFreq = 5000;
-            }
-            else if (SpellHandler.Spell.IsConcentration)
-            {
-                NextTick = StartTick;
-                // 60 seconds taken from PropertyChangingSpell
-                // Not sure if this is correct
-                PulseFreq = 650;
+                PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
+                EffectType = MapEffect();
+
+                if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                {
+                    TickInterval = 650;
+                    NextTick = 1 + (Duration >> 1) + (int)StartTick;
+                }
+                else if (SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime)
+                {
+                    NextTick = StartTick;
+                }
+                else if (SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion)
+                {
+                    PulseFreq = 5000;
+                }
+                else if (SpellHandler.Spell.IsConcentration)
+                {
+                    NextTick = StartTick;
+                    // 60 seconds taken from PropertyChangingSpell
+                    // Not sure if this is correct
+                    PulseFreq = 650;
+                }
             }
 
             EntityManager.AddEffect(this);
@@ -119,21 +150,24 @@ namespace DOL.GS
 
         public bool IsConcentrationEffect()
         {
-            return SpellHandler.Spell.IsConcentration;
+            return !FromSpell ? false : SpellHandler.Spell.IsConcentration;
         }
 
         public bool ShouldBeAddedToConcentrationList()
         {
-            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
+            return !FromSpell ? false : SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
         public bool ShouldBeRemovedFromConcentrationList()
         {
-            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
+            return !FromSpell ? false : SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
         protected eEffect MapEffect()
         {
+            if (!FromSpell)
+                return eEffect.Unknown;
+
             if (SpellHandler.SpellLine.IsBaseLine)
             {
                 SpellHandler.Spell.IsSpec = false;
