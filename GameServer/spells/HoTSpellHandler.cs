@@ -31,6 +31,11 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("HealOverTime")]
 	public class HoTSpellHandler : SpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new HealOverTimeECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// Execute heal over time spell
 		/// </summary>

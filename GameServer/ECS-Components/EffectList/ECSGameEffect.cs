@@ -121,10 +121,6 @@ namespace DOL.GS
                     TickInterval = 650;
                     NextTick = 1 + (Duration >> 1) + (int)StartTick;
                 }
-                else if (SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime)
-                {
-                    NextTick = StartTick;
-                }
                 else if (SpellHandler.Spell.IsConcentration)
                 {
                     NextTick = StartTick;

@@ -154,11 +154,6 @@ namespace DOL.GS
                         {
                             effect.OnEffectPulse();
                         }
-                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
-                        {
-                            (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
-                            effect.NextTick += effect.PulseFreq;
-                        }
                         if (effect.SpellHandler.Spell.IsConcentration && tick > effect.NextTick)
                         {
                             if (!effect.SpellHandler.Caster.
