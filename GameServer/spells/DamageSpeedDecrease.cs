@@ -46,8 +46,6 @@ namespace DOL.GS.Spells
 			{
 				base.ApplyEffectOnTarget(target, effectiveness);
 			}
-
-            //CreateECSEffect(target, effectiveness);
 		}
 
 		/// <summary>

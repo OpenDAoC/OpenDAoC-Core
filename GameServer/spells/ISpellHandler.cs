@@ -30,7 +30,7 @@ namespace DOL.GS.Spells
 	{
 		GameLiving GetTarget();
 		
-		void CreateECSEffect(GameLiving target, double effectiveness);
+		void CreateECSEffect(ECSGameEffectInitParams initParams);
 		/// <summary>
 		/// Called when a spell is casted
 		/// </summary>

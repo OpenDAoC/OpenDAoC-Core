@@ -78,7 +78,7 @@ namespace DOL.GS
             
             SendReply(t, "What service do you want to use ?\n" +
                          "I can add an [effect] to it or change its color with a [dye].\n\n" +
-                         "Alternatively, I can [remove all effects]. "
+                         "Alternatively, I can [remove all effects] or [remove dye] from your weapon. "
                          );
             t.TempProperties.setProperty(EFFECTNPC_ITEM_WEAK, item);
             return false;
@@ -506,6 +506,9 @@ namespace DOL.GS
                         "[White] (" + dyePrice + " RPs)\n");
                     break;
 
+                case "remove dye":
+                    SetColor(player, 0, removePrice);
+                    break;
                 case "White":
                     SetColor(player, 0, dyePrice);
                     break;

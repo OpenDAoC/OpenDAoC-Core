@@ -37,7 +37,12 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target, 1);
 		}
 
-		protected override void SendUpdates(GameLiving target)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+			new StatBuffECSEffect(initParams);
+        }
+
+        protected override void SendUpdates(GameLiving target)
 		{
 			base.SendUpdates(target);
 			if (target is GamePlayer)

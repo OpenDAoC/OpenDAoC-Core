@@ -44,10 +44,10 @@ namespace DOL.GS
 		private static Dictionary<string, Assembly> m_compiledScripts = new Dictionary<string, Assembly>();
 		private static Dictionary<string, ConstructorInfo> m_spellhandlerConstructorCache = new Dictionary<string, ConstructorInfo>();
 
-		/// <summary>
-		/// This class will hold all info about a gamecommand
-		/// </summary>
-		public class GameCommand
+        /// <summary>
+        /// This class will hold all info about a gamecommand
+        /// </summary>
+        public class GameCommand
 		{
 			public String[] Usage { get; set; }
 			public string m_cmd;
@@ -967,12 +967,12 @@ namespace DOL.GS
 			m_spellhandlerConstructorCache.Clear();
 		}
 
-		/// <summary>
-		/// Create server rules handler for specified server type
-		/// </summary>
-		/// <param name="serverType">server type used to look for rules handler</param>
-		/// <returns>server rules handler or normal server type handler if errors</returns>
-		public static IServerRules CreateServerRules(eGameServerType serverType)
+        /// <summary>
+        /// Create server rules handler for specified server type
+        /// </summary>
+        /// <param name="serverType">server type used to look for rules handler</param>
+        /// <returns>server rules handler or normal server type handler if errors</returns>
+        public static IServerRules CreateServerRules(eGameServerType serverType)
 		{
 			Type rules = null;
 

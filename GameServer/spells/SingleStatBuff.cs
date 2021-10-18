@@ -36,7 +36,12 @@ namespace DOL.GS.Spells
         {
             target.UpdateHealthManaEndu();
         }
-		
+
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new StatBuffECSEffect(initParams);
+        }
+
         /// <summary>
         /// Apply effect on target or do spell action if non duration spell
         /// </summary>

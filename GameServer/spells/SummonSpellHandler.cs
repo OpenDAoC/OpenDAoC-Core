@@ -191,9 +191,9 @@ namespace DOL.GS.Spells
 				m_pet.Spells = template.Spells; // Have to scale spells again now that the pet level has been assigned
 
             //effect.Start(m_pet);
-            CreateECSEffect(m_pet, effectiveness);
+            CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, effectiveness), effectiveness, this));
 
-            Caster.OnPetSummoned(m_pet);
+			Caster.OnPetSummoned(m_pet);
 		}
 
 		public override int CalculateSpellResistChance(GameLiving target)

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using System.Text;
 using DOL.AI.Brain;
@@ -411,18 +412,11 @@ namespace DOL.GS.Spells
 			return CastSpell(targetObject);
 		}
 
-
-		public virtual void CreateECSEffect(GameLiving target, double effectiveness)
+        public virtual void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
-			//IECSGameEffect effect;
-			int freq = Spell != null ? Spell.Frequency : 0;
-            // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
-
-            ECSGameEffect effect = new ECSGameEffect(target,this,Spell.Duration == 0 ? 0 : CalculateEffectDuration(target,effectiveness),freq,effectiveness,Spell.Icon);
-
-			EntityManager.AddEffect(effect);
-
-		}
+			// Base function should be empty once all effects are moved to their own effect class.
+			new ECSGameEffect(initParams);
+        }
 
         public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
         {
@@ -431,7 +425,7 @@ namespace DOL.GS.Spells
             int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
-            ECSPulseEffect effect = new ECSPulseEffect(target, this, Spell.Duration == 0 ? 0 : CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
+            ECSPulseEffect effect = new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
 
             EntityManager.AddEffect(effect);
 
@@ -2865,6 +2859,9 @@ namespace DOL.GS.Spells
 		/// <returns>The effect duration in milliseconds</returns>
 		protected virtual int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
+			if (Spell.Duration == 0)
+				return 0;
+			
 			double duration = Spell.Duration;
 			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
 			if (Spell.InstrumentRequirement != 0)
@@ -2983,6 +2980,8 @@ namespace DOL.GS.Spells
 				ad.SpellHandler = this;
 				ad.AttackResult = eAttackResult.HitUnstyled;
 				ad.IsSpellResisted = false;
+				ad.Damage = (int)Spell.Damage;
+				ad.DamageType = Spell.DamageType;
 
 				m_lastAttackData = ad;
 				Caster.OnAttackEnemy(ad);
@@ -3115,10 +3114,9 @@ namespace DOL.GS.Spells
 			return;
 			}
 
-            // eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
-            //CreateECSEffect(target, effectiveness);
+			// eChatType noOverwrite = (Spell.Pulse == 0) ? eChatType.CT_SpellResisted : eChatType.CT_SpellPulse;
 
-            CreateECSEffect(target, effectiveness);
+			CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target, effectiveness), effectiveness, this));
             
             // GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
             //

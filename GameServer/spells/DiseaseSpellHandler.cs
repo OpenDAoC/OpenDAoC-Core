@@ -36,10 +36,15 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Disease")]
 	public class DiseaseSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// called after normal spell cast is completed and effect has to be started
-		/// </summary>
-		public override void FinishSpellCast(GameLiving target)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new DiseaseECSGameEffect(initParams);
+        }
+
+        /// <summary>
+        /// called after normal spell cast is completed and effect has to be started
+        /// </summary>
+        public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);

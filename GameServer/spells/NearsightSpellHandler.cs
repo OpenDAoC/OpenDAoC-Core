@@ -26,11 +26,16 @@ using DOL.Language;
 namespace DOL.GS.Spells
 {
 	/// <summary>
-	/// Reduce range needed to cast the sepll
+	/// Reduce range needed to cast the spell
 	/// </summary>
 	[SpellHandler("Nearsight")]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new NearsightECSGameEffect(initParams);
+        }
+
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
 			if (EffectListService.GetEffectOnTarget(target, eEffect.Nearsight) != null)

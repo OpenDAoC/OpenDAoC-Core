@@ -3928,14 +3928,16 @@ namespace DOL.GS.PacketHandler
 						}
 
 						// store tooltip update for gamespelleffect.
-						if (ForceTooltipUpdate && effect is ECSGameEffect gameEffect)
+						if (ForceTooltipUpdate && effect is ECSGameEffect gameEffect && effect.FromSpell)
 						{
 							tooltipSpellHandlers.Add(gameEffect.SpellHandler);
 						}
 
 						//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
-						pak.WriteByte((byte)(fxcount - 1)); // icon index
-						pak.WriteByte((effect is ECSGameEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
+						// icon index
+						pak.WriteByte((byte)(fxcount - 1));
+						// Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
+						pak.WriteByte((effect.FromSpell || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); 
 
 						byte ImmunByte = 0;
 						var gsp = effect as ECSGameEffect;
@@ -3950,29 +3952,20 @@ namespace DOL.GS.PacketHandler
 						pak.WriteShort(effect.Icon);
 						pak.WriteShort((ushort)(effect.GetRemainingTimeForClient() / 1000));
 						if (effect is ECSGameEffect || effect is ECSImmunityEffect)
-							pak.WriteShort((ushort)((ECSGameEffect)effect).Icon); //v1.110+ send the spell ID for delve info in active icon
+							pak.WriteShort(effect.Icon); //v1.110+ send the spell ID for delve info in active icon
 						else
 							pak.WriteShort(0);//don't override existing tooltip ids
 
 						byte flagNegativeEffect = 0;
-                        
-						// if (effect is StaticEffect)
-						// {
-						// 	if (((StaticEffect)effect).HasNegativeEffect)
-						// 	{
-						// 		flagNegativeEffect = 1;
-						// 	}
-						// }
-						// else if (effect is GameSpellEffect)
-						// {
-						// 	if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
-						// 	{
-						// 		flagNegativeEffect = 1;
-						// 	}
-						// }
-						pak.WriteByte(flagNegativeEffect);
 
-						pak.WritePascalString(effect.SpellHandler.Spell.Name);
+						if (!effect.HasPositiveEffect)
+						{
+							flagNegativeEffect = 1;
+						}
+
+                        pak.WriteByte(flagNegativeEffect);
+
+						pak.WritePascalString(effect.Name);
 						entriesCount++;
 					}
 				}

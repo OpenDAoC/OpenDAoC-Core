@@ -13124,18 +13124,15 @@ namespace DOL.GS
 		/// Property that holds tick when stealth state was changed last time
 		/// </summary>
 		public const string STEALTH_CHANGE_TICK = "StealthChangeTick";
-		/// <summary>
-		/// Holds the stealth effect
-		/// </summary>
-		protected StealthEffect m_stealthEffect = null;
-		/// <summary>
-		/// The stealth state of this player
-		/// </summary>
-		public override bool IsStealthed
+        /// <summary>
+        /// The stealth state of this player
+        /// </summary>
+        public override bool IsStealthed
 		{
-			get { return m_stealthEffect != null; }
+			get { return effectListComponent.ContainsEffectForEffectType(eEffect.Stealth); }
 		}
-		public static void Unstealth(DOLEvent ev, object sender, EventArgs args)
+
+        public static void Unstealth(DOLEvent ev, object sender, EventArgs args)
 		{
 			AttackedByEnemyEventArgs atkArgs = args as AttackedByEnemyEventArgs;
 			GamePlayer player = sender as GamePlayer;
@@ -13163,111 +13160,47 @@ namespace DOL.GS
 			if (IsOnHorse || IsSummoningMount)
 				IsOnHorse = false;
 
-			UncoverStealthAction action = (UncoverStealthAction)TempProperties.getProperty<object>(UNCOVER_STEALTH_ACTION_PROP, null);
 			if (goStealth)
 			{
-				//start the uncover timer
-				if (action == null)
-					action = new UncoverStealthAction(this);
-				action.Interval = 2000;
-				action.Start(2000);
-				TempProperties.setProperty(UNCOVER_STEALTH_ACTION_PROP, action);
-
-				if (ObjectState == eObjectState.Active)
-					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				Out.SendPlayerModelTypeChange(this, 3);
-				m_stealthEffect = new StealthEffect();
-				m_stealthEffect.Start(this);
-
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
-                {
-                    EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), true);
-                }
-				// Cancel pulse effect
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
-                {
-					EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(this, eEffect.Pulse));
-                }
-
-				if (Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
-                {
-					Sprint(false);
-					//GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						if (player == null) continue;
-						if (player == this) continue;
-						if (!player.CanDetect(this))
-							player.Out.SendObjectDelete(this);
-					}
-					Out.SendUpdateMaxSpeed();
-				}
-				
+				new StealthECSGameEffect(new ECSGameEffectInitParams(this,0, 1, null));
 			}
 			else
 			{
-				//stop the uncover timer
-				if (action != null)
-				{
-					action.Stop();
-					TempProperties.removeProperty(UNCOVER_STEALTH_ACTION_PROP);
-				}
-
-				if (ObjectState == eObjectState.Active)
-					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Stealth.NoLongerHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-				CamouflageEffect cam = EffectList.GetOfType<CamouflageEffect>();
-				if (cam != null)
-				{
-					cam.Stop();
-				}
-				//Andraste
-				try
-				{
-					GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "BlanketOfCamouflage");
-					if (effect != null) effect.Cancel(false);
-				}
-				catch (Exception) { }
-
-				Out.SendPlayerModelTypeChange(this, 2);
-				if (m_stealthEffect != null) m_stealthEffect.Stop();
-				m_stealthEffect = null;
-				GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					if (player == null) continue;
-					//TODO: more correct way to do it
-					if (player == this) continue;
-
-					/// [Atlas - Takii] This commented code from DOL causes a large (1-2 seconds) delay before the target unstealths.
-					/// It does not seem to cause any issues related to targeting despite the comments.
-					//if a player could see us stealthed, we just update our model to avoid untargetting.
-// 					if (player.CanDetect(this))
-// 						player.Out.SendPlayerModelTypeChange(this, 2);
-// 					else
-// 						player.Out.SendPlayerCreate(this);
-					player.Out.SendPlayerCreate(this);
-					player.Out.SendLivingEquipmentUpdate(this);
-				}
-				if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
-				{
-					EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff), false);
-				}
-			}
-
-			
-			Notify(GamePlayerEvent.StealthStateChanged, this, null);
-			if(Client.Account.PrivLevel == 1 || Client.Account.PrivLevel == 0)
-            {
-				Out.SendUpdateMaxSpeed();
-			}
-			
+				if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
+                {
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+                }
+            }
 		}
 
-		/// <summary>
-		/// The temp property that stores the uncover stealth action
-		/// </summary>
-		protected const string UNCOVER_STEALTH_ACTION_PROP = "UncoverStealthAction";
+		// UncoverStealthAction is what unstealths player if they are too close to mobs.
+		public void StartStealthUncoverAction()
+		{
+            UncoverStealthAction action = (UncoverStealthAction)TempProperties.getProperty<object>(UNCOVER_STEALTH_ACTION_PROP, null);
+            //start the uncover timer
+            if (action == null)
+                action = new UncoverStealthAction(this);
+            action.Interval = 2000;
+            action.Start(2000);
+            TempProperties.setProperty(UNCOVER_STEALTH_ACTION_PROP, action);
+        }
+
+		// UncoverStealthAction is what unstealths player if they are too close to mobs.
+		public void StopStealthUncoverAction()
+        {
+            UncoverStealthAction action = (UncoverStealthAction)TempProperties.getProperty<object>(UNCOVER_STEALTH_ACTION_PROP, null);
+            //stop the uncover timer
+            if (action != null)
+            {
+                action.Stop();
+                TempProperties.removeProperty(UNCOVER_STEALTH_ACTION_PROP);
+            }
+        }
+
+        /// <summary>
+        /// The temp property that stores the uncover stealth action
+        /// </summary>
+        protected const string UNCOVER_STEALTH_ACTION_PROP = "UncoverStealthAction";
 
 		/// <summary>
 		/// Uncovers the player if a mob is too close

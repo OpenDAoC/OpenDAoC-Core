@@ -253,6 +253,7 @@ namespace DOL.GS
                     case eAttackResult.Missed:
                     case eAttackResult.Blocked:
                     case eAttackResult.Evaded:
+                    case eAttackResult.Fumbled: // Takii - Fumble should not prevent Offhand attack. https://www.atlasfreeshard.com/tickets/fumble-mainhand-lets-offhand-not-swing.1012/
                     case eAttackResult.Parried:
                         for (int i = 0; i < leftHandSwingCount; i++)
                         {

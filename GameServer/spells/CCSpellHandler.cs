@@ -204,7 +204,12 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Mesmerize")]
 	public class MesmerizeSpellHandler : AbstractCCSpellHandler
 	{
-		public override void OnEffectPulse(GameSpellEffect effect)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new MezECSGameEffect(initParams);
+        }
+
+        public override void OnEffectPulse(GameSpellEffect effect)
 		{
 			SendEffectAnimation(effect.Owner, 0, false, 1);
 			base.OnEffectPulse(effect);
@@ -482,7 +487,12 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Stun")]
 	public class StunSpellHandler : AbstractCCSpellHandler
 	{
-		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new StunECSGameEffect(initParams);
+        }
+
+        protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
 		{
 			//use ResurrectMana=1 if the Stun should not have immunity
 			if(Spell.ResurrectMana==1)
