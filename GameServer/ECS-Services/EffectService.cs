@@ -112,12 +112,7 @@ namespace DOL.GS
                             //Console.WriteLine("Applying EnduranceRegenBuff");
                             var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                             ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }                     
-                        else if (e.EffectType == eEffect.SavageBuff)
-                        {
-                            //Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
-                            ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }
+                        }                                            
                         else if (e.EffectType == eEffect.ResurrectionIllness)
                         {
                             GamePlayer gPlayer = e.Owner as GamePlayer;
@@ -218,23 +213,7 @@ namespace DOL.GS
                         //Console.WriteLine("Removing EnduranceRegenBuff");
                         var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                         ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                    }                   
-                    else if (e.EffectType == eEffect.SavageBuff)
-                    {
-                        //Console.WriteLine($"Savage Canceling {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
-                        ApplyBonus(e.Owner, (e.SpellHandler as AbstractSavageBuff).BonusCategory1, (e.SpellHandler as AbstractSavageBuff).Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-
-                        if (e.SpellHandler.Spell.Power != 0)
-                        {
-                            int cost = 0;
-                            if (e.SpellHandler.Spell.Power < 0)
-                                cost = (int)(e.SpellHandler.Caster.MaxHealth * Math.Abs(e.SpellHandler.Spell.Power) * 0.01);
-                            else
-                                cost = e.SpellHandler.Spell.Power;
-                            if (e.Owner.Health > cost)
-                                e.Owner.ChangeHealth(e.Owner, eHealthChangeType.Spell, -cost);
-                        }
-                    }
+                    }                                       
                     else if (e.EffectType == eEffect.Pet)
                     {
                         if (e.SpellHandler.Caster.PetCount > 0)
