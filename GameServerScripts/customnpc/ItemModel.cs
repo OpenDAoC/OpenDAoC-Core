@@ -2044,7 +2044,7 @@ namespace DOL.GS {
                 //staffs
                 case "traldor's oracle":
                     price = artifact;
-                    modelIDToAssign = 1658;
+                    modelIDToAssign = 1659;
                     break;
                 case "trident of the gods":
                     price = artifact;
@@ -2052,7 +2052,7 @@ namespace DOL.GS {
                     break;
                 case "tartaros gift":
                     price = artifact;
-                    modelIDToAssign = 1659;
+                    modelIDToAssign = 1658;
                     break;
                 case "dragonsworn staff":
                     price = dragon;
