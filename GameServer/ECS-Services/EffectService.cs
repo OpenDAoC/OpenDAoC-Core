@@ -112,14 +112,7 @@ namespace DOL.GS
                             //Console.WriteLine("Applying EnduranceRegenBuff");
                             var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                             ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }
-                        else if (e.EffectType == eEffect.PiercingMagic)
-                        {
-                            //Console.WriteLine($"Buffing {e.SpellHandler.Spell.Name}");
-                            //Console.WriteLine($"Value before: {e.Owner.Effectiveness}");
-                            e.Owner.Effectiveness += (e.SpellHandler.Spell.Value / 100);
-                            //Console.WriteLine($"Value after: {e.Owner.Effectiveness}");
-                        }
+                        }                     
                         else if (e.EffectType == eEffect.SavageBuff)
                         {
                             //Console.WriteLine($"Savage Buffing {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
@@ -225,14 +218,7 @@ namespace DOL.GS
                         //Console.WriteLine("Removing EnduranceRegenBuff");
                         var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                         ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                    }
-                    else if (e.EffectType == eEffect.PiercingMagic)
-                    {
-                        //Console.WriteLine($"Canceling {e.SpellHandler.Spell.Name}");
-                        //Console.WriteLine($"Value before: {e.Owner.Effectiveness}");
-                        e.Owner.Effectiveness -= (e.SpellHandler.Spell.Value / 100);
-                        //Console.WriteLine($"Value after: {e.Owner.Effectiveness}");                        
-                    }
+                    }                   
                     else if (e.EffectType == eEffect.SavageBuff)
                     {
                         //Console.WriteLine($"Savage Canceling {(e.SpellHandler as AbstractSavageBuff).Property1.ToString()}");
