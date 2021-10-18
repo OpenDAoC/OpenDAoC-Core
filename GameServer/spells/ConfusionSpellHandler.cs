@@ -35,6 +35,11 @@ namespace DOL.GS.Spells
 
 		public ArrayList targetList = new ArrayList();
 
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new ConfusionECSGameEffect(initParams);
+		}
+
 		public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);

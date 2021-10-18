@@ -73,6 +73,11 @@ namespace DOL.GS.Spells
         	Reptile = 8,	
         }
 
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new CharmECSGameEffect(initParams);
+        }
+
         /// <summary>
         /// called after normal spell cast is completed and effect has to be started
         /// </summary>
@@ -444,7 +449,9 @@ namespace DOL.GS.Spells
 
             //charm.Cancel(false);
             //charm.FirstOrDefault().CancelEffect = true;
-            EffectService.RequestCancelEffect(charm?.FirstOrDefault());
+            //if (charm?.FirstOrDefault().GetRemainingTimeForClient() < 0)
+            if (e == GameLivingEvent.PetReleased)
+                EffectService.RequestCancelEffect(charm?.FirstOrDefault());
         }
 
         /// <summary>

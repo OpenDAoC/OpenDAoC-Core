@@ -110,6 +110,7 @@ namespace DOL.GS
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
+            NextTick = 0;
 
             if (FromSpell)
             {
@@ -123,10 +124,6 @@ namespace DOL.GS
                 else if (SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime)
                 {
                     NextTick = StartTick;
-                }
-                else if (SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion)
-                {
-                    PulseFreq = 5000;
                 }
                 else if (SpellHandler.Spell.IsConcentration)
                 {
@@ -190,5 +187,6 @@ namespace DOL.GS
 
         public virtual void OnStartEffect() { }
         public virtual void OnStopEffect() { }
+        public virtual void OnEffectPulse() { }
     }
 }

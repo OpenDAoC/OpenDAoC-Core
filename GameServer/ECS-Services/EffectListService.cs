@@ -150,23 +150,14 @@ namespace DOL.GS
                                     effect.ExpireTick = GameLoop.GameLoopTime - 1;
                             }
                         }
+                        if (effect.NextTick != 0 && tick > effect.NextTick)
+                        {
+                            effect.OnEffectPulse();
+                        }
                         if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
                         {
                             (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
                             effect.NextTick += effect.PulseFreq;
-                        }
-                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.NextTick)
-                        {
-                            if ((effect.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
-                            {
-                                GameNPC npc = effect.Owner as GameNPC;
-                                npc.StopAttack();
-                                npc.StopCurrentSpellcast();
-
-                                GameLiving target = (effect.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
-
-                                npc.StartAttack(target);
-                            }
                         }
                         if (effect.SpellHandler.Spell.IsConcentration && tick > effect.NextTick)
                         {
@@ -203,41 +194,7 @@ namespace DOL.GS
                             }
 
                             effect.NextTick += effect.PulseFreq;
-                        }
-                        //if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                        //{
-                        //    if (tick > effect.NextTick)
-                        //    {
-                        //        double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
-                        //        if (factor < 0) factor = 0;
-                        //        else if (factor > 1) factor = 1;
-                        //        Console.WriteLine("SpeedDecrease Tick for " + effect.Owner.Name);
-                        //        effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
-
-                        //        UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
-                        //        effect.NextTick += effect.TickInterval;
-                        //        if (factor <= 0)
-                        //            effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                        //    }
-                        //}
-                        //if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.HealOverTime && tick > effect.NextTick)
-                        //{
-                        //    (effect.SpellHandler as HoTSpellHandler).OnDirectEffect(effect.Owner, effect.Effectiveness);
-                        //    effect.NextTick += effect.PulseFreq;
-                        //}
-                        if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Confusion && tick > effect.NextTick)
-                        {
-                            if ((effect.SpellHandler as ConfusionSpellHandler).targetList.Count > 0)
-                            {
-                                GameNPC npc = effect.Owner as GameNPC;
-                                npc.StopAttack();
-                                npc.StopCurrentSpellcast();
-
-                                GameLiving target = (effect.SpellHandler as ConfusionSpellHandler).targetList[Util.Random((effect.SpellHandler as ConfusionSpellHandler).targetList.Count - 1)] as GameLiving;
-
-                                npc.StartAttack(target);
-                            }
-                        }
+                        }                    
                     }
                 }
             }
