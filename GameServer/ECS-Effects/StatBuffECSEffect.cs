@@ -91,7 +91,7 @@ namespace DOL.GS
             IsBuffActive = false;
         }
 
-        private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
+        protected static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
         {
             int effectiveValue = (int)(Value * Effectiveness);
 

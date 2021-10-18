@@ -32,7 +32,12 @@ namespace DOL.GS.Spells
 	public abstract class AbstractSavageBuff : PropertyChangingSpell
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-	
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new SavageBuffECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only
