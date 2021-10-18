@@ -35,6 +35,11 @@ namespace DOL.GS.Spells
 	{
 		public const string ABLATIVE_HP = "ablative hp";
 
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new AblativeArmorECSGameEffect(initParams);
+		}
+
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			//base.OnEffectStart(effect);

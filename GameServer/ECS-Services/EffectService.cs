@@ -113,16 +113,6 @@ namespace DOL.GS
                             var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                             ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
                         }
-                        else if (e.EffectType == eEffect.AblativeArmor)
-                        {
-                            e.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, (int)e.SpellHandler.Spell.Value);
-                            //GameEventMgr.AddHandler(e.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-
-                            eChatType toLiving = (e.SpellHandler.Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
-                            eChatType toOther = (e.SpellHandler.Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
-                            (e.SpellHandler as AblativeArmorSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message1, toLiving);
-                            Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message2, e.Owner.GetName(0, false)), toOther, e.Owner);
-                        }
                         else if (e.EffectType == eEffect.PiercingMagic)
                         {
                             //Console.WriteLine($"Buffing {e.SpellHandler.Spell.Name}");
@@ -235,15 +225,6 @@ namespace DOL.GS
                         //Console.WriteLine("Removing EnduranceRegenBuff");
                         var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                         ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                    }
-                    else if (e.EffectType == eEffect.AblativeArmor)
-                    {
-                        e.Owner.TempProperties.removeProperty(AblativeArmorSpellHandler.ABLATIVE_HP);
-                        //if (!noMessages && Spell.Pulse == 0)
-                        //{
-                        (e.SpellHandler as AblativeArmorSpellHandler).MessageToLiving(e.Owner, e.SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
-                         Message.SystemToArea(e.Owner, Util.MakeSentence(e.SpellHandler.Spell.Message4, e.Owner.GetName(0, false)), eChatType.CT_SpellExpires, e.Owner);
-                        //}
                     }
                     else if (e.EffectType == eEffect.PiercingMagic)
                     {
