@@ -3052,14 +3052,15 @@ namespace DOL.GS {
                 case Slot.CLOAK:
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
-                        /*  "[Realm Cloak] (" + cloakexpensive + " RPs)\n" +
+                        "***** Catacombs Models Only ***** \n" +
+                          "[Realm Cloak] (" + cloakexpensive + " RPs)\n" +
                           "[Dragonslayer Cloak] (" + cloakexpensive + " RPs)\n" +
-                          "[Dragonsworn Cloak] (" + cloakcheap + " RPs)\n" +
-                          "[Valentines Cloak] (" + cloakcheap + " RPs)\n" +
-                          "[Winter Cloak] (" + cloakcheap + " RPs)\n" + //yep all these IDs are too new too
-                        //another one for the model wizards
-                          "[Clean Leather Cloak] (" + cloakcheap + " RPs)\n" +
-                          "[Corrupt Leather Cloak] (" + cloakcheap + " RPs)\n" + */
+                          "[Dragonsworn Cloak] (" + cloakmedium + " RPs)\n" +
+                          "[Valentines Cloak] (" + cloakmedium + " RPs)\n" +
+                          "[Winter Cloak] (" + cloakmedium + " RPs)\n" + 
+                          "[Clean Leather Cloak] (" + cloakmedium + " RPs)\n" +
+                          "[Corrupt Leather Cloak] (" + cloakmedium + " RPs)\n" + 
+                          "***** End Cata Only ***** \n" +
                         "[Cloudsong] (" + cloakmedium + " RPs)\n" +
                         "[Shades of Mist] (" + cloakmedium + " RPs)\n" +
                         "[Harpy Feather Cloak] (" + cloakmedium + " RPs)\n" +
