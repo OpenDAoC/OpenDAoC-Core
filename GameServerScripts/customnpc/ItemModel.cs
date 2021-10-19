@@ -23,12 +23,14 @@ namespace DOL.GS {
         //20k champion
         private int lowbie = 450;
         private int festive = 900;
-        private int toageneric = 1800; //effects price in RPs
+        private int toageneric = 1800;
+        private int armorpads = 2500;
         private int artifact = 4800;
         private int epic = 4000;
         private int dragon = 9000;
         private int champion = 18000;
-        private int cloakcheap = 18000;
+        private int cloakcheap = 9000;
+        private int cloakmedium = 18000;
         private int cloakexpensive = 61749;
 
         public override bool AddToWorld()
@@ -1641,9 +1643,7 @@ namespace DOL.GS {
                 #endregion
 
                 #region cloaks 
-                // :fademe:
-                //I wish we had the champion cloaks
-
+                
                 case "realm cloak":
                     price = cloakexpensive;
                     switch ((eRealm)player.Realm)
@@ -1677,72 +1677,72 @@ namespace DOL.GS {
                     break;
 
                 case "dragonsworn cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 3790;
                     break;
 
                 case "valentines cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 3752;
                     break;
 
                 case "winter cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 4115;
                     break;
 
                 case "clean leather cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 3637;
                     break;
 
                 case "corrupt leather cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 3634;
                     break;
 
                 case "cloudsong":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1727;
                     break;
 
                 case "shades of mist": //lol spelled it right here so its broken until I rebuild
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1726;
                     break;
 
                 case "magma cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1725;
                     break;
 
                 case "stygian cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1724;
                     break;
 
                 case "aerus cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1720;
                     break;
 
                 case "oceanus cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1722;
                     break;
 
                 case "harpy feather cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1721;
                     break;
 
                 case "healer's embrace":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 1723;
                     break;
 
                 case "collared cloak":
-                    price = cloakcheap;
+                    price = cloakmedium;
                     modelIDToAssign = 669;
                     break;
 
@@ -2873,32 +2873,54 @@ namespace DOL.GS {
                     modelIDToAssign = 3706;
                     break;
                 #endregion
-                    /*
-                #region Extensions
-                case "ext 2":
-                    price = 1;
-                    item.Extension = 2;
+
+                #region Armor Pads
+                case "armor pad":
+                    SendReply(player, "I can offer the following pad types: \n\n" +
+                        "[Type 1] \n" +
+                        "[Type 2] \n" +
+                        "[Type 3] \n" +
+                        "[Type 4] \n" +
+                        "[Type 5]"
+                        );
+                    return true;
+
+                case "type 1":
+                    price = armorpads;
+                    modelIDToAssign = 1;
                     break;
-                case "ext 3":
-                    price = 1;
-                    item.Extension = 3;
+                case "type 2":
+                    price = armorpads;
+                    modelIDToAssign = 2;
                     break;
-                case "ext 4":
-                    price = 1;
-                    item.Extension = 4;
+                case "type 3":
+                    price = armorpads;
+                    modelIDToAssign = 3;
                     break;
-                case "ext 5":
-                    price = 1;
-                    item.Extension = 5;
+                case "type 4":
+                    price = armorpads;
+                    modelIDToAssign = 4;
+                    break;
+                case "type 5":
+                    price = armorpads;
+                    modelIDToAssign = 5;
                     break;
                     #endregion
-                    */
-                    return true;
+                    
             }
             
-            int model = item.Model;
-            if (modelIDToAssign != 0) model = modelIDToAssign;
-            SetModel(player, model, price);
+            if (price == armorpads)
+            {
+                int extens = item.Extension;
+                if (modelIDToAssign != extens) extens = modelIDToAssign;
+                SetExtension(player, (byte)extens, price);
+            } else
+            {
+                int model = item.Model;
+                if (modelIDToAssign != 0) model = modelIDToAssign;
+                SetModel(player, model, price);
+            }
+
             return true;
         }
 
@@ -2967,6 +2989,8 @@ namespace DOL.GS {
                         "[Aerus Breastplate] (" + toageneric + " RPs)\n" +
 
                         "");
+                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " RPs) options."
+                         );
                     break;
 
                 case Slot.ARMS:
@@ -3006,6 +3030,8 @@ namespace DOL.GS {
                         "[Aerus Gloves] (" + toageneric + " RPs)\n" +
 
                         "");
+                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " RPs) options."
+                         );
                     break;
 
                 case Slot.FEET:
@@ -3019,6 +3045,8 @@ namespace DOL.GS {
                         "[Aerus Boots] (" + toageneric + " RPs)\n" +
 
                         "");
+                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " RPs) options."
+                         );
                     break;
 
                 case Slot.CLOAK:
@@ -3032,15 +3060,15 @@ namespace DOL.GS {
                         //another one for the model wizards
                           "[Clean Leather Cloak] (" + cloakcheap + " RPs)\n" +
                           "[Corrupt Leather Cloak] (" + cloakcheap + " RPs)\n" + */
-                        "[Cloudsong] (" + cloakcheap + " RPs)\n" +
-                        "[Shades of Mist] (" + cloakcheap + " RPs)\n" +
-                        "[Harpy Feather Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Healer's Embrace] (" + cloakcheap + " RPs)\n" +
-                        "[Oceanus Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Magma Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Stygian Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Aerus Cloak] (" + cloakcheap + " RPs)\n" +
-                        "[Collared Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Cloudsong] (" + cloakmedium + " RPs)\n" +
+                        "[Shades of Mist] (" + cloakmedium + " RPs)\n" +
+                        "[Harpy Feather Cloak] (" + cloakmedium + " RPs)\n" +
+                        "[Healer's Embrace] (" + cloakmedium + " RPs)\n" +
+                        "[Oceanus Cloak] (" + cloakmedium + " RPs)\n" +
+                        "[Magma Cloak] (" + cloakmedium + " RPs)\n" +
+                        "[Stygian Cloak] (" + cloakmedium + " RPs)\n" +
+                        "[Aerus Cloak] (" + cloakmedium + " RPs)\n" +
+                        "[Collared Cloak] (" + cloakmedium + " RPs)\n" +
                         "");
                     break;
 
@@ -3232,7 +3260,7 @@ namespace DOL.GS {
 
                     break;
             }
-
+            
             SendReply(t, ""
                          );
             t.TempProperties.setProperty(TempProperty, item);
@@ -3339,6 +3367,54 @@ namespace DOL.GS {
                 return;
             }
             
+            SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
+                              "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
+        }
+
+        public void SetExtension(GamePlayer player, byte number, int price)
+        {
+            if (price > 0)
+            {
+                if (player.RealmPoints < price)
+                {
+                    SendReply(player, "I'm sorry, but you cannot afford my services currently.");
+                    return;
+                }
+
+                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
+                player.TempProperties.removeProperty(TempProperty);
+
+                if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
+                    return;
+
+                //only allow pads on valid slots: torso/hand/feet
+                if (item.Item_Type != (int)eEquipmentItems.TORSO && item.Item_Type != (int)eEquipmentItems.HAND && item.Item_Type != (int)eEquipmentItems.FEET)
+                {
+                    SendReply(player, "I'm sorry, but I can only modify the pads on Torso, Hand, and Feet armors.");
+                    return;
+                }
+                
+
+                player.Inventory.RemoveItem(item);
+                ItemUnique unique = new ItemUnique(item.Template);
+                unique.Extension = number;
+                GameServer.Database.AddObject(unique);
+                InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
+                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+                player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
+                // player.RemoveBountyPoints(300);
+                player.RealmPoints -= price;
+                player.RespecRealm();
+                SetRealmLevel(player, (int)player.RealmPoints);
+                player.SaveIntoDatabase();
+
+                SendReply(player, "Thanks for your donation. " +
+                                  "I have changed your item's extension, you can now use it. \n\n" +
+                                  "I look forward to doing business with you in the future.");
+
+                return;
+            }
+
             SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         }
