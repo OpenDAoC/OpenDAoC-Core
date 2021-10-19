@@ -29,6 +29,11 @@ namespace DOL.GS.Spells
 	[SpellHandler("PveResurrectionIllness")]
 	public class PveResurrectionIllness : AbstractIllnessSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new ResurrectionIllnessECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only
