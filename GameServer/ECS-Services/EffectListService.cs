@@ -46,8 +46,12 @@ namespace DOL.GS
 
                         // TEMP - A lot of the code below assumes effects come from spells but many effects come from abilities (Sprint, Stealth, RAs, etc)
                         // This will need a better refactor later but for now this prevents crashing while working on porting over non-spell based effects to our system.
-                        if (!effect.FromSpell)
+                        if (!effect.FromSpell && effect.Duration > 0)
+                        {
+                            if (tick > effect.ExpireTick)
+                                EffectService.RequestCancelEffect(effect);
                             continue;
+                        }
 
                         if (tick > effect.ExpireTick && !effect.SpellHandler.Spell.IsConcentration)
                         {

@@ -81,16 +81,20 @@ namespace DOL.GS.SkillHandler
 			}
 
 			//Cancel old berserk effects on player
-			BerserkEffect berserk = player.EffectList.GetOfType<BerserkEffect>();
-			if (berserk!=null)
-			{
-				berserk.Cancel(false);
-				return;
-			}
+			//BerserkEffect berserk = player.EffectList.GetOfType<BerserkEffect>();
+			//if (berserk!=null)
+			//{
+			//	berserk.Cancel(false);
+			//	return;
+			//}
+			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(player, eEffect.Berserk);
+			if (berserk != null)
+				EffectService.RequestCancelEffect(berserk);
 
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new BerserkEffect().Start(player);
+			//new BerserkEffect().Start(player);
+			new BerserkECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1, null));
 		}                       
     }
 }

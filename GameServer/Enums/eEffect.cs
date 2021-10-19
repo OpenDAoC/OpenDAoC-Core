@@ -118,6 +118,7 @@ namespace DOL.GS
         ResurrectionIllness,
         RvrResurrectionIllness,
         Stealth,
-        Sprint
+        Sprint,
+        Berserk
     }
 }
