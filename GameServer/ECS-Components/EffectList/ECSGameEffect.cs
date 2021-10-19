@@ -133,7 +133,7 @@ namespace DOL.GS
             EntityManager.AddEffect(this);
         }
 
-        public long GetRemainingTimeForClient()
+        public virtual long GetRemainingTimeForClient()
         {
             if (Duration > 0)
                 return (ExpireTick - GameLoop.GameLoopTime);

@@ -11019,16 +11019,13 @@ namespace DOL.GS
 		{
 			get { return base.IsMoving || IsStrafing; }
 		}
-		/// <summary>
-		/// The sprint effect of this player
-		/// </summary>
-		protected SprintEffect m_sprintEffect = null;
+
 		/// <summary>
 		/// Gets sprinting flag
 		/// </summary>
 		public bool IsSprinting
 		{
-			get { return m_sprintEffect != null; }
+			get { return effectListComponent.ContainsEffectForEffectType(eEffect.Sprint); }
 		}
 		/// <summary>
 		/// Change sprint state of this player
@@ -11059,18 +11056,15 @@ namespace DOL.GS
 					return false;
 				}
 
-				m_sprintEffect = new SprintEffect();
-				m_sprintEffect.Start(this);
-				Out.SendUpdateMaxSpeed();
-				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sprint.PrepareSprint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				new SprintECSGameEffect(new ECSGameEffectInitParams(this, 0, 1, null));
 				return true;
 			}
 			else
 			{
-				m_sprintEffect.Stop();
-				m_sprintEffect = null;
-				Out.SendUpdateMaxSpeed();
-				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sprint.NoLongerReady"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if (effectListComponent.ContainsEffectForEffectType(eEffect.Sprint))
+				{
+					EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
+				}
 				return false;
 			}
 		}

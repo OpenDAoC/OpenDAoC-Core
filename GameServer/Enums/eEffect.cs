@@ -117,6 +117,7 @@ namespace DOL.GS
         PiercingMagic,
         ResurrectionIllness,
         RvrResurrectionIllness,
-        Stealth
+        Stealth,
+        Sprint
     }
 }

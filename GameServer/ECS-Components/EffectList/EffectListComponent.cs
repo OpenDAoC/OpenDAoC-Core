@@ -42,6 +42,10 @@ namespace DOL.GS
                     }
                     else if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
                     {
+                        // Check to prevent crash from holding sprint button down.
+                        if (!effect.FromSpell)
+                            return true;
+
                         // Effects contains this effect already so refresh it
                         if (existingEffects.Where(e => e.SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID).FirstOrDefault() != null)
                         {
