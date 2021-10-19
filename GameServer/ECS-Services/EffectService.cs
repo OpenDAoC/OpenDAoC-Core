@@ -67,16 +67,8 @@ namespace DOL.GS
                 return;
             }
 
-            if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
-            {
-                if (!e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
-                    effectList.AddEffect(e);
-
-                return;
-            }
-
             // Early out if we're trying to add an effect that is already present.
-            if (!effectList.AddEffect(e))
+            else if (!effectList.AddEffect(e))
             {
                 SendSpellResistAnimation(e);
                 return;
@@ -112,17 +104,7 @@ namespace DOL.GS
                             //Console.WriteLine("Applying EnduranceRegenBuff");
                             var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                             ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }                                            
-                        else if (e.EffectType == eEffect.ResurrectionIllness)
-                        {
-                            GamePlayer gPlayer = e.Owner as GamePlayer;
-                            if (gPlayer != null)
-                            {
-                                gPlayer.Effectiveness -= e.SpellHandler.Spell.Value * 0.01;
-                                gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                                gPlayer.Out.SendStatusUpdate();
-                            }
-                        }
+                        }                                                                   
                         
                         e.IsBuffActive = true;
                     }                                     
@@ -170,14 +152,6 @@ namespace DOL.GS
 
             //Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
 
-            if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
-            {
-                if (e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
-                    e.Owner.effectListComponent.RemoveEffect(e);
-                
-                return;
-            }
-
             if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 //Console.WriteLine("Unable to remove effect!");
@@ -200,24 +174,7 @@ namespace DOL.GS
                         //Console.WriteLine("Removing EnduranceRegenBuff");
                         var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                         ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                    }                                       
-                    else if (e.EffectType == eEffect.Pet)
-                    {
-                        if (e.SpellHandler.Caster.PetCount > 0)
-                            e.SpellHandler.Caster.PetCount--;
-                        e.Owner.Health = 0; // to send proper remove packet
-                        e.Owner.Delete();
-                    }
-                    else if (e.EffectType == eEffect.ResurrectionIllness)
-                    {
-                        GamePlayer gPlayer = e.Owner as GamePlayer;
-                        if (gPlayer != null)
-                        {
-                            gPlayer.Effectiveness += e.SpellHandler.Spell.Value * 0.01;
-                            gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                            gPlayer.Out.SendStatusUpdate();
-                        }
-                    }
+                    }                                                           
                 }
             }
 

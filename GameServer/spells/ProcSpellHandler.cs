@@ -40,6 +40,11 @@ namespace DOL.GS.Spells
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new ProcECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// Constructs new proc spell handler
 		/// </summary>
@@ -110,14 +115,14 @@ namespace DOL.GS.Spells
 			base.OnEffectStart(effect);
 			// "Your weapon is blessed by the gods!"
 			// "{0}'s weapon glows with the power of the gods!"
-			eChatType chatType = eChatType.CT_SpellPulse;
-			if (Spell.Pulse == 0)
-			{
-				chatType = eChatType.CT_Spell;
-			}
-			MessageToLiving(effect.Owner, Spell.Message1, chatType);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), chatType, effect.Owner);
-			GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+			//eChatType chatType = eChatType.CT_SpellPulse;
+			//if (Spell.Pulse == 0)
+			//{
+			//	chatType = eChatType.CT_Spell;
+			//}
+			//MessageToLiving(effect.Owner, Spell.Message1, chatType);
+			//Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), chatType, effect.Owner);
+			//GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
 		}
 
 		/// <summary>
@@ -129,12 +134,12 @@ namespace DOL.GS.Spells
 		/// <returns>immunity duration in milliseconds</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			if (!noMessages)
-			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
-			}
-			GameEventMgr.RemoveHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+			//if (!noMessages)
+			//{
+			//	MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+			//	Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
+			//}
+			//GameEventMgr.RemoveHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
 			return 0;
 		}
 
