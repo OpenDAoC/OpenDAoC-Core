@@ -457,7 +457,7 @@ namespace DOL.GS.Spells
 
 			if (Caster.IsEngaging)
 			{
-				EngageEffect effect = Caster.EffectList.GetOfType<EngageEffect>();
+				EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(Caster, eEffect.Engage);
 
 				if (effect != null)
 					effect.Cancel(false);
@@ -958,7 +958,7 @@ namespace DOL.GS.Spells
 			// Cancel engage if user starts attack
 			if (m_caster.IsEngaging)
 			{
-				EngageEffect engage = m_caster.EffectList.GetOfType<EngageEffect>();
+				EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(m_caster, eEffect.Engage);
 				if (engage != null)
 				{
 					engage.Cancel(false);

@@ -95,7 +95,7 @@ namespace DOL.GS
                     weaponAction = null;
             }
             
-            if (weaponAction is null && attackAction is null)
+            if (weaponAction is null && attackAction is null && !owner.InCombat)
             {
                 if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
                     EntityManager.RemoveComponent(typeof(AttackComponent), owner);
@@ -1264,6 +1264,7 @@ namespace DOL.GS
             ad.ArmorHitLocation = eArmorSlot.NOTSET;
             ad.Weapon = weapon;
             ad.IsOffHand = weapon == null ? false : weapon.Hand == 2;
+            AttackState = true;
 
             // Asp style range add
             int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)style?.Procs?.FirstOrDefault()?.Item1.Value - AttackRange: 0;
@@ -1768,8 +1769,8 @@ namespace DOL.GS
             //InterceptECSGameEffect intercept = null;
             GameSpellEffect bladeturn = null;
             ECSGameEffect ecsbladeturn = null;
-            EngageEffect engage = null;
-            //EngageECSGameEffect engage = null;
+            //EngageEffect engage = null;
+            EngageECSGameEffect engage = null;
             // ML effects
             GameSpellEffect phaseshift = null;
             GameSpellEffect grapple = null;
@@ -1811,12 +1812,12 @@ namespace DOL.GS
                         continue;
                     }
 
-                    //if (effect is EngageECSGameEffect)
-                    //{
-                    //    if (engage == null)
-                    //        engage = (EngageECSGameEffect)effect;
-                    //    continue;
-                    //}
+                    if (effect is EngageECSGameEffect)
+                    {
+                        if (engage == null)
+                            engage = (EngageECSGameEffect)effect;
+                        continue;
+                    }
 
                     if (effect.EffectType == eEffect.Bladeturn)
                     {
@@ -1866,12 +1867,12 @@ namespace DOL.GS
                     //    continue;
                     //}
 
-                    if (effect is EngageEffect)
-                    {
-                        if (engage == null)
-                            engage = (EngageEffect)effect;
-                        continue;
-                    }
+                    //if (effect is EngageEffect)
+                    //{
+                    //    if (engage == null)
+                    //        engage = (EngageEffect)effect;
+                    //    continue;
+                    //}
 
                     if (effect is GameSpellEffect)
                     {
