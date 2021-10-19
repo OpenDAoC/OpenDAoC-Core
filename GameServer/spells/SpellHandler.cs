@@ -421,7 +421,6 @@ namespace DOL.GS.Spells
         public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
         {
 
-            //IECSGameEffect effect;
             int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
