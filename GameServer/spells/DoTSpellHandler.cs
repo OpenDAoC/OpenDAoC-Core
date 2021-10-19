@@ -32,6 +32,10 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("DamageOverTime")]
 	public class DoTSpellHandler : SpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new DamageOverTimeECSGameEffect(initParams);
+		}
 		/// <summary>
 		/// Execute damage over time spell
 		/// </summary>
