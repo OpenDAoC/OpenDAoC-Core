@@ -1742,7 +1742,7 @@ namespace DOL.GS {
                     break;
 
                 case "collared cloak":
-                    price = cloakmedium;
+                    price = cloakcheap;
                     modelIDToAssign = 669;
                     break;
 
@@ -3068,7 +3068,7 @@ namespace DOL.GS {
                         "[Magma Cloak] (" + cloakmedium + " RPs)\n" +
                         "[Stygian Cloak] (" + cloakmedium + " RPs)\n" +
                         "[Aerus Cloak] (" + cloakmedium + " RPs)\n" +
-                        "[Collared Cloak] (" + cloakmedium + " RPs)\n" +
+                        "[Collared Cloak] (" + cloakcheap + " RPs)\n" +
                         "");
                     break;
 
