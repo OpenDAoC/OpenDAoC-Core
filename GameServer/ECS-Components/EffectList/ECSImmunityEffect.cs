@@ -5,6 +5,8 @@ namespace DOL.GS
 {
     public class ECSImmunityEffect : ECSGameEffect
     {
+        public override ushort Icon { get { return SpellHandler.Spell.Icon; } }
+        public override string Name { get { return SpellHandler.Spell.Name; } }
 
         public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
             : base(new ECSGameEffectInitParams(owner, duration, effectiveness))

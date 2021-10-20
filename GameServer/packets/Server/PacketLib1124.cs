@@ -3917,7 +3917,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects()/*Effects.Values*/.Where(e => e.EffectType != eEffect.Pulse))
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
 				{
 					if (effect.Icon != 0)
 					{
@@ -3936,13 +3936,12 @@ namespace DOL.GS.PacketHandler
 						//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
 						// icon index
 						pak.WriteByte((byte)(fxcount - 1));
-						// Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
-						pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); 
+                        // Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
+                        pak.WriteByte((effect is ECSGameAbilityEffect && effect.Icon <= 5000) ? (byte)0xff : (byte)(fxcount - 1)); 
+                        //pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); // <- [Takii] previous version
 
-						byte ImmunByte = 0;
+                        byte ImmunByte = 0;
 						var gsp = effect as ECSGameEffect;
-                        // if (gsp != null && gsp.IsDisabled)
-                        // 	ImmunByte = 1;
                         if (gsp is ECSImmunityEffect || gsp.IsDisabled)
                             ImmunByte = 1;
 						//todo this should be the ImmunByte
