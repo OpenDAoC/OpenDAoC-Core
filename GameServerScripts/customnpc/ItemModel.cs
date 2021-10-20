@@ -936,6 +936,60 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "good realm breastplate":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2790;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2797;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2803;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2809;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2815;
+                            break;
+                    }
+                    break;
+                case "possessed realm breastplate":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2728;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2735;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2741;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2747;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2753;
+                            break;
+                    }
+                    break;
                 case "eirene's chest":
                     price = artifact;
                     switch (player.Realm)
@@ -1693,6 +1747,60 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "good realm sleeves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2793;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2799;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2805;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2811;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2817;
+                            break;
+                    }
+                    break;
+                case "possessed realm sleeves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2731;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2737;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2743;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2749;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2755;
+                            break;
+                    }
+                    break;
                 case "foppish sleeves":
                     price = artifact;
                     modelIDToAssign = 1732;
@@ -2043,6 +2151,60 @@ namespace DOL.GS {
                             break;
                         case eObjectType.Plate:
                             modelIDToAssign = 3039;
+                            break;
+                    }
+                    break;
+                case "good realm pants":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2792;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2798;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2804;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2810;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2816;
+                            break;
+                    }
+                    break;
+                case "possessed realm pants":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2730;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2736;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2742;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2748;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2754;
                             break;
                     }
                     break;
@@ -2399,6 +2561,60 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "good realm boots":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2795;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2801;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2807;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2813;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2819;
+                            break;
+                    }
+                    break;
+                case "possessed realm boots":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2733;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2739;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2745;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2751;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2757;
+                            break;
+                    }
+                    break;
                 case "enyalio's boots":
                     price = artifact;
                     modelIDToAssign = 2488;
@@ -2749,6 +2965,60 @@ namespace DOL.GS {
                             break;
                         case eObjectType.Plate:
                             modelIDToAssign = 3042;
+                            break;
+                    }
+                    break;
+                case "good realm gloves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2796;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2802;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2808;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2814;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2820;
+                            break;
+                    }
+                    break;
+                case "possessed realm gloves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 2734;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 2740;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 2746;
+                            break;
+
+                        case eObjectType.Scale:
+                        case eObjectType.Chain:
+                            modelIDToAssign = 2752;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 2758;
                             break;
                     }
                     break;
