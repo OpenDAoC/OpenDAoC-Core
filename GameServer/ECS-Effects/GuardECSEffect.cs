@@ -10,13 +10,14 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class GuardECSGameEffect : ECSGameEffect
+    public class GuardECSGameEffect : ECSGameAbilityEffect
     {
         public GuardECSGameEffect(ECSGameEffectInitParams initParams, GameLiving guardSource, GameLiving guardTarget)
             : base(initParams) 
 		{
 			m_guardSource = guardSource;
 			m_guardTarget = guardTarget;
+			EffectType = eEffect.Guard;
 		}
 
 		/// <summary>
@@ -73,7 +74,6 @@ namespace DOL.GS
 			}
 		}
         public override bool HasPositiveEffect { get { return true; } }
-        protected override eEffect MapEffect() { return eEffect.Guard; }
 
         public override void OnStartEffect()
         {
