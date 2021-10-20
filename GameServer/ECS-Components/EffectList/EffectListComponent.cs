@@ -33,8 +33,20 @@ namespace DOL.GS
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
-                    if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
+                    if (effect.EffectType == eEffect.OffensiveProc || effect.EffectType == eEffect.DefensiveProc)
                     {
+                        if (!Effects.ContainsKey(effect.EffectType))
+                        {
+                            Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
+                            EffectIdToEffect.Add(effect.Icon, effect);
+                        }
+                    }
+                    else if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
+                    {
+                        // Check to prevent crash from holding sprint button down.
+                        if (!effect.FromSpell)
+                            return true;
+
                         // Effects contains this effect already so refresh it
                         if (existingEffects.Where(e => e.SpellHandler.Spell.ID == effect.SpellHandler.Spell.ID).FirstOrDefault() != null)
                         {

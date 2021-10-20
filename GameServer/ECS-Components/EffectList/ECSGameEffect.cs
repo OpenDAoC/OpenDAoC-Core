@@ -98,7 +98,7 @@ namespace DOL.GS
             NextTick = 0;
         }
 
-        public long GetRemainingTimeForClient()
+        public virtual long GetRemainingTimeForClient()
         {
             if (Duration > 0)
                 return (ExpireTick - GameLoop.GameLoopTime);

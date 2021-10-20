@@ -54,6 +54,11 @@ namespace DOL.GS.Spells
 
 		public SummonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new PetECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// called after normal spell cast is completed and effect has to be started
 		/// </summary>

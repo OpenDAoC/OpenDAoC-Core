@@ -3050,7 +3050,7 @@ namespace DOL.GS
 		/// </summary>
 		public void CancelEngageEffect()
 		{
-			EngageEffect effect = EffectList.GetOfType<EngageEffect>();
+			EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
 
 			if (effect != null)
 				effect.Cancel(false);
@@ -3806,7 +3806,7 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount, EngageEffect engage )
+		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount, EngageECSGameEffect engage )
 		{
 			// Block
       
@@ -3875,11 +3875,12 @@ namespace DOL.GS
 				else if (shieldSize == 3 && ad.Attacker is GameNPC && blockChance > .99)
 					blockChance = .99;
 
+				// KNutters - Removed the AttackState check because it is imposible to be in melee range
 				// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
-				if( engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker )
+				if( engage != null  && engage.EngageTarget == ad.Attacker )
 				{
 					// You cannot engage a mob that was attacked within the last X seconds...
-					if( engage.EngageTarget.LastAttackedByEnemyTick > engage.EngageTarget.CurrentRegion.Time - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK )
+					if( engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK )
 
 					{
 						if( engage.Owner is GamePlayer )

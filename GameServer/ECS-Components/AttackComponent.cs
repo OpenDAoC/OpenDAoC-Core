@@ -95,7 +95,7 @@ namespace DOL.GS
                     weaponAction = null;
             }
             
-            if (weaponAction is null && attackAction is null)
+            if (weaponAction is null && attackAction is null && !owner.InCombat)
             {
                 if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
                     EntityManager.RemoveComponent(typeof(AttackComponent), owner);
@@ -1264,6 +1264,7 @@ namespace DOL.GS
             ad.ArmorHitLocation = eArmorSlot.NOTSET;
             ad.Weapon = weapon;
             ad.IsOffHand = weapon == null ? false : weapon.Hand == 2;
+            AttackState = true;
 
             // Asp style range add
             int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)style?.Procs?.FirstOrDefault()?.Item1.Value - AttackRange: 0;
@@ -1761,11 +1762,15 @@ namespace DOL.GS
             //http://daoc.catacombs.com/forum.cfm?ThreadKey=511&DefMessage=681444&forum=DAOCMainForum#Defense
 
             GuardEffect guard = null;
+            //GuardECSGameEffect guard = null;
             DashingDefenseEffect dashing = null;
+            //DashingDefenseECSGameEffect dashing = null;
             InterceptEffect intercept = null;
+            //InterceptECSGameEffect intercept = null;
             GameSpellEffect bladeturn = null;
             ECSGameEffect ecsbladeturn = null;
-            EngageEffect engage = null;
+            //EngageEffect engage = null;
+            EngageECSGameEffect engage = null;
             // ML effects
             GameSpellEffect phaseshift = null;
             GameSpellEffect grapple = null;
@@ -1782,6 +1787,61 @@ namespace DOL.GS
             // get all needed effects in one loop
             owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out List<ECSGameEffect> btlist);
             ecsbladeturn = btlist?.FirstOrDefault();
+
+            lock (owner.effectListComponent.Effects)
+            {
+                foreach (ECSGameEffect effect in owner.effectListComponent.GetAllEffects())
+                {
+                    //if (effect is GuardECSGameEffect)
+                    //{
+                    //    if (guard == null && ((GuardECSGameEffect)effect).GuardTarget == owner)
+                    //        guard = (GuardECSGameEffect)effect;
+                    //    continue;
+                    //}
+
+                    //if (effect is DashingDefenseECSGameEffect)
+                    //{
+                    //    if (dashing == null && ((DashingDefenseECSGameEffect)effect).GuardTarget == owner)
+                    //        dashing = (DashingDefenseECSGameEffect)effect; //Dashing
+                    //    continue;
+                    //}
+
+                    if (effect is BerserkECSGameEffect)
+                    {
+                        defenseDisabled = true;
+                        continue;
+                    }
+
+                    if (effect is EngageECSGameEffect)
+                    {
+                        if (engage == null)
+                            engage = (EngageECSGameEffect)effect;
+                        continue;
+                    }
+
+                    if (effect.EffectType == eEffect.Bladeturn)
+                    {
+                        if (ecsbladeturn == null)
+                            ecsbladeturn = effect;
+                        continue;
+                    }
+
+                    // We check if interceptor can intercept
+
+                    // we can only intercept attacks on livings, and can only intercept when active
+                    // you cannot intercept while you are sitting
+                    // if you are stuned or mesmeried you cannot intercept...
+
+                    //InterceptECSGameEffect inter = effect as InterceptECSGameEffect;
+                    //if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
+                    //    && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
+                    //    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
+                    //{
+                    //    intercept = inter;
+                    //    continue;
+                    //}
+                }
+            }
 
             lock (owner.EffectList)
             {
@@ -1801,18 +1861,18 @@ namespace DOL.GS
                         continue;
                     }
 
-                    if (effect is BerserkEffect)
-                    {
-                        defenseDisabled = true;
-                        continue;
-                    }
+                    //if (effect is BerserkEffect)
+                    //{
+                    //    defenseDisabled = true;
+                    //    continue;
+                    //}
 
-                    if (effect is EngageEffect)
-                    {
-                        if (engage == null)
-                            engage = (EngageEffect)effect;
-                        continue;
-                    }
+                    //if (effect is EngageEffect)
+                    //{
+                    //    if (engage == null)
+                    //        engage = (EngageEffect)effect;
+                    //    continue;
+                    //}
 
                     if (effect is GameSpellEffect)
                     {
@@ -2488,7 +2548,7 @@ namespace DOL.GS
 
                     int critMin;
                     int critMax;
-                    BerserkEffect berserk = owner.EffectList.GetOfType<BerserkEffect>();
+                    ECSGameEffect berserk = EffectListService.GetEffectOnTarget(owner, eEffect.Berserk);
 
                     if (berserk != null)
                     {

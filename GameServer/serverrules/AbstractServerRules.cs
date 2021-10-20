@@ -1591,7 +1591,12 @@ namespace DOL.GS.ServerRules
 										count++;
 									}
 									realmPoints = (int)(realmPoints * (1.0 + count * 0.125));
+
 								}
+								if (!groupsToAward.Contains(killerPlayer.Group)){ groupsToAward.Add(killerPlayer.Group); }
+							} else if (!playersToAward.Contains(killerPlayer))
+                            {
+								playersToAward.Add(killerPlayer);
 							}
 						}
 						if (realmPoints > rpCap)
@@ -1602,21 +1607,8 @@ namespace DOL.GS.ServerRules
 							{
 								killedPlayer.LastDeathRealmPoints += realmPoints;
 								playerKillers.Add(new KeyValuePair<GamePlayer, int>(living as GamePlayer, realmPoints));
-
-								//add group to list if grouped kill 
-								if (p.Group != null && !groupsToAward.Contains(p.Group))
-								{
-									groupsToAward.Add(p.Group);
-								}
-								else if (!playersToAward.Contains(p))
-                                {
-									//else award solo players directly
-									playersToAward.Add(p);	
-                                }
 							}
-
 							living.GainRealmPoints(realmPoints);
-							
 						}
 					}
 
@@ -1738,6 +1730,7 @@ namespace DOL.GS.ServerRules
 						players.Add(pla);
                     }
 					GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
+					Console.WriteLine($"Chosen player: {playerToAward}");
 					if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
                 }
 
@@ -1746,6 +1739,7 @@ namespace DOL.GS.ServerRules
 				{
                     foreach (var player in playersToAward)
                     {
+						Console.WriteLine($"Generating ROG for {player}");
 						AtlasROGManager.GenerateROG(player, true);
 					}
 				}

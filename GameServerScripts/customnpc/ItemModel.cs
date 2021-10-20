@@ -1779,7 +1779,7 @@ namespace DOL.GS {
                     price = artifact;
                     modelIDToAssign = 3447;
                     break;
-                case "bruiser 1h":
+                case "bruiser hammer 1h":
                     price = artifact;
                     modelIDToAssign = 1671;
                     break;
@@ -2872,8 +2872,27 @@ namespace DOL.GS {
                     price = toageneric;
                     modelIDToAssign = 3706;
                     break;
+                #endregion
+                    /*
+                #region Extensions
+                case "ext 2":
+                    price = 1;
+                    item.Extension = 2;
+                    break;
+                case "ext 3":
+                    price = 1;
+                    item.Extension = 3;
+                    break;
+                case "ext 4":
+                    price = 1;
+                    item.Extension = 4;
+                    break;
+                case "ext 5":
+                    price = 1;
+                    item.Extension = 5;
+                    break;
                     #endregion
-
+                    */
                     return true;
             }
             

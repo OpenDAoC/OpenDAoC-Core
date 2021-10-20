@@ -47,7 +47,11 @@ namespace DOL.GS
                         // TEMP - A lot of the code below assumes effects come from spells but many effects come from abilities (Sprint, Stealth, RAs, etc)
                         // This will need a better refactor later but for now this prevents crashing while working on porting over non-spell based effects to our system.
                         if (effect is ECSGameAbilityEffect)
+                        {
+                            if (effect.Duration > 0 && tick > effect.ExpireTick)
+                                EffectService.RequestCancelEffect(effect);
                             continue;
+                        }
 
                         if (tick > effect.ExpireTick && !effect.IsConcentrationEffect())
                         {
@@ -93,10 +97,7 @@ namespace DOL.GS
                                 }
                             }
                             else
-                            {
-                                if (effect.EffectType == eEffect.Bleed)
-                                    effect.Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
-
+                            {                               
                                 if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
                                     effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                                 {
@@ -110,27 +111,7 @@ namespace DOL.GS
                                 }
                             }
                         }
-                        if (effect.EffectType == eEffect.DamageOverTime || effect.EffectType == eEffect.Bleed)
-                        {
-                            // Initial DoT application
-                            if (effect.LastTick == 0)
-                            {
-                                // Remove stealth on first application since the code that normally handles removing stealth on
-                                // attack ignores DoT damage, since only the first tick of a DoT should remove stealth.
-                                GamePlayer ownerPlayer = effect.Owner as GamePlayer;
-                                if (ownerPlayer != null)
-                                    ownerPlayer.Stealth(false);
 
-                                EffectService.OnEffectPulse(effect);
-                                effect.LastTick = GameLoop.GameLoopTime;
-                            }
-                            // Subsequent DoT ticks
-                            else if (tick > effect.PulseFreq + effect.LastTick)
-                            {
-                                EffectService.OnEffectPulse(effect);
-                                effect.LastTick += effect.PulseFreq;
-                            }
-                        }
                         if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                         {
                             if (tick > effect.NextTick)
@@ -148,7 +129,8 @@ namespace DOL.GS
                                     effect.ExpireTick = GameLoop.GameLoopTime - 1;
                             }
                         }
-                        if (effect.NextTick != 0 && tick > effect.NextTick)
+
+                        if (effect.NextTick != 0 && tick >= effect.NextTick)
                         {
                             effect.OnEffectPulse();
                         }

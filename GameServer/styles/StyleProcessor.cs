@@ -214,7 +214,7 @@ namespace DOL.GS.Styles
 
 				//Put player into attack state before setting the styles
 				//Changing the attack state clears out the styles...
-				if (living.attackComponent.AttackState == false)
+				if (living.attackComponent.AttackState == false || EffectListService.GetEffectOnTarget(living, eEffect.Engage) != null)
 				{
 					living.attackComponent.StartAttack(player.TargetObject);
 				}
@@ -279,7 +279,7 @@ namespace DOL.GS.Styles
 						if (living.IsEngaging)
 						{
 							// cancel engage effect if exist
-							EngageEffect effect = living.EffectList.GetOfType<EngageEffect>();
+							EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(living, eEffect.Engage);
 							if (effect != null)
 								effect.Cancel(false);
 						}

@@ -67,16 +67,8 @@ namespace DOL.GS
                 return;
             }
 
-            if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
-            {
-                if (!e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
-                    effectList.AddEffect(e);
-
-                return;
-            }
-
             // Early out if we're trying to add an effect that is already present.
-            if (!effectList.AddEffect(e))
+            else if (!effectList.AddEffect(e))
             {
                 SendSpellResistAnimation(e);
                 return;
@@ -112,18 +104,8 @@ namespace DOL.GS
                             //Console.WriteLine("Applying EnduranceRegenBuff");
                             var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                             ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }
-                        else if (e.EffectType == eEffect.ResurrectionIllness)
-                        {
-                            GamePlayer gPlayer = e.Owner as GamePlayer;
-                            if (gPlayer != null)
-                            {
-                                gPlayer.Effectiveness -= e.SpellHandler.Spell.Value * 0.01;
-                                gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                                gPlayer.Out.SendStatusUpdate();
-                            }
-                        }
-
+                        }                                                                   
+                        
                         e.IsBuffActive = true;
                     }
                 }
@@ -163,14 +145,6 @@ namespace DOL.GS
 
             //Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
 
-            if (e.EffectType == eEffect.OffensiveProc || e.EffectType == eEffect.DefensiveProc)
-            {
-                if (e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
-                    e.Owner.effectListComponent.RemoveEffect(e);
-                
-                return;
-            }
-
             if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 //Console.WriteLine("Unable to remove effect!");
@@ -193,24 +167,7 @@ namespace DOL.GS
                         //Console.WriteLine("Removing EnduranceRegenBuff");
                         var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                         ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                    }                                       
-                    else if (e.EffectType == eEffect.Pet)
-                    {
-                        if (e.SpellHandler.Caster.PetCount > 0)
-                            e.SpellHandler.Caster.PetCount--;
-                        e.Owner.Health = 0; // to send proper remove packet
-                        e.Owner.Delete();
-                    }
-                    else if (e.EffectType == eEffect.ResurrectionIllness)
-                    {
-                        GamePlayer gPlayer = e.Owner as GamePlayer;
-                        if (gPlayer != null)
-                        {
-                            gPlayer.Effectiveness += e.SpellHandler.Spell.Value * 0.01;
-                            gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                            gPlayer.Out.SendStatusUpdate();
-                        }
-                    }
+                    }                                                           
                 }
             }
 
@@ -820,64 +777,5 @@ namespace DOL.GS
             }
             return bonuscat;
         }
-        #region DoT/Bleed
-
-        // For DoT/Bleed functionality. Can be moved.
-        public static void OnEffectPulse(ECSGameEffect effect)
-        {
-
-            if (effect.Owner.IsAlive == false)
-            {
-                EffectService.RequestCancelEffect(effect);
-            }
-
-            if (effect.Owner.IsAlive)
-            {
-                if (effect.SpellHandler is DoTSpellHandler handler)
-                {
-                    // An acidic cloud surrounds you!
-                    handler.MessageToLiving(effect.Owner, effect.SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                    // {0} is surrounded by an acidic cloud!
-                    Message.SystemToArea(effect.Owner, Util.MakeSentence(effect.SpellHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-                    if (effect.LastTick == 0/*StartTick + effect.TickInterval > GameLoop.GameLoopTime*/)
-                        handler.OnDirectEffect(effect.Owner, effect.Effectiveness, true);
-                    else
-                        handler.OnDirectEffect(effect.Owner, effect.Effectiveness, false);
-                }
-                else if (effect.SpellHandler is StyleBleeding bleedHandler)
-                {
-                    if (effect.StartTick + effect.PulseFreq > GameLoop.GameLoopTime && effect.Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) == 0)
-                    {
-                        effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage + (int)bleedHandler.Spell.Damage * Util.Random(25) / 100);  // + random max 25%
-
-                    }
-                    bleedHandler.MessageToLiving(effect.Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
-                    Message.SystemToArea(effect.Owner, Util.MakeSentence(bleedHandler.Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-
-                    int bleedValue = effect.Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
-
-                    AttackData ad = bleedHandler.CalculateDamageToTarget(effect.Owner, 1.0);
-
-                    bleedHandler.SendDamageMessages(ad);
-
-                    // attacker must be null, attack result is 0x0A
-                    foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    {
-                        player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, 0x0A, ad.Target.HealthPercent);
-                    }
-                    // send animation before dealing damage else dead livings show no animation
-                    ad.Target.OnAttackedByEnemy(ad);
-                    ad.Attacker.DealDamage(ad);
-
-                    if (--bleedValue <= 0 || !effect.Owner.IsAlive)
-                    {
-                        effect.ExpireTick = GameLoop.GameLoopTime - 1;
-                    }
-                    else effect.Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
-                }
-            }
-        }
-
-        #endregion
     }
 }

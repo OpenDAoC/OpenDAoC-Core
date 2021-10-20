@@ -35,6 +35,11 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public const string BLEED_VALUE_PROPERTY = "BleedValue";
 
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new DamageOverTimeECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only
