@@ -69,7 +69,7 @@ namespace DOL.GS.Commands
             {
                 if (GameServer.ServerRules.IsAllowedToUnderstand(c.Player, player))
                 {
-                    c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", player.Name + " (" + c.Player.Level + ", " + c.Player.CharacterClass.Name + ")", message), eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
+                    c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", player.Name + " (" + player.Level + ", " + player.CharacterClass.Name + ")", message), eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
                 }
             }
 
