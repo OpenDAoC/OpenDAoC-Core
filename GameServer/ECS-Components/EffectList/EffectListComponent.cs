@@ -50,8 +50,9 @@ namespace DOL.GS
                     else if (spellEffect != null && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
                     {
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
+
                         // Effects contains this effect already so refresh it
-                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID).FirstOrDefault()/*existingEffect*/ != null)
+                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID).FirstOrDefault() != null)
                         {
                             if (spellEffect.IsConcentrationEffect() && !spellEffect.RenewEffect) 
                                 return false;
@@ -105,9 +106,6 @@ namespace DOL.GS
                                     if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
                                         spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
                                     {
-                                        //if (existingEffects[i].SpellHandler.Spell.IsConcentration || existingEffects[i].SpellHandler.Spell.IsPulsing ||
-                                        //    effect.SpellHandler.Spell.IsConcentration || effect.SpellHandler.Spell.IsPulsing || effect.EffectType == eEffect.DamageAdd
-                                        //    || effect.SpellHandler.AllowCoexisting)
                                         if (spellEffect.SpellHandler.Spell.IsHelpful && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
                                             EffectService.RequestDisableEffect(existingEffects[i], true);
                                         else
@@ -132,8 +130,6 @@ namespace DOL.GS
                                 {
                                     addEffect = true;
                                 }
-                                //else if (effect.EffectType == eEffect.DamageAdd)
-                                //    addEffect = true;
                             }
                             if (addEffect)
                             {
