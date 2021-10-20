@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace DOL.GS
 {
-    public class StatDebuffECSEffect : ECSGameEffect
+    public class StatDebuffECSEffect : ECSGameSpellEffect
     {
         public StatDebuffECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

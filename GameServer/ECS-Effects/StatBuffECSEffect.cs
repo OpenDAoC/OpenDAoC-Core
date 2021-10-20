@@ -7,7 +7,7 @@ using DOL.GS.PropertyCalc;
 
 namespace DOL.GS
 {
-    public class StatBuffECSEffect : ECSGameEffect
+    public class StatBuffECSEffect : ECSGameSpellEffect
     {
         public StatBuffECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

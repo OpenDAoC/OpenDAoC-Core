@@ -3928,7 +3928,7 @@ namespace DOL.GS.PacketHandler
 						}
 
 						// store tooltip update for gamespelleffect.
-						if (ForceTooltipUpdate && effect is ECSGameEffect gameEffect && effect.FromSpell)
+						if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)
 						{
 							tooltipSpellHandlers.Add(gameEffect.SpellHandler);
 						}
@@ -3937,7 +3937,7 @@ namespace DOL.GS.PacketHandler
 						// icon index
 						pak.WriteByte((byte)(fxcount - 1));
 						// Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
-						pak.WriteByte((effect.FromSpell || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); 
+						pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); 
 
 						byte ImmunByte = 0;
 						var gsp = effect as ECSGameEffect;

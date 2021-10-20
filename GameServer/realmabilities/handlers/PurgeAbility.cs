@@ -105,7 +105,7 @@ namespace DOL.GS.RealmAbilities
             // Gather effects to cancel
             foreach (ECSGameEffect e in effectListComponent.GetAllEffects())
             {
-                if (e.SpellHandler.HasPositiveEffect)
+                if (e.HasPositiveEffect)
                     continue;
 
                 if (e is ECSImmunityEffect)

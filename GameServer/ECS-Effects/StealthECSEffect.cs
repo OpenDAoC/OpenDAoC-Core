@@ -4,7 +4,7 @@ using DOL.Events;
 
 namespace DOL.GS
 {
-    public class StealthECSGameEffect : ECSGameEffect
+    public class StealthECSGameEffect : ECSGameAbilityEffect
     {
         public StealthECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
@@ -22,14 +22,14 @@ namespace DOL.GS
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 3);
 
-            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+            if (true)//OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
                 EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff), true);
             }
             // Cancel pulse effect
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
             {
-                EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Pulse));
+                EffectService.RequestCancelConcEffect(EffectListService.GetSpellEffectOnTarget(OwnerPlayer, eEffect.Pulse));
             }
 
             OwnerPlayer.Sprint(false);

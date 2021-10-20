@@ -5773,7 +5773,7 @@ namespace DOL.GS
 						if (effect.IsConcentrationEffect())
 						{
 							if (!leaveSelf || (leaveSelf && effect.SpellHandler.Caster != this))
-								EffectService.RequestCancelConcEffect(effect, false);
+								EffectService.RequestCancelConcEffect((IConcentrationEffect)effect, false);
 						}
 					}
 				}

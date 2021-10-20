@@ -574,7 +574,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							break;
 
                         // [Takii] This part needs a refactor since it assumes all effects come from spells.
-                        if (!foundEffect.FromSpell)
+                        if (!(foundEffect is ECSGameSpellEffect))
                             break;
 
                         caption = foundEffect.Name;

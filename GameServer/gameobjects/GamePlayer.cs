@@ -5622,7 +5622,7 @@ namespace DOL.GS
 			if (song != null && song.SpellHandler.Spell.InstrumentRequirement != 0)
             {
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				EffectService.RequestCancelConcEffect(song);
+				EffectService.RequestCancelConcEffect((ECSGameSpellEffect)song);
 			}
 
 			switch (slot)
@@ -13162,7 +13162,7 @@ namespace DOL.GS
 
 			if (goStealth)
 			{
-				new StealthECSGameEffect(new ECSGameEffectInitParams(this,0, 1, null));
+				new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
 			}
 			else
 			{

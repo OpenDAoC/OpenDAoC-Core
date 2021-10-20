@@ -46,15 +46,13 @@ namespace DOL.GS
 
                         // TEMP - A lot of the code below assumes effects come from spells but many effects come from abilities (Sprint, Stealth, RAs, etc)
                         // This will need a better refactor later but for now this prevents crashing while working on porting over non-spell based effects to our system.
-                        if (!effect.FromSpell)
+                        if (effect is ECSGameAbilityEffect)
                             continue;
 
-                        if (tick > effect.ExpireTick && !effect.SpellHandler.Spell.IsConcentration)
+                        if (tick > effect.ExpireTick && !effect.IsConcentrationEffect())
                         {
                             if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                             {
-                                
-
                                 if (effect.SpellHandler.Spell.PulsePower > 0)
                                 {
                                     if (effect.SpellHandler.Caster.Mana >= effect.SpellHandler.Spell.PulsePower)
@@ -85,7 +83,7 @@ namespace DOL.GS
                                     else
                                     {
                                         ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
-                                        EffectService.RequestCancelConcEffect(effect);
+                                        EffectService.RequestCancelConcEffect((ECSGameSpellEffect)effect);
                                     }
                                 }
                                 else
@@ -154,7 +152,7 @@ namespace DOL.GS
                         {
                             effect.OnEffectPulse();
                         }
-                        if (effect.SpellHandler.Spell.IsConcentration && tick > effect.NextTick)
+                        if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                         {
                             if (!effect.SpellHandler.Caster.
                                 IsWithinRadius(effect.Owner,
@@ -204,6 +202,39 @@ namespace DOL.GS
                 return effects.FirstOrDefault();
             else if (effects != null)
                 return effects.Where(e => e.SpellHandler.Spell.SpellType == (byte)spellType).FirstOrDefault();
+            else
+                return null;
+        }
+
+        public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
+        {
+            List<ECSGameEffect> effects;
+            target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+
+            if (effects != null) 
+                return (ECSGameSpellEffect)effects.Where(e => e is ECSGameSpellEffect && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == (byte)spellType)).FirstOrDefault();
+            else
+                return null;
+        }
+
+        public static ECSGameAbilityEffect GetAbilityEffectOnTarget(GameLiving target, eEffect effectType)
+        {
+            List<ECSGameEffect> effects;
+            target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+
+            if (effects != null)
+                return (ECSGameAbilityEffect)effects.Where(e => e is ECSGameAbilityEffect).FirstOrDefault();
+            else
+                return null;
+        }
+
+        public static ECSImmunityEffect GetImmunityEffectOnTarget(GameLiving target, eEffect effectType)
+        {
+            List<ECSGameEffect> effects;
+            target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+
+            if (effects != null)
+                return (ECSImmunityEffect)effects.Where(e => e is ECSImmunityEffect).FirstOrDefault();
             else
                 return null;
         }

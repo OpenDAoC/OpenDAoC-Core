@@ -83,11 +83,11 @@ namespace DOL.GS
             }
 
             // Update the Concentration List if Conc Buff/Song/Chant.
-            if (e.ShouldBeAddedToConcentrationList())
+            if (e is ECSGameSpellEffect spellEffect && spellEffect.ShouldBeAddedToConcentrationList())
             {
                 if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
                 {
-                    e.SpellHandler.Caster.ConcentrationEffects.Add(e);
+                    e.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
                 }
             }
 
@@ -98,21 +98,21 @@ namespace DOL.GS
                 if (!e.RenewEffect && e.SpellHandler.Spell.IsInstantCast)
                     ((SpellHandler)e.SpellHandler).SendCastAnimation();
             }
-            else 
-            { 
-                if (!(e is ECSImmunityEffect))
+            else
+            {
+                if (e is ECSGameSpellEffect)
                 {
                     if (!e.RenewEffect)
-                        SendSpellAnimation(e);
+                        SendSpellAnimation((ECSGameSpellEffect)e);
 
-                    if ((e.FromSpell && e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
-                    {                       
+                    if ((e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
+                    {
                         if (e.EffectType == eEffect.EnduranceRegenBuff)
                         {
                             //Console.WriteLine("Applying EnduranceRegenBuff");
                             var handler = e.SpellHandler as EnduranceRegenSpellHandler;
                             ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }                                            
+                        }
                         else if (e.EffectType == eEffect.ResurrectionIllness)
                         {
                             GamePlayer gPlayer = e.Owner as GamePlayer;
@@ -123,21 +123,14 @@ namespace DOL.GS
                                 gPlayer.Out.SendStatusUpdate();
                             }
                         }
-                        
+
                         e.IsBuffActive = true;
-                    }                                     
+                    }
                 }
-                //else
-                //{
-                //    if (e.Owner is GamePlayer immunePlayer)
-                //    {
-                //        immunePlayer.Out.SendUpdateIcons(e.Owner.effectListComponent.Effects.Values.Where(ef => ef.Icon != 0).ToList(), ref e.Owner.effectListComponent._lastUpdateEffectsCount);
-                //    }
-                //}
 
                 UpdateEffectIcons(e);
             }
-        }
+        }      
 
         private static void UpdateEffectIcons(ECSGameEffect e)
         {
@@ -227,7 +220,7 @@ namespace DOL.GS
             {
                 if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
                 {
-                    e.SpellHandler.Caster.ConcentrationEffects.Remove(e);
+                    e.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
                 }
             }
 
@@ -299,15 +292,15 @@ namespace DOL.GS
             EntityManager.AddEffect(effect);
         }
 
-        public static void SendSpellAnimation(ECSGameEffect e)
+        public static void SendSpellAnimation(ECSGameSpellEffect e)
         {
-            if (!e.FromSpell)
-                return;
-            
-            //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            if (e != null)
             {
-                player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
+                //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
+                }
             }
         }
 

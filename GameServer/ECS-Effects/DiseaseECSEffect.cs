@@ -4,7 +4,7 @@ using DOL.AI.Brain;
 
 namespace DOL.GS
 {
-    public class DiseaseECSGameEffect : ECSGameEffect
+    public class DiseaseECSGameEffect : ECSGameSpellEffect
     {
         public DiseaseECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

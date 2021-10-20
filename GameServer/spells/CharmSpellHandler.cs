@@ -433,7 +433,7 @@ namespace DOL.GS.Spells
             var concEffect = pulses?.Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
 
             if (concEffect != null)
-                EffectService.RequestCancelConcEffect(concEffect);
+                EffectService.RequestCancelConcEffect((ECSGameSpellEffect)concEffect);
                 //concEffect.CancelEffect = true;
                 //concEffect.Cancel(false);
 

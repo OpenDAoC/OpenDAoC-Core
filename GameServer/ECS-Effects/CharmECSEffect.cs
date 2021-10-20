@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class CharmECSGameEffect : ECSGameEffect
+    public class CharmECSGameEffect : ECSGameSpellEffect
     {
         public CharmECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

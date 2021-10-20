@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -168,6 +169,20 @@ namespace DOL.GS
                             temp.Add(effect);
 
                 return temp.OrderBy(e => e.StartTick).ToList();
+            }
+        }
+
+        public List<IConcentrationEffect> GetConcentrationEffects()
+        {
+            lock (_effectsLock)
+            {
+                var temp = new List<IConcentrationEffect>();
+                foreach (var effects in Effects.Values)
+                    foreach (var effect in effects)
+                        if (effect is IConcentrationEffect)
+                            temp.Add((IConcentrationEffect)effect);
+
+                return temp;
             }
         }
 

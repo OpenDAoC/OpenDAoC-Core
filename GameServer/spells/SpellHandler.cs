@@ -415,7 +415,7 @@ namespace DOL.GS.Spells
         public virtual void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			// Base function should be empty once all effects are moved to their own effect class.
-			new ECSGameEffect(initParams);
+			new ECSGameSpellEffect(initParams);
         }
 
         public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
@@ -691,7 +691,7 @@ namespace DOL.GS.Spells
 						
                     if (cancelEffect != null)
                     {
-						EffectService.RequestCancelConcEffect(cancelEffect);
+						EffectService.RequestCancelConcEffect((ECSGameSpellEffect)cancelEffect);
                         Caster.LastPulseCast = null;
                         //Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
@@ -2139,7 +2139,7 @@ namespace DOL.GS.Spells
                 if (Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var existingEffects))
                 {
                     Caster.effectListComponent.Effects.Remove(eEffect.Pulse);
-                    Caster.ConcentrationEffects.Remove(existingEffects.FirstOrDefault());
+                    Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)existingEffects.FirstOrDefault());
                 }
 
 

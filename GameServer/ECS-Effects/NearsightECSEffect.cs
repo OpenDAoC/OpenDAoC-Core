@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class NearsightECSGameEffect : ECSGameEffect
+    public class NearsightECSGameEffect : ECSGameSpellEffect
     {
         public NearsightECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams)

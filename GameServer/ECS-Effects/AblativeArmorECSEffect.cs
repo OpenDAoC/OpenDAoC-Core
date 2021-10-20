@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class AblativeArmorECSGameEffect : ECSGameEffect
+    public class AblativeArmorECSGameEffect : ECSGameSpellEffect
     {
         public AblativeArmorECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
