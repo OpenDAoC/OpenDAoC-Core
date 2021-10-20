@@ -44,7 +44,7 @@ namespace DOL.GS
                     else if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
                     {
                         // Check to prevent crash from holding sprint button down.
-                        if (!effect.FromSpell)
+                        if (!(effect is ECSGameAbilityEffect))
                             return true;
 
                         // Effects contains this effect already so refresh it
@@ -192,9 +192,37 @@ namespace DOL.GS
                 foreach (var effects in Effects.Values)
                     foreach (var effect in effects)
                         if (effect is IConcentrationEffect)
-                            temp.Add((IConcentrationEffect)effect);
+                            temp.Add(effect as IConcentrationEffect);
 
                 return temp;
+            }
+        }
+
+        public List<ECSGameSpellEffect> GetSpellEffects()
+        {
+            lock (_effectsLock)
+            {
+                var temp = new List<ECSGameSpellEffect>();
+                foreach (var effects in Effects.Values)
+                    foreach (var effect in effects)
+                        if (effect is ECSGameSpellEffect)
+                            temp.Add(effect as ECSGameSpellEffect);
+
+                return temp.OrderBy(e => e.StartTick).ToList();
+            }
+        }
+
+        public List<ECSGameAbilityEffect> GetAbilityEffects()
+        {
+            lock (_effectsLock)
+            {
+                var temp = new List<ECSGameAbilityEffect>();
+                foreach (var effects in Effects.Values)
+                    foreach (var effect in effects)
+                        if (effect is ECSGameAbilityEffect)
+                            temp.Add(effect as ECSGameAbilityEffect);
+
+                return temp.OrderBy(e => e.StartTick).ToList();
             }
         }
 

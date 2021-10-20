@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class SprintECSGameEffect : ECSGameEffect
-    {
+    public class SprintECSGameEffect : ECSGameAbilityEffect
+	{
         public SprintECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) 
 		{

@@ -22,7 +22,7 @@ namespace DOL.GS
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 3);
 
-            if (true)//OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
                 EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff), true);
             }

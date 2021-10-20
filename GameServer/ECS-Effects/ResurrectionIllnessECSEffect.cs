@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class ResurrectionIllnessECSGameEffect : ECSGameEffect
+    public class ResurrectionIllnessECSGameEffect : ECSGameSpellEffect
     {
         public ResurrectionIllnessECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class BerserkECSGameEffect : ECSGameEffect
+    public class BerserkECSGameEffect : ECSGameAbilityEffect
     {
         public BerserkECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
