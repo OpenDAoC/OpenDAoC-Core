@@ -432,7 +432,7 @@ namespace DOL.AI.Brain
 						case Abilities.Guard:
 							{
 								if (GetPlayerOwner() is GamePlayer player)
-									new GuardEffect().Start(Body, player);
+									new GuardECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, player);
 								break;
 							}
 						case Abilities.Protect:

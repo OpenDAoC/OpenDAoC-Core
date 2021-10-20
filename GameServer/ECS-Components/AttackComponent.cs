@@ -1761,8 +1761,8 @@ namespace DOL.GS
             //5.Positional degrees - Side Positional combat styles now will work an extra 15 degrees towards the rear of an opponent, and rear position styles work in a 60 degree arc rather than the original 90 degree standard. This change should even out the difficulty between side and rear positional combat styles, which have the same damage bonus. Please note that front positional styles are not affected by this change. 1.62
             //http://daoc.catacombs.com/forum.cfm?ThreadKey=511&DefMessage=681444&forum=DAOCMainForum#Defense
 
-            GuardEffect guard = null;
-            //GuardECSGameEffect guard = null;
+            //GuardEffect guard = null;
+            GuardECSGameEffect guard = null;
             DashingDefenseEffect dashing = null;
             //DashingDefenseECSGameEffect dashing = null;
             InterceptEffect intercept = null;
@@ -1792,12 +1792,12 @@ namespace DOL.GS
             {
                 foreach (ECSGameEffect effect in owner.effectListComponent.GetAllEffects())
                 {
-                    //if (effect is GuardECSGameEffect)
-                    //{
-                    //    if (guard == null && ((GuardECSGameEffect)effect).GuardTarget == owner)
-                    //        guard = (GuardECSGameEffect)effect;
-                    //    continue;
-                    //}
+                    if (effect is GuardECSGameEffect)
+                    {
+                        if (guard == null && ((GuardECSGameEffect)effect).GuardTarget == owner)
+                            guard = (GuardECSGameEffect)effect;
+                        continue;
+                    }
 
                     //if (effect is DashingDefenseECSGameEffect)
                     //{
@@ -1847,12 +1847,12 @@ namespace DOL.GS
             {
                 foreach (IGameEffect effect in owner.EffectList)
                 {
-                    if (effect is GuardEffect)
-                    {
-                        if (guard == null && ((GuardEffect)effect).GuardTarget == owner)
-                            guard = (GuardEffect)effect;
-                        continue;
-                    }
+                    //if (effect is GuardEffect)
+                    //{
+                    //    if (guard == null && ((GuardEffect)effect).GuardTarget == owner)
+                    //        guard = (GuardEffect)effect;
+                    //    continue;
+                    //}
 
                     if (effect is DashingDefenseEffect)
                     {

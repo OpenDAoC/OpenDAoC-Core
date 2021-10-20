@@ -39,7 +39,11 @@ namespace DOL.GS.Scripts
 				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "If you need so, I can port you back to your Realm's [event zone]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return true;
 			}
-			
+			if (player.Level > 24)
+			{
+				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "looks like you're ready to move on to the [next challenge]!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+				return true;
+			}
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			return true;
 		}
@@ -76,6 +80,24 @@ namespace DOL.GS.Scripts
 					{
 						t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 					}
+					break;
+				case "next challenge":
+					if (t.Level > 24)
+					{
+						switch (t.Realm)
+						{
+							case eRealm.Albion:
+								t.MoveTo(165, 584218, 585297, 5106, 1058);
+								break;
+							case eRealm.Midgard:
+								t.MoveTo(165, 575510, 537421, 4840, 608);
+								break;
+							case eRealm.Hibernia:
+								t.MoveTo(165, 536869, 585832, 5848, 1855);
+								break;
+						}
+					}
+					else { t.Client.Out.SendMessage("Speak to my Free Level colleague to attain enough experience first!", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					break;
 				case "event zone":
 					switch (t.Realm)
