@@ -22,7 +22,7 @@ namespace DOL.GS {
         //10k dragonsworn
         //20k champion
         private int lowbie = 450;
-        private int festive = 900;
+        private int festive = 1000;
         private int toageneric = 1800;
         private int armorpads = 2500;
         private int artifact = 4800;
@@ -4590,9 +4590,8 @@ namespace DOL.GS {
                         "***** Catacombs Models Only ***** \n" +
                           "[Dragonslayer Helm] (" + dragon*2 + " RPs)\n" +
                           "[Dragonsworn Helm] (" + dragon + " RPs)\n" +
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
 
-                        "[Dragonsworn Helm](" + dragon + " RPs)\n" +
                         "[Crown of Zahur] (" + artifact + " RPs)\n" +
                         "[Crown of Zahur variant] (" + artifact + " RPs)\n" +
                         "[Winged Helm] (" + artifact + " RPs)\n" +
@@ -4639,7 +4638,7 @@ namespace DOL.GS {
                           "[Good Realm Breastplate](" + festive + " RPs)\n" +
                           "[Possessed Realm Breastplate](" + festive + " RPs)\n" +
                           "[Mino Breastplate](" + festive + " RPs)\n" +
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
                         
                         "[Class Epic Chestpiece](" + epic + " RPs)\n" +
                         "[Eirene's Chest](" + artifact + " RPs)\n" +
@@ -4669,7 +4668,7 @@ namespace DOL.GS {
                           "[Good Realm Sleeves](" + festive + " RPs)\n" +
                           "[Possessed Realm Sleeves](" + festive + " RPs)\n" +
                           "[Mino Sleeves](" + festive + " RPs)\n" +
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
                         "[Foppish Sleeves] (" + artifact + " RPs)\n" +
                         "[Arms of the Wind] (" + artifact + " RPs)\n" +
                         "[Oceanus Sleeves] (" + toageneric + " RPs)\n" +
@@ -4693,7 +4692,7 @@ namespace DOL.GS {
                           "[Good Realm Pants](" + festive + " RPs)\n" +
                           "[Possessed Realm Pants](" + festive + " RPs)\n" +
                           "[Mino Pants](" + festive + " RPs)\n" +
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
                         "[Wings Dive] (" + artifact + " RPs)\n" +
                         "[Alvarus' Leggings] (" + artifact + " RPs)\n" +
                         "[Oceanus Pants] (" + toageneric + " RPs)\n" +
@@ -4717,7 +4716,7 @@ namespace DOL.GS {
                           "[Good Realm Gloves](" + festive + " RPs)\n" +
                           "[Possessed Realm Gloves](" + festive + " RPs)\n" +
                           "[Mino Gloves](" + festive + " RPs)\n" +
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
                         "[Maddening Scalars] (" + artifact + " RPs)\n" +
                         "[Sharkskin Gloves] (" + artifact + " RPs)\n" +
                         "[Oceanus Gloves] (" + toageneric + " RPs)\n" +
@@ -4743,7 +4742,7 @@ namespace DOL.GS {
                           "[Good Realm Boots](" + festive + " RPs)\n" +
                           "[Possessed Realm Boots](" + festive + " RPs)\n" +
                           "[Mino Boots](" + festive + " RPs)\n" +
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
                         "[Enyalio's Boots] (" + artifact + " RPs)\n" +
                         "[Flamedancer's Boots] (" + artifact + " RPs)\n" +
                         "[Oceanus Boots] (" + toageneric + " RPs)\n" +
@@ -4767,7 +4766,7 @@ namespace DOL.GS {
                           "[Winter Cloak] (" + cloakmedium + " RPs)\n" + 
                           "[Clean Leather Cloak] (" + cloakmedium + " RPs)\n" +
                           "[Corrupt Leather Cloak] (" + cloakmedium + " RPs)\n" + 
-                          "***** End Cata Only ***** \n" +
+                          "***** End Cata Only ***** \n\n" +
                         "[Cloudsong] (" + cloakmedium + " RPs)\n" +
                         "[Shades of Mist] (" + cloakmedium + " RPs)\n" +
                         "[Harpy Feather Cloak] (" + cloakmedium + " RPs)\n" +
