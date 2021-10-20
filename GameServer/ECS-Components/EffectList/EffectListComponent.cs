@@ -38,8 +38,7 @@ namespace DOL.GS
                         return true;
 
                     ECSGameSpellEffect spellEffect = effect as ECSGameSpellEffect;
-                    List<ECSGameSpellEffect> existingEffects = GetSpellEffects(effect.EffectType);
-
+                    
                     if (effect.EffectType == eEffect.OffensiveProc || effect.EffectType == eEffect.DefensiveProc)
                     {
                         if (!Effects.ContainsKey(effect.EffectType))
@@ -48,10 +47,11 @@ namespace DOL.GS
                             EffectIdToEffect.Add(effect.Icon, effect);
                         }
                     }
-                    else if (spellEffect != null && existingEffects.Count > 0)
+                    else if (spellEffect != null && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
                     {
+                        List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
                         // Effects contains this effect already so refresh it
-                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID).FirstOrDefault() != null)
+                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID).FirstOrDefault()/*existingEffect*/ != null)
                         {
                             if (spellEffect.IsConcentrationEffect() && !spellEffect.RenewEffect) 
                                 return false;
@@ -137,7 +137,7 @@ namespace DOL.GS
                             }
                             if (addEffect)
                             {
-                                existingEffects.Add(spellEffect);
+                                Effects[spellEffect.EffectType].Add(spellEffect);
                                 EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
                                 return true;
                             }

@@ -108,12 +108,12 @@ namespace DOL.GS
                         e.OnStartEffect();
                         e.IsBuffActive = true;
                     }
-
-                    UpdateEffectIcons(e);
                 }
             }
             else
                 e.OnStartEffect();
+
+            UpdateEffectIcons(e);
         }      
 
         private static void UpdateEffectIcons(ECSGameEffect e)
