@@ -683,7 +683,7 @@ namespace DOL.GS {
                                     modelIDToAssign = 4046;
                                     break;
                                 case eRealm.Hibernia:
-                                    modelIDToAssign = 4063;
+                                    modelIDToAssign = 4099;
                                     break;
                                 default:
                                     modelIDToAssign = 0;
