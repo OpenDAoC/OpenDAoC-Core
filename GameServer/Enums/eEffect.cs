@@ -120,6 +120,7 @@ namespace DOL.GS
         Stealth,
         Sprint,
         Berserk,
-        Engage
+        Engage,
+        Guard
     }
 }
