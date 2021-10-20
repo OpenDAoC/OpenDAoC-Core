@@ -990,6 +990,35 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "mino breastplate":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3631;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3606;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3611;
+                            break;
+
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3621;
+                            break;
+                        case eObjectType.Chain:
+                            modelIDToAssign = 3611;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3616;
+                            break;
+                    }
+                    break;
                 case "eirene's chest":
                     price = artifact;
                     switch (player.Realm)
@@ -1801,6 +1830,35 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "mino sleeves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3644;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3608;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3628;
+                            break;
+
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3623;
+                            break;
+                        case eObjectType.Chain:
+                            modelIDToAssign = 3613;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3618;
+                            break;
+                    }
+                    break;
                 case "foppish sleeves":
                     price = artifact;
                     modelIDToAssign = 1732;
@@ -2205,6 +2263,35 @@ namespace DOL.GS {
 
                         case eObjectType.Plate:
                             modelIDToAssign = 2754;
+                            break;
+                    }
+                    break;
+                case "mino pants":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3643;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3607;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3627;
+                            break;
+
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3622;
+                            break;
+                        case eObjectType.Chain:
+                            modelIDToAssign = 3612;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3617;
                             break;
                     }
                     break;
@@ -2615,6 +2702,35 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "mino boots":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3646;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3610;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3629;
+                            break;
+
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3625;
+                            break;
+                        case eObjectType.Chain:
+                            modelIDToAssign = 3615;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3620;
+                            break;
+                    }
+                    break;
                 case "enyalio's boots":
                     price = artifact;
                     modelIDToAssign = 2488;
@@ -3019,6 +3135,35 @@ namespace DOL.GS {
 
                         case eObjectType.Plate:
                             modelIDToAssign = 2758;
+                            break;
+                    }
+                    break;
+                case "mino gloves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3645;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3609;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3630;
+                            break;
+
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3624;
+                            break;
+                        case eObjectType.Chain:
+                            modelIDToAssign = 3614;
+                            break;
+
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3619;
                             break;
                     }
                     break;
