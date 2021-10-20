@@ -31,7 +31,7 @@ namespace DOL.GS
             // Cancel pulse effect
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
             {
-                EffectService.RequestCancelConcEffect(EffectListService.GetSpellEffectOnTarget(OwnerPlayer, eEffect.Pulse));
+                EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(OwnerPlayer));
             }
 
             OwnerPlayer.Sprint(false);

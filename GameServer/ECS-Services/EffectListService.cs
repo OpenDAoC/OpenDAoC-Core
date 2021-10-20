@@ -1,10 +1,9 @@
 using DOL.GS.Spells;
 using System.Collections.Generic;
-using System;
-using System.Numerics;
 using ECS.Debug;
 using System.Linq;
 using DOL.GS.PacketHandler;
+using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -87,7 +86,7 @@ namespace DOL.GS
                                     else
                                     {
                                         ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
-                                        EffectService.RequestCancelConcEffect((ECSGameSpellEffect)effect);
+                                        EffectService.RequestCancelConcEffect((IConcentrationEffect)effect);
                                     }
                                 }
                                 else
@@ -217,6 +216,17 @@ namespace DOL.GS
 
             if (effects != null)
                 return (ECSImmunityEffect)effects.Where(e => e is ECSImmunityEffect).FirstOrDefault();
+            else
+                return null;
+        }
+
+        public static ECSPulseEffect GetPulseEffectOnTarget(GameLiving target)
+        {
+            List<ECSGameEffect> effects;
+            target.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out effects);
+
+            if (effects != null)
+                return (ECSPulseEffect)effects.Where(e => e is ECSPulseEffect).FirstOrDefault();
             else
                 return null;
         }
