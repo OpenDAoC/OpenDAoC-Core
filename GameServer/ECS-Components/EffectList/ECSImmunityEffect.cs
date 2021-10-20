@@ -3,7 +3,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-    public class ECSImmunityEffect : ECSGameSpellEffect
+    public class ECSImmunityEffect : ECSGameEffect
     {
 
         public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)

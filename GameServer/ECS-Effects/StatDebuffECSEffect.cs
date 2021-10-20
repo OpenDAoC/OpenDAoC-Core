@@ -87,8 +87,7 @@ namespace DOL.GS
                 {
                     if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                     {
-                        ECSImmunityEffect immunityEffect = new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
-                        EntityManager.AddEffect(immunityEffect);
+                        new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
                     }
 
                     //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
