@@ -66,7 +66,8 @@ namespace DOL.GS.Scripts
         {
             if (!base.WhisperReceive(source, str))
                 return false;
-            
+            int targetLevel = Properties.EVENT_LVCAP;
+
             GamePlayer player = source as GamePlayer;
 
             if (player == null)
@@ -75,13 +76,13 @@ namespace DOL.GS.Scripts
             switch(str)
             {
                 case "experience":
-                    if (player.Level >= 24) {
+                    if (player.Level >= targetLevel) {
                        player.Out.SendMessage("You look like a veteran, go fight for your Realm!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                        return false;
                     }
                     else {
                         player.Out.SendMessage("I have given you enough experience to fight, now make Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-                        player.Level = 24;
+                        player.Level = (byte)targetLevel;
                         return true;
                     }
                 default: 
