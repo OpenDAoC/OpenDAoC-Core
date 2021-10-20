@@ -183,7 +183,6 @@ namespace DOL.GS {
                             break;
                     }
                     break;
-
                 case "dragonsworn helm":
                     price = dragon;
                     switch ((eObjectType)item.Object_Type)
@@ -823,6 +822,43 @@ namespace DOL.GS {
                             break;
                         case eObjectType.Plate:
                             modelIDToAssign = 3006;
+                            break;
+                    }
+                    break;
+                case "possessed shar breastplate":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3085;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3090;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3095;
+                            break;
+
+                        case eObjectType.Chain:
+                            switch (source.Realm)
+                            {
+                                case eRealm.Albion:
+                                case eRealm.Midgard:
+                                    modelIDToAssign = 3110;
+                                    break;
+                                default:
+                                    modelIDToAssign = 0;
+                                    break;
+                            }
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3100;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3105;
                             break;
                     }
                     break;
@@ -1472,6 +1508,43 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "possessed shar sleeves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3083;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3088;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3093;
+                            break;
+
+                        case eObjectType.Chain:
+                            switch (source.Realm)
+                            {
+                                case eRealm.Albion:
+                                case eRealm.Midgard:
+                                    modelIDToAssign = 3108;
+                                    break;
+                                default:
+                                    modelIDToAssign = 0;
+                                    break;
+                            }
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3098;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3103;
+                            break;
+                    }
+                    break;
                 case "foppish sleeves":
                     price = artifact;
                     modelIDToAssign = 1732;
@@ -1711,6 +1784,43 @@ namespace DOL.GS {
                             break;
                         case eObjectType.Plate:
                             modelIDToAssign = 3007;
+                            break;
+                    }
+                    break;
+                case "possessed shar pants":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3082;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3087;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3092;
+                            break;
+
+                        case eObjectType.Chain:
+                            switch (source.Realm)
+                            {
+                                case eRealm.Albion:
+                                case eRealm.Midgard:
+                                    modelIDToAssign = 3107;
+                                    break;
+                                default:
+                                    modelIDToAssign = 0;
+                                    break;
+                            }
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3097;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3102;
                             break;
                     }
                     break;
@@ -1956,6 +2066,43 @@ namespace DOL.GS {
                             break;
                     }
                     break;
+                case "possessed shar boots":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3084;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3089;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3094;
+                            break;
+
+                        case eObjectType.Chain:
+                            switch (source.Realm)
+                            {
+                                case eRealm.Albion:
+                                case eRealm.Midgard:
+                                    modelIDToAssign = 3109;
+                                    break;
+                                default:
+                                    modelIDToAssign = 0;
+                                    break;
+                            }
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3099;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3104;
+                            break;
+                    }
+                    break;
                 case "enyalio's boots":
                     price = artifact;
                     modelIDToAssign = 2488;
@@ -2195,6 +2342,43 @@ namespace DOL.GS {
                             break;
                         case eObjectType.Plate:
                             modelIDToAssign = 3011;
+                            break;
+                    }
+                    break;
+                case "possessed shar gloves":
+                    price = festive;
+                    switch ((eObjectType)item.Object_Type)
+                    {
+                        case eObjectType.Cloth:
+                            modelIDToAssign = 3085;
+                            break;
+
+                        case eObjectType.Leather:
+                            modelIDToAssign = 3090;
+                            break;
+
+                        case eObjectType.Studded:
+                        case eObjectType.Reinforced:
+                            modelIDToAssign = 3095;
+                            break;
+
+                        case eObjectType.Chain:
+                            switch (source.Realm)
+                            {
+                                case eRealm.Albion:
+                                case eRealm.Midgard:
+                                    modelIDToAssign = 3110;
+                                    break;
+                                default:
+                                    modelIDToAssign = 0;
+                                    break;
+                            }
+                            break;
+                        case eObjectType.Scale:
+                            modelIDToAssign = 3100;
+                            break;
+                        case eObjectType.Plate:
+                            modelIDToAssign = 3105;
                             break;
                     }
                     break;
