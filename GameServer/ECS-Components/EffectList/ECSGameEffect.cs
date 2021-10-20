@@ -87,11 +87,11 @@ namespace DOL.GS
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
             OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
+            EffectType = eEffect.Unknown; // should be overridden in subclasses
             CancelEffect = false;
             RenewEffect = false;
             IsDisabled = false;
             IsBuffActive = false;
-            EffectType = MapEffect();
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
@@ -109,7 +109,6 @@ namespace DOL.GS
         public virtual bool IsConcentrationEffect() { return false; }
         public virtual bool ShouldBeAddedToConcentrationList() { return false; }
         public virtual bool ShouldBeRemovedFromConcentrationList() { return false; }
-        protected virtual eEffect MapEffect() { return eEffect.Unknown; } // overridden in subclasses
         public virtual void TryApplyImmunity() { }
         public virtual void OnStartEffect() { }
         public virtual void OnStopEffect() { }

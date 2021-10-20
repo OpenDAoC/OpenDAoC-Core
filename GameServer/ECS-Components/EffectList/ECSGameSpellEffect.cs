@@ -20,6 +20,8 @@ namespace DOL.GS
 
         public ECSGameSpellEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
+            EffectType = MapSpellEffect();
+
             spellHandler = initParams.SpellHandler;
             SpellHandler = spellHandler; // this is the base ECSGameEffect handler , temp during conversion into different classes
             PulseFreq = spellHandler.Spell != null ? spellHandler.Spell.Frequency : 0;
@@ -40,6 +42,20 @@ namespace DOL.GS
             EntityManager.AddEffect(this);
         }
 
+        private eEffect MapSpellEffect()
+        {
+            if (spellHandler.SpellLine.IsBaseLine)
+            {
+                spellHandler.Spell.IsSpec = false;
+            }
+            else
+            {
+                spellHandler.Spell.IsSpec = true;
+            }
+
+            return EffectService.GetEffectFromSpell(spellHandler.Spell);
+        }
+
         public override bool IsConcentrationEffect()
         {
             return spellHandler.Spell.IsConcentration;
@@ -53,20 +69,6 @@ namespace DOL.GS
         public override bool ShouldBeRemovedFromConcentrationList()
         {
             return spellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
-        }
-
-        protected override eEffect MapEffect()
-        {
-            if (spellHandler.SpellLine.IsBaseLine)
-            {
-                spellHandler.Spell.IsSpec = false;
-            }
-            else
-            {
-                spellHandler.Spell.IsSpec = true;
-            }
-
-            return EffectService.GetEffectFromSpell(spellHandler.Spell);
         }
 
         public override void TryApplyImmunity()

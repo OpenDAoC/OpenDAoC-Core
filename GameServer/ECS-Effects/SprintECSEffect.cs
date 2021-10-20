@@ -14,6 +14,7 @@ namespace DOL.GS
         public SprintECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) 
 		{
+			EffectType = eEffect.Sprint;
 			NextTick = GameLoop.GameLoopTime + 1;
 		}
 
@@ -26,7 +27,6 @@ namespace DOL.GS
         public override string Name { get { return LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.SprintEffect.Name"); } }
         public override bool HasPositiveEffect { get { return true; } }
         public override long GetRemainingTimeForClient(){ return 1000; }
-        protected override eEffect MapEffect() { return eEffect.Sprint; }
 
         public override void OnStartEffect()
         {

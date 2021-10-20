@@ -11,7 +11,10 @@ namespace DOL.GS
     public class EngageECSGameEffect : ECSGameAbilityEffect
     {
         public EngageECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+            : base(initParams)
+        {
+            EffectType = eEffect.Engage;
+        }
 
         /// <summary>
 		/// The player that is defended by the engage source
@@ -38,7 +41,6 @@ namespace DOL.GS
             } 
         }
         public override bool HasPositiveEffect { get { return true; } }
-        protected override eEffect MapEffect() { return eEffect.Engage; }
 
         public override void OnStartEffect()
         {

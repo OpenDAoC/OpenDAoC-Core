@@ -7,12 +7,14 @@ namespace DOL.GS
     public class StealthECSGameEffect : ECSGameAbilityEffect
     {
         public StealthECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+            : base(initParams)
+        {
+            EffectType = eEffect.Stealth;
+        }
 
         public override ushort Icon { get { return 0x193; } }
         public override string Name { get { return LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StealthEffect.Name"); } }
         public override bool HasPositiveEffect { get { return true; } }
-        protected override eEffect MapEffect() { return eEffect.Stealth; }
 
         public override void OnStartEffect()
         {           

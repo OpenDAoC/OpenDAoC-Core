@@ -11,14 +11,16 @@ namespace DOL.GS
     public class BerserkECSGameEffect : ECSGameAbilityEffect
     {
         public BerserkECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+            : base(initParams)
+        {
+            EffectType = eEffect.Berserk;
+        }
 
         protected ushort m_startModel = 0;
 
         public override ushort Icon { get { return 479; } }
         public override string Name { get { return LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.Name"); } }
         public override bool HasPositiveEffect { get { return true; } }
-        protected override eEffect MapEffect() { return eEffect.Berserk; }
 
         public override void OnStartEffect()
         {
