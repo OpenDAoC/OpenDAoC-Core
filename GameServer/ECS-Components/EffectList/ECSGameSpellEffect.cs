@@ -9,28 +9,28 @@ namespace DOL.GS
     /// </summary>
     public class ECSGameSpellEffect : ECSGameEffect, IConcentrationEffect
     {
-        public ISpellHandler spellHandler;
+        public ISpellHandler SpellHandler;
         string IConcentrationEffect.Name => Name;
         ushort IConcentrationEffect.Icon => Icon;
-        byte IConcentrationEffect.Concentration => spellHandler.Spell.Concentration;
+        byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
 
-        public override ushort Icon { get { return spellHandler.Spell.Icon; } }
-        public override string Name { get { return spellHandler.Spell.Name; } }
-        public override bool HasPositiveEffect { get { return spellHandler == null ? false : spellHandler.HasPositiveEffect; } }
+        public override ushort Icon { get { return SpellHandler.Spell.Icon; } }
+        public override string Name { get { return SpellHandler.Spell.Name; } }
+        public override bool HasPositiveEffect { get { return SpellHandler == null ? false : SpellHandler.HasPositiveEffect; } }
 
         public ECSGameSpellEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
-            spellHandler = initParams.SpellHandler;
-            SpellHandler = spellHandler; // this is the base ECSGameEffect handler , temp during conversion into different classes
+            SpellHandler = initParams.SpellHandler;
+            //SpellHandler = SpellHandler; // this is the base ECSGameEffect handler , temp during conversion into different classes
             EffectType = MapSpellEffect();
-            PulseFreq = spellHandler.Spell != null ? spellHandler.Spell.Frequency : 0;
+            PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
 
-            if (spellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;
             }
-            else if (spellHandler.Spell.IsConcentration)
+            else if (SpellHandler.Spell.IsConcentration)
             {
                 NextTick = StartTick;
                 // 60 seconds taken from PropertyChangingSpell
@@ -43,38 +43,38 @@ namespace DOL.GS
 
         private eEffect MapSpellEffect()
         {
-            if (spellHandler.SpellLine.IsBaseLine)
+            if (SpellHandler.SpellLine.IsBaseLine)
             {
-                spellHandler.Spell.IsSpec = false;
+                SpellHandler.Spell.IsSpec = false;
             }
             else
             {
-                spellHandler.Spell.IsSpec = true;
+                SpellHandler.Spell.IsSpec = true;
             }
 
-            return EffectService.GetEffectFromSpell(spellHandler.Spell);
+            return EffectService.GetEffectFromSpell(SpellHandler.Spell);
         }
 
         public override bool IsConcentrationEffect()
         {
-            return spellHandler.Spell.IsConcentration;
+            return SpellHandler.Spell.IsConcentration;
         }
 
         public override bool ShouldBeAddedToConcentrationList()
         {
-            return spellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
+            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
         public override bool ShouldBeRemovedFromConcentrationList()
         {
-            return spellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
+            return SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
         }
 
         public override void TryApplyImmunity()
         {
             if (TriggersImmunity && OwnerPlayer != null)
             {
-                new ECSImmunityEffect(Owner, spellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
+                new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
             }
         }
     }

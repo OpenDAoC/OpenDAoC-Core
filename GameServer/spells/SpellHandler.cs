@@ -686,9 +686,7 @@ namespace DOL.GS.Spells
                     else
                         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
 
-					Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var pEffects);
-					ECSGameEffect cancelEffect = pEffects?.Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
-						
+					ECSGameSpellEffect cancelEffect = Caster.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
                     if (cancelEffect != null)
                     {
 						EffectService.RequestCancelConcEffect((IConcentrationEffect)cancelEffect);
@@ -2137,13 +2135,15 @@ namespace DOL.GS.Spells
             if (Spell.IsPulsing)
             {
 				EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
-            }
 
-            if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
-            {
-                CreateECSPulseEffect(Caster, Caster.Effectiveness);
-                Caster.LastPulseCast = Spell;
-            }
+				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
+				{
+					CreateECSPulseEffect(Caster, Caster.Effectiveness);
+					Caster.LastPulseCast = Spell;
+				}
+			}
+
+            
 
             //CreateSpellEffects();
             StartSpell(target); // and action
@@ -3055,7 +3055,7 @@ namespace DOL.GS.Spells
 				return false;
 			return true;
 		}
-		public virtual bool IsOverwritable(ECSGameEffect compare)
+		public virtual bool IsOverwritable(ECSGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

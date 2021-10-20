@@ -25,7 +25,7 @@ namespace DOL.GS
     /// </summary>
     public class ECSGameEffect
     {
-        public ISpellHandler SpellHandler;
+        //public ISpellHandler SpellHandler;
         //Based on GameLoop expire tick
         public long ExpireTick;
         public long StartTick;

@@ -18,7 +18,7 @@ namespace DOL.GS
             //if our debuff is already on the target, do not reapply effect
             if (Owner.effectListComponent.Effects.ContainsKey(EffectType))
             {
-                List<ECSGameEffect> effects = Owner.effectListComponent.Effects[EffectType];
+                List<ECSGameSpellEffect> effects = Owner.effectListComponent.GetSpellEffects(EffectType);
                 foreach (var e in effects)
                 {
                     if(e.SpellHandler.Spell.ID == SpellHandler.Spell.ID && IsBuffActive)

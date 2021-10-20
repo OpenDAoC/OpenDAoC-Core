@@ -255,7 +255,7 @@ namespace DOL.GS.Spells
                 if (target != null && (!target.IsAlive))
                 {
 					//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(target, this);
-					ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+					ECSGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
 
                     if (effect != null)
                     {
@@ -351,7 +351,7 @@ namespace DOL.GS.Spells
                 if (target != null && (!target.IsAlive)) 
                 {
 					//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(target, this);
-					ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+					ECSGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
 
 					if (effect != null)
 					{

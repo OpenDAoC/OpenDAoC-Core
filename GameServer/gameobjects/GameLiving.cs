@@ -4066,9 +4066,9 @@ namespace DOL.GS
 
 			TryCancelMovementSpeedBuffs();
 
+			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && effectListComponent.Effects.TryGetValue(eEffect.OffensiveProc, out var oProcEffects)
-				&& ad.AttackType != AttackData.eAttackType.Spell)
+            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
@@ -4083,9 +4083,9 @@ namespace DOL.GS
 
         public void CancelFocusSpell(bool moving = false)
         {
-            if (effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var focusEffects) && focusEffects.FirstOrDefault().SpellHandler.Spell.IsFocus)
+			var focusEffect = effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.IsFocus).FirstOrDefault();
+            if (focusEffect != null)
             {
-				var focusEffect = focusEffects.FirstOrDefault();
                 ((SpellHandler)focusEffect.SpellHandler).FocusSpellAction(moving);
                 EffectService.RequestCancelEffect(focusEffect);
                 if (((SpellHandler)focusEffect.SpellHandler).GetTarget().effectListComponent.Effects.TryGetValue(focusEffect.EffectType, out var petEffect))
@@ -4140,7 +4140,9 @@ namespace DOL.GS
 						var effects = effectListComponent.Effects[eEffect.AblativeArmor];
 						for (int i = 0; i < effects.Count; i++)
 						{
-							var effect = effects[i];
+							var effect = effects[i] as ECSGameSpellEffect;
+							if (effect is null)
+								continue;
 
 							if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
 
@@ -4175,9 +4177,9 @@ namespace DOL.GS
 						}
 					}
 
+					var dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
                     // Handle DefensiveProcs
-                    if (ad != null && ad.Target == this && effectListComponent.Effects.TryGetValue(eEffect.DefensiveProc, out var dProcEffects)
-						&& ad.AttackType != AttackData.eAttackType.Spell)
+                    if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
                     {
                         for (int i = 0; i < dProcEffects.Count; i++)
                         {
@@ -4192,8 +4194,9 @@ namespace DOL.GS
 
 		public void HandleDamageShields(AttackData ad)
         {
+			var dSEffects = effectListComponent.GetSpellEffects(eEffect.FocusShield);
 			// Handle DamageShield damage
-			if (effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out List<ECSGameEffect> dSEffects))
+			if (dSEffects != null)
 			{
 				for (int i = 0; i < dSEffects.Count; i++)
 				{
@@ -5767,16 +5770,10 @@ namespace DOL.GS
 			//cancel all active conc spell effects from other casters
 			if (effectListComponent != null)
 			{
-				foreach (var effects in effectListComponent.Effects)
+				foreach (var effect in effectListComponent.GetSpellEffects().Where(e => e.IsConcentrationEffect()))
 				{
-					foreach (var effect in effects.Value)
-					{
-						if (effect.IsConcentrationEffect())
-						{
-							if (!leaveSelf || (leaveSelf && effect.SpellHandler.Caster != this))
-								EffectService.RequestCancelConcEffect((IConcentrationEffect)effect, false);
-						}
-					}
+					if (!leaveSelf || (leaveSelf && effect.SpellHandler.Caster != this))
+						EffectService.RequestCancelConcEffect((IConcentrationEffect)effect, false);
 				}
 			}
         }

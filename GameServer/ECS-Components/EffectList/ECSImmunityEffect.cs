@@ -3,7 +3,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-    public class ECSImmunityEffect : ECSGameEffect
+    public class ECSImmunityEffect : ECSGameSpellEffect
     {
         public override ushort Icon { get { return SpellHandler.Spell.Icon; } }
         public override string Name { get { return SpellHandler.Spell.Name; } }

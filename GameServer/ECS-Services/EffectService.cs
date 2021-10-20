@@ -70,48 +70,50 @@ namespace DOL.GS
             // Early out if we're trying to add an effect that is already present.
             else if (!effectList.AddEffect(e))
             {
-                SendSpellResistAnimation(e);
+                SendSpellResistAnimation(e as ECSGameSpellEffect);
                 return;
             }
 
+            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
+
             // Update the Concentration List if Conc Buff/Song/Chant.
-            if (e is ECSGameSpellEffect spellEffect && spellEffect.ShouldBeAddedToConcentrationList())
+            if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList())
             {
-                if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
                 {
-                    e.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
+                    spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
                 }
             }
 
-            e.OnStartEffect();
-
-            if (e.EffectType == eEffect.Pulse)
+            if (spellEffect != null)
             {
-                if (!e.RenewEffect && e.SpellHandler.Spell.IsInstantCast)
-                    ((SpellHandler)e.SpellHandler).SendCastAnimation();
-            }
-            else
-            {
-                if (e is ECSGameSpellEffect)
+                if (e.EffectType == eEffect.Pulse)
                 {
-                    if (!e.RenewEffect)
+                    if (!e.RenewEffect && spellEffect.SpellHandler.Spell.IsInstantCast)
+                        ((SpellHandler)spellEffect.SpellHandler).SendCastAnimation();
+                }
+                else
+                {
+                    if (!spellEffect.RenewEffect)
                         SendSpellAnimation((ECSGameSpellEffect)e);
 
-                    if ((e.SpellHandler.Spell.IsConcentration && !e.SpellHandler.Spell.IsPulsing) || (!e.IsBuffActive && !e.IsDisabled))
+                    if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled))
                     {
-                        if (e.EffectType == eEffect.EnduranceRegenBuff)
+                        if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
                         {
                             //Console.WriteLine("Applying EnduranceRegenBuff");
-                            var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                            ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, false);
-                        }                                                                   
-                        
+                            var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
+                            ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, spellEffect.Effectiveness, false);
+                        }
+                        e.OnStartEffect();
                         e.IsBuffActive = true;
                     }
-                }
 
-                UpdateEffectIcons(e);
+                    UpdateEffectIcons(e);
+                }
             }
+            else
+                e.OnStartEffect();
         }      
 
         private static void UpdateEffectIcons(ECSGameEffect e)
@@ -151,35 +153,41 @@ namespace DOL.GS
                 return;
             }
 
-            e.OnStopEffect();
-            e.TryApplyImmunity();
-
-            if (!e.IsBuffActive)
+            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
+            if (spellEffect != null)
             {
-                //Console.WriteLine("Buff not active! {0} on {1}", e.SpellHandler.Spell.Name, e.Owner.Name);
-            }
-            else if (e.EffectType != eEffect.Pulse)
-            {
-                if (!(e is ECSImmunityEffect) )
-                {                  
-                    if (e.EffectType == eEffect.EnduranceRegenBuff)
-                    {
-                        //Console.WriteLine("Removing EnduranceRegenBuff");
-                        var handler = e.SpellHandler as EnduranceRegenSpellHandler;
-                        ApplyBonus(e.Owner, handler.BonusCategory1, handler.Property1, e.SpellHandler.Spell.Value, e.Effectiveness, true);
-                    }                                                           
-                }
-            }
-
-            e.IsBuffActive = false;
-            // Update the Concentration List if Conc Buff/Song/Chant.
-            if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
-            {
-                if (e.SpellHandler.Caster != null && e.SpellHandler.Caster.ConcentrationEffects != null)
+                if (!spellEffect.IsBuffActive)
                 {
-                    e.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
+                    //Console.WriteLine("Buff not active! {0} on {1}", e.SpellHandler.Spell.Name, e.Owner.Name);
+                }
+                else if (spellEffect.EffectType != eEffect.Pulse)
+                {
+                    if (!(spellEffect is ECSImmunityEffect))
+                    {
+                        if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
+                        {
+                            //Console.WriteLine("Removing EnduranceRegenBuff");
+                            var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
+                            ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, spellEffect.Effectiveness, true);
+                        }
+                        e.OnStopEffect();
+                    }
+                }
+
+                e.IsBuffActive = false;
+                // Update the Concentration List if Conc Buff/Song/Chant.
+                if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
+                {
+                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
+                    {
+                        spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
+                    }
                 }
             }
+            else
+                e.OnStopEffect();
+
+            e.TryApplyImmunity();
 
             if (e.Owner is GamePlayer player)
             {
@@ -208,7 +216,7 @@ namespace DOL.GS
                 return;
 
             // Player can't remove negative effect or Effect in Immunity State
-            if (playerCanceled && ((effect.SpellHandler != null && !effect.SpellHandler.HasPositiveEffect) || effect is ECSImmunityEffect))
+            if (playerCanceled && (!effect.HasPositiveEffect) || effect is ECSImmunityEffect)
             {
                 GamePlayer player = effect.Owner as GamePlayer;
                 if (player != null)
@@ -228,7 +236,7 @@ namespace DOL.GS
         /// </summary>
         public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
-            ECSGameEffect effect = concEffect as ECSGameEffect;
+            ECSGameSpellEffect effect = concEffect as ECSGameSpellEffect;
             if (effect != null)
             {
                 RequestCancelEffect(effect, playerCanceled);
@@ -482,8 +490,11 @@ namespace DOL.GS
             }
         }
 
-        public static void SendSpellResistAnimation(ECSGameEffect e)
+        public static void SendSpellResistAnimation(ECSGameSpellEffect e)
         {
+            if (e is null)
+                return;
+
             GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

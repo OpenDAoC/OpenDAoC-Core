@@ -569,18 +569,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 						// 	}
 						// }
 						ECSGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectFromEffectId(objectId);
-
+						ECSGameSpellEffect spellEffect = foundEffect as ECSGameSpellEffect;
 						if (foundEffect == null)
 							break;
 
-                        // [Takii] This part needs a refactor since it assumes all effects come from spells.
-                        if (!(foundEffect is ECSGameSpellEffect))
-                            break;
+						// [Takii] This part needs a refactor since it assumes all effects come from spells.
+						if (spellEffect is null)
+							break;							
 
-                        caption = foundEffect.Name;
-						objectInfo.AddRange(foundEffect.SpellHandler.DelveInfo);						
+                        caption = spellEffect.Name;
+						objectInfo.AddRange(spellEffect.SpellHandler.DelveInfo);						
 
-						if (client.Account.PrivLevel > 1 && foundEffect is ECSGameEffect spellEffect && spellEffect.SpellHandler.Spell != null)
+						if (client.Account.PrivLevel > 1 && spellEffect.SpellHandler.Spell != null)
 						{
 							objectInfo.Add(" ");
 							objectInfo.Add("----------Technical informations----------");

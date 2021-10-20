@@ -364,11 +364,13 @@ namespace DOL.GS
 
         private static void HandleDamageAdd(GameLiving owner, AttackData ad)
         {
+            var dAEffects = owner.effectListComponent.GetSpellEffects(eEffect.DamageAdd);
+
             /// [Atlas - Takii] This could probably be optimized a bit by doing the split below between "affected/unaffected by stacking"
             /// when the effect is applied in the EffectListComponent instead of every time we swing our weapon?
-            if (owner.effectListComponent.Effects.TryGetValue(eEffect.DamageAdd, out List<ECSGameEffect> dAEffects))
+            if (dAEffects != null)
             {
-                List<ECSGameEffect> dmgAddsUnaffectedByStacking = new List<ECSGameEffect>();
+                List<ECSGameSpellEffect> dmgAddsUnaffectedByStacking = new List<ECSGameSpellEffect>();
 
                 // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
                 foreach (var effect in dAEffects)
