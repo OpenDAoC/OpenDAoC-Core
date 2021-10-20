@@ -491,6 +491,9 @@ namespace DOL.GS
 
         public static void SendSpellResistAnimation(ECSGameEffect e)
         {
+            if (!e.FromSpell)
+                return;
+
             GameLiving target = e.SpellHandler.GetTarget() != null ? e.SpellHandler.GetTarget() : e.SpellHandler.Caster;
             //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
