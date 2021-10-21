@@ -100,10 +100,7 @@ namespace DOL.GS.Scripts
 						}
 						else { t.Client.Out.SendMessage("Speak to my Event Level colleague to attain enough experience before joining the Battleground!", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					}
-					else
-					{
-						t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-					}
+					else { t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					break;
 				case "event zone":
 					switch (t.Realm)
