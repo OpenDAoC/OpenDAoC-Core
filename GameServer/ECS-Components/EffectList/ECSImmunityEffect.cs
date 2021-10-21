@@ -9,7 +9,7 @@ namespace DOL.GS
         public override string Name { get { return SpellHandler.Spell.Name; } }
 
         public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
-            : base(new ECSGameEffectInitParams(owner, duration, effectiveness))
+            : base(new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
         {
             // Some of this is already done in the base constructor and should be cleaned up
             Owner = owner;
