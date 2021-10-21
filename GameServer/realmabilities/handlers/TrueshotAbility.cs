@@ -21,9 +21,9 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				SureShotEffect sureShot = player.EffectList.GetOfType<SureShotEffect>();
+				SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 				if (sureShot != null)
-					sureShot.Cancel(false);
+					EffectService.RequestCancelEffect(sureShot);
 
 				RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 				if (rapidFire != null)

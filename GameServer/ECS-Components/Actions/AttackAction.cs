@@ -318,11 +318,11 @@ namespace DOL.GS
                             {
                                 foreach (ECSGameAbilityEffect effect in owner.effectListComponent.GetAbilityEffects()) // switch to the correct range attack type
                                 {
-                                    //if (effect is SureShotECSGameEffect)
-                                    //{
-                                    //    owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                                    //    break;
-                                    //}
+                                    if (effect is SureShotECSGameEffect)
+                                    {
+                                        owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                                        break;
+                                    }
                                     else if (effect is RapidFireECSGameEffect)
                                     {
                                         owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
@@ -339,17 +339,17 @@ namespace DOL.GS
                             {
                                 foreach (IGameEffect effect in owner.EffectList) // switch to the correct range attack type
                                 {
-                                    if (effect is SureShotEffect)
-                                    {
-                                        owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                                        break;
-                                    }
+                                    //if (effect is SureShotEffect)
+                                    //{
+                                    //    owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                                    //    break;
+                                    //}
                                     //else if (effect is RapidFireEffect)
                                     //{
                                     //    owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
                                     //    break;
                                     //}
-                                    else if (effect is TrueshotEffect)
+                                    if (effect is TrueshotEffect)
                                     {
                                         owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
                                         break;

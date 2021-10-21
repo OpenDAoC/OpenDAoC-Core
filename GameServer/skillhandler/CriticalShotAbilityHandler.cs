@@ -48,9 +48,9 @@ namespace DOL.GS.SkillHandler
 				EffectService.RequestCancelEffect(rapidFire, false);
 
 			// cancel sure shot effect
-			SureShotEffect sureShot = player.EffectList.GetOfType<SureShotEffect>();
+			SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 			if (sureShot != null)
-				sureShot.Cancel(false);
+				EffectService.RequestCancelEffect(sureShot);
 
 			TrueshotEffect trueshot = player.EffectList.GetOfType<TrueshotEffect>();
 			if (trueshot != null)

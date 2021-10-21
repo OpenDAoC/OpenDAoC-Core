@@ -31,10 +31,10 @@ namespace DOL.GS.SkillHandler
 	{
 		public void Execute(Ability ab, GamePlayer player)
 		{
-			SureShotEffect sureShot = player.EffectList.GetOfType<SureShotEffect>();
+			SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 			if (sureShot != null)
 			{
-				sureShot.Cancel(false);
+				EffectService.RequestCancelEffect(sureShot);
 				return;
 			}
 
@@ -52,7 +52,7 @@ namespace DOL.GS.SkillHandler
 			if (trueshot != null)
 				trueshot.Cancel(false);
 
-			new SureShotEffect().Start(player);
+			new SureShotECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 		}
 	}
 }

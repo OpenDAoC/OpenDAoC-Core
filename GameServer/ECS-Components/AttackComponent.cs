@@ -663,11 +663,11 @@ namespace DOL.GS
                     {
                         foreach (ECSGameAbilityEffect effect in p.effectListComponent.GetAbilityEffects()) // switch to the correct range attack type
                         {
-                            //if (effect is SureShotECSGameEffect)
-                            //{
-                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                            //    break;
-                            //}
+                            if (effect is SureShotECSGameEffect)
+                            {
+                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                                break;
+                            }
 
                             if (effect is RapidFireECSGameEffect)
                             {
@@ -686,11 +686,11 @@ namespace DOL.GS
                     {
                         foreach (IGameEffect effect in p.EffectList) // switch to the correct range attack type
                         {
-                            if (effect is SureShotEffect)
-                            {
-                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                                break;
-                            }
+                            //if (effect is SureShotEffect)
+                            //{
+                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                            //    break;
+                            //}
 
                             //if (effect is RapidFireEffect)
                             //{
