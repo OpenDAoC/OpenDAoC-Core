@@ -7694,6 +7694,7 @@ namespace DOL.GS
 			if (killer is GamePlayer && killer != this)
 			{
 				((GamePlayer)killer).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)killer).Client.Account.Language, "GamePlayer.Die.YouKilled", GetName(0, false)), eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+				((GamePlayer)killer).Out.SendMessage(playerMessage, messageType, eChatLoc.CL_SystemWindow);
 			}
 
 			ArrayList players = new ArrayList();
