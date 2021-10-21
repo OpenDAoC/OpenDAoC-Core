@@ -13,10 +13,11 @@ using System.Reflection;
 
 namespace DOL.GS.Scripts
 {
-    public class ThidrankiEventTP : GameNPC
+    public class AtlasEventTP : GameNPC
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
+		public static int EventLVCap = ServerProperties.Properties.EVENT_LVCAP;
 
 		public static int TeleportDelay = 40000; //value in milliseconds
         public override bool AddToWorld()
@@ -34,14 +35,14 @@ namespace DOL.GS.Scripts
 			if (!base.Interact(player)) return false;
 			TurnTo(player.X, player.Y);
 			
-			if (base.CurrentRegionID == 252)
+			if (base.CurrentRegionID == 252 || base.CurrentRegionID == 165)
 			{
 				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "If you need so, I can port you back to your Realm's [event zone]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return true;
 			}
-			if (player.Level > 24)
+			if (player.Level != EventLVCap)
 			{
-				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "looks like you're ready to move on to the [next challenge]!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Speak to my Event Level colleague to attain enough experience before joining the Battleground!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return true;
 			}
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
@@ -61,43 +62,48 @@ namespace DOL.GS.Scripts
 					{
 						if (t.RealmPoints < EventRPCap)
 						{
-							switch (t.Realm)
+							if (t.Level == EventLVCap)
 							{
-								case eRealm.Albion:
-									t.MoveTo(252, 38113, 53507, 4160, 3268);
-									break;
-								case eRealm.Midgard:
-									t.MoveTo(252, 53568, 23643, 4530, 3268);
-									break;
-								case eRealm.Hibernia:
-									t.MoveTo(252, 17367, 18248, 4320, 3268);
-									break;
+								if (EventLVCap == 24)
+								{
+									switch (t.Realm)
+									{
+										case eRealm.Albion:
+											t.MoveTo(252, 38113, 53507, 4160, 3268);
+											break;
+										case eRealm.Midgard:
+											t.MoveTo(252, 53568, 23643, 4530, 3268);
+											break;
+										case eRealm.Hibernia:
+											t.MoveTo(252, 17367, 18248, 4320, 3268);
+											break;
+									}
+								}
+								else
+								{
+									switch (t.Realm)
+									{
+										case eRealm.Albion:
+											t.MoveTo(165, 584218, 585297, 5106, 1058);
+											break;
+										case eRealm.Midgard:
+											t.MoveTo(165, 575510, 537421, 4840, 608);
+											break;
+										case eRealm.Hibernia:
+											t.MoveTo(165, 536869, 585832, 5848, 1855);
+											break;
+									}
+								}
+
 							}
+							else { t.Client.Out.SendMessage("You have reached the Realm Rank cap for this event.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 						}
-						else { t.Client.Out.SendMessage("You have reached the Realm Rank cap for this event.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
+						else { t.Client.Out.SendMessage("Speak to my Event Level colleague to attain enough experience before joining the Battleground!", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					}
 					else
 					{
 						t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 					}
-					break;
-				case "next challenge":
-					if (t.Level > 24)
-					{
-						switch (t.Realm)
-						{
-							case eRealm.Albion:
-								t.MoveTo(165, 584218, 585297, 5106, 1058);
-								break;
-							case eRealm.Midgard:
-								t.MoveTo(165, 575510, 537421, 4840, 608);
-								break;
-							case eRealm.Hibernia:
-								t.MoveTo(165, 536869, 585832, 5848, 1855);
-								break;
-						}
-					}
-					else { t.Client.Out.SendMessage("Speak to my Free Level colleague to attain enough experience first!", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
 					break;
 				case "event zone":
 					switch (t.Realm)
@@ -123,10 +129,11 @@ namespace DOL.GS.Scripts
 					msg,
 					eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			}
+		
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("Thidranki Event Teleporter initialized");
+            log.Info("Atlas Event Teleporter initialized");
         }	
     }
 }

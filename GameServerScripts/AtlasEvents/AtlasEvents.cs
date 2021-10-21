@@ -1,6 +1,6 @@
 /*
  * 
- * ATLAS Thidranki Event
+ * ATLAS Events
  *
  */
 using System;
@@ -17,7 +17,7 @@ namespace DOL.GS.GameEvents
 	/// This is the best example on how to change Characters parameters on Creation.
 	/// </summary>
 	///
-	public static class ThidrankiEventSettings
+	public static class AtlasEventSettings
 	{
 
 		/// <summary>
@@ -36,8 +36,9 @@ namespace DOL.GS.GameEvents
 		{
 			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 			GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
+			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered,new DOLEventHandler(OnPlayerLogin));
 			if (log.IsInfoEnabled)
-				log.Info("Thidranki Event initialized");
+				log.Info("Atlas Event initialized");
 		}
 		
 		public static int EventLvCap = ServerProperties.Properties.EVENT_LVCAP;
@@ -117,6 +118,36 @@ namespace DOL.GS.GameEvents
 				return;
 
 			if (ServerProperties.Properties.EVENT_THIDRANKI && p.RealmPoints > EventRPCap)
+			{
+				switch (p.Realm)
+				{
+					case eRealm.Albion:
+						p.MoveTo(330, 52759, 39528, 4677, 36);
+						break;
+					case eRealm.Midgard:
+						p.MoveTo(334, 52160, 39862, 5472, 46);
+						break;
+					case eRealm.Hibernia:
+						p.MoveTo(335, 52836, 40401, 4672, 441);
+						break;
+				}
+			}
+		}
+		
+		public static void OnPlayerLogin(DOLEvent e, object sender, EventArgs args)
+		{
+			GamePlayer p = sender as GamePlayer;
+			
+			if (p == null)
+				return;
+			
+			if (EventRPCap == 0)
+				return;
+
+			if (EventLvCap == 0)
+				return;
+
+			if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
 			{
 				switch (p.Realm)
 				{
