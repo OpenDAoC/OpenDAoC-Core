@@ -426,7 +426,7 @@ namespace DOL.GS.Spells
 
             ECSPulseEffect effect = new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
 
-            EntityManager.AddEffect(effect);
+            //EntityManager.AddEffect(effect);
 
         }
 

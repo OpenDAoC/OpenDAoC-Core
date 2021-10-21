@@ -287,7 +287,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    //Console.WriteLine($"Error removing an Effect from EffectList {e}");
+                    Console.WriteLine($"Error removing an Effect from {effect.Owner}'s EffectList {e}");
                     return false;
                 }
 
