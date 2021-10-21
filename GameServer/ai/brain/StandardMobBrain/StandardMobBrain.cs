@@ -30,6 +30,7 @@ using DOL.GS.Keeps;
 using DOL.Language;
 using log4net;
 using System.Text;
+using System.Linq;
 
 namespace DOL.AI.Brain
 {
@@ -580,7 +581,7 @@ namespace DOL.AI.Brain
                 }
 
                 //ProtectEffect protect = (ProtectEffect) player.EffectList.GetOfType(typeof(ProtectEffect));
-                foreach (ProtectEffect protect in player.EffectList.GetAllOfType<ProtectEffect>())
+                foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
                 {
                     // if no aggro left => break
                     if (aggroamount <= 0) break;

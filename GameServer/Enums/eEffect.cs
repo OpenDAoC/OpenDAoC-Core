@@ -122,6 +122,7 @@ namespace DOL.GS
         Berserk,
         Engage,
         Guard,
-        Intercept
+        Intercept,
+        Protect
     }
 }
