@@ -22,10 +22,9 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            GamePlayer player = Owner.TargetObject as GamePlayer;
-            if (player != null)
+            if (OwnerPlayer != null)
             {
-                player.Out.SendMessage("You prepare a Trueshot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage("You prepare a Trueshot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
         public override void OnStopEffect()
