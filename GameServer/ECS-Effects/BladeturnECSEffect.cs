@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class BladeturnECSGameEffect : ECSGameEffect
+    public class BladeturnECSGameEffect : ECSGameSpellEffect
     {
         public BladeturnECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

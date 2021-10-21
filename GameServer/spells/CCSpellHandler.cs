@@ -255,14 +255,14 @@ namespace DOL.GS.Spells
                 if (target != null && (!target.IsAlive))
                 {
 					//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(target, this);
-					ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+					ECSGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
 
                     if (effect != null)
                     {
 						//effect.Cancel(false);//call OnEffectExpires
 						//CancelPulsingSpell(Caster, this.Spell.SpellType);
 						EffectService.RequestCancelEffect(effect);
-						EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(effect.SpellHandler.Caster, eEffect.Pulse));
+						EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
                         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
                     }
                     return;
@@ -351,14 +351,14 @@ namespace DOL.GS.Spells
                 if (target != null && (!target.IsAlive)) 
                 {
 					//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(target, this);
-					ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+					ECSGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
 
 					if (effect != null)
 					{
 						//effect.Cancel(false);//call OnEffectExpires
 						//CancelPulsingSpell(Caster, this.Spell.SpellType);
 						EffectService.RequestCancelEffect(effect);
-						EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(effect.SpellHandler.Caster, eEffect.Pulse));
+						EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
 						MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
                     }
                     return;

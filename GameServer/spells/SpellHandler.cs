@@ -330,48 +330,48 @@ namespace DOL.GS.Spells
 		/// Cancels all pulsing spells
 		/// </summary>
 		/// <param name="living"></param>
-		public static void CancelAllPulsingSpells(GameLiving living)
-		{
-			//[Takii] I updated this method so things would compile but the only call to it is currently commented and its unclear if we want to keep it.
-
-			List<IConcentrationEffect> pulsingSpells = new List<IConcentrationEffect>();
-
-			GamePlayer player = living as GamePlayer;
-
-			lock (living.ConcentrationEffects)
-			{
-				for (int i = 0; i < living.ConcentrationEffects.Count; i++)
-				{
-					ECSPulseEffect effect = living.ConcentrationEffects[i] as ECSPulseEffect;
-					if (effect == null)
-						continue;
-
-					if (player != null && player.CharacterClass.MaxPulsingSpells > 1)
-						pulsingSpells.Add(effect);
-					else
-						EffectService.RequestCancelEffect(effect);
-				}
-			}
-
-			// Non-concentration spells are grouped at the end of GameLiving.ConcentrationEffects.
-			// The first one is added at the very end; successive additions are inserted just before the last element
-			// which results in the following ordering:
-			// Assume pulsing spells A, B, C, and D were added in that order; X, Y, and Z represent other spells
-			// ConcentrationEffects = { X, Y, Z, ..., B, C, D, A }
-			// If there are only ever 2 or less pulsing spells active, then the oldest one will always be at the end.
-			// However, if an update or modification allows more than 2 to be active, the goofy ordering of the spells
-			// will prevent us from knowing which spell is the oldest and should be canceled - we can go ahead and simply
-			// cancel the last spell in the list (which will result in inconsistent behavior) or change the code that adds
-			// spells to ConcentrationEffects so that it enforces predictable ordering.
-			if (pulsingSpells.Count > 1)
-			{
-				ECSPulseEffect effect = pulsingSpells[pulsingSpells.Count - 1] as ECSPulseEffect;
-				if (effect != null)
-				{
-					EffectService.RequestCancelEffect(effect);
-				}
-			}
-		}
+// 		public static void CancelAllPulsingSpells(GameLiving living)
+// 		{
+// 			//[Takii] I updated this method so things would compile but the only call to it is currently commented and its unclear if we want to keep it.
+// 
+// 			List<IConcentrationEffect> pulsingSpells = new List<IConcentrationEffect>();
+// 
+// 			GamePlayer player = living as GamePlayer;
+// 
+// 			lock (living.ConcentrationEffects)
+// 			{
+// 				for (int i = 0; i < living.ConcentrationEffects.Count; i++)
+// 				{
+// 					ECSPulseEffect effect = living.ConcentrationEffects[i] as ECSPulseEffect;
+// 					if (effect == null)
+// 						continue;
+// 
+// 					if (player != null && player.CharacterClass.MaxPulsingSpells > 1)
+// 						pulsingSpells.Add(effect);
+// 					else
+// 						EffectService.RequestCancelEffect(effect);
+// 				}
+// 			}
+// 
+// 			// Non-concentration spells are grouped at the end of GameLiving.ConcentrationEffects.
+// 			// The first one is added at the very end; successive additions are inserted just before the last element
+// 			// which results in the following ordering:
+// 			// Assume pulsing spells A, B, C, and D were added in that order; X, Y, and Z represent other spells
+// 			// ConcentrationEffects = { X, Y, Z, ..., B, C, D, A }
+// 			// If there are only ever 2 or less pulsing spells active, then the oldest one will always be at the end.
+// 			// However, if an update or modification allows more than 2 to be active, the goofy ordering of the spells
+// 			// will prevent us from knowing which spell is the oldest and should be canceled - we can go ahead and simply
+// 			// cancel the last spell in the list (which will result in inconsistent behavior) or change the code that adds
+// 			// spells to ConcentrationEffects so that it enforces predictable ordering.
+// 			if (pulsingSpells.Count > 1)
+// 			{
+// 				ECSPulseEffect effect = pulsingSpells[pulsingSpells.Count - 1] as ECSPulseEffect;
+// 				if (effect != null)
+// 				{
+// 					EffectService.RequestCancelEffect(effect);
+// 				}
+// 			}
+// 		}
 
 		#endregion
 
@@ -415,13 +415,12 @@ namespace DOL.GS.Spells
         public virtual void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			// Base function should be empty once all effects are moved to their own effect class.
-			new ECSGameEffect(initParams);
+			new ECSGameSpellEffect(initParams);
         }
 
         public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
         {
 
-            //IECSGameEffect effect;
             int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
@@ -687,12 +686,10 @@ namespace DOL.GS.Spells
                     else
                         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
 
-					Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var pEffects);
-					ECSGameEffect cancelEffect = pEffects?.Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
-						
+					ECSGameSpellEffect cancelEffect = Caster.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
                     if (cancelEffect != null)
                     {
-						EffectService.RequestCancelConcEffect(cancelEffect);
+						EffectService.RequestCancelConcEffect((IConcentrationEffect)cancelEffect);
                         Caster.LastPulseCast = null;
                         //Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
@@ -2137,19 +2134,16 @@ namespace DOL.GS.Spells
 
             if (Spell.IsPulsing)
             {
-                if (Caster.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out var existingEffects))
-                {
-                    Caster.effectListComponent.Effects.Remove(eEffect.Pulse);
-                    Caster.ConcentrationEffects.Remove(existingEffects.FirstOrDefault());
-                }
-
+				EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
 					CreateECSPulseEffect(Caster, Caster.Effectiveness);
 					Caster.LastPulseCast = Spell;
 				}
-            }
+			}
+
+            
 
             //CreateSpellEffects();
             StartSpell(target); // and action
@@ -3061,7 +3055,7 @@ namespace DOL.GS.Spells
 				return false;
 			return true;
 		}
-		public virtual bool IsOverwritable(ECSGameEffect compare)
+		public virtual bool IsOverwritable(ECSGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

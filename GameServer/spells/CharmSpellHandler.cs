@@ -428,12 +428,10 @@ namespace DOL.GS.Spells
 
             //PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
 
-            List<ECSGameEffect> pulses = new List<ECSGameEffect>();
-            npc.Owner?.effectListComponent?.Effects?.TryGetValue(eEffect.Pulse, out pulses);
-            var concEffect = pulses?.Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
+            var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
 
             if (concEffect != null)
-                EffectService.RequestCancelConcEffect(concEffect);
+                EffectService.RequestCancelConcEffect((ECSPulseEffect)concEffect);
                 //concEffect.CancelEffect = true;
                 //concEffect.Cancel(false);
 

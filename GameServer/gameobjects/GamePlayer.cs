@@ -5618,7 +5618,7 @@ namespace DOL.GS
 				StopCurrentSpellcast();
 			}
 
-			var song = EffectListService.GetEffectOnTarget(this, eEffect.Pulse);
+			ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(this);
 			if (song != null && song.SpellHandler.Spell.InstrumentRequirement != 0)
             {
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
@@ -13156,7 +13156,7 @@ namespace DOL.GS
 
 			if (goStealth)
 			{
-				new StealthECSGameEffect(new ECSGameEffectInitParams(this,0, 1, null));
+				new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
 			}
 			else
 			{

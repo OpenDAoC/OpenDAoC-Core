@@ -4,7 +4,7 @@ using DOL.AI.Brain;
 
 namespace DOL.GS
 {
-    public abstract class AbstractCrowdControlECSEffect : ECSGameEffect
+    public abstract class AbstractCrowdControlECSEffect : ECSGameSpellEffect
     {
         public AbstractCrowdControlECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

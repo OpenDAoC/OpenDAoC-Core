@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class PiercingMagicECSGameEffect : ECSGameEffect
+    public class PiercingMagicECSGameEffect : ECSGameSpellEffect
     {
         public PiercingMagicECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

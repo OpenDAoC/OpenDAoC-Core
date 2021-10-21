@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace DOL.GS
 {
-    public class StatDebuffECSEffect : ECSGameEffect
+    public class StatDebuffECSEffect : ECSGameSpellEffect
     {
         public StatDebuffECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
@@ -18,7 +18,7 @@ namespace DOL.GS
             //if our debuff is already on the target, do not reapply effect
             if (Owner.effectListComponent.Effects.ContainsKey(EffectType))
             {
-                List<ECSGameEffect> effects = Owner.effectListComponent.Effects[EffectType];
+                List<ECSGameSpellEffect> effects = Owner.effectListComponent.GetSpellEffects(EffectType);
                 foreach (var e in effects)
                 {
                     if(e.SpellHandler.Spell.ID == SpellHandler.Spell.ID && IsBuffActive)
@@ -87,8 +87,7 @@ namespace DOL.GS
                 {
                     if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                     {
-                        ECSImmunityEffect immunityEffect = new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
-                        EntityManager.AddEffect(immunityEffect);
+                        new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
                     }
 
                     //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);

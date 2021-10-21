@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class ProcECSGameEffect : ECSGameEffect
+    public class ProcECSGameEffect : ECSGameSpellEffect
     {
         public ProcECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

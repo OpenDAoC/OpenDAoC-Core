@@ -1768,7 +1768,7 @@ namespace DOL.GS
             InterceptEffect intercept = null;
             //InterceptECSGameEffect intercept = null;
             GameSpellEffect bladeturn = null;
-            ECSGameEffect ecsbladeturn = null;
+            ECSGameSpellEffect ecsbladeturn = null;
             //EngageEffect engage = null;
             EngageECSGameEffect engage = null;
             // ML effects
@@ -1785,8 +1785,8 @@ namespace DOL.GS
             //			BerserkEffect berserk = null;
 
             // get all needed effects in one loop
-            owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out List<ECSGameEffect> btlist);
-            ecsbladeturn = btlist?.FirstOrDefault();
+            //owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out List<ECSGameEffect> btlist);
+            //ecsbladeturn = btlist?.FirstOrDefault();
 
             lock (owner.effectListComponent.Effects)
             {
@@ -1822,7 +1822,7 @@ namespace DOL.GS
                     if (effect.EffectType == eEffect.Bladeturn)
                     {
                         if (ecsbladeturn == null)
-                            ecsbladeturn = effect;
+                            ecsbladeturn = (ECSGameSpellEffect)effect;
                         continue;
                     }
 

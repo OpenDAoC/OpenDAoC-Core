@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class HealOverTimeECSGameEffect : ECSGameEffect
+    public class HealOverTimeECSGameEffect : ECSGameSpellEffect
     {
         public HealOverTimeECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) 

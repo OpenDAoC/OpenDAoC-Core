@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 	{
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-			var effect = EffectListService.GetEffectOnTarget(target, eEffect.MovementSpeedDebuff);
+			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);
 			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
 				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null || 
 				(effect != null && effect.SpellHandler.Spell.Value == 99))

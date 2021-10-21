@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class PetECSGameEffect : ECSGameEffect
+    public class PetECSGameEffect : ECSGameSpellEffect
     {
         public PetECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }

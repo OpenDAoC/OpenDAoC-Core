@@ -6,22 +6,26 @@ namespace DOL.GS
 {
     public struct ECSGameEffectInitParams
     {
-       public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler handler)
+        public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler spellHandler = null)
         {
+            
             Target = target;
             Duration = duration;
             Effectiveness = effectiveness;
-            Handler = handler;
+            SpellHandler = spellHandler;
         }
         public GameLiving Target { get; set; }
         public int Duration { get; set; }
         public double Effectiveness { get; set; }
-        public ISpellHandler Handler { get; set; }
+        public ISpellHandler SpellHandler { get; set; }
     }
-    
-    public class ECSGameEffect : IConcentrationEffect
+
+    /// <summary>
+    /// Base class for all Effects
+    /// </summary>
+    public class ECSGameEffect
     {
-        public ISpellHandler SpellHandler;
+        //public ISpellHandler SpellHandler;
         //Based on GameLoop expire tick
         public long ExpireTick;
         public long StartTick;
@@ -40,25 +44,15 @@ namespace DOL.GS
         public long NextTick;
         public int PreviousPosition = -1;
 
-        string IConcentrationEffect.Name => Name;
-        ushort IConcentrationEffect.Icon => Icon;
-        byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
-
         /// <summary>
-		/// The icon for this effect. Try to use the spell's icon by default. Non-spell based effects override this to provide the correct icon.
+		/// The icon for this effect.
 		/// </summary>
-        public virtual ushort Icon
-        {
-            get { return SpellHandler == null ? (ushort)0 : SpellHandler.Spell.Icon; }
-        }
+        public virtual ushort Icon { get { return (ushort)0; } }
 
         /// <summary>
-        /// The name of this effect. Try to use the spell's name by default. Non-spell based effects override this to provide the correct name.
+        /// The name of this effect.
         /// </summary>
-        public virtual string Name
-        {
-            get { return SpellHandler == null ? "Default Effect Name" : SpellHandler.Spell.Name; }
-        }
+        public virtual string Name { get { return "Default Effect Name"; } }
 
         /// <summary>
 		/// The name of the owner
@@ -74,15 +68,10 @@ namespace DOL.GS
             }
         }
 
-        public virtual bool HasPositiveEffect
-        {
-            get { return SpellHandler == null ? false : SpellHandler.HasPositiveEffect; }
-        }
-
-        public bool FromSpell
-        {
-            get { return SpellHandler != null; }
-        }
+        /// <summary>
+        /// Whether this effect is positive.
+        /// </summary>
+        public virtual bool HasPositiveEffect { get { return false; } }
 
         /// Whether this effect should trigger an immunity when it expires.
         public bool TriggersImmunity = false;
@@ -97,40 +86,16 @@ namespace DOL.GS
             Owner = initParams.Target;
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
-            SpellHandler = initParams.Handler;
-
             OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
-
+            EffectType = eEffect.Unknown; // should be overridden in subclasses
             CancelEffect = false;
             RenewEffect = false;
             IsDisabled = false;
             IsBuffActive = false;
-
-            EffectType = MapEffect();
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
             NextTick = 0;
-
-            if (FromSpell)
-            {
-                PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
-
-                if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                {
-                    TickInterval = 650;
-                    NextTick = 1 + (Duration >> 1) + (int)StartTick;
-                }
-                else if (SpellHandler.Spell.IsConcentration)
-                {
-                    NextTick = StartTick;
-                    // 60 seconds taken from PropertyChangingSpell
-                    // Not sure if this is correct
-                    PulseFreq = 650;
-                }
-            }
-
-            EntityManager.AddEffect(this);
         }
 
         public virtual long GetRemainingTimeForClient()
@@ -141,46 +106,10 @@ namespace DOL.GS
                 return 0;
         }
 
-        public bool IsConcentrationEffect()
-        {
-            return !FromSpell ? false : SpellHandler.Spell.IsConcentration;
-        }
-
-        public bool ShouldBeAddedToConcentrationList()
-        {
-            return !FromSpell ? false : SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
-        }
-
-        public bool ShouldBeRemovedFromConcentrationList()
-        {
-            return !FromSpell ? false : SpellHandler.Spell.IsConcentration || EffectType == eEffect.Pulse;
-        }
-
-        protected virtual eEffect MapEffect()
-        {
-            if (!FromSpell)
-                return eEffect.Unknown;
-
-            if (SpellHandler.SpellLine.IsBaseLine)
-            {
-                SpellHandler.Spell.IsSpec = false;
-            } else
-            {
-                SpellHandler.Spell.IsSpec = true;
-            }
-
-            return EffectService.GetEffectFromSpell(SpellHandler.Spell);
-        }
-
-        public virtual void TryApplyImmunity()
-        {
-            if (TriggersImmunity && OwnerPlayer != null)
-            {
-                ECSImmunityEffect immunityEffect = new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
-                EntityManager.AddEffect(immunityEffect);
-            }
-        }
-
+        public virtual bool IsConcentrationEffect() { return false; }
+        public virtual bool ShouldBeAddedToConcentrationList() { return false; }
+        public virtual bool ShouldBeRemovedFromConcentrationList() { return false; }
+        public virtual void TryApplyImmunity() { }
         public virtual void OnStartEffect() { }
         public virtual void OnStopEffect() { }
         public virtual void OnEffectPulse() { }

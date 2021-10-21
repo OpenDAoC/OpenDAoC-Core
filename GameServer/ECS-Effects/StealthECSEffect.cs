@@ -4,15 +4,17 @@ using DOL.Events;
 
 namespace DOL.GS
 {
-    public class StealthECSGameEffect : ECSGameEffect
+    public class StealthECSGameEffect : ECSGameAbilityEffect
     {
         public StealthECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+            : base(initParams)
+        {
+            EffectType = eEffect.Stealth;
+        }
 
         public override ushort Icon { get { return 0x193; } }
         public override string Name { get { return LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StealthEffect.Name"); } }
         public override bool HasPositiveEffect { get { return true; } }
-        protected override eEffect MapEffect() { return eEffect.Stealth; }
 
         public override void OnStartEffect()
         {           
@@ -29,7 +31,7 @@ namespace DOL.GS
             // Cancel pulse effect
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
             {
-                EffectService.RequestCancelConcEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Pulse));
+                EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(OwnerPlayer));
             }
 
             OwnerPlayer.Sprint(false);
