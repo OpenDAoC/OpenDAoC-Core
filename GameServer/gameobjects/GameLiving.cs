@@ -4078,6 +4078,12 @@ namespace DOL.GS
                 }
             }
 
+			TripleWieldECSGameEffect tw = (TripleWieldECSGameEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.TripleWield);
+			if (tw != null)
+            {
+				tw.EventHandler(ad);
+            }
+
             CancelFocusSpell();
         }
 

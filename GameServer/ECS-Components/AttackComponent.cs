@@ -2544,7 +2544,7 @@ namespace DOL.GS
                 if (Util.Chance(AttackCriticalChance(weapon)))
                 {
                     // triple wield prevents critical hits
-                    if (ad.Target.EffectList.GetOfType<TripleWieldEffect>() != null) return 0;
+                    if (EffectListService.GetAbilityEffectOnTarget(ad.Target, eEffect.TripleWield) != null) return 0;
 
                     int critMin;
                     int critMax;

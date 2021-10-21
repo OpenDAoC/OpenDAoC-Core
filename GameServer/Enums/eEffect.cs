@@ -128,6 +128,7 @@ namespace DOL.GS
         RapidFire,
         SureShot,
         TrueShot,
-        Stag
+        Stag,
+        TripleWield
     }
 }
