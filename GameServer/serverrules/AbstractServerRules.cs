@@ -1730,7 +1730,7 @@ namespace DOL.GS.ServerRules
 						players.Add(pla);
                     }
 					GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
-					Console.WriteLine($"Chosen player: {playerToAward}");
+					//Console.WriteLine($"Chosen player: {playerToAward}");
 					if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
                 }
 
@@ -1739,7 +1739,7 @@ namespace DOL.GS.ServerRules
 				{
                     foreach (var player in playersToAward)
                     {
-						Console.WriteLine($"Generating ROG for {player}");
+						//Console.WriteLine($"Generating ROG for {player}");
 						AtlasROGManager.GenerateROG(player, true);
 					}
 				}
