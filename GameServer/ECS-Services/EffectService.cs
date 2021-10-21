@@ -94,7 +94,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    if (!spellEffect.RenewEffect)
+                    if (!spellEffect.RenewEffect && !(spellEffect is ECSImmunityEffect))
                         SendSpellAnimation((ECSGameSpellEffect)e);
 
                     if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled))
