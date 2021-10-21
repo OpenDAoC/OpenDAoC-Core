@@ -138,6 +138,9 @@ namespace DOL.GS.GameEvents
 				m_lastBytesOut = Statistics.BytesOut;
 
 				int clients = WorldMgr.GetAllPlayingClientsCount();
+				int AlbPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
+				int MidPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
+				int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
 
 				float cpu = 0;
 				if (m_systemCpuUsedCounter != null)
@@ -153,6 +156,9 @@ namespace DOL.GS.GameEvents
 				newstat.Upload = (int)outRate/1024;
 				newstat.Download = (int)inRate / 1024;
 				newstat.Memory = totalmem / 1024;
+				newstat.AlbionPlayers = AlbPlayers;
+				newstat.MidgardPlayers = MidPlayers;
+				newstat.HiberniaPlayers = HibPlayers;
 				GameServer.Database.AddObject(newstat);
 				GameServer.Database.SaveObject(newstat);
 			}
