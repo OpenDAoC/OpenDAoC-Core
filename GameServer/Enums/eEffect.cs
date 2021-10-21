@@ -129,6 +129,7 @@ namespace DOL.GS
         SureShot,
         TrueShot,
         Stag,
-        TripleWield
+        TripleWield,
+        Camouflage
     }
 }

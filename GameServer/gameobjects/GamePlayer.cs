@@ -13244,7 +13244,7 @@ namespace DOL.GS
 					double detectRadius = 125.0 + ((npcLevel - stealthLevel) * 20.0);
 
 					// we have detect hidden and enemy don't = higher range
-					if (npc.HasAbility(Abilities.DetectHidden) && player.EffectList.GetOfType<CamouflageEffect>() == null)
+					if (npc.HasAbility(Abilities.DetectHidden) && EffectListService.GetAbilityEffectOnTarget(player, eEffect.Camouflage) == null)
 					{
 						detectRadius += 125;
 					}
@@ -13358,7 +13358,7 @@ namespace DOL.GS
 			if (levelDiff < 0) levelDiff = 0;
 
 			int range;
-			bool enemyHasCamouflage = enemy.EffectList.GetOfType<CamouflageEffect>() != null;
+			bool enemyHasCamouflage = EffectListService.GetAbilityEffectOnTarget(enemy, eEffect.Camouflage) != null;
 			if (HasAbility(Abilities.DetectHidden) && !enemy.HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
 			{
 				// we have detect hidden and enemy don't = higher range
