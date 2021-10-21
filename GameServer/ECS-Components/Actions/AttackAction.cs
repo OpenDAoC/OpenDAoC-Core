@@ -328,28 +328,7 @@ namespace DOL.GS
                                         owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
                                         break;
                                     }
-                                    //else if (effect is TrueshotECSGameEffect)
-                                    //{
-                                    //    owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-                                    //    break;
-                                    //}
-                                }
-                            }
-                            lock (owner.EffectList)
-                            {
-                                foreach (IGameEffect effect in owner.EffectList) // switch to the correct range attack type
-                                {
-                                    //if (effect is SureShotEffect)
-                                    //{
-                                    //    owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                                    //    break;
-                                    //}
-                                    //else if (effect is RapidFireEffect)
-                                    //{
-                                    //    owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                                    //    break;
-                                    //}
-                                    if (effect is TrueshotEffect)
+                                    else if (effect is TrueShotECSGameEffect)
                                     {
                                         owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
                                         break;

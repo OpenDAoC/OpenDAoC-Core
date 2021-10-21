@@ -126,6 +126,7 @@ namespace DOL.GS
         Protect,
         QuickCast,
         RapidFire,
-        SureShot
+        SureShot,
+        TrueShot
     }
 }

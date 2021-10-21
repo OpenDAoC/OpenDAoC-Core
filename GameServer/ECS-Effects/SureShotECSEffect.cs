@@ -16,8 +16,6 @@ namespace DOL.GS
             EffectType = eEffect.Berserk;
         }
 
-        protected ushort m_startModel = 0;
-
         public override ushort Icon { get { return 485; } }
         public override string Name { get { return LanguageMgr.GetTranslation(OwnerPlayer?.Client, "Effects.SureShotEffect.Name"); } }
         public override bool HasPositiveEffect { get { return true; } }

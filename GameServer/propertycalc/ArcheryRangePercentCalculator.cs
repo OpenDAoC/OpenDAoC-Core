@@ -51,9 +51,9 @@ namespace DOL.GS.PropertyCalc
 			if (living.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long)
 			{
 				ra = 50;
-				IGameEffect effect = living.EffectList.GetOfType<TrueshotEffect>();
+				TrueShotECSGameEffect effect = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(living, eEffect.TrueShot);
 				if (effect != null)
-					effect.Cancel(false);
+					EffectService.RequestCancelEffect(effect, false);
 			}
 
 			return item + ra;

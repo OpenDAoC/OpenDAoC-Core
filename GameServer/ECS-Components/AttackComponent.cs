@@ -675,30 +675,7 @@ namespace DOL.GS
                                 break;
                             }
 
-                            //if (effect is TrueshotECSGameEffect)
-                            //{
-                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-                            //    break;
-                            //}
-                        }
-                    }
-                    lock (p.EffectList)
-                    {
-                        foreach (IGameEffect effect in p.EffectList) // switch to the correct range attack type
-                        {
-                            //if (effect is SureShotEffect)
-                            //{
-                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                            //    break;
-                            //}
-
-                            //if (effect is RapidFireEffect)
-                            //{
-                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                            //    break;
-                            //}
-
-                            if (effect is TrueshotEffect)
+                            if (effect is TrueShotECSGameEffect)
                             {
                                 p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
                                 break;

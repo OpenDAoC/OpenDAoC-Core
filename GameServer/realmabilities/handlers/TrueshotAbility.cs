@@ -29,7 +29,7 @@ namespace DOL.GS.RealmAbilities
 				if (rapidFire != null)
 					EffectService.RequestCancelEffect(rapidFire, false);
 
-				new TrueshotEffect().Start(player);
+				new TrueShotECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 			}
 			DisableSkill(living);
 		}

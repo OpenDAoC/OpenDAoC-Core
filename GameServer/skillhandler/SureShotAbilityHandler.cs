@@ -48,9 +48,9 @@ namespace DOL.GS.SkillHandler
 			if (rapidFire != null)
 				EffectService.RequestCancelEffect(rapidFire, false);
 
-			TrueshotEffect trueshot = player.EffectList.GetOfType<TrueshotEffect>();
+			TrueShotECSGameEffect trueshot = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot);
 			if (trueshot != null)
-				trueshot.Cancel(false);
+				EffectService.RequestCancelEffect(trueshot, false);
 
 			new SureShotECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 		}
