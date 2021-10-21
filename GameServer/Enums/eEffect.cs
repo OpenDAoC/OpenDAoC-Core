@@ -127,6 +127,7 @@ namespace DOL.GS
         QuickCast,
         RapidFire,
         SureShot,
-        TrueShot
+        TrueShot,
+        Stag
     }
 }
