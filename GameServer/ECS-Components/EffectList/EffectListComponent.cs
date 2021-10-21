@@ -33,6 +33,11 @@ namespace DOL.GS
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
+                    if (!EntityManager.GetLivingByComponent(typeof(EffectListComponent)).ToArray().Contains(Owner))
+                    {
+                        EntityManager.AddComponent(typeof(EffectListComponent), Owner);
+                    }
+
                     // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)
                     {
@@ -154,11 +159,6 @@ namespace DOL.GS
                         Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
-
-                        if (Effects.Count == 1 && !EntityManager.GetLivingByComponent(typeof(EffectListComponent)).ToArray().Contains(Owner))
-                        {
-                            EntityManager.AddComponent(typeof(EffectListComponent), Owner);
-                        }
                     }
 
                     return true;
@@ -167,8 +167,7 @@ namespace DOL.GS
                 {
                     //Console.WriteLine($"Error adding an Effect {e}");
                     return false;
-                }
-                
+                }               
             }
             
         }
