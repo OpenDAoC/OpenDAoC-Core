@@ -123,6 +123,7 @@ namespace DOL.GS
         Engage,
         Guard,
         Intercept,
-        Protect
+        Protect,
+        QuickCast
     }
 }

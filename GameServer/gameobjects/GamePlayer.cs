@@ -8487,7 +8487,7 @@ namespace DOL.GS
 			if (CharacterClass.CanChangeCastingSpeed(line, spell) == false)
 				return ticks;
 
-			if (EffectList.GetOfType<QuickCastEffect>() != null)
+			if (EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast) != null)
 			{
 				// Most casters have access to the Quickcast ability (or the Necromancer equivalent, Facilitate Painworking).
 				// This ability will allow you to cast a spell without interruption.

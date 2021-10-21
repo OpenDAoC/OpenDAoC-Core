@@ -637,7 +637,8 @@ namespace DOL.GS.Spells
 			}
 			if (Spell.Uninterruptible)
 				return false;
-			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0 || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
+			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0
+				|| Caster.effectListComponent.Effects.ContainsKey(eEffect.QuickCast) || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
 				return false;
 			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2)
 			{
@@ -781,7 +782,7 @@ namespace DOL.GS.Spells
 			}
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
-				m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
+				EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
 			{
 				if (Caster.InterruptAction > 0 && Caster.InterruptAction + Caster.SpellInterruptRecastTime > Caster.CurrentRegion.Time)
 				{
@@ -1440,7 +1441,7 @@ namespace DOL.GS.Spells
 			}
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
-				m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
+				EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
 			{
 				if (Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
 				{
@@ -1822,7 +1823,7 @@ namespace DOL.GS.Spells
 				power -= basepower * specBonus;
 			}
 			// doubled power usage if quickcasting
-			if (Caster.EffectList.GetOfType<QuickCastEffect>() != null && Spell.CastTime > 0)
+			if (EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) != null && Spell.CastTime > 0)
 				power *= 2;
 			return (int)power;
 		}
@@ -2167,7 +2168,7 @@ namespace DOL.GS.Spells
 			//set the time when casting to can not quickcast during a minimum time
 			if (m_caster is GamePlayer)
 			{
-				QuickCastEffect quickcast = m_caster.EffectList.GetOfType<QuickCastEffect>();
+				QuickCastECSGameEffect quickcast = (QuickCastECSGameEffect)EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
 				if (quickcast != null && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.setProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);

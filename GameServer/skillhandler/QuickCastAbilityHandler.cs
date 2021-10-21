@@ -48,7 +48,7 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 
-			QuickCastEffect quickcast = player.EffectList.GetOfType<QuickCastEffect>();
+			QuickCastECSGameEffect quickcast = (QuickCastECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.QuickCast);
 			if (quickcast!=null)
 			{
 				quickcast.Cancel(false);
@@ -82,7 +82,7 @@ namespace DOL.GS.SkillHandler
 
 			//player.DisableSkill(ab,DURATION / 10);
 
-			new QuickCastEffect().Start(player);
+			new QuickCastECSGameEffect(new ECSGameEffectInitParams(player, QuickCastECSGameEffect.DURATION, 1));
 		}
 	}
 }
