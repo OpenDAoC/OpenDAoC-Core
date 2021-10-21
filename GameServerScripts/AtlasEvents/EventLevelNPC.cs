@@ -22,7 +22,7 @@ namespace DOL.GS.Scripts
     public class EventLevelNPC : GameNPC
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        
+        public static int EventLVCap = Properties.EVENT_LVCAP;
 		public override bool AddToWorld()
 		{
 			Name = "Event Level";
@@ -51,7 +51,7 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player))
                 return false;
 
-            if (player.Level < 24)
+            if (player.Level < EventLVCap)
             {
                 player.Out.SendMessage("Hello " + player.Name + ",\n I can give you enough [experience] to defend your Realm in the battleground.",
                     eChatType.CT_Say, eChatLoc.CL_PopupWindow);
