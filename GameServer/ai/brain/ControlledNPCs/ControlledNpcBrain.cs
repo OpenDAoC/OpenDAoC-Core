@@ -426,7 +426,7 @@ namespace DOL.AI.Brain
 							{
 								if (GetPlayerOwner() is GamePlayer player)
 									//the pet should intercept even if a player is till intercepting for the owner
-									new InterceptEffect().Start(Body, player);
+									new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, player);
 								break;
 							}
 						case Abilities.Guard:

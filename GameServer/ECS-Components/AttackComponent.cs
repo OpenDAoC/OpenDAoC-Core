@@ -1765,8 +1765,8 @@ namespace DOL.GS
             GuardECSGameEffect guard = null;
             DashingDefenseEffect dashing = null;
             //DashingDefenseECSGameEffect dashing = null;
-            InterceptEffect intercept = null;
-            //InterceptECSGameEffect intercept = null;
+            //InterceptEffect intercept = null;
+            InterceptECSGameEffect intercept = null;
             GameSpellEffect bladeturn = null;
             ECSGameSpellEffect ecsbladeturn = null;
             //EngageEffect engage = null;
@@ -1832,14 +1832,14 @@ namespace DOL.GS
                     // you cannot intercept while you are sitting
                     // if you are stuned or mesmeried you cannot intercept...
 
-                    //InterceptECSGameEffect inter = effect as InterceptECSGameEffect;
-                    //if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
-                    //    && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                    //    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
-                    //{
-                    //    intercept = inter;
-                    //    continue;
-                    //}
+                    InterceptECSGameEffect inter = effect as InterceptECSGameEffect;
+                    if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
+                        && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
+                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
+                    {
+                        intercept = inter;
+                        continue;
+                    }
                 }
             }
 
@@ -1902,14 +1902,14 @@ namespace DOL.GS
                     // we can only intercept attacks on livings, and can only intercept when active
                     // you cannot intercept while you are sitting
                     // if you are stuned or mesmeried you cannot intercept...
-                    InterceptEffect inter = effect as InterceptEffect;
-                    if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
-                        && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
-                    {
-                        intercept = inter;
-                        continue;
-                    }
+                    //InterceptEffect inter = effect as InterceptEffect;
+                    //if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
+                    //    && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
+                    //    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
+                    //{
+                    //    intercept = inter;
+                    //    continue;
+                    //}
                 }
             }
 

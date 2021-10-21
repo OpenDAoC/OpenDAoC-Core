@@ -121,6 +121,7 @@ namespace DOL.GS
         Sprint,
         Berserk,
         Engage,
-        Guard
+        Guard,
+        Intercept
     }
 }

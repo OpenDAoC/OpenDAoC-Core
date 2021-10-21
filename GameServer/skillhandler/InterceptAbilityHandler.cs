@@ -21,6 +21,8 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using log4net;
 using DOL.Language;
+using System.Linq;
+
 namespace DOL.GS.SkillHandler
 {
 	/// <summary>
@@ -61,7 +63,8 @@ namespace DOL.GS.SkillHandler
 			GameObject targetObject = player.TargetObject;
 			if (targetObject == null)
 			{
-				foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
+				//foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
+				foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
 				{
 					if (intercept.InterceptSource != player)
 						continue;
@@ -82,7 +85,8 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// check if someone is already intercepting for that target
-			foreach (InterceptEffect intercept in interceptTarget.EffectList.GetAllOfType<InterceptEffect>())
+			//foreach (InterceptEffect intercept in interceptTarget.EffectList.GetAllOfType<InterceptEffect>())
+			foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
 			{
 				if (intercept.InterceptTarget != interceptTarget)
 					continue;
@@ -94,7 +98,8 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// cancel all intercepts by this player
-			foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
+			//foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
+			foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
 			{
 				if (intercept.InterceptSource != player)
 					continue;
@@ -103,7 +108,8 @@ namespace DOL.GS.SkillHandler
 
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new InterceptEffect().Start(player, interceptTarget);
+			//new InterceptEffect().Start(player, interceptTarget);
+			new InterceptECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), player, (GameLiving)player.TargetObject);
 		}
 	}
 }
