@@ -25,9 +25,9 @@ namespace DOL.GS.RealmAbilities
 				if (sureShot != null)
 					sureShot.Cancel(false);
 
-				RapidFireEffect rapidFire = player.EffectList.GetOfType<RapidFireEffect>();
+				RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 				if (rapidFire != null)
-					rapidFire.Cancel(false);
+					EffectService.RequestCancelEffect(rapidFire, false);
 
 				new TrueshotEffect().Start(player);
 			}

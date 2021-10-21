@@ -43,9 +43,9 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// cancel rapid fire effect
-			RapidFireEffect rapidFire = player.EffectList.GetOfType<RapidFireEffect>();
+			RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 			if (rapidFire != null)
-				rapidFire.Cancel(false);
+				EffectService.RequestCancelEffect(rapidFire, false);
 
 			// cancel sure shot effect
 			SureShotEffect sureShot = player.EffectList.GetOfType<SureShotEffect>();

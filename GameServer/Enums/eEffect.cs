@@ -124,6 +124,7 @@ namespace DOL.GS
         Guard,
         Intercept,
         Protect,
-        QuickCast
+        QuickCast,
+        RapidFire
     }
 }

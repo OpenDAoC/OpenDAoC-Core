@@ -659,6 +659,29 @@ namespace DOL.GS
                         return;
                     }
 
+                    lock (p.effectListComponent.Effects)
+                    {
+                        foreach (ECSGameAbilityEffect effect in p.effectListComponent.GetAbilityEffects()) // switch to the correct range attack type
+                        {
+                            //if (effect is SureShotECSGameEffect)
+                            //{
+                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                            //    break;
+                            //}
+
+                            if (effect is RapidFireECSGameEffect)
+                            {
+                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+                                break;
+                            }
+
+                            //if (effect is TrueshotECSGameEffect)
+                            //{
+                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
+                            //    break;
+                            //}
+                        }
+                    }
                     lock (p.EffectList)
                     {
                         foreach (IGameEffect effect in p.EffectList) // switch to the correct range attack type
@@ -669,11 +692,11 @@ namespace DOL.GS
                                 break;
                             }
 
-                            if (effect is RapidFireEffect)
-                            {
-                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                                break;
-                            }
+                            //if (effect is RapidFireEffect)
+                            //{
+                            //    p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+                            //    break;
+                            //}
 
                             if (effect is TrueshotEffect)
                             {

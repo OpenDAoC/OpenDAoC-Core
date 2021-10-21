@@ -32,10 +32,10 @@ namespace DOL.GS.SkillHandler
 		public void Execute(Ability ab, GamePlayer player)
 		{
 
-			RapidFireEffect rapidFire = player.EffectList.GetOfType<RapidFireEffect>();
+			RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 			if (rapidFire!=null)
 			{
-				rapidFire.Cancel(false);
+				EffectService.RequestCancelEffect(rapidFire, false);
 				return;
 			}
 
@@ -53,7 +53,7 @@ namespace DOL.GS.SkillHandler
 			if (trueshot != null)
 				trueshot.Cancel(false);
 
-			new RapidFireEffect().Start(player);
+			new RapidFireECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 		}
 	}
 }
