@@ -8,11 +8,13 @@ namespace DOL.GS
 {
     public static class EntityManager
     {
-        //todo - have server property with Max Player size?
-        private static List<GamePlayer> _players = new List<GamePlayer>(4000);
+        public static int maxEntities = ServerProperties.Properties.MAX_ENTITIES;
+        public static int maxPlayers = ServerProperties.Properties.MAX_PLAYERS;
+        
+        private static List<GamePlayer> _players = new List<GamePlayer>(maxPlayers);
         private static object _playersLock = new object();
 
-        private static GameLiving[] _npcsArray = new GameLiving[120000];
+        private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
         private static int? _npcsLastDeleted = null;
         private static int _npcsCount = 0;
 
