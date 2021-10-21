@@ -35,7 +35,11 @@ namespace DOL.GS
 
                     // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)
+                    {
+                        if (!Effects.ContainsKey(effect.EffectType))
+                            Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
                         return true;
+                    }
 
                     ECSGameSpellEffect spellEffect = effect as ECSGameSpellEffect;
                     
