@@ -216,7 +216,7 @@ namespace DOL.GS
                 return;
 
             // Player can't remove negative effect or Effect in Immunity State
-            if (playerCanceled && (!effect.HasPositiveEffect) || effect is ECSImmunityEffect)
+            if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
             {
                 GamePlayer player = effect.Owner as GamePlayer;
                 if (player != null)
