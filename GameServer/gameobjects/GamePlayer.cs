@@ -14437,12 +14437,12 @@ namespace DOL.GS
 
 		#region Shade
 
-		protected ShadeEffect m_ShadeEffect = null;
+		protected ShadeECSGameEffect m_ShadeEffect = null;
 
 		/// <summary>
 		/// The shade effect of this player
 		/// </summary>
-		public ShadeEffect ShadeEffect
+		public ShadeECSGameEffect ShadeEffect
 		{
 			get { return m_ShadeEffect; }
 			set { m_ShadeEffect = value; }
@@ -14464,7 +14464,7 @@ namespace DOL.GS
 		/// Create a shade effect for this player.
 		/// </summary>
 		/// <returns></returns>
-		protected virtual ShadeEffect CreateShadeEffect()
+		protected virtual ShadeECSGameEffect CreateShadeEffect()
 		{
 			return CharacterClass.CreateShadeEffect();
 		}

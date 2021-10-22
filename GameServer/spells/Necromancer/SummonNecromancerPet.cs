@@ -71,7 +71,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (FindStaticEffectOnTarget(Caster, typeof(ShadeEffect)) != null)
+            if (EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.Shade) != null)
             {
                 MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonNecromancerPet.CheckBeginCast.ShadeEffectIsNotNull"), eChatType.CT_System);
                 return false;
