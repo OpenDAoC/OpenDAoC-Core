@@ -131,6 +131,8 @@ namespace DOL.GS
         Stag,
         TripleWield,
         Camouflage,
-        Shade
+        Shade,
+        DirtyTricks,
+        DirtyTricksDetrimental
     }
 }
