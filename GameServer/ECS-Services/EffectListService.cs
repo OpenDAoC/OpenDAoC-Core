@@ -47,6 +47,8 @@ namespace DOL.GS
                         // This will need a better refactor later but for now this prevents crashing while working on porting over non-spell based effects to our system.
                         if (e is ECSGameAbilityEffect)
                         {
+                            if (e.NextTick != 0 && tick > e.NextTick)
+                                e.OnEffectPulse();
                             if (e.Duration > 0 && tick > e.ExpireTick)
                                 EffectService.RequestCancelEffect(e);
                             continue;
