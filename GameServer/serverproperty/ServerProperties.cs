@@ -171,7 +171,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The max number of players on the server
 		/// </summary>
-		[ServerProperty("system", "max_players", "Max Players - Edit this to set the maximum players allowed to connect at the same time set 0 for unlimited", 0)]
+		[ServerProperty("system", "max_players", "Max Players - Edit this to set the maximum players allowed to connect at the same time", 4000)]
 		public static int MAX_PLAYERS;
 
 		/// <summary>
@@ -2509,6 +2509,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "event_rpcap", "Maximum character realm points for the active event", 0)]
 		public static int EVENT_RPCAP;
+		
+		/// <summary>
+		/// Maximum numbers of entities allowed
+		/// </summary>
+		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
+		public static int MAX_ENTITIES;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
