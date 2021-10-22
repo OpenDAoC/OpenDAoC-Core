@@ -2736,7 +2736,8 @@ namespace DOL.GS.Spells
 			if (m_spellTarget == null) return false;
 
 			IList<GameLiving> targets;
-			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster && !Spell.IsHealing && Spell.IsBuff)
+			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster && !Spell.IsHealing && Spell.IsBuff && 
+				Spell.SpellType != (byte)eSpellType.Bladeturn)
 				targets = GetGroupAndPets();
 			else
 				targets = SelectTargets(m_spellTarget);
