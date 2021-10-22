@@ -109,7 +109,7 @@ namespace DOL.GS
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect))
+                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) && effect.EffectType != eEffect.Bladeturn)
                                 {
                                     // Better Effect so disable the current Effect
                                     if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
