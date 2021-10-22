@@ -59,13 +59,17 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            if (EffectType == eEffect.StrengthConBuff || EffectType == eEffect.DexQuickBuff || EffectType == eEffect.SpecAFBuff)
+            if (EffectType == eEffect.StrengthConBuff || EffectType == eEffect.DexQuickBuff)
             {
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Canceling {prop.ToString()}");
                     ApplyBonus(Owner, eBuffBonusCategory.SpecBuff, prop, SpellHandler.Spell.Value, Effectiveness, true);
                 }
+            }
+            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.ArmorFactorBuff)
+            {
+                ApplyBonus(Owner, (SpellHandler as ArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, true);
             }
             else
             {
