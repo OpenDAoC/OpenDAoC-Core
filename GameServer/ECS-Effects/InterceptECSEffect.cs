@@ -139,7 +139,8 @@ namespace DOL.GS
         {
 			if (InterceptSource is GamePlayer && InterceptTarget is GamePlayer)
 			{
-				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+				if (m_group != null)
+					GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
 				m_group = null;
 			}
 
