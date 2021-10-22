@@ -108,6 +108,11 @@ namespace DOL.GS
                 }
             }
 
+            if(EffectType == eEffect.ConstitutionDebuff || EffectType == eEffect.StrConDebuff)
+            {
+                Owner.StartHealthRegeneration();
+            }
+
             IsBuffActive = false;
         }
 
