@@ -84,7 +84,7 @@ namespace DOL.GS.Scripts
 
 					foreach (eInventorySlot islot in bodySlots) {
 						GeneratedUniqueItem item = null;
-						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level), armorType, islot);
+						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), armorType, islot);
 						item.AllowAdd = true;
 						item.Color = (int)color;
 						item.IsTradable = false;
