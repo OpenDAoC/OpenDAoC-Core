@@ -413,6 +413,7 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.LargeWeapons, eInventorySlot.TwoHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.CelticSpear, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Fired, eInventorySlot.DistanceWeapon);
 					break;
 
 				case eCharacterClass.Champion:
