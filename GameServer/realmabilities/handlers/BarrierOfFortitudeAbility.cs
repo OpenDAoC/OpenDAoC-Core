@@ -11,25 +11,22 @@ namespace DOL.GS.RealmAbilities
 	{
 		public BarrierOfFortitudeAbility(DBAbility dba, int level) : base(dba, level) { }
 
-        /// [Atlas - Takii] Remove the "BoF/SB don't stack" rule from NF by giving them unique names.
-        //public const string BofBaSb = "RA_DAMAGE_DECREASE";
-        public const string BofBaSb = "RA_ATLAS_BOF";
+        public const string BofBaSb = "RA_DAMAGE_DECREASE";
 
 		int m_range = 1500;
-		int m_duration = 30;
-		int m_value = 0;
+		int m_duration = 30000; // 30s
 
 		public override void Execute(GameLiving living)
 		{
 			GamePlayer player = living as GamePlayer;
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-			if (player.TempProperties.getProperty(BofBaSb, false))
-			{
-				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				return;
-			}
 
-			m_value = GetAbsorbAmount();
+			/// [Atlas - Takii] We don't want this "does not stack" functionality in OF.
+// 			if (player.TempProperties.getProperty(BofBaSb, false))
+// 			{
+// 				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+// 				return;
+// 			}
 
 			DisableSkill(living);
 			ArrayList targets = new ArrayList();
@@ -54,7 +51,7 @@ namespace DOL.GS.RealmAbilities
 				if (success)
 				{
 					if (target != null)
-						new BarrierOfFortitudeEffect().Start(target, m_duration, m_value);
+						new BunkerOfFaithECSEffect(new ECSGameEffectInitParams(target, m_duration, GetAbsorbAmount()));
 				}
 			}
 
@@ -88,7 +85,7 @@ namespace DOL.GS.RealmAbilities
             {
                 switch (Level)
                 {
-                    case 1: return 10;;
+                    case 1: return 10;
                     case 2: return 20;
                     case 3: return 40;
                 }

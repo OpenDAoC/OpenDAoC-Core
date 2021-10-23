@@ -1,0 +1,48 @@
+using System;
+using DOL.Events;
+
+namespace DOL.GS.Effects
+{
+    /// <summary>
+    /// Effect handler for BOF
+    /// </summary>
+    public class BunkerOfFaithECSEffect : ECSGameAbilityEffect
+    {
+        public BunkerOfFaithECSEffect(ECSGameEffectInitParams initParams)
+            : base(initParams)
+        {
+            EffectType = eEffect.BunkerOfFaith;
+        }
+
+        public override ushort Icon { get { return 3015; } }
+        public override string Name { get { return "Bunker of Faith"; } }
+        public override bool HasPositiveEffect { get { return true; } }
+
+        public override void OnStartEffect()
+        {
+            GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+            OwnerPlayer.AbilityBonus[(int)eProperty.ArmorAbsorption] += (int)Effectiveness;
+        }
+
+        public override void OnStopEffect()
+        {
+            GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+            OwnerPlayer.AbilityBonus[(int)eProperty.ArmorAbsorption] -= (int)Effectiveness;
+        }
+
+        /// <summary>
+        /// Called when a player leaves the game
+        /// </summary>
+        /// <param name="e">The event which was raised</param>
+        /// <param name="sender">Sender of the event</param>
+        /// <param name="args">EventArgs associated with the event</param>
+        private static void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+        {
+            GamePlayer player = sender as GamePlayer;
+            if (player != null && player.effectListComponent != null)
+            {
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.BunkerOfFaith));
+            }
+        }
+    }
+}
