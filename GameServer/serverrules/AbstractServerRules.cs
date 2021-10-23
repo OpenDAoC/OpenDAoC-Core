@@ -1563,12 +1563,15 @@ namespace DOL.GS.ServerRules
 
 
 					double damagePercent = (float)de.Value / totalDamage;
-					if (!living.IsAlive)//Dead living gets 25% exp only
-						damagePercent *= 0.25;
 
 					// realm points
 					int rpCap = living.RealmPointsValue * 2;
 					int realmPoints = (int)(playerRPValue * damagePercent);
+
+					//moved to after realmPoints assignment so that dead players retain full RP
+					if (!living.IsAlive)//Dead living gets 25% exp only
+						damagePercent *= 0.25;
+
 					//rp bonuses from RR and Group
 					//20% if R1L0 char kills RR10,if RR10 char kills R1L0 he will get -20% bonus
 					//100% if full group,scales down according to player count in group and their range to target
