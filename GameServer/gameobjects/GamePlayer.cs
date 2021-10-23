@@ -1509,8 +1509,7 @@ namespace DOL.GS
 				case eReleaseType.RvR:
 				{
 					GamePlayer player = Client.Player as GamePlayer;
-					if (ServerProperties.Properties.EVENT_THIDRANKI)
-						
+						if (ServerProperties.Properties.EVENT_THIDRANKI && player.CurrentRegionID == 252)
 						{
 							switch (player.Realm)
 							{
