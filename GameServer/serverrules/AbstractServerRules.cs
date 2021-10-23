@@ -1566,7 +1566,7 @@ namespace DOL.GS.ServerRules
 
 					// realm points
 					int rpCap = living.RealmPointsValue * 2;
-					int realmPoints = (int)(playerRPValue * damagePercent);
+					int realmPoints = (int)(playerRPValue * damagePercent * 0.5);
 
 					//moved to after realmPoints assignment so that dead players retain full RP
 					if (!living.IsAlive)//Dead living gets 25% exp only
