@@ -264,7 +264,8 @@ namespace DOL.GS
 		public static bool ChanceDouble(double chancePercent)
 		{
 			//return chancePercent > RandomDouble();
-			return chancePercent > soleInstance.RandomDoubleImpl();
+			//return chancePercent > soleInstance.RandomDoubleImpl();
+			return chancePercent > (Util.CryptoNextDouble() * 100);
 		}
 
 		#endregion
