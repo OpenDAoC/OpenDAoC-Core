@@ -1341,7 +1341,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Ranger) {
 							return false;
 						}
-						if (type == eObjectType.Leather || type == eObjectType.Reinforced)
+						if (type == eObjectType.Leather || type == eObjectType.Reinforced || type == eObjectType.Scale)
 							return true;
 						return false;
 					}
