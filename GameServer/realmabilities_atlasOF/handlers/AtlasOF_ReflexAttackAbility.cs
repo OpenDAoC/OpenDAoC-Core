@@ -21,7 +21,7 @@ namespace DOL.GS.RealmAbilities
         {
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-            new AtlasOF_ReflexAttackEffect(duration).Start(living);
+            new ReflexAttackECSEffect(new ECSGameEffectInitParams(living, duration, 1));
             DisableSkill(living);
         }
     }

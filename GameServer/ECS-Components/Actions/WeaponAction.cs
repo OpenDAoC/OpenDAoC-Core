@@ -174,7 +174,7 @@ namespace DOL.GS
             // Check if Reflex Attack RA should apply. This is checked once here and cached since it is used multiple times below (every swing triggers Reflex Attack).
             bool targetHasReflexAttackRA = false;
             GamePlayer targetPlayer = mainHandAD.Target as GamePlayer;
-            if (targetPlayer != null && SpellHelper.FindStaticEffectOnTarget(targetPlayer, typeof(AtlasOF_ReflexAttackEffect)) != null)
+            if (targetPlayer != null && targetPlayer.effectListComponent != null && targetPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.ReflexAttack))
             {
                 targetHasReflexAttackRA = true;
             }

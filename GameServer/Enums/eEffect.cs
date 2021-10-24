@@ -139,5 +139,6 @@ namespace DOL.GS
         BunkerOfFaith,
         AmelioratingMelodies,
         SoldiersBarricade,
+        ReflexAttack,
     }
 }
