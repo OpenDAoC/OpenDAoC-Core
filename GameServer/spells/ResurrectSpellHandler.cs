@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -85,6 +86,9 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public override int PowerCost(GameLiving target)
 		{
+			if (IsPerfectRecovery())
+				return 0;
+
 			float factor = Math.Max (0.1f, 0.5f + (target.Level - m_caster.Level) / (float)m_caster.Level);
 
 			//DOLConsole.WriteLine("res power needed: " + (int) (m_caster.MaxMana * factor) + "; factor="+factor);
@@ -122,29 +126,19 @@ namespace DOL.GS.Spells
 					if (response == 1)
 					{
 						ResurrectLiving(player); //accepted
-						//VaNaTiC->
-						//#warning VaNaTiC: add this in GamePlayer.OnRevive with my RevivedEventArgs
-						// Patch 1.56: Resurrection sickness now goes from 100% to 50% when doing a "full rez" on another player. 
-						// We have do to this here, cause we dont have any other chance to get
-						// an object-relation between the casted spell of the rezzer (here) and
-						// the produced illness for the player (OnRevive()).
-						// -> any better solution -> post :)
-						if ( Spell.ResurrectHealth == 100 )
-						{
-							GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, "PveResurrectionIllness");
-				            if ( effect != null )
-				            	effect.Overwrite(new GameSpellEffect(effect.SpellHandler, effect.Duration / 2, effect.PulseFreq));
-							GameSpellEffect effecttwo = SpellHandler.FindEffectOnTarget(player, "RvrResurrectionIllness");
-				            if ( effecttwo != null )
-				            	effecttwo.Overwrite(new GameSpellEffect(effecttwo.SpellHandler, effecttwo.Duration / 2, effecttwo.PulseFreq));
-						}
-						//VaNaTiC<-
 					}
 					else
 					{
 						player.Out.SendMessage("You decline to be resurrected.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						//refund mana
 						m_caster.Mana += PowerCost(player);
+
+						// Reset PR cooldown if it wasnt accepted.
+						if (IsPerfectRecovery() && Ability != null)
+                        {
+							AtlasOF_PerfectRecovery PRAbility = Ability as AtlasOF_PerfectRecovery;
+							PRAbility.OnRezDeclined(Caster as GamePlayer);
+						}
 					}
 				}
 			}
@@ -160,16 +154,35 @@ namespace DOL.GS.Spells
 			if (m_caster.ObjectState != GameObject.eObjectState.Active) return;
 			if (m_caster.CurrentRegionID != living.CurrentRegionID) return;
 
-			GamePlayer player = living as GamePlayer;
+            GamePlayer player = living as GamePlayer;
 			if (player != null)
-				player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
+            {
+				// TempProperty is used to either halve (for high level spec rez) or remove (PR) rez sick.
+				// That's done either in GamePlayer.OnRevive() or in the rez sick spell handler if Effectiveness > 0;
+				double rezSickEffectiveness = 1;
+
+				// Must check PR first since PR also has ResurrectHealth == 100 but should not apply rez sick.
+				if (IsPerfectRecovery())
+                {
+                    rezSickEffectiveness = 0;
+                }
+                else if (Spell.ResurrectHealth == 100)
+                {
+					//Patch 1.56: Resurrection sickness now goes from 100 % to 50 % when doing a "full rez" on another player.
+					rezSickEffectiveness = 0.5;
+				}
+
+                player.TempProperties.setProperty(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS, rezSickEffectiveness);
+
+                player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
+            }
 
 			living.Health = living.MaxHealth * m_spell.ResurrectHealth / 100;
 			double tempManaEnd = m_spell.ResurrectMana / 100.0;
 			living.Mana = (int)(living.MaxMana * tempManaEnd);
 
-			//The spec rez spells are the only ones that have endurance
-			if (!SpellLine.IsBaseLine)
+            //The spec rez spells are the only ones that have endurance
+            if (!SpellLine.IsBaseLine)
 				living.Endurance = (int)(living.MaxEndurance * tempManaEnd);
 			else
 				living.Endurance = 0;
@@ -326,5 +339,7 @@ namespace DOL.GS.Spells
 				return list;
 			}
 		}
+
+		private bool IsPerfectRecovery() { return SpellLine.Name == "RealmAbilities"; }
 	}
 }
