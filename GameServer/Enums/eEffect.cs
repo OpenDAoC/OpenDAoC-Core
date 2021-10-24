@@ -137,5 +137,6 @@ namespace DOL.GS
 
         // Realm Abilities
         BunkerOfFaith,
+        AmelioratingMelodies,
     }
 }
