@@ -1,7 +1,4 @@
-using System.Reflection;
 using System.Collections;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Database;
 
@@ -17,18 +14,20 @@ namespace DOL.GS.RealmAbilities
         public const string BofBaSb = "RA_ATLAS_SB";
 
 		int m_range = 1500;
-		int m_duration = 30;
+		int m_duration = 30000; // 30s
 		int m_value = 0;
 
 		public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 			GamePlayer player = living as GamePlayer;
-			if (player.TempProperties.getProperty(BofBaSb, false))
-			{
-				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				return;
-			}
+
+			/// [Atlas - Takii] We don't want this "does not stack" functionality in OF.
+// 			if (player.TempProperties.getProperty(BofBaSb, false))
+// 			{
+// 				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+// 				return;
+// 			}
 
 			m_value = GetArmorFactorAmount();
 			
@@ -55,7 +54,7 @@ namespace DOL.GS.RealmAbilities
 				if (success)
 					if (target != null)
 					{
-						new AtlasOF_SoldiersBarricadeEffect().Start(target, m_duration, m_value);
+						new SoldiersBarricadeECSEffect(new ECSGameEffectInitParams(target, m_duration, m_value));
 					}
 			}
 

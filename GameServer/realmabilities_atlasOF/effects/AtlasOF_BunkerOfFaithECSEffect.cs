@@ -20,12 +20,16 @@ namespace DOL.GS.Effects
 
         public override void OnStartEffect()
         {
+            if (OwnerPlayer == null)
+                return;
             GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
             OwnerPlayer.AbilityBonus[(int)eProperty.ArmorAbsorption] += (int)Effectiveness;
         }
 
         public override void OnStopEffect()
         {
+            if (OwnerPlayer == null)
+                return;
             GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
             OwnerPlayer.AbilityBonus[(int)eProperty.ArmorAbsorption] -= (int)Effectiveness;
         }
