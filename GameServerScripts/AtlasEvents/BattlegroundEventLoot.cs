@@ -332,7 +332,6 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.LeftAxe, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.TwoHandWeapon);
 					break;
 
