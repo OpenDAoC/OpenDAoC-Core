@@ -1,9 +1,6 @@
 
 namespace DOL.GS.Effects
 {
-    /// <summary>
-    /// Effect handler for SB
-    /// </summary>
     public class SoldiersBarricadeECSEffect : ECSGameAbilityEffect
     {
         public SoldiersBarricadeECSEffect(ECSGameEffectInitParams initParams)

@@ -140,5 +140,6 @@ namespace DOL.GS
         AmelioratingMelodies,
         SoldiersBarricade,
         ReflexAttack,
+        MasteryOfConcentration,
     }
 }

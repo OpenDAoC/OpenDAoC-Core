@@ -39,7 +39,7 @@ namespace DOL.GS.RealmAbilities
 			if (caster == null)
 				return;
 
-			MasteryofConcentrationEffect MoCEffect = caster.EffectList.GetOfType<MasteryofConcentrationEffect>();
+			XMasteryofConcentrationEffect MoCEffect = caster.EffectList.GetOfType<XMasteryofConcentrationEffect>();
 			if (MoCEffect != null)
 			{
 				MoCEffect.Cancel(false);
@@ -75,7 +75,7 @@ namespace DOL.GS.RealmAbilities
 
 			DisableSkill(living);
 
-			new MasteryofConcentrationEffect(Duration).Start(caster);
+			new XMasteryofConcentrationEffect(Duration).Start(caster);
 		}
         public override int GetReUseDelay(int level)
         {

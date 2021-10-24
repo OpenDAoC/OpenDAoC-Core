@@ -3,9 +3,6 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
-    /// <summary>
-    /// Effect handler for Ameliorating Melodies
-    /// </summary>
     public class AmelioratingMelodiesECSEffect : ECSGameAbilityEffect
     {
         private const int m_range = 1500;

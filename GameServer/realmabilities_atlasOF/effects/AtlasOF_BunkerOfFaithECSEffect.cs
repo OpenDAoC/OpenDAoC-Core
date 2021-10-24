@@ -3,9 +3,6 @@ using DOL.Events;
 
 namespace DOL.GS.Effects
 {
-    /// <summary>
-    /// Effect handler for BOF
-    /// </summary>
     public class BunkerOfFaithECSEffect : ECSGameAbilityEffect
     {
         public BunkerOfFaithECSEffect(ECSGameEffectInitParams initParams)

@@ -66,14 +66,14 @@ namespace DOL.GS.Spells
 			{
 				double effectiveness = Caster.Effectiveness;
 
-				if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-				{
-					AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
-					if (ra != null && ra.Level > 0)
-					{
-						effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-					}
-				}
+// 				if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
+// 				{
+// 					AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
+// 					if (ra != null && ra.Level > 0)
+// 					{
+// 						effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+// 					}
+// 				}
 				return effectiveness;
 			}
 		}
@@ -111,9 +111,12 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200)
 				return false;
-			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0 
-				|| Caster.effectListComponent.Effects.ContainsKey(eEffect.QuickCast) || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
-				return false;
+
+            if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
+                || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
+                || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
+                return false;
+           
 			if (IsCasting && Stage < 2)
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
