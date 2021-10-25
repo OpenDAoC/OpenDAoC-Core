@@ -43,7 +43,7 @@ SkillBase.RegisterPropertyNames.CharismaBonusCap:		Bonus to Charisma attribute b
 SkillBase.RegisterPropertyNames.Cold:					Cold
 SkillBase.RegisterPropertyNames.ColdMagic:				Cold Magic
 SkillBase.RegisterPropertyNames.ColdMagicFocus:			Cold Magic Focus
-SkillBase.RegisterPropertyNames.Composite:				Composite
+SkillBase.RegisterPropertyNames.Composite:				Composite Bow
 SkillBase.RegisterPropertyNames.Concentration:			Concentration
 SkillBase.RegisterPropertyNames.Constitution:			Constitution
 SkillBase.RegisterPropertyNames.ConstitutionBonusCap:	Bonus to Constitution attribute bonus cap
