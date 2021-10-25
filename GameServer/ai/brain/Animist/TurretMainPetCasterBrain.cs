@@ -156,7 +156,7 @@ namespace DOL.AI.Brain
 		  }
 		}
 
-		protected override void OnAttackedByEnemy(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			if(AggressionState != eAggressionState.Passive)
 			{
