@@ -26,7 +26,7 @@ namespace DOL.GS
 
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
-                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff), true);
+                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff));
             }
             // Cancel pulse effect
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
@@ -77,7 +77,7 @@ namespace DOL.GS
             }
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
-                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff), false);
+                EffectService.RequestEnableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff));
             }
 
             StealthStateChanged();

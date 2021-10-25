@@ -143,7 +143,7 @@ namespace DOL.GS
                                     effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
                                     && !effect.IsDisabled)
                                 {
-                                    EffectService.RequestDisableEffect(effect, true);
+                                    EffectService.RequestDisableEffect(effect);
                                 }
                                 else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
                                     effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
@@ -167,7 +167,7 @@ namespace DOL.GS
                                     }
 
                                     if (isBest)
-                                        EffectService.RequestDisableEffect(effect, false);
+                                        EffectService.RequestEnableEffect(effect);
                                 }
 
                                 effect.NextTick += effect.PulseFreq;

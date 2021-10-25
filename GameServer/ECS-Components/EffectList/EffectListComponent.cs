@@ -116,7 +116,7 @@ namespace DOL.GS
                                         spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
                                     {
                                         if (spellEffect.SpellHandler.Spell.IsHelpful && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
-                                            EffectService.RequestDisableEffect(existingEffects[i], true);
+                                            EffectService.RequestDisableEffect(existingEffects[i]);
                                         else
                                             EffectService.RequestCancelEffect(existingEffects[i]);
 
@@ -128,7 +128,7 @@ namespace DOL.GS
                                         if ((existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster) 
                                             || existingEffects[i].SpellHandler.Spell.IsPulsing)
                                         {
-                                            EffectService.RequestDisableEffect(spellEffect, true);
+                                            EffectService.RequestDisableEffect(spellEffect);
                                             addEffect = true;
                                         }
                                         else
@@ -266,7 +266,7 @@ namespace DOL.GS
                             if (Effects[effect.EffectType].Count > 0)
                             {
                                 if (GetSpellEffects(effect.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
-                                    EffectService.RequestDisableEffect(GetSpellEffects(effect.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault(), false);
+                                    EffectService.RequestEnableEffect(GetSpellEffects(effect.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault());
                                 //foreach (var eff in Effects[effect.EffectType])
                                 //EffectService.RequestDisableEffect()
                             }

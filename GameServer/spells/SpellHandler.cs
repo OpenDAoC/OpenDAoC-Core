@@ -424,10 +424,7 @@ namespace DOL.GS.Spells
             int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
-            ECSPulseEffect effect = new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
-
-            //EntityManager.AddEffect(effect);
-
+            new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
         }
 
         /// <summary>

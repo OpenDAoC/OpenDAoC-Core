@@ -45,7 +45,7 @@ namespace DOL.GS
                         }
                         if (Owner.IsStealthed)
                         {
-                            EffectService.RequestDisableEffect(this, true);
+                            EffectService.RequestDisableEffect(this);
                         }
                     }
                     

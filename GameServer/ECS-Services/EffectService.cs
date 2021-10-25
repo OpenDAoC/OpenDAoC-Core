@@ -24,27 +24,15 @@ namespace DOL.GS
             EntityManager.AddService(typeof(EffectService));
         }
 
-
         public static void Tick(long tick)
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
             foreach (var e in EntityManager.GetAllEffects())
             {
-                if (e.CancelEffect)
-                {
-                    HandleCancelEffect(e);
-                }
-                else if (e.IsDisabled)
-                {
-                    HandleCancelEffect(e);
-                }
-                else
-                {
-                    HandlePropertyModification(e);
-                }
-                // EntityManager.RemoveEffect() is called inside the Handle functions to ensure the conditions
-                // above never result in us removing an effect from the queue without attempting to process it.
+                // Effect Cancel/Disables requests are processed immediately on the same frame they are requested and not through this queue.
+                HandlePropertyModification(e);
+                EntityManager.RemoveEffect(e);
             }
 
             Diagnostics.StopPerfCounter(ServiceName);
@@ -52,8 +40,6 @@ namespace DOL.GS
 
         private static void HandlePropertyModification(ECSGameEffect e)
         {
-            EntityManager.RemoveEffect(e);
-
             if (e.Owner == null)
             {
                 //Console.WriteLine($"Invalid target for Effect {e}");
@@ -143,8 +129,6 @@ namespace DOL.GS
 
         private static void HandleCancelEffect(ECSGameEffect e)
         {
-            EntityManager.RemoveEffect(e);
-
             //Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
 
             if (!e.Owner.effectListComponent.RemoveEffect(e))
@@ -208,7 +192,7 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Enqueues an ECSGameEffect to be canceled on the next tick.
+        /// Immediately cancels an ECSGameEffect.
         /// </summary>
         public static void RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
@@ -225,35 +209,49 @@ namespace DOL.GS
                 return;
             }
 
-            // playerCanceled param isn't used but it's there in case we eventually want to...
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            EntityManager.AddEffect(effect);
+            HandleCancelEffect(effect);
         }
 
         /// <summary>
-        /// Enqueues an ECSGameEffect (as a IConcentrationEffect) to be canceled on the next tick.
+        /// Immediately cancels an ECSGameSpellEffect (as a IConcentrationEffect).
         /// </summary>
         public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
             ECSGameSpellEffect effect = concEffect as ECSGameSpellEffect;
             if (effect != null)
             {
-                RequestCancelEffect(effect, playerCanceled);
-
                 if (effect.SpellHandler.Spell.IsPulsing)
                     effect.Owner.LastPulseCast = null;
+
+                RequestCancelEffect(effect, playerCanceled);
             }
         }
         /// <summary>
-        /// Enques an ECSGameEffect to be disabled/enabled on next tick
+        /// Immediately disables an ECSGameEffect.
         /// </summary>
         /// <param name="effect"></param>
         /// <param name="disable"></param>
-        public static void RequestDisableEffect(ECSGameEffect effect, bool disable)
+        public static void RequestDisableEffect(ECSGameEffect effect)
         {
-            effect.IsDisabled = disable;
-            effect.RenewEffect = !disable;
+            effect.IsDisabled = true;
+            effect.RenewEffect = false;
+            HandleCancelEffect(effect);
+        }
+
+        /// <summary>
+        /// Immediately enables a previously disabled ECSGameEffect.
+        /// </summary>
+        /// <param name="effect"></param>
+        /// <param name="disable"></param>
+        public static void RequestEnableEffect(ECSGameEffect effect)
+        {
+            if (!effect.IsDisabled)
+                return;
+            
+            effect.IsDisabled = false;
+            effect.RenewEffect = true;
             EntityManager.AddEffect(effect);
         }
 
