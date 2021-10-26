@@ -25,7 +25,7 @@ namespace DOL.GS {
                 eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
 
                 GeneratedUniqueItem item = null;
-                item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + 6));
+                item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + 3));
                 item.AllowAdd = true;
                 item.IsTradable = true;
 

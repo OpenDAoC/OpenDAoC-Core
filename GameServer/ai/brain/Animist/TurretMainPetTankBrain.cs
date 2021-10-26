@@ -72,7 +72,7 @@ namespace DOL.AI.Brain
 		CheckSpells(eCheckSpellType.Offensive);
 	}
 
-  	protected override void OnAttackedByEnemy(AttackData ad)
+  	public override void OnAttackedByEnemy(AttackData ad)
 	{
 	  if (AggressionState != eAggressionState.Passive)
 	  {

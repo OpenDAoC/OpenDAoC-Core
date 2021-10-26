@@ -253,7 +253,8 @@ namespace DOL.GS
 		public static bool Chance(int chancePercent)
 		{
 			//return chancePercent >= Random(1, 100);
-			return chancePercent >= soleInstance.RandomImpl(1, 100);
+			//return chancePercent >= soleInstance.RandomImpl(1, 100);
+			return chancePercent >= Util.CryptoNextInt(1, 100);
 		}
 
 		/// <summary>
@@ -264,7 +265,8 @@ namespace DOL.GS
 		public static bool ChanceDouble(double chancePercent)
 		{
 			//return chancePercent > RandomDouble();
-			return chancePercent > soleInstance.RandomDoubleImpl();
+			//return chancePercent > soleInstance.RandomDoubleImpl();
+			return chancePercent > Util.CryptoNextDouble();
 		}
 
 		#endregion

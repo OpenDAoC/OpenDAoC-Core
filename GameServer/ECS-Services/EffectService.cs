@@ -103,7 +103,7 @@ namespace DOL.GS
                         {
                             //Console.WriteLine("Applying EnduranceRegenBuff");
                             var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
-                            ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, spellEffect.Effectiveness, false);
+                            ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, 1, false);
                         }
                         e.OnStartEffect();
                         e.IsBuffActive = true;

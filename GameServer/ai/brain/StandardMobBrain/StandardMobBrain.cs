@@ -888,9 +888,9 @@ namespace DOL.AI.Brain
                 }
                 else if (e == GameLivingEvent.AttackedByEnemy)
                 {
-                    AttackedByEnemyEventArgs eArgs = args as AttackedByEnemyEventArgs;
-                    if (eArgs == null) return;
-                    OnAttackedByEnemy(eArgs.AttackData);
+                    //AttackedByEnemyEventArgs eArgs = args as AttackedByEnemyEventArgs;
+                   // if (eArgs == null) return;
+                    //OnAttackedByEnemy(eArgs.AttackData);
                     return;
                 }
                 /*
@@ -973,7 +973,7 @@ namespace DOL.AI.Brain
         /// Attacked by enemy event
         /// </summary>
         /// <param name="ad"></param>
-        protected virtual void OnAttackedByEnemy(AttackData ad)
+        public virtual void OnAttackedByEnemy(AttackData ad)
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)) { return; }
 

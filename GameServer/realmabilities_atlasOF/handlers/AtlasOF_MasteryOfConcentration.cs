@@ -50,17 +50,11 @@ namespace DOL.GS.RealmAbilities
 			if (caster == null)
 				return;
 
-			MasteryofConcentrationEffect MoCEffect = caster.EffectList.GetOfType<MasteryofConcentrationEffect>();
-			if (MoCEffect != null)
-			{
-				MoCEffect.Cancel(false);
-				return;
-			}
+			EffectListService.TryCancelFirstEffectOfTypeOnTarget(caster, eEffect.MasteryOfConcentration);
 
 			SendCasterSpellEffectAndCastMessage(living, 7007, true);
 			foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-
 				if (caster.IsWithinRadius(player, WorldMgr.INFO_DISTANCE))
 				{
 					if (player == caster)
@@ -78,7 +72,7 @@ namespace DOL.GS.RealmAbilities
 
 			DisableSkill(living);
 
-			new MasteryofConcentrationEffect(Duration).Start(caster);
+			new MasteryOfConcentrationECSEffect(new ECSGameEffectInitParams(caster, Duration, 1));
 		}
 	}
 }

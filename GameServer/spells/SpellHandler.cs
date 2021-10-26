@@ -628,18 +628,22 @@ namespace DOL.GS.Spells
 		public virtual bool CasterIsAttacked(GameLiving attacker)
 		{
 			//[StephenxPimentel] Check if the necro has MoC effect before interrupting.
-			if (Caster is NecromancerPet)
-			{
-				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
+			if (Caster is NecromancerPet necroPet)
+            {
+				GamePlayer Necro = necroPet.Owner as GamePlayer;
+				if (Necro.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 				{
 					return false;
 				}
 			}
 			if (Spell.Uninterruptible)
 				return false;
-			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0
-				|| Caster.effectListComponent.Effects.ContainsKey(eEffect.QuickCast) || Caster.effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking))
+
+			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
+				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
+				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
+
 			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2)
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
@@ -782,9 +786,9 @@ namespace DOL.GS.Spells
 			}
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
-				EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
+				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 			{
-				if (Caster.InterruptAction > 0 && Caster.InterruptAction + Caster.SpellInterruptRecastTime > Caster.CurrentRegion.Time)
+                if (Caster.InterruptAction > 0 && Caster.InterruptAction + Caster.SpellInterruptRecastTime > Caster.CurrentRegion.Time)
 				{
 					if (!quiet) MessageToCaster("You must wait " + (((Caster.InterruptAction + Caster.SpellInterruptRecastTime) - Caster.CurrentRegion.Time) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
 					return false;
@@ -1441,7 +1445,7 @@ namespace DOL.GS.Spells
 			}
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
-				EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
+				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 			{
 				if (Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
 				{
@@ -2749,27 +2753,28 @@ namespace DOL.GS.Spells
 				gpet.ScalePetSpell(Spell);
 			}
 
-			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-			{
-				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
-				if (ra != null && ra.Level > 0)
-				{
-					effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-				}
-			}
+			/// [Atlas - Takii] No effectiveness drop in OF MOC.
+// 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
+// 			{
+// 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
+// 				if (ra != null && ra.Level > 0)
+// 				{
+// 					effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+// 				}
+// 			}
 
 			//[StephenxPimentel] Reduce Damage if necro is using MoC
-			if (Caster is NecromancerPet)
-			{
-				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-				{
-					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
-					if (necroRA != null && necroRA.Level > 0)
-					{
-						effectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
-					}
-				}
-			}
+// 			if (Caster is NecromancerPet)
+// 			{
+// 				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
+// 				{
+// 					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
+// 					if (necroRA != null && necroRA.Level > 0)
+// 					{
+// 						effectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
+// 					}
+// 				}
+// 			}
 
 			if (Caster is GamePlayer && (Caster as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Warlock && m_spell.IsSecondary)
 			{

@@ -39,7 +39,7 @@ SkillBase.RegisterPropertyNames.CharismaBonusCap:	Bonus auf Charismabonuslimit
 SkillBase.RegisterPropertyNames.Cold:			Kälte
 SkillBase.RegisterPropertyNames.ColdMagic:		Kältemagie
 SkillBase.RegisterPropertyNames.ColdMagicFocus:		Kältemagie
-SkillBase.RegisterPropertyNames.Composite:		Komposite
+SkillBase.RegisterPropertyNames.Composite:		Kompositbogen
 SkillBase.RegisterPropertyNames.Concentration:		Konzentration
 SkillBase.RegisterPropertyNames.Constitution:		Konstitution
 SkillBase.RegisterPropertyNames.ConstitutionBonusCap:	Bonus auf Konstitutionsbonuslimit

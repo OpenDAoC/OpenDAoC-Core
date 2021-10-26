@@ -37,7 +37,7 @@ namespace DOL.GS
                 {
                     foreach (var e in effects)
                     {
-                        if (!e.Owner.IsAlive)
+                        if (!e.Owner.IsAlive || e.Owner.ObjectState == GameObject.eObjectState.Deleted)
                         {
                             EffectService.RequestCancelEffect(e);
                             continue;
@@ -233,6 +233,22 @@ namespace DOL.GS
                 return (ECSPulseEffect)effects.Where(e => e is ECSPulseEffect).FirstOrDefault();
             else
                 return null;
+        }
+
+        public static bool TryCancelFirstEffectOfTypeOnTarget(GameLiving target, eEffect effectType)
+        {
+            if (target == null || target.effectListComponent == null)
+                return false;
+
+            if (!target.effectListComponent.ContainsEffectForEffectType(effectType))
+                return false;
+
+            ECSGameEffect effectToCancel = GetEffectOnTarget(target, effectType);
+            if (effectToCancel == null)
+                return false;
+
+            EffectService.RequestCancelEffect(effectToCancel);
+            return true;
         }
     }
 }

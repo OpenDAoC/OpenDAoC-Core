@@ -120,15 +120,17 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = base.CalculateEffectDuration(target, effectiveness);
-			double mocFactor = 1.0;
-			MasteryofConcentrationEffect moc = Caster.EffectList.GetOfType<MasteryofConcentrationEffect>();
-			if (moc != null)
-			{
-				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
-				if (ra != null)
-					mocFactor = System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-				duration = (double)Math.Round(duration * mocFactor);
-			}
+
+			/// [Atlas - Takii] Disabling MOC effectiveness scaling in OF.
+// 			double mocFactor = 1.0;
+// 			MasteryofConcentrationEffect moc = Caster.EffectList.GetOfType<MasteryofConcentrationEffect>();
+// 			if (moc != null)
+// 			{
+// 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
+// 				if (ra != null)
+// 					mocFactor = System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+// 				duration = (double)Math.Round(duration * mocFactor);
+// 			}
 
 
 			if (Spell.SpellType != (byte)eSpellType.StyleStun)

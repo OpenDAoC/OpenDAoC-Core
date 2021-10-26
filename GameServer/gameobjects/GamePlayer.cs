@@ -113,6 +113,11 @@ namespace DOL.GS
 		/// </summary>
 		public static readonly string LAST_USED_ITEM_SPELL = "last_used_item_spell";
 
+        /// <summary>
+        /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
+        /// </summary>
+        public static readonly string RESURRECT_REZ_SICK_EFFECTIVENESS = "RES_SICK_EFFECTIVENESS";
+
 		/// <summary>
 		/// Array that stores ML step completition
 		/// </summary>
@@ -1509,8 +1514,7 @@ namespace DOL.GS
 				case eReleaseType.RvR:
 				{
 					GamePlayer player = Client.Player as GamePlayer;
-					if (ServerProperties.Properties.EVENT_THIDRANKI)
-						
+						if (ServerProperties.Properties.EVENT_THIDRANKI && player.CurrentRegionID == 252)
 						{
 							switch (player.Realm)
 							{
@@ -1862,11 +1866,24 @@ namespace DOL.GS
 			GamePlayer player = (GamePlayer)sender;
 			effectListComponent.CancelAll();
 			m_isDead = false;
-						
+
+			bool applyRezSick = true;
+
+			// Used by spells like Perfect Recovery
+			if (TempProperties.getAllProperties().Contains(RESURRECT_REZ_SICK_EFFECTIVENESS) && TempProperties.getProperty<double>(RESURRECT_REZ_SICK_EFFECTIVENESS) == 0)
+            {
+				applyRezSick = false;
+				TempProperties.removeProperty(RESURRECT_REZ_SICK_EFFECTIVENESS);
+			}
+            else if (player.Level < ServerProperties.Properties.RESS_SICKNESS_LEVEL)
+            {
+                applyRezSick = false;
+            }
+
 			if (player.IsUnderwater && player.CanBreathUnderWater == false)
 				player.Diving(eWaterBreath.Holding);
 			//We need two different sickness spells because RvR sickness is not curable by Healer NPC -Unty
-			if (player.Level >= ServerProperties.Properties.RESS_SICKNESS_LEVEL)
+			if (applyRezSick)
 			    switch (DeathType)
 			    {
 				    case eDeathType.RvR:

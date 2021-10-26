@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
                 if (player == null) continue;
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
 				{
-					player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
+					//player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
 					if ( !Body.IsWithinRadius( player, AggroRange ) )
                         continue;
                     if ((Body as GameKeepGuard).Component != null && !GameServer.KeepManager.IsEnemy(Body as GameKeepGuard, player, true))
@@ -165,10 +165,10 @@ namespace DOL.AI.Brain
 					{
 						Body.Say("Want to attack player " + player.Name);
 					}
-                    if (AggroLOS)
-                    {
+                   // if (AggroLOS)
+                  //  {
 						AddToAggroList(player, player.EffectiveLevel << 1);
-					}
+				//	}
 					
 					return;
 				}

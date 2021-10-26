@@ -14,6 +14,8 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AmelioratingMelodiesAbility : TimedRealmAbility
 	{
+		private const int m_duration = 30000; // 30s
+		
 		/// <summary>
 		/// Constructs the Ameliorating Melodies handler
 		/// </summary>
@@ -28,17 +30,14 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player == null) return;
 			if (CheckPreconditions(living, DEAD | SITTING | STUNNED | MEZZED | NOTINGROUP)) return;
-			AtlasOF_AmelioratingMelodiesEffect ameffect = player.EffectList.GetOfType<AtlasOF_AmelioratingMelodiesEffect>();
-			if (ameffect != null)
-			{
-				ameffect.Cancel(false);
-			}
+
+			EffectListService.TryCancelFirstEffectOfTypeOnTarget(player, eEffect.AmelioratingMelodies);
 
 			SendCasterSpellEffectAndCastMessage(living, 3021, true);
 
 			int heal = GetHealAmountPerTick();
 
-			new AtlasOF_AmelioratingMelodiesEffect(heal).Start(player);
+			new AmelioratingMelodiesECSEffect(new ECSGameEffectInitParams(player, 30000, heal));
 
 			DisableSkill(living);
 		}

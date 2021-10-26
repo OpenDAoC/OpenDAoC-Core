@@ -133,6 +133,13 @@ namespace DOL.GS
         Camouflage,
         Shade,
         DirtyTricks,
-        DirtyTricksDetrimental
+        DirtyTricksDetrimental,
+
+        // Realm Abilities
+        BunkerOfFaith,
+        AmelioratingMelodies,
+        SoldiersBarricade,
+        ReflexAttack,
+        MasteryOfConcentration,
     }
 }

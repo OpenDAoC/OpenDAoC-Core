@@ -36,7 +36,7 @@ namespace DOL.GS.Scripts
             }
 			TurnTo(player.X, player.Y);
 			player.Out.SendMessage("Hello " + player.Name + "! We're happy to see you here, supporting your realm.\n" +
-				"For your efforts, " + realmName + " has procured a [full suit] of equipment. " +
+				"For your efforts, " + realmName + " has procured a [full suit] of equipment and some [gems] to adorn them with. " +
 				"Additionally, I can provide you with some [weapons]. \n\n" +
                 "This is the best gear we could provide on short notice. If you want something better, you'll have to take it from your enemies on the battlefield. " + 
 				"Go forth, and do battle!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
@@ -84,7 +84,7 @@ namespace DOL.GS.Scripts
 
 					foreach (eInventorySlot islot in bodySlots) {
 						GeneratedUniqueItem item = null;
-						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level), armorType, islot);
+						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), armorType, islot);
 						item.AllowAdd = true;
 						item.Color = (int)color;
 						item.IsTradable = false;
@@ -94,8 +94,8 @@ namespace DOL.GS.Scripts
 						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 						//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
-					
-					DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
+
+				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
 					charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
 					charFreeEventEquip.KeyName = customKey;
 					charFreeEventEquip.Value = "1";
@@ -114,6 +114,46 @@ namespace DOL.GS.Scripts
 				
 				GenerateWeaponsForClass(charclass, player);
 				
+				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
+				charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
+				charFreeEventEquip.KeyName = customKey;
+				charFreeEventEquip.Value = "1";
+				GameServer.Database.AddObject(charFreeEventEquip);
+			} else if (str.Equals("gems"))
+            {
+				const string customKey = "free_event_gems";
+				var hasFreeArmor = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+				if (hasFreeArmor != null)
+				{
+					player.Out.SendMessage("Sorry " + player.Name + ", I don't have enough items left to give you another set.\n\n Go fight for your Realm to get more equipment!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					return false;
+				}
+
+				List<eInventorySlot> gemSlots = new List<eInventorySlot>();
+				gemSlots.Add(eInventorySlot.Cloak);
+				gemSlots.Add(eInventorySlot.Neck);
+				gemSlots.Add(eInventorySlot.Waist);
+				gemSlots.Add(eInventorySlot.Jewellery);
+				gemSlots.Add(eInventorySlot.LeftRing);
+				gemSlots.Add(eInventorySlot.RightRing);
+				gemSlots.Add(eInventorySlot.LeftBracer);
+				gemSlots.Add(eInventorySlot.RightBracer);
+
+				foreach (eInventorySlot islot in gemSlots)
+				{
+					GeneratedUniqueItem item = null;
+					item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), eObjectType.Magical, islot);
+					item.AllowAdd = true;
+					item.Color = (int)color;
+					item.IsTradable = false;
+					item.Price = 1;
+					GameServer.Database.AddObject(item);
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
 				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
 				charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
 				charFreeEventEquip.KeyName = customKey;
@@ -332,7 +372,6 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.RightHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.LeftAxe, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, eObjectType.Hammer, eInventorySlot.TwoHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Sword, eInventorySlot.TwoHandWeapon);
 					break;
 
@@ -413,6 +452,7 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.LargeWeapons, eInventorySlot.TwoHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.CelticSpear, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Fired, eInventorySlot.DistanceWeapon);
 					break;
 
 				case eCharacterClass.Champion:
