@@ -379,6 +379,7 @@ namespace DOL.GS
 					 *	For pet level 24-43, the debuff is now 20%.
 					 *	For pet level 44-50, the debuff is now 30%.  */
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					spell.ScaledToPetLevel = true;
 					break;
