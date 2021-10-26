@@ -6063,9 +6063,9 @@ namespace DOL.GS.PacketHandler
 
 				// weapondamage
 				var wd = (int)(m_gameClient.Player?.WeaponDamage(m_gameClient.Player?.AttackWeapon) * 100.0);
-				pak.WriteByte((byte)(wd / 100));
+				pak.WriteByte((byte)(wd / 256));
 				pak.WritePascalString(" ");
-				pak.WriteByte((byte)(wd % 100));
+				pak.WriteByte((byte)(wd % 256));
 				pak.WritePascalString(" ");
 				// weaponskill
 				int? ws = m_gameClient.Player?.DisplayedWeaponSkill;
