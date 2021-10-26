@@ -16,7 +16,6 @@ namespace DOL.GS
             if (SpellHandler.Caster.PetCount > 0)
                 SpellHandler.Caster.PetCount--;
             Owner.Health = 0; // to send proper remove packet
-            Owner.Die(Owner);
             Owner.Delete();
         }
     }
