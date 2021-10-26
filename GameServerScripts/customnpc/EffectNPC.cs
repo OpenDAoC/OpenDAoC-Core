@@ -19,11 +19,9 @@ using System.Collections;
 using DOL.GS.PacketHandler;
 using DOL.Database.UniqueID;
 
-namespace DOL.GS
-{
+namespace DOL.GS {
     [NPCGuildScript("Effect Master")]
-    public class EffectNPC : GameNPC
-    {
+    public class EffectNPC : GameNPC {
         private string EFFECTNPC_ITEM_WEAK = "DOL.GS.Scripts.EffectNPC_Item_Manipulation";//used to store the item in the player
         private ushort spell = 7215;//The spell which is casted
         private ushort duration = 3000;//3s, the duration the spell is cast
@@ -75,7 +73,7 @@ namespace DOL.GS
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
-            
+
             SendReply(t, "What service do you want to use ?\n" +
                          "I can add an [effect] to it or change its color with a [dye].\n\n" +
                          "Alternatively, I can [remove all effects] or [remove dye] from your weapon. "
@@ -87,21 +85,22 @@ namespace DOL.GS
         public override bool WhisperReceive(GameLiving source, string str)
         {
             if (!base.WhisperReceive(source, str)) return false;
-            
+
             if (!(source is GamePlayer)) return false;
-            
+
             GamePlayer player = source as GamePlayer;
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
-            
-            
+
+
             switch (str)
             {
                 #region effects
-                
+
                 case "effect":
                     switch (item.Object_Type)
                     {
-                        case (int)eObjectType.TwoHandedWeapon: case (int)eObjectType.LargeWeapons:
+                        case (int)eObjectType.TwoHandedWeapon:
+                        case (int)eObjectType.LargeWeapons:
                             SendReply(player,
                                 "Choose a weapon effect: \n" +
                                 "[gr sword - yellow flames] (" + effectPrice + " RPs)\n" +
@@ -122,8 +121,10 @@ namespace DOL.GS
                                 "[gr - gold/yellow glow] (" + effectPrice + " RPs)\n" +
                                 "[gr - hot green glow] (" + effectPrice + " RPs)\n");
                             break;
-                        
-                        case (int)eObjectType.Blunt: case (int)eObjectType.CrushingWeapon: case (int)eObjectType.Hammer:
+
+                        case (int)eObjectType.Blunt:
+                        case (int)eObjectType.CrushingWeapon:
+                        case (int)eObjectType.Hammer:
                             SendReply(player,
                                          "Choose a weapon effect: \n" +
                                          "[hammer - red aura] (" + effectPrice + " RPs)\n" +
@@ -149,8 +150,13 @@ namespace DOL.GS
                                          "[crush - hot purple glow] (" + effectPrice + " RPs)\n" +
                                          "[crush - cold vapor] (" + effectPrice + " RPs)\n");
                             break;
-                        
-                        case (int)eObjectType.SlashingWeapon: case (int)eObjectType.Sword: case (int)eObjectType.Blades: case (int)eObjectType.Piercing: case (int)eObjectType.ThrustWeapon: case (int)eObjectType.LeftAxe:
+
+                        case (int)eObjectType.SlashingWeapon:
+                        case (int)eObjectType.Sword:
+                        case (int)eObjectType.Blades:
+                        case (int)eObjectType.Piercing:
+                        case (int)eObjectType.ThrustWeapon:
+                        case (int)eObjectType.LeftAxe:
                             SendReply(player,
                                         "Choose a weapon effect: \n" +
                                         "[longsword - propane-style flame] (" + effectPrice + " RPs)\n" +
@@ -181,7 +187,7 @@ namespace DOL.GS
                                         "[shortsword - evil green glow] (" + effectPrice + " RPs)\n" +
                                         "[shortsword - black glow] (" + effectPrice + " RPs)\n");
                             break;
-                            
+
                         case (int)eObjectType.Axe:
                             SendReply(player,
                                         "Choose a weapon effect: \n" +
@@ -197,7 +203,9 @@ namespace DOL.GS
                                         "[axe - hot purple glow] (" + effectPrice + " RPs)\n" +
                                         "[axe - blue->purple->orange glow] (" + effectPrice + " RPs)\n");
                             break;
-                        case (int)eObjectType.Spear: case (int)eObjectType.CelticSpear: case (int)eObjectType.PolearmWeapon:
+                        case (int)eObjectType.Spear:
+                        case (int)eObjectType.CelticSpear:
+                        case (int)eObjectType.PolearmWeapon:
                             SendReply(player,
                                 "Choose a weapon effect:  (" + effectPrice + " RPs)\n" +
                                 "[battlespear - cold with twinkles] (" + effectPrice + " RPs)\n" +
@@ -218,7 +226,7 @@ namespace DOL.GS
                                 "[lugged spear - hot purple flame] (" + effectPrice + " RPs)\n" +
                                 "[lugged spear - silvery glow] (" + effectPrice + " RPs)\n");
                             break;
-                        
+
                         case (int)eObjectType.Staff:
                             SendReply(player,
                                 "Choose a weapon effect:  (" + effectPrice + " RPs)\n" +
@@ -228,7 +236,7 @@ namespace DOL.GS
                                 "[staff - gold glow with twinkles] (" + effectPrice + " RPs)\n" +
                                 "[staff - faint red glow] (" + effectPrice + " RPs)\n");
                             break;
-                        
+
                         default:
                             SendReply(player,
                                 "Unfortunately I cannot work with this item.");
@@ -236,7 +244,7 @@ namespace DOL.GS
                     }
 
                     break;
-                
+
                 //remove all effect
                 case "remove all effects": SetEffect(player, 0, removePrice); break;
                 //Longsword
@@ -345,12 +353,12 @@ namespace DOL.GS
                 case "staff - faint red glow": SetEffect(player, 94, effectPrice); break;
                 #endregion
                 #region dye
-                
+
                 case "dye":
-                    SendReply(player,"Please Choose Your Type Of Color" + 
+                    SendReply(player, "Please Choose Your Type Of Color" +
                         "[Blues], [Greens], [Reds], [Yellows], [Purples], [Violets], [Oranges], [Blacks], or [Other]");
                     break;
-                
+
                 case "Blues":
                     SendReply(player,
                             "[Old Turquoise] (" + dyePrice + " RPs)\n" +
@@ -373,27 +381,27 @@ namespace DOL.GS
                             "[Teal 3] (" + dyePrice + " RPs)\n");
                     break;
                 case "Greens":
-                  SendReply(player,
-                      "[Old Green] (" + dyePrice + " RPs)\n" +
-                      "[Leather Green] (" + dyePrice + " RPs)\n" +
-                      "[Leather Forest Green] (" + dyePrice + " RPs)\n" +
-                      "[Green Cloth] (" + dyePrice + " RPs)\n" +
-                      "[Blue-Green Cloth] (" + dyePrice + " RPs)\n" +
-                      "[Yellow-Green Cloth] (" + dyePrice + " RPs)\n" +
-                      "[Green Metal] (" + dyePrice + " RPs)\n" +
-                      "[Green 1] (" + dyePrice + " RPs)\n" +
-                      "[Green 1] (" + dyePrice + " RPs)\n" +
-                      "[Green 2] (" + dyePrice + " RPs)\n" +
-                      "[Green 3] (" + dyePrice + " RPs)\n" +
-                      "[Green 4] (" + dyePrice + " RPs)\n" +
-                      "[Ship Lime Green] (" + dyePrice + " RPs)\n" +
-                      "[Ship Green] (" + dyePrice + " RPs)\n" +
-                      "[Ship Green 2] (" + dyePrice + " RPs)\n" +
-                      "[Light Green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Olive Green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Sage Green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Lime Green - crafter only] (" + dyePrice + " RPs)\n" +
-                      "[Forest Green - crafter only] (" + dyePrice + " RPs)\n");
+                    SendReply(player,
+                        "[Old Green] (" + dyePrice + " RPs)\n" +
+                        "[Leather Green] (" + dyePrice + " RPs)\n" +
+                        "[Leather Forest Green] (" + dyePrice + " RPs)\n" +
+                        "[Green Cloth] (" + dyePrice + " RPs)\n" +
+                        "[Blue-Green Cloth] (" + dyePrice + " RPs)\n" +
+                        "[Yellow-Green Cloth] (" + dyePrice + " RPs)\n" +
+                        "[Green Metal] (" + dyePrice + " RPs)\n" +
+                        "[Green 1] (" + dyePrice + " RPs)\n" +
+                        "[Green 1] (" + dyePrice + " RPs)\n" +
+                        "[Green 2] (" + dyePrice + " RPs)\n" +
+                        "[Green 3] (" + dyePrice + " RPs)\n" +
+                        "[Green 4] (" + dyePrice + " RPs)\n" +
+                        "[Ship Lime Green] (" + dyePrice + " RPs)\n" +
+                        "[Ship Green] (" + dyePrice + " RPs)\n" +
+                        "[Ship Green 2] (" + dyePrice + " RPs)\n" +
+                        "[Light Green - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Olive Green - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Sage Green - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Lime Green - crafter only] (" + dyePrice + " RPs)\n" +
+                        "[Forest Green - crafter only] (" + dyePrice + " RPs)\n");
                     break;
                 case "Reds":
                     SendReply(player,
@@ -409,7 +417,7 @@ namespace DOL.GS
                         "[Ship Red] (" + dyePrice + " RPs)\n" +
                         "[Ship Red 2] (" + dyePrice + " RPs)\n" +
                         "[Red - crafter only] (" + dyePrice + " RPs)\n");
-                        break;
+                    break;
                 case "Yellows":
                     SendReply(player,
                         "[Old Yellow] (" + dyePrice + " RPs)\n" +
@@ -425,7 +433,7 @@ namespace DOL.GS
                         "[Dark Gold - crafter only] (" + dyePrice + " RPs)\n" +
                         "[Gold Metal] (" + dyePrice + " RPs)\n" +
                         "[Ship Yellow] (" + dyePrice + " RPs)\n");
-                        break;
+                    break;
                 case "Purples":
                     SendReply(player,
                         "[Old Purple] (" + dyePrice + " RPs)\n" +
@@ -455,9 +463,9 @@ namespace DOL.GS
                         "[Dusky Rose - crafter only] (" + dyePrice + " RPs)\n" +
                         "[Ship Pink] (" + dyePrice + " RPs)\n" +
                         "[Violet] (" + dyePrice + " RPs)\n");
-                        break;
-                
-                    case "Oranges":
+                    break;
+
+                case "Oranges":
                     SendReply(player,
                         "[Leather Orange] (" + dyePrice + " RPs)\n" +
                         "[Orange Cloth] (" + dyePrice + " RPs)\n" +
@@ -905,13 +913,13 @@ namespace DOL.GS
                 case "Burgundy - crafter only":
                     SetColor(player, 143, dyePrice);
                     break;
-                
-                #endregion
+
+                    #endregion
             }
 
             return true;
         }
-        
+
         public void SendReply(GamePlayer player, string msg)
         {
             player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
@@ -923,29 +931,94 @@ namespace DOL.GS
             if (player == null)
                 return;
 
-            if (rps == 0) { player.RealmLevel = 1; } else
-            if (rps is >= 25 and < 125) { player.RealmLevel = 2;} else
-            if (rps is >= 125 and < 350) { player.RealmLevel = 3;} else 
-            if (rps is >= 350 and < 750) { player.RealmLevel = 4;} else
-            if (rps is >= 750 and < 1375) { player.RealmLevel = 5;} else
-            if (rps is >= 750 and < 1375) { player.RealmLevel = 6; } else
-            if (rps is >= 2275 and < 3500) { player.RealmLevel = 7;} else
-            if (rps is >= 3500 and < 5100) { player.RealmLevel = 8;} else
-            if (rps is >= 5100 and < 7125) { player.RealmLevel = 9;} else 
-                //2l0
-            if (rps is >= 7125 and < 9625) { player.RealmLevel = 10;} else
-            if (rps is >= 9625 and < 12650) { player.RealmLevel = 11;} else
-            if (rps is >= 16250 and < 20475) { player.RealmLevel = 12;} else
-            if (rps is >= 20475 and < 25375) { player.RealmLevel = 13;} else
-            if (rps is >= 25375 and < 31000) { player.RealmLevel = 14;} else 
-            if (rps is >= 31000 and < 37400) { player.RealmLevel = 15;} else
-            if (rps is >= 37400 and < 44625) { player.RealmLevel = 16;} else
-            if (rps is >= 44625 and < 52725) { player.RealmLevel = 17;} else
-            if (rps is >= 52725 and < 61750) { player.RealmLevel = 18;} else
-            if (rps is >= 61750 and < 71750) { player.RealmLevel = 19;} else
-                //3l0
-            if (rps is >= 71750) { player.RealmLevel = 20; }
+            if (rps == 0) { player.RealmLevel = 1; }
+            else
+            if (rps is >= 25 and < 125) { player.RealmLevel = 2; }
+            else
+            if (rps is >= 125 and < 350) { player.RealmLevel = 3; }
+            else
+            if (rps is >= 350 and < 750) { player.RealmLevel = 4; }
+            else
+            if (rps is >= 750 and < 1375) { player.RealmLevel = 5; }
+            else
+            if (rps is >= 1375 and < 2275) { player.RealmLevel = 6; }
+            else
+            if (rps is >= 2275 and < 3500) { player.RealmLevel = 7; }
+            else
+            if (rps is >= 3500 and < 5100) { player.RealmLevel = 8; }
+            else
+            if (rps is >= 5100 and < 7125) { player.RealmLevel = 9; }
+            else
+            //2l0
+            if (rps is >= 7125 and < 9625) { player.RealmLevel = 10; }
+            else
+            if (rps is >= 9625 and < 12650) { player.RealmLevel = 11; }
+            else
+            if (rps is >= 12650 and < 16250) { player.RealmLevel = 12; }
+            else
+            if (rps is >= 16250 and < 20475) { player.RealmLevel = 13; }
+            else
+            if (rps is >= 20475 and < 25375) { player.RealmLevel = 14; }
+            else
+            if (rps is >= 25375 and < 31000) { player.RealmLevel = 15; }
+            else
+            if (rps is >= 31000 and < 37400) { player.RealmLevel = 16; }
+            else
+            if (rps is >= 37400 and < 44625) { player.RealmLevel = 17; }
+            else
+            if (rps is >= 44625 and < 52725) { player.RealmLevel = 18; }
+            else
+            if (rps is >= 52725 and < 61750) { player.RealmLevel = 19; }
+            else
+            //3l0
+            if (rps is >= 61750 and < 71750) { player.RealmLevel = 20; }
+            else
+            if (rps is >= 71750 and < 82775) { player.RealmLevel = 21; }
+            else
+            if (rps is >= 82775 and < 94875) { player.RealmLevel = 22; }
+            else
+            if (rps is >= 94875 and < 108100) { player.RealmLevel = 23; }
+            else
+            if (rps is >= 108100 and < 122500) { player.RealmLevel = 24; }
+            else
+            if (rps is >= 122500 and < 138125) { player.RealmLevel = 25; }
+            else
+            if (rps is >= 138125 and < 155025) { player.RealmLevel = 26; }
+            else
+            if (rps is >= 155025 and < 173250) { player.RealmLevel = 27; }
+            else
+            if (rps is >= 173250 and < 192850) { player.RealmLevel = 28; }
+            else
+            if (rps is >= 192850 and < 213875) { player.RealmLevel = 29; }
+            else
+            //4L0
+            if (rps is >= 213875 and < 236375) { player.RealmLevel = 30; }
+            else
+            if (rps is >= 236375 and < 260400) { player.RealmLevel = 31; }
+            else
+            if (rps is >= 260400 and < 286000) { player.RealmLevel = 32; }
+            else
+            if (rps is >= 286000 and < 313225) { player.RealmLevel = 33; }
+            else
+            if (rps is >= 313225 and < 342125) { player.RealmLevel = 34; }
+            else
+            if (rps is >= 342125 and < 372750) { player.RealmLevel = 35; }
+            else
+            if (rps is >= 372750 and < 405150) { player.RealmLevel = 36; }
+            else
+            if (rps is >= 405150 and < 439375) { player.RealmLevel = 37; }
+            else
+            if (rps is >= 439375 and < 475475) { player.RealmLevel = 38; }
+            else
+            if (rps is >= 475475 and < 513500) { player.RealmLevel = 39; }
+            else
 
+
+            if (rps is >= 513500)
+            {
+                player.RealmPoints = 513500;
+                player.RealmLevel = 40;
+            }
 
             player.Out.SendUpdatePlayer();
             player.Out.SendCharStatsUpdate();
@@ -953,8 +1026,8 @@ namespace DOL.GS
             player.UpdatePlayerStatus();
         }
         #endregion
-        
-        
+
+
         #region setcolor
         public void SetColor(GamePlayer player, int color, int price)
         {
@@ -974,13 +1047,13 @@ namespace DOL.GS
             {
                 SendReply(player, "You can't dye that.");
             }
-            
+
             if (player.RealmPoints < price)
             {
                 SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " RPs to dye that.");
                 return;
             }
-            
+
             m_timer.Enqueue(new RegionTimer(this, new RegionTimerCallback(Effect), duration));
             castplayer.Enqueue(player);
 
@@ -1004,8 +1077,8 @@ namespace DOL.GS
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             player.RealmPoints -= price;
             player.RespecRealm();
-            SetRealmLevel(player,(int)player.RealmPoints);
-            
+            SetRealmLevel(player, (int)player.RealmPoints);
+
             SendReply(player, "Thanks for your donation. The color has come out beautifully, wear it with pride.");
 
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -1014,8 +1087,8 @@ namespace DOL.GS
             }
         }
         #endregion setcolor
-        
-        
+
+
         #region seteffect
         public void SetEffect(GamePlayer player, int effect, int price)
         {
@@ -1040,16 +1113,16 @@ namespace DOL.GS
                 player.Out.SendMessage("Invalid item.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
             }
-            
+
             if (player.RealmPoints < price)
             {
-               SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " RPs to enchant that.");
-               return;
+                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " RPs to enchant that.");
+                return;
             }
-            
+
             m_timer.Enqueue(new RegionTimer(this, new RegionTimerCallback(Effect), duration));
             castplayer.Enqueue(player);
-            
+
 
             player.Inventory.RemoveItem(item);
             ItemUnique unique = new ItemUnique(item.Template);
@@ -1071,7 +1144,7 @@ namespace DOL.GS
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             player.RealmPoints -= price;
             player.RespecRealm();
-            SetRealmLevel(player,(int)player.RealmPoints);
+            SetRealmLevel(player, (int)player.RealmPoints);
 
             SendReply(player, "Thanks for your donation. May the " + item.Name + " lead you to a bright future.");
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

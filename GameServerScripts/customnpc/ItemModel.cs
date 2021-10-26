@@ -102,7 +102,7 @@ namespace DOL.GS {
             {
                 #region helms
                 case "dragonslayer helm":
-                    price = dragon*2;
+                    price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
                         case eObjectType.Cloth:
@@ -3290,7 +3290,7 @@ namespace DOL.GS {
                 #endregion
 
                 #region cloaks 
-                
+
                 case "realm cloak":
                     price = cloakexpensive;
                     switch ((eRealm)player.Realm)
@@ -4553,15 +4553,16 @@ namespace DOL.GS {
                     modelIDToAssign = 5;
                     break;
                     #endregion
-                    
+
             }
-            
+
             if (price == armorpads)
             {
                 int extens = item.Extension;
                 if (modelIDToAssign != extens) extens = modelIDToAssign;
                 SetExtension(player, (byte)extens, price);
-            } else
+            }
+            else
             {
                 int model = item.Model;
                 if (modelIDToAssign != 0) model = modelIDToAssign;
@@ -4588,7 +4589,7 @@ namespace DOL.GS {
                     SendReply(t, "A fine piece of headwear. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Helm] (" + dragon*2 + " RPs)\n" +
+                          "[Dragonslayer Helm] (" + dragon * 2 + " RPs)\n" +
                           "[Dragonsworn Helm] (" + dragon + " RPs)\n" +
                           "***** End Cata Only ***** \n\n" +
 
@@ -4639,7 +4640,7 @@ namespace DOL.GS {
                           "[Possessed Realm Breastplate](" + festive + " RPs)\n" +
                           "[Mino Breastplate](" + festive + " RPs)\n" +
                           "***** End Cata Only ***** \n\n" +
-                        
+
                         "[Class Epic Chestpiece](" + epic + " RPs)\n" +
                         "[Eirene's Chest](" + artifact + " RPs)\n" +
                         "[Naliah's Robe](" + artifact + " RPs)\n" +
@@ -4763,9 +4764,9 @@ namespace DOL.GS {
                           "[Dragonslayer Cloak] (" + cloakexpensive + " RPs)\n" +
                           "[Dragonsworn Cloak] (" + cloakmedium + " RPs)\n" +
                           "[Valentines Cloak] (" + cloakmedium + " RPs)\n" +
-                          "[Winter Cloak] (" + cloakmedium + " RPs)\n" + 
+                          "[Winter Cloak] (" + cloakmedium + " RPs)\n" +
                           "[Clean Leather Cloak] (" + cloakmedium + " RPs)\n" +
-                          "[Corrupt Leather Cloak] (" + cloakmedium + " RPs)\n" + 
+                          "[Corrupt Leather Cloak] (" + cloakmedium + " RPs)\n" +
                           "***** End Cata Only ***** \n\n" +
                         "[Cloudsong] (" + cloakmedium + " RPs)\n" +
                         "[Shades of Mist] (" + cloakmedium + " RPs)\n" +
@@ -4967,7 +4968,7 @@ namespace DOL.GS {
 
                     break;
             }
-            
+
             SendReply(t, ""
                          );
             t.TempProperties.setProperty(TempProperty, item);
@@ -4990,7 +4991,7 @@ namespace DOL.GS {
             else
             if (rps is >= 750 and < 1375) { player.RealmLevel = 5; }
             else
-            if (rps is >= 750 and < 1375) { player.RealmLevel = 6; }
+            if (rps is >= 1375 and < 2275) { player.RealmLevel = 6; }
             else
             if (rps is >= 2275 and < 3500) { player.RealmLevel = 7; }
             else
@@ -5003,27 +5004,70 @@ namespace DOL.GS {
             else
             if (rps is >= 9625 and < 12650) { player.RealmLevel = 11; }
             else
-            if (rps is >= 16250 and < 20475) { player.RealmLevel = 12; }
+            if (rps is >= 12650 and < 16250) { player.RealmLevel = 12; }
             else
-            if (rps is >= 20475 and < 25375) { player.RealmLevel = 13; }
+            if (rps is >= 16250 and < 20475) { player.RealmLevel = 13; }
             else
-            if (rps is >= 25375 and < 31000) { player.RealmLevel = 14; }
+            if (rps is >= 20475 and < 25375) { player.RealmLevel = 14; }
             else
-            if (rps is >= 31000 and < 37400) { player.RealmLevel = 15; }
+            if (rps is >= 25375 and < 31000) { player.RealmLevel = 15; }
             else
-            if (rps is >= 37400 and < 44625) { player.RealmLevel = 16; }
+            if (rps is >= 31000 and < 37400) { player.RealmLevel = 16; }
             else
-            if (rps is >= 44625 and < 52725) { player.RealmLevel = 17; }
+            if (rps is >= 37400 and < 44625) { player.RealmLevel = 17; }
             else
-            if (rps is >= 52725 and < 61750) { player.RealmLevel = 18; }
+            if (rps is >= 44625 and < 52725) { player.RealmLevel = 18; }
             else
-            if (rps is >= 61750 and < 71750) { player.RealmLevel = 19; }
+            if (rps is >= 52725 and < 61750) { player.RealmLevel = 19; }
             else
             //3l0
-            if (rps is >= 71750)
+            if (rps is >= 61750 and < 71750) { player.RealmLevel = 20; }
+            else
+            if (rps is >= 71750 and < 82775) { player.RealmLevel = 21; }
+            else
+            if (rps is >= 82775 and < 94875) { player.RealmLevel = 22; }
+            else
+            if (rps is >= 94875 and < 108100) { player.RealmLevel = 23; }
+            else
+            if (rps is >= 108100 and < 122500) { player.RealmLevel = 24; }
+            else
+            if (rps is >= 122500 and < 138125) { player.RealmLevel = 25; }
+            else
+            if (rps is >= 138125 and < 155025) { player.RealmLevel = 26; }
+            else
+            if (rps is >= 155025 and < 173250) { player.RealmLevel = 27; }
+            else
+            if (rps is >= 173250 and < 192850) { player.RealmLevel = 28; }
+            else
+            if (rps is >= 192850 and < 213875) { player.RealmLevel = 29; }
+            else
+            //4L0
+            if (rps is >= 213875 and < 236375) { player.RealmLevel = 30; }
+            else
+            if (rps is >= 236375 and < 260400) { player.RealmLevel = 31; }
+            else
+            if (rps is >= 260400 and < 286000) { player.RealmLevel = 32; }
+            else
+            if (rps is >= 286000 and < 313225) { player.RealmLevel = 33; }
+            else
+            if (rps is >= 313225 and < 342125) { player.RealmLevel = 34; }
+            else
+            if (rps is >= 342125 and < 372750) { player.RealmLevel = 35; }
+            else
+            if (rps is >= 372750 and < 405150) { player.RealmLevel = 36; }
+            else
+            if (rps is >= 405150 and < 439375) { player.RealmLevel = 37; }
+            else
+            if (rps is >= 439375 and < 475475) { player.RealmLevel = 38; }
+            else
+            if (rps is >= 475475 and < 513500) { player.RealmLevel = 39; }
+            else
+
+
+            if (rps is >= 513500)
             {
-                player.RealmPoints = 71750;
-                player.RealmLevel = 20;
+                player.RealmPoints = 513500;
+                player.RealmLevel = 40;
             }
 
 
@@ -5048,11 +5092,11 @@ namespace DOL.GS {
                     SendReply(player, "I'm sorry, but you cannot afford my services currently.");
                     return;
                 }
-                
+
                 SendReply(player, "Thanks for your donation. " +
                                   "I have changed your item's model, you can now use it. \n\n" +
                                   "I look forward to doing business with you in the future.");
-                           
+
                 InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
                 player.TempProperties.removeProperty(TempProperty);
 
@@ -5073,7 +5117,7 @@ namespace DOL.GS {
                 player.SaveIntoDatabase();
                 return;
             }
-            
+
             SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         }
@@ -5100,7 +5144,7 @@ namespace DOL.GS {
                     SendReply(player, "I'm sorry, but I can only modify the pads on Torso, Hand, and Feet armors.");
                     return;
                 }
-                
+
 
                 player.Inventory.RemoveItem(item);
                 ItemUnique unique = new ItemUnique(item.Template);
