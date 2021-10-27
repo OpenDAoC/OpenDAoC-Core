@@ -2149,7 +2149,7 @@ namespace DOL.GS
             }
 
             // Missrate
-            int missrate = (ad.Attacker is GamePlayer) ? 20 : 25; //player vs player tests show 20% miss on any level
+            int missrate = (ad.Attacker is GamePlayer) ? 18 : 25; //player vs player tests show 20% miss on any level
             missrate -= ad.Attacker.GetModified(eProperty.ToHitBonus);
             // PVE group missrate
             if (owner is GameNPC && ad.Attacker is GamePlayer &&
