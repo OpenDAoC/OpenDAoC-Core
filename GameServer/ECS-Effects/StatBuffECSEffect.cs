@@ -39,7 +39,7 @@ namespace DOL.GS
 
                     if (EffectType == eEffect.MovementSpeedBuff)
                     {
-                        if (!Owner.InCombat && !Owner.IsStealthed)
+                        if (/*!Owner.InCombat && */!Owner.IsStealthed)
                         {
                             //Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                             //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
