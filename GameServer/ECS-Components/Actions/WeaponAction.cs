@@ -141,8 +141,14 @@ namespace DOL.GS
             }
             else if (mainWeapon != null)
             {
+                bool usingOH = false;
+                if (leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
+                {
+                    usingOH = true;
+                }
+
                 // no left hand used, all is simple here
-                mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+                mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
                 leftHandSwingCount = 0;
             }
             else

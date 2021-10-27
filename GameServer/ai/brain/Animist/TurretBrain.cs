@@ -148,7 +148,7 @@ namespace DOL.AI.Brain
 				}
 				else
 				{
-					CheckPlayerAggro();
+					CheckPlayerAggro(true);
 					CheckNPCAggro();
 					target = CalculateNextAttackTarget();
 				}

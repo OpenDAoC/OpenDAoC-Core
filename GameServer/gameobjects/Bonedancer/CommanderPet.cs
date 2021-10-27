@@ -104,7 +104,7 @@ namespace DOL.GS
 						InitControlledBrainArray(1);
 						break;
 					case eCommanderType.BoneCommander:
-						InitControlledBrainArray(3);
+						InitControlledBrainArray(2);
 						break;
 					case eCommanderType.DreadCommander:
 					case eCommanderType.DreadArcher:
