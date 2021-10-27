@@ -4324,7 +4324,7 @@ namespace DOL.GS
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
 
-				if (!isAttacker && effect is ECSGameSpellEffect spellEffect && (spellEffect.SpellHandler.Spell.Pulse == 0 || spellEffect.SpellHandler.Spell.CastTime == 0))
+				if (!isAttacker && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
 				{
 					return false;
 				}

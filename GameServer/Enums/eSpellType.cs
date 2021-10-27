@@ -191,7 +191,8 @@ namespace DOL.GS
         RvrResurrectionIllness = 184,
         UnbreakableSpeedDecrease = 185,
         WeaponSkillConstitutionDebuff = 186,
-
+        EnduranceHeal = 187,
+        PowerHeal = 188,
         Null = 200
 
 
