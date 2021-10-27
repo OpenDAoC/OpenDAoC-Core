@@ -5353,6 +5353,7 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
+			/*
 			if (SpellTimer != null)
 			{
 				if (this == null || this.ObjectState != eObjectState.Active || !this.IsAlive || this.TargetObject == null || (this.TargetObject is GameLiving && this.TargetObject.ObjectState != eObjectState.Active || !(this.TargetObject as GameLiving).IsAlive))
@@ -5369,7 +5370,7 @@ namespace DOL.GS
 					SpellTimer.Start(interval);
 				}
 			}
-
+			*/
 			
 
 			if (m_runningSpellHandler != null)

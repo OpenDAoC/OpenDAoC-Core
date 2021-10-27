@@ -131,14 +131,14 @@ namespace DOL.GS
 			return true;
 		}
 
-		#region Inventory
+        #region Inventory
 
-		/// <summary>
-		/// Load equipment for the pet.
-		/// </summary>
-		/// <param name="templateID">Equipment Template ID.</param>
-		/// <returns>True on success, else false.</returns>
-		protected virtual void AddStatsToWeapon()
+        /// <summary>
+        /// Load equipment for the pet.
+        /// </summary>
+        /// <param name="templateID">Equipment Template ID.</param>
+        /// <returns>True on success, else false.</returns>
+        protected virtual void AddStatsToWeapon()
 		{
 			if (Inventory != null)
 			{
@@ -295,6 +295,11 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
+			if(castingComponent.queuedSpellHandler != null)
+            {
+				castingComponent.spellHandler = castingComponent.queuedSpellHandler;
+				castingComponent.queuedSpellHandler = null;
+            }
 			base.OnAfterSpellCastSequence(handler);
 			Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
 		}

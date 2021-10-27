@@ -275,7 +275,14 @@ namespace DOL.AI.Brain
 				previousIsStealthed = (target as GamePlayer).IsStealthed;
 
 			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()){	FSM.SetCurrentState(eFSMStateType.AGGRO);}
-			AttackMostWanted();
+            if (Body.CanCastHarmfulSpells)
+            {
+				CheckSpells(eCheckSpellType.Offensive);
+            } else
+            {
+				AttackMostWanted();
+			}
+			
 		}
 
 		/// <summary>
@@ -1069,10 +1076,11 @@ namespace DOL.AI.Brain
 						effect.Cancel(false);
 					}
 
-					if (!CheckSpells(eCheckSpellType.Offensive))
-					{
-						Body.StartAttack(target);
-					}
+				}
+
+				if (!CheckSpells(eCheckSpellType.Offensive))
+				{
+					Body.StartAttack(target);
 				}
 			}
 			else
