@@ -343,6 +343,14 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckPlayerAggro()
         {
+            CheckPlayerAggro(false);
+        }
+
+        /// <summary>
+        /// Check for aggro against players
+        /// </summary>
+        public virtual void CheckPlayerAggro(bool useLOS)
+        {
             //Check if we are already attacking, return if yes
             if (Body.attackComponent.AttackState)
                 return;
@@ -360,7 +368,12 @@ namespace DOL.AI.Brain
                 if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                     continue;
 
-                if (Body.CurrentZone.IsDungeon && player != null)
+                if (Body.CurrentZone.IsDungeon)
+                {
+                    useLOS = true;
+                }
+
+                if (useLOS && player != null)
                 {
                     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
                 }
@@ -386,7 +399,7 @@ namespace DOL.AI.Brain
 
                 if (CalculateAggroLevelToTarget(player) > 0)
                 {
-                    if (Body.CurrentZone.IsDungeon && !AggroLOS) return;
+                    if (useLOS && !AggroLOS) return;
                     AddToAggroList(player, player.EffectiveLevel << 1, true);
                 }
             }
