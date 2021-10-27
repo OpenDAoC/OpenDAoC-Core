@@ -3462,7 +3462,7 @@ namespace DOL.GS {
                     modelIDToAssign = 3458;
                     break;
                 case "wakazashi":
-                    price = champion;
+                    price = epic;
                     modelIDToAssign = 2209;
                     break;
                 case "turkey leg":
