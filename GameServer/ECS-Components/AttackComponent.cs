@@ -2208,7 +2208,7 @@ namespace DOL.GS
             }
             if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                InventoryItem ammo = owner.rangeAttackComponent.RangeAttackAmmo;
+                InventoryItem ammo = ad.Attacker.rangeAttackComponent.RangeAttackAmmo;
                 if (ammo != null)
                     switch ((ammo.SPD_ABS >> 4) & 0x3)
                     {
