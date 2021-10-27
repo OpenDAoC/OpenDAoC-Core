@@ -138,6 +138,7 @@ namespace DOL.AI.Brain
 			{
 				PetSpellEventArgs petSpell = (PetSpellEventArgs)args;
 				bool hadQueuedSpells = false;
+                Body.StopFollowing();
 
 				if (SpellsQueued)
 				{
@@ -145,9 +146,9 @@ namespace DOL.AI.Brain
 					hadQueuedSpells = true;
 				}
 
-                if (petSpell.ParentSpell != null)
+                if (Body.attackComponent.AttackState)
                 {
-                    if (/*petSpell.ParentSpell.IsInstantCast && */petSpell.Spell.IsInstantCast && !petSpell.Spell.IsHarmful)
+                    if (petSpell.Spell.IsInstantCast && !petSpell.Spell.IsHarmful)
                     {
                         CastSpell(petSpell.Spell, petSpell.SpellLine, petSpell.Target);
                     }
