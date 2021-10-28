@@ -661,7 +661,8 @@ namespace DOL.GS.PacketHandler
 						int acuityItemBonus = 0;
 						if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 						{
-							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
+								&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 							{
 								abilityBonus += m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
 
@@ -686,7 +687,8 @@ namespace DOL.GS.PacketHandler
 
 						if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 						{
-							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
+								&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 							{
 
 								if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
@@ -713,7 +715,8 @@ namespace DOL.GS.PacketHandler
 						int acuityItemBonus = 0;
 						if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.CharacterClass.ManaStat)
 						{
-							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
+								&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 							{
 								acuityItemBonus = m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
 							}
