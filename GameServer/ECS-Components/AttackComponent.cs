@@ -505,6 +505,11 @@ namespace DOL.GS
                             case 3: damage *= 1.25; break; //Broadhead (X-heavy) +25%
                         }
                     }
+
+                    //slow weapon bonus as found here: https://www2.uthgard.net/tracker/issue/2753/@/Bow_damage_variance_issue_(taking_item_/_spec_???)
+                    //EDPS * (your WS/target AF) * (1-absorb) * slow weap bonus * SPD * 2h weapon bonus * Arrow Bonus 
+                    damage *= 1 + ((weapon.SPD_ABS - 20) * 0.03) * .1;
+
                     //Ranged damage buff,debuff,Relic,RA
                     effectiveness += p.GetModified(eProperty.RangedDamage) * 0.01;
                 }
