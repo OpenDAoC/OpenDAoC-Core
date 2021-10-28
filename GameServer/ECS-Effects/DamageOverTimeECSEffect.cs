@@ -23,7 +23,8 @@ namespace DOL.GS
             if (OwnerPlayer != null)
                 OwnerPlayer.Stealth(false);
 
-            OnEffectPulse();
+            if (!IsBuffActive)
+                OnEffectPulse();
         }
 
         public override void OnStopEffect()

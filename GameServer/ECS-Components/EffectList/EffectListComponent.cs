@@ -76,6 +76,7 @@ namespace DOL.GS
                                     if (spellEffect.SpellHandler.Spell.IsPoison)
                                     {
                                         existingEffects[i].ExpireTick = spellEffect.ExpireTick;
+                                        spellEffect.IsBuffActive = true;
                                     }
                                     else
                                     {
