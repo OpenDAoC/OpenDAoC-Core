@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving healTarget in targets)
 			{
-				if (Spell.Value < 0)
+				if (Spell.Value < 0 && target != null)
 					// Restore a percentage of the target's endurance
 					spellValue = (int)Math.Round(Spell.Value * -0.01) * target.MaxEndurance;
 

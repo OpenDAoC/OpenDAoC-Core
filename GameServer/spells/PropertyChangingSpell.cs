@@ -35,7 +35,12 @@ namespace DOL.GS.Spells
 	public abstract class PropertyChangingSpell : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new StatBuffECSEffect(initParams);
+		}
+
 		/// <summary>
 		/// Execute property changing spell
 		/// </summary>
