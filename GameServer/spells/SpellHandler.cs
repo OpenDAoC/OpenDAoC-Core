@@ -573,7 +573,7 @@ namespace DOL.GS.Spells
 
 			m_castTimer = new DelayedCastTimer(Caster, this, target, step2, step3);
 			m_castTimer.Start(step1);
-			m_started = Caster.CurrentRegion.Time;
+			m_started = GameLoop.GameLoopTime;
 			SendCastAnimation();
 
 			if (m_caster.IsMoving || m_caster.IsStrafing)
@@ -788,9 +788,9 @@ namespace DOL.GS.Spells
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 			{
-                if (Caster.InterruptAction > 0 && Caster.InterruptAction + Caster.SpellInterruptRecastTime > Caster.CurrentRegion.Time)
+                if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 				{
-					if (!quiet) MessageToCaster("You must wait " + (((Caster.InterruptAction + Caster.SpellInterruptRecastTime) - Caster.CurrentRegion.Time) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
+					if (!quiet) MessageToCaster("You must wait " + (((Caster.InterruptTime) - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
 					return false;
 				}
 			}
@@ -1454,7 +1454,7 @@ namespace DOL.GS.Spells
 						if(Caster.LastInterruptMessage != "") MessageToCaster(Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
 						else MessageToCaster("You are interrupted and must wait " + ((Caster.InterruptTime - m_started) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
 					}
-					Caster.InterruptAction = Caster.CurrentRegion.Time - Caster.SpellInterruptRecastAgain;
+					Caster.InterruptAction = GameLoop.GameLoopTime - Caster.SpellInterruptRecastAgain;
 					return false;
 				}
 			}
@@ -1633,7 +1633,7 @@ namespace DOL.GS.Spells
 
                     if (CheckBeginCast(m_spellTarget))
 					{
-						m_started = Caster.CurrentRegion.Time;
+						m_started = GameLoop.GameLoopTime;
 						_castStartTick = currentTick;
 						SendSpellMessages();
 						if (Spell.IsInstantCast)
