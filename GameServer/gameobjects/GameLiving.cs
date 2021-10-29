@@ -1982,6 +1982,8 @@ namespace DOL.GS
 		/// <param name="attacker"></param>
 		public virtual void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
 		{
+			//duration *= 10;
+			Console.WriteLine("Interrupt duration: " + duration);
 			if (!IsAlive || ObjectState != eObjectState.Active)
 			{
 				InterruptTime = 0;
@@ -1999,8 +2001,8 @@ namespace DOL.GS
 			
 			if (Util.Chance((int)chance))
             {
-				if (InterruptTime < CurrentRegion.Time + duration)
-					InterruptTime = CurrentRegion.Time + duration;
+				if (InterruptTime < GameLoop.GameLoopTime + duration)
+					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
 			if (CurrentSpellHandler != null)
@@ -2013,11 +2015,12 @@ namespace DOL.GS
 		protected long m_interruptTime = 0;
 		public virtual long InterruptTime
 		{
-			get { return m_interruptTime; }
+			get {
+				Console.WriteLine($"Interrupt time: {m_interruptTime}");
+				return m_interruptTime; }
 			set
 			{
-				if (CurrentRegion != null)
-					InterruptAction = CurrentRegion.Time;
+				InterruptAction = GameLoop.GameLoopTime;
 				m_interruptTime = value;
 			}
 		}
@@ -2025,7 +2028,9 @@ namespace DOL.GS
 		protected long m_interruptAction = 0;
 		public virtual long InterruptAction
 		{
-			get { return m_interruptAction; }
+			get {
+				Console.WriteLine($"Interrupt action: {m_interruptAction}");
+				return m_interruptAction; }
 			set { m_interruptAction = value; }
 		}
 
@@ -2034,7 +2039,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsBeingInterrupted
 		{
-			get { return (m_interruptTime > CurrentRegion.Time); }
+			get { return (m_interruptTime > GameLoop.GameLoopTime); }
 		}
 
 		/// <summary>
