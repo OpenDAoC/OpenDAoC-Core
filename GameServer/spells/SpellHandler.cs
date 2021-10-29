@@ -1728,11 +1728,20 @@ namespace DOL.GS.Spells
             {
                 if (nPet.Brain is NecromancerPetBrain necroBrain)
                 {
-					necroBrain.RemoveSpellFromQueue();
-					if (nPet.InCombat)
-						necroBrain.RemoveSpellFromAttackQueue();
-					Caster.castingComponent.spellHandler = null;
-                }
+                    necroBrain.RemoveSpellFromQueue();
+                    if (nPet.attackComponent.AttackState)
+                        necroBrain.RemoveSpellFromAttackQueue();
+
+					if (Caster.castingComponent.queuedSpellHandler != null)
+					{
+						Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
+						Caster.castingComponent.queuedSpellHandler = null;
+					}
+					else
+					{
+						Caster.castingComponent.spellHandler = null;
+					}
+				}
             }
             else
             {
