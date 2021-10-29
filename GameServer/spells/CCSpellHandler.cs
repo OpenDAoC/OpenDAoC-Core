@@ -263,8 +263,8 @@ namespace DOL.GS.Spells
                     {
 						//effect.Cancel(false);//call OnEffectExpires
 						//CancelPulsingSpell(Caster, this.Spell.SpellType);
-						EffectService.RequestCancelEffect(effect);
-						EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
+						EffectService.RequestImmediateCancelEffect(effect);
+						EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
                         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
                     }
                     return;
@@ -359,8 +359,8 @@ namespace DOL.GS.Spells
 					{
 						//effect.Cancel(false);//call OnEffectExpires
 						//CancelPulsingSpell(Caster, this.Spell.SpellType);
-						EffectService.RequestCancelEffect(effect);
-						EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
+						EffectService.RequestImmediateCancelEffect(effect);
+						EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
 						MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
                     }
                     return;

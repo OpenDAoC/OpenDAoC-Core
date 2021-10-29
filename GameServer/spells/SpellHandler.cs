@@ -691,7 +691,7 @@ namespace DOL.GS.Spells
 					ECSGameSpellEffect cancelEffect = Caster.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
                     if (cancelEffect != null)
                     {
-						EffectService.RequestCancelConcEffect((IConcentrationEffect)cancelEffect);
+						EffectService.RequestImmediateCancelConcEffect((IConcentrationEffect)cancelEffect);
                         Caster.LastPulseCast = null;
                         //Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
@@ -2136,7 +2136,7 @@ namespace DOL.GS.Spells
 
             if (Spell.IsPulsing)
             {
-				EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
+				EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{

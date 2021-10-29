@@ -1117,7 +1117,7 @@ namespace DOL.GS
 
                             if (camouflage != null)// Check if Camo is active, if true, cancel ability.
                             {
-                                EffectService.RequestCancelEffect(camouflage, false);
+                                EffectService.RequestImmediateCancelEffect(camouflage, false);
                             }
                             Skill camo = SkillBase.GetAbility(Abilities.Camouflage); // now we find the ability
                             p.DisableSkill(camo, CamouflageSpecHandler.DISABLE_DURATION); // and here we disable it.
@@ -2267,14 +2267,14 @@ namespace DOL.GS
                 {
                     if (ad.Target is GamePlayer) ((GamePlayer)ad.Target).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     {
-                        EffectService.RequestCancelEffect(ecsbladeturn);
+                        EffectService.RequestImmediateCancelEffect(ecsbladeturn);
                     }
                 }
                 else
                 {
                     if (owner is GamePlayer) ((GamePlayer)owner).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)owner).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)ad.Attacker).Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    EffectService.RequestCancelEffect(ecsbladeturn);
+                    EffectService.RequestImmediateCancelEffect(ecsbladeturn);
                     if (owner is GamePlayer)
                         ((GamePlayer)owner).Stealth(false);
                     return eAttackResult.Missed;

@@ -31,7 +31,7 @@ namespace DOL.GS
 
                     gPlayer.StartInterruptTimer(gPlayer.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
                 }
-                EffectService.RequestCancelEffect(this);
+                EffectService.RequestImmediateCancelEffect(this);
             }
             else if (Owner is GameNPC)
             {
@@ -59,7 +59,7 @@ namespace DOL.GS
                     {
                         //Theurgist pets die.
                         npc.Die(SpellHandler.Caster);
-                        EffectService.RequestCancelEffect(this);
+                        EffectService.RequestImmediateCancelEffect(this);
                         return;
                     }
                 }

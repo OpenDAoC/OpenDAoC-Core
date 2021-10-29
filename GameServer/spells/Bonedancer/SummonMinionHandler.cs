@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
 			//if (effect != null)
 			//	effect.Cancel(false);
 			if (pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
-				EffectService.RequestCancelEffect(petEffect.FirstOrDefault());
+				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)

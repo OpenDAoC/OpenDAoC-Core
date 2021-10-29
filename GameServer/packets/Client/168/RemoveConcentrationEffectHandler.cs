@@ -69,7 +69,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 				}
 
-				EffectService.RequestCancelConcEffect(effect, true);
+				EffectService.RequestImmediateCancelConcEffect(effect, true);
 			}
 		}
 	}

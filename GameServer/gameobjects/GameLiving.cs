@@ -4097,9 +4097,9 @@ namespace DOL.GS
             if (focusEffect != null)
             {
                 ((SpellHandler)focusEffect.SpellHandler).FocusSpellAction(moving);
-                EffectService.RequestCancelEffect(focusEffect);
+                EffectService.RequestImmediateCancelEffect(focusEffect);
                 if (((SpellHandler)focusEffect.SpellHandler).GetTarget().effectListComponent.Effects.TryGetValue(focusEffect.EffectType, out var petEffect))
-                    EffectService.RequestCancelEffect(petEffect.FirstOrDefault());
+                    EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
             }
         }
 		/// <summary>
@@ -4178,7 +4178,7 @@ namespace DOL.GS
 
 							if (ablativehp <= 0)
 							{
-								EffectService.RequestCancelEffect(effect);
+								EffectService.RequestImmediateCancelEffect(effect);
 							}
 							else
 							{
@@ -4280,21 +4280,21 @@ namespace DOL.GS
             if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
 				var effect = effectListComponent.Effects[eEffect.Mez].FirstOrDefault();
-				EffectService.RequestCancelEffect(effect);
+				EffectService.RequestImmediateCancelEffect(effect);
 			}
 
 			// Remove Snare/Root
 			if (removeSnare && effectListComponent.Effects.ContainsKey(eEffect.Snare))
 			{
 				var effect = effectListComponent.Effects[eEffect.Snare].FirstOrDefault();
-				EffectService.RequestCancelEffect(effect);
+				EffectService.RequestImmediateCancelEffect(effect);
 			}
 
             // Remove MovementSpeedDebuff
             if (removeMovementSpeedDebuff && effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff))
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault();
-                EffectService.RequestCancelEffect(effect);
+                EffectService.RequestImmediateCancelEffect(effect);
             }
 
             return removeMez || removeSnare || removeMovementSpeedDebuff;
@@ -4323,7 +4323,7 @@ namespace DOL.GS
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
-                EffectService.RequestCancelEffect(effect);
+                EffectService.RequestImmediateCancelEffect(effect);
                 effectRemoved = true;
             }
 
@@ -4332,7 +4332,7 @@ namespace DOL.GS
                 var ownerEffect = EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
                 if (ownerEffect != null)
                 {
-                    EffectService.RequestCancelEffect(ownerEffect);
+                    EffectService.RequestImmediateCancelEffect(ownerEffect);
                     effectRemoved = true;
                 }
             }

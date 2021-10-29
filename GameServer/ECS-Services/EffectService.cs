@@ -31,8 +31,15 @@ namespace DOL.GS
             foreach (var e in EntityManager.GetAllEffects())
             {
                 // Effect Cancel/Disables requests are processed immediately on the same frame they are requested and not through this queue.
-                HandlePropertyModification(e);
-                EntityManager.RemoveEffect(e);
+                if (e.CancelEffect || e.IsDisabled)
+                {
+                    HandleCancelEffect(e);
+                }
+                else
+                {
+                    HandlePropertyModification(e);
+                }
+                //EntityManager.RemoveEffect(e);
             }
 
             Diagnostics.StopPerfCounter(ServiceName);
@@ -40,6 +47,7 @@ namespace DOL.GS
 
         private static void HandlePropertyModification(ECSGameEffect e)
         {
+            EntityManager.RemoveEffect(e);
             if (e.Owner == null)
             {
                 //Console.WriteLine($"Invalid target for Effect {e}");
@@ -130,7 +138,7 @@ namespace DOL.GS
         private static void HandleCancelEffect(ECSGameEffect e)
         {
             //Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
-
+            EntityManager.RemoveEffect(e);
             if (!e.Owner.effectListComponent.RemoveEffect(e))
             {
                 //Console.WriteLine("Unable to remove effect!");
@@ -211,7 +219,7 @@ namespace DOL.GS
 
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            HandleCancelEffect(effect);
+            EntityManager.AddEffect(effect);
         }
 
         /// <summary>
@@ -228,6 +236,57 @@ namespace DOL.GS
                 RequestCancelEffect(effect, playerCanceled);
             }
         }
+
+
+        /// <summary>
+        /// Immediately removes an ECSGameEffect.
+        /// </summary>
+        public static void RequestImmediateCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
+        {
+            if (effect is null)
+                return;
+
+            // Player can't remove negative effect or Effect in Immunity State
+            if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
+            {
+                GamePlayer player = effect.Owner as GamePlayer;
+                if (player != null)
+                    player.Out.SendMessage(LanguageMgr.GetTranslation((effect.Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                return;
+            }
+
+            // playerCanceled param isn't used but it's there in case we eventually want to...
+            effect.CancelEffect = true;
+            effect.ExpireTick = GameLoop.GameLoopTime - 1;
+            HandleCancelEffect(effect);
+        }
+
+
+        /// <summary>
+        /// Immediately removes an ECSGameEffect (as a IConcentrationEffect).
+        /// </summary>
+        public static void RequestImmediateCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
+        {
+            ECSGameSpellEffect effect = concEffect as ECSGameSpellEffect;
+            if (effect != null)
+            {
+                RequestImmediateCancelEffect(effect, playerCanceled);
+
+                if (effect.SpellHandler.Spell.IsPulsing)
+                    effect.Owner.LastPulseCast = null;
+            }
+        }
+
+        /// <summary>
+        /// Immediately starts an ECSGameEffect.
+        /// </summary>
+        /// <param name="effect"></param>
+        public static void RequestStartEffect(ECSGameEffect effect)
+        {
+            HandlePropertyModification(effect);
+        }
+
         /// <summary>
         /// Immediately disables an ECSGameEffect.
         /// </summary>
@@ -252,7 +311,7 @@ namespace DOL.GS
             
             effect.IsDisabled = false;
             effect.RenewEffect = true;
-            EntityManager.AddEffect(effect);
+            HandlePropertyModification(effect);
         }
 
         public static void SendSpellAnimation(ECSGameSpellEffect e)

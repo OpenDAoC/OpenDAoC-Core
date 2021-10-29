@@ -5639,7 +5639,7 @@ namespace DOL.GS
 			if (song != null && song.SpellHandler.Spell.InstrumentRequirement != 0)
             {
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				EffectService.RequestCancelConcEffect(song);
+				EffectService.RequestImmediateCancelConcEffect(song);
 			}
 
 			switch (slot)
@@ -8937,7 +8937,7 @@ namespace DOL.GS
 								if (effects != null)
 									effects.Cancel(false);
 								if (effect != null)
-									EffectService.RequestCancelEffect(effect);
+									EffectService.RequestImmediateCancelEffect(effect);
 									//effect.Cancel(false);
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
 								m_whistleMountTimer = new RegionTimer(this);
@@ -11081,7 +11081,7 @@ namespace DOL.GS
 			{
 				if (effectListComponent.ContainsEffectForEffectType(eEffect.Sprint))
 				{
-					EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
+					EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
 				}
 				return false;
 			}
@@ -13180,7 +13180,7 @@ namespace DOL.GS
 			{
 				if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
                 {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
                 }
             }
 		}

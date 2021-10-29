@@ -431,7 +431,7 @@ namespace DOL.GS.Spells
             var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
 
             if (concEffect != null)
-                EffectService.RequestCancelConcEffect((ECSPulseEffect)concEffect);
+                EffectService.RequestImmediateCancelConcEffect((ECSPulseEffect)concEffect);
                 //concEffect.CancelEffect = true;
                 //concEffect.Cancel(false);
 
@@ -449,7 +449,7 @@ namespace DOL.GS.Spells
             //charm.FirstOrDefault().CancelEffect = true;
             //if (charm?.FirstOrDefault().GetRemainingTimeForClient() < 0)
             if (e == GameLivingEvent.PetReleased)
-                EffectService.RequestCancelEffect(charm?.FirstOrDefault());
+                EffectService.RequestImmediateCancelEffect(charm?.FirstOrDefault());
         }
 
         /// <summary>

@@ -75,7 +75,7 @@ namespace DOL.GS
             if (Owner is GamePlayer)
                 (Owner as GamePlayer).Out.SendAttackMode(false);
 
-            EffectService.RequestCancelEffect(this, playerCancel);
+            EffectService.RequestImmediateCancelEffect(this, playerCancel);
             if (OwnerPlayer != null)
             {
                 if (playerCancel)

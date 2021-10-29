@@ -42,7 +42,7 @@ namespace DOL.GS.Effects
             GamePlayer player = sender as GamePlayer;
             if (player != null && player.effectListComponent != null)
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.BunkerOfFaith));
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.BunkerOfFaith));
             }
         }
     }

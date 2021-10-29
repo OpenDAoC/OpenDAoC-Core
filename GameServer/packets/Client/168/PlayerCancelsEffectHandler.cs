@@ -114,7 +114,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (effect.EffectType == eEffect.Guard)
 						(effect as GuardECSGameEffect).Cancel(true);
 					else
-						EffectService.RequestCancelEffect(effect, true);
+						EffectService.RequestImmediateCancelEffect(effect, true);
                 }
             }
 		}

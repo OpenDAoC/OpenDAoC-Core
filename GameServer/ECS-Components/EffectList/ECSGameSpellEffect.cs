@@ -38,7 +38,8 @@ namespace DOL.GS
                 PulseFreq = 650;
             }
 
-            EntityManager.AddEffect(this);
+            if (this is not ECSImmunityEffect)
+                EffectService.RequestStartEffect(this);
         }
 
         private eEffect MapSpellEffect()

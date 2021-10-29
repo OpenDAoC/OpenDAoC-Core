@@ -45,16 +45,16 @@ namespace DOL.GS.SkillHandler
 			// cancel rapid fire effect
 			RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 			if (rapidFire != null)
-				EffectService.RequestCancelEffect(rapidFire, false);
+				EffectService.RequestImmediateCancelEffect(rapidFire, false);
 
 			// cancel sure shot effect
 			SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 			if (sureShot != null)
-				EffectService.RequestCancelEffect(sureShot);
+				EffectService.RequestImmediateCancelEffect(sureShot);
 
 			TrueShotECSGameEffect trueshot = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot);
 			if (trueshot != null)
-				EffectService.RequestCancelEffect(trueshot, false);
+				EffectService.RequestImmediateCancelEffect(trueshot, false);
 
 			if (player.attackComponent.AttackState)
 			{

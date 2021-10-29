@@ -37,7 +37,7 @@ namespace DOL.GS.Spells
 				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null || 
 				(effect != null && effect.SpellHandler.Spell.Value == 99))
 			{
-				EffectService.RequestCancelEffect(effect);
+				EffectService.RequestImmediateCancelEffect(effect);
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				return;
 			}
