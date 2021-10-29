@@ -1982,8 +1982,6 @@ namespace DOL.GS
 		/// <param name="attacker"></param>
 		public virtual void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
 		{
-			//duration *= 10;
-			Console.WriteLine("Interrupt duration: " + duration);
 			if (!IsAlive || ObjectState != eObjectState.Active)
 			{
 				InterruptTime = 0;
@@ -2008,16 +2006,14 @@ namespace DOL.GS
 			if (CurrentSpellHandler != null)
 				CurrentSpellHandler.CasterIsAttacked(attacker);
 			
-			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
 				OnInterruptTick(attacker, attackType);
 		}
 
 		protected long m_interruptTime = 0;
 		public virtual long InterruptTime
 		{
-			get {
-				Console.WriteLine($"Interrupt time: {m_interruptTime}");
-				return m_interruptTime; }
+			get { return m_interruptTime; }
 			set
 			{
 				InterruptAction = GameLoop.GameLoopTime;
@@ -2028,9 +2024,7 @@ namespace DOL.GS
 		protected long m_interruptAction = 0;
 		public virtual long InterruptAction
 		{
-			get {
-				Console.WriteLine($"Interrupt action: {m_interruptAction}");
-				return m_interruptAction; }
+			get { return m_interruptAction; }
 			set { m_interruptAction = value; }
 		}
 
