@@ -27,6 +27,10 @@ namespace DOL.GS
             {
                 ApplyBonus(Owner, (SpellHandler as ArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, false);
             }
+            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.PaladinArmorFactorBuff)
+            {
+                ApplyBonus(Owner, (SpellHandler as PaladinArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, false);
+            }
             else
             {
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
@@ -35,7 +39,7 @@ namespace DOL.GS
 
                     if (EffectType == eEffect.MovementSpeedBuff)
                     {
-                        if (!Owner.InCombat && !Owner.IsStealthed)
+                        if (/*!Owner.InCombat && */!Owner.IsStealthed)
                         {
                             //Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                             //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
@@ -70,6 +74,10 @@ namespace DOL.GS
             else if (SpellHandler.Spell.SpellType == (byte)eSpellType.ArmorFactorBuff)
             {
                 ApplyBonus(Owner, (SpellHandler as ArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, true);
+            }
+            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.PaladinArmorFactorBuff)
+            {
+                ApplyBonus(Owner, (SpellHandler as PaladinArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, true);
             }
             else
             {

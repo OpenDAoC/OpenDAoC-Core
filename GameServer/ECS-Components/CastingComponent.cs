@@ -84,7 +84,10 @@ namespace DOL.GS
                         {
                             pl.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                         }
-                    } 
+                    } else if (owner is GamePet pet)
+                    {
+                        queuedSpellHandler = m_newSpellHandler;
+                    }
                 }
             }
             else

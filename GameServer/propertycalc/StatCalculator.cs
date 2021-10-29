@@ -63,7 +63,8 @@ namespace DOL.GS.PropertyCalc
 				GamePlayer player = living as GamePlayer;
 				if (property == (eProperty)(player.CharacterClass.ManaStat))
 				{
-					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 					{
 						abilityBonus += player.AbilityBonus[(int)eProperty.Acuity];
 					}
@@ -154,7 +155,8 @@ namespace DOL.GS.PropertyCalc
 
 				if (property == (eProperty)player.CharacterClass.ManaStat)
 				{
-					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger 
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 					{
 						itemBonus += living.ItemBonus[(int)eProperty.Acuity];
 					}
@@ -195,7 +197,8 @@ namespace DOL.GS.PropertyCalc
 
 				if (property == (eProperty)player.CharacterClass.ManaStat)
 				{
-					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 					{
 						itemBonusCapIncrease += living.ItemBonus[(int)eProperty.AcuCapBonus];
 					}
@@ -219,7 +222,8 @@ namespace DOL.GS.PropertyCalc
 
                 if (property == (eProperty)player.CharacterClass.ManaStat)
                 {
-                    if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+                    if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
                     {
                         MythicalitemBonusCapIncrease += living.ItemBonus[(int)eProperty.MythicalAcuCapBonus];
                     }

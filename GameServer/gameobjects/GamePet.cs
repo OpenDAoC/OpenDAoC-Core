@@ -131,14 +131,14 @@ namespace DOL.GS
 			return true;
 		}
 
-		#region Inventory
+        #region Inventory
 
-		/// <summary>
-		/// Load equipment for the pet.
-		/// </summary>
-		/// <param name="templateID">Equipment Template ID.</param>
-		/// <returns>True on success, else false.</returns>
-		protected virtual void AddStatsToWeapon()
+        /// <summary>
+        /// Load equipment for the pet.
+        /// </summary>
+        /// <param name="templateID">Equipment Template ID.</param>
+        /// <returns>True on success, else false.</returns>
+        protected virtual void AddStatsToWeapon()
 		{
 			if (Inventory != null)
 			{
@@ -295,6 +295,11 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
+			if(castingComponent.queuedSpellHandler != null)
+            {
+				castingComponent.spellHandler = castingComponent.queuedSpellHandler;
+				castingComponent.queuedSpellHandler = null;
+            }
 			base.OnAfterSpellCastSequence(handler);
 			Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
 		}
@@ -379,6 +384,7 @@ namespace DOL.GS
 					 *	For pet level 24-43, the debuff is now 20%.
 					 *	For pet level 44-50, the debuff is now 30%.  */
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					spell.ScaledToPetLevel = true;
 					break;

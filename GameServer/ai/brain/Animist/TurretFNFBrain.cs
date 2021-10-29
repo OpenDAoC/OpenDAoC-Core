@@ -138,7 +138,7 @@ namespace DOL.AI.Brain
 			return null;
 		}
 
-		protected override void OnAttackedByEnemy(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			AddToAggroList(ad.Attacker, (ad.Attacker.Level + 1) << 1);
 		}

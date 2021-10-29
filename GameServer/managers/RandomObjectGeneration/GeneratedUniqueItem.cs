@@ -76,7 +76,7 @@ namespace DOL.GS
 		public const ushort ROG_ITEM_RESIST_CHANCE = 43;
 
 		//item chance to get skills
-		public const ushort ROG_ITEM_SKILL_CHANCE = 20;
+		public const ushort ROG_ITEM_SKILL_CHANCE = 35;
 
 		// Item chance to get All skills stat
 		public const ushort ROG_STAT_ALLSKILL_CHANCE = 5;

@@ -1724,17 +1724,21 @@ namespace DOL.GS.ServerRules
 					}
 				}
 
-				//pick one member from each group to recieve the ROG
+				//for each group member, a 50% chance to get a ROG
                 foreach (var grp in groupsToAward)
                 {
 					List<GamePlayer> players = new List<GamePlayer>();
 					foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
                     {
-						players.Add(pla);
+                        if (Util.Chance(50) && !playersToAward.Contains(pla))
+                        {
+							playersToAward.Add(pla);
+						}
+						//players.Add(pla);
                     }
-					GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
+					//GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
 					//Console.WriteLine($"Chosen player: {playerToAward}");
-					if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
+					//if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
                 }
 
 				//distribute ROGs

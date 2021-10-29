@@ -1225,6 +1225,57 @@ namespace DOL.GS {
 
             return totalUti;
         }
+
+        private double GetSingleUtility(int BonusType, int Bonus)
+        {
+            double totalUti = 0;
+
+            //based off of eProperty
+            //1-8 == stats = *.6667
+            //9 == power cap = *2
+            //10 == maxHP =  *.25
+            //11-19 == resists = *2
+            //20-115 == skill = *5
+            //163 == all magic = *10
+            //164 == all melee = *10
+            //167 == all dual weild = *10
+            //168 == all archery = *10
+            if (BonusType != 0 &&
+                Bonus != 0)
+            {
+                if (BonusType < 9)
+                {
+                    totalUti += Bonus * .6667;
+                }
+                else if (BonusType == 9)
+                {
+                    totalUti += Bonus * 2;
+                }
+                else if (BonusType == 10)
+                {
+                    totalUti += Bonus * .25;
+                }
+                else if (BonusType < 20)
+                {
+                    totalUti += Bonus * 2;
+                }
+                else if (BonusType < 115)
+                {
+                    totalUti += Bonus * 5;
+                }
+                else if (BonusType == 163
+                  || BonusType == 164
+                  || BonusType == 167
+                  || BonusType == 168)
+                {
+                    totalUti += Bonus * 10;
+                }
+            }
+
+
+            return totalUti;
+        }
+
         protected virtual void WriteBonusLine(IList<string> list, GameClient client, int bonusCat, int bonusValue)
         {
             if (bonusCat != 0 && bonusValue != 0 && !SkillBase.CheckPropertyType((eProperty)bonusCat, ePropertyType.Focus))
@@ -1236,6 +1287,7 @@ namespace DOL.GS {
                 }
                 else
                 {
+                    string singleUti = String.Format("{0:0.00}", GetSingleUtility(bonusCat, bonusValue));
                     //- Axe: 5 pts
                     //- Strength: 15 pts
                     //- Constitution: 15 pts
@@ -1245,8 +1297,8 @@ namespace DOL.GS {
                     //Bonus to casting speed: 2%
                     //Bonus to armor factor (AF): 18
                     //Power: 6 % of power pool.
-                    list.Add(string.Format(
-                        "- {0}: {1}{2}",
+                    list.Add(singleUti + string.Format(
+                        " | {0}: {1}{2}",
                         SkillBase.GetPropertyName((eProperty)bonusCat),
                         bonusValue.ToString("+0 ;-0 ;0 "), //Eden
                         ((bonusCat == (int)eProperty.PowerPool)

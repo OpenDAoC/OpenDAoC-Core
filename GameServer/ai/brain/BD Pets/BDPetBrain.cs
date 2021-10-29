@@ -74,7 +74,7 @@ namespace DOL.AI.Brain
 		/// notify objects if they have been attacked/hit by an attack
 		/// </summary>
 		/// <param name="ad">information about the attack</param>
-		protected override void OnAttackedByEnemy(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			base.OnAttackedByEnemy(ad);
 

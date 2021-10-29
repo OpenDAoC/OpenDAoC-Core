@@ -93,12 +93,12 @@ namespace DOL.GS
 
                     if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled))
                     {
-                        if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                        {
-                            //Console.WriteLine("Applying EnduranceRegenBuff");
-                            var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
-                            ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, 1, false);
-                        }
+                        //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
+                        //{
+                        //    //Console.WriteLine("Applying EnduranceRegenBuff");
+                        //    var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
+                        //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, 1, false);
+                        //}
                         e.OnStartEffect();
                         e.IsBuffActive = true;
                     }
@@ -156,12 +156,12 @@ namespace DOL.GS
                 {
                     if (!(spellEffect is ECSImmunityEffect))
                     {
-                        if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                        {
-                            //Console.WriteLine("Removing EnduranceRegenBuff");
-                            var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
-                            ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, spellEffect.Effectiveness, true);
-                        }
+                        //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
+                        //{
+                        //    //Console.WriteLine("Removing EnduranceRegenBuff");
+                        //    var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
+                        //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, spellEffect.Effectiveness, true);
+                        //}
                         e.OnStopEffect();
                     }
                 }
@@ -318,6 +318,9 @@ namespace DOL.GS
         {
             if (e != null)
             {
+                if (e.SpellHandler.Spell.IsPulsing && e.Owner != e.SpellHandler.Caster && e.SpellHandler.HasPositiveEffect)
+                    return;
+
                 //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {

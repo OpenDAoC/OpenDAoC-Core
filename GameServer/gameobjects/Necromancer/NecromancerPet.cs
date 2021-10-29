@@ -411,12 +411,12 @@ namespace DOL.GS
 				}
 			}
 
-            NecromancerPetBrain tBrain = Brain as NecromancerPetBrain;
+			NecromancerPetBrain tBrain = Brain as NecromancerPetBrain;
 
-            if (tBrain.AttackSpellsQueued)
-            {
-                tBrain.CheckAttackSpellQueue();
-            }
+			if (tBrain.AttackSpellsQueued)
+			{
+				tBrain.CheckAttackSpellQueue();
+			}
 
 			return attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}

@@ -63,26 +63,7 @@ namespace DOL.GS
                                     {
                                         if (effect.SpellHandler.Caster.Mana >= effect.SpellHandler.Spell.PulsePower)
                                         {
-                                            effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;
-                                            //if (Spell.InstrumentRequirement != 0 || !HasPositiveEffect)
-                                            //{
-                                            //    SendEffectAnimation(Caster, 0, true, 1); // pulsing auras or songs
-                                            //}
-
-                                            if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
-                                            {
-                                                if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
-                                                    ((SpellHandler)effect.SpellHandler).SendCastAnimation();
-
-                                            }
-                                            else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
-                                            {
-                                                ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
-                                            }
-                                            else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                                            {
-                                                ((SpeedDecreaseSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
-                                            }
+                                            effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;                                            
                                             effect.SpellHandler.StartSpell(null);
                                             effect.ExpireTick += effect.PulseFreq;
                                         }
@@ -90,12 +71,28 @@ namespace DOL.GS
                                         {
                                             ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
                                             EffectService.RequestCancelConcEffect((IConcentrationEffect)effect);
+                                            continue;
                                         }
                                     }
                                     else
                                     {
                                         effect.SpellHandler.StartSpell(null);
                                         effect.ExpireTick += effect.PulseFreq;
+                                    }
+
+                                    if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
+                                    {
+                                        if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
+                                            ((SpellHandler)effect.SpellHandler).SendCastAnimation();
+
+                                    }
+                                    else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
+                                    {
+                                        ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
+                                    }
+                                    else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                                    {
+                                        ((SpeedDecreaseSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
                                     }
                                 }
                                 else

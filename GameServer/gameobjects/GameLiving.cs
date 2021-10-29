@@ -4064,7 +4064,7 @@ namespace DOL.GS
 			if (effectListComponent is null)
                 return;
 
-			TryCancelMovementSpeedBuffs();
+			TryCancelMovementSpeedBuffs(true);
 
 			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
@@ -4306,14 +4306,14 @@ namespace DOL.GS
                 return false;
 
 			// Cancel movement speed buffs when attacked
-			bool effectRemoved = TryCancelMovementSpeedBuffs();
+			bool effectRemoved = TryCancelMovementSpeedBuffs(false);
 
 			
 
 			return effectRemoved;
 		}
 
-        public virtual bool TryCancelMovementSpeedBuffs()
+        public virtual bool TryCancelMovementSpeedBuffs(bool isAttacker)
         {
             if (effectListComponent == null)
                 return false;
@@ -4323,8 +4323,16 @@ namespace DOL.GS
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
-                EffectService.RequestImmediateCancelEffect(effect);
-                effectRemoved = true;
+
+				if (!isAttacker && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+				{
+					return false;
+				}
+				else
+				{
+					EffectService.RequestImmediateCancelEffect(effect);
+					effectRemoved = true;
+				}
             }
 
             if (this is GamePet pet)

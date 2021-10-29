@@ -4663,24 +4663,34 @@ namespace DOL.GS
 			}
 		}
 
-		///// <summary>
-		///// Stops all attack actions, including following target
-		///// </summary>
-		//public override void StopAttack()
-		//{
-		//	base.StopAttack();
-		//	StopFollowing();
+        ///// <summary>
+        ///// Stops all attack actions, including following target
+        ///// </summary>
+        //public override void StopAttack()
+        //{
+        //	base.StopAttack();
+        //	StopFollowing();
 
-		//	// Tolakram: If npc has a distance weapon it needs to be made active after attack is stopped
-		//	if (Inventory != null && Inventory.GetItem(eInventorySlot.DistanceWeapon) != null && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-		//		SwitchWeapon(eActiveWeaponSlot.Distance);
-		//}
+        //	// Tolakram: If npc has a distance weapon it needs to be made active after attack is stopped
+        //	if (Inventory != null && Inventory.GetItem(eInventorySlot.DistanceWeapon) != null && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+        //		SwitchWeapon(eActiveWeaponSlot.Distance);
+        //}
 
-		/// <summary>
-		/// This method is called to drop loot after this mob dies
-		/// </summary>
-		/// <param name="killer">The killer</param>
-		public virtual void DropLoot(GameObject killer)
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+			if(Brain is StandardMobBrain standardMobBrain)
+            {
+				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
+				standardMobBrain.OnAttackedByEnemy(ad);
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+
+        /// <summary>
+        /// This method is called to drop loot after this mob dies
+        /// </summary>
+        /// <param name="killer">The killer</param>
+        public virtual void DropLoot(GameObject killer)
 		{
 			// TODO: mobs drop "a small chest" sometimes
 			ArrayList droplist = new ArrayList();
@@ -5343,6 +5353,7 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
+			/*
 			if (SpellTimer != null)
 			{
 				if (this == null || this.ObjectState != eObjectState.Active || !this.IsAlive || this.TargetObject == null || (this.TargetObject is GameLiving && this.TargetObject.ObjectState != eObjectState.Active || !(this.TargetObject as GameLiving).IsAlive))
@@ -5359,7 +5370,7 @@ namespace DOL.GS
 					SpellTimer.Start(interval);
 				}
 			}
-
+			*/
 			
 
 			if (m_runningSpellHandler != null)
