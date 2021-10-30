@@ -90,6 +90,19 @@ namespace DOL.GS.PropertyCalc
 				return hp;
 
             }
+			else if (living is TurretPet ani)
+            {
+				int hp = 1;
+				if (ani.Level < 2)
+				{
+					hp += ani.Level * 2;
+				}
+				else
+				{
+					hp = ani.Constitution * ani.Level;
+				}
+				return hp;
+			}
 			//else if (living is GamePet pet)
    //         {
 			//	int hp = 0;

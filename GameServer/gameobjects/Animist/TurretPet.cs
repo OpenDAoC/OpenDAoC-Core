@@ -22,6 +22,7 @@
  */
 
 using DOL.AI.Brain;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -42,6 +43,8 @@ namespace DOL.GS
 			get { return turretSpell; }
 			set { turretSpell = value; }
 		}
+
+		public override int Health { get => base.Health; set => base.Health = value; }
 
 		/// <summary>
 		/// Not all summoned turrets 'll throw ambient texts
@@ -75,9 +78,9 @@ namespace DOL.GS
 
             TargetObject = attackTarget;
             if (TargetObject.Realm == 0 || Realm == 0)
-                m_lastAttackTickPvE = m_CurrentRegion.Time;
+                m_lastAttackTickPvE = GameLoop.GameLoopTime;
             else
-                m_lastAttackTickPvP = m_CurrentRegion.Time;
+                m_lastAttackTickPvP = GameLoop.GameLoopTime;
 
             if (attackComponent.Attackers.Count == 0)
             {
@@ -102,6 +105,35 @@ namespace DOL.GS
         public override void StartInterruptTimer(AttackData attack, int duration)
 		{
 			return;
+		}
+
+		public override void AutoSetStats()
+		{
+			Strength = Properties.PET_AUTOSET_STR_BASE;
+			if (Strength < 1)
+				Strength = 1;
+
+			Constitution = NPCTemplate.Constitution;
+			if (Constitution < 1)
+				Constitution = 1;
+
+			Quickness = Properties.PET_AUTOSET_QUI_BASE;
+			if (Quickness < 1)
+				Quickness = 1;
+
+			Dexterity = Properties.PET_AUTOSET_DEX_BASE;
+			if (Dexterity < 1)
+				Dexterity = 1;
+
+			Intelligence = Properties.PET_AUTOSET_INT_BASE;
+			if (Intelligence < 1)
+				Intelligence = 1;
+
+			Empathy = 30;
+			Piety = 30;
+			Charisma = 30;
+
+			//base.AutoSetStats();
 		}
 	}
 }
