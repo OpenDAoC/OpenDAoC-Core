@@ -4134,14 +4134,18 @@ namespace DOL.GS
 			switch ((eObjectType)this.Object_Type)
 			{
 				case eObjectType.SlashingWeapon:
+					{
+						this.SPD_ABS = Util.Random(26, 39);
+						return;
+					}
 				case eObjectType.CrushingWeapon:
 					{
-						this.SPD_ABS = Util.Random(24, 42);
+						this.SPD_ABS = Util.Random(30, 40);
 						return;
 					}
 				case eObjectType.ThrustWeapon:
 					{
-						this.SPD_ABS = Util.Random(22, 38);
+						this.SPD_ABS = Util.Random(25, 37);
 						return;
 					}
 				case eObjectType.Fired:
@@ -4151,17 +4155,17 @@ namespace DOL.GS
 					}
 				case eObjectType.TwoHandedWeapon:
 					{
-						this.SPD_ABS = Util.Random(38, 55);
+						this.SPD_ABS = Util.Random(43, 51);
 						return;
 					}
 				case eObjectType.PolearmWeapon:
 					{
-						this.SPD_ABS = Util.Random(43, 60);
+						this.SPD_ABS = Util.Random(48, 56);
 						return;
 					}
 				case eObjectType.Staff:
 					{
-						this.SPD_ABS = Util.Random(30, 55);
+						this.SPD_ABS = Util.Random(30, 50);
 						return;
 					}
 				case eObjectType.MaulerStaff: //Maulers
@@ -4171,7 +4175,7 @@ namespace DOL.GS
 					}
 				case eObjectType.Longbow:
 					{
-						this.SPD_ABS = Util.Random(40, 55);
+						this.SPD_ABS = Util.Random(40, 52);
 						return;
 					}
 				case eObjectType.Crossbow:
@@ -4181,43 +4185,64 @@ namespace DOL.GS
 					}
 				case eObjectType.Flexible:
 					{
-						this.SPD_ABS = Util.Random(30, 47);
+						this.SPD_ABS = Util.Random(33, 39);
 						return;
 					}
 				case eObjectType.Sword:
-				case eObjectType.Hammer:
-				case eObjectType.Axe:
+					if (this.Hand == 1)
 					{
-						//28 to 58
+						this.SPD_ABS = Util.Random(46, 51);  // two handed
+						return;
+					}
+					else
+					{
+						this.SPD_ABS = Util.Random(25, 38); // one handed
+						return;
+					}
+				case eObjectType.Hammer:
+					{
 						if (this.Hand == 1)
 						{
-							this.SPD_ABS = Util.Random(46, 55);  // two handed
+							this.SPD_ABS = Util.Random(49, 52);  // two handed
+							return;
+						}
+						else
+						{
+							this.SPD_ABS = Util.Random(31, 39); // one handed
+							return;
+						}
+					}
+				case eObjectType.Axe:
+					{
+						if (this.Hand == 1)
+						{
+							this.SPD_ABS = Util.Random(49, 53);  // two handed
 							return;
 						}
 						else 
 						{
-							this.SPD_ABS = Util.Random(23, 45); // one handed
+							this.SPD_ABS = Util.Random(37, 40); // one handed
 							return;
 						}
 					}
 				case eObjectType.Spear:
 					{
-						this.SPD_ABS = Util.Random(39, 55);
+						this.SPD_ABS = Util.Random(43, 51);
 						return;
 					}
 				case eObjectType.CompositeBow:
 					{
-						this.SPD_ABS = Util.Random(37, 53);
+						this.SPD_ABS = Util.Random(40, 47);
 						return;
 					}
 				case eObjectType.LeftAxe:
 					{
-						this.SPD_ABS = Util.Random(24, 36);
+						this.SPD_ABS = Util.Random(27, 31);
 						return;
 					}
 				case eObjectType.HandToHand:
 					{
-						this.SPD_ABS = Util.Random(26, 37);
+						this.SPD_ABS = Util.Random(27, 37);
 						return;
 					}
 				case eObjectType.FistWraps:
@@ -4227,29 +4252,37 @@ namespace DOL.GS
 					}
 				case eObjectType.RecurvedBow:
 					{
-						this.SPD_ABS = Util.Random(40, 55);
+						this.SPD_ABS = Util.Random(45, 53);
 						return;
 					}
 				case eObjectType.Blades:
+					{
+						this.SPD_ABS = Util.Random(27, 39);
+						return;
+					}
 				case eObjectType.Blunt:
+					{
+						this.SPD_ABS = Util.Random(30, 40);
+						return;
+					}
 				case eObjectType.Piercing:
 					{
-						this.SPD_ABS = Util.Random(23, 45);
+						this.SPD_ABS = Util.Random(25, 36);
 						return;
 					}
 				case eObjectType.LargeWeapons:
 					{
-						this.SPD_ABS = Util.Random(37, 57);
+						this.SPD_ABS = Util.Random(47, 53);
 						return;
 					}
 				case eObjectType.CelticSpear:
 					{
-						this.SPD_ABS = Util.Random(33, 58);
+						this.SPD_ABS = Util.Random(40, 56);
 						return;
 					}
 				case eObjectType.Scythe:
 					{
-						this.SPD_ABS = Util.Random(38, 55);
+						this.SPD_ABS = Util.Random(40, 53);
 						return;
 					}
 				case eObjectType.Shield:
@@ -5281,7 +5314,7 @@ namespace DOL.GS
 							this.Hand = 2; // allow left hand
 							this.Item_Type = Slot.LEFTHAND;
 						}
-						else if (this.SPD_ABS < 27)
+						else if (this.SPD_ABS < 29)
 						{
 							name = "Stiletto";
 							model = 456;
