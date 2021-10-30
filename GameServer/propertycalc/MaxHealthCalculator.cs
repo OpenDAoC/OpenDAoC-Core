@@ -77,6 +77,40 @@ namespace DOL.GS.PropertyCalc
 
 				//todo : use material too to calculate maxhealth
 			}
+			else if (living is TheurgistPet theu)
+            {
+				int hp = 1;
+				if(theu.Level < 10)
+                {
+					hp += theu.Level * 2;
+                } else
+                {
+					hp = theu.Constitution * theu.Level * 10 / 44;
+                }
+				return hp;
+
+            }
+			//else if (living is GamePet pet)
+   //         {
+			//	int hp = 0;
+
+			//	if (living.Level < 10)
+			//	{
+			//		hp = living.Level * 20 + 20 + living.BaseBuffBonusCategory[(int)property];  // default
+			//	}
+			//	else
+			//	{
+			//		// approx to original formula, thx to mathematica :)
+			//		hp = (int)(50 + 0.548331 * living.Level * living.Level) + living.BaseBuffBonusCategory[(int)property];
+			//		if (living.Level < 25)
+			//			hp += 20;
+			//	}
+
+			//	int basecon = (living as GameNPC).Constitution;
+			//	int conmod = 20; // at level 50 +75 con ~= +300 hit points
+
+
+			//}
 			else if (living is GameNPC)
 			{
 				int hp = 0;
