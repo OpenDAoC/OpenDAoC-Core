@@ -3323,7 +3323,7 @@ namespace DOL.GS
 				case eObjectType.Magical:
 					return (eInventorySlot)MagicalSlots[Util.Random(0, MagicalSlots.Length - 1)];
 				case eObjectType.Instrument:
-					return (eInventorySlot)Util.Random(Slot.TWOHAND, Slot.RANGED);
+					return (eInventorySlot)Slot.RANGED;
 			}
 			return eInventorySlot.FirstEmptyBackpack;
 		}
