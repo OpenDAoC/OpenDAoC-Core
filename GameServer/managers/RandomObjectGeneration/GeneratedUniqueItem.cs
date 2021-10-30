@@ -3983,7 +3983,10 @@ namespace DOL.GS
 				case eObjectType.Sword:
 				case eObjectType.Axe:
 				case eObjectType.Hammer:
-					return (eInventorySlot)Util.Random(Slot.RIGHTHAND, Slot.TWOHAND);
+					if (Util.Random(100) >= 50)
+						return (eInventorySlot)Slot.RIGHTHAND;
+					else
+						return (eInventorySlot)Slot.TWOHAND;
 				//left
 				case eObjectType.LeftAxe:
 				case eObjectType.Shield:
