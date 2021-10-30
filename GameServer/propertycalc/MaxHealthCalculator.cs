@@ -103,28 +103,48 @@ namespace DOL.GS.PropertyCalc
 				}
 				return hp;
 			}
-			//else if (living is GamePet pet)
-   //         {
-			//	int hp = 0;
+            else if (living is GamePet pet)
+            {
+				int hp = 0;
 
-			//	if (living.Level < 10)
-			//	{
-			//		hp = living.Level * 20 + 20 + living.BaseBuffBonusCategory[(int)property];  // default
-			//	}
-			//	else
-			//	{
-			//		// approx to original formula, thx to mathematica :)
-			//		hp = (int)(50 + 0.548331 * living.Level * living.Level) + living.BaseBuffBonusCategory[(int)property];
-			//		if (living.Level < 25)
-			//			hp += 20;
-			//	}
+				if (living.Level < 10)
+				{
+					hp = living.Level * 20 + 20 + living.BaseBuffBonusCategory[(int)property];  // default
+				}
+				else
+				{
+					// approx to original formula, thx to mathematica :)
+					hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.BaseBuffBonusCategory[(int)property];
+					if (living.Level < 25)
+						hp += 20;
+				}
 
-			//	int basecon = (living as GameNPC).Constitution;
-			//	int conmod = 20; // at level 50 +75 con ~= +300 hit points
+				int basecon = (living as GameNPC).Constitution;
+				int conmod = 20; // at level 50 +75 con ~= +300 hit points
 
+				// first adjust hitpoints based on base CON
 
-			//}
-			else if (living is GameNPC)
+				if (basecon != ServerProperties.Properties.GAMENPC_BASE_CON)
+				{
+					hp = Math.Max(1, hp + ((basecon - ServerProperties.Properties.GAMENPC_BASE_CON) * ServerProperties.Properties.GAMENPC_HP_GAIN_PER_CON));
+				}
+
+				// Now adjust for buffs
+
+				// adjust hit points based on constitution difference from base con
+				// modified from http://www.btinternet.com/~challand/hp_calculator.htm
+				int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
+
+				// 50% buff / debuff cap
+				if (conhp > hp * 1.5)
+					conhp = (int)(hp * 1.5);
+				else if (conhp < hp / 2)
+					conhp = hp / 2;
+
+				conhp /= 3;
+				return conhp;
+			}
+            else if (living is GameNPC)
 			{
 				int hp = 0;
 
