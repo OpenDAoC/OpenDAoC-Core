@@ -70,16 +70,16 @@ namespace DOL.GS
 		public const ushort ROG_TOA_STAT_CHANCE = 0;
 		
 		// Item chance to get stat bonus
-		public const ushort ROG_ITEM_STAT_CHANCE = 50;
+		public const ushort ROG_ITEM_STAT_CHANCE = 45;
 		
 		// Item chance to get resist bonus
-		public const ushort ROG_ITEM_RESIST_CHANCE = 43;
+		public const ushort ROG_ITEM_RESIST_CHANCE = 50;
 
 		//item chance to get skills
 		public const ushort ROG_ITEM_SKILL_CHANCE = 35;
 
 		// Item chance to get All skills stat
-		public const ushort ROG_STAT_ALLSKILL_CHANCE = 5;
+		public const ushort ROG_STAT_ALLSKILL_CHANCE = 2;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 50;
@@ -702,6 +702,7 @@ namespace DOL.GS
 			return true;
 		}
 
+		
 		private bool SkillIsValidForArmor(eProperty property)
 		{
 			int level = this.Level;
