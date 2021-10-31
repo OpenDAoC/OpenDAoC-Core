@@ -647,7 +647,7 @@ namespace DOL.GS {
                     }
                     break;
                 case "wizard hat":
-                    if (item.Item_Type != Slot.HELM)
+                    if (item.Item_Type != Slot.HELM || item.Object_Type != (int)eObjectType.Cloth)
                     {
                         SendNotValidMessage(player);
                         break;
