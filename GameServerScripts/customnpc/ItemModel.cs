@@ -4230,11 +4230,21 @@ namespace DOL.GS {
 
                 //flex
                 case "snakecharmer's whip":
+                    if (item.Object_Type != (int)eObjectType.Flexible)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2119;
                     break;
 
                 case "scorched whip":
+                    if (item.Object_Type != (int)eObjectType.Flexible)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -4251,6 +4261,11 @@ namespace DOL.GS {
                     break;
 
                 case "dragonsworn whip":
+                    if (item.Object_Type != (int)eObjectType.Flexible)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
