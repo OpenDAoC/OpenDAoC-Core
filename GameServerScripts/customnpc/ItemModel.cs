@@ -4287,82 +4287,232 @@ namespace DOL.GS {
                 #region 2h wep
 
                 case "pickaxe":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2983;
                     break;
 
                 //axe
                 case "malice axe 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2110;
                     break;
                 case "scorched axe 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3705;
                     break;
                 case "magma axe 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2217;
                     break;
 
                 //spears
                 case "golden spear 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1662;
                     break;
                 case "dragon spear 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     modelIDToAssign = 3819;
                     break;
                 case "scorched spear 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3714;
                     break;
                 case "trident spear 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2191;
                     break;
 
                 //hammers
                 case "bruiser hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2113;
                     break;
                 case "battler hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3448;
                     break;
                 case "malice hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3449;
                     break;
                 case "scorched hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3704;
                     break;
                 case "magma hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2215;
                     break;
 
                 //swords
                 case "battler sword 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1670;
                     break;
                 case "scorched sword 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3701;
                     break;
                 case "katana 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2208;
                     break;
                 case "khopesh 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2196;
                     break;
                 case "hilt 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch (player.Realm)
                     {
@@ -4380,16 +4530,41 @@ namespace DOL.GS {
 
                 //thrust
                 case "scorched thrust 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3700;
                     break;
                 case "dragon thrust 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     modelIDToAssign = 3817;
                     break;
 
                 //staffs
                 case "traldor's oracle":
+                    if (item.Object_Type == (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1659;
                     break;
