@@ -102,6 +102,11 @@ namespace DOL.GS {
             {
                 #region helms
                 case "dragonslayer helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -184,6 +189,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "dragonsworn helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -224,6 +234,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "crown of zahur":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -242,6 +257,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "crown of zahur variant":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -260,6 +280,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "winged helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -278,6 +303,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "oceanus helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -359,6 +389,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -440,6 +475,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -521,6 +561,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -602,6 +647,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "wizard hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch (player.Realm)
                     {
@@ -620,6 +670,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "robin hood hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch (player.Realm)
                     {
@@ -635,34 +690,74 @@ namespace DOL.GS {
                     }
                     break;
                 case "fur cap":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1283;
                     break;
                 case "tarboosh":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1284;
                     break;
                 case "leaf hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1285;
                     break;
                 case "wing hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1286;
                     break;
                 case "jester hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1287;
                     break;
                 case "stag helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1288;
                     break;
                 case "wolf helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1289;
                     break;
                 case "candle hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 4169;
                     break;
@@ -670,6 +765,11 @@ namespace DOL.GS {
 
                 #region torsos
                 case "dragonslayer breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -752,6 +852,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "dragonsworn breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -4570,6 +4675,11 @@ namespace DOL.GS {
             }
 
             return true;
+        }
+
+        private void SendNotValidMessage(GamePlayer player)
+        {
+            SendReply(player, "This skin is not valid for this item type. Please try a different combo.");
         }
 
 
