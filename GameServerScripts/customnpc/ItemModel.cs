@@ -1732,6 +1732,11 @@ namespace DOL.GS {
 
                 #region sleeves
                 case "dragonslayer sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1814,6 +1819,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1851,6 +1861,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1888,6 +1903,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1925,6 +1945,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1962,6 +1987,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1989,6 +2019,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2016,6 +2051,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2045,14 +2085,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "foppish sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1732;
                     break;
                 case "arms of the wind":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1733;
                     break;
                 case "oceanus sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2081,6 +2136,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2109,6 +2169,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2137,6 +2202,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
