@@ -2238,6 +2238,11 @@ namespace DOL.GS {
 
                 #region pants
                 case "dragonslayer pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2320,6 +2325,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2357,6 +2367,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2394,6 +2409,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2431,6 +2451,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2468,6 +2493,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2495,6 +2525,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2522,6 +2557,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2551,14 +2591,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "wing's dive":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1767;
                     break;
                 case "alvarus' leggings":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1744;
                     break;
                 case "oceanus pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2587,6 +2642,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2615,6 +2675,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2643,6 +2708,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
