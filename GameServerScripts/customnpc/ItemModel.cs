@@ -894,6 +894,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -931,6 +936,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -968,6 +978,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1005,6 +1020,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1042,6 +1062,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1069,6 +1094,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1096,6 +1126,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1125,6 +1160,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "eirene's chest":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1143,6 +1183,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "naliah's robe":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1161,6 +1206,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "guard of valor":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1179,6 +1229,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "golden scarab vest":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1197,6 +1252,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "oceanus breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1278,6 +1338,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1359,6 +1424,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1440,6 +1510,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1521,6 +1596,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "class epic chestpiece":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch ((eCharacterClass)player.CharacterClass.ID)
                     {
