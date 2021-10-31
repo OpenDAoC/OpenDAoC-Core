@@ -4339,7 +4339,7 @@ namespace DOL.GS
 
             if (this is GamePet pet)
             {
-				if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+				if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 				{
 					var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
 					foreach (var ownerEffect in ownerEffects)
