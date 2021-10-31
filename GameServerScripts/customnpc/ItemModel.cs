@@ -5015,6 +5015,11 @@ namespace DOL.GS {
                 //case "dragonslayer harp": probably doesn't work
                 //     break;
                 case "class epic harp":
+                    if (item.Object_Type != (int)eObjectType.Instrument)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Bard)
                     {
@@ -5030,10 +5035,23 @@ namespace DOL.GS {
                     }
                     break;
                 case "labyrinth harp":
+                    if (item.Object_Type != (int)eObjectType.Instrument)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3688;
                     break;
                 case "class epic bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Scout)
                     {
@@ -5053,14 +5071,41 @@ namespace DOL.GS {
                     }
                     break;
                 case "fool's bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow &&
+                        item.Object_Type != (int)eObjectType.Fired
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1666;
                     break;
                 case "braggart's bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow &&
+                        item.Object_Type != (int)eObjectType.Fired
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1667;
                     break;
                 case "labyrinth bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow &&
+                        item.Object_Type != (int)eObjectType.Fired
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3706;
                     break;
