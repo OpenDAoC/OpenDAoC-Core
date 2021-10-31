@@ -13,7 +13,7 @@ namespace DOL.GS
 
         public override int Health { get => base.Health; set => base.Health = value; }
 
-        public override int MaxHealth => Constitution * 10;
+        //public override int MaxHealth => Constitution * 10;
 
         /// <summary>
         /// not each summoned pet 'll fire ambiant sentences

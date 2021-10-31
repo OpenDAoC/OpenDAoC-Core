@@ -602,7 +602,7 @@ namespace DOL.GS
 						else
 						{
 							// in all other cases client gets 10min to get wether in charscreen or playing state
-							if (client.PingTime + 10 * 60 * 10000000L < DateTime.Now.Ticks)
+							if (client.PingTime + 10 * 60 * 4000000L < DateTime.Now.Ticks)
 							{
 								if (log.IsWarnEnabled)
 									log.Warn("Hard timeout for client " + client.Account.Name + " (" + client.ClientState + ")");

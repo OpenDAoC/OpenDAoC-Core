@@ -878,7 +878,7 @@ namespace DOL.GS {
             if (Bonus1Type != 0 &&
                 Bonus1 != 0)
             {
-                if (Bonus1Type < 9)
+                if (Bonus1Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus1 * .6667;
                 }
@@ -910,7 +910,7 @@ namespace DOL.GS {
             if (Bonus2Type != 0 &&
                 Bonus2 != 0)
             {
-                if (Bonus2Type < 9)
+                if (Bonus2Type < 9 || Bonus2Type == 156)
                 {
                     totalUti += Bonus2 * .6667;
                 }
@@ -942,7 +942,7 @@ namespace DOL.GS {
             if (Bonus3Type != 0 &&
                 Bonus3 != 0)
             {
-                if (Bonus3Type < 9)
+                if (Bonus3Type < 9 || Bonus3Type == 156)
                 {
                     totalUti += Bonus3 * .6667;
                 }
@@ -974,7 +974,7 @@ namespace DOL.GS {
             if (Bonus4Type != 0 &&
                 Bonus4 != 0)
             {
-                if (Bonus4Type < 9)
+                if (Bonus4Type < 9 || Bonus4Type == 156)
                 {
                     totalUti += Bonus4 * .6667;
                 }
@@ -1006,7 +1006,7 @@ namespace DOL.GS {
             if (Bonus5Type != 0 &&
                 Bonus5 != 0)
             {
-                if (Bonus5Type < 9)
+                if (Bonus5Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus5 * .6667;
                 }
@@ -1038,7 +1038,7 @@ namespace DOL.GS {
             if (Bonus6Type != 0 &&
                 Bonus6 != 0)
             {
-                if (Bonus6Type < 9)
+                if (Bonus6Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus6 * .6667;
                 }
@@ -1070,7 +1070,7 @@ namespace DOL.GS {
             if (Bonus7Type != 0 &&
                 Bonus7 != 0)
             {
-                if (Bonus7Type < 9)
+                if (Bonus7Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus7 * .6667;
                 }
@@ -1101,7 +1101,7 @@ namespace DOL.GS {
             if (Bonus8Type != 0 &&
                 Bonus8 != 0)
             {
-                if (Bonus8Type < 9)
+                if (Bonus8Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus8 * .6667;
                 }
@@ -1132,7 +1132,7 @@ namespace DOL.GS {
             if (Bonus9Type != 0 &&
                 Bonus9 != 0)
             {
-                if (Bonus9Type < 9)
+                if (Bonus9Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus9 * .6667;
                 }
@@ -1163,7 +1163,7 @@ namespace DOL.GS {
             if (Bonus10Type != 0 &&
                 Bonus10 != 0)
             {
-                if (Bonus10Type < 9)
+                if (Bonus10Type < 9 || Bonus1Type == 156)
                 {
                     totalUti += Bonus10 * .6667;
                 }
@@ -1194,7 +1194,7 @@ namespace DOL.GS {
             if (ExtraBonusType != 0 &&
                 ExtraBonus != 0)
             {
-                if (ExtraBonusType < 9)
+                if (ExtraBonusType < 9 || Bonus1Type == 156)
                 {
                     totalUti += ExtraBonus * .6667;
                 }
@@ -1243,7 +1243,7 @@ namespace DOL.GS {
             if (BonusType != 0 &&
                 Bonus != 0)
             {
-                if (BonusType < 9)
+                if (BonusType < 9 || BonusType == 156)
                 {
                     totalUti += Bonus * .6667;
                 }
