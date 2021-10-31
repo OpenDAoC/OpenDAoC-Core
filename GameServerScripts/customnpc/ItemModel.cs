@@ -3944,50 +3944,133 @@ namespace DOL.GS {
 
                 #region 1h wep
                 case "traitor's dagger 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND && 
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1668;
                     break;
                 case "traitor's axe 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3452;
                     break;
                 case "croc tooth dagger 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1669;
                     break;
                 case "croc tooth axe 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3451;
                     break;
                 case "golden spear 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1807;
                     break;
                 case "malice axe 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2109;
                     break;
                 case "malice hammer 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3447;
                     break;
                 case "bruiser hammer 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1671;
                     break;
                 case "battler hammer 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND ||
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3453;
                     break;
                 case "battler sword 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2112;
                     break;
                 case "scepter of the meritorious":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1672;
                     break;
                 case "hilt 1h":
+                    if (item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch (player.Realm)
                     {
@@ -4003,34 +4086,69 @@ namespace DOL.GS {
                     }
                     break;
                 case "rolling pin":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 3458;
                     break;
                 case "wakazashi":
+                    if (item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND &&
+                        item.Type_Damage != (int)eDamageType.Thrust &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2209;
                     break;
                 case "turkey leg":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     modelIDToAssign = 3454;
                     break;
-                case "key":
-                    price = champion;
-                    modelIDToAssign = 3455;
-                    break;
                 case "cleaver":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 654;
                     break;
                 case "khopesh":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2195;
                     break;
-                case "torch":
-                    price = champion;
-                    modelIDToAssign = 3471;
-                    break;
                 case "stein":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     switch (player.Realm)
                     {
@@ -4046,6 +4164,13 @@ namespace DOL.GS {
                     }
                     break;
                 case "hot metal rod":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     modelIDToAssign = 2984;
                     break;
