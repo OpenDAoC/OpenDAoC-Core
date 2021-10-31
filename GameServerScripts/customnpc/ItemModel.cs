@@ -3250,6 +3250,11 @@ namespace DOL.GS {
 
                 #region gloves
                 case "dragonslayer gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3332,6 +3337,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3369,6 +3379,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3406,6 +3421,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3443,6 +3463,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3480,6 +3505,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3507,6 +3537,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3534,6 +3569,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3563,14 +3603,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "maddening scalars":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1746;
                     break;
                 case "sharkskin gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1734;
                     break;
                 case "oceanus gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3599,6 +3654,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3627,6 +3687,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3655,6 +3720,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
