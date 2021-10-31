@@ -4177,11 +4177,21 @@ namespace DOL.GS {
 
                 //hand to hand
                 case "snakecharmer's fist":
+                    if (item.Object_Type != (int)eObjectType.HandToHand)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2469;
                     break;
 
                 case "scorched fist":
+                    if (item.Object_Type != (int)eObjectType.HandToHand)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -4198,6 +4208,11 @@ namespace DOL.GS {
                     break;
 
                 case "dragonsworn fist":
+                    if (item.Object_Type != (int)eObjectType.HandToHand)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
