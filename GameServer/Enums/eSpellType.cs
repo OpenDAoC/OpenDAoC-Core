@@ -193,6 +193,7 @@ namespace DOL.GS
         WeaponSkillConstitutionDebuff = 186,
         EnduranceHeal = 187,
         PowerHeal = 188,
+        FatigueConsumptionDebuff = 189,
         Null = 200
 
 
