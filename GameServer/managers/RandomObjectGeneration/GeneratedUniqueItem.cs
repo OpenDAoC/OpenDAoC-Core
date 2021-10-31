@@ -692,8 +692,6 @@ namespace DOL.GS
 						charClass == eCharacterClass.Ranger ||
 						charClass == eCharacterClass.Blademaster ||
 						charClass == eCharacterClass.Hero ||
-						charClass == eCharacterClass.Valewalker ||
-						charClass == eCharacterClass.Skald ||
 						charClass == eCharacterClass.Hunter ||
 						charClass == eCharacterClass.Berserker ||
 						charClass == eCharacterClass.Warrior ||
@@ -2388,35 +2386,112 @@ namespace DOL.GS
 				case eProperty.Skill_PhantasmalWail:
 				case eProperty.Skill_Hexing:
 				case eProperty.Skill_Cursing:
-				case eProperty.Skill_Witchcraft:
 					return false;
 
 				case eProperty.Skill_Arboreal:
+					if (charClass != eCharacterClass.Valewalker &&
+						charClass != eCharacterClass.Animist)
+					{
+						return false;
+					}
+					goto case eProperty.Skill_Witchcraft;
+
+
+				case eProperty.Skill_Matter:
 				case eProperty.Skill_Body:
-				case eProperty.Skill_BoneArmy:
-				case eProperty.Skill_Cold:
-				case eProperty.Skill_Creeping:
-				
-				case eProperty.Skill_Darkness:
-				case eProperty.Skill_Death_Servant:
-				case eProperty.Skill_DeathSight:
+					{
+						if (charClass != eCharacterClass.Cabalist &&
+							charClass != eCharacterClass.Sorcerer)
+						{
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+
 				case eProperty.Skill_Earth:
-				case eProperty.Skill_Enchantments:				
-				case eProperty.Skill_Fire:				
+				case eProperty.Skill_Cold:
+					{
+						if (charClass != eCharacterClass.Theurgist &&
+							charClass != eCharacterClass.Wizard)
+						{
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+
+				case eProperty.Skill_Suppression:
+				case eProperty.Skill_Darkness:
+					{
+						if (charClass != eCharacterClass.Spiritmaster &&
+							charClass != eCharacterClass.Runemaster &&
+							charClass != eCharacterClass.Bonedancer)
+						{
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+
 				case eProperty.Skill_Light:
 				case eProperty.Skill_Mana:
-				case eProperty.Skill_Matter:
-				case eProperty.Skill_Mentalism:
-				case eProperty.Skill_Mind:
-				case eProperty.Skill_Pain_working:				
-				case eProperty.Skill_Runecarving:				
-				case eProperty.Skill_Spirit:
-				case eProperty.Skill_Summoning:
-				case eProperty.Skill_Suppression:
-				case eProperty.Skill_Verdant:
-				case eProperty.Skill_Void:
-				case eProperty.Skill_Wind:
 					{
+						if (charClass != eCharacterClass.Enchanter &&
+							charClass != eCharacterClass.Eldritch &&
+							charClass != eCharacterClass.Mentalist)
+						{
+							return false;
+						}
+						goto case eProperty.Skill_Witchcraft;
+					}
+
+
+				case eProperty.Skill_Mind:
+					if (charClass != eCharacterClass.Sorcerer) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Spirit:
+					if (charClass != eCharacterClass.Cabalist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Wind:
+					if (charClass != eCharacterClass.Theurgist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Fire:
+					if (charClass != eCharacterClass.Wizard) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Death_Servant:
+				case eProperty.Skill_DeathSight:
+				case eProperty.Skill_Pain_working:
+					if (charClass != eCharacterClass.Necromancer) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+
+				case eProperty.Skill_Summoning:
+					if (charClass != eCharacterClass.Spiritmaster) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Runecarving:
+					if (charClass != eCharacterClass.Runemaster) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_BoneArmy:
+					if (charClass != eCharacterClass.Bonedancer) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+
+				case eProperty.Skill_Void:
+					if (charClass != eCharacterClass.Eldritch) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Enchantments:
+					if (charClass != eCharacterClass.Enchanter) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Mentalism:
+					if (charClass != eCharacterClass.Mentalist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+				case eProperty.Skill_Creeping:
+				case eProperty.Skill_Verdant:
+					if (charClass != eCharacterClass.Animist) { return false; }
+					goto case eProperty.Skill_Witchcraft;
+
+				case eProperty.Skill_Witchcraft:
+					{
+						if (property == eProperty.Skill_Witchcraft)
+						{
+							return false; //we don't want actual Witchcraft skills
+						}
 						if (type == eObjectType.Staff && this.Description != "friar")
 							return true;
 						break;
