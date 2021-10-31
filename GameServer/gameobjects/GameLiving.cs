@@ -4319,29 +4319,39 @@ namespace DOL.GS
 
             bool effectRemoved = false;
 
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-            {
-                var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
+			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+			{
+				var effects = effectListComponent.Effects[eEffect.MovementSpeedBuff];/*.Where(e => e.IsDisabled == false).FirstOrDefault();*/
 
-				if (!isAttacker && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
-				{
-					return false;
-				}
-				else
-				{
-					EffectService.RequestCancelEffect(effect);
-					effectRemoved = true;
+				foreach (var effect in effects)
+				{ 
+					if (!isAttacker && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+					{
+						effectRemoved = false;
+					}
+					else
+					{
+						EffectService.RequestCancelEffect(effect);
+						effectRemoved = true;
+					}
 				}
             }
 
             if (this is GamePet pet)
             {
-                var ownerEffect = EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
-                if (ownerEffect != null)
-                {
-                    EffectService.RequestCancelEffect(ownerEffect);
-                    effectRemoved = true;
-                }
+                var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
+				foreach (var ownerEffect in ownerEffects)
+				{
+					if (!isAttacker && ownerEffect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+					{
+						effectRemoved = false;
+					}
+					else
+					{
+						EffectService.RequestCancelEffect(ownerEffect);
+						effectRemoved = true;
+					}
+				}
             }
 
             return effectRemoved;
