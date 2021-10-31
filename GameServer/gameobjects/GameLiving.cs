@@ -4339,17 +4339,20 @@ namespace DOL.GS
 
             if (this is GamePet pet)
             {
-                var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
-				foreach (var ownerEffect in ownerEffects)
+				if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 				{
-					if (!isAttacker && ownerEffect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+					var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
+					foreach (var ownerEffect in ownerEffects)
 					{
-						effectRemoved = false;
-					}
-					else
-					{
-						EffectService.RequestCancelEffect(ownerEffect);
-						effectRemoved = true;
+						if (!isAttacker && ownerEffect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+						{
+							effectRemoved = false;
+						}
+						else
+						{
+							EffectService.RequestCancelEffect(ownerEffect);
+							effectRemoved = true;
+						}
 					}
 				}
             }
