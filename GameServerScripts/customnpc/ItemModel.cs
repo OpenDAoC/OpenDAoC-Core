@@ -4718,6 +4718,7 @@ namespace DOL.GS {
 
                 case "class epic 1h":
                     price = champion;
+                    item.IsTradable = false;
                     switch ((eCharacterClass)player.CharacterClass.ID)
                     {
                         //alb
@@ -5079,6 +5080,7 @@ namespace DOL.GS {
 
                 case "class epic 2h":
                     price = champion;
+                    item.IsTradable = false;
                     switch ((eCharacterClass)player.CharacterClass.ID)
                     {
                         //alb
