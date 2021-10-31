@@ -2744,6 +2744,11 @@ namespace DOL.GS {
 
                 #region boots
                 case "dragonslayer boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2826,6 +2831,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2863,6 +2873,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2900,6 +2915,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2937,6 +2957,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2974,6 +2999,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3001,6 +3031,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3028,6 +3063,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3057,14 +3097,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "enyalio's boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2488;
                     break;
                 case "flamedancer's boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1731;
                     break;
                 case "oceanus boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3093,6 +3148,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3121,6 +3181,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3149,6 +3214,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
