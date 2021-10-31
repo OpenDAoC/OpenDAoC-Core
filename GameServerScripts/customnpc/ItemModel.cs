@@ -3944,7 +3944,7 @@ namespace DOL.GS {
 
                 #region 1h wep
                 case "traitor's dagger 1h":
-                    if ((item.Item_Type != Slot.RIGHTHAND && 
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
                         item.Item_Type != Slot.LEFTHAND) &&
                         item.Type_Damage != (int)eDamageType.Thrust)
                     {
@@ -4560,7 +4560,7 @@ namespace DOL.GS {
 
                 //staffs
                 case "traldor's oracle":
-                    if (item.Object_Type == (int)eObjectType.Staff)
+                    if (item.Object_Type != (int)eObjectType.Staff)
                     {
                         SendNotValidMessage(player);
                         break;
@@ -4569,46 +4569,96 @@ namespace DOL.GS {
                     modelIDToAssign = 1659;
                     break;
                 case "trident of the gods":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1660;
                     break;
                 case "tartaros gift":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1658;
                     break;
                 case "dragonsworn staff":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     modelIDToAssign = 3827;
                     break;
                 case "scorched staff":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3710;
                     break;
 
                 //scythes
                 case "dragonsworn scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3825;
                     break;
                 case "magma scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2213;
                     break;
                 case "scorched scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3708;
                     break;
                 case "scythe of kings":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3450;
                     break;
                 case "snakechamer's scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2111;
                     break;
 
                 //polearms
                 case "dragonsworn pole":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -4624,10 +4674,20 @@ namespace DOL.GS {
                     }
                     break;
                 case "pole of kings":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1661;
                     break;
                 case "scorched pole":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -4643,6 +4703,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "golden pole":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1662;
                     break;
@@ -5272,69 +5337,101 @@ namespace DOL.GS {
 
                 #region shields
                 case "aten's shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1663;
                     break;
                 case "cyclop's eye":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1664;
                     break;
                 case "shield of khaos":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1665;
                     break;
                 case "oceanus shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
                     {
-                        price = toageneric;
-                        if (item.Type_Damage == 1)//small shield
-                        {
-                            modelIDToAssign = 2192;
-                        }
-                        else if (item.Type_Damage == 2)
-                        {
-                            modelIDToAssign = 2193;
-                        }
-                        else if (item.Type_Damage == 3)
-                        {
-                            modelIDToAssign = 2194;
-                        }
+                        SendNotValidMessage(player);
                         break;
                     }
+                    price = toageneric;
+                    if (item.Type_Damage == 1)//small shield
+                    {
+                        modelIDToAssign = 2192;
+                    }
+                    else if (item.Type_Damage == 2)
+                    {
+                        modelIDToAssign = 2193;
+                    }
+                    else if (item.Type_Damage == 3)
+                    {
+                        modelIDToAssign = 2194;
+                    }
+                    break;
+
                 case "aerus shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
                     {
-                        price = toageneric;
-                        if (item.Type_Damage == 1)//small shield
-                        {
-                            modelIDToAssign = 2210;
-                        }
-                        else if (item.Type_Damage == 2)
-                        {
-                            modelIDToAssign = 2211;
-                        }
-                        else if (item.Type_Damage == 3)
-                        {
-                            modelIDToAssign = 2212;
-                        }
+                        SendNotValidMessage(player);
                         break;
                     }
+                    price = toageneric;
+                    if (item.Type_Damage == 1)//small shield
+                    {
+                        modelIDToAssign = 2210;
+                    }
+                    else if (item.Type_Damage == 2)
+                    {
+                        modelIDToAssign = 2211;
+                    }
+                    else if (item.Type_Damage == 3)
+                    {
+                        modelIDToAssign = 2212;
+                    }
+                    break;
+
                 case "magma shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
                     {
-                        price = toageneric;
-                        if (item.Type_Damage == 1)//small shield
-                        {
-                            modelIDToAssign = 2218;
-                        }
-                        else if (item.Type_Damage == 2)
-                        {
-                            modelIDToAssign = 2219;
-                        }
-                        else if (item.Type_Damage == 3)
-                        {
-                            modelIDToAssign = 2220;
-                        }
+                        SendNotValidMessage(player);
                         break;
                     }
+                    price = toageneric;
+                    if (item.Type_Damage == 1)//small shield
+                    {
+                        modelIDToAssign = 2218;
+                    }
+                    else if (item.Type_Damage == 2)
+                    {
+                        modelIDToAssign = 2219;
+                    }
+                    else if (item.Type_Damage == 3)
+                    {
+                        modelIDToAssign = 2220;
+                    }
+                    break;
+
                 case "minotaur shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3554;
                     break;
