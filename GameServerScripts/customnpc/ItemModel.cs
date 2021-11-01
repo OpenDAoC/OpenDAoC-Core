@@ -6198,6 +6198,7 @@ namespace DOL.GS {
                                     "[Battler Sword 1h](" + artifact + " RPs)\n" +
                                     "[Khopesh](" + epic + " RPs)\n" +
                                     "[Cleaver](" + epic + " RPs)\n" +
+                                    "[Wakazashi](" + epic + " RPs)\n" +
                                     "");
                                 break;
                         }
