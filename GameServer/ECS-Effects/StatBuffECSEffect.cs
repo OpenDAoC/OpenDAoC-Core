@@ -36,6 +36,8 @@ namespace DOL.GS
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Buffing {prop.ToString()}");
+                    if (EffectType == eEffect.EnduranceRegenBuff)
+                        Effectiveness = 1;
 
                     if (EffectType == eEffect.MovementSpeedBuff)
                     {
@@ -81,6 +83,9 @@ namespace DOL.GS
             }
             else
             {
+                if (EffectType == eEffect.EnduranceRegenBuff)
+                    Effectiveness = 1;
+
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Canceling {prop.ToString()}");
