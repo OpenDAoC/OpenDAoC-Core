@@ -102,8 +102,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected bool m_startReuseTimer = true;
 
-		private long _castStartTick;		
-
+		private long _castStartTick;
+		public long CastStartTick { get { return _castStartTick; } }
 		public bool StartReuseTimer
 		{
 			get { return m_startReuseTimer; }
