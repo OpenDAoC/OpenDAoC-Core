@@ -130,10 +130,19 @@ namespace DOL.GS
                 return;
             }
 
+            bool usingOH = false;
             if (leftHandSwingCount > 0)
             {
+                if (mainWeapon.Object_Type == (int)eObjectType.HandToHand || leftWeapon?.Object_Type == (int)eObjectType.HandToHand || mainWeapon.Object_Type == (int)eObjectType.TwoHandedWeapon)
+                    usingOH = false;
+                else
+                    usingOH = true;
+
+                if (owner is GameNPC)
+                    usingOH = false;
+
                 // both hands are used for attack
-                mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+                mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
                 if (style == null)
                 {
                     mainHandAD.AnimationId = -2; // virtual code for both weapons swing animation
@@ -141,11 +150,16 @@ namespace DOL.GS
             }
             else if (mainWeapon != null)
             {
-                bool usingOH = false;
                 if (leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
                 {
                     usingOH = true;
                 }
+
+                if (owner is GameNPC)
+                    usingOH = false;
+
+                if (mainWeapon.SlotPosition == (int)Slot.TWOHAND)
+                    usingOH = false;
 
                 // no left hand used, all is simple here
                 mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
@@ -157,12 +171,12 @@ namespace DOL.GS
                 if (style == null && Util.Chance(50))
                 {
                     mainWeapon = leftWeapon;
-                    mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+                    mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
                     mainHandAD.AnimationId = -1; // virtual code for left weapons swing animation
                 }
                 else
                 {
-                    mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, true);
+                    mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
                 }
             }
 
@@ -270,9 +284,9 @@ namespace DOL.GS
 
                             // Savage swings - main,left,main,left.
                             if (i % 2 == 0)
-                                leftHandAD = owner.attackComponent.MakeAttack(m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
+                                leftHandAD = owner.attackComponent.MakeAttack(m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, usingOH);
                             else
-                                leftHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, true);
+                                leftHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, usingOH);
 
                             //Notify the target of our attack (sends damage messages, should be before damage)
                             if (leftHandAD.Target != null)
