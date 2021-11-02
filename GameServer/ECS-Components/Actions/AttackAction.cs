@@ -271,6 +271,7 @@ namespace DOL.GS
                     }
                     else
                     {
+                        owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
                         Interval = 100;
                         return;
                     }
