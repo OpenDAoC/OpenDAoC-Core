@@ -215,6 +215,8 @@ namespace DOL.GS
                     //                         }
                 }
             }
+            else
+                owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
 
             //CMH
             // 1.89:
