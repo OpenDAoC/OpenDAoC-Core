@@ -164,6 +164,14 @@ namespace DOL.GS
 			set { m_isInBG = value; }
 		}
 
+		protected bool m_usedetailedcombatlog = false;
+
+		public bool UseDetailedCombatLog
+        {
+			get { return m_usedetailedcombatlog; }
+			set { m_usedetailedcombatlog = value;}
+        }
+
 		/// <summary>
 		/// Current warmap page
 		/// </summary>

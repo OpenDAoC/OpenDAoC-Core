@@ -1997,23 +1997,64 @@ namespace DOL.GS
             {
                 double evadeChance = owner.TryEvade(ad, lastAD, attackerConLevel, attackerCount);
                 ad.EvadeChance = evadeChance;
+                double randomEvadeNum = Util.CryptoNextDouble() * 10000;
+                randomEvadeNum = Math.Floor(randomEvadeNum);
+                randomEvadeNum /= 100;
+                evadeChance *= 100;
+                if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
+                {
+                    evadeAtk.Out.SendMessage($"Target chance to evade: {evadeChance} RandomNumber: {randomEvadeNum} EvadeSuccess? {evadeChance > randomEvadeNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
 
-                if (Util.ChanceDouble(evadeChance))
+                if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
+                {
+                    evadeTarg.Out.SendMessage($"Your chance to evade: {evadeChance} RandomNumber: {randomEvadeNum} EvadeSuccess? {evadeChance > randomEvadeNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+
+                if (evadeChance > randomEvadeNum)
                     return eAttackResult.Evaded;
 
                 if (ad.IsMeleeAttack)
                 {
                     double parryChance = owner.TryParry(ad, lastAD, attackerConLevel, attackerCount);
                     ad.ParryChance = parryChance;
+                    double ranParryNum = Util.CryptoNextDouble() * 10000;
+                    ranParryNum = Math.Floor(ranParryNum);
+                    ranParryNum /= 100;
+                    parryChance *= 100;
 
-                    if (Util.ChanceDouble(parryChance))
+                    if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
+                    {
+                        parryAtk.Out.SendMessage($"Target chance to parry: {parryChance} RandomNumber: {ranParryNum} ParrySuccess? {parryChance > ranParryNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+
+                    if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
+                    {
+                        parryTarg.Out.SendMessage($"Your chance to parry: {parryChance} RandomNumber: {ranParryNum} ParrySuccess? {parryChance > ranParryNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+
+                    if (parryChance > ranParryNum)
                         return eAttackResult.Parried;
                 }
 
                 double blockChance = owner.TryBlock(ad, lastAD, attackerConLevel, attackerCount, engage);
                 ad.BlockChance = blockChance;
+                double ranBlockNum = Util.CryptoNextDouble() * 10000;
+                ranBlockNum = Math.Floor(ranBlockNum);
+                ranBlockNum /= 100;
+                blockChance *= 100;
 
-                if (Util.ChanceDouble(blockChance))
+                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                {
+                    blockAttk.Out.SendMessage($"Target chance to parry: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+
+                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                {
+                    blockTarg.Out.SendMessage($"Your chance to parry: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+
+                if (blockChance > ranBlockNum)
                 {
                     // reactive effects on block moved to GamePlayer
                     return eAttackResult.Blocked;
