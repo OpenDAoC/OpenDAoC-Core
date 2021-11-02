@@ -24,7 +24,17 @@ namespace DOL.GS {
             Name = "Total: 0 DPS: 0";
             ResetArmorAndResists();
 
-            SendReply(player, "Hello, you can change my [armor] and [resistances] with ease, you need but ask. Right click me to reset them back to 0.");
+            SendReply(player, "Hello, you can change my [armor] and [resistances] with ease, you need but ask. Right click me to reset them back to 0. \n\n" +
+                "You can also whisper me with the following format: \n\n\n" +
+                "To change individual resists: /whisper <resist> <percent> (e.g., /whisper body 10) \n\n" +
+                "The resist percent must be between 0 and 70 \n\n" +
+                "Resist values accepted include: body, cold, crush, energy, heat, matter, slash, spirit, and thrust \n\n" +
+                "To change all resists: / whisper allresist <percent> (e.g., /whisper allresist 20) \n\n" +
+                "\n\n" +
+                "To change my individual defenses: /whisper <defense> <percent> (e.g., /whisper evade 30) \n\n" +
+                "Defense values accepted include: evade, block, parry \n\n" +
+                "To change all defenses: /whisper alldefense <percent> (e.g., /whisper alldefense 20) \n\n" + 
+                "");
             return true;
         }
 
@@ -91,6 +101,11 @@ namespace DOL.GS {
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Matter, double.Parse(splitText[1]), 1, false);
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Spirit, double.Parse(splitText[1]), 1, false);
                         break;
+                    case "alldefense":
+                        BlockChance = byte.Parse(splitText[1]);
+                        EvadeChance = byte.Parse(splitText[1]);
+                        ParryChance = byte.Parse(splitText[1]);
+                        break;
                 }
             }
             else
@@ -135,7 +150,7 @@ namespace DOL.GS {
 
                     case "resistances":
                         SendReply(player, "Whisper me the resist type and value you'd like. Example: '/whisper Body 10' will give me +10% Body resist. \n" +
-                            "Additionally, you can whisper me 'all #' to set all resistances to the number provided." +
+                            "Additionally, you can whisper me 'allresist #' to set all resistances to the number provided." +
                             "");
                         break;
                     default:
