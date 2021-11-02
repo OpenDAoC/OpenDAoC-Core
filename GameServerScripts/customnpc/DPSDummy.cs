@@ -24,7 +24,7 @@ namespace DOL.GS
             Name = "Total: 0 DPS: 0";
             ResetArmorAndResists();
 
-            SendReply(player, "Hello, you can change my [armor] and [resistances] with ease, you need but ask. Right click me to reset them back to 0.");
+            SendReply(player, "Hello, you can change my armor and [resistances] with ease, you need but ask. Right click me to reset them back to 0.");
             return true;
         }
 
@@ -45,45 +45,35 @@ namespace DOL.GS
                 {
                     case "slash":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Slash, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Slash resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "thrust":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Thrust, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Thrust resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "crush":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Crush, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Crush resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "body":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Body, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Body resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "cold":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Cold, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Cold resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "energy":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Energy, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Energy resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "heat":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Heat, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Heat resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "matter":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Matter, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Matter resistance increased by {double.Parse(splitText[1])}");
                         break;
                     case "spirit":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Spirit, double.Parse(splitText[1]), 1, false);
-                        Console.WriteLine($"Spirit resistance increased by {double.Parse(splitText[1])}");
                         break;
                 }
             }
             else
             {
-                Console.WriteLine($"inside else bracket {splitText[0]}");
                 switch (splitText[0].ToLower())
                 {
                     case "resistances":
