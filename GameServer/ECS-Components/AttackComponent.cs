@@ -2046,12 +2046,12 @@ namespace DOL.GS
 
                 if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                 {
-                    blockAttk.Out.SendMessage($"Target chance to parry: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockAttk.Out.SendMessage($"Target chance to block: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                 {
-                    blockTarg.Out.SendMessage($"Your chance to parry: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockTarg.Out.SendMessage($"Your chance to block: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (blockChance > ranBlockNum)
