@@ -24,7 +24,7 @@ namespace DOL.GS {
             Name = "Total: 0 DPS: 0";
             ResetArmorAndResists();
 
-            SendReply(player, "Hello, you can change my armor and [resistances] with ease, you need but ask. Right click me to reset them back to 0.");
+            SendReply(player, "Hello, you can change my [armor] and [resistances] with ease, you need but ask. Right click me to reset them back to 0.");
             return true;
         }
 
@@ -88,7 +88,7 @@ namespace DOL.GS {
             {
                 switch (splitText[0].ToLower())
                 {
-                    /*
+                    
                     case "armor":
                         SendReply(player, "Would you like me to don a set of \n" +
                             "[cloth] \n" +
@@ -100,9 +100,10 @@ namespace DOL.GS {
                             "or [scale]?" +
                             "");
                         break;
-                    */
+                    
                     case "cloth":
                         CreateArmorSetOfType(eObjectType.Cloth);
+                        
                         break;
                     case "leather":
                         CreateArmorSetOfType(eObjectType.Leather);
@@ -161,9 +162,11 @@ namespace DOL.GS {
                 this.ItemBonus[eProperty.ArmorAbsorption] += invItem.SPD_ABS;
                 //Console.WriteLine($"AF item prop{ItemBonus[eProperty.ArmorFactor]}");
                 ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, invItem.DPS_AF, 1, false);
-                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, invItem.SPD_ABS, 1, false);
+                //ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, invItem.SPD_ABS, 1, false);
                 Inventory.AddItem((eInventorySlot)slot, invItem);
             }
+
+            this.ItemBonus[eProperty.ArmorAbsorption] += GetAbsorb(armorType);
             BroadcastLivingEquipmentUpdate();
             BroadcastUpdate();
         }
@@ -178,7 +181,7 @@ namespace DOL.GS {
                 if (type == eObjectType.Cloth)
                     item.DPS_AF = Level;
                 else item.DPS_AF = Level * 2;
-                item.SPD_ABS = GetAbsorb(type);
+                //item.SPD_ABS = GetAbsorb(type);
             }
             item.Quality = 99;
             item.Condition = 100;
