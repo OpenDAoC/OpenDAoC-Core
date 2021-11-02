@@ -48,7 +48,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Name = "Hitback Total: 0 DPS: 0";
-            GuildName = "Hitback Dummy";
+            GuildName = "Right Click to Reset";
             Model = 34;
             Strength = 10;
             ScalingFactor = 4;
