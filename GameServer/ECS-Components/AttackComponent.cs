@@ -1274,7 +1274,7 @@ namespace DOL.GS
             // Asp style range add
             int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)style?.Procs?.FirstOrDefault()?.Item1.Value - AttackRange: 0;
 
-            if (dualWield)
+            if (dualWield && (ad.Attacker is GamePlayer gPlayer)  && gPlayer.CharacterClass.ID != (int)eCharacterClass.Savage)
                 ad.AttackType = AttackData.eAttackType.MeleeDualWield;
             else if (weapon == null)
                 ad.AttackType = AttackData.eAttackType.MeleeOneHand;
