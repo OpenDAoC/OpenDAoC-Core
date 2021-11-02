@@ -6309,13 +6309,13 @@ namespace DOL.GS
 			{
 				player = source as GamePlayer;
 				long whisperdelay = player.TempProperties.getProperty<long>("WHISPERDELAY");
-				if (whisperdelay > 0 && (CurrentRegion.Time - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
+				if (whisperdelay > 0 && (GameLoop.GameLoopTime - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
 				{
 					//player.Out.SendMessage("Speak slower!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 				
-				player.TempProperties.setProperty("WHISPERDELAY", CurrentRegion.Time);
+				player.TempProperties.setProperty("WHISPERDELAY", GameLoop.GameLoopTime);
 
 				foreach (DOL.GS.Quests.DataQuest q in DataQuestList)
 				{

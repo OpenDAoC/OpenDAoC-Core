@@ -2807,7 +2807,20 @@ namespace DOL.GS.Spells
 				    && Caster is GameNPC && (Caster as GameNPC).Brain is IOldAggressiveBrain)
 					((Caster as GameNPC).Brain as IOldAggressiveBrain).AddToAggroList(t, 1);
 
-				if (Util.Chance(CalculateSpellResistChance(t)))
+				int spellResistChance = CalculateSpellResistChance(t);
+				int randNum = Util.CryptoNextInt(100);
+
+				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+				{
+					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+				{
+					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				if (spellResistChance > randNum)
 				{
 					OnSpellResisted(t);
 					continue;

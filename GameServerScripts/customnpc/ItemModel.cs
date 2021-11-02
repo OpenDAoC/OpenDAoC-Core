@@ -4065,8 +4065,9 @@ namespace DOL.GS {
                     modelIDToAssign = 1672;
                     break;
                 case "hilt 1h":
-                    if (item.Item_Type != Slot.RIGHTHAND &&
-                        item.Item_Type != Slot.LEFTHAND)
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) ||
+                        item.Type_Damage == (int)eDamageType.Crush)
                     {
                         SendNotValidMessage(player);
                         break;
@@ -4508,7 +4509,8 @@ namespace DOL.GS {
                         item.Object_Type == (int)eObjectType.PolearmWeapon ||
                         item.Object_Type == (int)eObjectType.Spear ||
                         item.Object_Type == (int)eObjectType.CelticSpear ||
-                        item.Object_Type == (int)eObjectType.Scythe)
+                        item.Object_Type == (int)eObjectType.Scythe ||
+                        item.Type_Damage == (int)eDamageType.Crush)
                     {
                         SendNotValidMessage(player);
                         break;
@@ -6176,6 +6178,8 @@ namespace DOL.GS {
                                     "[Golden Spear 1h](" + artifact + " RPs)\n" +
                                     "[Wakazashi](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                     "");
                                 break;
 
                             case eDamageType.Crush:
@@ -6198,11 +6202,13 @@ namespace DOL.GS {
                                     "[Battler Sword 1h](" + artifact + " RPs)\n" +
                                     "[Khopesh](" + epic + " RPs)\n" +
                                     "[Cleaver](" + epic + " RPs)\n" +
+                                    "[Wakazashi](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                     "");
                                 break;
                         }
-                        SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
-                                     "");
+                        
                     }
                     SendReply(t, "Additionally, I can apply an [class epic 1h] " + champion + " skin. \n");
                     break;
@@ -6281,6 +6287,7 @@ namespace DOL.GS {
                                     "[Katana 2h](" + epic + " RPs)\n" +
                                     "[Pickaxe](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n");
                                 break;
 
                             case eDamageType.Crush:
@@ -6303,11 +6310,11 @@ namespace DOL.GS {
                                     "[Scorched Sword 2h](" + toageneric + " RPs)\n" +
                                     "[Katana 2h](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n");
                                 break;
                         }
                     }
-                    SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n" +
-                                "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
+                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
                     break;
 
                 case Slot.RANGED:

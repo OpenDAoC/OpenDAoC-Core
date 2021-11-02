@@ -141,7 +141,7 @@ namespace DOL.GS.PropertyCalc
 				else if (conhp < hp / 2)
 					conhp = hp / 2;
 
-				conhp /= 3;
+				conhp = (int)Math.Floor(0.6666 * (double)conhp);
 				return conhp;
 			}
             else if (living is GameNPC)
