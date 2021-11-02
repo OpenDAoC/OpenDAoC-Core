@@ -71,6 +71,15 @@ namespace DOL.GS {
                     case "spirit":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Spirit, double.Parse(splitText[1]), 1, false);
                         break;
+                    case "block":
+                        BlockChance = byte.Parse(splitText[1]);
+                        break;
+                    case "parry":
+                        ParryChance = byte.Parse(splitText[1]);
+                        break;
+                    case "evade":
+                        EvadeChance = byte.Parse(splitText[1]);
+                        break;
                     case "all":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Slash, double.Parse(splitText[1]), 1, false);
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Thrust, double.Parse(splitText[1]), 1, false);
