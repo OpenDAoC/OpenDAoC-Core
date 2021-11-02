@@ -97,7 +97,8 @@ namespace DOL.GS
                     if (!spellEffect.RenewEffect && !(spellEffect is ECSImmunityEffect))
                         SendSpellAnimation((ECSGameSpellEffect)e);
 
-                    if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled))
+                    if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
+                        || spellEffect is SavageBuffECSGameEffect)
                     {
                         //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
                         //{
