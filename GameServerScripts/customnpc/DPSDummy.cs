@@ -80,7 +80,7 @@ namespace DOL.GS {
                     case "evade":
                         EvadeChance = byte.Parse(splitText[1]);
                         break;
-                    case "all":
+                    case "allresist":
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Slash, double.Parse(splitText[1]), 1, false);
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Thrust, double.Parse(splitText[1]), 1, false);
                         ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Crush, double.Parse(splitText[1]), 1, false);
