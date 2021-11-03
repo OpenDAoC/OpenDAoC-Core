@@ -1995,6 +1995,9 @@ namespace DOL.GS
 
             if (!defenseDisabled)
             {
+                if (lastAD != null &&lastAD.AttackResult != eAttackResult.HitStyle)
+                    lastAD = null;
+
                 double evadeChance = owner.TryEvade(ad, lastAD, attackerConLevel, attackerCount);
                 ad.EvadeChance = evadeChance;
                 double randomEvadeNum = Util.CryptoNextDouble() * 10000;
