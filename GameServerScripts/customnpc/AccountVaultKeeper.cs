@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Account Vault Keeper - Kakuri Mar 20 2009
  * A fake GameHouseVault that works as an account vault.
  * The methods and properties of GameHouseVault *must* be marked as virtual for this to work (which was not the case in DOL builds prior to 1584).
@@ -209,7 +209,7 @@ namespace DOL.GS
                 player.ActiveInventoryObject = null;
             }
 
-            player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.HouseVault);
+            player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.Update);
         }
 
         public string VaultOwner
