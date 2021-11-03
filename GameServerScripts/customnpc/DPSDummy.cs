@@ -319,7 +319,7 @@ namespace DOL.GS {
         public override bool AddToWorld()
         {
             Name = "Total: 0 DPS: 0";
-            GuildName = "DPS Dummy";
+            GuildName = "Atlas Dummy Union";
             Model = 34;
             Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
             return base.AddToWorld(); // Finish up and add him to the world.
