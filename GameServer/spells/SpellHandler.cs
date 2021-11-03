@@ -1655,7 +1655,10 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						castState = eCastState.Cleanup;
+						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+							castState = eCastState.Interrupted;
+						else
+							castState = eCastState.Cleanup;
 					}
 					break;
 				case eCastState.Casting:
@@ -1880,6 +1883,12 @@ namespace DOL.GS.Spells
 					player.Out.SendInterruptAnimation(m_caster);
 				}
 			}
+			
+			if(m_caster is GamePlayer p && p.castingComponent != null)
+            {
+				p.castingComponent.spellHandler = null;
+				p.castingComponent.queuedSpellHandler = null;
+            }
 
 			if (m_castTimer != null)
 			{
