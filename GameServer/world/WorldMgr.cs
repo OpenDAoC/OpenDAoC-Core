@@ -99,7 +99,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the distance at which objects are updated
 		/// </summary>
-		public const int OBJ_UPDATE_DISTANCE = 4096;
+		public const int OBJ_UPDATE_DISTANCE = 6144;
 
 		/// <summary>
 		/// This will store available teleport destinations as read from the 'teleport' table.  These are
