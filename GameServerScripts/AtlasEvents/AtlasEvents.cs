@@ -136,32 +136,32 @@ namespace DOL.GS.GameEvents
 		
 		public static void OnPlayerLogin(DOLEvent e, object sender, EventArgs args)
 		{
-			// GamePlayer p = sender as GamePlayer;
-			//
-			// if (p == null)
-			// 	return;
-			//
-			// if (EventRPCap == 0)
-			// 	return;
-			//
-			// if (EventLvCap == 0)
-			// 	return;
-			//
-			// if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
-			// {
-			// 	switch (p.Realm)
-			// 	{
-			// 		case eRealm.Albion:
-			// 			p.MoveTo(330, 52759, 39528, 4677, 36);
-			// 			break;
-			// 		case eRealm.Midgard:
-			// 			p.MoveTo(334, 52160, 39862, 5472, 46);
-			// 			break;
-			// 		case eRealm.Hibernia:
-			// 			p.MoveTo(335, 52836, 40401, 4672, 441);
-			// 			break;
-			// 	}
-			// }
+			GamePlayer p = sender as GamePlayer;
+			
+			if (p == null)
+				return;
+			
+			if (EventRPCap == 0)
+				return;
+			
+			if (EventLvCap == 0)
+				return;
+			
+			if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
+			{
+				switch (p.Realm)
+				{
+					case eRealm.Albion:
+						p.MoveTo(330, 52759, 39528, 4677, 36);
+						break;
+					case eRealm.Midgard:
+						p.MoveTo(334, 52160, 39862, 5472, 46);
+						break;
+					case eRealm.Hibernia:
+						p.MoveTo(335, 52836, 40401, 4672, 441);
+						break;
+				}
+			}
 		}
 					
 		/// <summary>
