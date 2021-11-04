@@ -3838,7 +3838,7 @@ namespace DOL.GS
 				if( lefthand != null && ( player.attackComponent.AttackWeapon == null || player.attackComponent.AttackWeapon.Item_Type == Slot.RIGHTHAND || player.attackComponent.AttackWeapon.Item_Type == Slot.LEFTHAND ) )
 				{
 					if (lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront(ad.Attacker, 120))
-						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01; //* lefthand.Condition / lefthand.MaxCondition;
+						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01 * lefthand.Condition / lefthand.MaxCondition;
 				}
 			}
 			else if( this is GameNPC && IsObjectInFront( ad.Attacker, 120 ) )
