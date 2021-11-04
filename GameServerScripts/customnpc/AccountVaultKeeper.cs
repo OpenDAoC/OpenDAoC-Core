@@ -199,7 +199,7 @@ namespace DOL.GS
 
         public override string GetOwner(GamePlayer player)
         {
-            return player.Client.Account.Name;
+            return player.Client.Account.Name + player.Realm.ToString();
         }
         protected override void NotifyObservers(GamePlayer player, IDictionary<int, InventoryItem> updateItems)
         {
@@ -209,7 +209,7 @@ namespace DOL.GS
                 player.ActiveInventoryObject = null;
             }
 
-            player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.Update);
+            player.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
         }
 
         public string VaultOwner
