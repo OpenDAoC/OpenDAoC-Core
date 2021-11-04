@@ -3862,8 +3862,10 @@ namespace DOL.GS
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
-				//if(lefthand != null)
-					//blockChance += lefthand.Level - 1 / 50 * 0.15; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+				double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
+				Console.WriteLine(blockChance + " " + levelMod);
+				if(lefthand != null)
+					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
