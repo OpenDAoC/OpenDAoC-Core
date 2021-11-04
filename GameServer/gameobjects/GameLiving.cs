@@ -3832,14 +3832,13 @@ namespace DOL.GS
 			double blockChance = 0;
 			GamePlayer player = this as GamePlayer;
 			InventoryItem lefthand = null;
-
-			if( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
+			if ( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
 			{
 				lefthand = Inventory.GetItem( eInventorySlot.LeftHandWeapon );
 				if( lefthand != null && ( player.attackComponent.AttackWeapon == null || player.attackComponent.AttackWeapon.Item_Type == Slot.RIGHTHAND || player.attackComponent.AttackWeapon.Item_Type == Slot.LEFTHAND ) )
 				{
-					if( lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront( ad.Attacker, 120 ) )
-						blockChance = GetModified( eProperty.BlockChance ) * lefthand.Quality * 0.01;
+					if (lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront(ad.Attacker, 120))
+						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01; //* lefthand.Condition / lefthand.MaxCondition;
 				}
 			}
 			else if( this is GameNPC && IsObjectInFront( ad.Attacker, 120 ) )
@@ -3863,15 +3862,19 @@ namespace DOL.GS
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
+				//if(lefthand != null)
+					//blockChance += lefthand.Level - 1 / 50 * 0.15; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+
 				if (blockChance < 0.01)
 					blockChance = 0.01;
 				else if (blockChance > ServerProperties.Properties.BLOCK_CAP && ad.Attacker is GamePlayer)
 					blockChance = ServerProperties.Properties.BLOCK_CAP;
-				else if (shieldSize == 1 && ad.Attacker is GameNPC && blockChance > .8)
+				
+				if (shieldSize == 1 && blockChance > .8)
 					blockChance = .8;
-				else if (shieldSize == 2 && ad.Attacker is GameNPC && blockChance > .9)
+				else if (shieldSize == 2 && blockChance > .9)
 					blockChance = .9;
-				else if (shieldSize == 3 && ad.Attacker is GameNPC && blockChance > .99)
+				else if (shieldSize == 3 && blockChance > .99)
 					blockChance = .99;
 
 				// KNutters - Removed the AttackState check because it is imposible to be in melee range
