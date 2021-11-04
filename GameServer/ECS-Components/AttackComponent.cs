@@ -2091,7 +2091,7 @@ namespace DOL.GS
                             guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
                         else
                             guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * 0.00001;
-                        guardchance *= guardLevel * 0.3 + 0.05;
+                        guardchance += guardLevel * 5 * .01;
                         guardchance += attackerConLevel * 0.05;
                         int shieldSize = 0;
                         if (leftHand != null)
