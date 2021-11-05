@@ -392,8 +392,8 @@ namespace DOL.AI.Brain
 
 				Body.CastSpell(spell, line);
 
-                if (previousTarget != null)
-                    Body.TargetObject = previousTarget;
+                //if (previousTarget != null)
+                //    Body.TargetObject = previousTarget;
 
                 return true;
 			}
