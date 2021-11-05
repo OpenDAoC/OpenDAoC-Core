@@ -16,13 +16,60 @@ namespace DOL.GS {
             Realm = 0;
             Model = 1903;
             Size = 250;
+            Level = 75;
             Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
             SetOwnBrain(new LordOfBattleBrain());
 
             return base.AddToWorld(); // Finish up and add him to the world.
-        }   
+        }
 
-    }
+		public override bool Interact(GamePlayer player)
+		{
+			if (!base.Interact(player)) return false;
+			TurnTo(player.X, player.Y);
+
+			
+				player.Out.SendMessage("Hail, " + player.CharacterClass + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				return true;
+			
+			
+		}
+		public override bool WhisperReceive(GameLiving source, string str)
+		{
+			if (!base.WhisperReceive(source, str)) return false;
+			if (!(source is GamePlayer)) return false;
+            if (source.InCombatInLast(10000)) return false;
+			GamePlayer t = (GamePlayer)source;
+			TurnTo(t.X, t.Y);
+			switch (str)
+			{
+				case "event zone":
+					switch (t.Realm)
+					{
+						case eRealm.Albion:
+							t.MoveTo(330, 52759, 39528, 4677, 36);
+							break;
+						case eRealm.Midgard:
+							t.MoveTo(334, 52160, 39862, 5472, 46);
+							break;
+						case eRealm.Hibernia:
+							t.MoveTo(335, 52836, 40401, 4672, 441);
+							break;
+					}
+					break;
+				default: break;
+			}
+			return true;
+		}
+		private void SendReply(GamePlayer target, string msg)
+		{
+			target.Client.Out.SendMessage(
+				msg,
+				eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+		}
+
+	}
+
 
     public class LordOfBattleBrain : StandardMobBrain {
 
@@ -53,7 +100,12 @@ namespace DOL.GS {
                     {
                         EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
                     }
+
+                    if (player.IsSitting && !player.InCombatInLast(2000))
+                        player.Health = player.MaxHealth;
+
                     player.Out.SendStatusUpdate();
+
                 }
             }
 
@@ -74,6 +126,8 @@ namespace DOL.GS {
                     deadPlayer.Out.SendMessage("Mordred has found your soul worthy of resurrection!",
                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     deadPlayer.Notify(GamePlayerEvent.Revive, deadPlayer);
+
+                    AtlasROGManager.GenerateROG(deadPlayer, true);
 
                     playersToRez.Remove(deadPlayer);
                 }
