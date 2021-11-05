@@ -2052,12 +2052,12 @@ namespace DOL.GS
 
                 if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                 {
-                    blockAttk.Out.SendMessage($"Target chance to block: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockAttk.Out.SendMessage($"Target chance to block: {blockChance} RandomNumber: {ranBlockNum} BlockSuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                 {
-                    blockTarg.Out.SendMessage($"Your chance to block: {blockChance} RandomNumber: {ranBlockNum} ParrySuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockTarg.Out.SendMessage($"Your chance to block: {blockChance} RandomNumber: {ranBlockNum} BlockSuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (blockChance > ranBlockNum)
@@ -2114,7 +2114,22 @@ namespace DOL.GS
                             guardchance = .99;
 
                         if (ad.AttackType == AttackData.eAttackType.MeleeDualWield) guardchance /= 2;
-                        if (Util.ChanceDouble(guardchance))
+                        double ranBlockNum = Util.CryptoNextDouble() * 10000;
+                        ranBlockNum = Math.Floor(ranBlockNum);
+                        ranBlockNum /= 100;
+                        guardchance *= 100;
+
+                        if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                        {
+                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        }
+
+                        if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                        {
+                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        }
+
+                        if (guardchance > ranBlockNum)
                         {
                             ad.Target = guard.GuardSource;
                             return eAttackResult.Blocked;

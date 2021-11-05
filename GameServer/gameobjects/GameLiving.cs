@@ -3683,10 +3683,10 @@ namespace DOL.GS
 				evadeChance *= 0.001;
 				evadeChance += 0.01 * attackerConLevel; // 1% per con level distance multiplied by evade level
 
-				if( lastAD != null && lastAD.Style != null )
-				{
-					evadeChance += lastAD.Style.BonusToDefense * 0.01;
-				}
+				//if( lastAD != null && lastAD.Style != null )
+				//{
+					//evadeChance += lastAD.Style.BonusToDefense * 0.01;
+				//}
 
 				if( ad.AttackType == AttackData.eAttackType.Ranged )
 					evadeChance /= 5.0;
