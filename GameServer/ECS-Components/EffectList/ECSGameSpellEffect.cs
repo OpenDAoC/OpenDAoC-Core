@@ -72,8 +72,7 @@ namespace DOL.GS
 
         public override void TryApplyImmunity()
         {
-            // Shouldn't NPCs get Immunities too?
-            if (TriggersImmunity /*&& OwnerPlayer != null*/)
+            if (TriggersImmunity && (OwnerPlayer != null || Owner is NecromancerPet))
             {
                 new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
             }
