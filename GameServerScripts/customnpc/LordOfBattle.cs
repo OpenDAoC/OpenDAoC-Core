@@ -29,7 +29,7 @@ namespace DOL.GS {
 			TurnTo(player.X, player.Y);
 
 			
-				player.Out.SendMessage("Hail, " + player.CharacterClass + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 				return true;
 			
 			
