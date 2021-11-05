@@ -3862,10 +3862,14 @@ namespace DOL.GS
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
-				double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
+				
 			
 				if(lefthand != null)
+                {
+					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+				}
+					
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
