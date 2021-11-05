@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 			var targets = SelectTargets(target);
 			if (targets.Count <= 0)
 				if (m_caster.ControlledBrain != null)
-					target = m_caster.ControlledBrain as GameLiving;
+					targets.Add(m_caster.ControlledBrain.Body);
 				else
 				{
 					return false;
