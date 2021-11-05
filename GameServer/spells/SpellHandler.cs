@@ -2492,7 +2492,15 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
 							{
-								list.Add(player);
+								if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+								{
+									if (!Spell.IsBuff)
+										list.Add(player.ControlledBrain.Body);
+									else
+										list.Add(player);
+								}
+								else
+									list.Add(player);
 							}
 						}
 						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
@@ -2506,7 +2514,17 @@ namespace DOL.GS.Spells
 					else
 					{
 						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-							list.Add(target);
+						{
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+							{
+								if (!Spell.IsBuff)
+									list.Add(player.ControlledBrain.Body);
+								else
+									list.Add(player);
+							}
+							else
+								list.Add(target);
+						}
 					}
 					break;
 					#endregion
@@ -2718,6 +2736,16 @@ namespace DOL.GS.Spells
 						livings.Add(living.ControlledBrain.Body);
 				}
 
+			}
+			else if (Caster is NecromancerPet nPet && nPet.Owner.Group != null)
+            {
+				foreach (GameLiving living in nPet.Owner.Group.GetMembersInTheGroup().ToList())
+				{
+					livings.Add(living);
+
+					if (living.ControlledBrain != null)
+						livings.Add(living.ControlledBrain.Body);
+				}
 			}
 
 			return livings;
