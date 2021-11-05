@@ -87,7 +87,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Is the distance an player can see
 		/// </summary>
-		public const int VISIBILITY_DISTANCE = 3600;
+		public const int VISIBILITY_DISTANCE = 6000;
 		/// <summary>
 		/// Moving greater than this distance requires the player to do a full world refresh
 		/// </summary>
@@ -95,11 +95,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Is the square distance a player can see
 		/// </summary>
-		public const int VISIBILITY_SQUARE_DISTANCE = 12960000;
+		public const int VISIBILITY_SQUARE_DISTANCE = 36000000;
 		/// <summary>
 		/// Holds the distance at which objects are updated
 		/// </summary>
-		public const int OBJ_UPDATE_DISTANCE = 4096;
+		public const int OBJ_UPDATE_DISTANCE = 6144;
 
 		/// <summary>
 		/// This will store available teleport destinations as read from the 'teleport' table.  These are

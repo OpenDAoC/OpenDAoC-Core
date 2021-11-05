@@ -776,6 +776,9 @@ namespace DOL.GS
                     }
 
                     int speed = AttackSpeed(AttackWeapon) / 100;
+                    if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
+                        speed /= 2;
+                    
                     p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
             }
@@ -2090,8 +2093,8 @@ namespace DOL.GS
                         if (guard.GuardSource is GameNPC)
                             guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
                         else
-                            guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * 0.00001;
-                        guardchance *= guardLevel * 0.3 + 0.05;
+                            guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * leftHand.Condition / leftHand.MaxCondition * 0.00001;
+                        guardchance += guardLevel * 5 * .01; //5% additional chance to guard with each level in Guard
                         guardchance += attackerConLevel * 0.05;
                         int shieldSize = 0;
                         if (leftHand != null)
@@ -2101,13 +2104,13 @@ namespace DOL.GS
 
                         if (guardchance < 0.01)
                             guardchance = 0.01;
-                        else if (ad.Attacker is GamePlayer && guardchance > .6)
-                            guardchance = .6;
-                        else if (shieldSize == 1 && ad.Attacker is GameNPC && guardchance > .8)
+                        //else if (ad.Attacker is GamePlayer && guardchance > .6)
+                           // guardchance = .6;
+                        else if (shieldSize == 1 && guardchance > .8)
                             guardchance = .8;
-                        else if (shieldSize == 2 && ad.Attacker is GameNPC && guardchance > .9)
+                        else if (shieldSize == 2 && guardchance > .9)
                             guardchance = .9;
-                        else if (shieldSize == 3 && ad.Attacker is GameNPC && guardchance > .99)
+                        else if (shieldSize == 3 && guardchance > .99)
                             guardchance = .99;
 
                         if (ad.AttackType == AttackData.eAttackType.MeleeDualWield) guardchance /= 2;

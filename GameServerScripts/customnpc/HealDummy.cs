@@ -2,17 +2,13 @@
 
 namespace DOL.GS
 {
-    public class HitbackDummy : GameTrainingDummy {
-        Int32 Damage = 0;
+    public class HealDummy : GameTrainingDummy {
+        Int32 Healing = 0;
         DateTime StartTime;
         TimeSpan TimePassed;
         Boolean StartCheck = true;
 
-        public override short MaxSpeedBase { get => 0; }
-
-        public override bool FixedSpeed { get => true;}
-
-        public override ushort Heading { get => base.Heading; set => base.Heading = SpawnHeading; }
+        public override int Health { get => base.MaxHealth / 5; set { } }
 
         public override bool Interact(GamePlayer player)
         {
@@ -21,13 +17,18 @@ namespace DOL.GS
                 return false;
             }
 
-            Damage = 0;
+            Healing = 0;
             StartCheck = true;
-            this.StopAttack();
+            Name = "Heal Dummy Total: 0 HPS: 0";
             return true;
         }
 
         public override void OnAttackedByEnemy(AttackData ad)
+        {
+                       
+        }
+
+        public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
         {
             if (StartCheck)
             {
@@ -35,21 +36,17 @@ namespace DOL.GS
                 StartCheck = false;
             }
 
-            Damage += ad.Damage + ad.CriticalDamage;
-            TimePassed = (DateTime.Now - StartTime);
-
-            if (!this.attackComponent.AttackState)
-                this.attackComponent.StartAttack(ad.Attacker);
-            
+            Healing += changeAmount;
+            Name = "Heal Dummy Total: " + Healing.ToString() + " HPS: " + (Healing / (TimePassed.TotalSeconds + 1)).ToString("0");
+            return changeAmount;
         }
 
         public override bool AddToWorld()
         {
-            Name = "Hitback Dummy - Right Click to Reset";
+            Name = "Heal Dummy";
             GuildName = "Atlas Dummy Union";
+            base.ChangeHealth(this, eHealthChangeType.Spell, -200);
             Model = 34;
-            Strength = 10;
-            ScalingFactor = 4;
             return base.AddToWorld(); // Finish up and add him to the world.
         }
 

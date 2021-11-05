@@ -47,7 +47,7 @@ namespace DOL.GS.PropertyCalc
                 {
 					if (raToughness.Level > 0)
                     {
-						raToughnessAmount += (hpBase * raToughness.Level) / 100;
+						raToughnessAmount += (hpBase * raToughness.Level * 3) / 100;
 					}
                 }
                 // --- [ END ] --- AtlasOF_Thoughness ---------------------------------------------------------

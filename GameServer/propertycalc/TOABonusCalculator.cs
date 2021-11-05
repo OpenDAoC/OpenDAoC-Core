@@ -49,7 +49,7 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property)
         {
             //hardcap at 25%
-            return Math.Min(25, living.ItemBonus[(int)property]
+            return Math.Min(25, living.ItemBonus[(int)property] + living.AbilityBonus[(int)property]
                 - living.DebuffCategory[(int)property]);
         }
     }

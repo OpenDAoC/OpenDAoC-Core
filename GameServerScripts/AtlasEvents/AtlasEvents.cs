@@ -143,10 +143,10 @@ namespace DOL.GS.GameEvents
 			
 			if (EventRPCap == 0)
 				return;
-
+			
 			if (EventLvCap == 0)
 				return;
-
+			
 			if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
 			{
 				switch (p.Realm)
