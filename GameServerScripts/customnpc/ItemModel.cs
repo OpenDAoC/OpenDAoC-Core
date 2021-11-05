@@ -4335,8 +4335,8 @@ namespace DOL.GS {
 
                 //spears
                 case "golden spear 2h":
-                    if (item.Item_Type != Slot.TWOHAND ||
-                        item.Type_Damage != (int)eDamageType.Thrust)
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                        item.Object_Type != (int)eObjectType.CelticSpear)
                     {
                         SendNotValidMessage(player);
                         break;
@@ -4345,8 +4345,8 @@ namespace DOL.GS {
                     modelIDToAssign = 1662;
                     break;
                 case "dragon spear 2h":
-                    if (item.Item_Type != Slot.TWOHAND ||
-                        item.Type_Damage != (int)eDamageType.Thrust)
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                           item.Object_Type != (int)eObjectType.CelticSpear)
                     {
                         SendNotValidMessage(player);
                         break;
@@ -4355,8 +4355,8 @@ namespace DOL.GS {
                     modelIDToAssign = 3819;
                     break;
                 case "scorched spear 2h":
-                    if (item.Item_Type != Slot.TWOHAND ||
-                        item.Type_Damage != (int)eDamageType.Thrust)
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                        item.Object_Type != (int)eObjectType.CelticSpear)
                     {
                         SendNotValidMessage(player);
                         break;
@@ -4365,8 +4365,8 @@ namespace DOL.GS {
                     modelIDToAssign = 3714;
                     break;
                 case "trident spear 2h":
-                    if (item.Item_Type != Slot.TWOHAND ||
-                        item.Type_Damage != (int)eDamageType.Thrust)
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                        item.Object_Type != (int)eObjectType.CelticSpear)
                     {
                         SendNotValidMessage(player);
                         break;
