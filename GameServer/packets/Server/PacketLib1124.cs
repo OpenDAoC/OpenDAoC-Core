@@ -4857,12 +4857,15 @@ namespace DOL.GS.PacketHandler
                 lock (living.effectListComponent.Effects.Values)
                 {
                     byte i = 0;
-                    foreach (var effect in living.effectListComponent.GetAllEffects())//.Effects.Values)
+					var effects = living.effectListComponent.GetAllEffects();
+					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
+                    foreach (var effect in effects)//.Effects.Values)
 						//foreach (ECSGameEffect effect in effects)
 							if (effect is ECSGameEffect && !effect.IsDisabled)
 								i++;
                     pak.WriteByte(i);
-                    foreach (var effect in living.effectListComponent.GetAllEffects())//.Effects.Values)
+                    foreach (var effect in effects)//.Effects.Values)
 						//foreach (ECSGameEffect effect in effects)
 							if (effect is ECSGameEffect && !effect.IsDisabled)
 							{

@@ -139,6 +139,8 @@ namespace DOL.GS
                 IControlledBrain npc = ((GameNPC)e.Owner).Brain as IControlledBrain;
                 if (npc != null)
                     npc.UpdatePetWindow();
+                if (npc.Body is NecromancerPet)
+                    SendPlayerUpdates(npc.Owner as GamePlayer);
             }
         }
 
