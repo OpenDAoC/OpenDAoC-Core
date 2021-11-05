@@ -884,7 +884,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
 							break;
 
-						if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && m_caster.IsObjectInFront(selectedTarget, 180) == false)
 						{
 							if (!quiet) MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
 							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1135,7 +1135,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm)
 							break;
 						//enemys have to be in front and in view for targeted spells
-						if (!m_caster.IsObjectInFront(target, 180))
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(target, 180))
 						{
 							MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1305,8 +1305,8 @@ namespace DOL.GS.Spells
 				{
 					case "enemy":
 						//enemys have to be in front and in view for targeted spells
-						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50) && 
-							(!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
+						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50) &&
+							m_spell.SpellType != (byte)eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1523,7 +1523,7 @@ namespace DOL.GS.Spells
 				{
 					case "Enemy":
 						//enemys have to be in front and in view for targeted spells
-						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50))
+						if (Caster is GamePlayer && m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
