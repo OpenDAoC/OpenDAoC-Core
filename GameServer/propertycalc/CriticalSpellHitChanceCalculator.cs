@@ -29,6 +29,7 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is NecromancerPet petNecro)
 			{
+				chance += 10;
 				if (petNecro.Brain is IControlledBrain brainNecro && brainNecro.GetPlayerOwner() is GamePlayer necro
 					&& necro.GetAbility<RealmAbilities.WildPowerAbility>() is RealmAbilities.WildPowerAbility raWP)
 					chance += raWP.Amount;
