@@ -525,7 +525,6 @@ namespace DOL.GS
 										if (!BonusExists(property) && SkillIsValidForClass(property))
 										{
 											if (SkillIsValidForObjectType(property))
-												Console.WriteLine("Adding prop " + property);
 												validSkills.Add(property);
 										}
 										else
@@ -561,7 +560,6 @@ namespace DOL.GS
 
 						int index = 0;
 						index = validSkills.Count - 1;
-						Console.WriteLine("Count " + index);
 						if (index < 1)
 						{
 							// return a safe random stat
