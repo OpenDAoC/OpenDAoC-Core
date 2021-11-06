@@ -54,18 +54,25 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             DateTime thisDay = DateTime.Today;
-
-            //news = "18/06/2021\n- Website launched at www.atlasfreeshard.com\n\n17/06/2021\n- Added Stygia Haven as teleport location for all realms as end-game farming zone\n- Various teleports, hastener and trainer improvements\n\n16/06/2021\n - Hibernia Classic cities now all have basic NPCs in place (teleporter, smith, healer, master trainer)\n - Implemented Atlas Orbs (xp items)".Split('\n');
-
-            using (WebClient newsClient = new WebClient())
-            {
-                string newsTxt;
-                var news = new List<string>();
-                string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
-                newsTxt = newsClient.DownloadString(url);
-                news.Add(newsTxt);
-                client.Out.SendCustomTextWindow("Server News " + thisDay.ToString("d"), news);
+            
+            var news = new List<string>();
+            private readonly HttpClient _httpClient;
+            public MyService(HttpClient httpClient) {
+                _httpClient = httpClient;
             }
+   
+            public async Task getNews() {
+                var latestNews = await _httpClient.GetStringAsync("https://admin.atlasfreeshard.com/storage/servernews.txt");
+                
+                foreach (var line in latestNews)
+                {
+                    news.Add(line);
+                };
+            }
+            
+            client.Out.SendCustomTextWindow("Server News " + thisDay.ToString("d"), news);
+            client.Out.SendCustomDialog();
+            
             return;
 
         }
