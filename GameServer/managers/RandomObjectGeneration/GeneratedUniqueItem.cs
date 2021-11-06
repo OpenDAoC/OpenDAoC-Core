@@ -79,7 +79,7 @@ namespace DOL.GS
 		public const ushort ROG_ITEM_SKILL_CHANCE = 35;
 
 		// Item chance to get All skills stat
-		public const ushort ROG_STAT_ALLSKILL_CHANCE = 5;
+		public const ushort ROG_STAT_ALLSKILL_CHANCE = 25;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 50;
@@ -391,7 +391,11 @@ namespace DOL.GS
 
 			for (int i = 0; i < number; i++)
 			{
-				eBonusType type = this.GetPropertyType(toa);
+				eBonusType type;
+				if (i == 0)
+					type = eBonusType.Skill;
+				else
+					type = this.GetPropertyType(toa);
 				eProperty property = this.GetProperty(type);
 				if (!this.BonusExists(property))
 				{
@@ -428,7 +432,7 @@ namespace DOL.GS
 			List<eBonusType> bonTypes = new List<eBonusType>();
 			if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
 			if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
-			if (Util.Chance(ROG_ITEM_SKILL_CHANCE)) { bonTypes.Add(eBonusType.Skill); }
+			//if (Util.Chance(ROG_ITEM_SKILL_CHANCE)) { bonTypes.Add(eBonusType.Skill); }
 
 			//if none of the object types were added, default to magical
 			if (bonTypes.Count < 1)
@@ -492,7 +496,7 @@ namespace DOL.GS
 								{
 									foreach (eProperty property in AlbSkillBonus)
 									{
-										if (!BonusExists(property))
+										if (!BonusExists(property) && SkillIsValidForClass(property))
 										{
 											if (SkillIsValidForObjectType(property))
 												validSkills.Add(property);
@@ -505,7 +509,7 @@ namespace DOL.GS
 								{
 									foreach (eProperty property in HibSkillBonus)
 									{
-										if (!BonusExists(property))
+										if (!BonusExists(property) && SkillIsValidForClass(property))
 										{
 											if (SkillIsValidForObjectType(property))
 												validSkills.Add(property);
@@ -518,9 +522,10 @@ namespace DOL.GS
 								{
 									foreach (eProperty property in MidSkillBonus)
 									{
-										if (!BonusExists(property))
+										if (!BonusExists(property) && SkillIsValidForClass(property))
 										{
 											if (SkillIsValidForObjectType(property))
+												Console.WriteLine("Adding prop " + property);
 												validSkills.Add(property);
 										}
 										else
@@ -556,7 +561,7 @@ namespace DOL.GS
 
 						int index = 0;
 						index = validSkills.Count - 1;
-
+						Console.WriteLine("Count " + index);
 						if (index < 1)
 						{
 							// return a safe random stat
@@ -607,6 +612,436 @@ namespace DOL.GS
 			}
 			return eProperty.MaxHealth;
 		}
+
+		private bool SkillIsValidForClass(eProperty property)
+        {
+            switch (charClass)
+            {
+				case eCharacterClass.Paladin:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Crushing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.Skill_Two_Handed ||
+						property == eProperty.Skill_Shields || 
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Armsman:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Crushing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.Skill_Two_Handed ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_Polearms ||
+						property == eProperty.Skill_Cross_Bows ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Reaver:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Crushing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.Skill_Flexible_Weapon ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_SoulRending ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Mercenary:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Crushing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_Dual_Wield ||
+						property == eProperty.AllDualWieldingSkills ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Cleric:
+					if (property == eProperty.Skill_Rejuvenation ||
+						property == eProperty.Skill_Enhancement ||
+						property == eProperty.Skill_Smiting ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Friar:
+					if (property == eProperty.Skill_Rejuvenation ||
+						property == eProperty.Skill_Enhancement ||
+						property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Staff ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Infiltrator:
+					if (property == eProperty.Skill_Stealth ||
+						property == eProperty.Skill_Envenom ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.Skill_Critical_Strike ||
+						property == eProperty.Skill_Dual_Wield ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllDualWieldingSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Minstrel:
+					if (property == eProperty.Skill_Stealth ||
+						property == eProperty.Skill_Instruments ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Scout:
+					if (property == eProperty.Skill_Stealth ||
+						property == eProperty.Skill_Slashing ||
+						property == eProperty.Skill_Thrusting ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_Long_bows ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllArcherySkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Cabalist:
+					if (property == eProperty.Skill_Matter||
+						property == eProperty.Skill_Body ||
+						property == eProperty.Skill_Spirit ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Sorcerer:
+					if (property == eProperty.Skill_Matter ||
+						property == eProperty.Skill_Body ||
+						property == eProperty.Skill_Mind ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Theurgist:
+					if (property == eProperty.Skill_Earth ||
+						property == eProperty.Skill_Cold ||
+						property == eProperty.Skill_Wind ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Wizard:
+					if (property == eProperty.Skill_Earth ||
+						property == eProperty.Skill_Cold ||
+						property == eProperty.Skill_Fire ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Necromancer:
+					if (property == eProperty.Skill_DeathSight ||
+						property == eProperty.Skill_Death_Servant ||
+						property == eProperty.Skill_Pain_working ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Bard:
+					if (property == eProperty.Skill_Regrowth ||
+						property == eProperty.Skill_Nurture ||
+						property == eProperty.Skill_Music ||
+						property == eProperty.Skill_Blunt ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Druid:
+					if (property == eProperty.Skill_Regrowth ||
+						property == eProperty.Skill_Nurture ||
+						property == eProperty.Skill_Nature ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Warden:
+					if (property == eProperty.Skill_Regrowth ||
+						property == eProperty.Skill_Nurture ||
+						property == eProperty.Skill_Blunt ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.Skill_Parry ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Blademaster:
+					if (property == eProperty.Skill_Blunt ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.Skill_Piercing ||
+						property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_Celtic_Dual ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllDualWieldingSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Hero:
+					if (property == eProperty.Skill_Blunt ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.Skill_Piercing ||
+						property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_Celtic_Spear ||
+						property == eProperty.Skill_Large_Weapon ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Champion:
+					if (property == eProperty.Skill_Blunt ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.Skill_Piercing ||
+						property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.Skill_Valor ||
+						property == eProperty.Skill_Large_Weapon ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Eldritch:
+					if (property == eProperty.Skill_Light ||
+						property == eProperty.Skill_Mana ||
+						property == eProperty.Skill_Void ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Enchanter:
+					if (property == eProperty.Skill_Light ||
+						property == eProperty.Skill_Mana ||
+						property == eProperty.Skill_Enchantments ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Mentalist:
+					if (property == eProperty.Skill_Light ||
+						property == eProperty.Skill_Mana ||
+						property == eProperty.Skill_Mentalism ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Nightshade:
+					if (property == eProperty.Skill_Envenom ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.Skill_Piercing ||
+						property == eProperty.Skill_Stealth ||
+						property == eProperty.Skill_Critical_Strike ||
+						property == eProperty.Skill_Celtic_Dual ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllDualWieldingSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Ranger:
+					if (property == eProperty.Skill_RecurvedBow ||
+						property == eProperty.Skill_Blades ||
+						property == eProperty.Skill_Piercing ||
+						property == eProperty.Skill_Celtic_Dual ||
+						property == eProperty.AllArcherySkills ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllDualWieldingSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Animist:
+					if (property == eProperty.Skill_Arboreal ||
+						property == eProperty.Skill_Creeping ||
+						property == eProperty.Skill_Verdant ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Valewalker:
+					if (property == eProperty.Skill_Arboreal ||
+						property == eProperty.Skill_Scythe ||
+						property == eProperty.Skill_Parry ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Berserker:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_Axe ||
+						property == eProperty.Skill_Hammer ||
+						property == eProperty.Skill_Left_Axe ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Warrior:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_Axe ||
+						property == eProperty.Skill_Hammer ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Skald:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_Axe ||
+						property == eProperty.Skill_Hammer ||
+						property == eProperty.Skill_Battlesongs ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Thane:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_Axe ||
+						property == eProperty.Skill_Hammer ||
+						property == eProperty.Skill_Stormcalling ||
+						property == eProperty.Skill_Shields ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Savage:
+					if (property == eProperty.Skill_Parry ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_Axe ||
+						property == eProperty.Skill_Hammer ||
+						property == eProperty.Skill_Savagery ||
+						property == eProperty.Skill_HandToHand ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Healer:
+					if (property == eProperty.Skill_Mending ||
+						property == eProperty.Skill_Augmentation ||
+						property == eProperty.Skill_Pacification ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Shaman:
+					if (property == eProperty.Skill_Mending ||
+						property == eProperty.Skill_Augmentation ||
+						property == eProperty.Skill_Subterranean ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Hunter:
+					if (property == eProperty.Skill_BeastCraft ||
+						property == eProperty.Skill_Stealth ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_ShortBow ||
+						property == eProperty.Skill_Spear ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Shadowblade:
+					if (property == eProperty.Skill_Envenom ||
+						property == eProperty.Skill_Stealth ||
+						property == eProperty.Skill_Sword ||
+						property == eProperty.Skill_Axe ||
+						property == eProperty.Skill_Left_Axe ||
+						property == eProperty.Skill_Critical_Strike ||
+						property == eProperty.AllMeleeWeaponSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Runemaster:
+					if (property == eProperty.Skill_Darkness ||
+						property == eProperty.Skill_Suppression ||
+						property == eProperty.Skill_Runecarving ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Spiritmaster:
+					if (property == eProperty.Skill_Darkness ||
+						property == eProperty.Skill_Suppression ||
+						property == eProperty.Skill_Summoning ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+				case eCharacterClass.Bonedancer:
+					if (property == eProperty.Skill_Darkness ||
+						property == eProperty.Skill_Suppression ||
+						property == eProperty.Skill_BoneArmy ||
+						property == eProperty.AllMagicSkills ||
+						property == eProperty.AllSkills
+						)
+						return true;
+					return false;
+			}
+
+			return false;
+        }
 
 		private bool StatIsValidForObjectType(eProperty property)
 		{
@@ -2564,7 +2999,7 @@ namespace DOL.GS
 				case eProperty.Skill_Axe:
 					{
 						if(realm != eRealm.Midgard) { return false; }
-						if (type == eObjectType.Axe || type == eObjectType.LeftAxe || type == eObjectType.Shield)
+						if (type == eObjectType.Axe || type == eObjectType.LeftAxe)
 							return true;
 						break;
 					}
@@ -2592,7 +3027,7 @@ namespace DOL.GS
 							return false;
 						}
 
-						if (type == eObjectType.Blades || type == eObjectType.Shield)
+						if (type == eObjectType.Blades)
 							return true;
 						break;
 					}
@@ -2605,7 +3040,7 @@ namespace DOL.GS
 							return false;
 						}
 
-						if (type == eObjectType.Blunt || type == eObjectType.Shield)
+						if (type == eObjectType.Blunt)
 							return true;
 						break;
 					}
@@ -2652,8 +3087,7 @@ namespace DOL.GS
 					{
 						if(realm != eRealm.Albion) { return false; }
 						if (type == eObjectType.CrushingWeapon || 
-							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Crush) || 
-							type == eObjectType.Shield)
+							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Crush))
 							return true;
 						break;
 					}
@@ -2700,7 +3134,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Warrior) {
 							return false;
 						}
-						if (type == eObjectType.Hammer || type == eObjectType.Shield)
+						if (type == eObjectType.Hammer)
 							return true;
 						break;
 					}
@@ -2714,7 +3148,7 @@ namespace DOL.GS
 				case eProperty.Skill_Instruments:
 					{
 						if(charClass != eCharacterClass.Minstrel) { return false; }
-						if (type == eObjectType.Instrument || (type == eObjectType.Shield && this.Type_Damage == 1))
+						if (type == eObjectType.Instrument)
 							return true;
 						break;
 					}
@@ -2780,7 +3214,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Ranger) {
 							return false;
 						}
-						if (type == eObjectType.Piercing || type == eObjectType.Shield)
+						if (type == eObjectType.Piercing)
 							return true;
 						break;
 					}
@@ -2828,7 +3262,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Scout) {
 							return false;
 						}
-						if (type == eObjectType.SlashingWeapon || type == eObjectType.CrushingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Blunt || type == eObjectType.Blades || type == eObjectType.Piercing || type == eObjectType.Shield || type == eObjectType.Axe || type == eObjectType.Sword || type == eObjectType.Hammer)
+						if (type == eObjectType.Shield)
 							return true;
 						break;
 					}
@@ -2848,8 +3282,7 @@ namespace DOL.GS
 							return false;
 						}
 						if (type == eObjectType.SlashingWeapon ||
-							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Slash) ||
-							type == eObjectType.Shield)
+							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Slash))
 							return true;
 						break;
 					}
@@ -2900,7 +3333,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Warrior) {
 							return false;
 						}
-						if (type == eObjectType.Sword || type == eObjectType.Shield)
+						if (type == eObjectType.Sword)
 							return true;
 						break;
 					}
@@ -2916,8 +3349,7 @@ namespace DOL.GS
 							return false;
 						}
 						if (type == eObjectType.ThrustWeapon ||
-							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Thrust) ||
-							type == eObjectType.Shield)
+							((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Thrust))
 							return true;
 						break;
 					}
@@ -3404,8 +3836,12 @@ namespace DOL.GS
 					}
 				case eBonusType.Skill:
 					{
-						int max = (int)Math.Ceiling(((this.Level / 5.0) + 1) / 3);
-						if (property == eProperty.AllSkills)
+						int max = (int)Util.Random(1, 4);
+						if (property == eProperty.AllSkills || 
+							property == eProperty.AllMagicSkills ||
+							property == eProperty.AllDualWieldingSkills ||
+							property == eProperty.AllMeleeWeaponSkills ||
+							property == eProperty.AllArcherySkills)
 							max = (int)Math.Ceiling((double)max / 2.0);
 						return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
 					}
