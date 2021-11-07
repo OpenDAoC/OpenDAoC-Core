@@ -884,6 +884,7 @@ namespace DOL.GS
 						property == eProperty.Skill_Blades ||
 						property == eProperty.Skill_Piercing ||
 						property == eProperty.Skill_Celtic_Dual ||
+						property == eProperty.Skill_Stealth ||
 						property == eProperty.AllArcherySkills ||
 						property == eProperty.AllMeleeWeaponSkills ||
 						property == eProperty.AllDualWieldingSkills ||
@@ -3166,6 +3167,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Shadowblade) {
 							return false;
                         }
+						if (this.Item_Type == Slot.TWOHAND) return false;
 						if (type == eObjectType.Axe || type == eObjectType.LeftAxe)
 							return true;
 						break;
