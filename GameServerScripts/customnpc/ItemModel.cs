@@ -4728,6 +4728,7 @@ namespace DOL.GS {
                             if(item.Object_Type == (int)eObjectType.Shield)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eDamageType)item.Type_Damage)
@@ -4747,6 +4748,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3264;
@@ -4758,6 +4760,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3272;
@@ -4767,6 +4770,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.SlashingWeapon)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eDamageType)item.Type_Damage)
@@ -4785,6 +4789,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.CrushingWeapon)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eDamageType)item.Type_Damage)
@@ -4805,6 +4810,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.SlashingWeapon)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eDamageType)item.Type_Damage)
@@ -4821,6 +4827,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3268;
@@ -4831,6 +4838,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.CrushingWeapon)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eDamageType)item.Type_Damage)
@@ -4858,6 +4866,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.CrushingWeapon)
                                 {
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                                 }
                                 switch ((eDamageType)item.Type_Damage)
@@ -4879,6 +4888,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.SlashingWeapon)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eDamageType)item.Type_Damage)
@@ -4895,6 +4905,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3265;
@@ -4903,6 +4914,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3266;
@@ -4911,6 +4923,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3267;
@@ -4934,6 +4947,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -4941,6 +4955,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3311;
@@ -4949,6 +4964,7 @@ namespace DOL.GS {
                             if (item.Item_Type != Slot.RIGHTHAND)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3335;
@@ -4971,6 +4987,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
 
                             }
@@ -4995,6 +5012,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5015,6 +5033,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5047,6 +5066,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5054,6 +5074,7 @@ namespace DOL.GS {
                             if(item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3310;
@@ -5110,6 +5131,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3229;
@@ -5119,6 +5141,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Blunt)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5137,6 +5160,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Piercing)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5158,6 +5182,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Piercing)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5178,6 +5203,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Blunt)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5194,6 +5220,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3226;
@@ -5202,6 +5229,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3227;
@@ -5212,6 +5240,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Piercing)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5231,6 +5260,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3228;
@@ -5240,6 +5270,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Piercing)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5257,6 +5288,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Piercing)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5273,6 +5305,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Scythe)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3231;
@@ -5282,6 +5315,7 @@ namespace DOL.GS {
                                 item.Object_Type != (int)eObjectType.Blunt)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             switch ((eObjectType)item.Object_Type)
@@ -5319,6 +5353,7 @@ namespace DOL.GS {
                                         break;
                                     default:
                                         SendNotValidMessage(player);
+                                        price = 0;
                                         break;
                                 }
                             }
@@ -5337,6 +5372,7 @@ namespace DOL.GS {
                                         break;
                                     default:
                                         SendNotValidMessage(player);
+                                        price = 0;
                                         break;
                                 }
                             }
@@ -5345,6 +5381,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3264;
@@ -5353,6 +5390,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3282;
@@ -5361,6 +5399,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3271;
@@ -5369,6 +5408,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3268;
@@ -5387,6 +5427,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5394,12 +5435,14 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3265;
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             break;
@@ -5407,6 +5450,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3266;
@@ -5415,6 +5459,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3267;
@@ -5435,6 +5480,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5442,6 +5488,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3311;
@@ -5450,6 +5497,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3335;
@@ -5472,6 +5520,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5479,6 +5528,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3309;
@@ -5497,6 +5547,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5511,6 +5562,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5518,6 +5570,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3338;
@@ -5536,6 +5589,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5543,6 +5597,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3310;
@@ -5561,6 +5616,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5578,6 +5634,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5587,6 +5644,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3229;
@@ -5605,6 +5663,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -5612,6 +5671,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3226;
@@ -5620,6 +5680,7 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3227;
@@ -5655,6 +5716,7 @@ namespace DOL.GS {
                                     break;
                                 default:
                                     SendNotValidMessage(player);
+                                    price = 0;
                                     break;
 
                             }
@@ -5663,14 +5725,16 @@ namespace DOL.GS {
                             if (item.Object_Type != (int)eObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3228;
                             break;
                         case eCharacterClass.Valewalker:
-                            if (item.Object_Type != (int)eObjectType.Staff)
+                            if (item.Object_Type != (int)eObjectType.Scythe)
                             {
                                 SendNotValidMessage(player);
+                                price = 0;
                                 break;
                             }
                             modelIDToAssign = 3231;
