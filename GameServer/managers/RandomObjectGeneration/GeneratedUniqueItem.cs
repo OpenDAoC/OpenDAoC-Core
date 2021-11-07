@@ -3004,7 +3004,7 @@ namespace DOL.GS
                     }
 				case eProperty.Skill_Subterranean:
 					{
-						if (realm != eRealm.Midgard || charClass != eCharacterClass.Shaman)) { return false; }
+						if (realm != eRealm.Midgard || charClass != eCharacterClass.Shaman) { return false; }
 						if ((type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Hammer)
 						{
 							return true;
