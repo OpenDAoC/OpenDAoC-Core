@@ -726,6 +726,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Matter||
 						property == eProperty.Skill_Body ||
 						property == eProperty.Skill_Spirit ||
+						property == eProperty.Focus_Matter ||
+						property == eProperty.Focus_Body ||
+						property == eProperty.Focus_Spirit ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -735,6 +739,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Matter ||
 						property == eProperty.Skill_Body ||
 						property == eProperty.Skill_Mind ||
+						property == eProperty.Focus_Matter ||
+						property == eProperty.Focus_Body ||
+						property == eProperty.Focus_Mind ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -744,6 +752,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Earth ||
 						property == eProperty.Skill_Cold ||
 						property == eProperty.Skill_Wind ||
+						property == eProperty.Focus_Earth ||
+						property == eProperty.Focus_Cold ||
+						property == eProperty.Focus_Air ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -753,6 +765,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Earth ||
 						property == eProperty.Skill_Cold ||
 						property == eProperty.Skill_Fire ||
+						property == eProperty.Focus_Earth ||
+						property == eProperty.Focus_Cold ||
+						property == eProperty.Focus_Fire ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -762,6 +778,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_DeathSight ||
 						property == eProperty.Skill_Death_Servant ||
 						property == eProperty.Skill_Pain_working ||
+						property == eProperty.Focus_Earth ||
+						property == eProperty.Focus_Cold ||
+						property == eProperty.Focus_Air ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -843,6 +863,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Light ||
 						property == eProperty.Skill_Mana ||
 						property == eProperty.Skill_Void ||
+						property == eProperty.Focus_Light ||
+						property == eProperty.Focus_Mana ||
+						property == eProperty.Focus_Void ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -852,6 +876,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Light ||
 						property == eProperty.Skill_Mana ||
 						property == eProperty.Skill_Enchantments ||
+						property == eProperty.Focus_Light ||
+						property == eProperty.Focus_Mana ||
+						property == eProperty.Focus_Enchantments ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -861,6 +889,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Light ||
 						property == eProperty.Skill_Mana ||
 						property == eProperty.Skill_Mentalism ||
+						property == eProperty.Focus_Light ||
+						property == eProperty.Focus_Mana ||
+						property == eProperty.Focus_Mentalism ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -896,6 +928,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Arboreal ||
 						property == eProperty.Skill_Creeping ||
 						property == eProperty.Skill_Verdant ||
+						property == eProperty.Focus_Arboreal ||
+						property == eProperty.Focus_CreepingPath ||
+						property == eProperty.Focus_Verdant ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -1014,6 +1050,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Darkness ||
 						property == eProperty.Skill_Suppression ||
 						property == eProperty.Skill_Runecarving ||
+						property == eProperty.Focus_Darkness ||
+						property == eProperty.Focus_Suppression ||
+						property == eProperty.Focus_Runecarving ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -1023,6 +1063,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Darkness ||
 						property == eProperty.Skill_Suppression ||
 						property == eProperty.Skill_Summoning ||
+						property == eProperty.Focus_Darkness ||
+						property == eProperty.Focus_Suppression ||
+						property == eProperty.Focus_Summoning ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -1032,6 +1076,10 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Darkness ||
 						property == eProperty.Skill_Suppression ||
 						property == eProperty.Skill_BoneArmy ||
+						property == eProperty.Focus_Darkness ||
+						property == eProperty.Focus_Suppression ||
+						property == eProperty.Focus_BoneArmy ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -2941,21 +2989,29 @@ namespace DOL.GS
 				case eProperty.Skill_Enhancement:
 				case eProperty.Skill_Rejuvenation:
 					{
-						if(realm != eRealm.Albion) { return false; }
+						if(realm != eRealm.Albion || (charClass != eCharacterClass.Cleric && charClass != eCharacterClass.Friar)) { return false; }
 						if ((type == eObjectType.Staff && this.Description == "friar") || (type == eObjectType.Shield && this.Type_Damage < 3) || type == eObjectType.CrushingWeapon)
 							return true;
 						break;
 					}
 				case eProperty.Skill_Augmentation:
 				case eProperty.Skill_Mending:
-				case eProperty.Skill_Subterranean: 
 					{
-						if(realm != eRealm.Midgard) { return false; }
+						if(realm != eRealm.Midgard || (charClass != eCharacterClass.Healer && charClass != eCharacterClass.Shaman)) { return false; }
 						if((type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Hammer) {
 							return true;
                         }
 						break;
                     }
+				case eProperty.Skill_Subterranean:
+					{
+						if (realm != eRealm.Midgard || charClass != eCharacterClass.Shaman)) { return false; }
+						if ((type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Hammer)
+						{
+							return true;
+						}
+						break;
+					}
 				case eProperty.Skill_Nurture:
 				case eProperty.Skill_Nature:
 				case eProperty.Skill_Regrowth:
@@ -3022,6 +3078,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Ranger &&
 							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden) {
 							return false;
 						}
@@ -3035,6 +3092,7 @@ namespace DOL.GS
 						if (charClass != eCharacterClass.Champion &&
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Bard &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden) {
 							return false;
 						}
@@ -3197,6 +3255,26 @@ namespace DOL.GS
 							return true;
 						break;
 					}
+				case eProperty.Skill_Parry:
+					if (charClass != eCharacterClass.Berserker &&  //midgard
+							charClass != eCharacterClass.Savage &&
+							charClass != eCharacterClass.Skald &&
+							charClass != eCharacterClass.Thane &&
+							charClass != eCharacterClass.Warrior &&
+							charClass != eCharacterClass.Blademaster && //hibernia
+							charClass != eCharacterClass.Champion &&
+							charClass != eCharacterClass.Hero &&
+							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Warden &&
+							charClass != eCharacterClass.Armsman && //albion
+							charClass != eCharacterClass.Friar &&
+							charClass != eCharacterClass.Mercenary &&
+							charClass != eCharacterClass.Paladin &&
+							charClass != eCharacterClass.Reaver)
+					{
+						return false;
+					}
+					return true;
 				case eProperty.Skill_Pathfinding:
 					{
 						if(charClass != eCharacterClass.Ranger) {
@@ -3211,6 +3289,7 @@ namespace DOL.GS
 						if (charClass != eCharacterClass.Champion &&
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Ranger) {
 							return false;
 						}
