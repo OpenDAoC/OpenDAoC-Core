@@ -30,7 +30,29 @@ namespace DOL.GS {
 
 			
 				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-				return true;
+
+            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+            {
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
+            }
+
+            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+            {
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
+            }
+
+            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+            {
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.Disease));
+            }
+
+
+            player.Health = player.MaxHealth;
+            player.Endurance = player.MaxEndurance;
+            player.Mana = player.MaxMana;
+
+            player.Out.SendStatusUpdate();
+            return true;
 			
 			
 		}
@@ -89,24 +111,7 @@ namespace DOL.GS {
                 if (!player.IsAlive && !playersToRez.ContainsKey(player))
                 {
                     playersToRez.Add(player, GameLoop.GameLoopTime);
-                } else
-                {
-                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
-                    {
-                        EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
-                    }
-
-                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
-                    {
-                        EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
-                    }
-
-                    if (player.IsSitting && !player.InCombatInLast(2000))
-                        player.Health = player.MaxHealth;
-
-                    player.Out.SendStatusUpdate();
-
-                }
+                } 
             }
 
             foreach (GamePlayer deadPlayer in playersToRez.Keys)
