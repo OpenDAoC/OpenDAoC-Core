@@ -4961,13 +4961,16 @@ namespace DOL.GS {
                             modelIDToAssign = 3311;
                             break;
                         case eCharacterClass.Healer:
-                            if (item.Item_Type != Slot.RIGHTHAND)
+                            if (item.Item_Type != Slot.RIGHTHAND || item.Item_Type != Slot.TWOHAND || item.Object_Type != (int)eObjectType.Hammer)
                             {
                                 SendNotValidMessage(player);
                                 price = 0;
                                 break;
                             }
-                            modelIDToAssign = 3335;
+                            if (item.Item_Type == Slot.RIGHTHAND)
+                                modelIDToAssign = 3335;
+                            else
+                                modelIDToAssign = 3336;
                             break;
                         case eCharacterClass.Hunter:
                             switch ((eObjectType)item.Object_Type)
