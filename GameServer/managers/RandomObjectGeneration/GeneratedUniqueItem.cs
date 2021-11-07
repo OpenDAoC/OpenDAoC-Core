@@ -1009,6 +1009,7 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Mending ||
 						property == eProperty.Skill_Augmentation ||
 						property == eProperty.Skill_Pacification ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -1018,6 +1019,7 @@ namespace DOL.GS
 					if (property == eProperty.Skill_Mending ||
 						property == eProperty.Skill_Augmentation ||
 						property == eProperty.Skill_Subterranean ||
+						property == eProperty.AllFocusLevels ||
 						property == eProperty.AllMagicSkills ||
 						property == eProperty.AllSkills
 						)
@@ -1875,6 +1877,7 @@ namespace DOL.GS
 
 			switch (property)
 			{
+				case eProperty.Skill_Mending:
 				case eProperty.Skill_Augmentation:
 					{
 						if(charClass != eCharacterClass.Healer && 
