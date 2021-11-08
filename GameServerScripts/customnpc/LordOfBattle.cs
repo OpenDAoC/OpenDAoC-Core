@@ -111,7 +111,17 @@ namespace DOL.GS {
                 if (!player.IsAlive && !playersToRez.ContainsKey(player))
                 {
                     playersToRez.Add(player, GameLoop.GameLoopTime);
-                } 
+                }
+
+                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+                {
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
+                }
+
+                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+                {
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
+                }
             }
 
             foreach (GamePlayer deadPlayer in playersToRez.Keys)
