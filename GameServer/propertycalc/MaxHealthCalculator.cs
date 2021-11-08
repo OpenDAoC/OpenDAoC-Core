@@ -109,12 +109,12 @@ namespace DOL.GS.PropertyCalc
 
 				if (living.Level < 10)
 				{
-					hp = living.Level * 20 + 20 + living.BaseBuffBonusCategory[(int)property];  // default
+					hp = living.Level * 20 + 20 + pet.Constitution/*living.BaseBuffBonusCategory[(int)property]*/;  // default
 				}
 				else
 				{
 					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.BaseBuffBonusCategory[(int)property];
+					hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + pet.Constitution /*living.BaseBuffBonusCategory[(int)property]*/;
 					if (living.Level < 25)
 						hp += 20;
 				}
@@ -142,7 +142,8 @@ namespace DOL.GS.PropertyCalc
 					conhp = hp / 2;
 
 				conhp = (int)Math.Floor(0.6666 * (double)conhp);
-				return conhp;
+				return hp;
+				//return conhp;
 			}
             else if (living is GameNPC)
 			{
