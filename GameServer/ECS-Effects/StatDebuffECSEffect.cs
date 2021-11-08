@@ -85,10 +85,10 @@ namespace DOL.GS
             {
                 if (EffectType == eEffect.MovementSpeedDebuff)
                 {
-                    if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
-                    {
-                        new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
-                    }
+                    //if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                    //{
+                    //    new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
+                    //}
 
                     //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
                     Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, EffectType);

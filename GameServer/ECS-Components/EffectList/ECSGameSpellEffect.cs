@@ -29,6 +29,8 @@ namespace DOL.GS
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;
+                if (SpellHandler.Spell.Value == 99)
+                    TriggersImmunity = true;
             }
             else if (SpellHandler.Spell.IsConcentration)
             {
