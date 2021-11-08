@@ -76,13 +76,15 @@ namespace DOL.GS
 		public const ushort ROG_ITEM_RESIST_CHANCE = 50;
 
 		//item chance to get skills
-		public const ushort ROG_ITEM_SKILL_CHANCE = 35;
+		public const ushort ROG_ITEM_SKILL_CHANCE = 75;
 
 		// Item chance to get All skills stat
 		public const ushort ROG_STAT_ALLSKILL_CHANCE = 25;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 50;
+
+		private bool hasSkill;
 
 		private eCharacterClass charClass = eCharacterClass.Unknown;
 		
@@ -160,6 +162,7 @@ namespace DOL.GS
 			this.Item_Type = (int)slot;
 			this.Type_Damage = (int)dmg;
 			this.charClass = charClass;
+			this.hasSkill = false;
 			
 			// shouldn't need more Randomized public set values
 			
@@ -391,16 +394,14 @@ namespace DOL.GS
 
 			for (int i = 0; i < number; i++)
 			{
-				eBonusType type;
-				if (i == 0)
-					type = eBonusType.Skill;
-				else
-					type = this.GetPropertyType(toa);
+				eBonusType type = this.GetPropertyType(toa);
 				eProperty property = this.GetProperty(type);
 				if (!this.BonusExists(property))
 				{
 					int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property) * multiplier);
 					this.WriteBonus(property, amount);
+					if (type == eBonusType.Skill) 
+						hasSkill = true;
 					fAddedBonus = true;
 					if (!fNamed && this.WriteMagicalName(property))
 					{
@@ -432,7 +433,7 @@ namespace DOL.GS
 			List<eBonusType> bonTypes = new List<eBonusType>();
 			if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
 			if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
-			//if (Util.Chance(ROG_ITEM_SKILL_CHANCE)) { bonTypes.Add(eBonusType.Skill); }
+			if (Util.Chance(ROG_ITEM_SKILL_CHANCE) && !hasSkill) { bonTypes.Add(eBonusType.Skill); }
 
 			//if none of the object types were added, default to magical
 			if (bonTypes.Count < 1)
@@ -1292,6 +1293,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Ranger &&
 							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden)
 						{
 							return false;
@@ -1304,6 +1306,7 @@ namespace DOL.GS
 						if (charClass != eCharacterClass.Champion &&
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Bard &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden)
 						{
 							return false;
@@ -1602,6 +1605,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Champion && //hibernia
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Valewalker &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden &&
 							charClass != eCharacterClass.Armsman && //albion
 							charClass != eCharacterClass.Friar &&
@@ -1619,6 +1623,7 @@ namespace DOL.GS
 						if (charClass != eCharacterClass.Champion &&
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Ranger)
 						{
 							return false;
@@ -1963,6 +1968,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Ranger &&
 							charClass != eCharacterClass.Nightshade &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden) {
 							return false;
 						}
@@ -1976,6 +1982,7 @@ namespace DOL.GS
 						if (charClass != eCharacterClass.Champion &&
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Bard &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Warden) {
 							return false;
 						}
@@ -2473,6 +2480,7 @@ namespace DOL.GS
 							charClass != eCharacterClass.Hero &&
 							charClass != eCharacterClass.Valewalker &&
 							charClass != eCharacterClass.Warden &&
+							charClass != eCharacterClass.Blademaster &&
 							charClass != eCharacterClass.Armsman && //albion
 							charClass != eCharacterClass.Friar &&
 							charClass != eCharacterClass.Mercenary &&
