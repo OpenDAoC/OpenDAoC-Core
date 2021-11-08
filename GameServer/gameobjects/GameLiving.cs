@@ -4350,10 +4350,11 @@ namespace DOL.GS
 					{
 						effectRemoved = false;
 					}
+					/*
 					else if (!isAttacker && spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
 					{
 						effectRemoved = false;
-					}
+					}*/
 					else
 					{
 						EffectService.RequestCancelEffect(effect);
