@@ -15,7 +15,8 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.TripleWield;
-        }
+			EffectService.RequestStartEffect(this);
+		}
 
         protected ushort m_startModel = 0;
 

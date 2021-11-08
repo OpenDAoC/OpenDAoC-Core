@@ -14,6 +14,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.QuickCast;
+            EffectService.RequestStartEffect(this);
         }
 
         public const int DURATION = 3000;

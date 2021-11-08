@@ -15,6 +15,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricks;
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 478; } }
@@ -63,6 +64,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricksDetrimental;
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 478; } }

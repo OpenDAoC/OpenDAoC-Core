@@ -18,6 +18,7 @@ namespace DOL.GS
 			m_guardSource = guardSource;
 			m_guardTarget = guardTarget;
 			EffectType = eEffect.Guard;
+			EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>

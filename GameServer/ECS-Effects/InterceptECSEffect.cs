@@ -19,6 +19,7 @@ namespace DOL.GS
 			m_interceptSource = interceptSource;
 			m_interceptTarget = interceptTarget;
 			EffectType = eEffect.Intercept;
+			EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>

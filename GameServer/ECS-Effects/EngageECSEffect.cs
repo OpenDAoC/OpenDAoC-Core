@@ -14,6 +14,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.Engage;
+            EffectService.RequestStartEffect(this);
         }
 
         /// <summary>

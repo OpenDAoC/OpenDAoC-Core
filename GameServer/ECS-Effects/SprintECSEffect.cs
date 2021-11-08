@@ -16,6 +16,7 @@ namespace DOL.GS
 		{
 			EffectType = eEffect.Sprint;
 			NextTick = GameLoop.GameLoopTime + 1;
+			EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>

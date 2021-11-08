@@ -18,7 +18,8 @@ namespace DOL.GS
 			m_protectSource = protectSource;
 			m_protectTarget = protectTarget;
             EffectType = eEffect.Protect;
-        }
+			EffectService.RequestStartEffect(this);
+		}
 
 		/// <summary>
 		/// The player protecting the target

@@ -58,7 +58,7 @@ namespace DOL.GS
                 }
             }
             
-            IsBuffActive = true;
+            //IsBuffActive = true;
         }
 
         public override void OnStopEffect()
