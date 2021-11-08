@@ -40,7 +40,7 @@ namespace DOL.GS
                 PulseFreq = 650;
             }
 
-            if (this is not ECSImmunityEffect)
+            if (this is not ECSImmunityEffect && this is not ECSPulseEffect)
                 EffectService.RequestStartEffect(this);
         }
 
