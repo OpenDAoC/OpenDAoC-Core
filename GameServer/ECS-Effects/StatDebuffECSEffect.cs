@@ -108,7 +108,7 @@ namespace DOL.GS
                 }
             }
 
-            if(EffectType == eEffect.ConstitutionDebuff || EffectType == eEffect.StrConDebuff)
+            if(EffectType == eEffect.ConstitutionDebuff || EffectType == eEffect.StrConDebuff || EffectType == eEffect.WsConDebuff)
             {
                 Owner.StartHealthRegeneration();
             }
