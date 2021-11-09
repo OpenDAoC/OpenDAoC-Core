@@ -901,7 +901,8 @@ namespace DOL.GS {
                 else if (Bonus1Type == 163
                   || Bonus1Type == 164
                   || Bonus1Type == 167
-                  || Bonus1Type == 168)
+                  || Bonus1Type == 168
+                  || Bonus1Type == 213)
                 {
                     totalUti += Bonus1 * 10;
                 }
@@ -933,7 +934,8 @@ namespace DOL.GS {
                 else if (Bonus2Type == 163
                   || Bonus2Type == 164
                   || Bonus2Type == 167
-                  || Bonus2Type == 168)
+                  || Bonus2Type == 168
+                  || Bonus2Type == 213)
                 {
                     totalUti += Bonus2 * 10;
                 }
@@ -965,7 +967,8 @@ namespace DOL.GS {
                 else if (Bonus3Type == 163
                   || Bonus3Type == 164
                   || Bonus3Type == 167
-                  || Bonus3Type == 168)
+                  || Bonus3Type == 168
+                  || Bonus3Type == 213)
                 {
                     totalUti += Bonus3 * 10;
                 }
@@ -997,7 +1000,8 @@ namespace DOL.GS {
                 else if (Bonus4Type == 163
                   || Bonus4Type == 164
                   || Bonus4Type == 167
-                  || Bonus4Type == 168)
+                  || Bonus4Type == 168
+                  || Bonus4Type == 213)
                 {
                     totalUti += Bonus4 * 10;
                 }
@@ -1029,7 +1033,8 @@ namespace DOL.GS {
                 else if (Bonus5Type == 163
                   || Bonus5Type == 164
                   || Bonus5Type == 167
-                  || Bonus5Type == 168)
+                  || Bonus5Type == 168
+                  || Bonus5Type == 213)
                 {
                     totalUti += Bonus5 * 10;
                 }
@@ -1061,7 +1066,8 @@ namespace DOL.GS {
                 else if (Bonus6Type == 163
                   || Bonus6Type == 164
                   || Bonus6Type == 167
-                  || Bonus6Type == 168)
+                  || Bonus6Type == 168
+                  || Bonus6Type == 213)
                 {
                     totalUti += Bonus6 * 10;
                 }
@@ -1093,7 +1099,8 @@ namespace DOL.GS {
                 else if (Bonus7Type == 163
                   || Bonus7Type == 164
                   || Bonus7Type == 167
-                  || Bonus7Type == 168)
+                  || Bonus7Type == 168
+                  || Bonus7Type == 213)
                 {
                     totalUti += Bonus7 * 10;
                 }
@@ -1124,7 +1131,8 @@ namespace DOL.GS {
                 else if (Bonus8Type == 163
                   || Bonus8Type == 164
                   || Bonus8Type == 167
-                  || Bonus8Type == 168)
+                  || Bonus8Type == 168
+                  || Bonus8Type == 213)
                 {
                     totalUti += Bonus8 * 10;
                 }
@@ -1155,7 +1163,8 @@ namespace DOL.GS {
                 else if (Bonus9Type == 163
                   || Bonus9Type == 164
                   || Bonus9Type == 167
-                  || Bonus9Type == 168)
+                  || Bonus9Type == 168
+                  || Bonus9Type == 213)
                 {
                     totalUti += Bonus9 * 10;
                 }
@@ -1186,7 +1195,8 @@ namespace DOL.GS {
                 else if (Bonus10Type == 163
                   || Bonus10Type == 164
                   || Bonus10Type == 167
-                  || Bonus10Type == 168)
+                  || Bonus10Type == 168
+                  || Bonus10Type == 213)
                 {
                     totalUti += Bonus10 * 10;
                 }
@@ -1217,7 +1227,8 @@ namespace DOL.GS {
                 else if (ExtraBonusType == 163
                   || ExtraBonusType == 164
                   || ExtraBonusType == 167
-                  || ExtraBonusType == 168)
+                  || ExtraBonusType == 168
+                  || ExtraBonusType == 213)
                 {
                     totalUti += ExtraBonus * 10;
                 }
