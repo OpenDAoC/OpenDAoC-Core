@@ -42,14 +42,14 @@ namespace DOL.GS.Spells
             {
 				MessageToCaster(target.Name + " already has this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
-				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
 			}
 			if (EffectListService.GetEffectOnTarget(target, eEffect.NearsightImmunity) != null)
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
-				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
 			}
 			base.ApplyEffectOnTarget(target, effectiveness);

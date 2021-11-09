@@ -61,7 +61,7 @@ namespace DOL.GS.Commands
             {
                 string newsTxt;
                 var news = new List<string>();
-                string url = "https://www.atlasfreeshard.com/servernews.txt";
+                string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
                 newsTxt = newsClient.DownloadString(url);
                 news.Add(newsTxt);
                 client.Out.SendCustomTextWindow("Server News " + thisDay.ToString("d"), news);

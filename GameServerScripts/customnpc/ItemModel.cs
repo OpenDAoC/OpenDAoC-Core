@@ -102,6 +102,11 @@ namespace DOL.GS {
             {
                 #region helms
                 case "dragonslayer helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -184,6 +189,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "dragonsworn helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -224,6 +234,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "crown of zahur":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -242,6 +257,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "crown of zahur variant":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -260,6 +280,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "winged helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -278,6 +303,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "oceanus helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -359,6 +389,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -440,6 +475,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -521,6 +561,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -602,6 +647,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "wizard hat":
+                    if (item.Item_Type != Slot.HELM || item.Object_Type != (int)eObjectType.Cloth)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch (player.Realm)
                     {
@@ -620,6 +670,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "robin hood hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch (player.Realm)
                     {
@@ -635,34 +690,74 @@ namespace DOL.GS {
                     }
                     break;
                 case "fur cap":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1283;
                     break;
                 case "tarboosh":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1284;
                     break;
                 case "leaf hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1285;
                     break;
                 case "wing hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1286;
                     break;
                 case "jester hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1287;
                     break;
                 case "stag helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1288;
                     break;
                 case "wolf helm":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 1289;
                     break;
                 case "candle hat":
+                    if (item.Item_Type != Slot.HELM)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     modelIDToAssign = 4169;
                     break;
@@ -670,6 +765,11 @@ namespace DOL.GS {
 
                 #region torsos
                 case "dragonslayer breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -752,6 +852,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "dragonsworn breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -789,6 +894,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -826,6 +936,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -863,6 +978,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -900,6 +1020,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -937,6 +1062,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -964,6 +1094,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -991,6 +1126,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1020,6 +1160,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "eirene's chest":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1038,6 +1183,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "naliah's robe":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1056,6 +1206,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "guard of valor":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1074,6 +1229,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "golden scarab vest":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     switch (player.Realm)
                     {
@@ -1092,6 +1252,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "oceanus breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1173,6 +1338,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1254,6 +1424,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1335,6 +1510,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus breastplate":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1416,6 +1596,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "class epic chestpiece":
+                    if (item.Item_Type != Slot.TORSO)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch ((eCharacterClass)player.CharacterClass.ID)
                     {
@@ -1547,6 +1732,11 @@ namespace DOL.GS {
 
                 #region sleeves
                 case "dragonslayer sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1629,6 +1819,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1666,6 +1861,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1703,6 +1903,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1740,6 +1945,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1777,6 +1987,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1804,6 +2019,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1831,6 +2051,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1860,14 +2085,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "foppish sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1732;
                     break;
                 case "arms of the wind":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1733;
                     break;
                 case "oceanus sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1896,6 +2136,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1924,6 +2169,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1952,6 +2202,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus sleeves":
+                    if (item.Item_Type != Slot.ARMS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -1983,6 +2238,11 @@ namespace DOL.GS {
 
                 #region pants
                 case "dragonslayer pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2065,6 +2325,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2102,6 +2367,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2139,6 +2409,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2176,6 +2451,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2213,6 +2493,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2240,6 +2525,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2267,6 +2557,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2296,14 +2591,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "wing's dive":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1767;
                     break;
                 case "alvarus' leggings":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1744;
                     break;
                 case "oceanus pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2332,6 +2642,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2360,6 +2675,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2388,6 +2708,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus pants":
+                    if (item.Item_Type != Slot.LEGS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2419,6 +2744,11 @@ namespace DOL.GS {
 
                 #region boots
                 case "dragonslayer boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2501,6 +2831,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2538,6 +2873,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2575,6 +2915,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2612,6 +2957,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2649,6 +2999,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2676,6 +3031,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2703,6 +3063,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2732,14 +3097,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "enyalio's boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2488;
                     break;
                 case "flamedancer's boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1731;
                     break;
                 case "oceanus boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2768,6 +3148,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2796,6 +3181,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2824,6 +3214,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus boots":
+                    if (item.Item_Type != Slot.FEET)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2855,6 +3250,11 @@ namespace DOL.GS {
 
                 #region gloves
                 case "dragonslayer gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon * 2;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2937,6 +3337,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good shar gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -2974,6 +3379,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed shar gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3011,6 +3421,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good inconnu gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3048,6 +3463,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed inconnu gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3085,6 +3505,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "good realm gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3112,6 +3537,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "possessed realm gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3139,6 +3569,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "mino gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = festive;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3168,14 +3603,29 @@ namespace DOL.GS {
                     }
                     break;
                 case "maddening scalars":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1746;
                     break;
                 case "sharkskin gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1734;
                     break;
                 case "oceanus gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3204,6 +3654,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "stygia gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3232,6 +3687,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "volcanus gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3260,6 +3720,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "aerus gloves":
+                    if (item.Item_Type != Slot.HANDS)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eObjectType)item.Object_Type)
                     {
@@ -3292,6 +3757,11 @@ namespace DOL.GS {
                 #region cloaks 
 
                 case "realm cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakexpensive;
                     switch ((eRealm)player.Realm)
                     {
@@ -3308,6 +3778,11 @@ namespace DOL.GS {
                     break;
 
                 case "dragonslayer cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakexpensive;
                     switch ((eRealm)player.Realm)
                     {
@@ -3324,71 +3799,141 @@ namespace DOL.GS {
                     break;
 
                 case "dragonsworn cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 3790;
                     break;
 
                 case "valentines cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 3752;
                     break;
 
                 case "winter cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 4115;
                     break;
 
                 case "clean leather cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 3637;
                     break;
 
                 case "corrupt leather cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 3634;
                     break;
 
                 case "cloudsong":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1727;
                     break;
 
-                case "shades of mist": //lol spelled it right here so its broken until I rebuild
+                case "shades of mist":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1726;
                     break;
 
                 case "magma cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1725;
                     break;
 
                 case "stygian cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1724;
                     break;
 
                 case "aerus cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1720;
                     break;
 
                 case "oceanus cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1722;
                     break;
 
                 case "harpy feather cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1721;
                     break;
 
                 case "healer's embrace":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1723;
                     break;
 
                 case "collared cloak":
+                    if (item.Item_Type != Slot.CLOAK)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = cloakcheap;
                     modelIDToAssign = 669;
                     break;
@@ -3399,50 +3944,134 @@ namespace DOL.GS {
 
                 #region 1h wep
                 case "traitor's dagger 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1668;
                     break;
                 case "traitor's axe 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3452;
                     break;
                 case "croc tooth dagger 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1669;
                     break;
                 case "croc tooth axe 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3451;
                     break;
                 case "golden spear 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Thrust)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1807;
                     break;
                 case "malice axe 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2109;
                     break;
                 case "malice hammer 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3447;
                     break;
                 case "bruiser hammer 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1671;
                     break;
                 case "battler hammer 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND ||
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3453;
                     break;
                 case "battler sword 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2112;
                     break;
                 case "scepter of the meritorious":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1672;
                     break;
                 case "hilt 1h":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) ||
+                        item.Type_Damage == (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch (player.Realm)
                     {
@@ -3458,34 +4087,69 @@ namespace DOL.GS {
                     }
                     break;
                 case "rolling pin":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 3458;
                     break;
                 case "wakazashi":
+                    if (item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND &&
+                        item.Type_Damage != (int)eDamageType.Thrust &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2209;
                     break;
                 case "turkey leg":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     modelIDToAssign = 3454;
                     break;
-                case "key":
-                    price = champion;
-                    modelIDToAssign = 3455;
-                    break;
                 case "cleaver":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 654;
                     break;
                 case "khopesh":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Slash)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2195;
                     break;
-                case "torch":
-                    price = champion;
-                    modelIDToAssign = 3471;
-                    break;
                 case "stein":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     switch (player.Realm)
                     {
@@ -3501,17 +4165,34 @@ namespace DOL.GS {
                     }
                     break;
                 case "hot metal rod":
+                    if ((item.Item_Type != Slot.RIGHTHAND &&
+                        item.Item_Type != Slot.LEFTHAND) &&
+                        item.Type_Damage != (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     modelIDToAssign = 2984;
                     break;
 
                 //hand to hand
                 case "snakecharmer's fist":
+                    if (item.Object_Type != (int)eObjectType.HandToHand)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2469;
                     break;
 
                 case "scorched fist":
+                    if (item.Object_Type != (int)eObjectType.HandToHand)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -3528,6 +4209,11 @@ namespace DOL.GS {
                     break;
 
                 case "dragonsworn fist":
+                    if (item.Object_Type != (int)eObjectType.HandToHand)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -3545,11 +4231,21 @@ namespace DOL.GS {
 
                 //flex
                 case "snakecharmer's whip":
+                    if (item.Object_Type != (int)eObjectType.Flexible)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2119;
                     break;
 
                 case "scorched whip":
+                    if (item.Object_Type != (int)eObjectType.Flexible)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -3566,6 +4262,11 @@ namespace DOL.GS {
                     break;
 
                 case "dragonsworn whip":
+                    if (item.Object_Type != (int)eObjectType.Flexible)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -3587,82 +4288,233 @@ namespace DOL.GS {
                 #region 2h wep
 
                 case "pickaxe":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2983;
                     break;
 
                 //axe
                 case "malice axe 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2110;
                     break;
                 case "scorched axe 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3705;
                     break;
                 case "magma axe 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2217;
                     break;
 
                 //spears
                 case "golden spear 2h":
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                        item.Object_Type != (int)eObjectType.CelticSpear)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1662;
                     break;
                 case "dragon spear 2h":
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                           item.Object_Type != (int)eObjectType.CelticSpear)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     modelIDToAssign = 3819;
                     break;
                 case "scorched spear 2h":
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                        item.Object_Type != (int)eObjectType.CelticSpear)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3714;
                     break;
                 case "trident spear 2h":
+                    if (item.Object_Type != (int)eObjectType.Spear &&
+                        item.Object_Type != (int)eObjectType.CelticSpear)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2191;
                     break;
 
                 //hammers
                 case "bruiser hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2113;
                     break;
                 case "battler hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3448;
                     break;
                 case "malice hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3449;
                     break;
                 case "scorched hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3704;
                     break;
                 case "magma hammer 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Crush ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2215;
                     break;
 
                 //swords
                 case "battler sword 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1670;
                     break;
                 case "scorched sword 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3701;
                     break;
                 case "katana 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2208;
                     break;
                 case "khopesh 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Slash ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     modelIDToAssign = 2196;
                     break;
                 case "hilt 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe ||
+                        item.Type_Damage == (int)eDamageType.Crush)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     switch (player.Realm)
                     {
@@ -3680,60 +4532,135 @@ namespace DOL.GS {
 
                 //thrust
                 case "scorched thrust 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3700;
                     break;
                 case "dragon thrust 2h":
+                    if (item.Item_Type != Slot.TWOHAND ||
+                        item.Type_Damage != (int)eDamageType.Thrust ||
+                        item.Object_Type == (int)eObjectType.PolearmWeapon ||
+                        item.Object_Type == (int)eObjectType.Spear ||
+                        item.Object_Type == (int)eObjectType.CelticSpear ||
+                        item.Object_Type == (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     modelIDToAssign = 3817;
                     break;
 
                 //staffs
                 case "traldor's oracle":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1659;
                     break;
                 case "trident of the gods":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1660;
                     break;
                 case "tartaros gift":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1658;
                     break;
                 case "dragonsworn staff":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     modelIDToAssign = 3827;
                     break;
                 case "scorched staff":
+                    if (item.Object_Type != (int)eObjectType.Staff)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3710;
                     break;
 
                 //scythes
                 case "dragonsworn scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3825;
                     break;
                 case "magma scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 2213;
                     break;
                 case "scorched scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3708;
                     break;
                 case "scythe of kings":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 3450;
                     break;
                 case "snakechamer's scythe":
+                    if (item.Object_Type != (int)eObjectType.Scythe)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 2111;
                     break;
 
                 //polearms
                 case "dragonsworn pole":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = dragon;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -3749,10 +4676,20 @@ namespace DOL.GS {
                     }
                     break;
                 case "pole of kings":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1661;
                     break;
                 case "scorched pole":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     switch ((eDamageType)item.Type_Damage)
                     {
@@ -3768,6 +4705,11 @@ namespace DOL.GS {
                     }
                     break;
                 case "golden pole":
+                    if (item.Object_Type != (int)eObjectType.PolearmWeapon)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1662;
                     break;
@@ -3778,10 +4720,17 @@ namespace DOL.GS {
 
                 case "class epic 1h":
                     price = champion;
+                    item.IsTradable = false;
                     switch ((eCharacterClass)player.CharacterClass.ID)
                     {
                         //alb
                         case eCharacterClass.Armsman:
+                            if(item.Object_Type == (int)eObjectType.Shield)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eDamageType)item.Type_Damage)
                             {
                                 case eDamageType.Thrust:
@@ -3796,15 +4745,34 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Cabalist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3264;
                             break;
                         case eCharacterClass.Cleric:
                             modelIDToAssign = 3282;
                             break;
                         case eCharacterClass.Friar:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3272;
                             break;
                         case eCharacterClass.Infiltrator:
+                            if (item.Object_Type != (int)eObjectType.ThrustWeapon ||
+                                item.Object_Type != (int)eObjectType.SlashingWeapon)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eDamageType)item.Type_Damage)
                             {
                                 case eDamageType.Thrust:
@@ -3816,6 +4784,14 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Mercenary:
+                            if (item.Object_Type != (int)eObjectType.ThrustWeapon ||
+                                item.Object_Type != (int)eObjectType.SlashingWeapon ||
+                                item.Object_Type != (int)eObjectType.CrushingWeapon)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eDamageType)item.Type_Damage)
                             {
                                 case eDamageType.Thrust:
@@ -3830,6 +4806,13 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Minstrel:
+                            if (item.Object_Type != (int)eObjectType.ThrustWeapon ||
+                                item.Object_Type != (int)eObjectType.SlashingWeapon)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eDamageType)item.Type_Damage)
                             {
                                 case eDamageType.Thrust:
@@ -3841,9 +4824,23 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Necromancer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3268;
                             break;
                         case eCharacterClass.Paladin:
+                            if (item.Object_Type != (int)eObjectType.ThrustWeapon ||
+                                item.Object_Type != (int)eObjectType.SlashingWeapon ||
+                                item.Object_Type != (int)eObjectType.CrushingWeapon)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eDamageType)item.Type_Damage)
                             {
                                 case eDamageType.Thrust:
@@ -3864,6 +4861,14 @@ namespace DOL.GS {
                             }
                             else
                             {
+                                if (item.Object_Type != (int)eObjectType.ThrustWeapon ||
+                                item.Object_Type != (int)eObjectType.SlashingWeapon ||
+                                item.Object_Type != (int)eObjectType.CrushingWeapon)
+                                {
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
+                                }
                                 switch ((eDamageType)item.Type_Damage)
                                 {
                                     case eDamageType.Thrust:
@@ -3879,6 +4884,13 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Scout:
+                            if (item.Object_Type != (int)eObjectType.ThrustWeapon ||
+                                item.Object_Type != (int)eObjectType.SlashingWeapon)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eDamageType)item.Type_Damage)
                             {
                                 case eDamageType.Thrust:
@@ -3890,12 +4902,30 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Sorcerer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3265;
                             break;
                         case eCharacterClass.Theurgist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3266;
                             break;
                         case eCharacterClass.Wizard:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3267;
                             break;
 
@@ -3915,13 +4945,32 @@ namespace DOL.GS {
                                 case eObjectType.LeftAxe:
                                     modelIDToAssign = 3321;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Bonedancer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3311;
                             break;
                         case eCharacterClass.Healer:
-                            modelIDToAssign = 3335;
+                            if (item.Item_Type != Slot.RIGHTHAND || item.Item_Type != Slot.TWOHAND || item.Object_Type != (int)eObjectType.Hammer)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
+                            if (item.Item_Type == Slot.RIGHTHAND)
+                                modelIDToAssign = 3335;
+                            else
+                                modelIDToAssign = 3336;
                             break;
                         case eCharacterClass.Hunter:
                             switch ((eObjectType)item.Object_Type)
@@ -3939,6 +4988,11 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3317;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
+
                             }
                             break;
                         case eCharacterClass.Runemaster:
@@ -3959,50 +5013,95 @@ namespace DOL.GS {
                                 case eObjectType.HandToHand:
                                     modelIDToAssign = 3333;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Shadowblade:
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Axe:
-                                    modelIDToAssign = 3315;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3316;
+                                    else
+                                        modelIDToAssign = 3315;
                                     break;
                                 case eObjectType.Sword:
-                                    modelIDToAssign = 3313;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3314;
+                                    else
+                                        modelIDToAssign = 3313;
+                                    break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
                         case eCharacterClass.Shaman:
-                            modelIDToAssign = 3337;
+                            if (item.Item_Type == Slot.TWOHAND)
+                                modelIDToAssign = 3338;
+                            else
+                                modelIDToAssign = 3337;
                             break;
                         case eCharacterClass.Skald:
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Hammer:
-                                    modelIDToAssign = 3341;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3342;
+                                    else
+                                        modelIDToAssign = 3341;
                                     break;
                                 case eObjectType.Axe:
-                                    modelIDToAssign = 3339;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3340;
+                                    else
+                                        modelIDToAssign = 3339;
                                     break;
                                 case eObjectType.Sword:
-                                    modelIDToAssign = 3343;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3344;
+                                    else
+                                        modelIDToAssign = 3343;
+                                    break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
                         case eCharacterClass.Spiritmaster:
+                            if(item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3310;
                             break;
                         case eCharacterClass.Thane:
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Hammer:
-                                    modelIDToAssign = 3347;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3348;
+                                    else
+                                        modelIDToAssign = 3347;
                                     break;
                                 case eObjectType.Axe:
-                                    modelIDToAssign = 3345;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3346;
+                                    else
+                                        modelIDToAssign = 3345;
                                     break;
                                 case eObjectType.Sword:
-                                    modelIDToAssign = 3349;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3350;
+                                    else
+                                        modelIDToAssign = 3349;
                                     break;
                             }
                             break;
@@ -4010,22 +5109,44 @@ namespace DOL.GS {
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Hammer:
-                                    modelIDToAssign = 3353;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3354;
+                                    else
+                                        modelIDToAssign = 3353;
                                     break;
                                 case eObjectType.Axe:
-                                    modelIDToAssign = 3351;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3352;
+                                    else
+                                        modelIDToAssign = 3351;
                                     break;
                                 case eObjectType.Sword:
-                                    modelIDToAssign = 3355;
+                                    if (item.Item_Type == Slot.TWOHAND)
+                                        modelIDToAssign = 3356;
+                                    else
+                                        modelIDToAssign = 3355;
                                     break;
                             }
                             break;
 
                         //hib
                         case eCharacterClass.Animist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3229;
                             break;
                         case eCharacterClass.Bard:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Blunt)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4037,6 +5158,14 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Blademaster:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Blunt &&
+                                item.Object_Type != (int)eObjectType.Piercing)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4051,6 +5180,14 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Champion:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Blunt &&
+                                item.Object_Type != (int)eObjectType.Piercing)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4065,6 +5202,13 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Druid:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Blunt)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4076,12 +5220,32 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Eldritch:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3226;
                             break;
                         case eCharacterClass.Enchanter:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3227;
                             break;
                         case eCharacterClass.Hero:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Blunt &&
+                                item.Object_Type != (int)eObjectType.Piercing)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4096,9 +5260,22 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Mentalist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3228;
                             break;
                         case eCharacterClass.Nightshade:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Piercing)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4110,6 +5287,13 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Ranger:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Piercing)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4121,9 +5305,22 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Valewalker:
+                            if (item.Object_Type != (int)eObjectType.Scythe)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3231;
                             break;
                         case eCharacterClass.Warden:
+                            if (item.Object_Type != (int)eObjectType.Blades &&
+                                item.Object_Type != (int)eObjectType.Blunt)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             switch ((eObjectType)item.Object_Type)
                             {
                                 case eObjectType.Blades:
@@ -4139,6 +5336,7 @@ namespace DOL.GS {
 
                 case "class epic 2h":
                     price = champion;
+                    item.IsTradable = false;
                     switch ((eCharacterClass)player.CharacterClass.ID)
                     {
                         //alb
@@ -4156,6 +5354,10 @@ namespace DOL.GS {
                                     case eDamageType.Crush:
                                         modelIDToAssign = 3298;
                                         break;
+                                    default:
+                                        SendNotValidMessage(player);
+                                        price = 0;
+                                        break;
                                 }
                             }
                             else
@@ -4171,19 +5373,47 @@ namespace DOL.GS {
                                     case eDamageType.Crush:
                                         modelIDToAssign = 3302;
                                         break;
+                                    default:
+                                        SendNotValidMessage(player);
+                                        price = 0;
+                                        break;
                                 }
                             }
                             break;
                         case eCharacterClass.Cabalist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3264;
                             break;
                         case eCharacterClass.Cleric:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3282;
                             break;
                         case eCharacterClass.Friar:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3271;
                             break;
                         case eCharacterClass.Necromancer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3268;
                             break;
                         case eCharacterClass.Paladin:
@@ -4198,15 +5428,43 @@ namespace DOL.GS {
                                 case eDamageType.Crush:
                                     modelIDToAssign = 3308;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Sorcerer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3265;
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             break;
                         case eCharacterClass.Theurgist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3266;
                             break;
                         case eCharacterClass.Wizard:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3267;
                             break;
 
@@ -4223,12 +5481,28 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3326;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Bonedancer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3311;
                             break;
                         case eCharacterClass.Healer:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3335;
                             break;
                         case eCharacterClass.Hunter:
@@ -4247,9 +5521,19 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3318;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Runemaster:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3309;
                             break;
                         case eCharacterClass.Savage:
@@ -4264,6 +5548,10 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3332;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Shadowblade:
@@ -4275,9 +5563,19 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3314;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Shaman:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3338;
                             break;
                         case eCharacterClass.Skald:
@@ -4292,9 +5590,19 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3344;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Spiritmaster:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3310;
                             break;
                         case eCharacterClass.Thane:
@@ -4308,6 +5616,10 @@ namespace DOL.GS {
                                     break;
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3350;
+                                    break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
                                     break;
                             }
                             break;
@@ -4323,11 +5635,21 @@ namespace DOL.GS {
                                 case eObjectType.Sword:
                                     modelIDToAssign = 3356;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
 
                         //hib
                         case eCharacterClass.Animist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3229;
                             break;
                         case eCharacterClass.Champion:
@@ -4342,12 +5664,28 @@ namespace DOL.GS {
                                 case eDamageType.Crush:
                                     modelIDToAssign = 3253;
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
                             }
                             break;
                         case eCharacterClass.Eldritch:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3226;
                             break;
                         case eCharacterClass.Enchanter:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3227;
                             break;
                         case eCharacterClass.Hero:
@@ -4366,7 +5704,6 @@ namespace DOL.GS {
                                     modelIDToAssign = 3263;
                                     break;
                                 case eObjectType.LargeWeapons:
-                                    //yay weird daoc weapon structure
                                     switch ((eDamageType)item.Type_Damage)
                                     {
                                         case eDamageType.Slash:
@@ -4380,13 +5717,29 @@ namespace DOL.GS {
                                             break;
                                     }
                                     break;
+                                default:
+                                    SendNotValidMessage(player);
+                                    price = 0;
+                                    break;
 
                             }
                             break;
                         case eCharacterClass.Mentalist:
+                            if (item.Object_Type != (int)eObjectType.Staff)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3228;
                             break;
                         case eCharacterClass.Valewalker:
+                            if (item.Object_Type != (int)eObjectType.Scythe)
+                            {
+                                SendNotValidMessage(player);
+                                price = 0;
+                                break;
+                            }
                             modelIDToAssign = 3231;
                             break;
                     }
@@ -4397,69 +5750,101 @@ namespace DOL.GS {
 
                 #region shields
                 case "aten's shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1663;
                     break;
                 case "cyclop's eye":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1664;
                     break;
                 case "shield of khaos":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1665;
                     break;
                 case "oceanus shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
                     {
-                        price = toageneric;
-                        if (item.Type_Damage == 1)//small shield
-                        {
-                            modelIDToAssign = 2192;
-                        }
-                        else if (item.Type_Damage == 2)
-                        {
-                            modelIDToAssign = 2193;
-                        }
-                        else if (item.Type_Damage == 3)
-                        {
-                            modelIDToAssign = 2194;
-                        }
+                        SendNotValidMessage(player);
                         break;
                     }
+                    price = toageneric;
+                    if (item.Type_Damage == 1)//small shield
+                    {
+                        modelIDToAssign = 2192;
+                    }
+                    else if (item.Type_Damage == 2)
+                    {
+                        modelIDToAssign = 2193;
+                    }
+                    else if (item.Type_Damage == 3)
+                    {
+                        modelIDToAssign = 2194;
+                    }
+                    break;
+
                 case "aerus shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
                     {
-                        price = toageneric;
-                        if (item.Type_Damage == 1)//small shield
-                        {
-                            modelIDToAssign = 2210;
-                        }
-                        else if (item.Type_Damage == 2)
-                        {
-                            modelIDToAssign = 2211;
-                        }
-                        else if (item.Type_Damage == 3)
-                        {
-                            modelIDToAssign = 2212;
-                        }
+                        SendNotValidMessage(player);
                         break;
                     }
+                    price = toageneric;
+                    if (item.Type_Damage == 1)//small shield
+                    {
+                        modelIDToAssign = 2210;
+                    }
+                    else if (item.Type_Damage == 2)
+                    {
+                        modelIDToAssign = 2211;
+                    }
+                    else if (item.Type_Damage == 3)
+                    {
+                        modelIDToAssign = 2212;
+                    }
+                    break;
+
                 case "magma shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
                     {
-                        price = toageneric;
-                        if (item.Type_Damage == 1)//small shield
-                        {
-                            modelIDToAssign = 2218;
-                        }
-                        else if (item.Type_Damage == 2)
-                        {
-                            modelIDToAssign = 2219;
-                        }
-                        else if (item.Type_Damage == 3)
-                        {
-                            modelIDToAssign = 2220;
-                        }
+                        SendNotValidMessage(player);
                         break;
                     }
+                    price = toageneric;
+                    if (item.Type_Damage == 1)//small shield
+                    {
+                        modelIDToAssign = 2218;
+                    }
+                    else if (item.Type_Damage == 2)
+                    {
+                        modelIDToAssign = 2219;
+                    }
+                    else if (item.Type_Damage == 3)
+                    {
+                        modelIDToAssign = 2220;
+                    }
+                    break;
+
                 case "minotaur shield":
+                    if (item.Object_Type != (int)eObjectType.Shield)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3554;
                     break;
@@ -4470,6 +5855,11 @@ namespace DOL.GS {
                 //case "dragonslayer harp": probably doesn't work
                 //     break;
                 case "class epic harp":
+                    if (item.Object_Type != (int)eObjectType.Instrument)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = epic;
                     if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Bard)
                     {
@@ -4485,10 +5875,23 @@ namespace DOL.GS {
                     }
                     break;
                 case "labyrinth harp":
+                    if (item.Object_Type != (int)eObjectType.Instrument)
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3688;
                     break;
                 case "class epic bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = champion;
                     if ((eCharacterClass)player.CharacterClass.ID == eCharacterClass.Scout)
                     {
@@ -4508,14 +5911,41 @@ namespace DOL.GS {
                     }
                     break;
                 case "fool's bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow &&
+                        item.Object_Type != (int)eObjectType.Fired
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1666;
                     break;
                 case "braggart's bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow &&
+                        item.Object_Type != (int)eObjectType.Fired
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = artifact;
                     modelIDToAssign = 1667;
                     break;
                 case "labyrinth bow":
+                    if (item.Object_Type != (int)eObjectType.CompositeBow &&
+                        item.Object_Type != (int)eObjectType.Longbow &&
+                        item.Object_Type != (int)eObjectType.RecurvedBow &&
+                        item.Object_Type != (int)eObjectType.Fired
+                        )
+                    {
+                        SendNotValidMessage(player);
+                        break;
+                    }
                     price = toageneric;
                     modelIDToAssign = 3706;
                     break;
@@ -4570,6 +6000,11 @@ namespace DOL.GS {
             }
 
             return true;
+        }
+
+        private void SendNotValidMessage(GamePlayer player)
+        {
+            SendReply(player, "This skin is not valid for this item type. Please try a different combo.");
         }
 
 
@@ -4810,6 +6245,8 @@ namespace DOL.GS {
                                     "[Golden Spear 1h](" + artifact + " RPs)\n" +
                                     "[Wakazashi](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                     "");
                                 break;
 
                             case eDamageType.Crush:
@@ -4832,11 +6269,13 @@ namespace DOL.GS {
                                     "[Battler Sword 1h](" + artifact + " RPs)\n" +
                                     "[Khopesh](" + epic + " RPs)\n" +
                                     "[Cleaver](" + epic + " RPs)\n" +
+                                    "[Wakazashi](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                     "");
                                 break;
                         }
-                        SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
-                                     "");
+                        
                     }
                     SendReply(t, "Additionally, I can apply an [class epic 1h] " + champion + " skin. \n");
                     break;
@@ -4915,6 +6354,7 @@ namespace DOL.GS {
                                     "[Katana 2h](" + epic + " RPs)\n" +
                                     "[Pickaxe](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n");
                                 break;
 
                             case eDamageType.Crush:
@@ -4937,11 +6377,11 @@ namespace DOL.GS {
                                     "[Scorched Sword 2h](" + toageneric + " RPs)\n" +
                                     "[Katana 2h](" + epic + " RPs)\n" +
                                     "");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n");
                                 break;
                         }
                     }
-                    SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n" +
-                                "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
+                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
                     break;
 
                 case Slot.RANGED:

@@ -47,7 +47,7 @@ namespace DOL.GS.PropertyCalc
                 {
 					if (raToughness.Level > 0)
                     {
-						raToughnessAmount += (hpBase * raToughness.Level) / 100;
+						raToughnessAmount += (hpBase * raToughness.Level * 3) / 100;
 					}
                 }
                 // --- [ END ] --- AtlasOF_Thoughness ---------------------------------------------------------
@@ -77,18 +77,44 @@ namespace DOL.GS.PropertyCalc
 
 				//todo : use material too to calculate maxhealth
 			}
-			else if (living is GameNPC)
-			{
+			else if (living is TheurgistPet theu)
+            {
+				int hp = 1;
+				if(theu.Level < 10)
+                {
+					hp += theu.Level * 2;
+                } else
+                {
+					hp = theu.Constitution * theu.Level * 10 / 44;
+                }
+				return hp;
+
+            }
+			else if (living is TurretPet ani)
+            {
+				int hp = 1;
+				if (ani.Level < 2)
+				{
+					hp += ani.Level * 2;
+				}
+				else
+				{
+					hp = ani.Constitution * ani.Level;
+				}
+				return hp;
+			}
+            else if (living is GamePet pet)
+            {
 				int hp = 0;
 
-				if (living.Level<10)
+				if (living.Level < 10)
 				{
-					hp = living.Level * 20 + 20 + living.BaseBuffBonusCategory[(int)property];	// default
+					hp = living.Level * 20 + 20 + pet.Constitution/*living.BaseBuffBonusCategory[(int)property]*/;  // default
 				}
 				else
 				{
 					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 11*living.Level + 0.548331 * living.Level * living.Level) + living.BaseBuffBonusCategory[(int)property];
+					hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + pet.Constitution /*living.BaseBuffBonusCategory[(int)property]*/;
 					if (living.Level < 25)
 						hp += 20;
 				}
@@ -115,18 +141,61 @@ namespace DOL.GS.PropertyCalc
 				else if (conhp < hp / 2)
 					conhp = hp / 2;
 
-				return conhp;
+				conhp = (int)Math.Floor(0.6666 * (double)conhp);
+				return hp;
+				//return conhp;
+			}
+            else if (living is GameNPC)
+			{
+				int hp = 0;
+
+				if (living.Level<10)
+				{
+					hp = living.Level * 20 + 20 + (living as GameNPC).Constitution /*living.BaseBuffBonusCategory[(int)property]*/;	// default
+				}
+				else
+				{
+					// approx to original formula, thx to mathematica :)
+					hp = (int)(50 + 11*living.Level + 0.548331 * living.Level * living.Level) + (living as GameNPC).Constitution;
+					if (living.Level < 25)
+						hp += 20;
+				}
+
+				int basecon = (living as GameNPC).Constitution;
+				int conmod = 20; // at level 50 +75 con ~= +300 hit points
+
+				// first adjust hitpoints based on base CON
+
+				if (basecon != ServerProperties.Properties.GAMENPC_BASE_CON)
+				{
+					hp = Math.Max(1, hp + ((basecon - ServerProperties.Properties.GAMENPC_BASE_CON) * ServerProperties.Properties.GAMENPC_HP_GAIN_PER_CON));
+				}
+
+				// Now adjust for buffs
+
+				// adjust hit points based on constitution difference from base con
+				// modified from http://www.btinternet.com/~challand/hp_calculator.htm
+				int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
+
+				// 50% buff / debuff cap
+				if (conhp > hp * 1.5)
+					conhp = (int)(hp * 1.5);
+				else if (conhp < hp / 2)
+					conhp = hp / 2;
+
+				return hp;
+				//return conhp;
 			}
             else
             {
                 if (living.Level < 10)
                 {
-                    return living.Level * 20 + 20 + living.BaseBuffBonusCategory[(int)property];	// default
+                    return living.Level * 20 + 20 + living.GetBaseStat(eStat.CON) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
                 }
                 else
                 {
                     // approx to original formula, thx to mathematica :)
-                    int hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.BaseBuffBonusCategory[(int)property];
+                    int hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.GetBaseStat(eStat.CON)/*living.BaseBuffBonusCategory[(int)property]*/;
                     if (living.Level < 25)
                     {
                         hp += 20;

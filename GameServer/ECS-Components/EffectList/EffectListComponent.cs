@@ -78,7 +78,7 @@ namespace DOL.GS
                                         existingEffects[i].ExpireTick = spellEffect.ExpireTick;
                                         spellEffect.IsBuffActive = true;
                                     }
-                                    else
+                                    else if (spellEffect.EffectType != eEffect.MovementSpeedDebuff)
                                     {
                                         spellEffect.IsDisabled = existingEffects[i].IsDisabled;
                                         spellEffect.IsBuffActive = existingEffects[i].IsBuffActive;

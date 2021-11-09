@@ -47,6 +47,8 @@ namespace DOL.GS.Spells
 				//FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
 			{
 				MessageToCaster("Your target is immune!", eChatType.CT_System);
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				OnSpellResisted(target);
 				return;
 			}
 			base.ApplyEffectOnTarget(target, effectiveness);

@@ -206,8 +206,8 @@ namespace DOL.GS
 					}
 				case eProperty.MaxHealth:
 					{
-						int conBonus = (int)(3.1 * GetModified(eProperty.Constitution));
-						int hitsBonus = (int)(32.5 * Level + m_summonHitsBonus);
+						int conBonus = (int)(3.1 * Constitution /*GetModified(eProperty.Constitution)*/);
+						int hitsBonus = (int)( 0.5 * 32.5 * Level + m_summonHitsBonus);
 						int debuff = DebuffCategory[(int)property];
 
 						// Apply debuffs. As only base constitution affects pet
@@ -218,7 +218,7 @@ namespace DOL.GS
 						if (conBonus < 0)
 							conBonus = 0;
 
-						return conBonus + hitsBonus;
+						return /*conBonus +*/ hitsBonus;
 					}
 			}
 

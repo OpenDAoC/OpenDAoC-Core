@@ -83,6 +83,7 @@ namespace DOL.GS.Scripts
                     else {
                         player.Out.SendMessage("I have given you enough experience to fight, now make Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         player.Level = (byte)targetLevel;
+                        player.Health = player.MaxHealth;
                         return true;
                     }
                 default: 

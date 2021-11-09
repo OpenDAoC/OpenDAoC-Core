@@ -73,12 +73,27 @@ namespace DOL.GS.Spells
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
                 }
 				else
-					{
-						effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
-						effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
-					}
+				{
+					effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
+					effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+				}
 			}
-			else
+            else if (Caster is NecromancerPet nPet && Spell.Level > 0 && Spell.Target == "Enemy")
+            {
+                var caster = nPet.Owner as GamePlayer;
+                specLevel = caster.GetModifiedSpecLevel(m_spellLine.Spec);
+                effectiveness = 0.75; // This section is for list casters stat debuffs.
+                effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                effectiveness = Math.Max(0.75, effectiveness);
+                effectiveness = Math.Min(1.25, effectiveness);
+                effectiveness *= (1.0 + caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+
+                if (Spell.SpellType == (byte)eSpellType.ArmorFactorDebuff)
+                {
+                    effectiveness *= (1 + target.GetArmorAbsorb(eArmorSlot.TORSO));
+                }
+            }
+            else
             {
                 effectiveness = 1.0;
             }

@@ -45,7 +45,6 @@ namespace DOL.GS.PlayerClass
 		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
 		{
 			 //PlayerRace.Korazh, PlayerRace.Avalonian, PlayerRace.Briton, PlayerRace.Inconnu,
-			 PlayerRace.Avalonian, PlayerRace.Briton, PlayerRace.Inconnu,
 		};
 	}
 }

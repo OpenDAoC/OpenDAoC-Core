@@ -75,6 +75,21 @@ namespace DOL.GS
                 {
                     if (owner is GamePlayer pl)
                     {
+                        if (spell.CastTime > 0 && !(spellHandler is ChamberSpellHandler) && spell.SpellType != (byte)eSpellType.Chamber)
+                        {
+                            if (spellHandler.Spell.InstrumentRequirement != 0)
+                            {
+                                if (spell.InstrumentRequirement != 0)
+                                {
+                                    pl.Out.SendMessage(LanguageMgr.GetTranslation(pl.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                                }
+                                else
+                                { 
+                                    pl.Out.SendMessage("You must wait " + (((spellHandler.CastStartTick + spellHandler.Spell.CastTime) - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                                }
+                                return false;
+                            }
+                        }
                         if (pl.SpellQueue)
                         {
                             pl.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);

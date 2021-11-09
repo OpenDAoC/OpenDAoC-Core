@@ -91,7 +91,8 @@ namespace DOL.GS
                     if (!spellEffect.RenewEffect && !(spellEffect is ECSImmunityEffect))
                         SendSpellAnimation((ECSGameSpellEffect)e);
 
-                    if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled))
+                    if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
+                        || spellEffect is SavageBuffECSGameEffect)
                     {
                         //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
                         //{
@@ -132,6 +133,8 @@ namespace DOL.GS
                 IControlledBrain npc = ((GameNPC)e.Owner).Brain as IControlledBrain;
                 if (npc != null)
                     npc.UpdatePetWindow();
+                if (npc?.Body is NecromancerPet)
+                    SendPlayerUpdates(npc.Owner as GamePlayer);
             }
         }
 

@@ -897,10 +897,21 @@ namespace DOL.GS
 			double afBuffAbsorb = (afBuffBonus - afDebuffMalus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
 
 			double baseAbsorb = 0;
-			if (Level >= 30) baseAbsorb = 0.27;
-			else if (Level >= 20) baseAbsorb = 0.19;
-			else if (Level >= 10) baseAbsorb = 0.10;
 
+			if (this is NecromancerPet nPet)
+			{
+				if (nPet.Owner.Level == 50) baseAbsorb = 0.5;
+				else if (nPet.Owner.Level >= 40) baseAbsorb = 0.40;
+				else if (nPet.Owner.Level >= 30) baseAbsorb = 0.27;
+				else if (nPet.Owner.Level >= 20) baseAbsorb = 0.19;
+				else if (nPet.Owner.Level >= 10) baseAbsorb = 0.10;
+			}
+			else
+			{
+				if (Level >= 30) baseAbsorb = 0.27;
+				else if (Level >= 20) baseAbsorb = 0.19;
+				else if (Level >= 10) baseAbsorb = 0.10;
+			}
 			double absorb = 1 - (1 - absorbBonus) * (1 - baseAbsorb) * (1 - constitutionAbsorb) * (1 - afBuffAbsorb);
 			return absorb;
 		}
@@ -1999,14 +2010,14 @@ namespace DOL.GS
 			
 			if (Util.Chance((int)chance))
             {
-				if (InterruptTime < CurrentRegion.Time + duration)
-					InterruptTime = CurrentRegion.Time + duration;
+				if (InterruptTime < GameLoop.GameLoopTime + duration)
+					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
 			if (CurrentSpellHandler != null)
 				CurrentSpellHandler.CasterIsAttacked(attacker);
 			
-			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
 				OnInterruptTick(attacker, attackType);
 		}
 
@@ -2016,8 +2027,7 @@ namespace DOL.GS
 			get { return m_interruptTime; }
 			set
 			{
-				if (CurrentRegion != null)
-					InterruptAction = CurrentRegion.Time;
+				InterruptAction = GameLoop.GameLoopTime;
 				m_interruptTime = value;
 			}
 		}
@@ -2034,7 +2044,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsBeingInterrupted
 		{
-			get { return (m_interruptTime > CurrentRegion.Time); }
+			get { return (m_interruptTime > GameLoop.GameLoopTime); }
 		}
 
 		/// <summary>
@@ -3684,10 +3694,10 @@ namespace DOL.GS
 				evadeChance *= 0.001;
 				evadeChance += 0.01 * attackerConLevel; // 1% per con level distance multiplied by evade level
 
-				if( lastAD != null && lastAD.Style != null )
-				{
-					evadeChance += lastAD.Style.BonusToDefense * 0.01;
-				}
+				//if( lastAD != null && lastAD.Style != null )
+				//{
+					//evadeChance += lastAD.Style.BonusToDefense * 0.01;
+				//}
 
 				if( ad.AttackType == AttackData.eAttackType.Ranged )
 					evadeChance /= 5.0;
@@ -3833,14 +3843,13 @@ namespace DOL.GS
 			double blockChance = 0;
 			GamePlayer player = this as GamePlayer;
 			InventoryItem lefthand = null;
-
-			if( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
+			if ( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
 			{
 				lefthand = Inventory.GetItem( eInventorySlot.LeftHandWeapon );
 				if( lefthand != null && ( player.attackComponent.AttackWeapon == null || player.attackComponent.AttackWeapon.Item_Type == Slot.RIGHTHAND || player.attackComponent.AttackWeapon.Item_Type == Slot.LEFTHAND ) )
 				{
-					if( lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront( ad.Attacker, 120 ) )
-						blockChance = GetModified( eProperty.BlockChance ) * lefthand.Quality * 0.01;
+					if (lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront(ad.Attacker, 120))
+						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01 * lefthand.Condition / lefthand.MaxCondition;
 				}
 			}
 			else if( this is GameNPC && IsObjectInFront( ad.Attacker, 120 ) )
@@ -3864,15 +3873,25 @@ namespace DOL.GS
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
+				
+			
+				if(lefthand != null)
+                {
+					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
+					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+				}
+					
+
 				if (blockChance < 0.01)
 					blockChance = 0.01;
 				else if (blockChance > ServerProperties.Properties.BLOCK_CAP && ad.Attacker is GamePlayer)
 					blockChance = ServerProperties.Properties.BLOCK_CAP;
-				else if (shieldSize == 1 && ad.Attacker is GameNPC && blockChance > .8)
+				
+				if (shieldSize == 1 && blockChance > .8)
 					blockChance = .8;
-				else if (shieldSize == 2 && ad.Attacker is GameNPC && blockChance > .9)
+				else if (shieldSize == 2 && blockChance > .9)
 					blockChance = .9;
-				else if (shieldSize == 3 && ad.Attacker is GameNPC && blockChance > .99)
+				else if (shieldSize == 3 && blockChance > .99)
 					blockChance = .99;
 
 				// KNutters - Removed the AttackState check because it is imposible to be in melee range
@@ -4320,29 +4339,48 @@ namespace DOL.GS
 
             bool effectRemoved = false;
 
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-            {
-                var effect = effectListComponent.Effects[eEffect.MovementSpeedBuff].Where(e => e.IsDisabled == false).FirstOrDefault();
+			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+			{
+				var effects = effectListComponent.Effects[eEffect.MovementSpeedBuff];/*.Where(e => e.IsDisabled == false).FirstOrDefault();*/
 
-				if (!isAttacker && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+				foreach (var effect in effects)
 				{
-					return false;
-				}
-				else
-				{
-					EffectService.RequestImmediateCancelEffect(effect);
-					effectRemoved = true;
+					var spellEffect = effect as ECSGameSpellEffect;
+					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "pet")
+					{
+						effectRemoved = false;
+					}
+					/*
+					else if (!isAttacker && spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+					{
+						effectRemoved = false;
+					}*/
+					else
+					{
+						EffectService.RequestImmediateCancelEffect(effect);
+						effectRemoved = true;
+					}
 				}
             }
 
             if (this is GamePet pet)
             {
-                var ownerEffect = EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
-                if (ownerEffect != null)
-                {
-                    EffectService.RequestImmediateCancelEffect(ownerEffect);
-                    effectRemoved = true;
-                }
+				if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+				{
+					var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
+					foreach (var ownerEffect in ownerEffects)
+					{
+						if (!isAttacker && ownerEffect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+						{
+							effectRemoved = false;
+						}
+						else
+						{
+							EffectService.RequestImmediateCancelEffect(ownerEffect);
+							effectRemoved = true;
+						}
+					}
+				}
             }
 
             return effectRemoved;
@@ -6297,13 +6335,13 @@ namespace DOL.GS
 			{
 				player = source as GamePlayer;
 				long whisperdelay = player.TempProperties.getProperty<long>("WHISPERDELAY");
-				if (whisperdelay > 0 && (CurrentRegion.Time - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
+				if (whisperdelay > 0 && (GameLoop.GameLoopTime - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
 				{
 					//player.Out.SendMessage("Speak slower!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 				
-				player.TempProperties.setProperty("WHISPERDELAY", CurrentRegion.Time);
+				player.TempProperties.setProperty("WHISPERDELAY", GameLoop.GameLoopTime);
 
 				foreach (DOL.GS.Quests.DataQuest q in DataQuestList)
 				{

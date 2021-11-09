@@ -75,7 +75,7 @@ namespace DOL.GS
 
         public override void TryApplyImmunity()
         {
-            if (TriggersImmunity && OwnerPlayer != null)
+            if (TriggersImmunity && (OwnerPlayer != null || Owner is NecromancerPet))
             {
                 new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
             }

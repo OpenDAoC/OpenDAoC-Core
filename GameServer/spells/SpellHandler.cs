@@ -102,8 +102,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected bool m_startReuseTimer = true;
 
-		private long _castStartTick;		
-
+		private long _castStartTick;
+		public long CastStartTick { get { return _castStartTick; } }
 		public bool StartReuseTimer
 		{
 			get { return m_startReuseTimer; }
@@ -570,7 +570,7 @@ namespace DOL.GS.Spells
 
 			m_castTimer = new DelayedCastTimer(Caster, this, target, step2, step3);
 			m_castTimer.Start(step1);
-			m_started = Caster.CurrentRegion.Time;
+			m_started = GameLoop.GameLoopTime;
 			SendCastAnimation();
 
 			if (m_caster.IsMoving || m_caster.IsStrafing)
@@ -641,7 +641,7 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2)
+			if (IsCasting && Stage < 2)//(GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2)
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -785,9 +785,9 @@ namespace DOL.GS.Spells
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 			{
-                if (Caster.InterruptAction > 0 && Caster.InterruptAction + Caster.SpellInterruptRecastTime > Caster.CurrentRegion.Time)
+                if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 				{
-					if (!quiet) MessageToCaster("You must wait " + (((Caster.InterruptAction + Caster.SpellInterruptRecastTime) - Caster.CurrentRegion.Time) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
+					if (!quiet) MessageToCaster("You must wait " + (((Caster.InterruptTime) - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
 					return false;
 				}
 			}
@@ -881,7 +881,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
 							break;
 
-						if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && m_caster.IsObjectInFront(selectedTarget, 180) == false)
 						{
 							if (!quiet) MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
 							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1132,7 +1132,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm)
 							break;
 						//enemys have to be in front and in view for targeted spells
-						if (!m_caster.IsObjectInFront(target, 180))
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(target, 180))
 						{
 							MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1302,8 +1302,8 @@ namespace DOL.GS.Spells
 				{
 					case "enemy":
 						//enemys have to be in front and in view for targeted spells
-						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50) && 
-							(!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
+						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50) &&
+							m_spell.SpellType != (byte)eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1451,7 +1451,7 @@ namespace DOL.GS.Spells
 						if(Caster.LastInterruptMessage != "") MessageToCaster(Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
 						else MessageToCaster("You are interrupted and must wait " + ((Caster.InterruptTime - m_started) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
 					}
-					Caster.InterruptAction = Caster.CurrentRegion.Time - Caster.SpellInterruptRecastAgain;
+					Caster.InterruptAction = GameLoop.GameLoopTime - Caster.SpellInterruptRecastAgain;
 					return false;
 				}
 			}
@@ -1520,7 +1520,7 @@ namespace DOL.GS.Spells
 				{
 					case "Enemy":
 						//enemys have to be in front and in view for targeted spells
-						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50))
+						if (Caster is GamePlayer && m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1630,7 +1630,7 @@ namespace DOL.GS.Spells
 
                     if (CheckBeginCast(m_spellTarget))
 					{
-						m_started = Caster.CurrentRegion.Time;
+						m_started = GameLoop.GameLoopTime;
 						_castStartTick = currentTick;
 						SendSpellMessages();
 						if (Spell.IsInstantCast)
@@ -1652,7 +1652,10 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						castState = eCastState.Cleanup;
+						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+							castState = eCastState.Interrupted;
+						else
+							castState = eCastState.Cleanup;
 					}
 					break;
 				case eCastState.Casting:
@@ -1725,11 +1728,20 @@ namespace DOL.GS.Spells
             {
                 if (nPet.Brain is NecromancerPetBrain necroBrain)
                 {
-					necroBrain.RemoveSpellFromQueue();
-					if (nPet.InCombat)
-						necroBrain.RemoveSpellFromAttackQueue();
-					Caster.castingComponent.spellHandler = null;
-                }
+                    necroBrain.RemoveSpellFromQueue();
+                    if (nPet.attackComponent.AttackState)
+                        necroBrain.RemoveSpellFromAttackQueue();
+
+					if (Caster.castingComponent.queuedSpellHandler != null)
+					{
+						Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
+						Caster.castingComponent.queuedSpellHandler = null;
+					}
+					else
+					{
+						Caster.castingComponent.spellHandler = null;
+					}
+				}
             }
             else
             {
@@ -1868,6 +1880,12 @@ namespace DOL.GS.Spells
 					player.Out.SendInterruptAnimation(m_caster);
 				}
 			}
+			
+			if(m_caster is GamePlayer p && p.castingComponent != null)
+            {
+				p.castingComponent.spellHandler = null;
+				p.castingComponent.queuedSpellHandler = null;
+            }
 
 			if (m_castTimer != null)
 			{
@@ -2471,7 +2489,15 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
 							{
-								list.Add(player);
+								if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+								{
+									if (!Spell.IsBuff)
+										list.Add(player.ControlledBrain.Body);
+									else
+										list.Add(player);
+								}
+								else
+									list.Add(player);
 							}
 						}
 						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
@@ -2485,7 +2511,17 @@ namespace DOL.GS.Spells
 					else
 					{
 						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-							list.Add(target);
+						{
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+							{
+								if (!Spell.IsBuff)
+									list.Add(player.ControlledBrain.Body);
+								else
+									list.Add(player);
+							}
+							else
+								list.Add(target);
+						}
 					}
 					break;
 					#endregion
@@ -2698,6 +2734,16 @@ namespace DOL.GS.Spells
 				}
 
 			}
+			else if (Caster is NecromancerPet nPet && nPet.Owner.Group != null)
+            {
+				foreach (GameLiving living in nPet.Owner.Group.GetMembersInTheGroup().ToList())
+				{
+					livings.Add(living);
+
+					if (living.ControlledBrain != null)
+						livings.Add(living.ControlledBrain.Body);
+				}
+			}
 
 			return livings;
 		}
@@ -2795,7 +2841,20 @@ namespace DOL.GS.Spells
 				    && Caster is GameNPC && (Caster as GameNPC).Brain is IOldAggressiveBrain)
 					((Caster as GameNPC).Brain as IOldAggressiveBrain).AddToAggroList(t, 1);
 
-				if (Util.Chance(CalculateSpellResistChance(t)))
+				int spellResistChance = CalculateSpellResistChance(t);
+				int randNum = Util.CryptoNextInt(100);
+
+				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+				{
+					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+				{
+					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				if (spellResistChance > randNum)
 				{
 					OnSpellResisted(t);
 					continue;

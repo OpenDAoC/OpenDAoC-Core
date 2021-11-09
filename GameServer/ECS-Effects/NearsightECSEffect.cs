@@ -16,6 +16,7 @@ namespace DOL.GS
             // percent category
             Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)SpellHandler.Spell.Value;
             Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)SpellHandler.Spell.Value;
+            Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
             (SpellHandler as NearsightSpellHandler).SendEffectAnimation(Owner, 0, false, 1);
             (SpellHandler as NearsightSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
             Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_Spell, Owner);

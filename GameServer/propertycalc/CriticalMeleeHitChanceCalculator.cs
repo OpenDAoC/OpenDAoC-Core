@@ -52,6 +52,7 @@ namespace DOL.GS.PropertyCalc
 
 			if (living is NecromancerPet necroPet)
 			{
+				chance += 10;
 				if (necroPet.Brain is IControlledBrain necroPetBrain && necroPetBrain.GetPlayerOwner() is GamePlayer necro
 					&& necro.GetAbility<RealmAbilities.MasteryOfPain>() is RealmAbilities.MasteryOfPain raMoP)
 					chance += raMoP.Amount;
