@@ -37,8 +37,9 @@ namespace DOL.GS
                 {
                     foreach (var effects in living.effectListComponent.Effects.Values.ToList())
                     {
-                        foreach (var e in effects)
+                        for (int j = 0; j < effects.Count; j++)
                         {
+                            var e = effects[j];
                             if (e is null)
                                 continue;
 
