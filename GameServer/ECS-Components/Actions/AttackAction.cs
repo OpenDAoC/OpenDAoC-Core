@@ -366,14 +366,12 @@ namespace DOL.GS
                     if (attackWeapon != null && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield/*  leftHandSwingCount > 0*/)
                     {
                         Interval = owner.attackComponent.AttackSpeed(attackWeapon, leftWeapon);
-                        Console.WriteLine("Dual Wielding!");
                     }
                     else
                     {
                         Interval = owner.attackComponent.AttackSpeed(attackWeapon);
                     }
                 }
-                Console.WriteLine("AttackInterval: " + Interval);
                 StartTime = Interval;// owner.AttackSpeed(attackWeapon);
                 //owner.attackComponent.attackAction.CleanupAttackAction();
             }
