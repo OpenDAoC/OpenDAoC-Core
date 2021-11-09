@@ -38,10 +38,10 @@ namespace DOL.GS.PlayerClass
 			m_manaStat = eStat.DEX; 
 		}
 
-		public override IList<string> GetAutotrainableSkills()
-		{
-			return AutotrainableSkills;
-		}
+		// public override IList<string> GetAutotrainableSkills()
+		// {
+		// 	return AutotrainableSkills;
+		// }
 
 		public override eClassType ClassType
 		{
