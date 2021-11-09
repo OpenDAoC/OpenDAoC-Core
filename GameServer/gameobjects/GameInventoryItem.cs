@@ -1277,7 +1277,8 @@ namespace DOL.GS {
                 else if (BonusType == 163
                   || BonusType == 164
                   || BonusType == 167
-                  || BonusType == 168)
+                  || BonusType == 168
+                  || BonusType == 213)
                 {
                     totalUti += Bonus * 10;
                 }
