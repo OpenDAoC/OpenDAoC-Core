@@ -4107,6 +4107,14 @@ namespace DOL.GS
 				tw.EventHandler(ad);
             }
 
+			if (this is GameNPC)
+            {
+				if (ad.Target is GamePlayer)
+					LastAttackTickPvP = GameLoop.GameLoopTime;
+				else
+					LastAttackTickPvE = GameLoop.GameLoopTime;
+            }
+
             CancelFocusSpell();
         }
 
@@ -4343,9 +4351,13 @@ namespace DOL.GS
 			{
 				var effects = effectListComponent.Effects[eEffect.MovementSpeedBuff];/*.Where(e => e.IsDisabled == false).FirstOrDefault();*/
 
-				foreach (var effect in effects)
+				//foreach (var effect in effects)
+				for (int i = 0; i < effects.Count; i++)
 				{
-					var spellEffect = effect as ECSGameSpellEffect;
+					if (effects[i] is null)
+						continue;
+
+					var spellEffect = effects[i] as ECSGameSpellEffect;
 					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "pet")
 					{
 						effectRemoved = false;
@@ -4357,7 +4369,7 @@ namespace DOL.GS
 					}*/
 					else
 					{
-						EffectService.RequestImmediateCancelEffect(effect);
+						EffectService.RequestImmediateCancelEffect(effects[i]);
 						effectRemoved = true;
 					}
 				}
@@ -4368,15 +4380,16 @@ namespace DOL.GS
 				if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 				{
 					var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
-					foreach (var ownerEffect in ownerEffects)
+					//foreach (var ownerEffect in ownerEffects)
+					for (int i = 0; i < ownerEffects.Count; i++)
 					{
-						if (!isAttacker && ownerEffect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+						if (!isAttacker && ownerEffects[i] is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
 						{
 							effectRemoved = false;
 						}
 						else
 						{
-							EffectService.RequestImmediateCancelEffect(ownerEffect);
+							EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
 							effectRemoved = true;
 						}
 					}
