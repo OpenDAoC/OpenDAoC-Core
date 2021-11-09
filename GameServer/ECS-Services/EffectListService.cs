@@ -35,10 +35,13 @@ namespace DOL.GS
             {
                 lock (living.effectListComponent._effectsLock)
                 {
-                    foreach (var effects in living.effectListComponent.Effects.Values)
+                    foreach (var effects in living.effectListComponent.Effects.Values.ToList())
                     {
                         foreach (var e in effects)
                         {
+                            if (e is null)
+                                continue;
+
                             if (!e.Owner.IsAlive || e.Owner.ObjectState == GameObject.eObjectState.Deleted)
                             {
                                 EffectService.RequestCancelEffect(e);

@@ -264,14 +264,7 @@ namespace DOL.GS
                             Effects[effect.EffectType].Remove(effect);
                             EffectIdToEffect.Remove(effect.Icon);
 
-                            if (Effects[effect.EffectType].Count > 0)
-                            {
-                                if (GetSpellEffects(effect.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
-                                    EffectService.RequestEnableEffect(GetSpellEffects(effect.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault());
-                                //foreach (var eff in Effects[effect.EffectType])
-                                //EffectService.RequestDisableEffect()
-                            }
-                            else
+                            if (Effects[effect.EffectType].Count == 0)
                             {
                                 EffectIdToEffect.Remove(effect.Icon);
                                 Effects.Remove(effect.EffectType);
