@@ -201,7 +201,7 @@ namespace DOL.GS.Spells
 			}
 
 			GamePlayer player = m_owner as GamePlayer;
-			if (player != null && m_changeCounter <= 0)
+			if (player != null && m_changeCounter >= 0)
 			{
 				player.Out.SendConcentrationList();
 			}

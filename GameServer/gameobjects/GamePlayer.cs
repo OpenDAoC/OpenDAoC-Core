@@ -7894,6 +7894,7 @@ namespace DOL.GS
 			if (m_releaseType != eReleaseType.Duel)
 				DeathTime = PlayedTime;
 
+			CancelAllConcentrationEffects();
 			effectListComponent.CancelAll();
 
 			IsSwimming = false;
