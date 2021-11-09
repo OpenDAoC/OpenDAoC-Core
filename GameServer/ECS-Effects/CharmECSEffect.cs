@@ -101,6 +101,7 @@ namespace DOL.GS
                         {
                             ((IOldAggressiveBrain)npc.Brain).AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
                             npc.StartAttack(SpellHandler.Caster);
+                            npc.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                         }
                         else
                         {
