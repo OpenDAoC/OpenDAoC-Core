@@ -14,7 +14,7 @@ namespace DOL.GS
         
         public int _lastUpdateEffectsCount = 0;
         
-        private object _effectsLock = new object(); 
+        public object _effectsLock = new object(); 
         public Dictionary<eEffect, List<ECSGameEffect>> Effects = new Dictionary<eEffect, List<ECSGameEffect>>();
         public Dictionary<int, ECSGameEffect> EffectIdToEffect = new Dictionary<int, ECSGameEffect>();
 

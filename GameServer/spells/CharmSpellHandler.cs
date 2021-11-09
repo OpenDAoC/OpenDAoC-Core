@@ -345,8 +345,11 @@ namespace DOL.GS.Spells
                 {
                 	
                     MessageToCaster(target.GetName(0, true) + " resists the charm!" + " (" + resistChance + "%)" , eChatType.CT_SpellResisted);
+                    SendEffectAnimation(GetTarget(), 0, false, 0);
                     return;
                 }
+                else
+                    SendEffectAnimation(GetTarget(), 0, false, 1);
             }
 
             base.ApplyEffectOnTarget(target, effectiveness);
