@@ -1162,7 +1162,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						var fallPercent = Math.Min(99, (fallSpeed - 501) / fallDivide);
 
-						if (fallSpeed > 500)
+						if (fallSpeed > 500 && (client.Player.CharacterClass.ID == (int)eCharacterClass.Necromancer && !client.Player.IsShade))
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
 							client.Out.SendMessage(string.Format("You take {0}% of you max hits in damage.", fallPercent), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
