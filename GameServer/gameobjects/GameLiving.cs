@@ -897,10 +897,21 @@ namespace DOL.GS
 			double afBuffAbsorb = (afBuffBonus - afDebuffMalus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
 
 			double baseAbsorb = 0;
-			if (Level >= 30) baseAbsorb = 0.27;
-			else if (Level >= 20) baseAbsorb = 0.19;
-			else if (Level >= 10) baseAbsorb = 0.10;
 
+			if (this is NecromancerPet nPet)
+			{
+				if (nPet.Owner.Level == 50) baseAbsorb = 0.5;
+				else if (nPet.Owner.Level >= 40) baseAbsorb = 0.40;
+				else if (nPet.Owner.Level >= 30) baseAbsorb = 0.27;
+				else if (nPet.Owner.Level >= 20) baseAbsorb = 0.19;
+				else if (nPet.Owner.Level >= 10) baseAbsorb = 0.10;
+			}
+			else
+			{
+				if (Level >= 30) baseAbsorb = 0.27;
+				else if (Level >= 20) baseAbsorb = 0.19;
+				else if (Level >= 10) baseAbsorb = 0.10;
+			}
 			double absorb = 1 - (1 - absorbBonus) * (1 - baseAbsorb) * (1 - constitutionAbsorb) * (1 - afBuffAbsorb);
 			return absorb;
 		}
@@ -4339,10 +4350,11 @@ namespace DOL.GS
 					{
 						effectRemoved = false;
 					}
+					/*
 					else if (!isAttacker && spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
 					{
 						effectRemoved = false;
-					}
+					}*/
 					else
 					{
 						EffectService.RequestCancelEffect(effect);
