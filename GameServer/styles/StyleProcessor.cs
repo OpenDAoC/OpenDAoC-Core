@@ -88,7 +88,7 @@ namespace DOL.GS.Styles
 							|| lastAD.AttackResult != eAttackResult.HitStyle
 							|| lastAD.Style == null
 							|| lastAD.Style.ID != style.OpeningRequirementValue
-							|| lastAD.Target != target)) // style chains are possible only on the same target
+							/*|| lastAD.Target != target*/)) // style chains are *NOT* possible only on the same target
 						{
 							//DOLConsole.WriteLine("Offensive: Opening Requirement style needed failed!("+style.OpeningRequirementValue+")");
 							return false;
