@@ -138,7 +138,9 @@ namespace DOL.AI.Brain
 			{
 				PetSpellEventArgs petSpell = (PetSpellEventArgs)args;
 				bool hadQueuedSpells = false;
-                Body.StopFollowing();
+
+                if (petSpell.Spell.CastTime > 0)
+                    Body.StopFollowing();
 
 				if (SpellsQueued)
 				{
