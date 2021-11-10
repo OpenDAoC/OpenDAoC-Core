@@ -239,7 +239,7 @@ FirstAidAbility.Execute.FullyHealed:			You are fully healed.
 FirstAidAbility.Execute.HealYourself:			You heal yourself for {0} hit points.
 
 # /PurgeAbility
-PurgeAbility.AddEffectsInfo.Info1:			Level 1 of this ability has a five second delay when triggering this ability before it activates. Higher levels of Purge do not have this delay.
+PurgeAbility.AddEffectsInfo.Info1:			
 PurgeAbility.AddEffectsInfo.Info2:			Target: Self
 PurgeAbility.AddEffectsInfo.Info3:			Casting time: instant
 PurgeAbility.OnTick.PurgeActivate:			Purge activates in {0} seconds!
