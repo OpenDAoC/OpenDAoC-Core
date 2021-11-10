@@ -363,11 +363,15 @@ namespace DOL.AI.Brain
         /// </summary>
 		public void CheckAttackSpellQueue()
         {
-            SpellQueueEntry entry = GetSpellFromAttackQueue();
-            if (entry != null)
-                if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target))
-                    // If the spell can't be cast, remove it from the queue
-                    RemoveSpellFromAttackQueue();
+            int spellsQueued = m_attackSpellQueue.Count;
+            for (int i = 0; i < spellsQueued; i++)
+            {
+                SpellQueueEntry entry = GetSpellFromAttackQueue();
+                if (entry != null)
+                    if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target))
+                        // If the spell can't be cast, remove it from the queue
+                        RemoveSpellFromAttackQueue();
+            }
         }
 
         /// <summary>
