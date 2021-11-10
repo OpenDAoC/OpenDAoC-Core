@@ -1731,9 +1731,12 @@ namespace DOL.GS.Spells
             {
                 if (nPet.Brain is NecromancerPetBrain necroBrain)
                 {
-                    necroBrain.RemoveSpellFromQueue();
-                    if (nPet.attackComponent.AttackState)
-                        necroBrain.RemoveSpellFromAttackQueue();
+					if (Spell.CastTime > 0)
+					{
+						necroBrain.RemoveSpellFromQueue();
+						if (nPet.attackComponent.AttackState)
+							necroBrain.RemoveSpellFromAttackQueue();
+					}
 
 					if (Caster.castingComponent.queuedSpellHandler != null)
 					{
