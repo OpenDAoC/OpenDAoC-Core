@@ -98,15 +98,23 @@ namespace DOL.GS {
         public int timeBeforeRez = 3000; //3 seconds
 
         Dictionary<GamePlayer, long> playersToRez;
+        List<GamePlayer> playersToKill;
 
         public override void Think()
         {
             if (playersToRez == null)
-            {
                 playersToRez = new Dictionary<GamePlayer, long>();
+
+
+            if (playersToKill == null)
+                playersToKill = new List<GamePlayer>();
+
+            foreach(GamePlayer player in Body.GetPlayersInRadius(7000))
+            {
+                playersToKill.Add(player);
             }
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius(3000))
+            foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
             {
                 if (!player.IsAlive && !playersToRez.ContainsKey(player))
                 {
@@ -122,6 +130,9 @@ namespace DOL.GS {
                 {
                     EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
                 }
+
+                if(playersToKill.Contains(player))
+                    playersToKill.Remove(player);
             }
 
             foreach (GamePlayer deadPlayer in playersToRez.Keys)
@@ -131,7 +142,7 @@ namespace DOL.GS {
                     deadPlayer.Health = deadPlayer.MaxHealth;
                     deadPlayer.Mana = deadPlayer.MaxMana;
                     deadPlayer.Endurance = deadPlayer.MaxEndurance;
-                    deadPlayer.MoveTo(Body.CurrentRegionID, Body.X, Body.Y, Body.Z,
+                    deadPlayer.MoveTo(Body.CurrentRegionID, Body.X, Body.Y+100, Body.Z,
                                   Body.Heading);
 
 
@@ -147,6 +158,16 @@ namespace DOL.GS {
                     playersToRez.Remove(deadPlayer);
                 }
             }
+
+            foreach (GamePlayer player in playersToKill)
+            {
+                player.MoveTo(Body.CurrentRegionID, Body.X, Body.Y + 100, Body.Z,
+                                  Body.Heading);
+                player.Client.Out.SendMessage("Cowardice is not appreciated in this arena.",
+                                           eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            }
+
+            playersToKill.Clear();
         }
     }
 }
