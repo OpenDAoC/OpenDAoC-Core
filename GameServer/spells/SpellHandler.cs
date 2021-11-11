@@ -1717,15 +1717,22 @@ namespace DOL.GS.Spells
 		{
 			if (Caster is GamePlayer p)
 			{
-				if(p.castingComponent.queuedSpellHandler != null && p.SpellQueue)
-                {
-					p.castingComponent.spellHandler = p.castingComponent.queuedSpellHandler;
-					p.castingComponent.queuedSpellHandler = null;
-                } else
-                {
-					p.castingComponent.spellHandler = null;
+				if (Spell.CastTime > 0)
+				{
+					if (p.castingComponent.queuedSpellHandler != null && p.SpellQueue)
+					{
+						p.castingComponent.spellHandler = p.castingComponent.queuedSpellHandler;
+						p.castingComponent.queuedSpellHandler = null;
+					}
+					else
+					{
+						p.castingComponent.spellHandler = null;
+					}
 				}
-				
+				else
+                {
+					p.castingComponent.instantSpellHandler = null;
+                }
 			}
             else if (Caster is NecromancerPet nPet)
             {
@@ -1736,17 +1743,26 @@ namespace DOL.GS.Spells
 						necroBrain.RemoveSpellFromQueue();
 						if (nPet.attackComponent.AttackState)
 							necroBrain.RemoveSpellFromAttackQueue();
-					}
 
-					if (Caster.castingComponent.queuedSpellHandler != null)
-					{
-						Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
-						Caster.castingComponent.queuedSpellHandler = null;
+						if (Caster.castingComponent.queuedSpellHandler != null)
+						{
+							Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
+							Caster.castingComponent.queuedSpellHandler = null;
+						}
+						else
+						{
+							Caster.castingComponent.spellHandler = null;
+						}
+
+						necroBrain.AttackMostWanted();
+
+						if (necroBrain.SpellsQueued)
+							necroBrain.CheckSpellQueue();
 					}
 					else
-					{
-						Caster.castingComponent.spellHandler = null;
-					}
+                    {
+						Caster.castingComponent.instantSpellHandler = null;
+                    }
 				}
             }
             else

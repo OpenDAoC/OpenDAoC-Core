@@ -35,6 +35,9 @@ namespace DOL.GS
         //data for the spell they want to queue
         public ISpellHandler queuedSpellHandler;
 
+        //data for instant spells 
+        public ISpellHandler instantSpellHandler;
+
 
         public CastingComponent(GameLiving owner)
         {
@@ -68,8 +71,9 @@ namespace DOL.GS
             {
                 if (m_newSpellHandler.Spell.IsInstantCast)
                 {
-                    queuedSpellHandler = spellHandler;
-                    spellHandler = m_newSpellHandler;
+                    //queuedSpellHandler = spellHandler;
+                    //spellHandler = m_newSpellHandler;
+                    instantSpellHandler = m_newSpellHandler;
                 }
                 else 
                 {
@@ -99,7 +103,8 @@ namespace DOL.GS
                         {
                             pl.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                         }
-                    } else if (owner is GamePet pet)
+                    } 
+                    else if (owner is GamePet pet)
                     {
                         queuedSpellHandler = m_newSpellHandler;
                     }
@@ -107,7 +112,10 @@ namespace DOL.GS
             }
             else
             {
-                spellHandler = m_newSpellHandler;
+                if (m_newSpellHandler.Spell.IsInstantCast)
+                    instantSpellHandler = m_newSpellHandler;
+                else
+                    spellHandler = m_newSpellHandler;
 
                 //Special CastSpell rules
                 if (spellHandler is SummonNecromancerPet necroPetHandler)
@@ -121,9 +129,13 @@ namespace DOL.GS
                 }
             }
 
-            if (!spellHandler.SpellLine.IsBaseLine)
+            if (spellHandler != null && !spellHandler.SpellLine.IsBaseLine)
             {
                 spellHandler.Spell.IsSpec = true;
+            }
+            if (instantSpellHandler != null && !instantSpellHandler.SpellLine.IsBaseLine)
+            {
+                instantSpellHandler.Spell.IsSpec = true;
             }
 
             return true;
