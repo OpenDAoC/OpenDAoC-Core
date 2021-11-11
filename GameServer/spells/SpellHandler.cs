@@ -1759,8 +1759,11 @@ namespace DOL.GS.Spells
 					}
 					else
                     {
+						if (nPet.attackComponent.AttackState)
+							necroBrain.RemoveSpellFromAttackQueue();
+
 						Caster.castingComponent.instantSpellHandler = null;
-                    }
+					}
 				}
             }
             else
@@ -4039,6 +4042,9 @@ namespace DOL.GS.Spells
 			double spellDamage = Spell.Damage;
 			GamePlayer player = Caster as GamePlayer;
 
+			if (Spell.SpellType == (byte)eSpellType.Lifedrain)
+				spellDamage *= (1 + Spell.LifeDrainReturn * .001);
+
 			// For pets the stats of the owner have to be taken into account.
 
 			if (Caster is GameNPC && ((Caster as GameNPC).Brain) is IControlledBrain)
@@ -4074,7 +4080,7 @@ namespace DOL.GS.Spells
 				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= (manaStatValue + 200) / 275.0;
+					spellDamage *= (manaStatValue + 200) / 250.0;
 				}
 			}
 			else if (Caster is GameNPC)
@@ -4238,6 +4244,12 @@ namespace DOL.GS.Spells
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(m_caster.Realm, eRelicType.Magic));
 
+				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
+				if (skillProp != eProperty.Undefined)
+				{
+					var level = m_caster.GetModifiedFromItems(skillProp);
+					spellDamage *= (1 + level / 200.0);
+				}
 			}
 
 			// Apply casters effectiveness
