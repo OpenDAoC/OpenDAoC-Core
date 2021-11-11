@@ -146,17 +146,17 @@ namespace DOL.GS.Styles
 							//Back Styles
 							//60 degree since 1.62 patch
 							case Style.eOpeningPosition.Back:
-								if (!(angle >= 150 && angle < 210)) return false;
+								if (!(angle >= 150 && angle <= 210)) return false;
 								break;
 							// Side Styles  
 							//105 degree since 1.62 patch
 							case Style.eOpeningPosition.Side:
-								if (!(angle >= 45 && angle < 150) && !(angle >= 210 && angle < 315)) return false;
+								if (!(angle >= 60 && angle <= 120) && !(angle >= 240 && angle <= 300)) return false;
 								break;
 							// Front Styles
 							// 90 degree
 							case Style.eOpeningPosition.Front:
-								if (!(angle >= 315 || angle < 45)) return false;
+								if (!(angle > 300 || angle < 60)) return false;
 								break;
 						}
 						//DOLConsole.WriteLine("Positional check success: "+style.OpeningRequirementValue);
