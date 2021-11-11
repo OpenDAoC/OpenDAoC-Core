@@ -22,6 +22,7 @@ using System.Text;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Database;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -321,8 +322,16 @@ namespace DOL.GS
         {
             get
             {
-                return (IsMeleeAttack) 
-                    ? Util.ChanceDouble(Attacker.ChanceToFumble) 
+				double randNum = Util.CryptoNextDouble();
+				double fumbleChance = Attacker.ChanceToFumble;
+
+				if (Attacker is GamePlayer p && p.UseDetailedCombatLog)
+				{
+					p.Out.SendMessage($"Your chance to fumble: {fumbleChance} RandomNumber: {randNum} Fumble? {fumbleChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				return (IsMeleeAttack) 
+                    ? fumbleChance > randNum 
                     : false;
             }
         }
