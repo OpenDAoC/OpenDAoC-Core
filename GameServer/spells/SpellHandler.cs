@@ -3036,8 +3036,16 @@ namespace DOL.GS.Spells
 					return;
 				}
 			}
-			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects || m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == Specs.Savagery || m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || m_spellLine.KeyName == "OffensiveProc")
+			
+			if (Spell.Radius == 0 &&
+				(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
+				m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
+				m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
+				m_spellLine.KeyName == Specs.Savagery || 
+				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
+				m_spellLine.KeyName == "OffensiveProc"))
 				effectiveness = 1.0; // TODO player.PlayerEffectiveness
+
 			if (effectiveness <= 0)
 				return; // no effect
 
