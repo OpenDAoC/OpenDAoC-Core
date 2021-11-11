@@ -106,9 +106,14 @@ namespace DOL.GS.Spells
 			if (player == null || player.ControlledBrain == null) 
                 return;
 
-            // No power cost, we'll drain power on the caster when
-            // the pet actually starts casting it.
+			// No power cost, we'll drain power on the caster when
+			// the pet actually starts casting it.
 			// If there is an ID, create a sub spell for the pet.
+
+			int powerCost = PowerCost(player);
+
+			if (powerCost > 0)
+				player.ChangeMana(player, eManaChangeType.Spell, -powerCost);
 
 			ControlledNpcBrain petBrain = player.ControlledBrain as ControlledNpcBrain;
 			if (petBrain != null && Spell.SubSpellID > 0)

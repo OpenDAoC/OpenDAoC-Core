@@ -215,15 +215,15 @@ namespace DOL.GS
 
                 if (pet != null && sender == pet && e == GameLivingEvent.CastStarting && args is CastingEventArgs)
                 {
-                    ISpellHandler spellHandler = (args as CastingEventArgs).SpellHandler;
+       //             ISpellHandler spellHandler = (args as CastingEventArgs).SpellHandler;
 
-                    if (spellHandler != null)
-                    {
-                        int powerCost = spellHandler.PowerCost(Player);
+       //             if (spellHandler != null)
+       //             {
+       //                 int powerCost = spellHandler.PowerCost(Player);
 
-                        if (powerCost > 0)
-							Player.ChangeMana(Player, eManaChangeType.Spell, -powerCost);
-                    }
+       //                 if (powerCost > 0)
+							//Player.ChangeMana(Player, eManaChangeType.Spell, -powerCost);
+       //             }
 
                     return;
                 }
