@@ -25,6 +25,7 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -391,6 +392,18 @@ namespace DOL.GS
 				}
 			}
 
+			if (ad.AttackType == AttackData.eAttackType.Spell)
+			{
+				GamePlayer player = Owner as GamePlayer;
+				string modmessage = "";
+				if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+				if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				if (ad.CriticalDamage > 0)
+				{
+					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				}
+			}
 			base.OnAttackedByEnemy(ad);
 		}
 
