@@ -1759,6 +1759,9 @@ namespace DOL.GS.Spells
 					}
 					else
                     {
+						if (nPet.attackComponent.AttackState)
+							necroBrain.RemoveSpellFromAttackQueue();
+
 						Caster.castingComponent.instantSpellHandler = null;
                     }
 				}
