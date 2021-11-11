@@ -451,18 +451,33 @@ namespace DOL.GS
 
 			bool cast = castingComponent.StartCastSpell(spell, line);
 			//ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
-			if (castingComponent.spellHandler != null)
+			ISpellHandler handler;
+			if (spell.IsInstantCast)
+				handler = castingComponent.instantSpellHandler;
+			else
 			{
-				int power = castingComponent.spellHandler.PowerCost(Owner);
+				handler = castingComponent.spellHandler;
+			}
+
+			if (handler != null)
+			{
+				int power = handler.PowerCost(Owner);
 
 				if (Owner.Mana < power)
 				{
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.NotEnoughPower));
 					return false;
 				}
+				
+				if (!handler.Spell.IsInstantCast)
+                {
+					m_runningSpellHandler = handler;
+					handler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+				}
 			}
-            	m_runningSpellHandler = castingComponent.spellHandler;
-            	castingComponent.spellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+			
+			
+            	
             //	return spellhandler.CastSpell();
             //}
             //else
