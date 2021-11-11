@@ -109,6 +109,9 @@ namespace DOL.GS {
             if (playersToKill == null)
                 playersToKill = new List<GamePlayer>();
 
+            if (Body.Flags.HasFlag(GameNPC.eFlags.GHOST))
+                return;
+
             foreach(GamePlayer player in Body.GetPlayersInRadius(7000))
             {
                 playersToKill.Add(player);
@@ -161,7 +164,7 @@ namespace DOL.GS {
 
             foreach (GamePlayer player in playersToKill)
             {
-                player.MoveTo(Body.CurrentRegionID, Body.X, Body.Y + 100, Body.Z,
+                player.MoveTo(Body.CurrentRegionID, Body.X + 100, Body.Y, Body.Z,
                                   Body.Heading);
                 player.Client.Out.SendMessage("Cowardice is not appreciated in this arena.",
                                            eChatType.CT_Important, eChatLoc.CL_SystemWindow);
