@@ -137,10 +137,7 @@ namespace DOL.AI.Brain
 			if (e == GameNPCEvent.PetSpell)
 			{
 				PetSpellEventArgs petSpell = (PetSpellEventArgs)args;
-				bool hadQueuedSpells = false;
-
-                if (petSpell.Spell.CastTime > 0)
-                    Body.StopFollowing();
+				bool hadQueuedSpells = false;               
 
 				if (SpellsQueued)
 				{
@@ -390,7 +387,10 @@ namespace DOL.AI.Brain
 			// Target must be alive, or this is a self spell, or this is a pbaoe spell
 			if ((spellTarget != null && spellTarget.IsAlive) || spell.Target.ToLower() == "self" || spell.Range == 0)
 			{
-				GameObject previousTarget = Body.TargetObject;
+                if (spell.CastTime > 0)
+                    Body.StopFollowing();
+
+                GameObject previousTarget = Body.TargetObject;
 				Body.TargetObject = spellTarget;
 
 				if (spellTarget != null && spellTarget != Body)
