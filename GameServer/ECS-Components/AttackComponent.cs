@@ -2100,7 +2100,7 @@ namespace DOL.GS
                         if (guard.GuardSource is GameNPC)
                             guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
                         else
-                            guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * leftHand.Condition / leftHand.MaxCondition * 0.00001;
+                            guardchance = (guard.GuardSource.GetModified(eProperty.BlockChance) * .001) * (leftHand.Quality * .01);
                         guardchance += guardLevel * 5 * .01; //5% additional chance to guard with each level in Guard
                         guardchance += attackerConLevel * 0.05;
                         int shieldSize = 0;
@@ -2126,12 +2126,12 @@ namespace DOL.GS
                         ranBlockNum /= 100;
                         guardchance *= 100;
 
-                        if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                        if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         {
                             blockAttk.Out.SendMessage($"Chance to guard: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
-                        if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                        if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                         {
                             blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }

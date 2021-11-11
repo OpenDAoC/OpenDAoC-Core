@@ -241,6 +241,12 @@ namespace DOL.GS.Spells
             {
                 healedrp = (long)Math.Max(heal, 0);
                 target.DamageRvRMemory -= healedrp;
+
+                //if we heal a target that is in RvR, the healer will get rewards from their heal target's target
+                if(target.TargetObject is GamePlayer enemy && enemy.Realm != target.Realm)
+                {
+                    enemy.AddXPGainer(m_caster, healedrp);
+                }
             }
 
             if (heal == 0)
