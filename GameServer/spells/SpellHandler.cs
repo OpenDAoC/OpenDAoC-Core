@@ -1754,8 +1754,6 @@ namespace DOL.GS.Spells
 							Caster.castingComponent.spellHandler = null;
 						}
 
-						necroBrain.AttackMostWanted();
-
 						if (necroBrain.SpellsQueued)
 							necroBrain.CheckSpellQueue();
 					}

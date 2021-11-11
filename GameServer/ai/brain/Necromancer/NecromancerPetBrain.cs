@@ -388,7 +388,10 @@ namespace DOL.AI.Brain
 			if ((spellTarget != null && spellTarget.IsAlive) || spell.Target.ToLower() == "self" || spell.Range == 0)
 			{
                 if (spell.CastTime > 0)
+                {
                     Body.StopFollowing();
+                    Body.attackComponent.NPCStopAttack();
+                }
 
                 GameObject previousTarget = Body.TargetObject;
 				Body.TargetObject = spellTarget;
