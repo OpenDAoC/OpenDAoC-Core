@@ -41,6 +41,10 @@ namespace DOL.GS {
                 EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
             }
 
+
+            if (player.InCombatPvPInLast(8000))
+                return true;
+
             if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
             {
                 EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.Disease));

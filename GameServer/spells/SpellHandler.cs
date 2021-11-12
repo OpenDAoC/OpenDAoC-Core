@@ -644,7 +644,7 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .9))// Stage < 2) //only interrupt if we're under 90% of the way through the cast
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2) //only interrupt if we're under 90% of the way through the cast
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -3036,8 +3036,16 @@ namespace DOL.GS.Spells
 					return;
 				}
 			}
-			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects || m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == Specs.Savagery || m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || m_spellLine.KeyName == "OffensiveProc")
+			
+			if (Spell.Radius == 0 &&
+				(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
+				m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
+				m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
+				m_spellLine.KeyName == Specs.Savagery || 
+				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
+				m_spellLine.KeyName == "OffensiveProc"))
 				effectiveness = 1.0; // TODO player.PlayerEffectiveness
+
 			if (effectiveness <= 0)
 				return; // no effect
 
