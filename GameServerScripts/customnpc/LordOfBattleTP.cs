@@ -49,7 +49,7 @@ namespace DOL.GS {
 			switch (str)
 			{
 				case "fight club":
-                    t.MoveTo(249, 47465, 49602, 20850, 1000);
+                    t.MoveTo(90, 34868, 33912, 19034, 4089);
                     break;
 				default: break;
 			}
