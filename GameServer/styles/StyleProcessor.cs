@@ -411,7 +411,7 @@ namespace DOL.GS.Styles
 					double effectiveWeaponSpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 					double styleGrowth = Math.Max(0,attackData.Style.GrowthOffset + attackData.Style.GrowthRate * living.GetModifiedSpecLevel(attackData.Style.Spec));
 					double styleDamageBonus = living.GetModified(eProperty.StyleDamage) * 0.01 - 1;
-
+					double resist = attackData.Modifier / (attackData.Modifier + attackData.Damage);
 					if (staticGrowth)
 					{
 						//if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
@@ -420,7 +420,7 @@ namespace DOL.GS.Styles
 						//}
 						//attackData.StyleDamage = (int)(absorbRatio * styleGrowth * ServerProperties.Properties.CS_OPENING_EFFECTIVENESS);
 
-						var spec = living.GetModifiedSpecLevel(attackData.Style.Spec);
+						var spec = Math.Min(living.Level, living.GetModifiedSpecLevel(attackData.Style.Spec));
 						
 						// CS style check
 						switch (attackData.Style.ID)
@@ -429,28 +429,28 @@ namespace DOL.GS.Styles
 								{
 									//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
 									attackData.StyleDamage = (int)((Math.Min(5, spec / 10) + spec * 14 / 3) *
-										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)) * (1 - resist));
 								}
 								break;
 							case 339: //Backstab II
 								{
 									//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
 									attackData.StyleDamage = (int)((Math.Min(45, spec) + spec * 6) *
-										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)) * (1 - resist));
 								}
 								break;
 							case 343: //Perforate Artery
 								if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
 								{
 									//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 12) *
-										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
+									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) +  spec * 12) *
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)) * (1 - resist));
 								}
 								else
 								{
 									//Perforate Artery Cap = 75 + Critical Strike Spec *9 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 9) * 
-										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
+									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) +  spec * 9) * 
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)) * (1 - resist));
 								}
 								break;
 						}
