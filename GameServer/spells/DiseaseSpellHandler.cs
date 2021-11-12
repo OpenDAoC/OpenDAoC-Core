@@ -49,13 +49,18 @@ namespace DOL.GS.Spells
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
 		}
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			base.ApplyEffectOnTarget(target, effectiveness);
+        }
 
-		/// <summary>
-		/// When an applied effect starts
-		/// duration spells only
-		/// </summary>
-		/// <param name="effect"></param>
-		public override void OnEffectStart(GameSpellEffect effect)
+        /// <summary>
+        /// When an applied effect starts
+        /// duration spells only
+        /// </summary>
+        /// <param name="effect"></param>
+        public override void OnEffectStart(GameSpellEffect effect)
 		{
 			//base.OnEffectStart(effect);
 

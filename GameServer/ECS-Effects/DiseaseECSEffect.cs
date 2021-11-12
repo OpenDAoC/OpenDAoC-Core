@@ -20,7 +20,7 @@ namespace DOL.GS
             (SpellHandler as DiseaseSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
             Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, true)), eChatType.CT_System, Owner);
 
-            Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
+            //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
             if (Owner is GameNPC)
             {
                 IOldAggressiveBrain aggroBrain = ((GameNPC)Owner).Brain as IOldAggressiveBrain;
