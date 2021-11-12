@@ -2014,8 +2014,9 @@ namespace DOL.GS
 					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
-			if (CurrentSpellHandler != null)
-				CurrentSpellHandler.CasterIsAttacked(attacker);
+			if (castingComponent?.spellHandler != null)
+				/*CurrentSpellHandler*/
+				castingComponent?.spellHandler.CasterIsAttacked(attacker);
 			
 			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
 				OnInterruptTick(attacker, attackType);
