@@ -421,37 +421,36 @@ namespace DOL.GS.Styles
 						//attackData.StyleDamage = (int)(absorbRatio * styleGrowth * ServerProperties.Properties.CS_OPENING_EFFECTIVENESS);
 
 						var spec = living.GetModifiedSpecLevel(attackData.Style.Spec);
-						var damageCap = living.attackComponent.UnstyledDamageCap(attackData.Weapon);
-
+						
 						// CS style check
 						switch (attackData.Style.ID)
 						{
 							case 335: //Backstab I 
 								{
 									//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(5, spec / 10) + spec * 14 / 3) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(5, spec / 10) + spec * 14 / 3) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(5, spec / 10) + spec * 14 / 3) *
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
 								}
 								break;
 							case 339: //Backstab II
 								{
 									//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(45, spec) + spec * 6) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(45, spec) + spec * 9) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(45, spec) + spec * 6) *
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
 								}
 								break;
 							case 343: //Perforate Artery
 								if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
 								{
 									//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 12) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(75, spec * 1.5) + spec * 12) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 12) *
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
 								}
 								else
 								{
 									//Perforate Artery Cap = 75 + Critical Strike Spec *9 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 9) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(75, spec * 1.5) + spec * 9) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 9) * 
+										(1 - attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation)));
 								}
 								break;
 						}
