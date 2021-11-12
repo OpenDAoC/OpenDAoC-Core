@@ -2109,6 +2109,9 @@ namespace DOL.GS
                         if (guard.GuardSource is GameNPC)
                             shieldSize = 1;
 
+                        double levelMod = (double)(leftHand.Level - 1) / 50 * 0.15;
+                        guardchance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+
                         if (guardchance < 0.01)
                             guardchance = 0.01;
                         //else if (ad.Attacker is GamePlayer && guardchance > .6)
