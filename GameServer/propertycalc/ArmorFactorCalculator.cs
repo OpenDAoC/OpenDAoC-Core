@@ -50,6 +50,9 @@ namespace DOL.GS.PropertyCalc
 				// uncapped category
 				af += living.BuffBonusCategory4[(int)property];
 
+				// buffs should be spread across each armor piece since the damage calculation is based on piece hit
+				af /= 6;
+
 				return af;
 			}
 			else if (living is GameKeepDoor || living is GameKeepComponent)

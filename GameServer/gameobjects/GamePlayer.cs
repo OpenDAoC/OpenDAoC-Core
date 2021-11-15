@@ -7188,12 +7188,13 @@ namespace DOL.GS
 			}
 
 			eaf = Math.Min(eaf, itemAFcap);
-			eaf *= 4.67; // compensate *4.67 in damage formula
+			//eaf *= 4.67; // compensate *4.67 in damage formula
 
 			// my test shows that qual is added after AF buff
 			eaf *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
 
 			eaf += GetModified(eProperty.ArmorFactor);
+			eaf *= 4.67; // compensate *4.67 in damage formula
 
 			/*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
 			if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
