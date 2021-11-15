@@ -5570,7 +5570,7 @@ namespace DOL.GS {
                             }
                             break;
                         case eCharacterClass.Shaman:
-                            if (item.Object_Type != (int)eObjectType.Staff)
+                            if (item.Object_Type != (int)eObjectType.Hammer)
                             {
                                 SendNotValidMessage(player);
                                 price = 0;
