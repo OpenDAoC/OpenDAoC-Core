@@ -1418,9 +1418,9 @@ namespace DOL.GS
                 }
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
                 // Modified to change the lowest value being 75
-                int lowerboundary = (spec - 1) * 50 / (ad.Target.EffectiveLevel + 1) + spec;
+                int lowerboundary = (spec - 1) * 50 / (ad.Target.EffectiveLevel + 1) + Math.Min(50, spec);
                 // Added to clamp variance in ranges
-                int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level ? 75 : 100;
+                int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
                 lowerboundary = Math.Max(lowerboundary, lowerLimit);
                 lowerboundary = Math.Min(lowerboundary, 100);
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
