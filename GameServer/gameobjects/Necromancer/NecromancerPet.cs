@@ -630,14 +630,19 @@ namespace DOL.GS
 			return WhisperReceive(player, "arawn");
 		}
 
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+			criticalAmount /= 2;
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
 
-		/// <summary>
-		/// Actions to be taken when the pet receives a whisper.
-		/// </summary>
-		/// <param name="source">Source of the whisper.</param>
-		/// <param name="text">"Text that was whispered</param>
-		/// <returns>True if whisper was handled, false otherwise.</returns>
-		public override bool WhisperReceive(GameLiving source, string text)
+        /// <summary>
+        /// Actions to be taken when the pet receives a whisper.
+        /// </summary>
+        /// <param name="source">Source of the whisper.</param>
+        /// <param name="text">"Text that was whispered</param>
+        /// <returns>True if whisper was handled, false otherwise.</returns>
+        public override bool WhisperReceive(GameLiving source, string text)
 		{
 			GamePlayer owner = ((Brain as IControlledBrain).Owner) as GamePlayer;
 			if (source == null || source != owner) return false;

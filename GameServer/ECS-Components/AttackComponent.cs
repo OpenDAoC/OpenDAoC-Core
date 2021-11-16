@@ -1457,7 +1457,10 @@ namespace DOL.GS
 
                 // apply total damage cap
                 ad.UncappedDamage = ad.Damage;
-                ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon)/* * effectiveness*/));
+                if(owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
+                    ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon) * 2));
+                else 
+                    ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon)/* * effectiveness*/));
 
                 if ((owner is GamePlayer || (owner is GameNPC && (owner as GameNPC).Brain is IControlledBrain && owner.Realm != 0)) && target is GamePlayer)
                 {
