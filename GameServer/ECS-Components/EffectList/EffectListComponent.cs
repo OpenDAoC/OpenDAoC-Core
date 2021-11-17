@@ -48,15 +48,15 @@ namespace DOL.GS
 
                     ECSGameSpellEffect spellEffect = effect as ECSGameSpellEffect;
                     
-                    if (effect.EffectType == eEffect.OffensiveProc || effect.EffectType == eEffect.DefensiveProc)
-                    {
-                        if (!Effects.ContainsKey(effect.EffectType))
-                        {
-                            Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
-                            EffectIdToEffect.Add(effect.Icon, effect);
-                        }
-                    }
-                    else if (spellEffect != null && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
+                    //if (effect.EffectType == eEffect.OffensiveProc || effect.EffectType == eEffect.DefensiveProc)
+                    //{
+                    //    if (!Effects.ContainsKey(effect.EffectType))
+                    //    {
+                    //        Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
+                    //        EffectIdToEffect.Add(effect.Icon, effect);
+                    //    }
+                    //}
+                    if (spellEffect != null && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
                     {
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
 
