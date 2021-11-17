@@ -113,10 +113,12 @@ namespace DOL.GS
                                 if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) && effect.EffectType != eEffect.Bladeturn)
                                 {
                                     // Better Effect so disable the current Effect
-                                    if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
-                                        spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
+                                    if (spellEffect.SpellHandler.Spell.Value >= existingEffects[i].SpellHandler.Spell.Value ||
+                                        spellEffect.SpellHandler.Spell.Damage >= existingEffects[i].SpellHandler.Spell.Damage)
                                     {
-                                        if (spellEffect.SpellHandler.Spell.IsHelpful && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
+                                        if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster || 
+                                            spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
+                                            existingEffects[i].SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
                                             EffectService.RequestDisableEffect(existingEffects[i]);
                                         else
                                             EffectService.RequestCancelEffect(existingEffects[i]);
