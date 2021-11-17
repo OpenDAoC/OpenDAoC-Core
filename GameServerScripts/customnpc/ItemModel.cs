@@ -1436,13 +1436,13 @@ namespace DOL.GS {
                             switch (source.Realm)
                             {
                                 case eRealm.Albion:
-                                    modelIDToAssign = 2513;
+                                    modelIDToAssign = 2169;
                                     break;
                                 case eRealm.Hibernia:
-                                    modelIDToAssign = 2513;
+                                    modelIDToAssign = 2169;
                                     break;
                                 case eRealm.Midgard:
-                                    modelIDToAssign = 2513;
+                                    modelIDToAssign = 2169;
                                     break;
                                 default:
                                     modelIDToAssign = 0;
