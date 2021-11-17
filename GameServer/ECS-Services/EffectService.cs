@@ -328,7 +328,8 @@ namespace DOL.GS
         {
             if (e != null)
             {
-                if (e.SpellHandler.Spell.IsPulsing && e.Owner != e.SpellHandler.Caster && e.SpellHandler.HasPositiveEffect)
+                if (e.SpellHandler.Spell.IsPulsing && e.Owner != e.SpellHandler.Caster && e.SpellHandler.HasPositiveEffect && 
+                    e.SpellHandler.Spell.SpellType != (byte)eSpellType.DamageShield)
                     return;
 
                 //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
