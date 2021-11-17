@@ -110,34 +110,50 @@ namespace DOL.GS
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) && effect.EffectType != eEffect.Bladeturn)
+                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect))
                                 {
-                                    // Better Effect so disable the current Effect
-                                    if (spellEffect.SpellHandler.Spell.Value >= existingEffects[i].SpellHandler.Spell.Value ||
-                                        spellEffect.SpellHandler.Spell.Damage >= existingEffects[i].SpellHandler.Spell.Damage)
+                                    if (effect.EffectType != eEffect.Bladeturn)
                                     {
-                                        if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster || 
-                                            spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
-                                            existingEffects[i].SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
-                                            EffectService.RequestDisableEffect(existingEffects[i]);
-                                        else
-                                            EffectService.RequestCancelEffect(existingEffects[i]);
-
-                                        addEffect = true;
-                                    }
-                                    else if (spellEffect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
-                                        spellEffect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
-                                    {
-                                        if ((existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster) 
-                                            || existingEffects[i].SpellHandler.Spell.IsPulsing)
+                                        // Better Effect so disable the current Effect
+                                        if (spellEffect.SpellHandler.Spell.Value >= existingEffects[i].SpellHandler.Spell.Value ||
+                                            spellEffect.SpellHandler.Spell.Damage >= existingEffects[i].SpellHandler.Spell.Damage)
                                         {
-                                            EffectService.RequestDisableEffect(spellEffect);
+                                            if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster ||
+                                                spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
+                                                existingEffects[i].SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
+                                                EffectService.RequestDisableEffect(existingEffects[i]);
+                                            else
+                                                EffectService.RequestCancelEffect(existingEffects[i]);
+
                                             addEffect = true;
                                         }
-                                        else
-                                            addEffect = false;
+                                        else if (spellEffect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
+                                            spellEffect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
+                                        {
+                                            if ((existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
+                                                || existingEffects[i].SpellHandler.Spell.IsPulsing)
+                                            {
+                                                EffectService.RequestDisableEffect(spellEffect);
+                                                addEffect = true;
+                                            }
+                                            else
+                                                addEffect = false;
+                                        }
                                     }
-                                }                                
+                                    else
+                                    {
+                                        // PBT should only replace itself
+                                        if (!spellEffect.SpellHandler.Spell.IsPulsing)
+                                        {
+                                            // Self cast Bladeturns should never be overwritten
+                                            if (existingEffects[i].SpellHandler.Spell.Target.ToLower() != "self")
+                                            {
+                                                EffectService.RequestCancelEffect(existingEffects[i]);
+                                                addEffect = true;
+                                            }
+                                        }
+                                    }
+                                }
                                 else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
                                 {
                                     addEffect = true;
