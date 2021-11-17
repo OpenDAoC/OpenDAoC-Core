@@ -64,7 +64,8 @@ namespace DOL.GS
             // Early out if we're trying to add an effect that is already present.
             else if (!effectList.AddEffect(e))
             {
-                SendSpellResistAnimation(e as ECSGameSpellEffect);
+                if (e is ECSGameSpellEffect spell && !spell.SpellHandler.Spell.IsPulsing)
+                    SendSpellResistAnimation(e as ECSGameSpellEffect);
                 return;
             }
 
