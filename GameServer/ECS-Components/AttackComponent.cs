@@ -776,9 +776,9 @@ namespace DOL.GS
                     }
 
                     int speed = AttackSpeed(AttackWeapon) / 100;
-                    if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
-                        speed /= 2;
-                    
+                    //if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
+                    //    speed /= 2;
+
                     p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
             }
