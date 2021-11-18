@@ -776,8 +776,8 @@ namespace DOL.GS
                     }
 
                     int speed = AttackSpeed(AttackWeapon) / 100;
-                    //if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
-                    //    speed /= 2;
+                    if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
+                        speed = Math.Max(15, speed / 2);
 
                     p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
@@ -828,7 +828,7 @@ namespace DOL.GS
                                                            0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
-                        attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed;
+                        attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? Math.Max(1500, speed / 2) : speed;
 
                     }
                 }

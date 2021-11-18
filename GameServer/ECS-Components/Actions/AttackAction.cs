@@ -356,6 +356,7 @@ namespace DOL.GS
                         if (owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         {
                             speed /= 2; // can start fire at the middle of the normal time
+                            speed = Math.Max(1500, speed);
                         }
 
                         Interval = speed;
