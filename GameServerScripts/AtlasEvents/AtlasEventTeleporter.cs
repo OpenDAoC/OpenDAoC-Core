@@ -38,38 +38,73 @@ namespace DOL.GS.Scripts
 		{
 			if(!base.WhisperReceive(source,str)) return false;
 		  	if(!(source is GamePlayer)) return false;
-		    if (EventRPCap == 0) return false;
-			GamePlayer t = (GamePlayer) source;
+		    GamePlayer t = (GamePlayer) source;
 			TurnTo(t.X,t.Y);
 			switch(str)
 			{
 				case "fight":
-					if (t.Group != null && t.Group.MemberCount > 1)
+					//case solo
+					if (t.Group == null)
 					{
-						foreach (var groupMember in t.Group.GetPlayersInTheGroup())
-						{
-							if (groupMember.GetDistanceTo(t) > 5000)
+						log.Info("Solo player");
+							int SoloRandLoc = Util.Random(1, 4);
+							switch (SoloRandLoc)
 							{
-								t.MoveTo(27, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
-								break;
+								case 1:
+									t.MoveTo(27, 233781, 227178, 5124, 1538);
+									break;
+								case 2:
+									t.MoveTo(27, 229129, 231088, 5169, 1808);
+									break;
+								case 3:
+									t.MoveTo(27, 218884, 230568, 5184, 2514);
+									break;
+								case 4:
+									t.MoveTo(27, 220771, 222700, 4780, 3069);
+									break;
+							}
+					}
+					//case grouped
+					else if (t.Group != null && t.Group.MemberCount > 1)
+					{
+						log.Info("Player in group");
+						foreach (GamePlayer groupMember in t.Group.GetPlayersInTheGroup())
+						{
+							if (t.GetDistanceTo(groupMember) > 5000)
+							{
+								log.Info("Distance > 5k");
+								t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
+								return true;
 							}
 						}
+						log.Info("Distance < 5k");
+						int GroupRandLoc = Util.Random(1, 7);
+						switch (GroupRandLoc)
+						{
+							case 1:
+								t.MoveTo(27, 205877, 217055, 5249, 3521);
+								break;
+							case 2:
+								t.MoveTo(27, 211378, 207917, 6862, 3293);
+								break;
+							case 3:
+								t.MoveTo(27, 217277, 202645, 6983, 30);
+								break;
+							case 4:
+								t.MoveTo(27, 227651, 202965, 4968, 403);
+								break;
+							case 5:
+								t.MoveTo(27, 240408, 205320, 8445, 3866);
+								break;
+							case 6:
+								t.MoveTo(27, 249477, 206588, 7295, 327);
+								break;
+							case 7:
+								t.MoveTo(27, 251844, 225446, 5392, 875);
+								break;
+						}
 					}
-					
-					int RandLoc = Util.Random(1, 3);
 
-					switch (RandLoc)
-					{
-						case 1:
-                            t.MoveTo(27, 253621, 21794, 6620, 3268);
-                            break;
-						case 2:
-                            t.MoveTo(27, 222073, 206206, 7900, 4010);
-                            break;
-						case 3:
-                            t.MoveTo(27, 221020, 232192, 5247, 2471);
-                            break;
-					}
 					break;
 			}
 			return true;
@@ -84,7 +119,7 @@ namespace DOL.GS.Scripts
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("Atlas Event Teleporter 2 initialized");
+            log.Info("Atlas Event Teleporter initialized");
         }	
     }
 }

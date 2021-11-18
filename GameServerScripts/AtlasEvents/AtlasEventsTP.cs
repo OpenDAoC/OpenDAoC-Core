@@ -130,7 +130,7 @@ namespace DOL.GS.Scripts
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("Atlas Event Teleporter initialized");
+            log.Info("Atlas Basic Event Teleporter initialized");
         }	
     }
 }
