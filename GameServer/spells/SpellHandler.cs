@@ -824,6 +824,10 @@ namespace DOL.GS.Spells
 					{
 						selectedTarget = Caster.ControlledBrain.Body;
 					}
+					else if (selectedTarget is TurretPet)
+                    {
+						//do nothing
+                    }
 					else
 					{
 						if (!quiet) MessageToCaster("You must cast this spell on a creature you are controlling.",
