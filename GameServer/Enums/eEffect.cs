@@ -134,6 +134,7 @@ namespace DOL.GS
         Shade,
         DirtyTricks,
         DirtyTricksDetrimental,
+        Charge,
 
         // Realm Abilities
         BunkerOfFaith,

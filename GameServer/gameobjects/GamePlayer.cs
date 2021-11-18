@@ -2524,27 +2524,31 @@ namespace DOL.GS
 			{
 				int regen = GetModified(eProperty.EnduranceRegenerationRate);  //default is 1
 				int endchant = GetModified(eProperty.FatigueConsumption);      //Pull chant/buff value
+				var charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
 
 				int longwind = 5;
 				if (sprinting && IsMoving)
 				{
-					#region Calculation : AtlasOF_LongWind
-					// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
-					AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
-					if (raLongWind != null)
-                    {
-						longwind -= (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
-					}
-                    // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
-                    #endregion
-
-                    regen -= longwind;
-					
-					if (endchant > 1) regen = (int)Math.Ceiling(regen * endchant * 0.01);
-					
-					if (Endurance + regen > MaxEndurance - longwind)
+					if (charge is null)
 					{
-						regen -= (Endurance + regen) - (MaxEndurance - longwind);
+						#region Calculation : AtlasOF_LongWind
+						// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+						AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
+						if (raLongWind != null)
+						{
+							longwind -= (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
+						}
+						// --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
+						#endregion
+
+						regen -= longwind;
+
+						if (endchant > 1) regen = (int)Math.Ceiling(regen * endchant * 0.01);
+
+						if (Endurance + regen > MaxEndurance - longwind)
+						{
+							regen -= (Endurance + regen) - (MaxEndurance - longwind);
+						}
 					}
 				}
 
