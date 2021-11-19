@@ -662,7 +662,7 @@ namespace DOL.GS
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
-                    }
+                    }                    
 
                     lock (p.effectListComponent.Effects)
                     {
@@ -829,7 +829,7 @@ namespace DOL.GS
 
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
                         attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? Math.Max(1500, speed / 2) : speed;
-
+                        attackAction.RangeInterruptTime = 750;
                     }
                 }
                 else
