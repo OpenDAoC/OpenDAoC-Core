@@ -53,7 +53,7 @@ namespace DOL.GS
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {
-                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) == 0)
+                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
                     {
                         Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage + (int)bleedHandler.Spell.Damage * Util.Random(25) / 100);  // + random max 25%
                     }
@@ -62,9 +62,9 @@ namespace DOL.GS
                     Message.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
 
                     int bleedValue = Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
-
+                    Console.WriteLine("get value " + bleedValue);
                     AttackData ad = bleedHandler.CalculateDamageToTarget(Owner, 1.0);
-
+                    Console.WriteLine("ad damage value " + ad.Damage);
                     bleedHandler.SendDamageMessages(ad);
 
                     // attacker must be null, attack result is 0x0A
@@ -81,6 +81,7 @@ namespace DOL.GS
                         EffectService.RequestCancelEffect(this);
                     }
                     else Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
+                    Console.WriteLine("set value " + bleedValue);
                 }
             }
 
