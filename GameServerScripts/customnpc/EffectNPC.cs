@@ -1012,13 +1012,134 @@ namespace DOL.GS {
             else
             if (rps is >= 475475 and < 513500) { player.RealmLevel = 39; }
             else
-
-
-            if (rps is >= 513500)
-            {
-                player.RealmPoints = 513500;
-                player.RealmLevel = 40;
-            }
+            //5L0
+            if (rps is >= 513500 and < 553500) { player.RealmLevel = 40; }
+            else
+            if (rps is >= 553500 and < 595525) { player.RealmLevel = 41; }
+            else
+            if (rps is >= 595525 and < 639625) { player.RealmLevel = 42; }
+            else
+            if (rps is >= 639625 and < 685850) { player.RealmLevel = 43; }
+            else
+            if (rps is >= 685850 and < 734250) { player.RealmLevel = 44; }
+            else
+            if (rps is >= 734250 and < 784875) { player.RealmLevel = 45; }
+            else
+            if (rps is >= 784875 and < 837775) { player.RealmLevel = 46; }
+            else
+            if (rps is >= 837775 and < 893000) { player.RealmLevel = 47; }
+            else
+            if (rps is >= 893000 and < 950600) { player.RealmLevel = 48; }
+            else
+            if (rps is >= 950600 and < 1010625) { player.RealmLevel = 49; }
+            else
+            //6L0
+            if (rps is >= 1010625 and < 1073125) { player.RealmLevel = 50; }
+            else
+            if (rps is >= 1073125 and < 1138150) { player.RealmLevel = 51; }
+            else
+            if (rps is >= 1138150 and < 1205750) { player.RealmLevel = 52; }
+            else
+            if (rps is >= 1205750 and < 1275975) { player.RealmLevel = 53; }
+            else
+            if (rps is >= 1275975 and < 1348875) { player.RealmLevel = 54; }
+            else
+            if (rps is >= 1348875 and < 1424500) { player.RealmLevel = 55; }
+            else
+            if (rps is >= 1424500 and < 1502900) { player.RealmLevel = 56; }
+            else
+            if (rps is >= 1502900 and < 1584125) { player.RealmLevel = 57; }
+            else
+            if (rps is >= 1584125 and < 1668225) { player.RealmLevel = 58; }
+            else
+            if (rps is >= 1668225 and < 1755250) { player.RealmLevel = 59; }
+            else
+            //7L0
+            if (rps is >= 1755250 and < 1845250) { player.RealmLevel = 60; }
+            else
+            if (rps is >= 1845250 and < 1938275) { player.RealmLevel = 61; }
+            else
+            if (rps is >= 1938275 and < 2034375) { player.RealmLevel = 62; }
+            else
+            if (rps is >= 2034375 and < 2133600) { player.RealmLevel = 63; }
+            else
+            if (rps is >= 2133600 and < 2236000) { player.RealmLevel = 64; }
+            else
+            if (rps is >= 2236000 and < 2341625) { player.RealmLevel = 65; }
+            else
+            if (rps is >= 2341625 and < 2450525) { player.RealmLevel = 66; }
+            else
+            if (rps is >= 2450525 and < 2562750) { player.RealmLevel = 67; }
+            else
+            if (rps is >= 2562750 and < 2678350) { player.RealmLevel = 68; }
+            else
+            if (rps is >= 2678350 and < 2797375) { player.RealmLevel = 69; }
+            else
+            //8L0
+            if (rps is >= 2797375 and < 2919875) { player.RealmLevel = 70; }
+            else
+            if (rps is >= 2919875 and < 3045900) { player.RealmLevel = 71; }
+            else
+            if (rps is >= 3045900 and < 3175500) { player.RealmLevel = 72; }
+            else
+            if (rps is >= 3175500 and < 3308725) { player.RealmLevel = 73; }
+            else
+            if (rps is >= 3308725 and < 3445625) { player.RealmLevel = 74; }
+            else
+            if (rps is >= 3445625 and < 3586250) { player.RealmLevel = 75; }
+            else
+            if (rps is >= 3586250 and < 3730650) { player.RealmLevel = 76; }
+            else
+            if (rps is >= 3730650 and < 3878875) { player.RealmLevel = 77; }
+            else
+            if (rps is >= 3878875 and < 4030975) { player.RealmLevel = 78; }
+            else
+            if (rps is >= 4030975 and < 4187000) { player.RealmLevel = 79; }
+            else
+            //9L0
+            if (rps is >= 4187000 and < 4347000) { player.RealmLevel = 80; }
+            else
+            if (rps is >= 4347000 and < 4511025) { player.RealmLevel = 81; }
+            else
+            if (rps is >= 4511025 and < 4679125) { player.RealmLevel = 82; }
+            else
+            if (rps is >= 4679125 and < 4851350) { player.RealmLevel = 83; }
+            else
+            if (rps is >= 4851350 and < 5027750) { player.RealmLevel = 84; }
+            else
+            if (rps is >= 5027750 and < 5208375) { player.RealmLevel = 85; }
+            else
+            if (rps is >= 5208375 and < 5393275) { player.RealmLevel = 86; }
+            else
+            if (rps is >= 5393275 and < 5582500) { player.RealmLevel = 87; }
+            else
+            if (rps is >= 5582500 and < 5776100) { player.RealmLevel = 88; }
+            else
+            if (rps is >= 5776100 and < 5974125) { player.RealmLevel = 89; }
+            else
+            //10L0
+            if (rps is >= 5974125 and < 6176625) { player.RealmLevel = 90; }
+            else
+            if (rps is >= 6176625 and < 6383650) { player.RealmLevel = 91; }
+            else
+            if (rps is >= 6383650 and < 6595250) { player.RealmLevel = 92; }
+            else
+            if (rps is >= 6595250 and < 6811475) { player.RealmLevel = 93; }
+            else
+            if (rps is >= 6811475 and < 7032375) { player.RealmLevel = 94; }
+            else
+            if (rps is >= 7032375 and < 7258000) { player.RealmLevel = 95; }
+            else
+            if (rps is >= 7258000 and < 7488400) { player.RealmLevel = 96; }
+            else
+            if (rps is >= 7488400 and < 7723625) { player.RealmLevel = 97; }
+            else
+            if (rps is >= 7723625 and < 7963725) { player.RealmLevel = 98; }
+            else
+            if (rps is >= 7963725 and < 8208750) { player.RealmLevel = 99; }
+            else
+            //11L0
+            if (rps is >= 8208750) { player.RealmLevel = 100; }
 
             player.Out.SendUpdatePlayer();
             player.Out.SendCharStatsUpdate();
