@@ -22,6 +22,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 
 namespace DOL.GS.ServerRules
@@ -156,11 +157,14 @@ namespace DOL.GS.ServerRules
 		{
 			if(source == null || target == null) return false;
 
-			if(source.Realm != target.Realm)
+			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
+			
+			if (source.Realm != target.Realm)
 			{
-				if(quiet == false) MessageToLiving(source, "You can't invite a player of another realm.");
+				if(quiet == false) MessageToLiving(source, "You can't group with a player from another realm!");
 				return false;
 			}
+			
 			return true;
 		}
 
