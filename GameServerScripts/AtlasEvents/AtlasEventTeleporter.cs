@@ -45,6 +45,12 @@ namespace DOL.GS.Scripts
 			switch(str)
 			{
 				case "fight":
+
+					if (t.Level != ServerProperties.Properties.EVENT_LVCAP)
+					{
+						t.Out.SendMessage("You must be level " + ServerProperties.Properties.EVENT_LVCAP + " to enter the event, speak with my colleague!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return false;
+					}
 					
 					//case recently in combat
 					if (t.InCombatInLast(TeleportDelay))
