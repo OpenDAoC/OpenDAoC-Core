@@ -29,8 +29,8 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            if (EffectType == eEffect.Bleed)
-                Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
+            //if (EffectType == eEffect.Bleed)
+                //Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
         }
 
         public override void OnEffectPulse()
