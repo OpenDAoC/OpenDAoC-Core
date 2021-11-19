@@ -390,7 +390,7 @@ namespace DOL.GS
                     var p = owner as GamePlayer;
                     if (p != null && p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
-                        if (p != null && p.InterruptTime > GameLoop.GameLoopTime)
+                        if (p != null && p.InterruptTime > GameLoop.GameLoopTime && p.attackComponent.Attackers.Count > 0)
                         {
                             var attacker = p.attackComponent.Attackers.Last();
                             string attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Type.Shot");
