@@ -401,6 +401,12 @@ namespace DOL.GS.ServerRules
 					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
 					return false;
 				}
+
+				if ((area.IsSafeArea) && (attacker is GamePlayer))
+				{
+					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+					return false;
+				}
 			}
 
 			//I don't want mobs attacking guards
