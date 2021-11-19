@@ -200,6 +200,7 @@ namespace DOL.GS
                     {
                         Interval = owner.attackComponent.AttackSpeed(attackWeapon);
                         ad.AttackResult = eAttackResult.Missed;
+                        StartTime = Interval;
                         return; //Don't start the attack if the last one fumbled
                     }
 
