@@ -16,6 +16,8 @@ namespace DOL.GS.Scripts
     public class AtlasEventTeleporter : GameNPC
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		
+		public static int TeleportDelay = 40000; //value in milliseconds
 		public override bool AddToWorld()
         {
             Model = 2026;
@@ -43,6 +45,14 @@ namespace DOL.GS.Scripts
 			switch(str)
 			{
 				case "fight":
+					
+					//case recently in combat
+					if (t.InCombatInLast(TeleportDelay))
+					{
+	                    t.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+                        return false;
+					}
+					
 					//case solo
 					if (t.Group == null)
 					{
@@ -70,7 +80,7 @@ namespace DOL.GS.Scripts
 						log.Info("Player in group");
 						foreach (GamePlayer groupMember in t.Group.GetPlayersInTheGroup())
 						{
-							if (t.GetDistanceTo(groupMember) > 5000)
+							if (GetDistanceTo(groupMember) > 5000 && groupMember.InCombat == false)
 							{
 								log.Info("Distance > 5k");
 								t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
