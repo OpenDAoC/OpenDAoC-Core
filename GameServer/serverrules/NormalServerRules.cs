@@ -213,6 +213,8 @@ namespace DOL.GS.ServerRules
 		public override bool IsAllowedToUnderstand(GameLiving source, GamePlayer target)
 		{
 			if(source == null || target == null) return false;
+			
+			if(Properties.EVENT_CROSS_REALM_GROUPS) return true;
 
 			// clients with priv level > 1 are allowed to talk and hear anyone
 			if(source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
