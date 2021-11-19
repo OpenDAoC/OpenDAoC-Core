@@ -29,8 +29,8 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            if (EffectType == eEffect.Bleed)
-                Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
+            //if (EffectType == eEffect.Bleed)
+                //Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
         }
 
         public override void OnEffectPulse()
@@ -53,7 +53,7 @@ namespace DOL.GS
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {
-                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) == 0)
+                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
                     {
                         Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage + (int)bleedHandler.Spell.Damage * Util.Random(25) / 100);  // + random max 25%
                     }
@@ -64,7 +64,6 @@ namespace DOL.GS
                     int bleedValue = Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
 
                     AttackData ad = bleedHandler.CalculateDamageToTarget(Owner, 1.0);
-
                     bleedHandler.SendDamageMessages(ad);
 
                     // attacker must be null, attack result is 0x0A
