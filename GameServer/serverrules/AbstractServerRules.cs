@@ -1742,7 +1742,7 @@ namespace DOL.GS.ServerRules
                 }
 
 				//distribute ROGs
-				if (ServerProperties.Properties.EVENT_THIDRANKI)
+				if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_PVP)
 				{
                     foreach (var player in playersToAward)
                     {

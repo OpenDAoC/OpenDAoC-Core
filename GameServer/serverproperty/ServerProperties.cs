@@ -2499,6 +2499,18 @@ namespace DOL.GS.ServerProperties
 		public static bool EVENT_THIDRANKI;
 		
 		/// <summary>
+		/// Enables the PvP event in the Tutorial zone, moving all characters and binding them to the zone
+		/// </summary>
+		[ServerProperty("atlas", "event_pvp", "Enables the PvP event in the Tutorial zone", false)]
+		public static bool EVENT_PVP;
+
+		/// <summary>
+		/// Allow cross realm grouping for the Event?
+		/// </summary>
+		[ServerProperty("atlas", "event_cross_realm_groups", "Enables cross Realm groups during the event", false)]
+		public static bool EVENT_CROSS_REALM_GROUPS;
+
+		/// <summary>
 		/// Maximum character level for the active event
 		/// </summary>
 		[ServerProperty("atlas", "event_lvcap", "Maximum character level for the active event", 0)]

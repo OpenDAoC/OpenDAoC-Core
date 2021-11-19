@@ -8,6 +8,7 @@ using System.Reflection;
 using log4net;
 using DOL.Database;
 using DOL.Events;
+using MySql.Data.MySqlClient.Memcached;
 
 
 namespace DOL.GS.GameEvents
@@ -76,6 +77,7 @@ namespace DOL.GS.GameEvents
 
 			DOLCharacters ch = chArgs.Character;
 
+			//moving and binding newly created characters to the BG event zone
 			if (ServerProperties.Properties.EVENT_THIDRANKI)
 			{
 				switch (ch.Realm)
@@ -105,6 +107,19 @@ namespace DOL.GS.GameEvents
 				ch.GainXP = false;
 				BindCharacter(ch);
 			}
+
+			//moving and binding newly created characters to the PVP event zone
+			if (ServerProperties.Properties.EVENT_PVP)
+			{
+				ch.Xpos = 342521;
+				ch.Ypos = 385230;
+				ch.Zpos = 5410;
+				ch.Direction = 1756;
+				ch.Region = 27;
+				ch.GainXP = false;
+				BindCharacter(ch);
+			}
+			
 		}
 
 		public static void OnRPGain(DOLEvent e, object sender, EventArgs args)
@@ -117,6 +132,7 @@ namespace DOL.GS.GameEvents
 			if (EventRPCap == 0)
 				return;
 
+			// BG event RP cap check
 			if (ServerProperties.Properties.EVENT_THIDRANKI && p.RealmPoints > EventRPCap)
 			{
 				switch (p.Realm)
@@ -132,21 +148,28 @@ namespace DOL.GS.GameEvents
 						break;
 				}
 			}
+			
+			// in case we ever have a RP cap with the PVP event
+			if (ServerProperties.Properties.EVENT_PVP && p.RealmPoints > EventRPCap)
+			{
+				p.MoveTo(27, 342521, 385230, 5410, 1756);
+			}
 		}
 		
 		public static void OnPlayerLogin(DOLEvent e, object sender, EventArgs args)
 		{
+			
+			// trying to catch, move and bind existing characters
+			
 			GamePlayer p = sender as GamePlayer;
 			
 			if (p == null)
 				return;
-			
-			if (EventRPCap == 0)
-				return;
-			
+
 			if (EventLvCap == 0)
 				return;
 			
+			// BG event login checks
 			if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
 			{
 				switch (p.Realm)
@@ -162,6 +185,19 @@ namespace DOL.GS.GameEvents
 						break;
 				}
 			}
+			
+			// PVP event login checks
+			if (ServerProperties.Properties.EVENT_PVP)
+			{
+				p.MoveTo(27, 342521, 385230, 5410, 1756);
+				
+				// bind characters the first time they port - hopefully they'll use the event level NPC shortly after entering
+				if (p.Level != EventLvCap)
+				{
+					p.Bind(true);
+				}
+			}
+			
 		}
 					
 		/// <summary>

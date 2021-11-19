@@ -110,7 +110,7 @@ namespace DOL.GS.GameEvents
 				// get the first entry according to Tutorial Enabling.
 				foreach (var location in availableLocation)
 				{
-					if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.DISABLE_TUTORIAL && location.ClientRegionID == TUTORIAL_REGIONID)
+					if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_PVP || ServerProperties.Properties.DISABLE_TUTORIAL && location.ClientRegionID == TUTORIAL_REGIONID)
 						continue;
 					
 					dbStartupLocation = location;
