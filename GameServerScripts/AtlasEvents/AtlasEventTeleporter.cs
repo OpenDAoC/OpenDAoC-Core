@@ -10,6 +10,7 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using log4net;
 using System.Reflection;
+using DOL.Database;
 
 namespace DOL.GS.Scripts
 {
@@ -63,22 +64,13 @@ namespace DOL.GS.Scripts
 					if (t.Group == null)
 					{
 						log.Info("Solo player");
-							int SoloRandLoc = Util.Random(1, 4);
-							switch (SoloRandLoc)
-							{
-								case 1:
-									t.MoveTo(27, 233781, 227178, 5124, 1538);
-									break;
-								case 2:
-									t.MoveTo(27, 229129, 231088, 5169, 1808);
-									break;
-								case 3:
-									t.MoveTo(27, 218884, 230568, 5184, 2514);
-									break;
-								case 4:
-									t.MoveTo(27, 220771, 222700, 4780, 3069);
-									break;
-							}
+						int randX = Util.Random(223000, 235000);
+						int randY = Util.Random(216000, 227000);
+						int z = 6000;
+						
+						t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
+						t.MoveTo(27, randX, randY, z, t.Heading);
+						
 					}
 					//case grouped
 					else if (t.Group != null && t.Group.MemberCount > 1)
@@ -89,36 +81,19 @@ namespace DOL.GS.Scripts
 							if (GetDistanceTo(groupMember) > 5000 && groupMember.InCombat == false)
 							{
 								log.Info("Distance > 5k");
+								t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
 								t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
 								return true;
 							}
 						}
 						log.Info("Distance < 5k");
-						int GroupRandLoc = Util.Random(1, 7);
-						switch (GroupRandLoc)
-						{
-							case 1:
-								t.MoveTo(27, 205877, 217055, 5249, 3521);
-								break;
-							case 2:
-								t.MoveTo(27, 211378, 207917, 6862, 3293);
-								break;
-							case 3:
-								t.MoveTo(27, 217277, 202645, 6983, 30);
-								break;
-							case 4:
-								t.MoveTo(27, 227651, 202965, 4968, 403);
-								break;
-							case 5:
-								t.MoveTo(27, 240408, 205320, 8445, 3866);
-								break;
-							case 6:
-								t.MoveTo(27, 249477, 206588, 7295, 327);
-								break;
-							case 7:
-								t.MoveTo(27, 251844, 225446, 5392, 875);
-								break;
-						}
+						int randX = Util.Random(205000, 253000);
+						int randY = Util.Random(204000, 216000);
+						int z = 9000;
+						
+						t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
+						t.MoveTo(27, randX, randY, z, t.Heading);
+
 					}
 
 					break;
