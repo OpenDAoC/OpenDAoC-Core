@@ -29,6 +29,19 @@ namespace DOL.GS.Scripts
             Flags |= eFlags.PEACE;
             return base.AddToWorld();
         }
+		
+		public int GetEnemyCountInArea(GamePlayer t, ushort radius)
+		{
+			int inArea = 0;
+			foreach (GamePlayer NearbyPlayers in t.GetPlayersInRadius(radius))
+			{
+				if (GameServer.ServerRules.IsAllowedToAttack(this, NearbyPlayers, true));
+                {
+                    inArea++;
+                }
+			}
+			return inArea;
+		}
 		public override bool Interact(GamePlayer player)
 		{
 			if (!base.Interact(player)) return false;
@@ -78,15 +91,18 @@ namespace DOL.GS.Scripts
 						log.Info("Player in group");
 						foreach (GamePlayer groupMember in t.Group.GetPlayersInTheGroup())
 						{
-							if (GetDistanceTo(groupMember) > 5000 && groupMember.InCombat == false)
+							// checking if any group member is already in the zone and safe
+							if (GetDistanceTo(groupMember) > 5000 && GetEnemyCountInArea(groupMember, 2750) == 0)
 							{
+								log.Info("Enemies in range: " + GetEnemyCountInArea(groupMember, 2750));
 								log.Info("Distance > 5k");
 								t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
 								t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
 								return true;
 							}
 						}
-						log.Info("Distance < 5k");
+						// fallback if no group member is in the zone or safe
+						log.Info("Distance < 5k or close to enemies");
 						int randX = Util.Random(205000, 253000);
 						int randY = Util.Random(204000, 216000);
 						int z = 9000;
