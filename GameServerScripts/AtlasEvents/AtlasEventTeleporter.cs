@@ -92,7 +92,7 @@ namespace DOL.GS.Scripts
 						foreach (GamePlayer groupMember in t.Group.GetPlayersInTheGroup())
 						{
 							// checking if any group member is already in the zone and safe
-							if (GetDistanceTo(groupMember) > 5000 && GetEnemyCountInArea(groupMember, 2750) == 0)
+							if (GetDistanceTo(groupMember) > 5000 && !groupMember.InCombat)
 							{
 								log.Info("Enemies in range: " + GetEnemyCountInArea(groupMember, 2750));
 								log.Info("Distance > 5k");
@@ -102,7 +102,7 @@ namespace DOL.GS.Scripts
 							}
 						}
 						// fallback if no group member is in the zone or safe
-						log.Info("Distance < 5k or close to enemies");
+						log.Info("Distance < 5k or too close to enemies");
 						int randX = Util.Random(205000, 253000);
 						int randY = Util.Random(204000, 216000);
 						int z = 9000;
