@@ -58,49 +58,7 @@ namespace DOL.GS.Scripts
 			switch(str)
 			{
 				case "fight":
-					if (!t.InCombatPvPInLast(TeleportDelay))
-					{
-						if (t.RealmPoints < EventRPCap)
-						{
-							if (t.Level == EventLVCap)
-							{
-								if (EventLVCap == 24)
-								{
-									switch (t.Realm)
-									{
-										case eRealm.Albion:
-											t.MoveTo(252, 38113, 53507, 4160, 3268);
-											break;
-										case eRealm.Midgard:
-											t.MoveTo(252, 53568, 23643, 4530, 3268);
-											break;
-										case eRealm.Hibernia:
-											t.MoveTo(252, 17367, 18248, 4320, 3268);
-											break;
-									}
-								}
-								else
-								{
-									switch (t.Realm)
-									{
-										case eRealm.Albion:
-											t.MoveTo(165, 584218, 585297, 5106, 1058);
-											break;
-										case eRealm.Midgard:
-											t.MoveTo(165, 575510, 537421, 4840, 608);
-											break;
-										case eRealm.Hibernia:
-											t.MoveTo(165, 536869, 585832, 5848, 1855);
-											break;
-									}
-								}
-
-							}
-							else { t.Client.Out.SendMessage("You have reached the Realm Rank cap for this event.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
-						}
-						else { t.Client.Out.SendMessage("Speak to my Event Level colleague to attain enough experience before joining the Battleground!", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
-					}
-					else { t.Client.Out.SendMessage("You need to wait a little longer before porting again.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
+					t.MoveTo(27, 342521, 385230, 5410, 1756);
 					break;
 				case "event zone":
 					switch (t.Realm)
