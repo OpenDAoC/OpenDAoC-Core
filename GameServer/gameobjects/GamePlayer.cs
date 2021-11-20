@@ -9818,6 +9818,18 @@ namespace DOL.GS
                 return false;
             if (IsIgnoring(source))
                 return true;
+            
+            if (Properties.EVENT_CROSS_REALM_SAY)
+            {
+                foreach (AbstractArea area in source.CurrentAreas)
+                {
+                    if (area.IsSafeArea)
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SayReceive.Says", source.GetName(0, false), str),
+                            eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                    return true;
+                }
+            }
+            
             if (GameServer.ServerRules.IsAllowedToUnderstand(source, this) || Properties.ENABLE_DEBUG)
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SayReceive.Says", source.GetName(0, false), str),
                     eChatType.CT_Say, eChatLoc.CL_ChatWindow);

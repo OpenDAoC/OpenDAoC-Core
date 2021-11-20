@@ -2509,6 +2509,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "event_cross_realm_groups", "Enables cross Realm groups during the event", false)]
 		public static bool EVENT_CROSS_REALM_GROUPS;
+		
+		/// <summary>
+		/// Allow cross cross realm /say in Safe Zones?
+		/// </summary>
+		[ServerProperty("atlas", "event_cross_realm_say", "Enables cross Realm /say in safe zones", false)]
+		public static bool EVENT_CROSS_REALM_SAY;
 
 		/// <summary>
 		/// Maximum character level for the active event
