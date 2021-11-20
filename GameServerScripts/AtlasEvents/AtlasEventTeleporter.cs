@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
 			TurnTo(player.X, player.Y);
 			
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
-			player.Out.SendMessage("If you need so, I can port you back to your Realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("If you need so, I can port you back to your Realm's [testing lobby]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			return true;
 		}
 		public override bool WhisperReceive(GameLiving source, string str)
@@ -97,7 +97,7 @@ namespace DOL.GS.Scripts
 					}
 					break;
 
-				case "event zone":
+				case "testing lobby":
 					switch (t.Realm)
 					{
 						case eRealm.Albion:
