@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
 			int inArea = 0;
 			foreach (GamePlayer NearbyPlayers in t.GetPlayersInRadius(radius))
 			{
-				if (GameServer.ServerRules.IsAllowedToAttack(t, NearbyPlayers, true));
+				if (GameServer.ServerRules.IsAllowedToAttack(this, NearbyPlayers, true));
                 {
                     inArea++;
                 }
@@ -91,11 +91,10 @@ namespace DOL.GS.Scripts
 						log.Info("Player in group");
 						foreach (GamePlayer groupMember in t.Group.GetPlayersInTheGroup())
 						{
-							int enemiesInRange = GetEnemyCountInArea(groupMember, 2750);
 							// checking if any group member is already in the zone and safe
-							if (GetDistanceTo(groupMember) > 5000 && enemiesInRange == 0)
+							if (GetDistanceTo(groupMember) > 5000 && !groupMember.InCombat)
 							{
-								log.Info("Enemies in range: " + enemiesInRange);
+								log.Info("Enemies in range: " + GetEnemyCountInArea(groupMember, 2750));
 								log.Info("Distance > 5k");
 								t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
 								t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
