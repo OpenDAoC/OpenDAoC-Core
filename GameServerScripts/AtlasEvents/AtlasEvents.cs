@@ -8,7 +8,6 @@ using System.Reflection;
 using log4net;
 using DOL.Database;
 using DOL.Events;
-using MySql.Data.MySqlClient.Memcached;
 
 
 namespace DOL.GS.GameEvents
