@@ -156,15 +156,20 @@ namespace DOL.GS.ServerRules
 		public override bool IsAllowedToGroup(GamePlayer source, GamePlayer target, bool quiet)
 		{
 			if(source == null || target == null) return false;
-
-			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
 			
 			if (source.Realm != target.Realm)
 			{
 				if(quiet == false) MessageToLiving(source, "You can't group with a player from another realm!");
 				return false;
 			}
-			
+
+			if (source?.CurrentRegionID == 27 || target?.CurrentRegionID == 27)
+            {
+                if (Properties.EVENT_THIDRANKI) { return false; }
+            }
+
+			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
+
 			return true;
 		}
 

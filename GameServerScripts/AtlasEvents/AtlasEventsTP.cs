@@ -47,7 +47,7 @@ namespace DOL.GS.Scripts
 			}
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 
-			if(WorldMgr.GetAllClientsCount() >= 100)
+			if(WorldMgr.GetAllClientsCount() >= 100 && player.Group == null)
             {
 				player.Out.SendMessage("Additionally, I can port you to the [solo zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
@@ -81,6 +81,9 @@ namespace DOL.GS.Scripts
 					}
 					break;
 				case "solo zone":
+
+					if(WorldMgr.GetAllClientsCount() < 100) { break; }
+
 					if (t.Group == null)
 					{
 						log.Info("Solo player");
