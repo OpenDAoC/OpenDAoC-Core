@@ -252,7 +252,7 @@ namespace DOL.GS
         /// <summary>
         /// Is this player PvP enabled
         /// </summary>
-        public virtual bool IsPvP { get { return GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP; }}
+        public virtual bool IsPvP { get { return GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP || (this.CurrentRegionID == 27 && Properties.EVENT_PVP); }}
 
         /// <summary>
         /// Can this player use cross realm items
