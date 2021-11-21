@@ -78,6 +78,12 @@ namespace DOL.GS.ServerRules
 				return false;
 			}
 
+			if(attacker is GamePlayer atkPl && defender is GamePlayer defPl
+				&& atkPl.IsPvP && defPl.IsPvP)
+            {
+				return true;
+            }
+
 			//Don't allow attacks on same realm members on Normal Servers
 			if (attacker.Realm == defender.Realm && !(attacker is GamePlayer && ((GamePlayer)attacker).DuelTarget == defender))
 			{
