@@ -5331,6 +5331,9 @@ namespace DOL.GS {
                                     break;
                             }
                             break;
+                        default:
+                            price = 0;
+                            break;
                     }
                     break;
 
@@ -5741,6 +5744,9 @@ namespace DOL.GS {
                                 break;
                             }
                             modelIDToAssign = 3231;
+                            break;
+                        default:
+                            price = 0;
                             break;
                     }
                     break;
