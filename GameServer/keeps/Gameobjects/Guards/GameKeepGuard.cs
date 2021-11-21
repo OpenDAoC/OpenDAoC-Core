@@ -885,7 +885,7 @@ namespace DOL.GS.Keeps
 					Component.Keep = keepArea.Keep;
 					m_dataObjectID = mobobject.ObjectId;
 					// mob reload command might be reloading guard, so check to make sure it isn't already added
-					if (Component.Keep.Guards?.ContainsKey(sKey) == false)
+					if (Component.Keep?.Guards?.ContainsKey(sKey) == false)
 						Component.Keep.Guards.Add(sKey, this);
 					// break; This is a bad idea.  If there are multiple KeepAreas, we should put a guard on each
 				}
