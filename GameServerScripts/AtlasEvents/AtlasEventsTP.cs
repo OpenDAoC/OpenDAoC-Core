@@ -46,6 +46,12 @@ namespace DOL.GS.Scripts
 				return true;
 			}
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+
+			if(WorldMgr.GetAllClientsCount() >= 100)
+            {
+				player.Out.SendMessage("Additionally, I can port you to the [solo zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			}
+
 			return true;
 		}
 		public override bool WhisperReceive(GameLiving source, string str)
@@ -72,6 +78,19 @@ namespace DOL.GS.Scripts
 						case eRealm.Hibernia:
 							t.MoveTo(335, 52836, 40401, 4672, 441);
 							break;
+					}
+					break;
+				case "solo zone":
+					if (t.Group == null)
+					{
+						log.Info("Solo player");
+						int randX = Util.Random(223000, 235000);
+						int randY = Util.Random(216000, 227000);
+						int z = 6000;
+
+						t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT * 1000, null);
+						t.MoveTo(27, randX, randY, z, t.Heading);
+
 					}
 					break;
 				default: break;
