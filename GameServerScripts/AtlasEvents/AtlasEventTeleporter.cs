@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
 			int inArea = 0;
 			foreach (GamePlayer NearbyPlayers in t.GetPlayersInRadius(radius))
 			{
-				if (GameServer.ServerRules.IsAllowedToAttack(t, NearbyPlayers, true))
+				if (GameServer.ServerRules.IsAllowedToAttack(t, NearbyPlayers, true));
                 {
                     inArea++;
                 }
@@ -93,26 +93,24 @@ namespace DOL.GS.Scripts
 						{
 							int enemiesInRange = GetEnemyCountInArea(groupMember, 2750);
 							// checking if any group member is already in the zone and safe
-							if (GetDistanceTo(groupMember) > 5000)
+							if (GetDistanceTo(groupMember) > 5000 && enemiesInRange == 0)
 							{
+								log.Info("Enemies in range: " + enemiesInRange);
 								log.Info("Distance > 5k");
-								if (enemiesInRange == 0)
-								{
-									log.Info("No enemies in range");
-									t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
-									t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
-									return true;
-								}
-								log.Info("Too many enemies in range: " + enemiesInRange);
-								int randX = Util.Random(205000, 253000);
-								int randY = Util.Random(204000, 216000);
-								int z = 9000;
-						
 								t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
-								t.MoveTo(27, randX, randY, z, t.Heading);
+								t.MoveTo(groupMember.CurrentRegionID, groupMember.X, groupMember.Y, groupMember.Z, groupMember.Heading);
 								return true;
 							}
 						}
+						// fallback if no group member is in the zone or safe
+						log.Info("Distance < 5k or too close to enemies");
+						int randX = Util.Random(205000, 253000);
+						int randY = Util.Random(204000, 216000);
+						int z = 9000;
+						
+						t.StartInvulnerabilityTimer(ServerProperties.Properties.TIMER_PVP_TELEPORT*1000,null);
+						t.MoveTo(27, randX, randY, z, t.Heading);
+
 					}
 					break;
 
