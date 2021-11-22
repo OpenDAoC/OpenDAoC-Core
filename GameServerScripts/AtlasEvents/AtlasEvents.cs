@@ -8,6 +8,7 @@ using System.Reflection;
 using log4net;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.ServerProperties;
 
 
 namespace DOL.GS.GameEvents
@@ -129,7 +130,7 @@ namespace DOL.GS.GameEvents
 		{
 			GamePlayer p = sender as GamePlayer;
 
-			if (WorldMgr.GetAllClientsCount() < SoloPop)
+			if (p.CurrentRegionID == 27 && Properties.EVENT_PVP && WorldMgr.GetAllClientsCount() < SoloPop)
 			{
 				switch (p.Realm)
 				{
