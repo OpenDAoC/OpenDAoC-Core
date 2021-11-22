@@ -5138,6 +5138,9 @@ namespace DOL.GS.Spells
 					if (Spell.Value < 0)
 						dw.AddKeyValuePair("delve_string", $"Decreases your threat to monster targets by {-(int)Spell.Value} damage.");
 					break;
+				case eSpellType.NaturesShield:
+					dw.AddKeyValuePair("delve_string", $"Gives the user a {(int)Spell.Value}% base chance to block ranged melee attacks while this style is prepared.");
+					break;
 			}
 		}
 

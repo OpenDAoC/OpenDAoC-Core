@@ -194,6 +194,7 @@ namespace DOL.GS
         EnduranceHeal = 187,
         PowerHeal = 188,
         FatigueConsumptionDebuff = 189,
+        NaturesShield = 191,
         Null = 200
 
 

@@ -4,7 +4,7 @@
     </PropertyGroup>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -59,9 +59,7 @@
         </None>
     </ItemGroup>
     <Target Name="CopyFiles" AfterTargets="AfterBuild">
-        <Copy
-          SourceFiles="@(XmlFiles)"
-          DestinationFiles="@(XmlFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\lib\config\%(RecursiveDir)%(Filename)%(Extension)')" />
+        <Copy SourceFiles="@(XmlFiles)" DestinationFiles="@(XmlFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\lib\config\%(RecursiveDir)%(Filename)%(Extension)')" />
     </Target>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
