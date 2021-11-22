@@ -23,9 +23,11 @@ namespace DOL.GS.Scripts
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static int EventLVCap = Properties.EVENT_LVCAP;
+        public static int realmPoints = Properties.EVENT_START_RP;
+        
 		public override bool AddToWorld()
 		{
-			Name = "Event Level";
+			Name = "Event Booster";
             GuildName = "Atlas Event";
             Model = 1198;
             Level = 50;
@@ -51,14 +53,8 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player))
                 return false;
 
-            if (player.Level < EventLVCap)
-            {
-                player.Out.SendMessage("Hello " + player.Name + ",\n I can give you enough [experience] to defend your Realm in the battleground.",
-                    eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-                return true;
-            }
-
-            player.Out.SendMessage("You look like a veteran, go fight for your Realm!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage("Hello " + player.Name + ",\n\n I can give you enough [experience] to defend your Realm in the battleground.\n\n Additionally, you might be interested in a small[realm level] boost.",
+                eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             return true;
         }
 
@@ -66,7 +62,7 @@ namespace DOL.GS.Scripts
         {
             if (!base.WhisperReceive(source, str))
                 return false;
-            int targetLevel = Properties.EVENT_LVCAP;
+            int targetLevel = EventLVCap;
 
             GamePlayer player = source as GamePlayer;
 
@@ -76,20 +72,30 @@ namespace DOL.GS.Scripts
             switch(str)
             {
                 case "experience":
-                    if (player.Level >= targetLevel) {
-                       player.Out.SendMessage("You look like a veteran, go fight for your Realm!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-                       return false;
-                    }
-                    else {
+                    if (player.Level < EventLVCap)
+                    {
                         player.Out.SendMessage("I have given you enough experience to fight, now make Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
                         return true;
                     }
-                default: 
+                    player.Out.SendMessage("You are a veteran already, go fight for your Realm!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                     return false;
 
-                return true;
+                case "realm level":
+                    
+                    if (player.RealmPoints < realmPoints)
+                    {
+                        player.GainRealmPoints((long)(realmPoints - player.RealmPoints / Properties.RP_RATE));
+                        player.Out.SendMessage("I have given you some RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        return true;
+                    }
+                    player.Out.SendMessage("You have killed enough enemies already, go kill more!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                    return false;
+
+
+                default:
+                    return false;
             }
         }
 
