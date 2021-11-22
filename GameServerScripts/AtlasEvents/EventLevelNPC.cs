@@ -53,7 +53,7 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player))
                 return false;
 
-            player.Out.SendMessage("Hello " + player.Name + ",\n\n I can give you enough [experience] to defend your Realm in the battleground.\n\n Additionally, you might be interested in a small[realm level] boost.",
+            player.Out.SendMessage("Hello " + player.Name + ",\n\n I can give you enough [experience] to defend your Realm in the battleground.\n\n Additionally, you might be interested in a small [realm level] boost.",
                 eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             return true;
         }

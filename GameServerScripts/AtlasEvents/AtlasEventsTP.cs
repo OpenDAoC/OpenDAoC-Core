@@ -18,12 +18,13 @@ namespace DOL.GS.Scripts
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
 		public static int EventLVCap = ServerProperties.Properties.EVENT_LVCAP;
+		public static int SoloPop = ServerProperties.Properties.EVENT_SOLO_POP;
 
 		public static int TeleportDelay = 40000; //value in milliseconds
         public override bool AddToWorld()
         {
             Model = 2026;
-            Name = "Event Teleporter Old";
+            Name = "Event Teleporter";
             GuildName = "Atlas Event";
             Level = 50;
             Size = 60;
@@ -38,6 +39,12 @@ namespace DOL.GS.Scripts
 			if (base.CurrentRegionID == 252 || base.CurrentRegionID == 165)
 			{
 				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "If you need so, I can port you back to your Realm's [event zone]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+
+				if (WorldMgr.GetAllClientsCount() < 100 && player.Group == null)
+				{
+					player.Out.SendMessage("\nAdditionally, I can port you to the [solo zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				}
+
 				return true;
 			}
 			if (player.Level != EventLVCap)
@@ -47,7 +54,7 @@ namespace DOL.GS.Scripts
 			}
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight] in Thidranki?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 
-			if(WorldMgr.GetAllClientsCount() < 100 && player.Group == null)
+			if(WorldMgr.GetAllClientsCount() >= SoloPop && player.Group == null)
             {
 				player.Out.SendMessage("Additionally, I can port you to the [solo zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
