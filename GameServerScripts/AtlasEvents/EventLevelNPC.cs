@@ -23,7 +23,7 @@ namespace DOL.GS.Scripts
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static int EventLVCap = Properties.EVENT_LVCAP;
-        public static int realmPoints = Properties.EVENT_START_RP;
+        public static int realmPoints = Properties.EVENT_START_RP ;
         
 		public override bool AddToWorld()
 		{
@@ -87,7 +87,7 @@ namespace DOL.GS.Scripts
                     if (player.RealmPoints < realmPoints)
                     {
                         long realmPointsToGive = realmPoints - player.RealmPoints;
-                        player.GainRealmPoints(realmPointsToGive);
+                        player.GainRealmPoints(realmPointsToGive/(long)Properties.RP_RATE);
                         player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         return true;
                     }
