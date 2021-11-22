@@ -23,7 +23,7 @@ namespace DOL.GS.Scripts
         public override bool AddToWorld()
         {
             Model = 2026;
-            Name = "Event Teleporter";
+            Name = "Event Teleporter Old";
             GuildName = "Atlas Event";
             Level = 50;
             Size = 60;
@@ -45,9 +45,9 @@ namespace DOL.GS.Scripts
 				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Speak to my Event Level colleague to attain enough experience before joining the Battleground!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return true;
 			}
-			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight] in Thidranki?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 
-			if(WorldMgr.GetAllClientsCount() >= 100 && player.Group == null)
+			if(WorldMgr.GetAllClientsCount() < 100 && player.Group == null)
             {
 				player.Out.SendMessage("Additionally, I can port you to the [solo zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
@@ -64,7 +64,19 @@ namespace DOL.GS.Scripts
 			switch(str)
 			{
 				case "fight":
-					t.MoveTo(27, 342521, 385230, 5410, 1756);
+					// t.MoveTo(27, 342521, 385230, 5410, 1756);
+					switch (t.Realm)
+					{
+						case eRealm.Albion:
+							t.MoveTo(252, 38113, 53507, 4160, 3268);
+							break;
+						case eRealm.Midgard:
+							t.MoveTo(252, 53568, 23643, 4530, 3268);
+							break;
+						case eRealm.Hibernia:
+							t.MoveTo(252, 17367, 18248, 4320, 3268);
+							break;
+					}
 					break;
 				case "event zone":
 					switch (t.Realm)
