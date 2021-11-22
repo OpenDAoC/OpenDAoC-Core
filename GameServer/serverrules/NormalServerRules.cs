@@ -165,7 +165,7 @@ namespace DOL.GS.ServerRules
 
 			if (source?.CurrentRegionID == 27 || target?.CurrentRegionID == 27)
             {
-                if (Properties.EVENT_THIDRANKI) { return false; }
+                if (Properties.EVENT_PVP) { return false; }
             }
 
 			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
