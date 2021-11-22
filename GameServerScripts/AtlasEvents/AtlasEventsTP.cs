@@ -101,7 +101,7 @@ namespace DOL.GS.Scripts
 					break;
 				case "solo zone":
 
-					if(WorldMgr.GetAllClientsCount() < 100) { break; }
+					if(WorldMgr.GetAllClientsCount() < SoloPop) { break; }
 
 					if (t.Group == null)
 					{
