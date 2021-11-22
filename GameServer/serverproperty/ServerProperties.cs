@@ -2499,10 +2499,16 @@ namespace DOL.GS.ServerProperties
 		public static bool EVENT_THIDRANKI;
 		
 		/// <summary>
-		/// Enables the PvP event in the Tutorial zone, moving all characters and binding them to the zone
+		/// Enables PvP in the Tutorial event zone
 		/// </summary>
-		[ServerProperty("atlas", "event_pvp", "Enables the PvP event in the Tutorial zone", false)]
+		[ServerProperty("atlas", "event_pvp", "Enables PvP in the Tutorial event zone", false)]
 		public static bool EVENT_PVP;
+		
+		/// <summary>
+		/// Enables the event in the Tutorial zone
+		/// </summary>
+		[ServerProperty("atlas", "event_tutorial", "Enables the event in the Tutorial zone", false)]
+		public static bool EVENT_TUTORIAL;
 
 		/// <summary>
 		/// Allow cross realm grouping for the Event?
@@ -2527,7 +2533,19 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "event_rpcap", "Maximum character realm points for the active event", 0)]
 		public static int EVENT_RPCAP;
-		
+
+		/// <summary>
+		/// Starting RPs amount for all players during the event
+		/// </summary>
+		[ServerProperty("atlas", "event_starting_rp", "Starting RPs amount for all players during the event", 0)]
+		public static int EVENT_START_RP;
+
+		/// <summary>
+		/// Minimum server population required to enable the solo zone
+		/// </summary>
+		[ServerProperty("atlas", "event_solo_pop", "Minimum server population required to enable the solo zone", 0)]
+		public static int EVENT_SOLO_POP;
+
 		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>

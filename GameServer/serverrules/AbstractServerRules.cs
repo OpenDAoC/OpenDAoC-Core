@@ -1751,12 +1751,13 @@ namespace DOL.GS.ServerRules
                 }
 
 				//distribute ROGs
-				if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_PVP)
+				if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
 				{
                     foreach (var player in playersToAward)
                     {
 						//Console.WriteLine($"Generating ROG for {player}");
 						AtlasROGManager.GenerateROG(player, true);
+						AtlasROGManager.GenerateOrbs(player);
 					}
 				}
 
