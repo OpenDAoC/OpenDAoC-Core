@@ -66,7 +66,7 @@ namespace DOL.GS {
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
 
-                int maxcount = Util.Random(1, 10);
+                int maxcount = Util.Random(5, 20);
                 player.Inventory.AddTemplate(item, maxcount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 //player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
