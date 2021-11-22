@@ -2541,6 +2541,12 @@ namespace DOL.GS.ServerProperties
 		public static int EVENT_START_RP;
 
 		/// <summary>
+		/// Minimum server population required to enable the solo zone
+		/// </summary>
+		[ServerProperty("atlas", "event_solo_pop", "Minimum server population required to enable the solo zone", 0)]
+		public static int EVENT_SOLO_POP;
+
+		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
