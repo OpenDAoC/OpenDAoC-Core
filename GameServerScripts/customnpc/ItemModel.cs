@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace DOL.GS {
     public class ItemModel : GameNPC {
         public string TempProperty = "ItemModel";
+        public string currencyName = "Orbs";
         private int Chance;
         private Random rnd = new Random();
 
@@ -21,17 +22,28 @@ namespace DOL.GS {
         //4k high toa
         //10k dragonsworn
         //20k champion
-        private int lowbie = 450;
-        private int festive = 1000;
-        private int toageneric = 1800;
-        private int armorpads = 2500;
-        private int artifact = 4800;
-        private int epic = 4000;
-        private int dragon = 9000;
-        private int champion = 18000;
-        private int cloakcheap = 9000;
-        private int cloakmedium = 18000;
-        private int cloakexpensive = 61749;
+        //private int lowbie = 450;
+        //private int festive = 1000;
+        //private int toageneric = 1800;
+        //private int armorpads = 2500;
+        //private int artifact = 4800;
+        //private int epic = 4000;
+        //private int dragon = 9000;
+        //private int champion = 18000;
+        //private int cloakcheap = 9000;
+        //private int cloakmedium = 18000;
+        //private int cloakexpensive = 61749;
+        private int lowbie = 4;
+        private int festive = 10;
+        private int toageneric = 18; 
+        private int armorpads = 25;
+        private int artifact = 48;
+        private int epic = 40;
+        private int dragon = 90;
+        private int champion = 100;
+        private int cloakcheap = 90;
+        private int cloakmedium = 100;
+        private int cloakexpensive = 120;
 
         public override bool AddToWorld()
         {
@@ -6030,38 +6042,38 @@ namespace DOL.GS {
                     SendReply(t, "A fine piece of headwear. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Helm] (" + dragon * 2 + " RPs)\n" +
-                          "[Dragonsworn Helm] (" + dragon + " RPs)\n" +
+                          "[Dragonslayer Helm] (" + dragon * 2 + " " + currencyName + ")\n" +
+                          "[Dragonsworn Helm] (" + dragon + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
 
-                        "[Crown of Zahur] (" + artifact + " RPs)\n" +
-                        "[Crown of Zahur variant] (" + artifact + " RPs)\n" +
-                        "[Winged Helm] (" + artifact + " RPs)\n" +
-                        "[Oceanus Helm] (" + toageneric + " RPs)\n" +
-                        "[Stygia Helm] (" + toageneric + " RPs)\n" +
-                        "[Volcanus Helm] (" + toageneric + " RPs)\n" +
-                        "[Aerus Helm] (" + toageneric + " RPs)\n" +
-                        "[Wizard Hat] (" + epic + " RPs)\n\n" +
+                        "[Crown of Zahur] (" + artifact + " " + currencyName + ")\n" +
+                        "[Crown of Zahur variant] (" + artifact + " " + currencyName + ")\n" +
+                        "[Winged Helm] (" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Helm] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Stygia Helm] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Volcanus Helm] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Helm] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Wizard Hat] (" + epic + " " + currencyName + ")\n\n" +
                         "Additionally, I have some realm specific headgear available:" +
                         "");
                     switch (source.Realm)
                     {
                         case eRealm.Albion:
-                            SendReply(t, "[Robin Hood Hat] (" + festive + " RPs)\n" +
-                                "[Tarboosh] (" + festive + " RPs)\n" +
-                                "[Jester Hat] (" + festive + " RPs)\n" +
+                            SendReply(t, "[Robin Hood Hat] (" + festive + " " + currencyName + ")\n" +
+                                "[Tarboosh] (" + festive + " " + currencyName + ")\n" +
+                                "[Jester Hat] (" + festive + " " + currencyName + ")\n" +
                                 "");
                             break;
                         case eRealm.Hibernia:
-                            SendReply(t, "[Robin Hood Hat] (" + festive + " RPs)\n" +
-                               "[Leaf Hat] (" + festive + " RPs)\n" +
-                               "[Stag Helm] (" + festive + " RPs)\n" +
+                            SendReply(t, "[Robin Hood Hat] (" + festive + " " + currencyName + ")\n" +
+                               "[Leaf Hat] (" + festive + " " + currencyName + ")\n" +
+                               "[Stag Helm] (" + festive + " " + currencyName + ")\n" +
                                "");
                             break;
                         case eRealm.Midgard:
-                            SendReply(t, "[Fur Cap] (" + festive + " RPs)\n" +
-                               "[Wing Hat] (" + festive + " RPs)\n" +
-                               "[Wolf Helm] (" + festive + " RPs)\n" +
+                            SendReply(t, "[Fur Cap] (" + festive + " " + currencyName + ")\n" +
+                               "[Wing Hat] (" + festive + " " + currencyName + ")\n" +
+                               "[Wolf Helm] (" + festive + " " + currencyName + ")\n" +
                                "");
                             break;
                     }
@@ -6071,29 +6083,29 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Breastplate] (" + dragon * 2 + " RPs)\n" +
-                          "[Dragonsworn Breastplate](" + dragon + " RPs)\n" +
-                          "[Good Shar Breastplate](" + festive + " RPs)\n" +
-                          "[Possessed Shar Breastplate](" + festive + " RPs)\n" +
-                          "[Good Inconnu Breastplate](" + festive + " RPs)\n" +
-                          "[Possessed Inconnu Breastplate](" + festive + " RPs)\n" +
-                          "[Good Realm Breastplate](" + festive + " RPs)\n" +
-                          "[Possessed Realm Breastplate](" + festive + " RPs)\n" +
-                          "[Mino Breastplate](" + festive + " RPs)\n" +
+                          "[Dragonslayer Breastplate] (" + dragon * 2 + " " + currencyName + ")\n" +
+                          "[Dragonsworn Breastplate](" + dragon + " " + currencyName + ")\n" +
+                          "[Good Shar Breastplate](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Shar Breastplate](" + festive + " " + currencyName + ")\n" +
+                          "[Good Inconnu Breastplate](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Inconnu Breastplate](" + festive + " " + currencyName + ")\n" +
+                          "[Good Realm Breastplate](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Realm Breastplate](" + festive + " " + currencyName + ")\n" +
+                          "[Mino Breastplate](" + festive + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
 
-                        "[Class Epic Chestpiece](" + epic + " RPs)\n" +
-                        "[Eirene's Chest](" + artifact + " RPs)\n" +
-                        "[Naliah's Robe](" + artifact + " RPs)\n" +
-                        "[Guard of Valor](" + artifact + " RPs)\n" +
-                        "[Golden Scarab Vest](" + artifact + " RPs)\n" +
-                        "[Oceanus Breastplate] (" + toageneric + " RPs)\n" +
-                        "[Stygia Breastplate] (" + toageneric + " RPs)\n" +
-                        "[Volcanus Breastplate] (" + toageneric + " RPs)\n" +
-                        "[Aerus Breastplate] (" + toageneric + " RPs)\n" +
+                        "[Class Epic Chestpiece](" + epic + " " + currencyName + ")\n" +
+                        "[Eirene's Chest](" + artifact + " " + currencyName + ")\n" +
+                        "[Naliah's Robe](" + artifact + " " + currencyName + ")\n" +
+                        "[Guard of Valor](" + artifact + " " + currencyName + ")\n" +
+                        "[Golden Scarab Vest](" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Stygia Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Volcanus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
 
                         "");
-                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " RPs) options."
+                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options."
                          );
                     break;
 
@@ -6101,22 +6113,22 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Sleeves] (" + dragon * 2 + " RPs)\n" +
-                          "[Dragonsworn Sleeves](" + dragon + " RPs)\n" +
-                          "[Good Shar Sleeves](" + festive + " RPs)\n" +
-                          "[Possessed Shar Sleeves](" + festive + " RPs)\n" +
-                          "[Good Inconnu Sleeves](" + festive + " RPs)\n" +
-                          "[Possessed Inconnu Sleeves](" + festive + " RPs)\n" +
-                          "[Good Realm Sleeves](" + festive + " RPs)\n" +
-                          "[Possessed Realm Sleeves](" + festive + " RPs)\n" +
-                          "[Mino Sleeves](" + festive + " RPs)\n" +
+                          "[Dragonslayer Sleeves] (" + dragon * 2 + " " + currencyName + ")\n" +
+                          "[Dragonsworn Sleeves](" + dragon + " " + currencyName + ")\n" +
+                          "[Good Shar Sleeves](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Shar Sleeves](" + festive + " " + currencyName + ")\n" +
+                          "[Good Inconnu Sleeves](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Inconnu Sleeves](" + festive + " " + currencyName + ")\n" +
+                          "[Good Realm Sleeves](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Realm Sleeves](" + festive + " " + currencyName + ")\n" +
+                          "[Mino Sleeves](" + festive + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
-                        "[Foppish Sleeves] (" + artifact + " RPs)\n" +
-                        "[Arms of the Wind] (" + artifact + " RPs)\n" +
-                        "[Oceanus Sleeves] (" + toageneric + " RPs)\n" +
-                        "[Stygia Sleeves] (" + toageneric + " RPs)\n" +
-                        "[Volcanus Sleeves] (" + toageneric + " RPs)\n" +
-                        "[Aerus Sleeves] (" + toageneric + " RPs)\n" +
+                        "[Foppish Sleeves] (" + artifact + " " + currencyName + ")\n" +
+                        "[Arms of the Wind] (" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Stygia Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Volcanus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
 
                         "");
                     break;
@@ -6125,22 +6137,22 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Pants] (" + dragon * 2 + " RPs)\n" +
-                          "[Dragonsworn Pants](" + dragon + " RPs)\n" +
-                          "[Good Shar Pants](" + festive + " RPs)\n" +
-                          "[Possessed Shar Pants](" + festive + " RPs)\n" +
-                          "[Good Inconnu Pants](" + festive + " RPs)\n" +
-                          "[Possessed Inconnu Pants](" + festive + " RPs)\n" +
-                          "[Good Realm Pants](" + festive + " RPs)\n" +
-                          "[Possessed Realm Pants](" + festive + " RPs)\n" +
-                          "[Mino Pants](" + festive + " RPs)\n" +
+                          "[Dragonslayer Pants] (" + dragon * 2 + " " + currencyName + ")\n" +
+                          "[Dragonsworn Pants](" + dragon + " " + currencyName + ")\n" +
+                          "[Good Shar Pants](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Shar Pants](" + festive + " " + currencyName + ")\n" +
+                          "[Good Inconnu Pants](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Inconnu Pants](" + festive + " " + currencyName + ")\n" +
+                          "[Good Realm Pants](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Realm Pants](" + festive + " " + currencyName + ")\n" +
+                          "[Mino Pants](" + festive + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
-                        "[Wings Dive] (" + artifact + " RPs)\n" +
-                        "[Alvarus' Leggings] (" + artifact + " RPs)\n" +
-                        "[Oceanus Pants] (" + toageneric + " RPs)\n" +
-                        "[Stygia Pants] (" + toageneric + " RPs)\n" +
-                        "[Volcanus Pants] (" + toageneric + " RPs)\n" +
-                        "[Aerus Pants] (" + toageneric + " RPs)\n" +
+                        "[Wings Dive] (" + artifact + " " + currencyName + ")\n" +
+                        "[Alvarus' Leggings] (" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Pants] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Stygia Pants] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Volcanus Pants] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Pants] (" + toageneric + " " + currencyName + ")\n" +
 
                         "");
                     break;
@@ -6149,25 +6161,25 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Gloves] (" + dragon * 2 + " RPs)\n" +
-                          "[Dragonsworn Gloves](" + dragon + " RPs)\n" +
-                          "[Good Shar Gloves](" + festive + " RPs)\n" +
-                          "[Possessed Shar Gloves](" + festive + " RPs)\n" +
-                          "[Good Inconnu Gloves](" + festive + " RPs)\n" +
-                          "[Possessed Inconnu Gloves](" + festive + " RPs)\n" +
-                          "[Good Realm Gloves](" + festive + " RPs)\n" +
-                          "[Possessed Realm Gloves](" + festive + " RPs)\n" +
-                          "[Mino Gloves](" + festive + " RPs)\n" +
+                          "[Dragonslayer Gloves] (" + dragon * 2 + " " + currencyName + ")\n" +
+                          "[Dragonsworn Gloves](" + dragon + " " + currencyName + ")\n" +
+                          "[Good Shar Gloves](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Shar Gloves](" + festive + " " + currencyName + ")\n" +
+                          "[Good Inconnu Gloves](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Inconnu Gloves](" + festive + " " + currencyName + ")\n" +
+                          "[Good Realm Gloves](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Realm Gloves](" + festive + " " + currencyName + ")\n" +
+                          "[Mino Gloves](" + festive + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
-                        "[Maddening Scalars] (" + artifact + " RPs)\n" +
-                        "[Sharkskin Gloves] (" + artifact + " RPs)\n" +
-                        "[Oceanus Gloves] (" + toageneric + " RPs)\n" +
-                        "[Stygia Gloves] (" + toageneric + " RPs)\n" +
-                        "[Volcanus Gloves] (" + toageneric + " RPs)\n" +
-                        "[Aerus Gloves] (" + toageneric + " RPs)\n" +
+                        "[Maddening Scalars] (" + artifact + " " + currencyName + ")\n" +
+                        "[Sharkskin Gloves] (" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Gloves] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Stygia Gloves] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Volcanus Gloves] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Gloves] (" + toageneric + " " + currencyName + ")\n" +
 
                         "");
-                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " RPs) options."
+                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options."
                          );
                     break;
 
@@ -6175,25 +6187,25 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Boots] (" + dragon * 2 + " RPs)\n" +
-                          "[Dragonsworn Boots](" + dragon + " RPs)\n" +
-                          "[Good Shar Boots](" + festive + " RPs)\n" +
-                          "[Possessed Shar Boots](" + festive + " RPs)\n" +
-                          "[Good Inconnu Boots](" + festive + " RPs)\n" +
-                          "[Possessed Inconnu Boots](" + festive + " RPs)\n" +
-                          "[Good Realm Boots](" + festive + " RPs)\n" +
-                          "[Possessed Realm Boots](" + festive + " RPs)\n" +
-                          "[Mino Boots](" + festive + " RPs)\n" +
+                          "[Dragonslayer Boots] (" + dragon * 2 + " " + currencyName + ")\n" +
+                          "[Dragonsworn Boots](" + dragon + " " + currencyName + ")\n" +
+                          "[Good Shar Boots](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Shar Boots](" + festive + " " + currencyName + ")\n" +
+                          "[Good Inconnu Boots](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Inconnu Boots](" + festive + " " + currencyName + ")\n" +
+                          "[Good Realm Boots](" + festive + " " + currencyName + ")\n" +
+                          "[Possessed Realm Boots](" + festive + " " + currencyName + ")\n" +
+                          "[Mino Boots](" + festive + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
-                        "[Enyalio's Boots] (" + artifact + " RPs)\n" +
-                        "[Flamedancer's Boots] (" + artifact + " RPs)\n" +
-                        "[Oceanus Boots] (" + toageneric + " RPs)\n" +
-                        "[Stygia Boots] (" + toageneric + " RPs)\n" +
-                        "[Volcanus Boots] (" + toageneric + " RPs)\n" +
-                        "[Aerus Boots] (" + toageneric + " RPs)\n" +
+                        "[Enyalio's Boots] (" + artifact + " " + currencyName + ")\n" +
+                        "[Flamedancer's Boots] (" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Boots] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Stygia Boots] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Volcanus Boots] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Boots] (" + toageneric + " " + currencyName + ")\n" +
 
                         "");
-                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " RPs) options."
+                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options."
                          );
                     break;
 
@@ -6201,23 +6213,23 @@ namespace DOL.GS {
                     SendReply(t, "This looks like it has protected you nicely. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
-                          "[Realm Cloak] (" + cloakexpensive + " RPs)\n" +
-                          "[Dragonslayer Cloak] (" + cloakexpensive + " RPs)\n" +
-                          "[Dragonsworn Cloak] (" + cloakmedium + " RPs)\n" +
-                          "[Valentines Cloak] (" + cloakmedium + " RPs)\n" +
-                          "[Winter Cloak] (" + cloakmedium + " RPs)\n" +
-                          "[Clean Leather Cloak] (" + cloakmedium + " RPs)\n" +
-                          "[Corrupt Leather Cloak] (" + cloakmedium + " RPs)\n" +
+                          "[Realm Cloak] (" + cloakexpensive + " " + currencyName + ")\n" +
+                          "[Dragonslayer Cloak] (" + cloakexpensive + " " + currencyName + ")\n" +
+                          "[Dragonsworn Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                          "[Valentines Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                          "[Winter Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                          "[Clean Leather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                          "[Corrupt Leather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
                           "***** End Cata Only ***** \n\n" +
-                        "[Cloudsong] (" + cloakmedium + " RPs)\n" +
-                        "[Shades of Mist] (" + cloakmedium + " RPs)\n" +
-                        "[Harpy Feather Cloak] (" + cloakmedium + " RPs)\n" +
-                        "[Healer's Embrace] (" + cloakmedium + " RPs)\n" +
-                        "[Oceanus Cloak] (" + cloakmedium + " RPs)\n" +
-                        "[Magma Cloak] (" + cloakmedium + " RPs)\n" +
-                        "[Stygian Cloak] (" + cloakmedium + " RPs)\n" +
-                        "[Aerus Cloak] (" + cloakmedium + " RPs)\n" +
-                        "[Collared Cloak] (" + cloakcheap + " RPs)\n" +
+                        "[Cloudsong] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Shades of Mist] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Harpy Feather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Healer's Embrace] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Oceanus Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Magma Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Stygian Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Aerus Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                        "[Collared Cloak] (" + cloakcheap + " " + currencyName + ")\n" +
                         "");
                     break;
 
@@ -6227,17 +6239,17 @@ namespace DOL.GS {
                     if ((eObjectType)item.Object_Type == eObjectType.HandToHand)
                     {
                         SendReply(t,
-                                    "[Snakecharmer's Fist](" + artifact + " RPs)\n" +
-                                    "[Scorched Fist](" + toageneric + " RPs)\n" +
-                                    "[Dragonsworn Fist](" + dragon + " RPs)\n" +
+                                    "[Snakecharmer's Fist](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scorched Fist](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Dragonsworn Fist](" + dragon + " " + currencyName + ")\n" +
                                     "");
                     }
                     if ((eObjectType)item.Object_Type == eObjectType.Flexible)
                     {
                         SendReply(t,
-                                    "[Snakecharmer's Whip](" + artifact + " RPs)\n" +
-                                    "[Scorched Whip](" + toageneric + " RPs)\n" +
-                                    "[Dragonsworn Whip](" + dragon + " RPs)\n" +
+                                    "[Snakecharmer's Whip](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scorched Whip](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Dragonsworn Whip](" + dragon + " " + currencyName + ")\n" +
                                     "");
                     }
                     else
@@ -6246,38 +6258,38 @@ namespace DOL.GS {
                         {
                             case eDamageType.Thrust:
                                 SendReply(t,
-                                    "[Traitor's Dagger 1h](" + artifact + " RPs)\n" +
-                                    "[Croc Tooth Dagger 1h](" + artifact + " RPs)\n" +
-                                    "[Golden Spear 1h](" + artifact + " RPs)\n" +
-                                    "[Wakazashi](" + epic + " RPs)\n" +
+                                    "[Traitor's Dagger 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Croc Tooth Dagger 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Golden Spear 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Wakazashi](" + epic + " " + currencyName + ")\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " " + currencyName + ") \n" +
                                      "");
                                 break;
 
                             case eDamageType.Crush:
                                 SendReply(t,
-                                    "[Battler Hammer 1h](" + artifact + " RPs)\n" +
-                                    "[Malice Hammer 1h](" + artifact + " RPs)\n" +
-                                    "[Bruiser Hammer 1h](" + artifact + " RPs)\n" +
-                                    "[Scepter of the Meritorious](" + artifact + " RPs)\n" +
-                                    "[Rolling Pin](" + epic + " RPs)\n" +
-                                    "[Stein](" + epic + " RPs)\n" +
-                                    "[Turkey Leg](" + champion + " RPs)\n" +
+                                    "[Battler Hammer 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Malice Hammer 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Bruiser Hammer 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scepter of the Meritorious](" + artifact + " " + currencyName + ")\n" +
+                                    "[Rolling Pin](" + epic + " " + currencyName + ")\n" +
+                                    "[Stein](" + epic + " " + currencyName + ")\n" +
+                                    "[Turkey Leg](" + champion + " " + currencyName + ")\n" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
-                                    "[Croc Tooth Axe 1h](" + artifact + " RPs)\n" +
-                                    "[Traitor's Axe 1h](" + artifact + " RPs)\n" +
-                                    "[Malice Axe 1h](" + artifact + " RPs)\n" +
-                                    "[Battler Sword 1h](" + artifact + " RPs)\n" +
-                                    "[Khopesh](" + epic + " RPs)\n" +
-                                    "[Cleaver](" + epic + " RPs)\n" +
-                                    "[Wakazashi](" + epic + " RPs)\n" +
+                                    "[Croc Tooth Axe 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Traitor's Axe 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Malice Axe 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Battler Sword 1h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Khopesh](" + epic + " " + currencyName + ")\n" +
+                                    "[Cleaver](" + epic + " " + currencyName + ")\n" +
+                                    "[Wakazashi](" + epic + " " + currencyName + ")\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " RPs) \n" +
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " " + currencyName + ") \n" +
                                      "");
                                 break;
                         }
@@ -6292,13 +6304,13 @@ namespace DOL.GS {
                     {
                         SendReply(t, "A sturdy barricade to ward the blows of your enemies. \n" +
                         "I can apply the following skins: \n\n" +
-                        "[Aten's Shield](" + artifact + " RPs)\n" +
-                        "[Cyclop's Eye](" + artifact + " RPs)\n" +
-                        "[Shield of Khaos](" + artifact + " RPs)\n" +
-                        "[Oceanus Shield](" + toageneric + " RPs)\n" +
-                        "[Aerus Shield](" + toageneric + " RPs)\n" +
-                        "[Magma Shield](" + toageneric + " RPs)\n" +
-                        "[Minotaur Shield](" + toageneric + " RPs)\n" +
+                        "[Aten's Shield](" + artifact + " " + currencyName + ")\n" +
+                        "[Cyclop's Eye](" + artifact + " " + currencyName + ")\n" +
+                        "[Shield of Khaos](" + artifact + " " + currencyName + ")\n" +
+                        "[Oceanus Shield](" + toageneric + " " + currencyName + ")\n" +
+                        "[Aerus Shield](" + toageneric + " " + currencyName + ")\n" +
+                        "[Magma Shield](" + toageneric + " " + currencyName + ")\n" +
+                        "[Minotaur Shield](" + toageneric + " " + currencyName + ")\n" +
                         "");
                     }
                     else
@@ -6314,39 +6326,39 @@ namespace DOL.GS {
                     if ((eObjectType)item.Object_Type == eObjectType.Staff)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Staff](" + dragon + " RPs)\n" +
-                                    "[Traldor's Oracle](" + artifact + " RPs)\n" +
-                                    "[Trident of the Gods](" + artifact + " RPs)\n" +
-                                    "[Tartaros Gift](" + artifact + " RPs)\n" +
-                                    "[Scorched Staff](" + toageneric + " RPs)\n" +
+                                    "[Dragonsworn Staff](" + dragon + " " + currencyName + ")\n" +
+                                    "[Traldor's Oracle](" + artifact + " " + currencyName + ")\n" +
+                                    "[Trident of the Gods](" + artifact + " " + currencyName + ")\n" +
+                                    "[Tartaros Gift](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scorched Staff](" + toageneric + " " + currencyName + ")\n" +
                                     "");
                     }
                     else if ((eObjectType)item.Object_Type == eObjectType.Scythe)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Scythe](" + dragon + " RPs)\n" +
-                                    "[Scythe of Kings](" + artifact + " RPs)\n" +
-                                    "[Snakechamer's Scythe](" + artifact + " RPs)\n" +
-                                    "[Magma Scythe](" + toageneric + " RPs)\n" +
-                                    "[Scorched Scythe](" + toageneric + " RPs)\n" +
+                                    "[Dragonsworn Scythe](" + dragon + " " + currencyName + ")\n" +
+                                    "[Scythe of Kings](" + artifact + " " + currencyName + ")\n" +
+                                    "[Snakechamer's Scythe](" + artifact + " " + currencyName + ")\n" +
+                                    "[Magma Scythe](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Scorched Scythe](" + toageneric + " " + currencyName + ")\n" +
                                     "");
                     }
                     else if ((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Pole](" + dragon + " RPs)\n" +
-                                    "[Pole of Kings](" + artifact + " RPs)\n" +
-                                    "[Golden Pole](" + toageneric + " RPs)\n" +
-                                    "[Scorched Pole](" + toageneric + " RPs)\n" +
+                                    "[Dragonsworn Pole](" + dragon + " " + currencyName + ")\n" +
+                                    "[Pole of Kings](" + artifact + " " + currencyName + ")\n" +
+                                    "[Golden Pole](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Scorched Pole](" + toageneric + " " + currencyName + ")\n" +
                                     "");
                     }
                     else if ((eObjectType)item.Object_Type == eObjectType.Spear || (eObjectType)item.Object_Type == eObjectType.CelticSpear)
                     {
                         SendReply(t,
-                                    "[Golden Spear 2h](" + artifact + " RPs)\n" +
-                                    "[Dragon Spear 2h](" + dragon + " RPs)\n" +
-                                    "[Scorched Spear 2h](" + toageneric + " RPs)\n" +
-                                    "[Trident Spear 2h](" + toageneric + " RPs)\n" +
+                                    "[Golden Spear 2h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Dragon Spear 2h](" + dragon + " " + currencyName + ")\n" +
+                                    "[Scorched Spear 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Trident Spear 2h](" + toageneric + " " + currencyName + ")\n" +
                                     "");
                     }
                     else
@@ -6355,39 +6367,39 @@ namespace DOL.GS {
                         {
                             case eDamageType.Thrust:
                                 SendReply(t,
-                                    "[Scorched Thrust 2h](" + toageneric + " RPs)\n" +
-                                    "[Dragon Thrust 2h](" + toageneric + " RPs)\n" +
-                                    "[Katana 2h](" + epic + " RPs)\n" +
-                                    "[Pickaxe](" + epic + " RPs)\n" +
+                                    "[Scorched Thrust 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Dragon Thrust 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Katana 2h](" + epic + " " + currencyName + ")\n" +
+                                    "[Pickaxe](" + epic + " " + currencyName + ")\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " " + currencyName + ") \n");
                                 break;
 
                             case eDamageType.Crush:
                                 SendReply(t,
-                                    "[Battler Hammer 2h](" + artifact + " RPs)\n" +
-                                    "[Malice Hammer 2h](" + artifact + " RPs)\n" +
-                                    "[Bruiser Hammer 2h](" + artifact + " RPs)\n" +
-                                    "[Scorched Hammer 2h](" + toageneric + " RPs)\n" +
-                                    "[Magma Hammer 2h](" + toageneric + " RPs)\n" +
-                                    "[Pickaxe](" + epic + " RPs)\n" +
+                                    "[Battler Hammer 2h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Malice Hammer 2h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Bruiser Hammer 2h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scorched Hammer 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Magma Hammer 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Pickaxe](" + epic + " " + currencyName + ")\n" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
-                                    "[Malice Axe 2h](" + artifact + " RPs)\n" +
-                                    "[Scorched Axe 2h](" + toageneric + " RPs)\n" +
-                                    "[Magma Axe 2h](" + toageneric + " RPs)\n" +
-                                    "[Battler Sword 2h](" + artifact + " RPs)\n" +
-                                    "[Scorched Sword 2h](" + toageneric + " RPs)\n" +
-                                    "[Katana 2h](" + epic + " RPs)\n" +
+                                    "[Malice Axe 2h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scorched Axe 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Magma Axe 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Battler Sword 2h](" + artifact + " " + currencyName + ")\n" +
+                                    "[Scorched Sword 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Katana 2h](" + epic + " " + currencyName + ")\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " RPs) \n");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " " + currencyName + ") \n");
                                 break;
                         }
                     }
-                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " RPs) skin. \n");
+                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " " + currencyName + ") skin. \n");
                     break;
 
                 case Slot.RANGED:
@@ -6395,20 +6407,20 @@ namespace DOL.GS {
                     {
                         SendReply(t, "This looks like it plays beautiful music. \n" +
                         "I can apply the following skins: \n\n" +
-                        //"[Dragonslayer Harp](" + dragon + " RPs)\n" + //these too
-                        "[Class Epic Harp](" + champion + " RPs)\n" +
-                        "[Labyrinth Harp](" + toageneric + " RPs)\n" +
+                        //"[Dragonslayer Harp](" + dragon + " " + currencyName + ")\n" + //these too
+                        "[Class Epic Harp](" + epic + " " + currencyName + ")\n" +
+                        "[Labyrinth Harp](" + toageneric + " " + currencyName + ")\n" +
                         "");
                     }
                     else
                     {
                         SendReply(t, "Nothing like bringing death from afar. \n" +
                         "I can apply the following skins: \n\n" +
-                        //"[Dragonslayer Bow](" + dragon + " RPs)\n" +
-                        "[Class Epic Bow](" + champion + " RPs)\n" +
-                        "[Braggart's Bow](" + artifact + " RPs)\n" +
-                        "[Fool's Bow](" + artifact + " RPs)\n" +
-                        "[Labyrinth Bow](" + toageneric + " RPs)\n" +
+                        //"[Dragonslayer Bow](" + dragon + " " + currencyName + ")\n" +
+                        "[Class Epic Bow](" + epic + " " + currencyName + ")\n" +
+                        "[Braggart's Bow](" + artifact + " " + currencyName + ")\n" +
+                        "[Fool's Bow](" + artifact + " " + currencyName + ")\n" +
+                        "[Labyrinth Bow](" + toageneric + " " + currencyName + ")\n" +
                         "");
                     }
 
@@ -6654,7 +6666,10 @@ namespace DOL.GS {
         {
             if (price > 0)
             {
-                if (player.RealmPoints < price)
+                int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                log.Info("Player Orbs:" + playerOrbs);
+
+                if (playerOrbs < price)
                 {
                     SendReply(player, "I'm sorry, but you cannot afford my services currently.");
                     return;
@@ -6678,9 +6693,11 @@ namespace DOL.GS {
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
                 // player.RemoveBountyPoints(300);
-                player.RealmPoints -= price;
-                player.RespecRealm();
-                SetRealmLevel(player, (int)player.RealmPoints);
+                //player.RealmPoints -= price;
+                //player.RespecRealm();
+                //SetRealmLevel(player, (int)player.RealmPoints);
+                player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
                 player.SaveIntoDatabase();
                 return;
             }
@@ -6693,7 +6710,10 @@ namespace DOL.GS {
         {
             if (price > 0)
             {
-                if (player.RealmPoints < price)
+                int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack);
+                log.Info("Player Orbs:" + playerOrbs);
+
+                if (playerOrbs < price)
                 {
                     SendReply(player, "I'm sorry, but you cannot afford my services currently.");
                     return;
@@ -6721,9 +6741,11 @@ namespace DOL.GS {
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
                 // player.RemoveBountyPoints(300);
-                player.RealmPoints -= price;
-                player.RespecRealm();
-                SetRealmLevel(player, (int)player.RealmPoints);
+                //player.RealmPoints -= price;
+                //player.RespecRealm();
+                //SetRealmLevel(player, (int)player.RealmPoints);
+                player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
                 player.SaveIntoDatabase();
 
                 SendReply(player, "Thanks for your donation. " +
