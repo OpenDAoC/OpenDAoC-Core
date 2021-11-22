@@ -117,97 +117,97 @@ namespace DOL.GS.Scripts
             {
                 switch (item.Id_nb)
                 {
-                    case "token_solo":
-                        {
-                            if (player.Level >= 50)
-                            {
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You are already level 50!"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-                                return false;
-                            }
+                    //case "token_solo":
+                    //    {
+                    //        if (player.Level >= 50)
+                    //        {
+                    //            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You are already level 50!"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    //            return false;
+                    //        }
 
-                            if (item.Count < player.Level)
-                            {
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You need to turn in " + player.Level + " at once."), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-                                return false;
-                            }
+                    //        if (item.Count < player.Level)
+                    //        {
+                    //            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You need to turn in " + player.Level + " at once."), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    //            return false;
+                    //        }
 
-                            var remaining = item.Count;
-                            var used = 0;
-                            long totalXpGained = 0;
-                            var timesTurnedIn = 0;
+                    //        var remaining = item.Count;
+                    //        var used = 0;
+                    //        long totalXpGained = 0;
+                    //        var timesTurnedIn = 0;
 
-                            while (remaining >= player.Level && player.Level < 50)
-                            {
-                                remaining -= player.Level;
-                                used += player.Level;
-                                var amount = GamePlayer.GetExperienceAmountForLevel(player.Level) * 1;
+                    //        while (remaining >= player.Level && player.Level < 50)
+                    //        {
+                    //            remaining -= player.Level;
+                    //            used += player.Level;
+                    //            var amount = GamePlayer.GetExperienceAmountForLevel(player.Level) * 1;
 
-                                totalXpGained += amount;
-                                timesTurnedIn++;
-                                player.GainExperience(eXPSource.Other, amount, false);
-                            }
+                    //            totalXpGained += amount;
+                    //            timesTurnedIn++;
+                    //            player.GainExperience(eXPSource.Other, amount, false);
+                    //        }
 
-                            if (used > 0)
-                            {
-                                player.Inventory.RemoveCountFromStack(item, used);
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You have made " + timesTurnedIn + " turn ins and used a total of " + used + " tokens. You have gained a total of " + totalXpGained + " experience points.(token_single)"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-                                return true;
-                            }
-                            break;
-                        }
-                    case "token_many":
-                        {
+                    //        if (used > 0)
+                    //        {
+                    //            player.Inventory.RemoveCountFromStack(item, used);
+                    //            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You have made " + timesTurnedIn + " turn ins and used a total of " + used + " tokens. You have gained a total of " + totalXpGained + " experience points.(token_single)"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    //            return true;
+                    //        }
+                    //        break;
+                    //    }
+                    //case "token_many":
+                    //    {
 
-                            if (player.Level >= 50)
-                            {
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You are already level 50!"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-                                return false;
-                            }
+                    //        if (player.Level >= 50)
+                    //        {
+                    //            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You are already level 50!"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    //            return false;
+                    //        }
 
-                            var orbXPTotal = 0;
-                            double orbXPMultiplier = 0;
-                            var usedOrbs = 0;
-                            var orbXP = 0;
-                            var orbCount = item.Count;
-                            int iteration = 0;
+                    //        var orbXPTotal = 0;
+                    //        double orbXPMultiplier = 0;
+                    //        var usedOrbs = 0;
+                    //        var orbXP = 0;
+                    //        var orbCount = item.Count;
+                    //        int iteration = 0;
 
-                            while (orbCount > 0)
-                            {
-                                orbXPMultiplier = GetOrbMultuplier((byte)(player.Level + iteration));
+                    //        while (orbCount > 0)
+                    //        {
+                    //            orbXPMultiplier = GetOrbMultuplier((byte)(player.Level + iteration));
 
-                                // xp each orb is worth
-                                orbXP = (int)((GamePlayer.GetExperienceAmountForLevel((byte)(player.Level + iteration)) -
-                                    player.GetExperienceNeededForLevel((byte)(player.Level + iteration))) * orbXPMultiplier);
+                    //            // xp each orb is worth
+                    //            orbXP = (int)((GamePlayer.GetExperienceAmountForLevel((byte)(player.Level + iteration)) -
+                    //                player.GetExperienceNeededForLevel((byte)(player.Level + iteration))) * orbXPMultiplier);
 
-                                // xp player needs to reach next level
-                                double neededXPForLevel = GamePlayer.GetExperienceAmountForLevel((byte)(player.Level + iteration)) - player.Experience + orbXPTotal;
+                    //            // xp player needs to reach next level
+                    //            double neededXPForLevel = GamePlayer.GetExperienceAmountForLevel((byte)(player.Level + iteration)) - player.Experience + orbXPTotal;
 
-                                // number of orbs needed to level up
-                                int neededOrbsForLevel = (int)(neededXPForLevel / orbXP + 1);
+                    //            // number of orbs needed to level up
+                    //            int neededOrbsForLevel = (int)(neededXPForLevel / orbXP + 1);
 
-                                if (orbCount > neededOrbsForLevel)
-                                {
-                                    orbXPTotal += neededOrbsForLevel * orbXP;
-                                    usedOrbs += neededOrbsForLevel;
-                                    orbCount -= neededOrbsForLevel;
-                                }
-                                else
-                                {
-                                    orbXPTotal += orbCount * orbXP;
-                                    usedOrbs += orbCount;
-                                    orbCount -= orbCount;
-                                }
-                                iteration++;
-                            }
+                    //            if (orbCount > neededOrbsForLevel)
+                    //            {
+                    //                orbXPTotal += neededOrbsForLevel * orbXP;
+                    //                usedOrbs += neededOrbsForLevel;
+                    //                orbCount -= neededOrbsForLevel;
+                    //            }
+                    //            else
+                    //            {
+                    //                orbXPTotal += orbCount * orbXP;
+                    //                usedOrbs += orbCount;
+                    //                orbCount -= orbCount;
+                    //            }
+                    //            iteration++;
+                    //        }
 
-                            player.GainExperience(eXPSource.Other, orbXPTotal, false);
+                    //        player.GainExperience(eXPSource.Other, orbXPTotal, false);
 
-                            player.Inventory.RemoveCountFromStack(item, item.Count);
+                    //        player.Inventory.RemoveCountFromStack(item, item.Count);
 
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You have turned in " + usedOrbs + " tokens. You have gained a total of " + orbXPTotal + " experience points."), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    //        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "You have turned in " + usedOrbs + " tokens. You have gained a total of " + orbXPTotal + " experience points."), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 
-                            return true;
-                        }
+                    //        return true;
+                    //    }
 
 
                     case "respec_single":

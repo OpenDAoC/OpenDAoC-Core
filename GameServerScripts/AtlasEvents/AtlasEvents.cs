@@ -108,7 +108,7 @@ namespace DOL.GS.GameEvents
 			}
 
 			//moving and binding newly created characters to the PVP event zone
-			if (ServerProperties.Properties.EVENT_PVP)
+			if (ServerProperties.Properties.EVENT_TUTORIAL)
 			{
 				ch.Xpos = 342521;
 				ch.Ypos = 385230;
@@ -149,7 +149,7 @@ namespace DOL.GS.GameEvents
 			}
 			
 			// in case we ever have a RP cap with the PVP event
-			if (ServerProperties.Properties.EVENT_PVP && p.RealmPoints > EventRPCap)
+			if (ServerProperties.Properties.EVENT_TUTORIAL && p.RealmPoints > EventRPCap)
 			{
 				p.MoveTo(27, 342521, 385230, 5410, 1756);
 			}
@@ -169,10 +169,19 @@ namespace DOL.GS.GameEvents
 				return;
 			
 			// BG event login checks
-			if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
+			if (ServerProperties.Properties.EVENT_THIDRANKI)
 			{
 				switch (p.Realm)
 				{
+					//case eRealm.Albion:
+					//	p.MoveTo(252, 38113, 53507, 4160, 3268);
+					//	break;
+					//case eRealm.Midgard:
+					//	p.MoveTo(252, 53568, 23643, 4530, 3268);
+					//	break;
+					//case eRealm.Hibernia:
+					//	p.MoveTo(252, 17367, 18248, 4320, 3268);
+					//	break;
 					case eRealm.Albion:
 						p.MoveTo(330, 52759, 39528, 4677, 36);
 						break;
@@ -184,9 +193,9 @@ namespace DOL.GS.GameEvents
 						break;
 				}
 			}
-			
+
 			// PVP event login checks
-			if (ServerProperties.Properties.EVENT_PVP)
+			if (ServerProperties.Properties.EVENT_TUTORIAL)
 			{
 				p.MoveTo(27, 342521, 385230, 5410, 1756);
 				
