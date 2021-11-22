@@ -227,6 +227,8 @@ namespace DOL.GS.ServerRules
 			
 			if(Properties.EVENT_CROSS_REALM_GROUPS) return true;
 
+			if (source.CurrentRegionID == 27) return true;
+
 			// clients with priv level > 1 are allowed to talk and hear anyone
 			if(source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
 			if(target.Client.Account.PrivLevel > 1) return true;
