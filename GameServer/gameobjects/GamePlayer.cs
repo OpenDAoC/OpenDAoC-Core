@@ -1523,7 +1523,7 @@ namespace DOL.GS
                 {
                     GamePlayer player = Client.Player as GamePlayer;
 					
-                    if (ServerProperties.Properties.EVENT_TUTORIAL)
+                    if (player.CurrentRegionID == 27)
                     {
                         relRegion = 27;
                         relX = 342521;
