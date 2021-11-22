@@ -3695,12 +3695,13 @@ namespace DOL.GS
 				evadeChance *= 0.001;
 				evadeChance += 0.01 * attackerConLevel; // 1% per con level distance multiplied by evade level
 
-				//if( lastAD != null && lastAD.Style != null )
-				//{
-					//evadeChance += lastAD.Style.BonusToDefense * 0.01;
-				//}
+				// Kelgor's Claw 15% evade 
+                if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
+                {
+                    evadeChance += 15 * 0.01;
+                }
 
-				evadeChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
+                evadeChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
 
 				if ( ad.AttackType == AttackData.eAttackType.Ranged )
 					evadeChance /= 5.0;
@@ -3794,6 +3795,12 @@ namespace DOL.GS
 
 					parryChance *= 0.001;
 					parryChance += 0.05 * attackerConLevel;
+
+					// Tribal Wrath 25% evade 
+					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
+					{
+						parryChance += 25 * 0.01;
+					}
 
 					parryChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
 
