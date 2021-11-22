@@ -192,6 +192,7 @@ namespace DOL.GS.GameEvents
 						p.MoveTo(335, 52836, 40401, 4672, 441);
 						break;
 				}
+				p.Bind(true);
 			}
 
 			// PVP event login checks
