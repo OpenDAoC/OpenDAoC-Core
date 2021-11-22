@@ -324,7 +324,7 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.Name;
-			if (Properties.EVENT_PVP)
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
 				return target.Name;
 
 			return source.RaceToTranslatedName(target.Race, target.Gender);
@@ -340,7 +340,7 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.LastName;
-			if (Properties.EVENT_PVP)
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
 				return target.LastName;
 
 			return target.RealmRankTitle(source.Client.Account.Language);
@@ -356,7 +356,7 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.GuildName;
-			if (Properties.EVENT_PVP)
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
 				return target.RealmRankTitle(source.Client.Account.Language);
 			return string.Empty;
 		}
