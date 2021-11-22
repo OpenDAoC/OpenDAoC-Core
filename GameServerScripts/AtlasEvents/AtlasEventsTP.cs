@@ -40,7 +40,7 @@ namespace DOL.GS.Scripts
 			{
 				player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "If you need so, I can port you back to your Realm's [event zone]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 
-				if (WorldMgr.GetAllClientsCount() < 100 && player.Group == null)
+				if (WorldMgr.GetAllClientsCount() >= SoloPop && player.Group == null)
 				{
 					player.Out.SendMessage("\nAdditionally, I can port you to the [solo zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 				}

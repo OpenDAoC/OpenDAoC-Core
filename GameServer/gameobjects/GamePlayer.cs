@@ -1522,16 +1522,47 @@ namespace DOL.GS
                 case eReleaseType.RvR:
                 {
                     GamePlayer player = Client.Player as GamePlayer;
+                    int SoloPop = Properties.EVENT_SOLO_POP;
 					
                     if (player.CurrentRegionID == 27)
                     {
-                        relRegion = 27;
-                        relX = 342521;
-                        relY = 385230;
-                        relZ = 5410;
-                        relHeading = 1756;
-                        break;
-                    }
+                            if (WorldMgr.GetAllClientsCount() >= SoloPop)
+                            {
+                                relRegion = 27;
+                                relX = 342521;
+                                relY = 385230;
+                                relZ = 5410;
+                                relHeading = 1756;
+                                break;
+                            }
+                            else
+                            {
+                                switch (player.Realm)
+                                {
+                                    case eRealm.Albion:
+                                        relRegion = 252;
+                                        relX = 38113;
+                                        relY = 53507;
+                                        relZ = 4160;
+                                        break;
+                                    case eRealm.Midgard:
+                                        relRegion = 252;
+                                        relX = 53568;
+                                        relY = 23643;
+                                        relZ = 4530;
+                                        break;
+                                    case eRealm.Hibernia:
+                                        relRegion = 252;
+                                        relX = 17367;
+                                        relY = 18248;
+                                        relZ = 4320;
+                                        break;
+                                }
+                                break;
+                            }
+
+
+                        }
 					
                     if (ServerProperties.Properties.EVENT_THIDRANKI && player.CurrentRegionID == 252)
                     {
