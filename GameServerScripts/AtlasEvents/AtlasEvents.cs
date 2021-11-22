@@ -169,7 +169,7 @@ namespace DOL.GS.GameEvents
 				return;
 			
 			// BG event login checks
-			if (ServerProperties.Properties.EVENT_THIDRANKI)
+			if (ServerProperties.Properties.EVENT_THIDRANKI && p.CurrentRegionID != 252)
 			{
 				switch (p.Realm)
 				{
