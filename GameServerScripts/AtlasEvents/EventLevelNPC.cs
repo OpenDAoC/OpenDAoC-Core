@@ -86,8 +86,9 @@ namespace DOL.GS.Scripts
                     
                     if (player.RealmPoints < realmPoints)
                     {
-                        player.GainRealmPoints((long)(realmPoints - player.RealmPoints));
-                        player.Out.SendMessage("I have given you some RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        long realmPointsToGive = realmPoints - player.RealmPoints;
+                        player.GainRealmPoints(realmPointsToGive);
+                        player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         return true;
                     }
                     player.Out.SendMessage("You have killed enough enemies already, go kill more!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
