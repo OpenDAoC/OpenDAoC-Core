@@ -1757,6 +1757,7 @@ namespace DOL.GS.ServerRules
                     {
 						//Console.WriteLine($"Generating ROG for {player}");
 						AtlasROGManager.GenerateROG(player, true);
+						AtlasROGManager.GenerateOrbs(player);
 					}
 				}
 
