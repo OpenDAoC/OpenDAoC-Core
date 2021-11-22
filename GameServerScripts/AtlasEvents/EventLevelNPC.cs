@@ -86,7 +86,7 @@ namespace DOL.GS.Scripts
                     
                     if (player.RealmPoints < realmPoints)
                     {
-                        player.GainRealmPoints((long)(realmPoints - player.RealmPoints / Properties.RP_RATE));
+                        player.GainRealmPoints((long)(realmPoints - player.RealmPoints));
                         player.Out.SendMessage("I have given you some RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         return true;
                     }
