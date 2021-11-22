@@ -22,28 +22,17 @@ namespace DOL.GS {
         //4k high toa
         //10k dragonsworn
         //20k champion
-        //private int lowbie = 450;
-        //private int festive = 1000;
-        //private int toageneric = 1800;
-        //private int armorpads = 2500;
-        //private int artifact = 4800;
-        //private int epic = 4000;
-        //private int dragon = 9000;
-        //private int champion = 18000;
-        //private int cloakcheap = 9000;
-        //private int cloakmedium = 18000;
-        //private int cloakexpensive = 61749;
-        private int lowbie = 4;
-        private int festive = 10;
-        private int toageneric = 18; 
-        private int armorpads = 25;
-        private int artifact = 48;
-        private int epic = 40;
-        private int dragon = 90;
-        private int champion = 100;
-        private int cloakcheap = 90;
-        private int cloakmedium = 100;
-        private int cloakexpensive = 120;
+        private int lowbie = 450;
+        private int festive = 1000;
+        private int toageneric = 1800;
+        private int armorpads = 2500;
+        private int artifact = 4800;
+        private int epic = 4000;
+        private int dragon = 9000;
+        private int champion = 18000;
+        private int cloakcheap = 9000;
+        private int cloakmedium = 18000;
+        private int cloakexpensive = 61749;
 
         public override bool AddToWorld()
         {
