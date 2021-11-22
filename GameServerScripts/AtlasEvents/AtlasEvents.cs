@@ -37,12 +37,14 @@ namespace DOL.GS.GameEvents
 			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 			GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
 			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered,new DOLEventHandler(OnPlayerLogin));
+			GameEventMgr.AddHandler(GamePlayerEvent.Released, new DOLEventHandler(OnPlayerReleased));
 			if (log.IsInfoEnabled)
 				log.Info("Atlas Event initialized");
 		}
 		
 		public static int EventLvCap = ServerProperties.Properties.EVENT_LVCAP;
 		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
+		public static int SoloPop = ServerProperties.Properties.EVENT_SOLO_POP;
 		
 		/// <summary>
 		/// Unregister Character Creation Events
@@ -55,6 +57,8 @@ namespace DOL.GS.GameEvents
 		{
 			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 			GameEventMgr.RemoveHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(OnPlayerLogin));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.Released, new DOLEventHandler(OnPlayerReleased));
 		}
 		
 		/// <summary>
@@ -121,6 +125,26 @@ namespace DOL.GS.GameEvents
 			
 		}
 
+		private static void OnPlayerReleased(DOLEvent e, object sender, EventArgs arguments)
+		{
+			GamePlayer p = sender as GamePlayer;
+
+			if (WorldMgr.GetAllClientsCount() < SoloPop)
+			{
+				switch (p.Realm)
+				{
+					case eRealm.Albion:
+						p.MoveTo(330, 52759, 39528, 4677, 36);
+						break;
+					case eRealm.Midgard:
+						p.MoveTo(334, 52160, 39862, 5472, 46);
+						break;
+					case eRealm.Hibernia:
+						p.MoveTo(335, 52836, 40401, 4672, 441);
+						break;
+				}
+			}
+		}
 		public static void OnRPGain(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer p = sender as GamePlayer;
