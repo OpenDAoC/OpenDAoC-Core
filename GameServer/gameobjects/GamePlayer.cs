@@ -1523,7 +1523,7 @@ namespace DOL.GS
                 {
                     GamePlayer player = Client.Player as GamePlayer;
 					
-                    if (ServerProperties.Properties.EVENT_PVP)
+                    if (ServerProperties.Properties.EVENT_TUTORIAL)
                     {
                         relRegion = 27;
                         relX = 342521;
