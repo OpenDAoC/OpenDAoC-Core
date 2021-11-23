@@ -583,8 +583,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					if (fallSpeed > fallMinSpeed)
 					{
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"),
-						eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+						// client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"),
+						// eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
 						fallDamage = client.Player.CalcFallDamage(fallPercent);
 					}
 
@@ -1160,16 +1160,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						int fallDivide = 15;
 
-						var fallPercent = Math.Min(99, (fallSpeed - 501) / fallDivide);
+						var fallPercent = (int)Math.Min(99, (fallSpeed - 501) / fallDivide);
 
 						if (fallSpeed > 500)
 						{
 							if (client.Player.CharacterClass.ID != (int)eCharacterClass.Necromancer || !client.Player.IsShade)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage(string.Format("You take {0}% of you max hits in damage.", fallPercent), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("You lose endurance", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-								client.Player.CalcFallDamage((int)fallPercent);
+								// client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+								// client.Out.SendMessage(string.Format("You take {0}% of you max hits in damage.", fallPercent), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+								// client.Out.SendMessage("You lose endurance", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+								// client.Player.CalcFallDamage((int)fallPercent);
+								client.Player.CalcFallDamage(fallPercent);
 							}
 						}
 
