@@ -233,15 +233,19 @@ namespace DOL.GS.Scripts
 			if(type == eObjectType.Shield)
             {
 				int shieldSize = GetShieldSizeFromClass(charClass);
-				GeneratedUniqueItem item = null;
-				item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, (eDamageType)shieldSize);
-				item.AllowAdd = true;
-				item.Color = (int)color;
-				item.IsTradable = false;
-				item.Price = 1;
-				GameServer.Database.AddObject(item);
-				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                for (int i = 0; i < shieldSize; i++)
+                {
+					GeneratedUniqueItem item = null;
+					item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, (eDamageType)i);
+					item.AllowAdd = true;
+					item.Color = (int)color;
+					item.IsTradable = false;
+					item.Price = 1;
+					GameServer.Database.AddObject(item);
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+				}
+				
 			}
 			else if (type == eObjectType.Flexible)
             {
