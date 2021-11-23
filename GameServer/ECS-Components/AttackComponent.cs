@@ -1415,7 +1415,7 @@ namespace DOL.GS
                             weaponTypeToUse.Object_Type = (int)eObjectType.ThrustWeapon;
                         }
                     }
-                }
+                }                
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
                 // Modified to change the lowest value being 75
                 int lowerboundary = (spec - 1) * 50 / (ad.Target.EffectiveLevel + 1) + Math.Min(50, spec);
@@ -1436,7 +1436,7 @@ namespace DOL.GS
                 }
 
                 // Added to ensure damage variance never exceeds 150%
-                int range = (spec == owner.Level ? 150 : 125) - lowerboundary;
+                int range = (spec >= owner.Level + 2 ? 150 : 125) - lowerboundary;
                 damage *= (lowerboundary + Util.Random(range)) * 0.01;
 
                 ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
