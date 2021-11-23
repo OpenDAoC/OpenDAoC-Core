@@ -467,6 +467,8 @@ namespace DOL.GS
                         return eEffect.BodyResistDebuff;
                     else if (spell.DamageType == eDamageType.Cold)
                         return eEffect.ColdResistDebuff;
+                    else if (spell.DamageType == eDamageType.Heat)
+                        return eEffect.HeatResistDebuff;
                     else
                         return eEffect.Unknown;
                 case (byte)eSpellType.PiercingMagic:
