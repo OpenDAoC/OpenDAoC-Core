@@ -266,8 +266,11 @@ namespace DOL.GS.Spells
                 || target is GamePlayer && healedrp > 0)
             {
                 int POURCENTAGE_SOIN_RP = ServerProperties.Properties.HEAL_PVP_DAMAGE_VALUE_RP; // ...% de bonus RP pour les soins effectués
-
-                if (m_spell.Pulse == 0 && m_caster.CurrentRegionID != 242 && // On Exclu zone COOP
+                if(m_caster.Group != null && m_caster.Group.IsInTheGroup(target))
+                {
+                    //do nothing
+                }
+                else if(m_spell.Pulse == 0 && m_caster.CurrentRegionID != 242 && // On Exclu zone COOP
                     m_spell.SpellType != (byte)eSpellType.SpreadHeal && target != m_caster &&
                     m_spellLine.KeyName != GlobalSpellsLines.Item_Spells &&
                     m_spellLine.KeyName != GlobalSpellsLines.Potions_Effects &&
