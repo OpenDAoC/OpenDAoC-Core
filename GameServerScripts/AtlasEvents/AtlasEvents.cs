@@ -193,6 +193,12 @@ namespace DOL.GS.GameEvents
 			if (EventLvCap == 0)
 				return;
 			
+			// GMs don't get ported at login
+			if (p.Client.Account.PrivLevel > 1)
+			{
+				return;
+			}
+			
 			// BG event login checks
 			if (ServerProperties.Properties.EVENT_THIDRANKI && p.CurrentRegionID != 252)
 			{
