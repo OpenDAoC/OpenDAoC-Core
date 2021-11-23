@@ -401,26 +401,26 @@ namespace DOL.GS.Spells
             if (baseChance < 1)
                 baseChance = 1;
 
-            if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
-            {
-                Spell baseSpell = null;
+            //if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
+            //{
+            //    Spell baseSpell = null;
 				
-                GameNPC pet = ad.Attacker as GameNPC;
-                var procSpells = new List<Spell>();
-                foreach (Spell spell in pet.Spells)
-                {
-                    if (pet.GetSkillDisabledDuration(spell) == 0)
-                    {
-                        if (spell.SpellType == (byte)eSpellType.OffensiveProc)
-                            procSpells.Add(spell);
-                    }
-                }
-                if (procSpells.Count > 0)
-                {
-                    baseSpell = procSpells[Util.Random((procSpells.Count - 1))];
-                }
-                m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
-            }
+            //    GameNPC pet = ad.Attacker as GameNPC;
+            //    var procSpells = new List<Spell>();
+            //    foreach (Spell spell in pet.Spells)
+            //    {
+            //        if (pet.GetSkillDisabledDuration(spell) == 0)
+            //        {
+            //            if (spell.SpellType == (byte)eSpellType.OffensiveProc)
+            //                procSpells.Add(spell);
+            //        }
+            //    }
+            //    if (procSpells.Count > 0)
+            //    {
+            //        baseSpell = procSpells[Util.Random((procSpells.Count - 1))];
+            //    }
+            //    m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
+            //}
             if (Util.Chance(baseChance))
             {
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)ad.Attacker, m_procSpell, m_procSpellLine);
