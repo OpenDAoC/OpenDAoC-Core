@@ -4195,6 +4195,11 @@ namespace DOL.GS.Spells
 				}
 			}
 
+			if (Caster is GameNPC)
+            {
+				hitchance = (int)(87.5 - (target.Level - Caster.Level));
+            }
+
 			return hitchance;
 		}
 
