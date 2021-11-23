@@ -74,6 +74,9 @@ namespace DOL.GS
         {
             if (TriggersImmunity && (OwnerPlayer != null || Owner is NecromancerPet))
             {
+                if (EffectType == eEffect.Stun && SpellHandler.Caster is GamePet)
+                    return;
+
                 new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
             }
         }
