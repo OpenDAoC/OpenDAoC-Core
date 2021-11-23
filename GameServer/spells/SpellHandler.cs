@@ -5146,6 +5146,10 @@ namespace DOL.GS.Spells
 				case eSpellType.NaturesShield:
 					dw.AddKeyValuePair("delve_string", $"Gives the user a {(int)Spell.Value}% base chance to block ranged melee attacks while this style is prepared.");
 					break;
+				case eSpellType.SlashResistDebuff:
+					dw.AddKeyValuePair("delve_string", $"Decreases target's resistance to Slash by {(int)Spell.Value}% for {(int)Spell.Duration / 1000} seconds.");
+					break;
+					
 			}
 		}
 

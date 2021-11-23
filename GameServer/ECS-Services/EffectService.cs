@@ -443,6 +443,8 @@ namespace DOL.GS
                     return eEffect.ColdResistDebuff;
                 case (byte)eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
+                case (byte)eSpellType.SlashResistDebuff:
+                    return eEffect.SlashResistDebuff;
 
                 //misc 
                 case (byte)eSpellType.SavageCombatSpeedBuff:
