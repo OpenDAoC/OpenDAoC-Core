@@ -1418,11 +1418,13 @@ namespace DOL.GS
                 }                
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
                 // Modified to change the lowest value being 75
-                int lowerboundary = (spec - 1) * 50 / (ad.Target.EffectiveLevel + 1) + Math.Min(50, spec);
+                int lowerboundary = (int)((spec - 1) / (ad.Target.EffectiveLevel * 1.0 + 1) * 75.0 + 25);
                 // Added to clamp variance in ranges
                 int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
                 lowerboundary = Math.Max(lowerboundary, lowerLimit);
                 lowerboundary = Math.Min(lowerboundary, 100);
+                int upperboundary = Math.Max(lowerboundary + 50, 125);
+                
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
 
                 // Badge Of Valor Calculation 1+ absorb or 1- absorb
@@ -1436,7 +1438,7 @@ namespace DOL.GS
                 }
 
                 // Added to ensure damage variance never exceeds 150%
-                int range = (spec >= owner.Level + 2 ? 150 : 125) - lowerboundary;
+                int range = upperboundary - lowerboundary;
                 damage *= (lowerboundary + Util.Random(range)) * 0.01;
 
                 ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
