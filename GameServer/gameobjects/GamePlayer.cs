@@ -9583,6 +9583,18 @@ namespace DOL.GS
             return false;
         }
 
+        public static bool CanPoisonWeapon(int objectType)
+        {
+            switch (objectType)
+            {
+                case (int)eObjectType.Crossbow:
+                case (int)eObjectType.Thrown:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
         /// <summary>
         /// Apply poison to weapon
         /// </summary>
@@ -9603,7 +9615,7 @@ namespace DOL.GS
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.PoisonsAppliedWeapons"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
-            if (!HasAbilityToUseItem(toItem.Template))
+            if (!HasAbilityToUseItem(toItem.Template) || !CanPoisonWeapon(toItem.Object_Type))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantPoisonWeapon"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
