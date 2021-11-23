@@ -8,6 +8,7 @@ using System.Reflection;
 using log4net;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.ServerProperties;
 
 
 namespace DOL.GS.GameEvents
@@ -37,12 +38,14 @@ namespace DOL.GS.GameEvents
 			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 			GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
 			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered,new DOLEventHandler(OnPlayerLogin));
+			GameEventMgr.AddHandler(GamePlayerEvent.Released, new DOLEventHandler(OnPlayerReleased));
 			if (log.IsInfoEnabled)
 				log.Info("Atlas Event initialized");
 		}
 		
 		public static int EventLvCap = ServerProperties.Properties.EVENT_LVCAP;
 		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
+		public static int SoloPop = ServerProperties.Properties.EVENT_SOLO_POP;
 		
 		/// <summary>
 		/// Unregister Character Creation Events
@@ -55,6 +58,8 @@ namespace DOL.GS.GameEvents
 		{
 			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 			GameEventMgr.RemoveHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(OnRPGain));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(OnPlayerLogin));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.Released, new DOLEventHandler(OnPlayerReleased));
 		}
 		
 		/// <summary>
@@ -108,7 +113,7 @@ namespace DOL.GS.GameEvents
 			}
 
 			//moving and binding newly created characters to the PVP event zone
-			if (ServerProperties.Properties.EVENT_PVP)
+			if (ServerProperties.Properties.EVENT_TUTORIAL)
 			{
 				ch.Xpos = 342521;
 				ch.Ypos = 385230;
@@ -121,6 +126,26 @@ namespace DOL.GS.GameEvents
 			
 		}
 
+		private static void OnPlayerReleased(DOLEvent e, object sender, EventArgs arguments)
+		{
+			GamePlayer p = sender as GamePlayer;
+
+			if (p.CurrentRegionID == 27 && Properties.EVENT_PVP && WorldMgr.GetAllClientsCount() < SoloPop)
+			{
+				switch (p.Realm)
+				{
+					case eRealm.Albion:
+						p.MoveTo(330, 52759, 39528, 4677, 36);
+						break;
+					case eRealm.Midgard:
+						p.MoveTo(334, 52160, 39862, 5472, 46);
+						break;
+					case eRealm.Hibernia:
+						p.MoveTo(335, 52836, 40401, 4672, 441);
+						break;
+				}
+			}
+		}
 		public static void OnRPGain(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer p = sender as GamePlayer;
@@ -149,7 +174,7 @@ namespace DOL.GS.GameEvents
 			}
 			
 			// in case we ever have a RP cap with the PVP event
-			if (ServerProperties.Properties.EVENT_PVP && p.RealmPoints > EventRPCap)
+			if (ServerProperties.Properties.EVENT_TUTORIAL && p.RealmPoints > EventRPCap)
 			{
 				p.MoveTo(27, 342521, 385230, 5410, 1756);
 			}
@@ -169,10 +194,19 @@ namespace DOL.GS.GameEvents
 				return;
 			
 			// BG event login checks
-			if (ServerProperties.Properties.EVENT_THIDRANKI && (p.RealmPoints > EventRPCap || p.Level != EventLvCap))
+			if (ServerProperties.Properties.EVENT_THIDRANKI && p.CurrentRegionID != 252)
 			{
 				switch (p.Realm)
 				{
+					//case eRealm.Albion:
+					//	p.MoveTo(252, 38113, 53507, 4160, 3268);
+					//	break;
+					//case eRealm.Midgard:
+					//	p.MoveTo(252, 53568, 23643, 4530, 3268);
+					//	break;
+					//case eRealm.Hibernia:
+					//	p.MoveTo(252, 17367, 18248, 4320, 3268);
+					//	break;
 					case eRealm.Albion:
 						p.MoveTo(330, 52759, 39528, 4677, 36);
 						break;
@@ -183,10 +217,11 @@ namespace DOL.GS.GameEvents
 						p.MoveTo(335, 52836, 40401, 4672, 441);
 						break;
 				}
+				p.Bind(true);
 			}
-			
+
 			// PVP event login checks
-			if (ServerProperties.Properties.EVENT_PVP)
+			if (ServerProperties.Properties.EVENT_TUTORIAL)
 			{
 				p.MoveTo(27, 342521, 385230, 5410, 1756);
 				

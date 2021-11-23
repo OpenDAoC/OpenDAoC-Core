@@ -28,8 +28,9 @@ namespace DOL.GS {
         private eEmote Emotes = eEmote.Raise;//The Emote the NPC does when Interacted
         private Queue m_timer = new Queue();//Gametimer for casting some spell at the end of the process
         private Queue castplayer = new Queue();//Used to hold the player who the spell gets cast on
-        private int effectPrice = 1800; //effects price in RPs
-        private int dyePrice = 500; //effects price in RPs
+        public string currencyName = "Orbs";
+        private int effectPrice = 1800; //effects price
+        private int dyePrice = 500; //effects price
         private int removePrice = 0; //removal is free
 
 
@@ -52,8 +53,8 @@ namespace DOL.GS {
                 }
                 SendReply(player, "Greetings " + player.Name + "!\n\n" +
                                     "I can either change the effect or the color of your weapons, armors...\n" +
-                                    "Simply give me the item and i will start my work.\n" +
-                                    "In exchange for my services, I will gladly take some of your RPs and respec your Realm Abilities..");
+                                    "Simply give me the item and i will start my work.\n\n" +
+                                    "In exchange for my services, I will gladly take some of your Atlas Orbs.");
                 //"On my countless journeys, i have mastered the art of"+ Didnt like the amount of talking
                 //"focusing the etheral flows to a certain weapon.\n"+  so i slimmed it a  bit o.O
                 //"Using this technique, i can make your weapon glow in"+
@@ -103,23 +104,23 @@ namespace DOL.GS {
                         case (int)eObjectType.LargeWeapons:
                             SendReply(player,
                                 "Choose a weapon effect: \n" +
-                                "[gr sword - yellow flames] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - orange flames] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - fire with smoke] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - fire with sparks] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - yellow flames] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - orange flames] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - fire with smoke] (" + effectPrice + " RPs)\n" +
-                                "[gr sword - fire with sparks] (" + effectPrice + " RPs)\n" +
-                                "[gr - blue glow with sparkles] (" + effectPrice + " RPs)\n" +
-                                "[gr - blue aura with cold vapor] (" + effectPrice + " RPs)\n" +
-                                "[gr - icy blue glow] (" + effectPrice + " RPs)\n" +
-                                "[gr - red aura] (" + effectPrice + " RPs)\n" +
-                                "[gr - strong crimson glow] (" + effectPrice + " RPs)\n" +
-                                "[gr - white core red glow] (" + effectPrice + " RPs)\n" +
-                                "[gr - silvery/white glow] (" + effectPrice + " RPs)\n" +
-                                "[gr - gold/yellow glow] (" + effectPrice + " RPs)\n" +
-                                "[gr - hot green glow] (" + effectPrice + " RPs)\n");
+                                "[gr sword - yellow flames] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - orange flames] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - fire with smoke] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - fire with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - yellow flames] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - orange flames] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - fire with smoke] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr sword - fire with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - blue glow with sparkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - blue aura with cold vapor] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - icy blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - red aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - strong crimson glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - white core red glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - silvery/white glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - gold/yellow glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[gr - hot green glow] (" + effectPrice + " " + currencyName + ")\n");
                             break;
 
                         case (int)eObjectType.Blunt:
@@ -127,28 +128,28 @@ namespace DOL.GS {
                         case (int)eObjectType.Hammer:
                             SendReply(player,
                                          "Choose a weapon effect: \n" +
-                                         "[hammer - red aura] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - fiery glow] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - more intense fiery glow] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - flaming] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - torchlike flaming] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - silvery glow] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - purple glow] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - blue aura] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - blue glow] (" + effectPrice + " RPs)\n" +
-                                         "[hammer - arcs from head to handle] (" + effectPrice + " RPs)\n" +
-                                         "[crush - arcing halo] (" + effectPrice + " RPs)\n" +
-                                         "[crush - center arcing] (" + effectPrice + " RPs)\n" +
-                                         "[crush - smaller arcing halo] (" + effectPrice + " RPs)\n" +
-                                         "[crush - hot orange core glow] (" + effectPrice + " RPs)\n" +
-                                         "[crush - orange aura] (" + effectPrice + " RPs)\n" +
-                                         "[crush - subtle aura with sparks] (" + effectPrice + " RPs)\n" +
-                                         "[crush - yellow flame] (" + effectPrice + " RPs)\n" +
-                                         "[crush - mana flame] (" + effectPrice + " RPs)\n" +
-                                         "[crush - hot green glow] (" + effectPrice + " RPs)\n" +
-                                         "[crush - hot red glow] (" + effectPrice + " RPs)\n" +
-                                         "[crush - hot purple glow] (" + effectPrice + " RPs)\n" +
-                                         "[crush - cold vapor] (" + effectPrice + " RPs)\n");
+                                         "[hammer - red aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - fiery glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - more intense fiery glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - flaming] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - torchlike flaming] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - silvery glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - purple glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - blue aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[hammer - arcs from head to handle] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - arcing halo] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - center arcing] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - smaller arcing halo] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - hot orange core glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - orange aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - subtle aura with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - yellow flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - mana flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - hot green glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - hot red glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - hot purple glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                         "[crush - cold vapor] (" + effectPrice + " " + currencyName + ")\n");
                             break;
 
                         case (int)eObjectType.SlashingWeapon:
@@ -159,82 +160,82 @@ namespace DOL.GS {
                         case (int)eObjectType.LeftAxe:
                             SendReply(player,
                                         "Choose a weapon effect: \n" +
-                                        "[longsword - propane-style flame] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - regular flame] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - orange flame] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - rising flame] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - flame with smoke] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - flame with sparks] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hot glow] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hot aura] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - blue aura] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hot blue glow] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hot gold glow] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hot red glow] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - red aura] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - cold aura with sparkles] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - cold aura with vapor] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hilt wavering blue beam] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hilt wavering green beam] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hilt wavering red beam] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hilt red/blue beam] (" + effectPrice + " RPs)\n" +
-                                        "[longsword - hilt purple beam] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - propane flame] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - orange flame with sparks] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - blue aura with twinkles] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - green cloud with bubbles] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - red aura with blood bubbles] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - evil green glow] (" + effectPrice + " RPs)\n" +
-                                        "[shortsword - black glow] (" + effectPrice + " RPs)\n");
+                                        "[longsword - propane-style flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - regular flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - orange flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - rising flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - flame with smoke] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - flame with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hot glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hot aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - blue aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hot blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hot gold glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hot red glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - red aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - cold aura with sparkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - cold aura with vapor] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hilt wavering blue beam] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hilt wavering green beam] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hilt wavering red beam] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hilt red/blue beam] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[longsword - hilt purple beam] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - propane flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - orange flame with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - blue aura with twinkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - green cloud with bubbles] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - red aura with blood bubbles] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - evil green glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[shortsword - black glow] (" + effectPrice + " " + currencyName + ")\n");
                             break;
 
                         case (int)eObjectType.Axe:
                             SendReply(player,
                                         "Choose a weapon effect: \n" +
-                                        "[axe - basic flame] (" + effectPrice + " RPs)\n" +
-                                        "[axe - orange flame] (" + effectPrice + " RPs)\n" +
-                                        "[axe - slow orange flame with sparks] (" + effectPrice + " RPs)\n" +
-                                        "[axe - fiery/trailing flame] (" + effectPrice + " RPs)\n" +
-                                        "[axe - cold vapor] (" + effectPrice + " RPs)\n" +
-                                        "[axe - blue aura with twinkles] (" + effectPrice + " RPs)\n" +
-                                        "[axe - hot green glow] (" + effectPrice + " RPs)\n" +
-                                        "[axe - hot blue glow] (" + effectPrice + " RPs)\n" +
-                                        "[axe - hot cyan glow (" + effectPrice + " RPs)\n" +
-                                        "[axe - hot purple glow] (" + effectPrice + " RPs)\n" +
-                                        "[axe - blue->purple->orange glow] (" + effectPrice + " RPs)\n");
+                                        "[axe - basic flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - orange flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - slow orange flame with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - fiery/trailing flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - cold vapor] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - blue aura with twinkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - hot green glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - hot blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - hot cyan glow (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - hot purple glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                        "[axe - blue->purple->orange glow] (" + effectPrice + " " + currencyName + ")\n");
                             break;
                         case (int)eObjectType.Spear:
                         case (int)eObjectType.CelticSpear:
                         case (int)eObjectType.PolearmWeapon:
                             SendReply(player,
-                                "Choose a weapon effect:  (" + effectPrice + " RPs)\n" +
-                                "[battlespear - cold with twinkles] (" + effectPrice + " RPs)\n" +
-                                "[battlespear - evil green aura] (" + effectPrice + " RPs)\n" +
-                                "[battlespear - evil red aura] (" + effectPrice + " RPs)\n" +
-                                "[battlespear - flaming] (" + effectPrice + " RPs)\n" +
-                                "[battlespear - hot gold glow] (" + effectPrice + " RPs)\n" +
-                                "[battlespear - hot fire glow] (" + effectPrice + " RPs)\n" +
-                                "[battlespear - red aura] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - blue glow] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - hot blue glow] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - cold with twinkles] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - flaming] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - electric arcing] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - hot yellow flame] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - orange flame with sparks] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - orange to purple flame] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - hot purple flame] (" + effectPrice + " RPs)\n" +
-                                "[lugged spear - silvery glow] (" + effectPrice + " RPs)\n");
+                                "Choose a weapon effect:  (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - cold with twinkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - evil green aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - evil red aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - flaming] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - hot gold glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - hot fire glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[battlespear - red aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - hot blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - cold with twinkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - flaming] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - electric arcing] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - hot yellow flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - orange flame with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - orange to purple flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - hot purple flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[lugged spear - silvery glow] (" + effectPrice + " " + currencyName + ")\n");
                             break;
 
                         case (int)eObjectType.Staff:
                             SendReply(player,
-                                "Choose a weapon effect:  (" + effectPrice + " RPs)\n" +
-                                "[staff - blue glow] (" + effectPrice + " RPs)\n" +
-                                "[staff - blue glow with twinkles] (" + effectPrice + " RPs)\n" +
-                                "[staff - gold glow] (" + effectPrice + " RPs)\n" +
-                                "[staff - gold glow with twinkles] (" + effectPrice + " RPs)\n" +
-                                "[staff - faint red glow] (" + effectPrice + " RPs)\n");
+                                "Choose a weapon effect:  (" + effectPrice + " " + currencyName + ")\n" +
+                                "[staff - blue glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[staff - blue glow with twinkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[staff - gold glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[staff - gold glow with twinkles] (" + effectPrice + " " + currencyName + ")\n" +
+                                "[staff - faint red glow] (" + effectPrice + " " + currencyName + ")\n");
                             break;
 
                         default:
@@ -361,157 +362,157 @@ namespace DOL.GS {
 
                 case "Blues":
                     SendReply(player,
-                            "[Old Turquoise] (" + dyePrice + " RPs)\n" +
-                            "[Leather Blue] (" + dyePrice + " RPs)\n" +
-                            "[Blue-Green Cloth] (" + dyePrice + " RPs)\n" +
-                            "[Turquoise Cloth] (" + dyePrice + " RPs)\n" +
-                            "[Light Blue Cloth] (" + dyePrice + " RPs)\n" +
-                            "[Blue Cloth] (" + dyePrice + " RPs)\n" +
-                            "[Blue-Violet Cloth] (" + dyePrice + " RPs)\n" +
-                            "[Blue Metal] (" + dyePrice + " RPs)\n" +
-                            "[Blue 1] (" + dyePrice + " RPs)\n" +
-                            "[Blue 2] (" + dyePrice + " RPs)\n" +
-                            "[Blue 3] (" + dyePrice + " RPs)\n" +
-                            "[Blue 4] (" + dyePrice + " RPs)\n" +
-                            "[Turquoise 1] (" + dyePrice + " RPs)\n" +
-                            "[Turquoise 2] (" + dyePrice + " RPs)\n" +
-                            "[Turquoise 3] (" + dyePrice + " RPs)\n" +
-                            "[Teal 1] (" + dyePrice + " RPs)\n" +
-                            "[Teal 2] (" + dyePrice + " RPs)\n" +
-                            "[Teal 3] (" + dyePrice + " RPs)\n");
+                            "[Old Turquoise] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Leather Blue] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue-Green Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Turquoise Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Light Blue Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue-Violet Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue Metal] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue 1] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue 2] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue 3] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Blue 4] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Turquoise 1] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Turquoise 2] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Turquoise 3] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Teal 1] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Teal 2] (" + dyePrice + " " + currencyName + ")\n" +
+                            "[Teal 3] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Greens":
                     SendReply(player,
-                        "[Old Green] (" + dyePrice + " RPs)\n" +
-                        "[Leather Green] (" + dyePrice + " RPs)\n" +
-                        "[Leather Forest Green] (" + dyePrice + " RPs)\n" +
-                        "[Green Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Blue-Green Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Yellow-Green Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Green Metal] (" + dyePrice + " RPs)\n" +
-                        "[Green 1] (" + dyePrice + " RPs)\n" +
-                        "[Green 1] (" + dyePrice + " RPs)\n" +
-                        "[Green 2] (" + dyePrice + " RPs)\n" +
-                        "[Green 3] (" + dyePrice + " RPs)\n" +
-                        "[Green 4] (" + dyePrice + " RPs)\n" +
-                        "[Ship Lime Green] (" + dyePrice + " RPs)\n" +
-                        "[Ship Green] (" + dyePrice + " RPs)\n" +
-                        "[Ship Green 2] (" + dyePrice + " RPs)\n" +
-                        "[Light Green - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Olive Green - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Sage Green - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Lime Green - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Forest Green - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Old Green] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Leather Green] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Leather Forest Green] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Blue-Green Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow-Green Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green Metal] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Green 4] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Lime Green] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Green] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Green 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Light Green - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Olive Green - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Sage Green - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Lime Green - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Forest Green - crafter only] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Reds":
                     SendReply(player,
-                        "[Old Red] (" + dyePrice + " RPs)\n" +
-                        "[Leather Red] (" + dyePrice + " RPs)\n" +
-                        "[Red Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Purple-Red Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Red Metal] (" + dyePrice + " RPs)\n" +
-                        "[Red 1] (" + dyePrice + " RPs)\n" +
-                        "[Red 2] (" + dyePrice + " RPs)\n" +
-                        "[Red 3] (" + dyePrice + " RPs)\n" +
-                        "[Red 4] (" + dyePrice + " RPs)\n" +
-                        "[Ship Red] (" + dyePrice + " RPs)\n" +
-                        "[Ship Red 2] (" + dyePrice + " RPs)\n" +
-                        "[Red - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Old Red] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Leather Red] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple-Red Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red Metal] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red 4] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Red] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Red 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Red - crafter only] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Yellows":
                     SendReply(player,
-                        "[Old Yellow] (" + dyePrice + " RPs)\n" +
-                        "[Leather Yellow] (" + dyePrice + " RPs)\n" +
-                        "[Yellow-Orange Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Yellow Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Yellow- Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Yellow Metal] (" + dyePrice + " RPs)\n" +
-                        "[Yellow 1] (" + dyePrice + " RPs)\n" +
-                        "[Yellow 2] (" + dyePrice + " RPs)\n" +
-                        "[Yellow 3] (" + dyePrice + " RPs)\n" +
-                        "[Light Gold - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dark Gold - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Gold Metal] (" + dyePrice + " RPs)\n" +
-                        "[Ship Yellow] (" + dyePrice + " RPs)\n");
+                        "[Old Yellow] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Leather Yellow] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow-Orange Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow- Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow Metal] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Yellow 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Light Gold - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Dark Gold - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Gold Metal] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Yellow] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Purples":
                     SendReply(player,
-                        "[Old Purple] (" + dyePrice + " RPs)\n" +
-                        "[Leather Purple] (" + dyePrice + " RPs)\n" +
-                        "[Purple Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Bright Purple Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Purple- Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Purple Metal] (" + dyePrice + " RPs)\n" +
-                        "[Purple 1] (" + dyePrice + " RPs)\n" +
-                        "[Purple 2] (" + dyePrice + " RPs)\n" +
-                        "[Purple 3] (" + dyePrice + " RPs)\n" +
-                        "[Purple 4] (" + dyePrice + " RPs)\n" +
-                        "[Ship Purple] (" + dyePrice + " RPs)\n" +
-                        "[Ship Purple 2] (" + dyePrice + " RPs)\n" +
-                        "[Ship Purple 3] (" + dyePrice + " RPs)\n" +
-                        "[Purple - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dark Purple - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dusky Purple - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Old Purple] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Leather Purple] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Bright Purple Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple- Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple Metal] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple 4] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Purple] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Purple 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Purple 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Purple - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Dark Purple - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Dusky Purple - crafter only] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Violets":
                     SendReply(player,
-                        "[Leather Violet] (" + dyePrice + " RPs)\n" +
-                        "[-Violet Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Violet Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Bright Violet Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Hot Pink - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dusky Rose - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Ship Pink] (" + dyePrice + " RPs)\n" +
-                        "[Violet] (" + dyePrice + " RPs)\n");
+                        "[Leather Violet] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[-Violet Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Violet Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Bright Violet Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Hot Pink - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Dusky Rose - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Pink] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Violet] (" + dyePrice + " " + currencyName + ")\n");
                     break;
 
                 case "Oranges":
                     SendReply(player,
-                        "[Leather Orange] (" + dyePrice + " RPs)\n" +
-                        "[Orange Cloth] (" + dyePrice + " RPs)\n" +
-                        "[-Orange Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Orange 1] (" + dyePrice + " RPs)\n" +
-                        "[Orange 2] (" + dyePrice + " RPs)\n" +
-                        "[Orange 3] (" + dyePrice + " RPs)\n" +
-                        "[Ship Orange] (" + dyePrice + " RPs)\n" +
-                        "[Ship Orange 2] (" + dyePrice + " RPs)\n" +
-                        "[Orange 3] (" + dyePrice + " RPs)\n" +
-                        "[Dirty Orange - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Leather Orange] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Orange Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[-Orange Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Orange 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Orange 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Orange 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Orange] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Orange 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Orange 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Dirty Orange - crafter only] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Blacks":
                     SendReply(player,
-                        "[Black Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Brown Cloth] (" + dyePrice + " RPs)\n" +
-                        "[Brown 1] (" + dyePrice + " RPs)\n" +
-                        "[Brown 2] (" + dyePrice + " RPs)\n" +
-                        "[Brown 3] (" + dyePrice + " RPs)\n" +
-                        "[Brown - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Gray] (" + dyePrice + " RPs)\n" +
-                        "[Gray 2] (" + dyePrice + " RPs)\n" +
-                        "[Gray 3] (" + dyePrice + " RPs)\n" +
-                        "[Light Gray - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Gray  - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Olive Gray - crafter only] (" + dyePrice + " RPs)\n");
+                        "[Black Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Brown Cloth] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Brown 1] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Brown 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Brown 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Brown - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Gray] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Gray 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Gray 3] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Light Gray - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Gray  - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Olive Gray - crafter only] (" + dyePrice + " " + currencyName + ")\n");
                     break;
                 case "Other":
                     SendReply(player,
-                        "[Bronze] (" + dyePrice + " RPs)\n" +
-                        "[Iron] (" + dyePrice + " RPs)\n" +
-                        "[Steel] (" + dyePrice + " RPs)\n" +
-                        "[Alloy] (" + dyePrice + " RPs)\n" +
-                        "[Fine Alloy] (" + dyePrice + " RPs)\n" +
-                        "[Mithril] (" + dyePrice + " RPs)\n" +
-                        "[Asterite] (" + dyePrice + " RPs)\n" +
-                        "[Eog] (" + dyePrice + " RPs)\n" +
-                        "[Xenium] (" + dyePrice + " RPs)\n" +
-                        "[Vaanum] (" + dyePrice + " RPs)\n" +
-                        "[Adamantium] (" + dyePrice + " RPs)\n" +
-                        "[Mauve] (" + dyePrice + " RPs)\n" +
-                        "[Ship Charcoal] (" + dyePrice + " RPs)\n" +
-                        "[Ship Charcoal 2] (" + dyePrice + " RPs)\n" +
-                        "[Plum - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[Dark Tan - crafter only] (" + dyePrice + " RPs)\n" +
-                        "[White] (" + dyePrice + " RPs)\n");
+                        "[Bronze] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Iron] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Steel] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Alloy] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Fine Alloy] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Mithril] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Asterite] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Eog] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Xenium] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Vaanum] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Adamantium] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Mauve] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Charcoal] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Ship Charcoal 2] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Plum - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[Dark Tan - crafter only] (" + dyePrice + " " + currencyName + ")\n" +
+                        "[White] (" + dyePrice + " " + currencyName + ")\n");
                     break;
 
                 case "remove dye":
@@ -1169,9 +1170,12 @@ namespace DOL.GS {
                 SendReply(player, "You can't dye that.");
             }
 
-            if (player.RealmPoints < price)
+            int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            log.Info("Player Orbs:" + playerOrbs);
+
+            if (playerOrbs < price)
             {
-                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " RPs to dye that.");
+                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " " + currencyName + " to dye that.");
                 return;
             }
 
@@ -1196,9 +1200,10 @@ namespace DOL.GS {
             InventoryItem newInventoryItem = GameInventoryItem.Create<ItemUnique>(unique);
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
-            player.RealmPoints -= price;
-            player.RespecRealm();
-            SetRealmLevel(player, (int)player.RealmPoints);
+            //player.RealmPoints -= price;
+            //player.RespecRealm();
+            //SetRealmLevel(player, (int)player.RealmPoints);
+            player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
             SendReply(player, "Thanks for your donation. The color has come out beautifully, wear it with pride.");
 
@@ -1235,9 +1240,12 @@ namespace DOL.GS {
                 return;
             }
 
-            if (player.RealmPoints < price)
+            int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            log.Info("Player Orbs:" + playerOrbs);
+
+            if (playerOrbs < price)
             {
-                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " RPs to enchant that.");
+                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " " + currencyName + " to enchant that.");
                 return;
             }
 
@@ -1263,9 +1271,11 @@ namespace DOL.GS {
             InventoryItem newInventoryItem = GameInventoryItem.Create<ItemUnique>(unique);
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
-            player.RealmPoints -= price;
-            player.RespecRealm();
-            SetRealmLevel(player, (int)player.RealmPoints);
+            //player.RealmPoints -= price;
+            //player.RespecRealm();
+            //SetRealmLevel(player, (int)player.RealmPoints);
+            player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
 
             SendReply(player, "Thanks for your donation. May the " + item.Name + " lead you to a bright future.");
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

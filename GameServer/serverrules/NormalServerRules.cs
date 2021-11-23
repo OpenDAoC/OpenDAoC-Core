@@ -78,6 +78,12 @@ namespace DOL.GS.ServerRules
 				return false;
 			}
 
+			if(attacker is GamePlayer atkPl && defender is GamePlayer defPl
+				&& atkPl.IsPvP && defPl.IsPvP)
+            {
+				return true;
+            }
+
 			//Don't allow attacks on same realm members on Normal Servers
 			if (attacker.Realm == defender.Realm && !(attacker is GamePlayer && ((GamePlayer)attacker).DuelTarget == defender))
 			{
@@ -165,7 +171,7 @@ namespace DOL.GS.ServerRules
 
 			if (source?.CurrentRegionID == 27 || target?.CurrentRegionID == 27)
             {
-                if (Properties.EVENT_THIDRANKI) { return false; }
+                if (Properties.EVENT_PVP) { return false; }
             }
 
 			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
@@ -220,6 +226,8 @@ namespace DOL.GS.ServerRules
 			if(source == null || target == null) return false;
 			
 			if(Properties.EVENT_CROSS_REALM_GROUPS) return true;
+
+			if (source.CurrentRegionID == 27) return true;
 
 			// clients with priv level > 1 are allowed to talk and hear anyone
 			if(source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
@@ -324,6 +332,9 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.Name;
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
+				return target.Name;
+
 			return source.RaceToTranslatedName(target.Race, target.Gender);
 		}
 
@@ -336,6 +347,8 @@ namespace DOL.GS.ServerRules
 		public override string GetPlayerLastName(GamePlayer source, GamePlayer target)
 		{
 			if (IsSameRealm(source, target, true))
+				return target.LastName;
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
 				return target.LastName;
 
 			return target.RealmRankTitle(source.Client.Account.Language);
@@ -351,6 +364,8 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.GuildName;
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
+				return target.RealmRankTitle(source.Client.Account.Language);
 			return string.Empty;
 		}
 	

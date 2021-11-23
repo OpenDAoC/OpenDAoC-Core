@@ -56,5 +56,23 @@ namespace DOL.GS {
             }
         }
 
+        public static void GenerateOrbs(GameLiving living)
+        {
+            if (living != null && living is GamePlayer)
+            {
+                GamePlayer player = living as GamePlayer;
+
+                ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+
+                InventoryItem item = GameInventoryItem.Create(orbs);
+
+                int maxcount = Util.Random(10, 30);
+                player.Inventory.AddTemplate(item, maxcount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+                //player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            }
+        }
+
     }
 }

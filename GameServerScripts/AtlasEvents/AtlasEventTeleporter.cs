@@ -48,7 +48,7 @@ namespace DOL.GS.Scripts
 			TurnTo(player.X, player.Y);
 			
 			player.Out.SendMessage("Hello " + player.Name + "!\n\n" + "Are you ready to [fight]?", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
-			player.Out.SendMessage("If you need so, I can port you back to your Realm's [testing lobby]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("If you need so, I can port you back to your Realm's [testing lobby] or to the [battleground]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			return true;
 		}
 		public override bool WhisperReceive(GameLiving source, string str)
@@ -124,6 +124,21 @@ namespace DOL.GS.Scripts
 							break;
 						case eRealm.Hibernia:
 							t.MoveTo(335, 52836, 40401, 4672, 441);
+							break;
+					}
+					break;
+
+				case "battleground":
+					switch (t.Realm)
+					{
+						case eRealm.Albion:
+							t.MoveTo(252, 38113, 53507, 4160, 3268);
+							break;
+						case eRealm.Midgard:
+							t.MoveTo(252, 53568, 23643, 4530, 3268);
+							break;
+						case eRealm.Hibernia:
+							t.MoveTo(252, 17367, 18248, 4320, 3268);
 							break;
 					}
 					break;
