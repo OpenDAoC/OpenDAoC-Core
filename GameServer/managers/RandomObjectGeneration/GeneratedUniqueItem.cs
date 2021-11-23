@@ -4269,6 +4269,7 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.CompositeBow);
 					weaponTypes.Add(eObjectType.Sword);
 					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Savage:
 					weaponTypes.Add(eObjectType.HandToHand);
@@ -4281,6 +4282,7 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.Axe);
 					weaponTypes.Add(eObjectType.LeftAxe);
 					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Berserker:
 					weaponTypes.Add(eObjectType.LeftAxe);

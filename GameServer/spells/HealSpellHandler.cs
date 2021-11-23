@@ -263,7 +263,7 @@ namespace DOL.GS.Spells
 
             if (m_caster is GamePlayer && target is NecromancerPet &&
                 ((target as NecromancerPet).Brain as IControlledBrain).GetPlayerOwner() != null
-                || target is GamePlayer && healedrp > 0)
+                || target is GamePlayer && healedrp > 0 && !m_caster.Group.IsInTheGroup(target))
             {
                 int POURCENTAGE_SOIN_RP = ServerProperties.Properties.HEAL_PVP_DAMAGE_VALUE_RP; // ...% de bonus RP pour les soins effectués
 
