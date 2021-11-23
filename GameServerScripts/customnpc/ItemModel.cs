@@ -6676,6 +6676,7 @@ namespace DOL.GS {
                 ItemUnique unique = new ItemUnique(item.Template);
                 unique.Model = number;
                 item.IsTradable = false;
+                item.IsDropable = false;
                 GameServer.Database.AddObject(unique);
                 InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
