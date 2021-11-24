@@ -443,7 +443,10 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
             {
-                WritePotionInfo(delve, player.Client);
+                if (SpellID == 31051)
+                    WritePotionInfo(delve, AllStatsBarrel.BuffList, player.Client);
+                else
+                    WritePotionInfo(delve, player.Client);
             }
             else if (CanUseEvery > 0)
             {
@@ -1452,13 +1455,78 @@ namespace DOL.GS {
             }
         }
 
+        protected virtual void WritePotionInfo(IList<string> list, IList<int> idList, GameClient client)
+        {
+            Spell mSpell = SkillBase.GetSpellByID(SpellID);
+            list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
+            list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
+            list.Add(" ");
+
+            long nextPotionAvailTime = client.Player.TempProperties.getProperty<long>("LastPotionItemUsedTick_Type" + mSpell.SharedTimerGroup);
+            // Satyr Update: Individual Reuse-Timers for Pots need a Time looking forward
+            // into Future, set with value of "itemtemplate.CanUseEvery" and no longer back into past
+            if (nextPotionAvailTime > client.Player.CurrentRegion.Time)
+            {
+                list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.UseItem3", Util.FormatTime((nextPotionAvailTime - client.Player.CurrentRegion.Time) / 1000)));
+            }
+            else
+            {
+                int minutes = CanUseEvery / 60;
+                int seconds = CanUseEvery % 60;
+
+                if (minutes == 0)
+                {
+                    list.Add(String.Format("Can use item every: {0} sec", seconds));
+                }
+                else
+                {
+                    list.Add(String.Format("Can use item every: {0}:{1:00} min", minutes, seconds));
+                }
+            }
+            list.Add(" ");
+            foreach (int id in idList)
+            {
+                if (id != 0)
+                {
+                    SpellLine potionLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
+                    if (potionLine != null)
+                    {
+                        List<Spell> spells = SkillBase.GetSpellList(potionLine.KeyName);
+
+                        list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
+
+                        list.Add(" ");
+
+                        foreach (Spell spl in spells)
+                        {
+                            if (spl.ID == id)
+                            {
+                                
+                                WritePotionSpellsInfos(list, client, spl, potionLine);
+                                list.Add(" ");
+
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            if (mSpell.CastTime > 0)
+            {
+                list.Add(" ");
+                list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.NoUseInCombat"));
+            }
+        }
+
 
         protected static void WritePotionSpellsInfos(IList<string> list, GameClient client, Spell spl, NamedSkill line)
         {
             if (spl != null)
             {
                 list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicAbility"));
-                list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Type", spl.SpellType));
+                list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Type", ((eSpellType)spl.SpellType).ToString()));
                 list.Add(" ");
                 list.Add(spl.Description);
                 list.Add(" ");
@@ -1471,8 +1539,7 @@ namespace DOL.GS {
                 {
                     list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Range", spl.Range));
                 }
-                list.Add(" ");
-                list.Add(" ");
+
                 if (spl.SubSpellID > 0)
                 {
                     List<Spell> spells = SkillBase.GetSpellList(line.KeyName);

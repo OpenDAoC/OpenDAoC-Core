@@ -5,6 +5,7 @@
 using System;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using System.Collections.Generic;
 
 namespace DOL.GS.Spells
 {
@@ -14,6 +15,7 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("AllStatsBarrel")]
 	public class AllStatsBarrel : SingleStatBuff
 	{
+		public static List<int> BuffList = new List<int> {8090,8091,8094,8092,8095,8093/*,8071*/};
 		private int strengthID = 8090;
 		private int conID = 8091;
 		private int strenghtConID = 8094;
