@@ -133,6 +133,10 @@ namespace DOL.GS.ServerRules
 			// checking as a gm, targets are considered friendly
 			if (source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
 
+			if (target is GamePlayer tPl && source is GamePlayer sPl
+				&& tPl.IsPvP && sPl.IsPvP)
+				return false;
+
 			//Peace flag NPCs are same realm
 			if (target is GameNPC)
 				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
@@ -253,6 +257,26 @@ namespace DOL.GS.ServerRules
 		{
 			if (point.Realm == 0) return true;
 			return player.Realm == (eRealm)point.Realm;
+		}
+
+		/// <summary>
+		/// Gets the server type color handling scheme
+		///
+		/// ColorHandling: this byte tells the client how to handle color for PC and NPC names (over the head)
+		/// 0: standard way, other realm PC appear red, our realm NPC appear light green
+		/// 1: standard PvP way, all PC appear red, all NPC appear with their level color
+		/// 2: Same realm livings are friendly, other realm livings are enemy; nearest friend/enemy buttons work
+		/// 3: standard PvE way, all PC friendly, realm 0 NPC enemy rest NPC appear light green
+		/// 4: All NPC are enemy, all players are friendly; nearest friend button selects self, nearest enemy don't work at all
+		/// </summary>
+		/// <param name="client">The client asking for color handling</param>
+		/// <returns>The color handling</returns>
+		public override byte GetColorHandling(GameClient client)
+		{
+			if (client.Player.CurrentRegionID == 27)
+				return 1;
+			else
+				return base.GetColorHandling(client);
 		}
 
 		/// <summary>
