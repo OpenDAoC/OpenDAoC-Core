@@ -195,6 +195,7 @@ namespace DOL.GS
         PowerHeal = 188,
         FatigueConsumptionDebuff = 189,
         NaturesShield = 191,
+        AllStatsBarrel = 192,
         Null = 200
 
 
