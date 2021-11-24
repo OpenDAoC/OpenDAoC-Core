@@ -142,7 +142,7 @@ namespace DOL.GS
                                     effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                     && !effect.IsDisabled)
                                 {
-                                    EffectService.RequestDisableEffect(effect, true);
+                                    EffectService.RequestDisableEffect(effect);
                                 }
                                 else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
                                     effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
