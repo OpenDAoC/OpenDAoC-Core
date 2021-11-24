@@ -26,14 +26,14 @@ namespace DOL.GS.Spells
         {
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
 
-			Spell strenghtSpell = SkillBase.FindSpell(strengthID, potionEffectLine);
-			SpellHandler strenghtSpellHandler = ScriptMgr.CreateSpellHandler(target, strenghtSpell, potionEffectLine) as SpellHandler;
+			Spell strengthSpell = SkillBase.FindSpell(strengthID, potionEffectLine);
+			SpellHandler strenghtSpellHandler = ScriptMgr.CreateSpellHandler(target, strengthSpell, potionEffectLine) as SpellHandler;
 
 			Spell conSpell = SkillBase.FindSpell(conID, potionEffectLine);
 			SpellHandler conSpellHandler = ScriptMgr.CreateSpellHandler(target, conSpell, potionEffectLine) as SpellHandler;
 
-			Spell strenghtConSpell = SkillBase.FindSpell(strenghtConID, potionEffectLine);
-			SpellHandler strenghtConSpellHandler = ScriptMgr.CreateSpellHandler(target, strenghtConSpell, potionEffectLine) as SpellHandler;
+			Spell strengthConSpell = SkillBase.FindSpell(strenghtConID, potionEffectLine);
+			SpellHandler strenghtConSpellHandler = ScriptMgr.CreateSpellHandler(target, strengthConSpell, potionEffectLine) as SpellHandler;
 
 			Spell dexSpell = SkillBase.FindSpell(dexID, potionEffectLine);
 			SpellHandler dexSpellHandler = ScriptMgr.CreateSpellHandler(target, dexSpell, potionEffectLine) as SpellHandler;
