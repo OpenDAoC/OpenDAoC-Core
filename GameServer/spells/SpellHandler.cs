@@ -4568,7 +4568,7 @@ namespace DOL.GS.Spells
 				if (Spell.SpellType == (byte)eSpellType.Bomber || Spell.SpellType == (byte)eSpellType.SummonAnimistFnF)
 					dw.AddKeyValuePair("delve_spell", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 				else
-				dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
+					dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 
 			if (!dw.Values.ContainsKey("parm") && (eSpellType)Spell.SpellType != eSpellType.MesmerizeDurationBuff)
 				dw.AddKeyValuePair("parm", "1");
@@ -4639,6 +4639,7 @@ namespace DOL.GS.Spells
 				case eSpellType.ConstitutionBuff:
 				case eSpellType.DexterityBuff:
 				case eSpellType.StrengthBuff:
+				case eSpellType.AllStatsBarrel:
 					return "stat";
 				case eSpellType.ConstitutionDebuff:
 				case eSpellType.DexterityDebuff:
@@ -4788,6 +4789,7 @@ namespace DOL.GS.Spells
 				case eSpellType.SpiritResistBuff:
 				case eSpellType.SpiritResistDebuff:
 				case eSpellType.StrengthBuff:
+				case eSpellType.AllStatsBarrel:
 				case eSpellType.StrengthConstitutionBuff:
 				case eSpellType.StrengthConstitutionDebuff:
 				case eSpellType.StrengthDebuff:
@@ -4843,6 +4845,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.AcuityBuff:
 				case eSpellType.ConstitutionBuff:
+				case eSpellType.AllStatsBarrel:
 				case eSpellType.ConstitutionDebuff:
 				case eSpellType.EnduranceRegenBuff:
 					dw.AddKeyValuePair(parm, "3");

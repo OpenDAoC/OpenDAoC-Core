@@ -9147,7 +9147,8 @@ namespace DOL.GS
                                                 if (spellHandler != null)
                                                 {
                                                     GameLiving target = TargetObject as GameLiving;
-
+                                                    if (spellHandler is AllStatsBarrel)
+                                                        target = this;
                                                     // Tobz: make sure we have the appropriate target for our charge spell,
                                                     // otherwise don't waste a charge.
                                                     if (spell.Target.ToLower() == "enemy")
