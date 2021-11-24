@@ -44,8 +44,8 @@ namespace DOL.GS.Spells
 			Spell acuitySpell = SkillBase.FindSpell(acuityID, potionEffectLine);
 			SpellHandler acuitySpellHandler = ScriptMgr.CreateSpellHandler(target, acuitySpell, potionEffectLine) as SpellHandler;
 
-			Spell hasteSpell = SkillBase.FindSpell(hasteID, potionEffectLine);
-			SpellHandler hasteSpellHandler = ScriptMgr.CreateSpellHandler(target, hasteSpell, potionEffectLine) as SpellHandler;
+			//Spell hasteSpell = SkillBase.FindSpell(hasteID, potionEffectLine);
+			//SpellHandler hasteSpellHandler = ScriptMgr.CreateSpellHandler(target, hasteSpell, potionEffectLine) as SpellHandler;
 
 			strenghtSpellHandler.StartSpell(target);
 			conSpellHandler.StartSpell(target);
@@ -53,7 +53,7 @@ namespace DOL.GS.Spells
 			dexSpellHandler.StartSpell(target);
 			dexQuickSpellHandler.StartSpell(target);
 			acuitySpellHandler.StartSpell(target);
-			hasteSpellHandler.StartSpell(target);
+			//hasteSpellHandler.StartSpell(target);
 
 			return true;
 		}
