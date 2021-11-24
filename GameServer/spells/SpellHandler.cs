@@ -641,7 +641,7 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && Stage < 2)//(GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime / 2))// Stage < 2)
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .9 ))// Stage < 2) //only interrupt if we're under 90% of the way through the cast
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -821,6 +821,10 @@ namespace DOL.GS.Spells
 					{
 						selectedTarget = Caster.ControlledBrain.Body;
 					}
+					else if (selectedTarget is TurretPet)
+                    {
+						//do nothing
+                    }
 					else
 					{
 						if (!quiet) MessageToCaster("You must cast this spell on a creature you are controlling.",
@@ -1714,32 +1718,52 @@ namespace DOL.GS.Spells
 		{
 			if (Caster is GamePlayer p)
 			{
-				if(p.castingComponent.queuedSpellHandler != null && p.SpellQueue)
-                {
-					p.castingComponent.spellHandler = p.castingComponent.queuedSpellHandler;
-					p.castingComponent.queuedSpellHandler = null;
-                } else
-                {
-					p.castingComponent.spellHandler = null;
+				if (Spell.CastTime > 0)
+				{
+					if (p.castingComponent.queuedSpellHandler != null && p.SpellQueue)
+					{
+						p.castingComponent.spellHandler = p.castingComponent.queuedSpellHandler;
+						p.castingComponent.queuedSpellHandler = null;
+					}
+					else
+					{
+						p.castingComponent.spellHandler = null;
+					}
 				}
-				
+				else
+                {
+					p.castingComponent.instantSpellHandler = null;
+                }
 			}
             else if (Caster is NecromancerPet nPet)
             {
                 if (nPet.Brain is NecromancerPetBrain necroBrain)
                 {
-                    necroBrain.RemoveSpellFromQueue();
-                    if (nPet.attackComponent.AttackState)
-                        necroBrain.RemoveSpellFromAttackQueue();
-
-					if (Caster.castingComponent.queuedSpellHandler != null)
+					if (Spell.CastTime > 0)
 					{
-						Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
-						Caster.castingComponent.queuedSpellHandler = null;
+						necroBrain.RemoveSpellFromQueue();
+						if (nPet.attackComponent.AttackState)
+							necroBrain.RemoveSpellFromAttackQueue();
+
+						if (Caster.castingComponent.queuedSpellHandler != null)
+						{
+							Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
+							Caster.castingComponent.queuedSpellHandler = null;
+						}
+						else
+						{
+							Caster.castingComponent.spellHandler = null;
+						}
+
+						if (necroBrain.SpellsQueued)
+							necroBrain.CheckSpellQueue();
 					}
 					else
-					{
-						Caster.castingComponent.spellHandler = null;
+                    {
+						if (nPet.attackComponent.AttackState)
+							necroBrain.RemoveSpellFromAttackQueue();
+
+						Caster.castingComponent.instantSpellHandler = null;
 					}
 				}
             }
@@ -3013,8 +3037,16 @@ namespace DOL.GS.Spells
 					return;
 				}
 			}
-			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects || m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == Specs.Savagery || m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || m_spellLine.KeyName == "OffensiveProc")
+			
+			if (Spell.Radius == 0 &&
+				(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
+				m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
+				m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
+				m_spellLine.KeyName == Specs.Savagery || 
+				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
+				m_spellLine.KeyName == "OffensiveProc"))
 				effectiveness = 1.0; // TODO player.PlayerEffectiveness
+
 			if (effectiveness <= 0)
 				return; // no effect
 
@@ -4019,6 +4051,9 @@ namespace DOL.GS.Spells
 			double spellDamage = Spell.Damage;
 			GamePlayer player = Caster as GamePlayer;
 
+			if (Spell.SpellType == (byte)eSpellType.Lifedrain)
+				spellDamage *= (1 + Spell.LifeDrainReturn * .001);
+
 			// For pets the stats of the owner have to be taken into account.
 
 			if (Caster is GameNPC && ((Caster as GameNPC).Brain) is IControlledBrain)
@@ -4054,7 +4089,7 @@ namespace DOL.GS.Spells
 				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= (manaStatValue + 200) / 275.0;
+					spellDamage *= (manaStatValue + 200) / 250.0;
 				}
 			}
 			else if (Caster is GameNPC)
@@ -4157,6 +4192,11 @@ namespace DOL.GS.Spells
 				}
 			}
 
+			if (Caster is GameNPC)
+            {
+				hitchance = (int)(87.5 - (target.Level - Caster.Level));
+            }
+
 			return hitchance;
 		}
 
@@ -4218,6 +4258,12 @@ namespace DOL.GS.Spells
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(m_caster.Realm, eRelicType.Magic));
 
+				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
+				if (skillProp != eProperty.Undefined)
+				{
+					var level = m_caster.GetModifiedFromItems(skillProp);
+					spellDamage *= (1 + level / 200.0);
+				}
 			}
 
 			// Apply casters effectiveness
@@ -4519,7 +4565,7 @@ namespace DOL.GS.Spells
 				if (Spell.SpellType == (byte)eSpellType.Bomber || Spell.SpellType == (byte)eSpellType.SummonAnimistFnF)
 					dw.AddKeyValuePair("delve_spell", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 				else
-				dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
+					dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 
 			if (!dw.Values.ContainsKey("parm") && (eSpellType)Spell.SpellType != eSpellType.MesmerizeDurationBuff)
 				dw.AddKeyValuePair("parm", "1");
@@ -4590,6 +4636,7 @@ namespace DOL.GS.Spells
 				case eSpellType.ConstitutionBuff:
 				case eSpellType.DexterityBuff:
 				case eSpellType.StrengthBuff:
+				case eSpellType.AllStatsBarrel:
 					return "stat";
 				case eSpellType.ConstitutionDebuff:
 				case eSpellType.DexterityDebuff:
@@ -4739,6 +4786,7 @@ namespace DOL.GS.Spells
 				case eSpellType.SpiritResistBuff:
 				case eSpellType.SpiritResistDebuff:
 				case eSpellType.StrengthBuff:
+				case eSpellType.AllStatsBarrel:
 				case eSpellType.StrengthConstitutionBuff:
 				case eSpellType.StrengthConstitutionDebuff:
 				case eSpellType.StrengthDebuff:
@@ -4794,6 +4842,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.AcuityBuff:
 				case eSpellType.ConstitutionBuff:
+				case eSpellType.AllStatsBarrel:
 				case eSpellType.ConstitutionDebuff:
 				case eSpellType.EnduranceRegenBuff:
 					dw.AddKeyValuePair(parm, "3");
@@ -5094,6 +5143,13 @@ namespace DOL.GS.Spells
 					if (Spell.Value < 0)
 						dw.AddKeyValuePair("delve_string", $"Decreases your threat to monster targets by {-(int)Spell.Value} damage.");
 					break;
+				case eSpellType.NaturesShield:
+					dw.AddKeyValuePair("delve_string", $"Gives the user a {(int)Spell.Value}% base chance to block ranged melee attacks while this style is prepared.");
+					break;
+				case eSpellType.SlashResistDebuff:
+					dw.AddKeyValuePair("delve_string", $"Decreases target's resistance to Slash by {(int)Spell.Value}% for {(int)Spell.Duration / 1000} seconds.");
+					break;
+					
 			}
 		}
 

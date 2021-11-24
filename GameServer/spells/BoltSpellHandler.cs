@@ -258,6 +258,18 @@ namespace DOL.GS.Spells
 							}
 						}
 					}
+
+					// Nature's shield 60% block
+					if (target.IsObjectInFront(caster, 180) && target.styleComponent.NextCombatStyle != null && target.styleComponent.NextCombatStyle.ID == 394)
+                    {
+						if (Util.Chance(60))
+                        {
+							m_handler.MessageToLiving(player, "You block " + caster.GetName(0, false) + "'s spell!", eChatType.CT_Missed);
+							m_handler.MessageToCaster(player.GetName(0, true) + " blocks!", eChatType.CT_YouHit);
+							blocked = true;
+							ad.Damage = 0;
+						}
+                    }
 				}
 
 				double effectiveness = 1.0 + (caster.GetModified(eProperty.SpellDamage) * 0.01);
@@ -306,8 +318,12 @@ namespace DOL.GS.Spells
 				//target.damageComponent.DamageToDeal += ad.Damage;
 
 				caster.OnAttackEnemy(ad);
-				m_handler.SendDamageMessages(ad);
-                m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
+				if (ad.Damage > 0)
+				{
+					m_handler.SendDamageMessages(ad);
+				}
+				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
+
                 target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
 			}
 		}

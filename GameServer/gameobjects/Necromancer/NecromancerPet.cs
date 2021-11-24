@@ -25,6 +25,7 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -206,8 +207,8 @@ namespace DOL.GS
 					}
 				case eProperty.MaxHealth:
 					{
-						int conBonus = (int)(3.1 * Constitution /*GetModified(eProperty.Constitution)*/);
-						int hitsBonus = (int)( 0.5 * 32.5 * Level + m_summonHitsBonus);
+						int conBonus = (int)(3.1 * m_summonConBonus /*GetModified(eProperty.Constitution)*/);
+						int hitsBonus = (int)(30 * Level + m_summonHitsBonus);
 						int debuff = DebuffCategory[(int)property];
 
 						// Apply debuffs. As only base constitution affects pet
@@ -218,7 +219,7 @@ namespace DOL.GS
 						if (conBonus < 0)
 							conBonus = 0;
 
-						return /*conBonus +*/ hitsBonus;
+						return conBonus + hitsBonus;
 					}
 			}
 
@@ -391,6 +392,18 @@ namespace DOL.GS
 				}
 			}
 
+			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
+			{
+				GamePlayer player = Owner as GamePlayer;
+				string modmessage = "";
+				if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+				if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				if (ad.CriticalDamage > 0)
+				{
+					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				}
+			}
 			base.OnAttackedByEnemy(ad);
 		}
 
@@ -451,18 +464,33 @@ namespace DOL.GS
 
 			bool cast = castingComponent.StartCastSpell(spell, line);
 			//ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
-			if (castingComponent.spellHandler != null)
+			ISpellHandler handler;
+			if (spell.IsInstantCast)
+				handler = castingComponent.instantSpellHandler;
+			else
 			{
-				int power = castingComponent.spellHandler.PowerCost(Owner);
+				handler = castingComponent.spellHandler;
+			}
+
+			if (handler != null)
+			{
+				int power = handler.PowerCost(Owner);
 
 				if (Owner.Mana < power)
 				{
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.NotEnoughPower));
 					return false;
 				}
+				
+				if (!handler.Spell.IsInstantCast)
+                {
+					m_runningSpellHandler = handler;
+					handler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+				}
 			}
-            	m_runningSpellHandler = castingComponent.spellHandler;
-            	castingComponent.spellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+			
+			
+            	
             //	return spellhandler.CastSpell();
             //}
             //else
@@ -602,14 +630,19 @@ namespace DOL.GS
 			return WhisperReceive(player, "arawn");
 		}
 
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+			criticalAmount /= 2;
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
 
-		/// <summary>
-		/// Actions to be taken when the pet receives a whisper.
-		/// </summary>
-		/// <param name="source">Source of the whisper.</param>
-		/// <param name="text">"Text that was whispered</param>
-		/// <returns>True if whisper was handled, false otherwise.</returns>
-		public override bool WhisperReceive(GameLiving source, string text)
+        /// <summary>
+        /// Actions to be taken when the pet receives a whisper.
+        /// </summary>
+        /// <param name="source">Source of the whisper.</param>
+        /// <param name="text">"Text that was whispered</param>
+        /// <returns>True if whisper was handled, false otherwise.</returns>
+        public override bool WhisperReceive(GameLiving source, string text)
 		{
 			GamePlayer owner = ((Brain as IControlledBrain).Owner) as GamePlayer;
 			if (source == null || source != owner) return false;

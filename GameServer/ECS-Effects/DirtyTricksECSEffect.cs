@@ -84,14 +84,14 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            Owner.DebuffCategory[(int)eProperty.FumbleChance] += 50;
+            Owner.DebuffCategory[(int)eProperty.FumbleChance] += 35;
 
             if (OwnerPlayer != null)
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectStart"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
         public override void OnStopEffect()
         {
-            Owner.DebuffCategory[(int)eProperty.FumbleChance] -= 50;
+            Owner.DebuffCategory[(int)eProperty.FumbleChance] -= 35;
 
             if (OwnerPlayer != null)
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectCancel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

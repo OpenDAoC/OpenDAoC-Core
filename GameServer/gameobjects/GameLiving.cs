@@ -2014,8 +2014,9 @@ namespace DOL.GS
 					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
-			if (CurrentSpellHandler != null)
-				CurrentSpellHandler.CasterIsAttacked(attacker);
+			if (castingComponent?.spellHandler != null)
+				/*CurrentSpellHandler*/
+				castingComponent?.spellHandler.CasterIsAttacked(attacker);
 			
 			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
 				OnInterruptTick(attacker, attackType);
@@ -3694,12 +3695,15 @@ namespace DOL.GS
 				evadeChance *= 0.001;
 				evadeChance += 0.01 * attackerConLevel; // 1% per con level distance multiplied by evade level
 
-				//if( lastAD != null && lastAD.Style != null )
-				//{
-					//evadeChance += lastAD.Style.BonusToDefense * 0.01;
-				//}
+				// Kelgor's Claw 15% evade 
+                if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
+                {
+                    evadeChance += 15 * 0.01;
+                }
 
-				if( ad.AttackType == AttackData.eAttackType.Ranged )
+                evadeChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
+
+				if ( ad.AttackType == AttackData.eAttackType.Ranged )
 					evadeChance /= 5.0;
 
 				if( evadeChance < 0.01 )
@@ -3723,6 +3727,9 @@ namespace DOL.GS
 					evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
 				}
 			}
+
+			
+
 			return evadeChance;
 		}
 
@@ -3789,7 +3796,15 @@ namespace DOL.GS
 					parryChance *= 0.001;
 					parryChance += 0.05 * attackerConLevel;
 
-					if( parryChance < 0.01 )
+					// Tribal Wrath 25% evade 
+					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
+					{
+						parryChance += 25 * 0.01;
+					}
+
+					parryChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
+
+					if ( parryChance < 0.01 )
 						parryChance = 0.01;
 					else if( parryChance > ServerProperties.Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer )
 						parryChance = ServerProperties.Properties.PARRY_CAP;
@@ -3881,6 +3896,7 @@ namespace DOL.GS
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
 				}
 					
+				blockChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
@@ -3934,6 +3950,25 @@ namespace DOL.GS
 				}
 			}
 			return blockChance;
+		}
+
+		private double GetAttackerDefensePenetration(GameLiving living)
+        {            
+			double statBasedReduction = (living.GetWeaponStat(living.attackComponent?.AttackWeapon) - 50) / 25.0;
+			//double weaponskillBasedReduction = living.GetWeaponSkill(living.attackComponent?.AttackWeapon) / 100;
+			double skillBasedReduction = living.WeaponSpecLevel(living.attackComponent?.AttackWeapon) * 0.15;
+
+			double combinedReduction = statBasedReduction + skillBasedReduction;
+
+			if (living is GamePlayer p)
+            {
+				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
+				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
+				//divide by final 2 to use the 2.0 damage table as our anchor. classes below 2.0 damage table will have slightly reduced penetration, above 2.0 will have increased penetration
+				combinedReduction *= p.CharacterClass.WeaponSkillBase / 200.0 / 2;
+			}
+				
+			return combinedReduction;
 		}
 
 		/// <summary>

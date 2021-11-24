@@ -33,11 +33,11 @@ namespace DOL.GS.Spells
 		/// <param name="target"></param>
 		public override bool StartSpell(GameLiving target)
 		{
-            if (!Caster.effectListComponent.Effects.ContainsKey(eEffect.CombatHeal))
-            {
-                CreateECSPulseEffect(Caster, Caster.Effectiveness);
-                Caster.LastPulseCast = Spell;
-            }
+            //if (!Caster.effectListComponent.Effects.ContainsKey(eEffect.CombatHeal))
+            //{
+            //    CreateECSPulseEffect(Caster, Caster.Effectiveness);
+            //    Caster.LastPulseCast = Spell;
+            //}
 
 			m_startReuseTimer = true;
 			// do not start spell if not in combat

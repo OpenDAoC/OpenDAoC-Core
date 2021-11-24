@@ -508,6 +508,8 @@ namespace DOL.GS
                     return eEffect.ColdResistDebuff;
                 case (byte)eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
+                case (byte)eSpellType.SlashResistDebuff:
+                    return eEffect.SlashResistDebuff;
 
                 //misc 
                 case (byte)eSpellType.SavageCombatSpeedBuff:
@@ -530,6 +532,8 @@ namespace DOL.GS
                         return eEffect.BodyResistDebuff;
                     else if (spell.DamageType == eDamageType.Cold)
                         return eEffect.ColdResistDebuff;
+                    else if (spell.DamageType == eDamageType.Heat)
+                        return eEffect.HeatResistDebuff;
                     else
                         return eEffect.Unknown;
                 case (byte)eSpellType.PiercingMagic:

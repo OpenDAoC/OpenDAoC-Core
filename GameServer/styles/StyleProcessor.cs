@@ -88,7 +88,7 @@ namespace DOL.GS.Styles
 							|| lastAD.AttackResult != eAttackResult.HitStyle
 							|| lastAD.Style == null
 							|| lastAD.Style.ID != style.OpeningRequirementValue
-							|| lastAD.Target != target)) // style chains are possible only on the same target
+							/*|| lastAD.Target != target*/)) // style chains are *NOT* possible only on the same target
 						{
 							//DOLConsole.WriteLine("Offensive: Opening Requirement style needed failed!("+style.OpeningRequirementValue+")");
 							return false;
@@ -146,17 +146,17 @@ namespace DOL.GS.Styles
 							//Back Styles
 							//60 degree since 1.62 patch
 							case Style.eOpeningPosition.Back:
-								if (!(angle >= 150 && angle < 210)) return false;
+								if (!(angle >= 150 && angle <= 210)) return false;
 								break;
 							// Side Styles  
 							//105 degree since 1.62 patch
 							case Style.eOpeningPosition.Side:
-								if (!(angle >= 45 && angle < 150) && !(angle >= 210 && angle < 315)) return false;
+								if (!(angle >= 60 && angle <= 120) && !(angle >= 240 && angle <= 300)) return false;
 								break;
 							// Front Styles
 							// 90 degree
 							case Style.eOpeningPosition.Front:
-								if (!(angle >= 315 || angle < 45)) return false;
+								if (!(angle > 300 || angle < 60)) return false;
 								break;
 						}
 						//DOLConsole.WriteLine("Positional check success: "+style.OpeningRequirementValue);
@@ -420,41 +420,46 @@ namespace DOL.GS.Styles
 						//}
 						//attackData.StyleDamage = (int)(absorbRatio * styleGrowth * ServerProperties.Properties.CS_OPENING_EFFECTIVENESS);
 
-						var spec = living.GetModifiedSpecLevel(attackData.Style.Spec);
-						var damageCap = living.attackComponent.UnstyledDamageCap(attackData.Weapon);
-
+						var spec = Math.Min(living.Level, living.GetModifiedSpecLevel(attackData.Style.Spec));
 						// CS style check
 						switch (attackData.Style.ID)
 						{
 							case 335: //Backstab I 
 								{
 									//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(5, spec / 10) + spec * 14 / 3) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(5, spec / 10) + spec * 14 / 3) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(5, spec / 10) + spec * 14 / 3));
 								}
 								break;
 							case 339: //Backstab II
 								{
 									//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(45, spec) + spec * 6) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(45, spec) + spec * 9) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(45, spec) + spec * 6));
 								}
 								break;
 							case 343: //Perforate Artery
 								if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
 								{
 									//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 12) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(75, spec * 1.5) + spec * 12) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) +  spec * 12));
 								}
 								else
 								{
 									//Perforate Artery Cap = 75 + Critical Strike Spec *9 + Nonstyle Cap
-									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) + spec * 9) * absorbRatio);
-									attackData.Modifier -= (int)((Math.Min(75, spec * 1.5) + spec * 9) - attackData.StyleDamage);
+									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) +  spec * 9));
 								}
 								break;
 						}
+
+						int initialDamage = attackData.StyleDamage;
+						InventoryItem armor = null;
+						if (attackData.Target.Inventory != null)
+							armor = attackData.Target.Inventory.GetItem((eInventorySlot)attackData.ArmorHitLocation);
+
+						attackData.StyleDamage = (int)(attackData.StyleDamage * (1.0 - Math.Min(0.85, attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation))));
+						attackData.StyleDamage -= (int)(attackData.StyleDamage * (attackData.Target.GetResist(attackData.DamageType) + SkillBase.GetArmorResist(armor, attackData.DamageType)) * 0.01);
+						attackData.StyleDamage -= (int)(attackData.StyleDamage * attackData.Target.GetDamageResist(attackData.Target.GetResistTypeForDamage(attackData.DamageType)) * 0.01);
+
+						attackData.Modifier -= (int)(initialDamage - attackData.StyleDamage);
 					}
 					else
 						attackData.StyleDamage = (int)(absorbRatio * styleGrowth * effectiveWeaponSpeed);
@@ -467,7 +472,7 @@ namespace DOL.GS.Styles
 					{
 						absorb=(int)Math.Floor((double)attackData.StyleDamage * ((double)attackData.Target.GetModified(eProperty.StyleAbsorb)/100));
 						attackData.StyleDamage -= absorb;
-					}
+					}					
 
 					//Increase regular damage by styledamage ... like on live servers
 

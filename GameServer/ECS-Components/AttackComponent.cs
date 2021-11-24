@@ -662,7 +662,7 @@ namespace DOL.GS
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
-                    }
+                    }                    
 
                     lock (p.effectListComponent.Effects)
                     {
@@ -777,8 +777,8 @@ namespace DOL.GS
 
                     int speed = AttackSpeed(AttackWeapon) / 100;
                     if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
-                        speed /= 2;
-                    
+                        speed = Math.Max(15, speed / 2);
+
                     p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
             }
@@ -828,8 +828,8 @@ namespace DOL.GS
                                                            0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
-                        attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed;
-
+                        attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? Math.Max(1500, speed / 2) : speed;
+                        attackAction.RangeInterruptTime = 750;
                     }
                 }
                 else
@@ -1415,11 +1415,16 @@ namespace DOL.GS
                             weaponTypeToUse.Object_Type = (int)eObjectType.ThrustWeapon;
                         }
                     }
-                }
-
-                int lowerboundary = (owner.WeaponSpecLevel(weaponTypeToUse) - 1) * 50 / (ad.Target.EffectiveLevel + 1) + 75;
-                lowerboundary = Math.Max(lowerboundary, 75);
-                lowerboundary = Math.Min(lowerboundary, 125);
+                }                
+                int spec = owner.WeaponSpecLevel(weaponTypeToUse);
+                // Modified to change the lowest value being 75
+                int lowerboundary = (int)((spec - 1) / (ad.Target.EffectiveLevel * 1.0 + 1) * 75.0 + 25);
+                // Added to clamp variance in ranges
+                int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
+                lowerboundary = Math.Max(lowerboundary, lowerLimit);
+                lowerboundary = Math.Min(lowerboundary, 100);
+                int upperboundary = Math.Max(lowerboundary + 50, 125);
+                
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
 
                 // Badge Of Valor Calculation 1+ absorb or 1- absorb
@@ -1431,7 +1436,11 @@ namespace DOL.GS
                 {
                     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                 }
-                damage *= (lowerboundary + Util.Random(50)) * 0.01;
+
+                // Added to ensure damage variance never exceeds 150%
+                int range = upperboundary - lowerboundary;
+                damage *= (lowerboundary + Util.Random(range)) * 0.01;
+
                 ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
                 //damage += ad.Modifier;
                 // RA resist check
@@ -1450,7 +1459,10 @@ namespace DOL.GS
 
                 // apply total damage cap
                 ad.UncappedDamage = ad.Damage;
-                ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon)/* * effectiveness*/));
+                if(owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
+                    ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon) * 2));
+                else 
+                    ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon)/* * effectiveness*/));
 
                 if ((owner is GamePlayer || (owner is GameNPC && (owner as GameNPC).Brain is IControlledBrain && owner.Realm != 0)) && target is GamePlayer)
                 {
@@ -1566,7 +1578,13 @@ namespace DOL.GS
                         }
                         else if (ad.Target is GamePlayer)
                         {
-                            ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.AttacksYou") + " (" + /*(ad.Target as GamePlayer).GetBlockChance()*/ad.BlockChance.ToString("0.0") + "%)", ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                            // Added for Nature's Shield
+                            int percent = 0;
+                            if (ad.Target.styleComponent != null && (ad.Target.styleComponent.NextCombatStyle != null && ad.Target.styleComponent.NextCombatStyle.ID == 394) ||
+                                (ad.Target.styleComponent.NextCombatBackupStyle != null && ad.Target.styleComponent.NextCombatBackupStyle.ID == 394))
+                                percent = 60;
+
+                            ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.AttacksYou") + " (" + (percent > 0 ? percent.ToString("0.0") + "%)" : ad.BlockChance.ToString("0.0") + "%)"), ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                         }
                         break;
                     }
@@ -2067,6 +2085,18 @@ namespace DOL.GS
                 }
             }
 
+            if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            {
+                // Nature's shield 60% block
+                if (owner.IsObjectInFront(ad.Attacker, 180) && (owner.styleComponent.NextCombatStyle != null && owner.styleComponent.NextCombatStyle.ID == 394) ||
+                    (owner.styleComponent.NextCombatBackupStyle != null && owner.styleComponent.NextCombatBackupStyle.ID == 394))
+                {
+                    if (Util.Chance(60))
+                    {
+                        return eAttackResult.Blocked;
+                    }
+                }
+            }
 
             // Guard
             if (guard != null &&
@@ -2093,7 +2123,7 @@ namespace DOL.GS
                         if (guard.GuardSource is GameNPC)
                             guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
                         else
-                            guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * leftHand.Condition / leftHand.MaxCondition * 0.00001;
+                            guardchance = (guard.GuardSource.GetModified(eProperty.BlockChance) * .001) * (leftHand.Quality * .01);
                         guardchance += guardLevel * 5 * .01; //5% additional chance to guard with each level in Guard
                         guardchance += attackerConLevel * 0.05;
                         int shieldSize = 0;
@@ -2101,6 +2131,9 @@ namespace DOL.GS
                             shieldSize = leftHand.Type_Damage;
                         if (guard.GuardSource is GameNPC)
                             shieldSize = 1;
+
+                        double levelMod = (double)(leftHand.Level - 1) / 50 * 0.15;
+                        guardchance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
 
                         if (guardchance < 0.01)
                             guardchance = 0.01;
@@ -2119,12 +2152,12 @@ namespace DOL.GS
                         ranBlockNum /= 100;
                         guardchance *= 100;
 
-                        if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                        if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         {
                             blockAttk.Out.SendMessage($"Chance to guard: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
-                        if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                        if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                         {
                             blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }

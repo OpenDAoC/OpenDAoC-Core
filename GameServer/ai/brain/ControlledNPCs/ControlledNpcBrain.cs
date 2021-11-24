@@ -763,17 +763,20 @@ namespace DOL.AI.Brain
                 case (byte)eSpellType.SpreadHeal:
 					String spellTarget = spell.Target.ToUpper();
 					int bodyPercent = Body.HealthPercent;
-					
+					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'
+					int healThreshold = this.Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+
+
 					if (spellTarget == "SELF")
 					{
-						if (bodyPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD && !spell.TargetHasEffect(Body))
+						if (bodyPercent < healThreshold && !spell.TargetHasEffect(Body))
 							Body.TargetObject = Body;
 
 						break;
 					}
 
 					// Heal seriously injured targets first
-					int emergencyThreshold = GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2;
+					int emergencyThreshold = healThreshold / 2;
 
 					//Heal owner
 					owner = (this as IControlledBrain).Owner;
@@ -815,7 +818,7 @@ namespace DOL.AI.Brain
 					if (spellTarget == "SELF")
 					{
 						// if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
-						if (bodyPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
+						if (bodyPercent < healThreshold
 							&& !spell.TargetHasEffect(Body))
 						{
 							Body.TargetObject = Body;
@@ -825,7 +828,7 @@ namespace DOL.AI.Brain
 
 					//Heal owner
 					owner = (this as IControlledBrain).Owner;
-					if (ownerPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
+					if (ownerPercent < healThreshold
 						&& !spell.TargetHasEffect(owner) && Body.IsWithinRadius(owner, spell.Range))
 					{
 						Body.TargetObject = owner;
@@ -833,7 +836,7 @@ namespace DOL.AI.Brain
 					}
 
 					//Heal self
-					if (bodyPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
+					if (bodyPercent < healThreshold
 						&& !spell.TargetHasEffect(Body))
 					{
 						Body.TargetObject = Body;
@@ -845,7 +848,7 @@ namespace DOL.AI.Brain
 					{
 						foreach (GamePlayer p in playerGroup)
 						{
-							if (p.HealthPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD 
+							if (p.HealthPercent < healThreshold
 								&& !spell.TargetHasEffect(p) && Body.IsWithinRadius(p, spell.Range))
 							{
 								Body.TargetObject = p;

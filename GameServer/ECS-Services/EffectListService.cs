@@ -131,39 +131,39 @@ namespace DOL.GS
                                     }
                                 }
 
-                                if (effect.NextTick != 0 && tick >= effect.NextTick)
+                            if (effect.NextTick != 0 && tick >= effect.NextTick)
+                            {
+                                effect.OnEffectPulse();
+                            }
+                            if (effect.IsConcentrationEffect() && tick > effect.NextTick)
+                            {
+                                if (!effect.SpellHandler.Caster.
+                                    IsWithinRadius(effect.Owner,
+                                    effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
+                                    && !effect.IsDisabled)
                                 {
-                                    effect.OnEffectPulse();
+                                    EffectService.RequestDisableEffect(effect, true);
                                 }
-                                if (effect.IsConcentrationEffect() && tick > effect.NextTick)
+                                else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
+                                    effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
+                                    && effect.IsDisabled)
                                 {
-                                    if (!effect.SpellHandler.Caster.
-                                        IsWithinRadius(effect.Owner,
-                                        effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
-                                        && !effect.IsDisabled)
+                                    List<ECSGameEffect> concEffects;
+                                    effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out concEffects);
+                                    bool isBest = false;
+                                    if (concEffects.Count == 1)
+                                        isBest = true;
+                                    else if (concEffects.Count > 1)
                                     {
-                                        EffectService.RequestDisableEffect(effect);
+                                        foreach (ECSGameSpellEffect eff in effects)
+                                            if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                            {
+                                                isBest = true;
+                                                break;
+                                            }
+                                            else
+                                                isBest = false;
                                     }
-                                    else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
-                                        effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : effect.SpellHandler.Spell.Range)
-                                        && effect.IsDisabled)
-                                    {
-                                        List<ECSGameEffect> concEffects;
-                                        effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out concEffects);
-                                        bool isBest = false;
-                                        if (concEffects.Count == 1)
-                                            isBest = true;
-                                        else if (concEffects.Count > 1)
-                                        {
-                                            foreach (ECSGameSpellEffect eff in effects)
-                                                if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
-                                                {
-                                                    isBest = true;
-                                                    break;
-                                                }
-                                                else
-                                                    isBest = false;
-                                        }
 
                                         if (isBest)
                                             EffectService.RequestEnableEffect(effect);

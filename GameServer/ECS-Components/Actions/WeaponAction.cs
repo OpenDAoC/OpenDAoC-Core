@@ -133,7 +133,10 @@ namespace DOL.GS
             bool usingOH = false;
             if (leftHandSwingCount > 0)
             {
-                if (mainWeapon.Object_Type == (int)eObjectType.HandToHand || leftWeapon?.Object_Type == (int)eObjectType.HandToHand || mainWeapon.Object_Type == (int)eObjectType.TwoHandedWeapon)
+                if (mainWeapon.Object_Type == (int)eObjectType.HandToHand || 
+                    leftWeapon?.Object_Type == (int)eObjectType.HandToHand || 
+                    mainWeapon.Object_Type == (int)eObjectType.TwoHandedWeapon || 
+                    mainWeapon.Item_Type == (int)Slot.RANGED)
                     usingOH = false;
                 else
                     usingOH = true;
@@ -158,7 +161,7 @@ namespace DOL.GS
                 if (owner is GameNPC)
                     usingOH = false;
 
-                if (mainWeapon.SlotPosition == (int)Slot.TWOHAND)
+                if (mainWeapon.SlotPosition == (int)Slot.TWOHAND || mainWeapon.SlotPosition == (int)Slot.RANGED)
                     usingOH = false;
 
                 // no left hand used, all is simple here
@@ -407,9 +410,10 @@ namespace DOL.GS
                 int numRegularDmgAddsApplied = 0;
                 foreach (var effect in dAEffects.Except(dmgAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
                 {
+                    var effectiveness = 1 + effect.SpellHandler.Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
                     if (effect.IsBuffActive)
                     {
-                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
+                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? effectiveness * 0.5 : effectiveness);
                         numRegularDmgAddsApplied++;
                     }
                 }

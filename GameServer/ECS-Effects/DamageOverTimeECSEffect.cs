@@ -29,7 +29,7 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            if (EffectType == eEffect.Bleed)
+            if (EffectType == eEffect.Bleed && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
                 Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
         }
 
@@ -53,9 +53,18 @@ namespace DOL.GS
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {
-                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) == 0)
+
+                    if (Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed)
+                        && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) > bleedHandler.Spell.Damage)
                     {
-                        Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage + (int)bleedHandler.Spell.Damage * Util.Random(25) / 100);  // + random max 25%
+                        bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", eChatType.CT_SpellResisted);
+                        EffectService.RequestCancelEffect(this);
+                        return;
+                    }
+
+                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
+                    {
+                        Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage); 
                     }
 
                     bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
@@ -64,7 +73,6 @@ namespace DOL.GS
                     int bleedValue = Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
 
                     AttackData ad = bleedHandler.CalculateDamageToTarget(Owner, 1.0);
-
                     bleedHandler.SendDamageMessages(ad);
 
                     // attacker must be null, attack result is 0x0A
@@ -76,7 +84,10 @@ namespace DOL.GS
                     ad.Target.OnAttackedByEnemy(ad);
                     ad.Attacker.DealDamage(ad);
 
-                    if (--bleedValue <= 0 || !Owner.IsAlive)
+                    if(bleedValue > 1)
+                        bleedValue--;
+
+                    if (!Owner.IsAlive)
                     {
                         EffectService.RequestImmediateCancelEffect(this);
                     }

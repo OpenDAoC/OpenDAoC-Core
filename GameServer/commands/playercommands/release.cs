@@ -30,7 +30,7 @@
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon || ServerProperties.Properties.EVENT_THIDRANKI)
+			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon || ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
 			{
 				client.Player.Release(eReleaseType.RvR, false);
 				return;
@@ -38,7 +38,7 @@
 
             if (args.Length > 1 && args[1].ToLower() == "city")
             {
-	            if (ServerProperties.Properties.EVENT_THIDRANKI)
+	            if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
 		            return;
 				client.Player.Release(eReleaseType.City, false);
 					return;
@@ -46,7 +46,7 @@
 
             if (args.Length > 1 && args[1].ToLower() == "house")
             {
-	            if (ServerProperties.Properties.EVENT_THIDRANKI)
+	            if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
 		            return;
                 client.Player.Release(eReleaseType.House, false);
                 return;

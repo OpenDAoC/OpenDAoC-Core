@@ -2499,6 +2499,30 @@ namespace DOL.GS.ServerProperties
 		public static bool EVENT_THIDRANKI;
 		
 		/// <summary>
+		/// Enables PvP in the Tutorial event zone
+		/// </summary>
+		[ServerProperty("atlas", "event_pvp", "Enables PvP in the Tutorial event zone", false)]
+		public static bool EVENT_PVP;
+		
+		/// <summary>
+		/// Enables the event in the Tutorial zone
+		/// </summary>
+		[ServerProperty("atlas", "event_tutorial", "Enables the event in the Tutorial zone", false)]
+		public static bool EVENT_TUTORIAL;
+
+		/// <summary>
+		/// Allow cross realm grouping for the Event?
+		/// </summary>
+		[ServerProperty("atlas", "event_cross_realm_groups", "Enables cross Realm groups during the event", false)]
+		public static bool EVENT_CROSS_REALM_GROUPS;
+		
+		/// <summary>
+		/// Allow cross cross realm /say in Safe Zones?
+		/// </summary>
+		[ServerProperty("atlas", "event_cross_realm_say", "Enables cross Realm /say in safe zones", false)]
+		public static bool EVENT_CROSS_REALM_SAY;
+
+		/// <summary>
 		/// Maximum character level for the active event
 		/// </summary>
 		[ServerProperty("atlas", "event_lvcap", "Maximum character level for the active event", 0)]
@@ -2509,7 +2533,19 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "event_rpcap", "Maximum character realm points for the active event", 0)]
 		public static int EVENT_RPCAP;
-		
+
+		/// <summary>
+		/// Starting RPs amount for all players during the event
+		/// </summary>
+		[ServerProperty("atlas", "event_starting_rp", "Starting RPs amount for all players during the event", 0)]
+		public static int EVENT_START_RP;
+
+		/// <summary>
+		/// Minimum server population required to enable the solo zone
+		/// </summary>
+		[ServerProperty("atlas", "event_solo_pop", "Minimum server population required to enable the solo zone", 0)]
+		public static int EVENT_SOLO_POP;
+
 		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>

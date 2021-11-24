@@ -30,6 +30,10 @@ namespace DOL.GS
                     aggroBrain.AddToAggroList(SpellHandler.Caster, 1);
                 npc.attackComponent.AttackState = true;
             }
+            if(SpellHandler.Caster is GamePlayer)
+                Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+            else
+                Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
         }
 
         protected void UpdatePlayerStatus()

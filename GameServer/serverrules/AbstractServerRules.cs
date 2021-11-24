@@ -401,6 +401,12 @@ namespace DOL.GS.ServerRules
 					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
 					return false;
 				}
+
+				if ((area.IsSafeArea) && (attacker is GamePlayer))
+				{
+					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+					return false;
+				}
 			}
 
 			//I don't want mobs attacking guards
@@ -591,6 +597,9 @@ namespace DOL.GS.ServerRules
 		public virtual bool CanTakeFallDamage(GamePlayer player)
 		{
 			if (player.Client.Account.PrivLevel > 1)
+				return false;
+
+			if (player.IsInvulnerableToAttack)
 				return false;
 
 			if (player.CurrentRegion.IsHousing)
@@ -1742,12 +1751,13 @@ namespace DOL.GS.ServerRules
                 }
 
 				//distribute ROGs
-				if (ServerProperties.Properties.EVENT_THIDRANKI)
+				if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
 				{
                     foreach (var player in playersToAward)
                     {
 						//Console.WriteLine($"Generating ROG for {player}");
 						AtlasROGManager.GenerateROG(player, true);
+						AtlasROGManager.GenerateOrbs(player);
 					}
 				}
 

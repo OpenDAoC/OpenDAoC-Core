@@ -19,10 +19,12 @@ namespace DOL.GS
             {
                 if (p == null)
                     continue;
-                
-                if(p.castingComponent?.spellHandler == null)
-                    continue;
 
+                if (p.castingComponent?.instantSpellHandler != null)
+                    p.castingComponent.instantSpellHandler.Tick(tick);
+
+                if (p.castingComponent?.spellHandler == null)
+                    continue;
 
                 var handler = p.castingComponent.spellHandler;
                 

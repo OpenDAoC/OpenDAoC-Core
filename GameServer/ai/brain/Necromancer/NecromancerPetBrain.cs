@@ -137,8 +137,7 @@ namespace DOL.AI.Brain
 			if (e == GameNPCEvent.PetSpell)
 			{
 				PetSpellEventArgs petSpell = (PetSpellEventArgs)args;
-				bool hadQueuedSpells = false;
-                Body.StopFollowing();
+				bool hadQueuedSpells = false;               
 
 				if (SpellsQueued)
 				{
@@ -363,11 +362,15 @@ namespace DOL.AI.Brain
         /// </summary>
 		public void CheckAttackSpellQueue()
         {
-            SpellQueueEntry entry = GetSpellFromAttackQueue();
-            if (entry != null)
-                if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target))
-                    // If the spell can't be cast, remove it from the queue
-                    RemoveSpellFromAttackQueue();
+            int spellsQueued = m_attackSpellQueue.Count;
+            for (int i = 0; i < spellsQueued; i++)
+            {
+                SpellQueueEntry entry = GetSpellFromAttackQueue();
+                if (entry != null)
+                    if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target))
+                        // If the spell can't be cast, remove it from the queue
+                        RemoveSpellFromAttackQueue();
+            }
         }
 
         /// <summary>
@@ -384,7 +387,13 @@ namespace DOL.AI.Brain
 			// Target must be alive, or this is a self spell, or this is a pbaoe spell
 			if ((spellTarget != null && spellTarget.IsAlive) || spell.Target.ToLower() == "self" || spell.Range == 0)
 			{
-				GameObject previousTarget = Body.TargetObject;
+                if (spell.CastTime > 0)
+                {
+                    Body.StopFollowing();
+                    Body.attackComponent.NPCStopAttack();
+                }
+
+                GameObject previousTarget = Body.TargetObject;
 				Body.TargetObject = spellTarget;
 
 				if (spellTarget != null && spellTarget != Body)

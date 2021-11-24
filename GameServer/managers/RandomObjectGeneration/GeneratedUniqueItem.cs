@@ -58,7 +58,7 @@ namespace DOL.GS
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 45;
 		// Weapon Chance in %
-		public const ushort ROG_WEAPON_CHANCE = 40;
+		public const ushort ROG_WEAPON_CHANCE = 45;
 
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
@@ -76,7 +76,7 @@ namespace DOL.GS
 		public const ushort ROG_ITEM_RESIST_CHANCE = 50;
 
 		//item chance to get skills
-		public const ushort ROG_ITEM_SKILL_CHANCE = 75;
+		public const ushort ROG_ITEM_SKILL_CHANCE = 66;
 
 		// Item chance to get All skills stat
 		public const ushort ROG_STAT_ALLSKILL_CHANCE = 25;
@@ -4281,6 +4281,7 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.Axe);
 					weaponTypes.Add(eObjectType.LeftAxe);
 					weaponTypes.Add(eObjectType.Staff);
+					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Berserker:
 					weaponTypes.Add(eObjectType.LeftAxe);
@@ -4827,7 +4828,7 @@ namespace DOL.GS
 					}
 				case eObjectType.Spear:
 					{
-						this.SPD_ABS = Util.Random(43, 51);
+						this.SPD_ABS = Util.Random(43, 52);
 						return;
 					}
 				case eObjectType.CompositeBow:
@@ -4852,7 +4853,7 @@ namespace DOL.GS
 					}
 				case eObjectType.RecurvedBow:
 					{
-						this.SPD_ABS = Util.Random(45, 53);
+						this.SPD_ABS = Util.Random(45, 52);
 						return;
 					}
 				case eObjectType.Blades:
