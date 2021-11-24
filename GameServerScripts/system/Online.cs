@@ -418,7 +418,7 @@ namespace DOL.GS.Commands
             Dictionary<string, int> zoneXnumbers = new Dictionary<string, int>();
             foreach (GameClient c in clients)
             {
-                if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null)
+                if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null || c.Account.PrivLevel > 1 && c.Player.IsAnonymous )
                     continue;
 
                 int count = 1;

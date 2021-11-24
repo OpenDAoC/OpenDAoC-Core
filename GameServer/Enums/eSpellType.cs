@@ -198,6 +198,7 @@ namespace DOL.GS
         AllStatsBarrel = 192,
         DexterityConstitutionDebuff = 193,
         ComfortingFlames = 194,
+        AllRegenBuff = 195,
         Null = 200
 
 
