@@ -84,7 +84,10 @@ namespace DOL.GS
                     ad.Target.OnAttackedByEnemy(ad);
                     ad.Attacker.DealDamage(ad);
 
-                    if (--bleedValue <= 0 || !Owner.IsAlive)
+                    if(bleedValue > 1)
+                        bleedValue--;
+
+                    if (!Owner.IsAlive)
                     {
                         EffectService.RequestCancelEffect(this);
                     }
