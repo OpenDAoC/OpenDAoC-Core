@@ -115,8 +115,8 @@ namespace DOL.GS
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
                                         // Better Effect so disable the current Effect
-                                        if (spellEffect.SpellHandler.Spell.Value >= existingEffects[i].SpellHandler.Spell.Value ||
-                                            spellEffect.SpellHandler.Spell.Damage >= existingEffects[i].SpellHandler.Spell.Damage)
+                                        if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
+                                            spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
                                         {
                                             if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster ||
                                                 spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
