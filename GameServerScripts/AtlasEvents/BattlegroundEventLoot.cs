@@ -236,7 +236,7 @@ namespace DOL.GS.Scripts
                 for (int i = 0; i < shieldSize; i++)
                 {
 					GeneratedUniqueItem item = null;
-					item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, (eDamageType)i);
+					item = new GeneratedUniqueItem(realm, charClass, (byte)(player.Level + freeLootLevelOffset), type, invSlot, (eDamageType)i+1);
 					item.AllowAdd = true;
 					item.Color = (int)color;
 					item.IsTradable = false;
