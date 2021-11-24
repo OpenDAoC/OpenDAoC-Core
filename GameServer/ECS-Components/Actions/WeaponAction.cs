@@ -410,9 +410,10 @@ namespace DOL.GS
                 int numRegularDmgAddsApplied = 0;
                 foreach (var effect in dAEffects.Except(dmgAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
                 {
+                    var effectiveness = 1 + effect.SpellHandler.Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
                     if (effect.IsBuffActive)
                     {
-                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
+                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? effectiveness * 0.5 : effectiveness);
                         numRegularDmgAddsApplied++;
                     }
                 }
