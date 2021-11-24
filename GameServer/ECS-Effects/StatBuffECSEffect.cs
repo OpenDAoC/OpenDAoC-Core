@@ -8,7 +8,7 @@ using DOL.GS.PropertyCalc;
 namespace DOL.GS
 {
     public class StatBuffECSEffect : ECSGameSpellEffect
-    {
+    {        
         public StatBuffECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
@@ -122,7 +122,13 @@ namespace DOL.GS
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
                 //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
                 if (IsSubstracted)
-                    tblBonusCat[(int)Property] -= effectiveValue;
+                {
+                    if(Property == eProperty.ArmorFactor && tblBonusCat[(int)Property] - effectiveValue < 0)
+                        tblBonusCat[(int)Property] = 0;
+                    else
+                        tblBonusCat[(int)Property] -= effectiveValue;
+                }
+                    
                 else
                     tblBonusCat[(int)Property] += effectiveValue;
                 //Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
