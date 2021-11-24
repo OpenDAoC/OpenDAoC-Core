@@ -393,6 +393,13 @@ namespace DOL.GS.Spells
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
 			}
+			if(target is GameNPC && target.HealthPercent < 75)
+            {
+				MessageToCaster("Your target is enraged and resists the spell!", eChatType.CT_System);
+				SendEffectAnimation(target, 0, false, 0);
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				return;
+			}
 			//Do nothing when already mez, but inform caster
 			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             target.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
