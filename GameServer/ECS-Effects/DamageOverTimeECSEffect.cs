@@ -53,9 +53,18 @@ namespace DOL.GS
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {
+
+                    if (Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed)
+                        && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) > bleedHandler.Spell.Damage)
+                    {
+                        bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", eChatType.CT_SpellResisted);
+                        EffectService.RequestCancelEffect(this);
+                        return;
+                    }
+
                     if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
                     {
-                        Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage);  // + random max 25%
+                        Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage); 
                     }
 
                     bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
