@@ -187,6 +187,13 @@ namespace DOL.GS.Spells
 			double damage = Spell.Damage * target.AttackSpeed(target.AttackWeapon) * spread * 0.00001;
 			double damageResisted = damage * target.GetResist(Spell.DamageType) * -0.01;
 
+            if (!Spell.IsFocus)
+            {
+				var effectiveness = 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
+				damage *= effectiveness;
+			}
+			
+
 			if (Spell.Damage < 0)
 			{
 				damage = args.AttackData.Damage * Spell.Damage / -100.0;
