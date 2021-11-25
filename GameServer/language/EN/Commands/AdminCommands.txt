@@ -1,54 +1,104 @@
-﻿
+﻿# Admin (plvl 3) Commands
+AdminCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
+AdminCommands.Command.SyntaxCRUD:                           If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:
+
+# Command Headers/Dividers
+AdminCommands.Header.Syntax.Account:                    <----- '/account' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Benchmark:                  <----- '/benchmark' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Plvl:                       <----- '/plvl' Commands (plvl 3) ----->
+
+# '/account' Commands
+AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas player accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform most of these functions. Otherwise, use the following syntax:
+AdminCommands.Account.Comm.Desc:                       For more information regarding '/account' commands, see the GM Commands Library on the Atlas Developers forum. It is recommended that Atlas staff utilize the Web Admin tool ('https://admin.atlasfreeshard.com') to perform account management activities, such as resetting account passwords and deleting characters or accounts.
+AdminCommands.Account.Syntax.AccountName:               /account accountname <characterName>
+AdminCommands.Account.Usage.AccountName:			    Identifies the account associated with the character. This may be used on offline characters.
+AdminCommands.Account.Syntax.ChangePassword:            /account changepassword <accountName> <newPassword>
+AdminCommands.Account.Usage.ChangePassword:			    Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
+AdminCommands.Account.Syntax.Comm:                      /account command
+AdminCommands.Account.Usage.Comm:			            Provides information regarding command documentation.
+AdminCommands.Account.Syntax.Create:                    /account create <accountName> <password>
+AdminCommands.Account.Usage.Create:					    Creates a new account with the specified login credentials.
+AdminCommands.Account.Syntax.Delete:                    /account delete <accountName>
+AdminCommands.Account.Usage.Delete:					    Deletes the specified account, along with any associated characters.
+AdminCommands.Account.Syntax.DeleteChar:                /account deletecharacter <characterName>
+AdminCommands.Account.Usage.DeleteChar:				    Deletes the matching character from its associated account.
+AdminCommands.Account.Syntax.MoveChar:                  /account movecharacter <characterName> <newAccount>
+AdminCommands.Account.Usage.MoveChar:				    Moves the specified character to the first available slot of the same realm on the destination account.
+AdminCommands.Account.Syntax.Status:                    /account status <accountName> <status>
+AdminCommands.Account.Usage.Status:					    Sets an account's status (between '0' and '256'), which is used to define custom behaviors.
+AdminCommands.Account.Syntax.Unban:                     /account unban <accountName>
+AdminCommands.Account.Usage.Unban:					    Removes an account's ban state, if one is active.
+AdminCommands.Account.Msg.AccNameForChar:				{0} is associated with the account '{1}'.
+AdminCommands.Account.Msg.AccountBanNotFound:			The account '{0}' is not currently banned!
+AdminCommands.Account.Msg.AccountCreated:				You created the account successfully! Remember to write down the login credentials for future use.
+AdminCommands.Account.Msg.AccountDeleted:				You successfully deleted the account '{0}'!
+AdminCommands.Account.Msg.AlreadyRegistered:            An account already exists with that name! Try again with a different value.
+AdminCommands.Account.Msg.AccountNotFound:				No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
+AdminCommands.Account.Msg.AccountUnbanned:              You've successfully removed the ban from the account '{0}'!
+AdminCommands.Account.Msg.CharacterDeleted:				You successfully deleted the character {0}!
+AdminCommands.Account.Msg.CharacterMovedToAccount:		You successfully transferred ownership of {0} to account '{1}'!
+AdminCommands.Account.Msg.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their first name correctly.
+AdminCommands.Account.Msg.CharNotFromValidRealm:		That character is not a member of a valid realm and cannot be moved to the destination account!
+AdminCommands.Account.Msg.InvalidNamePass:              A new account could not be created! The account name and password must both be a minimum of 4 characters in length. Additionally, the account name may not include special characters (e.g., !@#.?).
+AdminCommands.Account.Msg.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
+AdminCommands.Account.Msg.PasswordChanged:              You successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
+AdminCommands.Account.Msg.PasswordChars:                A new password could not be set because the expected value was too short. Enter a password at least 4 characters long for security purposes.
+AdminCommands.Account.Msg.SetStatus:                    You have changed the status for account '{0}' from {1} to {2}!
+AdminCommands.Account.Msg.SpecialChars:                 A new account could not be created because special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
+AdminCommands.Account.Msg.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
+
+# '/benchmark' Commands
+AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
+AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
+AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) it takes to list 1000 cached skills. This does not include spellcasting specializations.
+AdminCommands.Benchmark.Syntax.Listspells:              /benchmark listspells
+AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) it takes to list 1000 cached spells.
+AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list 10000 usable skills.
+AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list 10000 usable spells.
+
+# '/plvl' Commands
+AdminCommands.Plvl.Description:                         Alters a player's character or account privilege level (plvl). With these commands, characters or accounts may be turned into Admins, GMs, and regular players from in-game. These commands are typically used for testing purposes.
+AdminCommands.Plvl.Syntax.Comm:                         /plvl command
+AdminCommands.Plvl.Usage.Comm:                          Provides information regarding command documentation.
+AdminCommands.Plvl.Syntax.Plvl:                         /plvl <newPlvl> <playerName>
+AdminCommands.Plvl.Usage.Plvl:                          Sets the privilege level for a targeted player's account. The player will then have access to all commands associated with that privilege level. Use '/plvl single' or '/plvl singleaccount' to grant access to specific commands as a Player.
+AdminCommands.Plvl.Syntax.Remove:                       /plvl remove <commandType> <playerName>
+AdminCommands.Plvl.Usage.Remove:                        Removes a specific permission previously granted to a player using the '/plvl single' command.
+AdminCommands.Plvl.Syntax.Removeaccount:                /plvl removeaccount <commandType> <playerName>
+AdminCommands.Plvl.Usage.Removeaccount:                 Removes a specific permission previously granted to a player's account using the '/plvl singleaccount' command.
+AdminCommands.Plvl.Syntax.Single:                       /plvl single <commandType> <playerName>
+AdminCommands.Plvl.Usage.Single:                        Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+AdminCommands.Plvl.Syntax.Account:                      /plvl singleaccount <commandType> <playerName>
+AdminCommands.Plvl.Usage.Account:                       Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+AdminCommands.Plvl.Comm.Intro:                          The '/plvl' command allows you to control a player's privilege level and the commands they can access. The values used for privilege levels are as follows:
+AdminCommands.Plvl.Comm.1:                              1 = Player
+AdminCommands.Plvl.Comm.2:                              2 = Gamemaster (GM)
+AdminCommands.Plvl.Comm.3:                              3 = Admin
+AdminCommands.Plvl.Comm.Desc:                           For more information regarding '/plvl' commands, see page 22 of the GM Commands Library on the Atlas Developers forum.
+AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
+AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
+AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
+AdminCommands.Plvl.Msg.DelSinglePerm:                   {0} has removed your access to the '/{1}' command! You may no longer use this command type.
+AdminCommands.Plvl.Msg.AddAcct:                         You've granted {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.GaveAcct:                        {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
+AdminCommands.Plvl.Msg.RevokeAcctPerm:                  You have revoked {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.DelAcctPerm:                     {0} has removed your account's access to the '/{1}' command! You may no longer use this command type as a Player.
+AdminCommands.Plvl.Msg.YourPlvlSet:                     {0} has changed your privilege level to {1}!
+AdminCommands.Plvl.Msg.PlvlSet:                         You have changed {0}'s privilege level to {1}!
+AdminCommands.Plvl.Err.NoPlayerExists:                  No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online.
+AdminCommands.Plvl.Err.NoPlayerName:                    You must specify a player name for '/plvl' commands!
+AdminCommands.Plvl.Err.NoPermFound:                     No permission has been granted to {0} for the '/{1}' command.
+AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found for {0}'s account and the '/{1}" command!
+AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
+
 # /serverproperties Command
 AdminCommands.ServerProperties.Description:			Reloads server properties from the database
 AdminCommands.ServerProperties.Usage:				/serverproperties
 AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
 AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
 
-
-# /plvl Command
-AdminCommands.plvl.Description:						Change privilege level and add single permission to player
-AdminCommands.plvl.Usage:							/plvl <newPlvl> [PlayerName]
-AdminCommands.plvl.Usage.Single:					/plvl single <command> [PlayerName]
-AdminCommands.plvl.Usage.SingleAccount:				/plvl singleaccount <command> [AccountName]
-AdminCommands.plvl.Usage.Remove:					/plvl remove <command> [PlayerName]
-AdminCommands.plvl.Usage.RemoveAccount:				/plvl removeaccount <command> [AccountName]
-AdminCommands.plvl.NoSelectPlayer:					You must select a player to changes permission on him.
-AdminCommands.plvl.AddedSinglePermission:			You add the single permission to {0} for {1} command.
-AdminCommands.plvl.AddedSingleAccountPermission:	You add the single permission to account {0} for {1} command.
-AdminCommands.plvl.RemoveSinglePermission:			You removed the single permission of {0} for {1} command.
-AdminCommands.plvl.RemoveSingleAccountPermission:	You removed the single permission of account {0} for {1} command.
-AdminCommands.plvl.NoPermissionForCommand:			There is no permission of {0} for {1} command.
-AdminCommands.plvl.YourPlvlHasBeenSetted:			Your privilege level has been set to {0}.
-AdminCommands.plvl.PlayerPlvlHasBeenSetted:			{0} privilege level has been set to {1}.
-
 # /code Command
 AdminCommands.Code.Description:						Executes custom code!
 AdminCommands.Code.Usage:							/code <codesnippet>
 AdminCommands.Code.ErrorCompiling:					Error Compiling Expression:
 AdminCommands.Code.CodeExecuted:					Code executed...
-
-
-# /account Command
-AdminCommands.Account.Description:					Account modification command
-AdminCommands.Account.Usage.Create:					/account create <AccountName> <Password>
-AdminCommands.Account.Usage.ChangePassword:			/account changepassword <AccountName> <NewPassword>
-AdminCommands.Account.Usage.Delete:					/account delete <AccountName>
-AdminCommands.Account.Usage.DeleteChar:				/account deletecharacter <CharacterName>
-AdminCommands.Account.Usage.MoveChar:				/account movecharacter <CharacterName> <NewAccountName>
-AdminCommands.Account.Usage.Status:					/account status <AccountName> <Level>
-AdminCommands.Account.Usage.UnBan:					/account unban <AccountName>
-AdminCommands.Account.Usage.AccountName:			/account accountname <CharacterName>
-AdminCommands.Account.AccountNotFound:				Account {0} not found!
-AdminCommands.Account.AccountDeleted:				Account {0} deleted!
-AdminCommands.Account.CharacterNotFound:			Character {0} not found!
-AdminCommands.Account.CharacterDeleted:				Character {0} deleted!
-AdminCommands.Account.CharNotFromValidRealm:		The character is not from a valid realm!
-AdminCommands.Account.AccountHasNoFreeSlots:		Account {0} has no free character slots for this realm anymore!
-AdminCommands.Account.CharacterMovedToAccount:		Character {0} moved to Account {1}!
-AdminCommands.Account.InvalidAccountName:			Invalid account name.
-AdminCommands.Account.InvalidAccountNameOrPassword:	Account name and password must be at least 4 letters.
-AdminCommands.Account.AccountNameAlreadyRegistered:	This account name is already registered.
-AdminCommands.Account.AccountCreated:				Account created!
-AdminCommands.Account.AccNameForChar:				Account name for character {0} is: {1}
-
