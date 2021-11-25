@@ -17,11 +17,6 @@
  *
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -79,7 +74,76 @@ namespace DOL.GS
 
 			target.Out.SendMessage(translatedMsg, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
 		}
+		
+		/// <summary>
+		/// Used to send translated messages containing slash command descriptions and related information
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the message (typically "client")</param>
+		/// <param name="translationID">The translation string associated with the message (e.g., "AdminCommands.Account.Usage.Create")</param>
+		/// <param name="args">Any arguments to include in the message in place of values like "{0}" (or else use "null")</param>
+		public static void SendCommMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send in-line messages containing slash command descriptions and related information
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the message (typically "client")</param>
+		/// <param name="message">The message itself (translation IDs recommended instead)</param>
+		public static void SendCommMessage(GameClient target, string message)
+		{
+			target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated messages containing slash command syntax (e.g., /account accountname)
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the command type list (typically "client")</param>
+		/// <param name="translationID">The translation string associated with the message (e.g., "AdminCommands.Account.Syntax.Create")</param>
+		/// <param name="args">Any arguments to include in the message in place of values like "{0}" (or else use "null")</param>
+		public static void SendSyntaxMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send in-line messages containing slash command syntax (e.g., '/account accountname')
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the command type list (typically "client")</param>
+		/// <param name="message">The message itself (translation IDs recommended instead)</param>
+		public static void SendSyntaxMessage(GameClient target, string message)
+		{
+			target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated header/separator at head of command list (e.g., ----- '/account' Commands (plvl 3) -----)
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the command type list (typically "client")</param>
+		/// <param name="translationID">The translation string associated with the message (e.g., "AdminCommands.Header.Syntax.Account")</param>
+		/// <param name="args">Any arguments to include in the message (typically "null")</param>
+		public static void SendHeaderMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
 
+		/// <summary>
+		/// Used to send in-line header/separator at head of command list (e.g., ----- '/account' Commands (plvl 3) -----)
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the command type list (typically "client")</param>
+		/// <param name="message">The message itself (translation IDs recommended instead)</param>
+		public static void SendHeaderMessage(GameClient target, string message)
+		{
+			target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
+		
 		public static void SendHelpMessage(GamePlayer target, string message)
 		{
 			target.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
@@ -102,6 +166,19 @@ namespace DOL.GS
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
 			target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated error/alert messages
+		/// </summary>
+		/// <param name="target">The player encountering the error/alert (typically "client")</param>
+		/// <param name="translationID">The translation string for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any arguments to display in the message (or "null")</param>
+		public static void SendErrorMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendErrorMessage(GamePlayer target, string message)
