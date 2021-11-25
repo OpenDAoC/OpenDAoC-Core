@@ -135,21 +135,3 @@ AdminCommands.ServerProperties.Description:			Reloads server properties from the
 AdminCommands.ServerProperties.Usage:				/serverproperties
 AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
 AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
-
-# Replaced Commands
-// AdminCommands.Account.Description:					Account modification command
-// AdminCommands.Account.Usage.Create:					/account create <AccountName> <Password>
-// AdminCommands.Account.Usage.ChangePassword:			/account changepassword <AccountName> <NewPassword>
-// AdminCommands.Account.Usage.Delete:					/account delete <AccountName>
-// AdminCommands.Account.Usage.DeleteChar:				/account deletecharacter <CharacterName>
-// AdminCommands.Account.Usage.MoveChar:				/account movecharacter <CharacterName> <NewAccountName>
-// AdminCommands.Account.Usage.Status:					/account status <AccountName> <Level>
-// AdminCommands.Account.Usage.UnBan:					/account unban <AccountName>
-// AdminCommands.Account.Usage.AccountName:			    /account accountname <CharacterName>
-// AdminCommands.Account.InvalidAccountNameOrPassword:	Account name and password must be at least 4 letters.
-// AdminCommands.plvl.Description:						Change privilege level and add single permission to player
-// AdminCommands.plvl.Usage:							/plvl <newPlvl> [PlayerName]
-// AdminCommands.plvl.Usage.Single:					    /plvl single <command> [PlayerName]
-// AdminCommands.plvl.Usage.SingleAccount:				/plvl singleaccount <command> [AccountName]
-// AdminCommands.plvl.Usage.Remove:					    /plvl remove <command> [PlayerName]
-// AdminCommands.plvl.Usage.RemoveAccount:				/plvl removeaccount <command> [AccountName]
