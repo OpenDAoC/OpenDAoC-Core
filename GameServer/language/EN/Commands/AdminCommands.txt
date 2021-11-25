@@ -83,6 +83,8 @@ AdminCommands.Code.Usage:							/code <codesnippet>
 AdminCommands.Code.ErrorCompiling:					Error Compiling Expression:
 AdminCommands.Code.CodeExecuted:					Code executed...
 
+# '/freeze' Commands
+
 # '/plvl' Commands
 AdminCommands.Plvl.Description:                         Alters a player's character or account privilege level (plvl). With these commands, characters or accounts may be turned into Admins, GMs, and regular players from in-game. These commands are typically used for testing purposes.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
@@ -128,6 +130,10 @@ AdminCommands.plvl.NoPermissionForCommand:			    There is no permission of {0} f
 AdminCommands.plvl.YourPlvlHasBeenSetted:			    Your privilege level has been set to {0}.
 AdminCommands.plvl.PlayerPlvlHasBeenSetted:			    {0} privilege level has been set to {1}.
 
+# '/refresh' Commands
+
+# '/reload' Commands
+
 # '/serverproperties' Commands
 
 # Old /serverproperties Command
@@ -135,3 +141,5 @@ AdminCommands.ServerProperties.Description:			Reloads server properties from the
 AdminCommands.ServerProperties.Usage:				/serverproperties
 AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
 AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
+
+# '/shutdown' Commands
