@@ -70,11 +70,11 @@ AdminCommands.Account.AccNameForChar:				    Account name for character {0} is: 
 # '/benchmark' Commands
 AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
 AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
-AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) it takes to list 1000 cached skills. This does not include spellcasting specializations.
+AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list 1000 cached skills. This does not include spellcasting specializations.
 AdminCommands.Benchmark.Syntax.Listspells:              /benchmark listspells
-AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) it takes to list 1000 cached spells.
-AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list 10000 usable skills.
-AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list 10000 usable spells.
+AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) the system takes to list 1000 cached spells.
+AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list {1} usable skills.
+AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
 
 # '/code' Commands
 
