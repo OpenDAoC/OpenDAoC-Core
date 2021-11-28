@@ -14,15 +14,17 @@ AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverpropertie
 AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
 # '/account' Commands
+AdminCommands.Account.Comm.Header.WebAdmin:                ----- Web Admin Tool -----
+AdminCommands.Account.Comm.Header.MoreInfo:                ----- Additional Info -----
 AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
-AdminCommands.Account.Comm.Desc1:                       For more information regarding '/account' commands, see page 1 of the GM Commands Library on the Atlas Developers forum (https://www.atlasfreeshard.com/forums/development/).
-AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool ('https://admin.atlasfreeshard.com') to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
+AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
+AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
 AdminCommands.Account.Syntax.AccountName:               /account accountname <characterName>
 AdminCommands.Account.Usage.AccountName:			    Identifies the account associated with the character. This may be used on offline characters.
 AdminCommands.Account.Syntax.ChangePassword:            /account changepassword <accountName> <newPassword>
 AdminCommands.Account.Usage.ChangePassword:			    Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
 AdminCommands.Account.Syntax.Comm:                      /account command
-AdminCommands.Account.Usage.Comm:			            Provides additional information regarding the '/account' commands.
+AdminCommands.Account.Usage.Comm:			            Provides additional information regarding the '/account' command type.
 AdminCommands.Account.Syntax.Create:                    /account create <accountName> <password>
 AdminCommands.Account.Usage.Create:					    Creates a new account with the specified login credentials.
 AdminCommands.Account.Syntax.Delete:                    /account delete <accountName>
@@ -87,39 +89,46 @@ AdminCommands.Code.CodeExecuted:					Code executed...
 # '/freeze' Commands
 
 # '/plvl' Commands
-AdminCommands.Plvl.Description:                         Alters a player's character or account privilege level (plvl). With these commands, characters or accounts may be turned into Admins, GMs, and regular players from in-game. These commands are typically used for testing purposes.
+AdminCommands.Plvl.Comm.Header.Accepted:                ----- Privilege Levels -----
+AdminCommands.Plvl.Comm.Header.MoreInfo:                ----- Additional Info -----
+AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
-AdminCommands.Plvl.Usage.Comm:                          Provides information regarding command documentation.
+AdminCommands.Plvl.Usage.Comm:                          Provides additional information regarding the '/plvl' command type.
 AdminCommands.Plvl.Syntax.Plvl:                         /plvl <newPlvl> <playerName>
-AdminCommands.Plvl.Usage.Plvl:                          Sets the privilege level for a targeted player's account. The player will then have access to all commands associated with that privilege level. Use '/plvl single' or '/plvl singleaccount' to grant access to specific commands as a Player.
+AdminCommands.Plvl.Usage.Plvl:                          Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player.
 AdminCommands.Plvl.Syntax.Remove:                       /plvl remove <commandType> <playerName>
-AdminCommands.Plvl.Usage.Remove:                        Removes a specific permission previously granted to a player using the '/plvl single' command.
-AdminCommands.Plvl.Syntax.Removeaccount:                /plvl removeaccount <commandType> <playerName>
-AdminCommands.Plvl.Usage.Removeaccount:                 Removes a specific permission previously granted to a player's account using the '/plvl singleaccount' command.
+AdminCommands.Plvl.Usage.Remove:                        Removes a specific command type previously granted to a player using '/plvl single'.
+AdminCommands.Plvl.Syntax.AcctRemove:                   /plvl removeaccount <commandType> <playerName>
+AdminCommands.Plvl.Usage.AcctRemove:                    Removes a specific command type previously granted to a player's account using '/plvl singleaccount'.
 AdminCommands.Plvl.Syntax.Single:                       /plvl single <commandType> <playerName>
 AdminCommands.Plvl.Usage.Single:                        Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
-AdminCommands.Plvl.Syntax.Account:                      /plvl singleaccount <commandType> <playerName>
-AdminCommands.Plvl.Usage.Account:                       Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
-AdminCommands.Plvl.Comm.Intro:                          The '/plvl' command allows you to control a player's privilege level and the commands they can access. The values used for privilege levels are as follows:
+AdminCommands.Plvl.Syntax.AcctSingle:                      /plvl singleaccount <commandType> <playerName>
+AdminCommands.Plvl.Usage.AcctSingle:                       Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+AdminCommands.Plvl.Comm.Intro:                          The '/plvl' command type allows you to control an account's privilege level and the command types its characters may access when they are a Player. The values used for each plvl are:
 AdminCommands.Plvl.Comm.1:                              1 = Player
+AdminCommands.Plvl.Comm.Usage1:                         You can be attacked by mobs or other players and take falling damage. Players only have access to basic slash commands (such as '/bg', '/gc', '/cg', etc.).
 AdminCommands.Plvl.Comm.2:                              2 = Gamemaster (GM)
+AdminCommands.Plvl.Comm.Usage2:                         You cannot be attacked by mobs or other players or take falling damage. GMs have access to MOST special slash commands (except those requiring ePrivLevel.Admin--such as '/plvl', '/account', '/shutdown', etc.).
 AdminCommands.Plvl.Comm.3:                              3 = Admin
-AdminCommands.Plvl.Comm.Desc:                           For more information regarding '/plvl' commands, see page 22 of the GM Commands Library on the Atlas Developers forum.
+AdminCommands.Plvl.Comm.Usage3:                         You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
+AdminCommands.Plvl.Comm.UseSingleAcct:                  These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
+AdminCommands.Plvl.Comm.Desc:                           For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum.
 AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
 AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
-AdminCommands.Plvl.Msg.DelSinglePerm:                   {0} has removed your access to the '/{1}' command! You may no longer use this command type.
-AdminCommands.Plvl.Msg.AddAcct:                         You've granted {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.DelSinglePerm:                   {0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level.
+AdminCommands.Plvl.Msg.AddAcct:                         You have granted {0}'s account access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveAcct:                        {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
 AdminCommands.Plvl.Msg.RevokeAcctPerm:                  You have revoked {0}'s account access to the '/{1}' command!
-AdminCommands.Plvl.Msg.DelAcctPerm:                     {0} has removed your account's access to the '/{1}' command! You may no longer use this command type as a Player.
-AdminCommands.Plvl.Msg.YourPlvlSet:                     {0} has changed your privilege level to {1}!
-AdminCommands.Plvl.Msg.PlvlSet:                         You have changed {0}'s privilege level to {1}!
+AdminCommands.Plvl.Msg.DelAcctPerm:                     {0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level.
+AdminCommands.Plvl.Msg.YourPlvlSet:                     {0} has changed your account's privilege level to {1}!
+AdminCommands.Plvl.Msg.PlvlSet:                         You have changed {0}'s account privilege level to {1}!
 AdminCommands.Plvl.Err.NoPlayerExists:                  No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online.
 AdminCommands.Plvl.Err.NoPlayerName:                    You must specify a player name for '/plvl' commands!
 AdminCommands.Plvl.Err.NoPermFound:                     No permission has been granted to {0} for the '/{1}' command.
 AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found for {0}'s account and the '/{1}" command!
 AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
+AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
 
 # Old /plvl Commands
 AdminCommands.plvl.NoSelectPlayer:					    You must select a player to changes permission on him.

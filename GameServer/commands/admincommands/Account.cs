@@ -54,7 +54,7 @@ namespace DOL.GS.Commands
 		"AdminCommands.Account.Description",
 		// Syntax: /account command
 		"AdminCommands.Account.Syntax.Comm",
-		// Message: "Provides additional information regarding the '/account' commands."
+		// Message: "Provides additional information regarding the '/account' command type."
 		"AdminCommands.Account.Usage.Comm",
 		// Syntax: /account accountname <characterName>
 		"AdminCommands.Account.Syntax.AccountName",
@@ -591,7 +591,7 @@ namespace DOL.GS.Commands
                 #endregion Account Name
 				
 				#region Command
-				// Provides information about accessing the GM Command Library for more information about the '/account' commands
+				// Provides information about accessing the GM Command Library for more information about the '/account' command type
 				// Syntax: /account command
 				// Args:   /account args[1]
 				// See the comments above 'using' about SendMessage translation IDs
@@ -601,14 +601,27 @@ namespace DOL.GS.Commands
 					{
 						" ",
 						" ",
-						// Message: "For more information regarding '/account' commands, see page 1 of the GM Commands Library on the Atlas Developers forum (https://www.atlasfreeshard.com/forums/development/)."
+						// Message: "----- Web Admin Tool -----"
+						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Header.WebAdmin"),
+						" ",
+						// Message: "It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts."
+						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc2"),
+							" ",
+						// Message: "https://admin.atlasfreeshard.com"
+						LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.Atlas.WebAdminTool"),
+						" ",
+						" ",
+						// Message: "----- Additional Info -----"
+						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Header.MoreInfo"),
+						" ",
+						// Message: "For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum."
 						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc1"),
 						" ",
-						" ",
-						// Message: "It is recommended that Atlas staff utilize the Web Admin tool ('https://admin.atlasfreeshard.com') to perform account management activities where possible, such as resetting passwords and deleting characters or accounts."
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc2")
+						// Message: "https://www.atlasfreeshard.com/threads/gm-commands-library.408/"
+						LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.CommLibrary.Main")
 					};
 
+					// Title of dialog
 					client.Out.SendCustomTextWindow("GM Commands Library", info);
 					return;
 				}

@@ -1,3 +1,12 @@
+# Notes
+AllCommands.Header.Note.Divider:                    --- NOTE: ---
+AllCommands.Header.Note.Dashes:                     --------------
+
+# URLs
+Hyperlinks.Atlas.WebAdminTool:                      https://admin.atlasfreeshard.com
+Hyperlinks.CommLibrary.Main:                        https://www.atlasfreeshard.com/threads/gm-commands-library.408/
+Hyperlinks.CommLibrary.Plvl:                        https://www.atlasfreeshard.com/threads/gm-commands-library.408/post-4379
+
 # /FreeLevel
 PLCommands.FreeLevel.AboveMaximumLevel:	You are above the maximum level to obtain a free level.
 PLCommands.FreeLevel.EligibleFreeLevel:	You are eligible for a free level! Click on your trainer to receive it (or type /freelevel decline to discard your free level).
