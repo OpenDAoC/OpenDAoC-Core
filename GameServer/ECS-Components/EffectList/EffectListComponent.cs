@@ -193,75 +193,60 @@ namespace DOL.GS
 
         public List<ECSGameEffect> GetAllEffects()
         {
-            lock (_effectsLock)
-            {
-                var temp = new List<ECSGameEffect>();
-                foreach (var effects in Effects.Values)
-                    foreach (var effect in effects)
-                        if (effect.EffectType != eEffect.Pulse)
-                            temp.Add(effect);
+            var temp = new List<ECSGameEffect>();
+            foreach (var effects in Effects.Values)
+                foreach (var effect in effects)
+                    if (effect.EffectType != eEffect.Pulse)
+                        temp.Add(effect);
 
-                return temp.OrderBy(e => e.StartTick).ToList();
-            }
+            return temp.OrderBy(e => e.StartTick).ToList();
         }
 
         public List<IConcentrationEffect> GetConcentrationEffects()
         {
-            lock (_effectsLock)
-            {
-                var temp = new List<IConcentrationEffect>();
-                foreach (var effects in Effects.Values)
-                    foreach (var effect in effects)
-                        if (effect is IConcentrationEffect)
-                            temp.Add(effect as IConcentrationEffect);
+            var temp = new List<IConcentrationEffect>();
+            foreach (var effects in Effects.Values)
+                foreach (var effect in effects)
+                    if (effect is IConcentrationEffect)
+                        temp.Add(effect as IConcentrationEffect);
 
-                return temp;
-            }
+            return temp;
         }
 
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType = eEffect.Unknown)
         {
-            lock (_effectsLock)
-            {
-                var temp = new List<ECSGameSpellEffect>();
-                foreach (var effects in Effects.Values)
-                    foreach (var effect in effects)
-                        if (effect is ECSGameSpellEffect)
+            var temp = new List<ECSGameSpellEffect>();
+            foreach (var effects in Effects.Values)
+                foreach (var effect in effects)
+                    if (effect is ECSGameSpellEffect)
+                    {
+                        if (effectType != eEffect.Unknown)
                         {
-                            if (effectType != eEffect.Unknown)
-                            {
-                                if (effect.EffectType == effectType)
-                                    temp.Add(effect as ECSGameSpellEffect);
-                            }
-                            else
+                            if (effect.EffectType == effectType)
                                 temp.Add(effect as ECSGameSpellEffect);
                         }
+                        else
+                            temp.Add(effect as ECSGameSpellEffect);
+                    }
 
-                return temp.OrderBy(e => e.StartTick).ToList();
-            }
+            return temp.OrderBy(e => e.StartTick).ToList();
         }
 
         public List<ECSGameAbilityEffect> GetAbilityEffects()
         {
-            lock (_effectsLock)
-            {
-                var temp = new List<ECSGameAbilityEffect>();
-                foreach (var effects in Effects.Values)
-                    foreach (var effect in effects)
-                        if (effect is ECSGameAbilityEffect)
-                            temp.Add(effect as ECSGameAbilityEffect);
+            var temp = new List<ECSGameAbilityEffect>();
+            foreach (var effects in Effects.Values)
+                foreach (var effect in effects)
+                    if (effect is ECSGameAbilityEffect)
+                        temp.Add(effect as ECSGameAbilityEffect);
 
-                return temp.OrderBy(e => e.StartTick).ToList();
-            }
+            return temp.OrderBy(e => e.StartTick).ToList();
         }
 
         public ECSGameEffect TryGetEffectFromEffectId(int effectId)
         {
-            lock (_effectsLock)
-            {
-                EffectIdToEffect.TryGetValue(effectId, out var effect);
-                return effect;
-            }
+            EffectIdToEffect.TryGetValue(effectId, out var effect);
+            return effect;
         }
 
         public bool RemoveEffect(ECSGameEffect effect)
@@ -307,35 +292,31 @@ namespace DOL.GS
 
         public bool ContainsEffectForEffectType(eEffect effectType)
         {
-            lock (_effectsLock)
+            try
             {
-                try
+                if (Effects.ContainsKey(effectType))
                 {
-                    if (Effects.ContainsKey(effectType))
-                    {
-                        return true;
-                    } else
-                    {
-                        return false;
-                    }
-                } catch (Exception e)
+                    return true;
+                } 
+                else
                 {
-                    //Console.WriteLine($"Error attempting to check effect type");
                     return false;
                 }
+            } 
+            catch (Exception e)
+            {
+                //Console.WriteLine($"Error attempting to check effect type");
+                return false;
             }
         }
 
         public void CancelAll()
         {
-            lock (_effectsLock)
+            foreach (var key in Effects)
             {
-                foreach (var key in Effects)
+                foreach (var effect in key.Value)
                 {
-                    foreach (var effect in key.Value)
-                    {
-                        EffectService.RequestCancelEffect(effect);
-                    }
+                    EffectService.RequestCancelEffect(effect);
                 }
             }
         }

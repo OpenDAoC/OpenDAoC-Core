@@ -33,8 +33,6 @@ namespace DOL.GS
         {
             if (living?.effectListComponent?.Effects.Count > 0)
             {
-                lock (living.effectListComponent._effectsLock)
-                {
                     foreach (var effects in living.effectListComponent.Effects.Values.ToList())
                     {
                         for (int j = 0; j < effects.Count; j++)
@@ -174,7 +172,6 @@ namespace DOL.GS
                             }
                         }
                     }
-                }
             }
         }
 
