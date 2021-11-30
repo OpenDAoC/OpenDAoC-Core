@@ -14,8 +14,6 @@ AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverpropertie
 AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
 # '/account' Commands
-AdminCommands.Account.Comm.Header.WebAdmin:                ----- Web Admin Tool -----
-AdminCommands.Account.Comm.Header.MoreInfo:                ----- Additional Info -----
 AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
 AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
 AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
@@ -38,43 +36,30 @@ AdminCommands.Account.Usage.Status:					    Sets an account's status (between '0
 AdminCommands.Account.Syntax.Unban:                     /account unban <accountName>
 AdminCommands.Account.Usage.Unban:					    Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip'), but will remove '/ban both' and '/ban account' records.
 AdminCommands.Account.Msg.AccNameForChar:				{0} is associated with the account '{1}'.
-AdminCommands.Account.Msg.AccountBanNotFound:			The account '{0}' is not currently banned!
+AdminCommands.Account.Err.AccountBanNotFound:			The account '{0}' is not currently banned!
 AdminCommands.Account.Msg.AccountCreated:				You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
 AdminCommands.Account.Msg.AccountDeleted:				You have successfully deleted the account '{0}'!
-AdminCommands.Account.Msg.AlreadyRegistered:            An account already exists with the name '{0}'! Try again with a different value.
-AdminCommands.Account.Msg.AccountNotFound:				No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
+AdminCommands.Account.Err.AlreadyRegistered:            An account already exists with the name '{0}'! Try again with a different value.
+AdminCommands.Account.Err.AccountNotFound:				No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
 AdminCommands.Account.Msg.AccountUnbanned:              You have successfully removed the ban from the account '{0}'!
 AdminCommands.Account.Msg.CharacterDeleted:				You have successfully deleted the character {0}!
 AdminCommands.Account.Msg.CharacterMovedToAccount:		You have successfully transferred ownership of {0} to account '{1}'!
-AdminCommands.Account.Msg.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-AdminCommands.Account.Msg.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue.
-AdminCommands.Account.Msg.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
-AdminCommands.Account.Msg.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
+AdminCommands.Account.Err.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
+AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue.
+AdminCommands.Account.Err.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
+AdminCommands.Account.Err.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
 AdminCommands.Account.Msg.PasswordChanged:              You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
-AdminCommands.Account.Msg.PasswordChars:                A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
+AdminCommands.Account.Err.PasswordChars:                A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
 AdminCommands.Account.Msg.SetStatus:                    You have changed the status for account '{0}' from {1} to {2}!
-AdminCommands.Account.Msg.SpecialChars:                 A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
-AdminCommands.Account.Msg.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
-
-# Old /account Commands
-AdminCommands.Account.AccountNotFound:				    Account {0} not found!
-AdminCommands.Account.AccountDeleted:				    Account {0} deleted!
-AdminCommands.Account.CharacterNotFound:			    Character {0} not found!
-AdminCommands.Account.CharacterDeleted:				    Character {0} deleted!
-AdminCommands.Account.CharNotFromValidRealm:		    The character is not from a valid realm!
-AdminCommands.Account.AccountHasNoFreeSlots:		    Account {0} has no free character slots for this realm anymore!
-AdminCommands.Account.CharacterMovedToAccount:		    Character {0} moved to Account {1}!
-AdminCommands.Account.InvalidAccountName:			    Invalid account name.
-AdminCommands.Account.AccountNameAlreadyRegistered:	    This account name is already registered.
-AdminCommands.Account.AccountCreated:				    Account created!
-AdminCommands.Account.AccNameForChar:				    Account name for character {0} is: {1}
+AdminCommands.Account.Err.SpecialChars:                 A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
+AdminCommands.Account.Err.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
 
 # '/benchmark' Commands
 AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
 AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
-AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list 1000 cached skills. This does not include spellcasting specializations.
+AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations.
 AdminCommands.Benchmark.Syntax.Listspells:              /benchmark listspells
-AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) the system takes to list 1000 cached spells.
+AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells.
 AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list {1} usable skills.
 AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
 
@@ -129,16 +114,6 @@ AdminCommands.Plvl.Err.NoPermFound:                     No permission has been g
 AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found for {0}'s account and the '/{1}" command!
 AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
 AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
-
-# Old /plvl Commands
-AdminCommands.plvl.NoSelectPlayer:					    You must select a player to changes permission on him.
-AdminCommands.plvl.AddedSinglePermission:			    You add the single permission to {0} for {1} command.
-AdminCommands.plvl.AddedSingleAccountPermission:	    You add the single permission to account {0} for {1} command.
-AdminCommands.plvl.RemoveSinglePermission:			    You removed the single permission of {0} for {1} command.
-AdminCommands.plvl.RemoveSingleAccountPermission:	    You removed the single permission of account {0} for {1} command.
-AdminCommands.plvl.NoPermissionForCommand:			    There is no permission of {0} for {1} command.
-AdminCommands.plvl.YourPlvlHasBeenSetted:			    Your privilege level has been set to {0}.
-AdminCommands.plvl.PlayerPlvlHasBeenSetted:			    {0} privilege level has been set to {1}.
 
 # '/refresh' Commands
 

@@ -448,7 +448,7 @@ namespace DOL.GS.Commands
 						var info = new List<string>();
 						info.Add(" ");
 						// Message: "----- Privilege Levels -----"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Header.Accepted"));
+						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.PrivLevels"));
 						info.Add(" ");
 						// Message: "The '/plvl' command type allows you to control an account's privilege level and the command types its characters may access when they are a Player. The values used for each plvl are:"
 						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Intro"));
@@ -477,7 +477,7 @@ namespace DOL.GS.Commands
 						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AllCommands.Header.Note.Dashes"));
 						info.Add(" ");
 						// Message: "----- Additional Info -----"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Header.MoreInfo"));
+						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"));
 						info.Add(" ");
 						// Message: "For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum."
 						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Desc"));

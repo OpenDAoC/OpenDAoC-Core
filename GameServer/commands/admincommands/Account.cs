@@ -133,7 +133,7 @@ namespace DOL.GS.Commands
 	                        if (accountname.Length < 4 || password.Length < 4)
 	                        {
 		                        // Message: "A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length."
-		                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.InvalidNamePass", null);
+		                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.InvalidNamePass", null);
 	                            return;
 	                        }
 	                        
@@ -142,7 +142,7 @@ namespace DOL.GS.Commands
 	                        if (account != null)
 	                        {
 		                        // Message: "An account already exists with the name '{0}'! Try again with a different value."
-		                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AlreadyRegistered", accountname);
+		                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AlreadyRegistered", accountname);
 	                            return;
 	                        }
 	                        
@@ -167,7 +167,7 @@ namespace DOL.GS.Commands
                         else
                         {
 	                        // Message: "A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed."
-	                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.SpecialChars", null);
+	                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.SpecialChars", null);
                         }
                     }
                     break;
@@ -203,7 +203,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: "No account exists with the name '{0}'. Please make sure you entered the full account name correctly."
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AccountNotFound", accountname);
+							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 						
@@ -211,7 +211,7 @@ namespace DOL.GS.Commands
 						if (newpass.Length < 4)
 						{
 							// Message: "A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes."
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.PasswordChars", accountname);
+							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.PasswordChars", accountname);
 							return;
 						}
 						
@@ -257,7 +257,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: "No account exists with the name '{0}'. Please make sure you entered the full account name correctly."
-                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AccountNotFound", accountname);
+                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 
@@ -302,7 +302,7 @@ namespace DOL.GS.Commands
                         if (cha == null)
                         {
 	                        // Message: "No character exists with the name '{0}'. Please make sure you entered their full first name correctly."
-                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.CharacterNotFound", charname);
+                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.CharacterNotFound", charname);
                             return;
                         }
 
@@ -349,7 +349,7 @@ namespace DOL.GS.Commands
                         if (cha == null)
                         {
 	                        // Message: "No character exists with the name '{0}'. Please make sure you entered their full first name correctly."
-                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.CharacterNotFound", charname);
+                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.CharacterNotFound", charname);
                             return;
                         }
                         
@@ -360,7 +360,7 @@ namespace DOL.GS.Commands
                         if (acc == null)
                         {
 	                        // Message: "No account exists with the name '{0}'. Please make sure you entered the full account name correctly."
-                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AccountNotFound", accountname);
+                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AccountNotFound", accountname);
                             return;
                         }
 
@@ -380,7 +380,7 @@ namespace DOL.GS.Commands
                             {
 	                            // If the character does not belong to any of these realms (i.e., somehow got assigned Neutral (0))
 	                            // Message: "{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue."
-	                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.CharNotFromValidRealm", cha.Name, cha.Realm);
+	                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.CharNotFromValidRealm", cha.Name, cha.Realm);
                                 return;
 	                        }
                         }
@@ -408,7 +408,7 @@ namespace DOL.GS.Commands
                         if (freeslot == 0)
                         {
 	                        // Message: "The destination account of '{0}' has no available character slots for that realm! The character transfer has failed."
-	                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.NoFreeSlots", accountname);
+	                        ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.NoFreeSlots", accountname);
                             return;
                         }
 
@@ -463,13 +463,13 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: "No account exists with the name '{0}'. Please make sure you entered the full account name correctly."
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AccountNotFound", accountname);
+							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 
 						int status;
                         // Exception: "The value you entered was not expected. Please provide a number between '0' and '255'."
-                        try { status=Convert.ToInt32(args[3]); } catch(Exception) { ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.StatusValueReq", null); return; }
+                        try { status=Convert.ToInt32(args[3]); } catch(Exception) { ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.StatusValueReq", null); return; }
                         
 						if(status >= 0 && status < 256 )
 						{
@@ -488,7 +488,7 @@ namespace DOL.GS.Commands
 						else
 						{
 							// Message: "The value you entered was not expected. Please provide a number between '0' and '255'."
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.StatusValueReq", null);
+							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.StatusValueReq", null);
 						}
 						return;
 					}
@@ -521,7 +521,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
  							// Message: "No account exists with the name '{0}'. Please make sure you entered the full account name correctly."
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AccountNotFound", accountname);
+							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 
@@ -531,7 +531,7 @@ namespace DOL.GS.Commands
 						if (banacc.Count == 0)
 						{
 							// Message: "The account '{0}' is not currently banned!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.AccountBanNotFound", accountname);
+							ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.AccountBanNotFound", accountname);
 							return;
 						}
 						
@@ -578,7 +578,7 @@ namespace DOL.GS.Commands
                         if (Char == null)
                         {
 	                        // Message: "No character exists with the name '{0}'. Please make sure you entered their full first name correctly."
-                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Msg.CharacterNotFound", charname);
+                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.CharacterNotFound", charname);
                             return;
                         }
                         
@@ -602,7 +602,7 @@ namespace DOL.GS.Commands
 						" ",
 						" ",
 						// Message: "----- Web Admin Tool -----"
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Header.WebAdmin"),
+						LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.WebAdmin"),
 						" ",
 						// Message: "It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts."
 						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc2"),
@@ -612,7 +612,7 @@ namespace DOL.GS.Commands
 						" ",
 						" ",
 						// Message: "----- Additional Info -----"
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Header.MoreInfo"),
+						LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"),
 						" ",
 						// Message: "For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum."
 						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc1"),

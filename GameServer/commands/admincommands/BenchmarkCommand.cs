@@ -47,13 +47,13 @@ namespace DOL.GS.Commands
 		ePrivLevel.Admin,
 		// Message: "Performs a system benchmark of the specified type. This is used to gauge overall system performance."
 		"AdminCommands.Benchmark.Description",
-		// Syntax: '/benchmark listskills'
+		// Syntax: /benchmark listskills
 		"AdminCommands.Benchmark.Syntax.Listskills",
-		// Message: "Tests the total amount of time (in milliseconds) the system takes to list 1000 cached skills. This does not include spellcasting specializations."
+		// Message: "Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations."
 		"AdminCommands.Benchmark.Usage.Listskills",
-		// Syntax: '/benchmark listspells'
+		// Syntax: /benchmark listspells
 		"AdminCommands.Benchmark.Syntax.Listspells",
-		// Message: "Tests the total amount of time (in milliseconds) the system takes to list 1000 cached spells."
+		// Message: "Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells."
 		"AdminCommands.Benchmark.Usage.Listspells")]
 	public class BenchmarkCommand : AbstractCommandHandler, ICommandHandler
 	{		
