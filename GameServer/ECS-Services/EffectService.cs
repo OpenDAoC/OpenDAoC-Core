@@ -72,7 +72,7 @@ namespace DOL.GS
             ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
 
             // Update the Concentration List if Conc Buff/Song/Chant.
-            if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList())
+            if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect)
             {
                 if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
                 {
