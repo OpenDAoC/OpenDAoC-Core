@@ -213,6 +213,11 @@ namespace DOL.GS
             return temp;
         }
 
+        public ECSGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType = eEffect.Unknown)
+        {
+            return GetSpellEffects(effectType)?.OrderByDescending(e => e.IsDisabled).ThenByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
+        }
+
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType = eEffect.Unknown)
         {
             var temp = new List<ECSGameSpellEffect>();
