@@ -317,11 +317,11 @@ namespace DOL.GS
 
         public void CancelAll()
         {
-            foreach (var key in Effects)
+            foreach (var effects in Effects.Values.ToList())
             {
-                foreach (var effect in key.Value)
+                for (int j = 0; j < effects.Count; j++)
                 {
-                    EffectService.RequestCancelEffect(effect);
+                    EffectService.RequestCancelEffect(effects[j]);
                 }
             }
         }
