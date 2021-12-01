@@ -15,7 +15,8 @@ namespace DOL.GS
         {
             m_level = level;
             EffectType = eEffect.Stag;
-        }
+			EffectService.RequestStartEffect(this);
+		}
 
         /// <summary>
 		/// The amount of max health gained

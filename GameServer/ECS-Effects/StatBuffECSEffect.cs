@@ -43,15 +43,15 @@ namespace DOL.GS
                     {
                         if (/*!Owner.InCombat && */!Owner.IsStealthed)
                         {
-                            //Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                            //Console.WriteLine($"Value before: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                             //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
                             Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, EffectType, SpellHandler.Spell.Value / 100.0);
-                            //Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                            //Console.WriteLine($"Value after: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                             (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
                         }
                         if (Owner.IsStealthed)
                         {
-                            EffectService.RequestDisableEffect(this, true);
+                            EffectService.RequestDisableEffect(this);
                         }
                     }
                     
@@ -60,7 +60,7 @@ namespace DOL.GS
                 }
             }
             
-            IsBuffActive = true;
+            //IsBuffActive = true;
         }
 
         public override void OnStopEffect()
@@ -93,14 +93,14 @@ namespace DOL.GS
 
                     if (EffectType == eEffect.MovementSpeedBuff)
                     {
-                        if (Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed) == SpellHandler.Spell.Value / 100 || Owner.InCombat)
-                        {
-                            //Console.WriteLine($"Value before: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                        //if (Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed) == SpellHandler.Spell.Value / 100 || Owner.InCombat)
+                        //{
+                            //Console.WriteLine($"Value before: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                             //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
                             Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, EffectType);
-                            //Console.WriteLine($"Value after: {e.Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
+                            //Console.WriteLine($"Value after: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
                             (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
-                        }
+                        //}
                     }
                     
                     else

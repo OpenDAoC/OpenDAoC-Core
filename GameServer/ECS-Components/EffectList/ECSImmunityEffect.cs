@@ -22,8 +22,9 @@ namespace DOL.GS
             ExpireTick = duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
+            TriggersImmunity = false;
 
-            EntityManager.AddEffect(this);
+            EffectService.RequestStartEffect(this);
         }
 
         protected eEffect MapImmunityEffect()

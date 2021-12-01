@@ -18,7 +18,8 @@ namespace DOL.GS
 			m_protectSource = protectSource;
 			m_protectTarget = protectTarget;
             EffectType = eEffect.Protect;
-        }
+			EffectService.RequestStartEffect(this);
+		}
 
 		/// <summary>
 		/// The player protecting the target
@@ -98,10 +99,10 @@ namespace DOL.GS
 
 			var protectSourceEffect = EffectListService.GetEffectOnTarget(m_protectSource, eEffect.Intercept);
 			if (protectSourceEffect != null)
-				EffectService.RequestCancelEffect(protectSourceEffect);
+				EffectService.RequestImmediateCancelEffect(protectSourceEffect);
 			var protectTargetEffect = EffectListService.GetEffectOnTarget(m_protectTarget, eEffect.Intercept);
 			if (protectTargetEffect != null)
-				EffectService.RequestCancelEffect(protectTargetEffect);
+				EffectService.RequestImmediateCancelEffect(protectTargetEffect);
 
 			m_protectSource.Out.SendMessage(LanguageMgr.GetTranslation(m_protectSource.Client, "Effects.ProtectEffect.YouNoProtectY", m_protectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			m_protectTarget.Out.SendMessage(LanguageMgr.GetTranslation(m_protectTarget.Client, "Effects.ProtectEffect.XNoProtectYou", m_protectSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);

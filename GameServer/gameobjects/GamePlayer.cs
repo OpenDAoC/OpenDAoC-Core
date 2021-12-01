@@ -5661,9 +5661,9 @@ namespace DOL.GS
             ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(this);
             if (song != null && song.SpellHandler.Spell.InstrumentRequirement != 0)
             {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                EffectService.RequestCancelConcEffect(song);
-            }
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				EffectService.RequestImmediateCancelConcEffect(song);
+			}
 
             switch (slot)
             {
@@ -7910,7 +7910,8 @@ namespace DOL.GS
             if (m_releaseType != eReleaseType.Duel)
                 DeathTime = PlayedTime;
 
-            effectListComponent.CancelAll();
+			CancelAllConcentrationEffects();
+			effectListComponent.CancelAll();
 
             IsSwimming = false;
         }
@@ -8942,42 +8943,42 @@ namespace DOL.GS
                                     return;
                                 }
 								
-                                if (IsSummoningMount)
-                                {
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.StopCallingMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    StopWhistleTimers();
-                                    return;
-                                }
-                                Out.SendTimerWindow("Summoning Mount", 5);
-                                foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                {
-                                    if (plr == null) continue;
-                                    plr.Out.SendEmoteAnimation(this, eEmote.Horse_whistle);
-                                }
-                                // vampiir ~
-                                GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
-                                //GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "SpeedEnhancement");
-                                ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
-                                if (effects != null)
-                                    effects.Cancel(false);
-                                if (effect != null)
-                                    EffectService.RequestCancelEffect(effect);
-                                //effect.Cancel(false);
-                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-                                m_whistleMountTimer = new RegionTimer(this);
-                                m_whistleMountTimer.Callback = new RegionTimerCallback(WhistleMountTimerCallback);
-                                m_whistleMountTimer.Start(5000);
-                            }
-                        }
-                        break;
-                    case Slot.RIGHTHAND:
-                    case Slot.LEFTHAND:
-                        if (type != 0) break;
-                        if (ActiveWeaponSlot == eActiveWeaponSlot.Standard)
-                            break;
-                        SwitchWeapon(eActiveWeaponSlot.Standard);
-                        Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
-                        return;
+								if (IsSummoningMount)
+								{
+									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.StopCallingMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									StopWhistleTimers();
+									return;
+								}
+								Out.SendTimerWindow("Summoning Mount", 5);
+								foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+								{
+									if (plr == null) continue;
+									plr.Out.SendEmoteAnimation(this, eEmote.Horse_whistle);
+								}
+								// vampiir ~
+								GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
+								//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "SpeedEnhancement");
+								ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
+								if (effects != null)
+									effects.Cancel(false);
+								if (effect != null)
+									EffectService.RequestImmediateCancelEffect(effect);
+									//effect.Cancel(false);
+								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+								m_whistleMountTimer = new RegionTimer(this);
+								m_whistleMountTimer.Callback = new RegionTimerCallback(WhistleMountTimerCallback);
+								m_whistleMountTimer.Start(5000);
+							}
+						}
+						break;
+					case Slot.RIGHTHAND:
+					case Slot.LEFTHAND:
+						if (type != 0) break;
+						if (ActiveWeaponSlot == eActiveWeaponSlot.Standard)
+							break;
+						SwitchWeapon(eActiveWeaponSlot.Standard);
+						Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
+						return;
 
                     case Slot.TWOHAND:
                         if (type != 0) break;
@@ -11127,18 +11128,18 @@ namespace DOL.GS
                     return false;
                 }
 
-                new SprintECSGameEffect(new ECSGameEffectInitParams(this, 0, 1, null));
-                return true;
-            }
-            else
-            {
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.Sprint))
-                {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
-                }
-                return false;
-            }
-        }
+				new SprintECSGameEffect(new ECSGameEffectInitParams(this, 0, 1, null));
+				return true;
+			}
+			else
+			{
+				if (effectListComponent.ContainsEffectForEffectType(eEffect.Sprint))
+				{
+					EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
+				}
+				return false;
+			}
+		}
 
         /// <summary>
         /// The strafe state of this player
@@ -13233,7 +13234,7 @@ namespace DOL.GS
             {
                 if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
                 {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
                 }
             }
         }

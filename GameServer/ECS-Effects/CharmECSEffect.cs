@@ -79,6 +79,12 @@ namespace DOL.GS
 
                 lock (npc.BrainSync)
                 {
+                    var immunityEffects = npc.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
+                    for (int i = 0; i < immunityEffects.Length; i++)
+                    {
+                        EffectService.RequestImmediateCancelEffect(immunityEffects[i]);
+                    }
+
                     npc.StopAttack();
                     npc.RemoveBrain(oldBrain);
 
@@ -95,6 +101,7 @@ namespace DOL.GS
                         {
                             ((IOldAggressiveBrain)npc.Brain).AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
                             npc.StartAttack(SpellHandler.Caster);
+                            npc.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                         }
                         else
                         {

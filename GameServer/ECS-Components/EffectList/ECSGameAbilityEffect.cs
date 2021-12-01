@@ -11,7 +11,7 @@ namespace DOL.GS
 
         public ECSGameAbilityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
-            EntityManager.AddEffect(this);
+            //EffectService.RequestStartEffect(this);
         }
     }
 }

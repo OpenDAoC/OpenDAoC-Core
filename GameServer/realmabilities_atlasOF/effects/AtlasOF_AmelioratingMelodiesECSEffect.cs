@@ -15,6 +15,7 @@ namespace DOL.GS.Effects
             PulseFreq = 1500; // 1.5s. Effect lasts 30s so that is 20 ticks.
             NextTick = StartTick;
             m_heal = (int)Effectiveness; // Effectiveness value is used as a heal value per tick.
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 3021; } }

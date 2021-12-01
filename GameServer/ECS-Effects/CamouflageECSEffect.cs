@@ -14,6 +14,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.Camouflage;
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 476; } }

@@ -19,6 +19,7 @@ namespace DOL.GS
 			m_interceptSource = interceptSource;
 			m_interceptTarget = interceptTarget;
 			EffectType = eEffect.Intercept;
+			EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>
@@ -146,10 +147,10 @@ namespace DOL.GS
 
 			var interceptSourceEffect = EffectListService.GetEffectOnTarget(m_interceptSource, eEffect.Intercept);
 			if (interceptSourceEffect != null)
-				EffectService.RequestCancelEffect(interceptSourceEffect);
+				EffectService.RequestImmediateCancelEffect(interceptSourceEffect);
 			var interceptTargetEffect = EffectListService.GetEffectOnTarget(m_interceptTarget, eEffect.Intercept);
 			if (interceptTargetEffect != null)
-				EffectService.RequestCancelEffect(interceptTargetEffect);
+				EffectService.RequestImmediateCancelEffect(interceptTargetEffect);
 
 			if (playerCancel)
 			{

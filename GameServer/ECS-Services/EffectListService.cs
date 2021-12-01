@@ -33,10 +33,14 @@ namespace DOL.GS
         {
             if (living?.effectListComponent?.Effects.Count > 0)
             {
-                foreach (var effects in living.effectListComponent.Effects.Values)
+                foreach (var effects in living.effectListComponent.Effects.Values.ToList())
                 {
-                    foreach (var e in effects)
+                    for (int j = 0; j < effects.Count; j++)
                     {
+                        var e = effects[j];
+                        if (e is null)
+                            continue;
+
                         if (!e.Owner.IsAlive || e.Owner.ObjectState == GameObject.eObjectState.Deleted)
                         {
                             EffectService.RequestCancelEffect(e);
@@ -63,7 +67,7 @@ namespace DOL.GS
                                     {
                                         if (effect.SpellHandler.Caster.Mana >= effect.SpellHandler.Spell.PulsePower)
                                         {
-                                            effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;                                            
+                                            effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;
                                             effect.SpellHandler.StartSpell(null);
                                             effect.ExpireTick += effect.PulseFreq;
                                         }
@@ -85,10 +89,6 @@ namespace DOL.GS
                                         if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
                                             ((SpellHandler)effect.SpellHandler).SendCastAnimation();
 
-                                    }
-                                    else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm)
-                                    {
-                                        ((CharmSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
                                     }
                                     else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                                     {
@@ -140,12 +140,20 @@ namespace DOL.GS
                                     effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                     && !effect.IsDisabled)
                                 {
-                                    EffectService.RequestDisableEffect(effect, true);
+                                    ECSGameSpellEffect disabled = null;
+                                    if (effect.Owner.effectListComponent.GetSpellEffects(effect.EffectType).Count > 1)
+                                        disabled = effect.Owner.effectListComponent.GetBestDisabledSpellEffect(effect.EffectType);
+
+                                    EffectService.RequestDisableEffect(effect);
+
+                                    if (disabled != null)
+                                        EffectService.RequestEnableEffect(disabled);
                                 }
                                 else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
                                     effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                     && effect.IsDisabled)
                                 {
+                                    ECSGameSpellEffect enabled = null;
                                     List<ECSGameEffect> concEffects;
                                     effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out concEffects);
                                     bool isBest = false;
@@ -154,20 +162,32 @@ namespace DOL.GS
                                     else if (concEffects.Count > 1)
                                     {
                                         foreach (ECSGameSpellEffect eff in effects)
+                                        {
+                                            if (!eff.IsDisabled)
+                                                enabled = eff;
                                             if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
                                             {
                                                 isBest = true;
                                                 break;
                                             }
                                             else
+                                            {
                                                 isBest = false;
+                                            }
+                                        }
                                     }
 
                                     if (isBest)
-                                        EffectService.RequestDisableEffect(effect, false);
-                                }
+                                    {
+                                        EffectService.RequestEnableEffect(effect);
+                                        if (enabled != null)
+                                        {
+                                            EffectService.RequestDisableEffect(enabled);
+                                        }
+                                    }
 
-                                effect.NextTick += effect.PulseFreq;
+                                    effect.NextTick += effect.PulseFreq;
+                                }
                             }
                         }
                     }
@@ -244,7 +264,7 @@ namespace DOL.GS
             if (effectToCancel == null)
                 return false;
 
-            EffectService.RequestCancelEffect(effectToCancel);
+            EffectService.RequestImmediateCancelEffect(effectToCancel);
             return true;
         }
     }

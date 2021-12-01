@@ -424,10 +424,7 @@ namespace DOL.GS.Spells
             int freq = Spell != null ? Spell.Frequency : 0;
             // return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 
-            ECSPulseEffect effect = new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
-
-            //EntityManager.AddEffect(effect);
-
+            new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
         }
 
         /// <summary>
@@ -682,6 +679,10 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
+			var quickCast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
+			if (quickCast != null)
+				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
+
             if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
             {
                 if (Spell.IsPulsing && Caster.LastPulseCast != null && Caster.LastPulseCast.Equals(Spell))
@@ -694,7 +695,7 @@ namespace DOL.GS.Spells
 					ECSGameSpellEffect cancelEffect = Caster.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
                     if (cancelEffect != null)
                     {
-						EffectService.RequestCancelConcEffect((IConcentrationEffect)cancelEffect);
+						EffectService.RequestImmediateCancelConcEffect((IConcentrationEffect)cancelEffect);
                         Caster.LastPulseCast = null;
                         //Console.WriteLine("Canceling Effect " + cancelEffect.SpellHandler.Spell.Name);
                     }
@@ -843,12 +844,12 @@ namespace DOL.GS.Spells
 					if (!quiet) MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
 					return false;
 				}
-				if (!Caster.GroundTargetInView)
-				{
-					MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
-					return false;
-				}
-			}
+                if (!Caster.GroundTargetInView)
+                {
+                    MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
+                    return false;
+                }
+            }
 			else if (targetType != "self" && targetType != "group" && targetType != "pet"
 			         && targetType != "controlled" && targetType != "cone" && m_spell.Range > 0)
 			{
@@ -1497,12 +1498,12 @@ namespace DOL.GS.Spells
 					if (!quiet) MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
 					return false;
 				}
-				if (!Caster.GroundTargetInView)
-				{
-					MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
-					return false;
-				}
-			}
+                if (!Caster.GroundTargetInView)
+                {
+                    MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
+                    return false;
+                }
+            }
 			else if (m_spell.Target.ToLower() != "self" && m_spell.Target.ToLower() != "group" && m_spell.Target.ToLower() != "cone" && m_spell.Range > 0)
 			{
 				if (m_spell.Target.ToLower() != "pet")
@@ -2181,7 +2182,7 @@ namespace DOL.GS.Spells
 
             if (Spell.IsPulsing)
             {
-				EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
+				EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
@@ -2219,6 +2220,7 @@ namespace DOL.GS.Spells
 				{
 					m_caster.TempProperties.setProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
 					((GamePlayer)m_caster).DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
+					//EffectService.RequestImmediateCancelEffect(quickcast, false);
 					quickcast.Cancel(false);
 				}
 			}

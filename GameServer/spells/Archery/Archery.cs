@@ -238,7 +238,7 @@ namespace DOL.GS.Spells
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							ad.AttackResult = eAttackResult.HitUnstyled;
-                            EffectService.RequestCancelEffect(bladeturn.FirstOrDefault());
+                            EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
                         }
                         break;
 
@@ -255,7 +255,7 @@ namespace DOL.GS.Spells
 								player = target as GamePlayer;
 								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 								ad.AttackResult = eAttackResult.Missed;
-								EffectService.RequestCancelEffect(bladeturn.FirstOrDefault());
+								EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
 							}
 						}
 						break;

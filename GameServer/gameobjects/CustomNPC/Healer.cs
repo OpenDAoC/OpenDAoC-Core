@@ -73,7 +73,7 @@ namespace DOL.GS
 			if (effect != null)
 			{
                 //effect.Cancel(false);
-                EffectService.RequestCancelEffect(effect);
+                EffectService.RequestImmediateCancelEffect(effect);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
                     GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
@@ -81,7 +81,7 @@ namespace DOL.GS
             if (rvrEffect != null)
             {
                 //effect.Cancel(false);
-                EffectService.RequestCancelEffect(rvrEffect);
+                EffectService.RequestImmediateCancelEffect(rvrEffect);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
                     GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }

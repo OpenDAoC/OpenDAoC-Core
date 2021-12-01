@@ -27,7 +27,7 @@ namespace DOL.GS
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
 
-            //EntityManager.AddEffect(this);
+            EffectService.RequestStartEffect(this);
         }
     }
 }

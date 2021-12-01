@@ -18,6 +18,7 @@ namespace DOL.GS
 			m_guardSource = guardSource;
 			m_guardTarget = guardTarget;
 			EffectType = eEffect.Guard;
+			EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>
@@ -124,10 +125,10 @@ namespace DOL.GS
 
 			var guardSourceEffect = EffectListService.GetEffectOnTarget(m_guardSource, eEffect.Guard);
 			if (guardSourceEffect != null)
-				EffectService.RequestCancelEffect(guardSourceEffect);
+				EffectService.RequestImmediateCancelEffect(guardSourceEffect);
 			var guardTargetEffect = EffectListService.GetEffectOnTarget(m_guardTarget, eEffect.Guard);
 			if (guardTargetEffect != null)
-				EffectService.RequestCancelEffect(guardTargetEffect);
+				EffectService.RequestImmediateCancelEffect(guardTargetEffect);
 
 			if (m_guardSource is GamePlayer)
 				((GamePlayer)m_guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_guardSource).Client, "Effects.GuardEffect.YourNoLongerGuardingY", m_guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);

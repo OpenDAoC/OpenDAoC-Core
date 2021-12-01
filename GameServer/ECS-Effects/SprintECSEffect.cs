@@ -16,6 +16,7 @@ namespace DOL.GS
 		{
 			EffectType = eEffect.Sprint;
 			NextTick = GameLoop.GameLoopTime + 1;
+			EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>
@@ -55,7 +56,7 @@ namespace DOL.GS
 
 			if (Owner.Endurance - 5 <= 0 || m_idleTicks >= 6)
 			{
-				EffectService.RequestCancelEffect(this);
+				EffectService.RequestImmediateCancelEffect(this);
 				nextInterval = 0;
 			}
 			else

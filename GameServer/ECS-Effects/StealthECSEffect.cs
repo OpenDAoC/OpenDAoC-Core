@@ -10,6 +10,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.Stealth;
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 0x193; } }
@@ -26,12 +27,12 @@ namespace DOL.GS
 
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
-                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff), true);
+                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff));
             }
             // Cancel pulse effect
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
             {
-                EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(OwnerPlayer));
+                EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(OwnerPlayer));
             }
 
             OwnerPlayer.Sprint(false);
@@ -77,7 +78,7 @@ namespace DOL.GS
             }
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
-                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff), false);
+                EffectService.RequestEnableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff));
             }
 
             StealthStateChanged();

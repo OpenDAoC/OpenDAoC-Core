@@ -9,6 +9,7 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.BunkerOfFaith;
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 3015; } }
@@ -42,7 +43,7 @@ namespace DOL.GS.Effects
             GamePlayer player = sender as GamePlayer;
             if (player != null && player.effectListComponent != null)
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.BunkerOfFaith));
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.BunkerOfFaith));
             }
         }
     }

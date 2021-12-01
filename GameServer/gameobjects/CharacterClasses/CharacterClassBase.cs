@@ -423,7 +423,7 @@ namespace DOL.GS
 				if (Player.ShadeEffect != null)
 				{
 					// Drop shade form.
-					EffectService.RequestCancelEffect(Player.ShadeEffect);
+					EffectService.RequestImmediateCancelEffect(Player.ShadeEffect);
 					Player.ShadeEffect = null;
 				}
 				// Drop shade form.

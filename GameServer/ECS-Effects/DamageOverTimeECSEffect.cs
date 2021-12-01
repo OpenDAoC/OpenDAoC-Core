@@ -37,7 +37,7 @@ namespace DOL.GS
         {
             if (Owner.IsAlive == false)
             {
-                EffectService.RequestCancelEffect(this);
+                EffectService.RequestImmediateCancelEffect(this);
             }
 
             if (Owner.IsAlive)
@@ -89,7 +89,7 @@ namespace DOL.GS
 
                     if (!Owner.IsAlive)
                     {
-                        EffectService.RequestCancelEffect(this);
+                        EffectService.RequestImmediateCancelEffect(this);
                     }
                     else Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
                 }

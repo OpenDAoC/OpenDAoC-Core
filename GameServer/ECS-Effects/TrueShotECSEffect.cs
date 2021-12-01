@@ -14,6 +14,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.TrueShot;
+            EffectService.RequestStartEffect(this);
         }
 
         public override ushort Icon { get { return 3004; } }

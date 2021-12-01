@@ -273,7 +273,7 @@ namespace DOL.GS.ServerRules
 		/// <returns>The color handling</returns>
 		public override byte GetColorHandling(GameClient client)
 		{
-			if (client.Player.CurrentRegionID == 27)
+			if (client.Player?.CurrentRegionID == 27)
 				return 1;
 			else
 				return base.GetColorHandling(client);

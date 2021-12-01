@@ -23,11 +23,11 @@ namespace DOL.GS.RealmAbilities
 			{
 				SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 				if (sureShot != null)
-					EffectService.RequestCancelEffect(sureShot);
+					EffectService.RequestImmediateCancelEffect(sureShot);
 
 				RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 				if (rapidFire != null)
-					EffectService.RequestCancelEffect(rapidFire, false);
+					EffectService.RequestImmediateCancelEffect(rapidFire, false);
 
 				new TrueShotECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 			}
