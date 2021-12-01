@@ -946,16 +946,16 @@ namespace DOL.GS {
                     switch ((eObjectType)item.Object_Type)
                     {
                         case eObjectType.Cloth:
-                            modelIDToAssign = 3085;
+                            modelIDToAssign = 3081;
                             break;
 
                         case eObjectType.Leather:
-                            modelIDToAssign = 3090;
+                            modelIDToAssign = 3086;
                             break;
 
                         case eObjectType.Studded:
                         case eObjectType.Reinforced:
-                            modelIDToAssign = 3095;
+                            modelIDToAssign = 3091;
                             break;
 
                         case eObjectType.Chain:
@@ -963,7 +963,7 @@ namespace DOL.GS {
                             {
                                 case eRealm.Albion:
                                 case eRealm.Midgard:
-                                    modelIDToAssign = 3110;
+                                    modelIDToAssign = 3106;
                                     break;
                                 default:
                                     modelIDToAssign = 0;
@@ -971,10 +971,10 @@ namespace DOL.GS {
                             }
                             break;
                         case eObjectType.Scale:
-                            modelIDToAssign = 3100;
+                            modelIDToAssign = 3096;
                             break;
                         case eObjectType.Plate:
-                            modelIDToAssign = 3105;
+                            modelIDToAssign = 3101;
                             break;
                     }
                     break;

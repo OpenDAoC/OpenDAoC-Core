@@ -193,6 +193,10 @@ namespace DOL.GS.GameEvents
 			if (EventLvCap == 0)
 				return;
 			
+			// Jailed players stay in jail
+			if (p.CurrentRegionID == 249)
+				return;
+			
 			// GMs don't get ported at login
 			if (p.Client.Account.PrivLevel > 1)
 			{

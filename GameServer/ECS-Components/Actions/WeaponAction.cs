@@ -440,7 +440,7 @@ namespace DOL.GS
                     GamePlayer playerAttacker = attacker as GamePlayer;
                     if (ReflexAttackAD.AttackResult == eAttackResult.HitUnstyled)
                     {
-                        playerAttacker.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        playerAttacker?.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     }
                     break;
             }
