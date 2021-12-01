@@ -844,12 +844,12 @@ namespace DOL.GS.Spells
 					if (!quiet) MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
 					return false;
 				}
-				//if (!Caster.GroundTargetInView)
-				//{
-				//	MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
-				//	return false;
-				//}
-			}
+                if (!Caster.GroundTargetInView)
+                {
+                    MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
+                    return false;
+                }
+            }
 			else if (targetType != "self" && targetType != "group" && targetType != "pet"
 			         && targetType != "controlled" && targetType != "cone" && m_spell.Range > 0)
 			{
@@ -1498,12 +1498,12 @@ namespace DOL.GS.Spells
 					if (!quiet) MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
 					return false;
 				}
-				//if (!Caster.GroundTargetInView)
-				//{
-				//	MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
-				//	return false;
-				//}
-			}
+                if (!Caster.GroundTargetInView)
+                {
+                    MessageToCaster("Your ground target is not in view!", eChatType.CT_SpellResisted);
+                    return false;
+                }
+            }
 			else if (m_spell.Target.ToLower() != "self" && m_spell.Target.ToLower() != "group" && m_spell.Target.ToLower() != "cone" && m_spell.Range > 0)
 			{
 				if (m_spell.Target.ToLower() != "pet")
