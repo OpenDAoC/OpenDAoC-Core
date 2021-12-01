@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
             }
 
             base.ApplyEffectOnTarget(target, effectiveness);
-            m_pet.Level = Caster.Level; // No bomber class to override SetPetLevel() in, so set level here
+            m_pet.Level = m_pet.Owner.Level; // No bomber class to override SetPetLevel() in, so set level here
             m_pet.TempProperties.setProperty(BOMBERTARGET, target);
             m_pet.Name = Spell.Name;
 			m_pet.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
