@@ -22,6 +22,7 @@ namespace DOL.GS
             ExpireTick = duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
+            TriggersImmunity = false;
 
             EffectService.RequestStartEffect(this);
         }
