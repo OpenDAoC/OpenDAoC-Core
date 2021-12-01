@@ -217,6 +217,12 @@ namespace DOL.GS
             if (effect is null)
                 return;
 
+            if (effect is QuickCastECSGameEffect quickCast)
+            {
+                quickCast.Cancel(true);
+                return;
+            }
+
             // Player can't remove negative effect or Effect in Immunity State
             if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
             {
