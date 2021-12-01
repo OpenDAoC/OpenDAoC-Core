@@ -4332,7 +4332,7 @@ namespace DOL.GS
                 }
 				// Non-Damaging, non-resisted spells that break mez.
 				else if (ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler is AmnesiaSpellHandler || ad.SpellHandler is DiseaseSpellHandler
-						 || ad.SpellHandler is SpeedDecreaseSpellHandler) 
+						 || ad.SpellHandler is SpeedDecreaseSpellHandler || ad.SpellHandler is StunSpellHandler) 
 				{
 					removeMez = true;
 				}
