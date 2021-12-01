@@ -124,7 +124,15 @@ namespace DOL.GS
                     ecsList.AddRange(playerEffects.Skip(e.PreviousPosition));
                 }
                 else
-                    ecsList.Add(e);
+                {
+                    if (e is ECSGameSpellEffect spellEffect && AllStatsBarrel.BuffList.Contains(spellEffect.SpellHandler.Spell.ID))
+                    {
+                        List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
+                        ecsList.AddRange(playerEffects.Skip(playerEffects.Count - AllStatsBarrel.BuffList.Count));
+                    }
+                    else
+                        ecsList.Add(e);
+                }
 
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                 SendPlayerUpdates(player);
