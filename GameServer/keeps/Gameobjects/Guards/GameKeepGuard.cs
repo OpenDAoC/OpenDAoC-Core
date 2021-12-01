@@ -921,7 +921,7 @@ namespace DOL.GS.Keeps
 					break;
 				}
 			}
-				RefreshTemplate();			
+			RefreshTemplate();			
 		}		
 
 		public void DeleteObject()
