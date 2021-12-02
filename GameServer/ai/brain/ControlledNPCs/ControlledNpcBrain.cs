@@ -275,13 +275,13 @@ namespace DOL.AI.Brain
 				previousIsStealthed = (target as GamePlayer).IsStealthed;
 
 			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()){	FSM.SetCurrentState(eFSMStateType.AGGRO);}
-            if (Body.CanCastHarmfulSpells)
-            {
-				CheckSpells(eCheckSpellType.Offensive);
-            } else
-            {
+    //        if (Body.CanCastHarmfulSpells)
+    //        {
+				//CheckSpells(eCheckSpellType.Offensive);
+    //        } else
+    //        {
 				AttackMostWanted();
-			}
+			//}
 			
 		}
 
@@ -885,7 +885,7 @@ namespace DOL.AI.Brain
 
 		// Temporary until StandardMobBrain is updated
 		protected override bool CheckOffensiveSpells(Spell spell)
-		{
+		{		
 			if (spell == null || spell.IsHelpful || !(Body.TargetObject is GameLiving living) || !living.IsAlive)
 				return false;
 
@@ -1032,7 +1032,7 @@ namespace DOL.AI.Brain
             }
 
 			GameLiving target = CalculateNextAttackTarget();
-
+			
 			if (target != null)
 			{
 				if (!Body.IsAttacking || target != Body.TargetObject)
