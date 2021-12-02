@@ -29,11 +29,7 @@ namespace DOL.GS.Spells
 	/// </summary>
 	[SpellHandler("SpeedDecrease")]
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
-	{
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
-        {
-            new StatDebuffECSEffect(initParams);
-        }
+	{       
 
         /// <summary>
         /// Apply the effect.

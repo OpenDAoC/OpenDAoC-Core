@@ -4662,6 +4662,7 @@ namespace DOL.GS.Spells
 					return "dmg_shield";
 				case eSpellType.DamageSpeedDecrease:
 				case eSpellType.SpeedDecrease:
+				case eSpellType.UnbreakableSpeedDecrease:
 					return "snare";
 				case eSpellType.DefensiveProc:
 					return "def_proc";
@@ -4811,6 +4812,7 @@ namespace DOL.GS.Spells
 				case eSpellType.DamageSpeedDecrease:
 				case eSpellType.SpeedDecrease:
 				case eSpellType.StyleSpeedDecrease:
+				case eSpellType.UnbreakableSpeedDecrease:
 					dw.AddKeyValuePair("bonus", 100 - Spell.Value);
 					break;
 				case eSpellType.DefensiveProc:

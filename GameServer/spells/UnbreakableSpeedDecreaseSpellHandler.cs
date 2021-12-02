@@ -30,6 +30,10 @@ namespace DOL.GS.Spells
 	[SpellHandler("UnbreakableSpeedDecrease")]
 	public class UnbreakableSpeedDecreaseSpellHandler : ImmunityEffectSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new StatDebuffECSEffect(initParams);
+		}
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);
