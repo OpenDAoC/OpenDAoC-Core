@@ -134,9 +134,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 					                         LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.FreeLevel"));
 				}
 				player.Out.SendMasterLevelWindow(0);
-				AssemblyName an = Assembly.GetExecutingAssembly().GetName();
-				player.Out.SendMessage("Dawn of Light " + an.Name + " Version: " + an.Version, eChatType.CT_System,
-				                       eChatLoc.CL_SystemWindow);
+				// AssemblyName an = Assembly.GetExecutingAssembly().GetName();
+				// player.Out.SendMessage("Dawn of Light " + an.Name + " Version: " + an.Version, eChatType.CT_System,
+				//                        eChatLoc.CL_SystemWindow);
 
 
 				if (Properties.TELEPORT_LOGIN_NEAR_ENEMY_KEEP)
