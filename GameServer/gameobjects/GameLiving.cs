@@ -4356,7 +4356,8 @@ namespace DOL.GS
             if (removeMovementSpeedDebuff && effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff))
             {
                 var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault();
-                EffectService.RequestImmediateCancelEffect(effect);
+				if (effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
+					EffectService.RequestImmediateCancelEffect(effect);
             }
 
             return removeMez || removeSnare || removeMovementSpeedDebuff;

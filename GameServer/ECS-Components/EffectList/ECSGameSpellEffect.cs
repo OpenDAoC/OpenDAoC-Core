@@ -25,12 +25,11 @@ namespace DOL.GS
             EffectType = MapSpellEffect();
             PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
 
-            if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+            if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease || SpellHandler.Spell.SpellType == (byte)eSpellType.UnbreakableSpeedDecrease)
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;
-                if (SpellHandler.Spell.Value == 99)
-                    TriggersImmunity = true;
+                TriggersImmunity = true;
             }
             else if (SpellHandler.Spell.IsConcentration)
             {
