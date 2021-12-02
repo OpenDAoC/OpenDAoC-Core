@@ -1039,18 +1039,18 @@ namespace DOL.AI.Brain
 				{
 					Body.TargetObject = target;
 
-					if (target is GamePlayer)
-					{
-						Body.LastAttackTickPvP = GameLoop.GameLoopTime; 
-						Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					}
-					else
-					{
-						Body.LastAttackTickPvE = GameLoop.GameLoopTime;
-						Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					}
+                    //if (target is GamePlayer)
+                    //{
+                    //    Body.LastAttackTickPvP = GameLoop.GameLoopTime;
+                    //    Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                    //}
+                    //else
+                    //{
+                    //    Body.LastAttackTickPvE = GameLoop.GameLoopTime;
+                    //    Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                    //}
 
-					List<GameSpellEffect> effects = new List<GameSpellEffect>();
+                    List<GameSpellEffect> effects = new List<GameSpellEffect>();
 
 					lock (Body.EffectList)
 					{
