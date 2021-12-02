@@ -4142,15 +4142,25 @@ namespace DOL.GS
 				tw.EventHandler(ad);
             }
 
-			if (this is GameNPC)
-            {
-				if (ad.Target is GamePlayer)
-					LastAttackTickPvP = GameLoop.GameLoopTime;
-				else
-					LastAttackTickPvE = GameLoop.GameLoopTime;
-            }
+			if (this is GameNPC npc)
+			{
+				var brain = npc.Brain as ControlledNpcBrain;
 
-            CancelFocusSpell();
+				if (ad.Target is GamePlayer)
+				{
+					LastAttackTickPvP = GameLoop.GameLoopTime;
+					if (brain != null)
+						brain.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+				}
+				else
+				{
+					LastAttackTickPvE = GameLoop.GameLoopTime;
+					if (brain != null)
+						brain.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+				}
+			}
+
+			CancelFocusSpell();
         }
 
         public void CancelFocusSpell(bool moving = false)
@@ -4411,25 +4421,38 @@ namespace DOL.GS
 				}
             }
 
-            if (this is GamePet pet)
+            if (this is GameNPC npc && npc.Brain is ControlledNpcBrain pBrain || this is GamePet pet)
             {
-				if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+				var ownerEffects = new List<ECSGameEffect>(1);
+				pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
+				pet = this as GamePet;
+				if (pBrain != null)
 				{
-					var ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff]; //EffectListService.GetEffectOnTarget(pet.Owner, eEffect.MovementSpeedBuff);
-					//foreach (var ownerEffect in ownerEffects)
-					for (int i = 0; i < ownerEffects.Count; i++)
+					if (pBrain.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 					{
-						if (!isAttacker && ownerEffects[i] is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
-						{
-							effectRemoved = false;
-						}
-						else
-						{
-							EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
-							effectRemoved = true;
-						}
+						ownerEffects = pBrain.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff];
 					}
 				}
+				else
+                {
+					if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+					{
+						ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff];
+					}
+				}
+
+				for (int i = 0; i < ownerEffects.Count; i++)
+				{
+					if (!isAttacker && ownerEffects[i] is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
+					{
+						effectRemoved = false;
+					}
+					else
+					{
+						EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
+						effectRemoved = true;
+					}
+				}				
             }
 
             return effectRemoved;
