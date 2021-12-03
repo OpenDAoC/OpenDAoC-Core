@@ -125,6 +125,14 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             return;
         }
 
+        //handle pet movement
+        if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
+            brain.Follow(brain.Owner);
+        if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
+        {
+            brain.Goto(brain.Body.TargetObject);
+        }
+
         brain.CheckSpells(eCheckSpellType.Offensive);
         
 
@@ -171,10 +179,10 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.AttackMostWanted();
         }
 
-        if(brain.Body.TargetObject == null && !brain.Body.IsCasting)
-        {
-            brain.FollowOwner();
-        }
+        //if(brain.Body.TargetObject == null && !brain.Body.IsCasting)
+        //{
+        //    brain.FollowOwner();
+        //}
 
     }
 }
