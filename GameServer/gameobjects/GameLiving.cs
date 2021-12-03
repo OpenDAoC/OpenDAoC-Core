@@ -4146,7 +4146,13 @@ namespace DOL.GS
 			{
 				var brain = npc.Brain as ControlledNpcBrain;
 
-				if (ad.Target is GamePlayer)
+
+				GamePlayer owner = brain?.GetPlayerOwner();
+
+                if (owner != null)
+                    owner.Stealth(false);
+
+                if (ad.Target is GamePlayer)
 				{
 					LastAttackTickPvP = GameLoop.GameLoopTime;
 					if (brain != null)

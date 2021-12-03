@@ -939,10 +939,10 @@ namespace DOL.GS
                 if ((p.Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
                     return;
 
-                GamePlayer owner = null;
+                //GamePlayer owner = null;
 
-                if ((owner = ((IControlledBrain)p.Brain).GetPlayerOwner()) != null)
-                    owner.Stealth(false);
+                //if ((owner = ((IControlledBrain)p.Brain).GetPlayerOwner()) != null)
+                //    owner.Stealth(false);
             }
 
             // TODO: need to look into these timers
