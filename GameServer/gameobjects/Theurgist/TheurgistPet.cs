@@ -14,10 +14,14 @@ namespace DOL.GS
 		public override void OnAttackedByEnemy(AttackData ad) 
 		{
 			if (ad != null && (ad.CausesCombat || ad.IsSpellResisted))
-				Console.WriteLine("IsCasting: " + castingComponent.IsCasting);
-				if (castingComponent != null && castingComponent.IsCasting && castingComponent.spellHandler.CastStartTick + (CurrentSpellHandler as SpellHandler).CalculateCastingTime() / 2 < GameLoop.GameLoopTime) { Console.WriteLine("No Melee"); }
+			{
+				if (castingComponent != null && castingComponent.IsCasting && castingComponent.spellHandler.CastStartTick + (CurrentSpellHandler as SpellHandler).CalculateCastingTime() / 2 < GameLoop.GameLoopTime)
+				{
+					InterruptTime = 0;
+				}
 				else
-					(Brain as TheurgistPetBrain).Melee = true; 
+					(Brain as TheurgistPetBrain).Melee = true;
+			}
 		}
 
         public override int Health { get => base.Health; set => base.Health = value; }
@@ -67,7 +71,7 @@ namespace DOL.GS
 			{
 				// Now add stats for levelling
 				Strength += (short)Math.Round(10.0 * (Level - 1) * Properties.PET_AUTOSET_STR_MULTIPLIER);
-				//Constitution += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_CON_MULTIPLIER / 2);
+				Constitution += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_CON_MULTIPLIER / 2);
 				Quickness += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_QUI_MULTIPLIER);
 				Dexterity += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_DEX_MULTIPLIER);
 				Intelligence += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_INT_MULTIPLIER);
