@@ -275,6 +275,9 @@ namespace DOL.AI.Brain
 				previousIsStealthed = (target as GamePlayer).IsStealthed;
 
 			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()){	FSM.SetCurrentState(eFSMStateType.AGGRO);}
+			if (target != Body.TargetObject && Body.IsCasting)
+				Body.StopCurrentSpellcast();
+
     //        if (Body.CanCastHarmfulSpells)
     //        {
 				//CheckSpells(eCheckSpellType.Offensive);
