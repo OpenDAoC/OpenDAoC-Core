@@ -4118,6 +4118,9 @@ namespace DOL.GS
 			if (effectListComponent is null)
                 return;
 
+			if (this is GamePlayer player)
+				player.Stealth(false);
+
 			TryCancelMovementSpeedBuffs(true);
 
 			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
