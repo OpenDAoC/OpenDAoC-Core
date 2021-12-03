@@ -1,4 +1,6 @@
+using DOL.AI.Brain;
 using DOL.GS.ServerProperties;
+using DOL.GS.Spells;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +11,14 @@ namespace DOL.GS
 	{
 		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
 
-		public override void OnAttackedByEnemy(AttackData ad) { /* do nothing */ }
+		public override void OnAttackedByEnemy(AttackData ad) 
+		{
+			if (ad != null && (ad.CausesCombat || ad.IsSpellResisted))
+				Console.WriteLine("IsCasting: " + castingComponent.IsCasting);
+				if (castingComponent != null && castingComponent.IsCasting && castingComponent.spellHandler.CastStartTick + (CurrentSpellHandler as SpellHandler).CalculateCastingTime() / 2 < GameLoop.GameLoopTime) { Console.WriteLine("No Melee"); }
+				else
+					(Brain as TheurgistPetBrain).Melee = true; 
+		}
 
         public override int Health { get => base.Health; set => base.Health = value; }
 

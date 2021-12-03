@@ -1576,7 +1576,7 @@ namespace DOL.GS
 			BroadcastUpdate();
 		}
 
-		public const int STICKMINIMUMRANGE = 100;
+		public const int STICKMINIMUMRANGE = 75;
 		public const int STICKMAXIMUMRANGE = 5000;
 
 		/// <summary>

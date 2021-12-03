@@ -6978,7 +6978,7 @@ namespace DOL.GS
 
 		public virtual bool IsCasting
 		{
-			get { return m_runningSpellHandler != null && m_runningSpellHandler.IsCasting; }
+			get { return castingComponent != null && castingComponent.spellHandler != null && castingComponent.spellHandler.IsCasting; }
 		}
 
 		/// <summary>
