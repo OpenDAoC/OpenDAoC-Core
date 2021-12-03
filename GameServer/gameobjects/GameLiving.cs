@@ -4142,6 +4142,15 @@ namespace DOL.GS
 				tw.EventHandler(ad);
             }
 
+			if (ad.Target is GamePlayer)
+			{
+				LastAttackTickPvP = GameLoop.GameLoopTime;
+			}
+			else
+			{
+				LastAttackTickPvE = GameLoop.GameLoopTime;
+			}
+
 			if (this is GameNPC npc)
 			{
 				var brain = npc.Brain as ControlledNpcBrain;
