@@ -551,7 +551,7 @@ namespace DOL.AI.Brain
 
             // Check LOS (walls, pits, etc...) before  attacking, player + pet
             // Be sure the aggrocheck is triggered by the brain on Think() method
-            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS)
+            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || this is KeepGuardBrain)
             {
                 GamePlayer thisLiving = null;
                 if (living is GamePlayer)
