@@ -134,7 +134,8 @@ namespace DOL.GS.Keeps
 
 		public override int MaxHealth
 		{
-			get { return GetModified(eProperty.MaxHealth) + (base.Level * 4); }
+			// (base.Level * 4)
+			get { return GetModified(eProperty.MaxHealth) + (base.Level * 2); }
 		}
 
 		private bool m_changingPositions = false;
