@@ -33,6 +33,9 @@ GameStaticItem.GetName.Article2:			the {0}
 Dialog.Header.Content.WebAdmin:                ----- Web Admin Tool -----
 Dialog.Header.Content.MoreInfo:                ----- Additional Info -----
 Dialog.Header.Content.PrivLevels:               ----- Privilege Levels -----
+Dialog.Header.Content.Shutdown:                 ----- Implications of a Shutdown -----
+Dialog.Header.Content.Attention:                 ----- ATTENTION -----
+
 
 # URLs
 Hyperlinks.Atlas.WebAdminTool:                      https://admin.atlasfreeshard.com
