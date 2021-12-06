@@ -703,11 +703,14 @@ namespace DOL.GS.Keeps
 			{
 				banner.ChangeGuild();
 			}
+
+			GameKeepDoor door = new GameKeepDoor();
     		this.SaveIntoDatabase();
             LoadFromDatabase(DBKeep);
+            door.BroadcastDoorStatus();
             StartDeductionTimer();
             GameEventMgr.Notify(KeepEvent.KeepClaimed, this, new KeepEventArgs(this));
-        }
+		}
 
 		/// <summary>
 		/// Starts the deduction timer
