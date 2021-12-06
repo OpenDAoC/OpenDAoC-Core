@@ -2,16 +2,18 @@ Atlas Freeshard - Core
 
 # Changelog
 
+21/12/06 - leftygamer - Added information about accessing the test server, updated AtlasPack information, added info about server properties to remove, fixed incorrect SQL setup commands.
 21/09/14 - leftygamer - Revised to account for removal of `Net5` directory. Changes made to `serverconfig.xml` instruction and building/running the project. Moved **Before You Start** section.
-21/08/31 - leftygamer - Expanded documentation for setting up envrionments for both Ubuntu & Window environments.
+21/08/31 - leftygamer - Expanded documentation for setting up environments for both Ubuntu & Window environments.
 
 # Before You Start
 
 You will need the following files and permissions before you'll be able to complete this process in its entirety. For each of these, please message clait on Discord:
 
-* Download the latest stable copy of `atlasDB.sql`.
-* Receive the `Developer` role on Discord to access team channels.
+* Download the latest stable copy of `AtlasDB`.
+* Receive the `Developer` role (if applicable) on Discord to access team channels.
 * Obtain access to all team forums on the Atlas freeshard website.
+* Check out the [GM Command Library](https://www.atlasfreeshard.com/threads/gm-commands-library.408/) for more information on commands you may use in-game with the Admin or GM privilege level.
 
 # Setting Up an Atlas Dev Environment
 
@@ -57,13 +59,13 @@ The following sections outline the process of preparing your environment to buil
     4. [Installing Git](#installing-git-win)
     5. [Cloning Atlas' Repos](#cloning-the-repository-win)
     6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
-4. [Building Your DoL Server Locally](#building-your-dol-server-locally)
-5. [Accessing Local Servers](#accessing-local-servers)
-6. [Accessing the World Builders' Server](#accessing-the-world-builders-server)
-7. [Testing](#testing)
+4. [Removing Server Properties](#removing-server-properties)
+5. [Building Your DoL Server Locally](#building-your-dol-server-locally)
+6. [Accessing Local Servers](#accessing-local-servers)
+8. [Testing](#testing)
     1. [In-Game Testing](#in-game-testing)
     2. [Recommended Extensions for Testing](#recommended-extensions-for-testing)
-8. [Logging](#logging)
+9. [Logging](#logging)
 
 ## Environment Requirements
 
@@ -152,10 +154,10 @@ If you're already familiar with the process and wish to skip it, just remember t
 3. `SHOW DATABASES;`</li> <!-- Verify that the DB exists -->
 4. `CREATE USER 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- Both username and password must be "atlas" -->
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
-6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- The 'atlas' user may exercise ALL privileges on ALL of your databases -->
-7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;` <!-- The 'atlas' user may only modify the 'atlas' DB -->
+6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost;`.
+7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;`.
 8. `FLUSH PRIVILEGES` <!-- Refreshes the privilege changes -->
-9. `SHOW GRANTS FOR 'atlas'@localhost;` <!-- This lists all privileges granted to the `atlas` user -->
+9. `SHOW GRANTS FOR 'atlas'@localhost;`
 
 #### Configuring `My.cnf` (Ubuntu)
 
@@ -332,8 +334,8 @@ If you're already familiar with the process and wish to skip it, just remember t
 3. `SHOW DATABASES;` <!-- Verify that the DB exists -->
 4. `CREATE USER 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- Both username and password must be "atlas" -->
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
-6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- The 'atlas' user may exercise ALL privileges on ALL of your databases -->
-7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;` <!-- The 'atlas' user may only modify the 'atlas' DB -->
+6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost;`.
+7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;`.
 8. `FLUSH PRIVILEGES` <!-- Refreshes the privilege changes -->
 9. `SHOW GRANTS FOR 'atlas'@localhost;` <!-- This lists all privileges granted to the `atlas` user -->
 
@@ -473,6 +475,15 @@ Depending on your needs, you may need to alter the `serverconfig.xml` file. By d
 
 Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
 
+## Removing Server Properties
+
+The database has webhooks set by default, which sends updates to the #dol channel on the Atlas Discord server regarding a server's accessibility. However, if these properties are left untouched on a local instance, they create some confusion among the staff regarding the status of the live server because each time a local instance is built, it sends an update to the channel saying the server is available for connections. Thus, it is requested that all staff remove the associated server properties prior to running a local instance of Atlas.
+
+From the `serverproperty` table, set the booleans under the *Value* column to `False` (or just delete them) for the following properties:
+
+* `Discord_Webhook_Active`
+* `serverlistupdate_enabled`
+
 ## Building Your DoL Server Locally
 
 This section provides the commands necessary for both building and running a DoL server locally.
@@ -489,16 +500,17 @@ Congratulations! You're now running an instance of Atlas on your machine.
 In order to access either local builds of Atlas or the World Builders' server, you need to have the DAoC client installed and equipped with the right files.
 
 1. Download the full [DAoC Client](https://darkageofcamelot.com/sites/daoc/files/downloads/DAoCSetup.exe).
-2. Install it, launch the application, and then download all patches.
-3. Log in on the Atlas forums and download the [AtlasPack](https://www.atlasfreeshard.com/files/AtlasPack-0.2.zip) and [AtlasDF](https://www.atlasfreeshard.com/files/AtlasDF.zip).
-4. Extract the files.
-5. Place everything from `AtlasPack` into the base directory (e.g., `C:\Program Files (x86)\Electronic Arts\Dark Age of Camelot\`). Replace any files affected when prompted.
-6. Place the `zones` folder from `AtlasDF` onto the `zones` folder in the same directory as was used for `AtlasPack`.
-7. Download the [DAoCPortal](https://sourceforge.net/projects/dolserver/files/DAOC%20Portal/DAoCPortalSetup.msi/download) app and install it.
+2. Install it, launch the DAoC application, and then download all patches.
 
-The client is ready for all Atlas servers.
+> **NOTE:** You **MUST** patch DAoC fully before installing the AtlasPack, as you will encounter zone loading issues otherwise. The DAoC patch will overwrite any files you install from the AtlasPack.
 
-## Accessing Local Servers
+3. Navigate to the Atlas freeshard website and download the [AtlasPack](https://www.atlasfreeshard.com/how-to-connect/).
+4. Run the `.exe` file downloaded and specify the location of your DAoC install. This will automatically extract and replace existing DAoC files with Atlas-specific assets.
+5. (Optional) If you wish to log in to your local Atlas builds, download the [DAoCPortal](http://www.dolserver.net/viewtopic.php?f=63&t=23275) app and install it. Ignore any virus warnings.
+
+You may now access Atlas-specific servers. For additional information, see [Accessing Local Servers](#), [Accessing the Test Server](#), and [Accessing the Live Atlas Server](#).
+
+## Accessing Your Local Server
 
 Once you've built your Atlas server and it's running locally, you can now access it using the DAoC client and DAoCPortal.
 
@@ -513,24 +525,45 @@ Once you've built your Atlas server and it's running locally, you can now access
 7. Click **OK**.
 8. Click on the desired server.
 9. Provide a value for **User** (Username) and **Pass** (Password).
-10. Click **Play!**
+10. Click **Play!**.
 
-The DAoC client launches and creates a new account based on the credentials you entered. You should be brought to the character selection screen now.
+The DAoC client launches and creates a new account based on the credentials you entered (unless the account already exists, then it just accesses the existing account if the credentials are correect). You should be brought to the character selection screen.
 
-## Accessing the World Builders' Server
+## Accessing the Test Server
 
-The World Builders all currently access a single live instance of the Atlas server to populate the regions with NPCs, mobs, and so on.
+To test out existing functionality or make a commit/branch available to other Atlas staff, the private test server (PTR) is available.
 
-> **TO GAIN ACCESS:** You must first request an account from clait to access this server. He will provide you with a regular (`plvl1`) account. Should you require additional capabilities as a World Builder/GameMaster (`plvl2`) or Administrator (`plvl3`), an additional account will be provided with the necessary privileges.
+> **NOTE:** If no branch or commit is currently being tested here, send all requests to Clait and he will update the server where possible. You should then communicate with the team what changes are available on PTR. 
 
-> **NOTE:** This is not intended as a "play" server, as reckless use of GM commands can negatively impact the work of the World Builders. If you are unfamiliar with GM commands, we ask that you use them with caution (or on your own environment) and respect the work the Builders have already done.
+> **NOTE:** This environment is intended for testing purposes, so do not be afraid of breaking anything (though we ask that you not break anything out of malicious intent). For example, if you are unfamiliar with GM commands, PTR is an excellent environment in which to try them out.
 
-1. From the base directory of the DAoC client, execute the `AtlasLauncher` application.
-2. Enter your login credentials and click **PLAY**.
+1. Create a new text file with the following format:
 
-This should launch the DAoC client and then the character selection screen.
+```
+start /d "<pathToDAoCFolder>" connect.exe game1127.dll 144.76.41.4:10325 <yourAccountName> <yourAccountPassword>
+```
 
-**If you are unable to get past the loading screen**, check the `dol` channel on Discord to see if the server is online.
+See the example below:
+
+```
+start /d "C:\Program Files (x86)\Electronic Arts\Dark Age of Camelot" connect.exe game1127.dll 144.76.41.4:10325 myaccount password123
+```
+
+2. Save this file with whatever name you wish, but with the `.bat` extension.
+3. Run the `.bat` file from any folder location. It will automatically launch the DAoC client and connect to the test server.
+
+> **NOTE:** Do not share this test server information with non-Atlas staff as it is intended for internal use only.
+
+## Accessing the Live Atlas Server
+
+Every Atlas staff member is given two accounts to use on the Atlas live server, one with the Player privilege level (your own account to use for ordinary playing, or testing if desired) and another with a privilege level of either GM or Admin (for use in moderating players and assisting/troubleshooting issues via GM commands).
+
+> **NOTE:** If you do not already have these accounts set up, please notify Clait and he will create account(s) with the necessary privilege level.
+
+1. Navigate to your DAoC install folder and run `connect.exe`.
+2. Enter your login credentials and log in.
+
+You're on the Atlas live server!
 
 ## Testing
 
