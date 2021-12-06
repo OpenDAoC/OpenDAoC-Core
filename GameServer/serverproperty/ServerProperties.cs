@@ -2545,7 +2545,13 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "event_solo_pop", "Minimum server population required to enable the solo zone", 0)]
 		public static int EVENT_SOLO_POP;
-
+		
+		/// <summary>
+		/// Allow claiming of BG keeps
+		/// </summary>
+		[ServerProperty("atlas", "allow_bg_claim", "Allow claiming of BG keeps", false)]
+		public static bool ALLOW_BG_CLAIM;
+		
 		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>
