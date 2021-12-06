@@ -606,12 +606,14 @@ namespace DOL.GS.Keeps
 				player.Out.SendMessage("The keep is not owned by your realm.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
 				return false;
 			}
-
-			if (this.DBKeep.BaseLevel != 50)
-			{
-				player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
-			}
+			
+			// Disabled check on Keep.BaseLevel to allow claiming of BG keeps
+			
+			// if (this.DBKeep.BaseLevel != 50)
+			// {
+			// 	player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			// 	return false;
+			// }
 
 			if (player.Guild == null)
 			{
