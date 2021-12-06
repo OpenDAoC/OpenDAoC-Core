@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DOL.GS;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
+using System.Xml;
 
 namespace DOL.GS.API
 {
@@ -22,80 +20,72 @@ namespace DOL.GS.API
             app.MapGet("/hello", () => "Hello World");
 
             app.MapGet("/players", async c =>
-                await c.Response.WriteAsJsonAsync(WorldMgr.GetAllClientsCount()));
-
-            app.MapGet("/json", async c =>
-                await c.Response.WriteAsJsonAsync(GetPlayers()));
+                await c.Response.WriteAsync(GetPlayers()));
             
-            app.MapGet("/longshot", async c =>
-                await c.Response.WriteAsJsonAsync(WorldMgr.GetAllClients().Select(x => x.Player.Realm == eRealm.Albion ? "Albion" : "Midgard")));
-
             app.Run();
         }
         
-        public class RealmCount
+        public class PlayerCount
         {
-            public string name;
-            public int count;
-
-            public RealmCount(string name, int count)
-            {
-                this.name = name;
-                this.count = count;
-            }
+            public int Albion {get; set;}
+            public int Midgard {get; set;}
+            public int Hibernia {get; set;}
+            public int Total {get; set;}
         }
-
-        private List<RealmCount> realmCount = new List<RealmCount>();
-
-        public IList<string> GetPlayers()
+        
+        public string GetPlayers()
         {
+            IList<GameClient> clients = WorldMgr.GetAllClients();
+            int Albion = 0, Midgard = 0, Hibernia = 0, Total = 0;
 
+            foreach (GameClient c in clients)
             {
-                IList<GameClient> clients = WorldMgr.GetAllClients();
-                IList<string> output = new List<string>();
-                
-                realmCount.Clear();
-                realmCount.Add(new RealmCount("Albion", 0)); //0
-                realmCount.Add(new RealmCount("Midgard", 0)); //1
-                realmCount.Add(new RealmCount("Hibernia", 0)); //2
-                realmCount.Add(new RealmCount("Total", 0)); //3
+                if (c == null)
+                    continue;
 
-                foreach (GameClient c in clients)
+                #region realm specific counting
+
+                switch (c.Player.Realm)
                 {
-                    if (c == null)
-                        continue;
-
-                    #region realm specific counting
-
-                    switch (c.Player.Realm)
-                    {
-                        case eRealm.Albion:
-                            realmCount[0].count++;
-                            realmCount[3].count++;
-                            break;
-                        case eRealm.Midgard:
-                            realmCount[1].count++;
-                            realmCount[3].count++;
-                            break;
-                        case eRealm.Hibernia:
-                            realmCount[2].count++;
-                            realmCount[3].count++;
-                            break;
-                        default:
-                            realmCount[3].count++;
-                            break;
-                    }
-
-                    #endregion
+                    case eRealm.Albion:
+                        Albion++;
+                        Total++;
+                        break;
+                    case eRealm.Midgard:
+                        Midgard++;
+                        Total++;
+                        break;
+                    case eRealm.Hibernia:
+                        Hibernia++;
+                        Total++;
+                        break;
+                    default:
+                        Total++;
+                        break;
                 }
-                for (int c = 0; c < realmCount.Count; c++)
-                {
-                    output.Add(string.Format("{0}: {1}", realmCount[c].name, realmCount[c].count.ToString()));
-                }
-                return output;
-                // return realmCount;
+
+                #endregion
             }
+            
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+            
+
+            var playerCount = new PlayerCount
+            {
+                Albion = Albion,
+                Midgard = Midgard,
+                Hibernia = Hibernia,
+                Total = Total
+            };
+
+            string jsonString = JsonSerializer.Serialize(playerCount,options);
+            return jsonString;
         }
+        
+        
     }
 }
         
