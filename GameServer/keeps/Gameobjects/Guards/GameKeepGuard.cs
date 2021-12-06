@@ -134,7 +134,8 @@ namespace DOL.GS.Keeps
 
 		public override int MaxHealth
 		{
-			get { return GetModified(eProperty.MaxHealth) + (base.Level * 4); }
+			// (base.Level * 4)
+			get { return GetModified(eProperty.MaxHealth) + (base.Level * 2); }
 		}
 
 		private bool m_changingPositions = false;
@@ -864,6 +865,7 @@ namespace DOL.GS.Keeps
 			return s;
 		}
 
+		/*
 		#region Database
 
 		string m_dataObjectID = "";
@@ -885,7 +887,7 @@ namespace DOL.GS.Keeps
 					Component.Keep = keepArea.Keep;
 					m_dataObjectID = mobobject.ObjectId;
 					// mob reload command might be reloading guard, so check to make sure it isn't already added
-					if (Component.Keep?.Guards?.ContainsKey(sKey) == false)
+					if (Component.Keep.Guards.ContainsKey(sKey) == false)
 						Component.Keep.Guards.Add(sKey, this);
 					// break; This is a bad idea.  If there are multiple KeepAreas, we should put a guard on each
 				}
@@ -893,6 +895,35 @@ namespace DOL.GS.Keeps
 
 			RefreshTemplate();
 		}
+		*/
+		string m_dataObjectID = "";
+
+        #region Database
+        /// <summary>
+        /// Load the guard from the database
+        /// </summary>
+        /// <param name="mobobject">The database mobobject</param>
+        public override void LoadFromDatabase(DataObject mobobject)
+		{
+			base.LoadFromDatabase(mobobject);
+			foreach (AbstractArea area in this.CurrentAreas)
+			{
+				if (area is KeepArea)
+				{
+					AbstractGameKeep keep = (area as KeepArea).Keep;
+					Component = new GameKeepComponent();
+					Component.Keep = keep;
+					m_dataObjectID = mobobject.ObjectId;
+					// mob reload command might be reloading guard, so check to make sure it isn't already added
+					if (Component.Keep.Guards.ContainsKey(m_dataObjectID) == false)
+					{
+						Component.Keep.Guards.Add(m_dataObjectID, this);
+					}
+					break;
+				}
+			}
+			RefreshTemplate();			
+		}		
 
 		public void DeleteObject()
 		{

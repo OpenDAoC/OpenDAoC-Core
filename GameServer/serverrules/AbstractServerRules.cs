@@ -1755,10 +1755,11 @@ namespace DOL.GS.ServerRules
 				{
                     foreach (var player in playersToAward)
                     {
-						//Console.WriteLine($"Generating ROG for {player}");
-						AtlasROGManager.GenerateROG(player, true);
-						AtlasROGManager.GenerateOrbs(player);
-					}
+	                    AtlasROGManager.GenerateOrbs(player);
+	                    if (!player.ReceiveROG) continue;
+	                    //Console.WriteLine($"Generating ROG for {player}");
+	                    AtlasROGManager.GenerateROG(player, true);
+                    }
 				}
 
 				if (ServerProperties.Properties.LOG_PVP_KILLS && playerKillers.Count > 0)

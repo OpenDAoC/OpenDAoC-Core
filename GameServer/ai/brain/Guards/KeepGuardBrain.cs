@@ -27,7 +27,7 @@ namespace DOL.AI.Brain
 			: base()
 		{
 			AggroLevel = 90;
-			AggroRange = 1500;
+			AggroRange = 1000;
 		}
 
 		public void SetAggression(int aggroLevel, int aggroRange)
