@@ -93,18 +93,19 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			//if we are not doing an action, let us see if we should move somewhere
-			if (guard.CurrentSpellHandler == null && !guard.IsMoving && !guard.attackComponent.AttackState && !guard.InCombat)
-			{
-				// Tolakram - always clear the aggro list so if this is done by mistake the list will correctly re-fill on next think
-				ClearAggroList();
+			////if we are not doing an action, let us see if we should move somewhere
+			//if (guard.CurrentSpellHandler == null && !guard.IsMoving && !guard.attackComponent.AttackState && !guard.InCombat)
+			//{
+			//	// Tolakram - always clear the aggro list so if this is done by mistake the list will correctly re-fill on next think
+			//	ClearAggroList();
 
-				if (guard.GetDistanceTo(guard.SpawnPoint, 0) > 50)
-				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-					//guard.WalkToSpawn();
-				}
-			}
+			//	if (guard.GetDistanceTo(guard.SpawnPoint, 0) > 50)
+			//	{
+			//		FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+			//		//guard.WalkToSpawn();
+			//	}
+			//}
+
 			//Eden - Portal Keeps Guards max distance
             if (guard.Level > 200 && !guard.IsWithinRadius(guard.SpawnPoint, 2000))
 			{
