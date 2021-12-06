@@ -168,11 +168,17 @@ namespace DOL.GS
 								mount.Size = 45;
 								break;
 							case eRace.Frostalf:
+								mount.Size = 48;
+								break;
 							case eRace.Shar:
 								mount.Size = 48;
 								break;
 							case eRace.Briton:
+								mount.Size = 50;
+								break;
 							case eRace.Saracen:
+								mount.Size = 48;
+								break;
 							case eRace.Celt:
 								mount.Size = 50;
 								break;
@@ -180,18 +186,32 @@ namespace DOL.GS
 								mount.Size = 52;
 								break;
 							case eRace.Avalonian:
+								mount.Size = 52;
+								break;
 							case eRace.Highlander:
+								mount.Size = 55;
+								break;
 							case eRace.Norseman:
+								mount.Size = 50;
+								break;
 							case eRace.Elf:
+								mount.Size = 52;
+								break;
 							case eRace.Sylvan:
 								mount.Size = 55;
 								break;
 							case eRace.Firbolg:
-								mount.Size=62;
+								mount.Size = 62;
 								break;
 							case eRace.HalfOgre:
+								mount.Size = 62;
+								break;
 							case eRace.AlbionMinotaur:
+								mount.Size = 65;
+								break;
 							case eRace.MidgardMinotaur:
+								mount.Size = 65;
+								break;
 							case eRace.HiberniaMinotaur:
 								mount.Size = 65;
 								break;
@@ -199,7 +219,7 @@ namespace DOL.GS
 								mount.Size = 67;
 								break;
 							default:
-								mount.Size = 55;
+								mount.Size = 50;
 								break;
 						}
 
