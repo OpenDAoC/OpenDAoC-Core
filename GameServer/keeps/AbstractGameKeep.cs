@@ -607,13 +607,12 @@ namespace DOL.GS.Keeps
 				return false;
 			}
 			
-			// Disabled check on Keep.BaseLevel to allow claiming of BG keeps
-			
-			// if (this.DBKeep.BaseLevel != 50)
-			// {
-			// 	player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			// 	return false;
-			// }
+			// Disabled check on DBKeep.BaseLevel to allow claiming of BG keeps
+			if (this.DBKeep.BaseLevel != 50 && !ServerProperties.Properties.ALLOW_BG_CLAIM)
+			{
+			 	player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			 	return false;
+			}
 
 			if (player.Guild == null)
 			{
