@@ -29,7 +29,7 @@ namespace DOL.GS
 		public GameTaxi() : base()
 		{
 			Model = 449;
-			MaxSpeedBase = 600;
+			MaxSpeedBase = 400;
 			Size = 50;
 			Level = 63;
 			Name = "horse";
