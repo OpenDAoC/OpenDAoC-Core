@@ -864,38 +864,7 @@ namespace DOL.GS.Keeps
 			}
 			return s;
 		}
-
-		/*
-		#region Database
-
-		string m_dataObjectID = "";
-
-		/// <summary>
-		/// Load the guard from the database
-		/// </summary>
-		/// <param name="mobobject">The database mobobject</param>
-		public override void LoadFromDatabase(DataObject mobobject)
-		{
-			if (mobobject == null) return;
-			base.LoadFromDatabase(mobobject);
-			string sKey = mobobject.ObjectId;
-			foreach (AbstractArea area in this.CurrentAreas)
-			{
-				if (area is KeepArea keepArea)
-				{
-					Component = new GameKeepComponent();
-					Component.Keep = keepArea.Keep;
-					m_dataObjectID = mobobject.ObjectId;
-					// mob reload command might be reloading guard, so check to make sure it isn't already added
-					if (Component.Keep.Guards.ContainsKey(sKey) == false)
-						Component.Keep.Guards.Add(sKey, this);
-					// break; This is a bad idea.  If there are multiple KeepAreas, we should put a guard on each
-				}
-			}
-
-			RefreshTemplate();
-		}
-		*/
+		
 		string m_dataObjectID = "";
 
         #region Database
