@@ -112,6 +112,9 @@ internal class Player
         {
             var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
             
+            if (player == null)
+                return "Player not found";
+            
             playerInfo = new PlayerInfo()
             {
                 Name = player.Name,
