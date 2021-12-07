@@ -28,44 +28,17 @@ internal class Player
     {
         if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
         {
-            IList<GameClient> clients = WorldMgr.GetAllClients();
-            int Albion = 0, Midgard = 0, Hibernia = 0, Total = 0;
-
-            foreach (GameClient c in clients)
-            {
-                if (c == null)
-                    continue;
-
-                #region realm specific counting
-
-                switch (c.Player.Realm)
-                {
-                    case eRealm.Albion:
-                        Albion++;
-                        Total++;
-                        break;
-                    case eRealm.Midgard:
-                        Midgard++;
-                        Total++;
-                        break;
-                    case eRealm.Hibernia:
-                        Hibernia++;
-                        Total++;
-                        break;
-                    default:
-                        Total++;
-                        break;
-                }
-
-                #endregion
-            }
+            int clients = WorldMgr.GetAllPlayingClientsCount();
+            int AlbPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
+            int MidPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
+            int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
 
             playerCount = new PlayerCount
             {
-                Albion = Albion,
-                Midgard = Midgard,
-                Hibernia = Hibernia,
-                Total = Total
+                Albion = AlbPlayers,
+                Midgard = MidPlayers,
+                Hibernia = HibPlayers,
+                Total = clients
             };
 
             _cache.Set(_playerCountCacheKey, playerCount, DateTime.Now.AddMinutes(1));
