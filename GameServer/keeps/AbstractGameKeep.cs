@@ -897,6 +897,8 @@ namespace DOL.GS.Keeps
 
 				guard.Level = (byte)(GetBaseLevel(guard) + (bonusLevel * multiplier));
 			}
+
+			guard.StartHealthRegeneration();
 		}
 
 
