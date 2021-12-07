@@ -124,10 +124,11 @@ internal class Player
                 KillsMidgardSolo = player.KillsMidgardSolo,
                 KillsHiberniaSolo = player.KillsHiberniaSolo
             };
+            
+            _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
+            
         }
-        
-        _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
-        
+
         var options = new JsonSerializerOptions()
         {
             WriteIndented = true
