@@ -17,6 +17,7 @@ namespace DOL.GS.API
     internal class ApiHost
     {
         private readonly Player _player;
+        private readonly Guild _guild;
 
         public ApiHost()
         {
@@ -51,6 +52,7 @@ namespace DOL.GS.API
             
             
             _player = new Player();
+            _guild = new Guild();
             
             // stats
             app.MapGet("/stats", async c =>
@@ -63,12 +65,37 @@ namespace DOL.GS.API
                 
                 if (playerInfo == null)
                 {
-                    return Results.NotFound();
+                    return Results.NotFound("Player not found");
                 }
-                
                 return Results.Ok(playerInfo);
                 
             });
+            
+            // guild
+            app.MapGet("/guild", () => "Usage /guild/{guildName}");
+            app.MapGet("/guild/{guildName}", (string guildName) =>
+            {
+                var guildInfo = _guild.GetGuildInfo(guildName);
+                
+                if (guildInfo == null)
+                {
+                    return Results.NotFound("Guild not found");
+                }
+                return Results.Ok(guildInfo);
+                
+            });
+            
+            // app.MapGet("/guild/{guildName}/members", (string guildName) =>
+            // {
+            //     var guildMembers = _guild.GetGuildMembers(guildName);
+            //     
+            //     if (guildMembers == null)
+            //     {
+            //         return Results.NotFound();
+            //     }
+            //     return Results.Ok(guildMembers);
+            //     
+            // });
             
             app.Run();
         }

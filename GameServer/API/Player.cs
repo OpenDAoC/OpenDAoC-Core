@@ -133,9 +133,7 @@ internal class Player
             WriteIndented = true
         };
         
-        string jsonString = JsonSerializer.Serialize(playerInfo,options);
         return playerInfo;
-        // return jsonString;
     }
 
     #endregion

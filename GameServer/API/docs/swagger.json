@@ -19,6 +19,10 @@
       "description": "Everything about server statistics"
     },
     {
+      "name": "guild",
+      "description": "Everything about Guilds"
+    },
+    {
       "name": "player",
       "description": "Everything about Players"
     }
@@ -45,6 +49,43 @@
           },
           "500": {
             "description": "Stats not found"
+          }
+        }
+      }
+    },
+    "/guild/{guildName}": {
+      "get": {
+        "tags": [
+          "guild"
+        ],
+        "summary": "Find guilds by name",
+        "description": "Returns a single guild",
+        "operationId": "getGuildByName",
+        "parameters": [
+          {
+            "name": "guildName",
+            "in": "path",
+            "description": "Name of the guild to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/guild"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Guild not found"
           }
         }
       }
@@ -96,10 +137,6 @@
     "schemas": {
       "stats": {
         "type": "object",
-        "required": [
-          "name",
-          "photoUrls"
-        ],
         "properties": {
           "Albion": {
             "type": "integer",
@@ -116,6 +153,38 @@
           "Total": {
             "type": "integer",
             "example": 478
+          }
+        }
+      },
+      "guild": {
+        "type": "object",
+        "required": [
+          "Name"
+        ],
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Clan Cotswold"
+          },
+          "realmID": {
+            "type": "integer",
+            "example": 1
+          },
+          "realm": {
+            "type": "string",
+            "example": "Albion"
+          },
+          "emblem": {
+            "type": "integer",
+            "example": 0
+          },
+          "realmPoints": {
+            "type": "integer",
+            "example": 77845992
+          },
+          "bountyPoints": {
+            "type": "integer",
+            "example": 24669
           }
         }
       },
