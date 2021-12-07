@@ -7,10 +7,14 @@ using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Xml;
 
+using Microsoft.Extensions.Caching.Memory;
+
 namespace DOL.GS.API
 {
     internal class ApiHost
     {
+        private readonly Player _player;
+
         public ApiHost()
         {
             var builder = WebApplication.CreateBuilder();
@@ -19,72 +23,14 @@ namespace DOL.GS.API
 
             app.MapGet("/hello", () => "Hello World");
 
+            _player = new Player();
             app.MapGet("/players", async c =>
-                await c.Response.WriteAsync(GetPlayers()));
+                await c.Response.WriteAsync(_player.GetPlayerCount()));
+            
+            app.MapGet("/who/{playerName}", (string playerName) => _player.GetPlayerInfo(playerName));
             
             app.Run();
         }
-        
-        public class PlayerCount
-        {
-            public int Albion {get; set;}
-            public int Midgard {get; set;}
-            public int Hibernia {get; set;}
-            public int Total {get; set;}
-        }
-        
-        public string GetPlayers()
-        {
-            IList<GameClient> clients = WorldMgr.GetAllClients();
-            int Albion = 0, Midgard = 0, Hibernia = 0, Total = 0;
-
-            foreach (GameClient c in clients)
-            {
-                if (c == null)
-                    continue;
-
-                #region realm specific counting
-
-                switch (c.Player.Realm)
-                {
-                    case eRealm.Albion:
-                        Albion++;
-                        Total++;
-                        break;
-                    case eRealm.Midgard:
-                        Midgard++;
-                        Total++;
-                        break;
-                    case eRealm.Hibernia:
-                        Hibernia++;
-                        Total++;
-                        break;
-                    default:
-                        Total++;
-                        break;
-                }
-
-                #endregion
-            }
-            
-            var options = new JsonSerializerOptions()
-            {
-                WriteIndented = true
-            };
-            
-
-            var playerCount = new PlayerCount
-            {
-                Albion = Albion,
-                Midgard = Midgard,
-                Hibernia = Hibernia,
-                Total = Total
-            };
-
-            string jsonString = JsonSerializer.Serialize(playerCount,options);
-            return jsonString;
-        }
-        
         
     }
 }
