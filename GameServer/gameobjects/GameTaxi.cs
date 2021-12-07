@@ -29,10 +29,10 @@ namespace DOL.GS
 		public GameTaxi() : base()
 		{
 			Model = 449;
-			MaxSpeedBase = 400;
+			MaxSpeedBase = 550;
 			Size = 50;
-			Level = 63;
-			Name = "horse";
+			Level = 55;
+			Name = "Horse";
 			BlankBrain brain = new BlankBrain();
 			SetOwnBrain(brain);
 		}
