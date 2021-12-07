@@ -57,7 +57,18 @@ namespace DOL.GS.API
                 await c.Response.WriteAsync(_player.GetPlayerCount()));
             // player
             app.MapGet("/player", () => "Usage /player/{playerName}");
-            app.MapGet("/player/{playerName}", (string playerName) => _player.GetPlayerInfo(playerName));
+            app.MapGet("/player/{playerName}", (string playerName) =>
+            {
+                var playerInfo = _player.GetPlayerInfo(playerName);
+                
+                if (playerInfo == null)
+                {
+                    return Results.NotFound();
+                }
+                
+                return Results.Ok(playerInfo);
+                
+            });
             
             app.Run();
         }

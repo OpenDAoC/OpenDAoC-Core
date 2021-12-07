@@ -91,7 +91,7 @@ internal class Player
         }
     }
     
-    public string GetPlayerInfo(string playerName)
+    public PlayerInfo GetPlayerInfo(string playerName)
     {
         string _playerInfoCacheKey = "api_player_info_" + playerName;
 
@@ -100,13 +100,13 @@ internal class Player
             var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
             
             if (player == null)
-                return "Player not found";
+                return null;
             
             playerInfo = new PlayerInfo()
             {
                 Name = player.Name,
                 Lastname = player.LastName,
-                Guild = GuildMgr.GetGuildByGuildID(player.GuildID).Name,
+                Guild = GuildMgr.GetGuildByGuildID(player.GuildID)?.Name,
                 RealmID = player.Realm,
                 Realm = RealmIDtoString(player.Realm),
                 ClassID = player.Class,
@@ -134,7 +134,8 @@ internal class Player
         };
         
         string jsonString = JsonSerializer.Serialize(playerInfo,options);
-        return jsonString;
+        return playerInfo;
+        // return jsonString;
     }
 
     #endregion
