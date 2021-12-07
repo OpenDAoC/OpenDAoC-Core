@@ -1716,7 +1716,10 @@ namespace DOL.GS
 							//StopFollow();
 							Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 							//brain.ClearAggroList();
-							this.WalkToSpawn();
+							//this.WalkToSpawn();
+							LastAttackedByEnemyTickPvE = 0;
+							LastAttackedByEnemyTickPvP = 0;
+							brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 							return 0;
 						}
 					}
