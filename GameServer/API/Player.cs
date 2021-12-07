@@ -62,7 +62,9 @@ internal class Player
         public string Lastname { get; set; }
         public string Guild { get; set; }
         public string Realm { get; set; }
-        public string Class { get; set; }
+        public int RealmID { get; set; }
+        public string ClassName { get; set; }
+        public int ClassID { get; set; }
         public int Level { get; set; }
         public long RealmPoints { get; set; }
         public int RealmRank { get; set; }
@@ -75,6 +77,18 @@ internal class Player
         public int KillsAlbionSolo { get; set; }
         public int KillsMidgardSolo { get; set; }
         public int KillsHiberniaSolo { get; set; }
+    }
+    
+    public static string RealmIDtoString(int realm)
+    {
+        switch (realm)
+        {
+            case 0: return "None";
+            case 1: return "Albion";
+            case 2: return "Midgard";
+            case 3: return "Hibernia";
+            default: return "None";
+        }
     }
     
     public string GetPlayerInfo(string playerName)
@@ -92,9 +106,11 @@ internal class Player
             {
                 Name = player.Name,
                 Lastname = player.LastName,
-                Guild = player.GuildID,
-                Realm = player.Realm.ToString(),
-                Class = player.Class.ToString(),
+                Guild = GuildMgr.GetGuildByGuildID(player.GuildID).Name,
+                RealmID = player.Realm,
+                Realm = RealmIDtoString(player.Realm),
+                ClassID = player.Class,
+                ClassName = ScriptMgr.FindCharacterClass(player.Class).Name,
                 Level = player.Level,
                 RealmPoints = player.RealmPoints,
                 RealmRank = player.RealmLevel,

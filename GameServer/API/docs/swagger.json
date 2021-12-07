@@ -135,20 +135,35 @@
           },
           "Guild": {
             "type": "string",
-            "example": "32f6e224-53d1-4db1-a7ad-68a66f5c4706"
+            "example": "Atlas"
           },
-          "Realm": {
+          "RealmID": {
             "type": "integer",
-            "example": 3,
+            "example": "Albion",
             "enum": [
-              "1 => Albion",
-              "2 => Midgard",
-              "3 => Hibernia"
+              1,
+              2,
+              3,
+              0
             ]
           },
-          "Class": {
+          "Realm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "ClassID": {
             "example": 48,
             "type": "integer"
+          },
+          "ClassName": {
+            "example": "Bard",
+            "type": "string"
           },
           "LeveL": {
             "example": 50,
