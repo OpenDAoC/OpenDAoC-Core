@@ -56,8 +56,14 @@ namespace DOL.GS.Spells
         {
             if (Spell.Target.ToLower() == "pet")
             {
-                target = Caster?.ControlledBrain?.Body;
-                if (target is null)
+                Spell subspell = SkillBase.GetSpellByID(m_spell.SubSpellID);
+
+                if (subspell != null && subspell.IsHealing && Caster?.TargetObject is TurretPet)
+                    target = (GameLiving)Caster.TargetObject;
+                else
+                    target = Caster?.ControlledBrain?.Body;
+
+                if (target is null || !target.IsWithinRadius(Caster, subspell.Range))
                     return;
             }
 
