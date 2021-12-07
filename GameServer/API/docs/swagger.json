@@ -1,0 +1,220 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Use this documentation to navigate the available Atlas APIs",
+    "version": "1.0.0",
+    "title": "AtlasAPI",
+    "termsOfService": "https://www.atlasfreeshard.com",
+    "contact": {
+      "email": "atlas@thisisclait.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "stats",
+      "description": "Everything about server statistics"
+    },
+    {
+      "name": "player",
+      "description": "Everything about Players"
+    }
+  ],
+  "paths": {
+    "/stats": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Get current live population",
+        "description": "Returns live population",
+        "operationId": "getStats",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/stats"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stats not found"
+          }
+        }
+      }
+    },
+    "/player/{playerName}": {
+      "get": {
+        "tags": [
+          "player"
+        ],
+        "summary": "Find player by name",
+        "description": "Returns a single player",
+        "operationId": "getPlayerByName",
+        "parameters": [
+          {
+            "name": "playerName",
+            "in": "path",
+            "description": "Name of the player to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/player"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://api.atlasfreeshard.com/"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "stats": {
+        "type": "object",
+        "required": [
+          "name",
+          "photoUrls"
+        ],
+        "properties": {
+          "Albion": {
+            "type": "integer",
+            "example": 159
+          },
+          "Midgard": {
+            "type": "integer",
+            "example": 156
+          },
+          "Hibernia": {
+            "type": "integer",
+            "example": 163
+          },
+          "Total": {
+            "type": "integer",
+            "example": 478
+          }
+        }
+      },
+      "player": {
+        "type": "object",
+        "required": [
+          "Name"
+        ],
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Player"
+          },
+          "Lastname": {
+            "type": "string",
+            "example": "Lastname"
+          },
+          "Guild": {
+            "type": "string",
+            "example": "Atlas"
+          },
+          "RealmID": {
+            "type": "integer",
+            "example": "Albion",
+            "enum": [
+              1,
+              2,
+              3,
+              0
+            ]
+          },
+          "Realm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "ClassID": {
+            "example": 48,
+            "type": "integer"
+          },
+          "ClassName": {
+            "example": "Bard",
+            "type": "string"
+          },
+          "LeveL": {
+            "example": 50,
+            "type": "integer"
+          },
+          "RealmPoints": {
+            "example": 61750,
+            "type": "integer"
+          },
+          "RealmRank": {
+            "example": 25,
+            "type": "integer"
+          },
+          "KillsAlbionPlayers": {
+            "example": 12,
+            "type": "integer"
+          },
+          "KillsMidgardPlayers": {
+            "example": 45,
+            "type": "integer"
+          },
+          "KillsHiberniaPlayers": {
+            "example": 0,
+            "type": "integer"
+          },
+          "KillsAlbionDeathBlows": {
+            "example": 2,
+            "type": "integer"
+          },
+          "KillsMidgardDeathBlows": {
+            "example": 3,
+            "type": "integer"
+          },
+          "KillsHiberniaDeathBlows": {
+            "example": 0,
+            "type": "integer"
+          },
+          "KillsAlbionSolo": {
+            "example": 1,
+            "type": "integer"
+          },
+          "KillsMidgardSolo": {
+            "example": 1,
+            "type": "integer"
+          },
+          "KillsHiberniaSolo": {
+            "example": 0,
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
