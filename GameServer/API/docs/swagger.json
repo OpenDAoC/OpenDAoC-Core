@@ -5,9 +5,6 @@
     "version": "1.0.0",
     "title": "AtlasAPI",
     "termsOfService": "https://www.atlasfreeshard.com",
-    "contact": {
-      "email": "atlas@thisisclait.com"
-    },
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -234,7 +231,7 @@
             "example": "Bard",
             "type": "string"
           },
-          "LeveL": {
+          "Level": {
             "example": 50,
             "type": "integer"
           },
