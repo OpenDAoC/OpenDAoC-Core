@@ -7,12 +7,19 @@ using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Xml;
 
+using Microsoft.Extensions.Caching.Memory;
+
 namespace DOL.GS.API
 {
     internal class ApiHost
     {
+        private IMemoryCache _cache;
+        private const string _playerCountCacheKey = "api_player_count";
+
         public ApiHost()
         {
+            _cache = new MemoryCache(new MemoryCacheOptions());
+
             var builder = WebApplication.CreateBuilder();
 
             var app = builder.Build();
@@ -32,54 +39,60 @@ namespace DOL.GS.API
             public int Hibernia {get; set;}
             public int Total {get; set;}
         }
+
         
         public string GetPlayers()
         {
-            IList<GameClient> clients = WorldMgr.GetAllClients();
-            int Albion = 0, Midgard = 0, Hibernia = 0, Total = 0;
-
-            foreach (GameClient c in clients)
+            if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
             {
-                if (c == null)
-                    continue;
+                IList<GameClient> clients = WorldMgr.GetAllClients();
+                int Albion = 0, Midgard = 0, Hibernia = 0, Total = 0;
 
-                #region realm specific counting
-
-                switch (c.Player.Realm)
+                foreach (GameClient c in clients)
                 {
-                    case eRealm.Albion:
-                        Albion++;
-                        Total++;
-                        break;
-                    case eRealm.Midgard:
-                        Midgard++;
-                        Total++;
-                        break;
-                    case eRealm.Hibernia:
-                        Hibernia++;
-                        Total++;
-                        break;
-                    default:
-                        Total++;
-                        break;
+                    if (c == null)
+                        continue;
+
+                    #region realm specific counting
+
+                    switch (c.Player.Realm)
+                    {
+                        case eRealm.Albion:
+                            Albion++;
+                            Total++;
+                            break;
+                        case eRealm.Midgard:
+                            Midgard++;
+                            Total++;
+                            break;
+                        case eRealm.Hibernia:
+                            Hibernia++;
+                            Total++;
+                            break;
+                        default:
+                            Total++;
+                            break;
+                    }
+
+                    #endregion
                 }
 
-                #endregion
+                playerCount = new PlayerCount
+                {
+                    Albion = Albion,
+                    Midgard = Midgard,
+                    Hibernia = Hibernia,
+                    Total = Total
+                };
+
+                _cache.Set(_playerCountCacheKey, playerCount, DateTime.Now.AddMinutes(1));
             }
-            
+
             var options = new JsonSerializerOptions()
             {
                 WriteIndented = true
             };
-            
 
-            var playerCount = new PlayerCount
-            {
-                Albion = Albion,
-                Midgard = Midgard,
-                Hibernia = Hibernia,
-                Total = Total
-            };
 
             string jsonString = JsonSerializer.Serialize(playerCount,options);
             return jsonString;
