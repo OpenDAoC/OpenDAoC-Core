@@ -49,23 +49,23 @@
         }
       }
     },
-    "/player/{petId}": {
+    "/player/{playerName}": {
       "get": {
         "tags": [
           "player"
         ],
-        "summary": "Find pet by ID",
-        "description": "Returns a single pet",
-        "operationId": "getPetById",
+        "summary": "Find player by name",
+        "description": "Returns a single player",
+        "operationId": "getPlayerByName",
         "parameters": [
           {
-            "name": "petId",
+            "name": "playerName",
             "in": "path",
-            "description": "ID of pet to return",
+            "description": "Name of the player to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "format": "string"
             }
           }
         ],
@@ -77,310 +77,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/player"
                 }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/player"
-                }
               }
             }
           },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
           "404": {
-            "description": "Pet not found"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Updates a pet in the store with form data",
-        "description": "",
-        "operationId": "updatePetWithForm",
-        "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet that needs to be updated",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "description": "Updated name of the pet",
-                    "type": "string"
-                  },
-                  "status": {
-                    "description": "Updated status of the pet",
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "405": {
-            "description": "Invalid input"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Deletes a pet",
-        "description": "",
-        "operationId": "deletePet",
-        "parameters": [
-          {
-            "name": "api_key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "Pet id to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Pet not found"
-          }
-        }
-      }
-    },
-    "/store/order/{orderId}": {
-      "get": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Find purchase order by ID",
-        "description": "For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions",
-        "operationId": "getOrderById",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "ID of pet that needs to be fetched",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1,
-              "maximum": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/stats"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/stats"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Order not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Delete purchase order by ID",
-        "description": "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors",
-        "operationId": "deleteOrder",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "ID of the order that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Order not found"
-          }
-        }
-      }
-    },
-    "/user/{username}": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Get user by user name",
-        "description": "",
-        "operationId": "getUserByName",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be fetched. Use user1 for testing. ",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/stats"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/stats"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Updated user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "name that need to be updated",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/stats"
-              }
-            }
-          },
-          "description": "Updated user object",
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Invalid user supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Delete user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/user": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Create user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/stats"
-              }
-            }
-          },
-          "description": "Created user object",
-          "required": true
-        },
-        "responses": {
-          "default": {
-            "description": "successful operation"
+            "description": "Player not found"
           }
         }
       }
@@ -421,54 +122,82 @@
       "player": {
         "type": "object",
         "required": [
-          "name",
-          "photoUrls"
+          "Name"
         ],
         "properties": {
-          "id": {
+          "Name": {
+            "type": "string",
+            "example": "Player"
+          },
+          "Lastname": {
+            "type": "string",
+            "example": "Lastname"
+          },
+          "Guild": {
+            "type": "string",
+            "example": "32f6e224-53d1-4db1-a7ad-68a66f5c4706"
+          },
+          "Realm": {
             "type": "integer",
-            "format": "int64"
-          },
-          "category": {
-            "$ref": "#/components/schemas/stats"
-          },
-          "name": {
-            "type": "string",
-            "example": "doggie"
-          },
-          "photoUrls": {
-            "type": "array",
-            "xml": {
-              "wrapped": true
-            },
-            "items": {
-              "type": "string",
-              "xml": {
-                "name": "photoUrl"
-              }
-            }
-          },
-          "tags": {
-            "type": "array",
-            "xml": {
-              "wrapped": true
-            },
-            "items": {
-              "$ref": "#/components/schemas/stats"
-            }
-          },
-          "status": {
-            "type": "string",
-            "description": "pet status in the store",
+            "example": 3,
             "enum": [
-              "available",
-              "pending",
-              "sold"
+              "1 => Albion",
+              "2 => Midgard",
+              "3 => Hibernia"
             ]
+          },
+          "Class": {
+            "example": 48,
+            "type": "integer"
+          },
+          "LeveL": {
+            "example": 50,
+            "type": "integer"
+          },
+          "RealmPoints": {
+            "example": 61750,
+            "type": "integer"
+          },
+          "RealmRank": {
+            "example": 25,
+            "type": "integer"
+          },
+          "KillsAlbionPlayers": {
+            "example": 12,
+            "type": "integer"
+          },
+          "KillsMidgardPlayers": {
+            "example": 45,
+            "type": "integer"
+          },
+          "KillsHiberniaPlayers": {
+            "example": 0,
+            "type": "integer"
+          },
+          "KillsAlbionDeathBlows": {
+            "example": 2,
+            "type": "integer"
+          },
+          "KillsMidgardDeathBlows": {
+            "example": 3,
+            "type": "integer"
+          },
+          "KillsHiberniaDeathBlows": {
+            "example": 0,
+            "type": "integer"
+          },
+          "KillsAlbionSolo": {
+            "example": 1,
+            "type": "integer"
+          },
+          "KillsMidgardSolo": {
+            "example": 1,
+            "type": "integer"
+          },
+          "KillsHiberniaSolo": {
+            "example": 0,
+            "type": "integer"
           }
-        },
-        "xml": {
-          "name": "Pet"
         }
       }
     }
