@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
@@ -69,9 +68,10 @@ internal class Guild
                 RealmPoints = guild.RealmPoints,
                 BountyPoints = guild.BountyPoints
             };
+            
+            _cache.Set(_guildInfoCacheKey, guildInfo, DateTime.Now.AddMinutes(1));
         }
         
-        _cache.Set(_guildInfoCacheKey, guildInfo, DateTime.Now.AddMinutes(1));
 
         return guildInfo;
     }
