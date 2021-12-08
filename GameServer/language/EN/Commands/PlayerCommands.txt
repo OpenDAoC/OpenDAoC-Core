@@ -1,3 +1,7 @@
+# Notes
+AllCommands.Header.Note.Divider:                    --- NOTE: ---
+AllCommands.Header.Note.Dashes:                     --------------
+
 # /FreeLevel
 PLCommands.FreeLevel.AboveMaximumLevel:	You are above the maximum level to obtain a free level.
 PLCommands.FreeLevel.EligibleFreeLevel:	You are eligible for a free level! Click on your trainer to receive it (or type /freelevel decline to discard your free level).
