@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-internal class Player
+public class Player
 {
     private const string _playerCountCacheKey = "api_player_count";
     private IMemoryCache _cache;
@@ -31,16 +31,16 @@ internal class Player
         if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
         {
             int clients = WorldMgr.GetAllPlayingClientsCount();
-            int AlbPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
-            int MidPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
-            int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
+            int albPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
+            int midPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
+            int hibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
             DateTime now = DateTime.Now;
 
             playerCount = new PlayerCount
             {
-                Albion = AlbPlayers,
-                Midgard = MidPlayers,
-                Hibernia = HibPlayers,
+                Albion = albPlayers,
+                Midgard = midPlayers,
+                Hibernia = hibPlayers,
                 Total = clients,
                 Timestamp = now.ToString("dd-MM-yyyy hh:mm tt")
             };
@@ -136,7 +136,6 @@ internal class Player
     }
     public IList<PlayerInfo> GetAllPlayers()
     {
-        
         string _allPlayersCacheKey = "api_all_players";
 
         if (!_cache.TryGetValue(_allPlayersCacheKey, out IList<PlayerInfo> allPlayers))
@@ -151,6 +150,37 @@ internal class Player
                 allPlayers.Add(thisPlayer);
             }
             _cache.Set(_allPlayersCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
+        }
+
+        return allPlayers;
+    }
+    
+    public IList<PlayerInfo> GetPlayersByGuild(string guildName)
+    {
+        string _allPlayerByGuildCacheKey = "api_all_players_" + guildName;
+        
+        if (guildName == null)
+            return null;
+        
+        var guild = GuildMgr.GetGuildByName(guildName);
+        if (guild == null)
+            return null;
+
+        var guildId = guild.GuildID;
+        
+        if (!_cache.TryGetValue(_allPlayerByGuildCacheKey, out IList<PlayerInfo> allPlayers))
+        {
+            allPlayers = new List<PlayerInfo>();
+            var players = DOLDB<DOLCharacters>.SelectObjects(DB.Column("GuildID").IsEqualTo(guildId));
+            
+            foreach (var player in players)
+            {
+                var thisPlayer = GetPlayerInfo(player.Name);
+                if (thisPlayer == null)
+                    continue;
+                allPlayers.Add(thisPlayer);
+            }
+            _cache.Set(_allPlayerByGuildCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
         }
 
         return allPlayers;

@@ -86,17 +86,17 @@ namespace DOL.GS.API
                 
             });
             
-            // app.MapGet("/guild/{guildName}/members", (string guildName) =>
-            // {
-            //     var guildMembers = _guild.GetGuildMembers(guildName);
-            //     
-            //     if (guildMembers == null)
-            //     {
-            //         return Results.NotFound();
-            //     }
-            //     return Results.Ok(guildMembers);
-            //     
-            // });
+            app.MapGet("/guild/{guildName}/members", (string guildName) =>
+            {
+                var guildMembers = _player.GetPlayersByGuild(guildName);
+                
+                if (guildMembers == null)
+                {
+                    return Results.NotFound();
+                }
+                return Results.Ok(guildMembers);
+                
+            });
             
             app.Run();
         }

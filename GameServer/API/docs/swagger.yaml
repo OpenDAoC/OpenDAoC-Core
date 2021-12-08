@@ -33,7 +33,7 @@ paths:
     get:
       tags:
         - stats
-      summary: Get current live population
+      summary: Returns the current live population
       description: Returns live population
       operationId: getStats
       responses:
@@ -65,6 +65,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/guild'
+        '404':
+          description: $guildName not found
+  /guild/{guildName}/members:
+    get:
+      tags:
+        - guild
+      summary: Returns all players in a specific guild
+      description: Returns all players in a guild
+      operationId: getPlayersByGuild
+      parameters:
+        - name: guildName
+          in: path
+          description: Name of the guild of which return players
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allPlayers'
         '404':
           description: $guildName not found
   /player/{playerName}:
