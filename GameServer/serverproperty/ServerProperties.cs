@@ -2553,6 +2553,12 @@ namespace DOL.GS.ServerProperties
 		public static bool ALLOW_BG_CLAIM;
 		
 		/// <summary>
+		/// Text breadcrumbs for players
+		/// </summary>
+		[ServerProperty("atlas", "atlas_bread", "Text breadcrumbs for players", "")]
+		public static string BREAD;
+		
+		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]

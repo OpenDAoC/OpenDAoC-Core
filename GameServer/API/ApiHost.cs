@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using DOL.GS;
-
+﻿using System.IO;
+using DOL.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using System.Text.Json;
-using System.Xml;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
@@ -55,10 +48,6 @@ namespace DOL.GS.API
                 c.Response.Redirect("/docs");
             });
 
-
-                _player = new Player();
-            _guild = new Guild();
-            
             // stats
             app.MapGet("/stats", async c =>
                 await c.Response.WriteAsync(_player.GetPlayerCount()));
@@ -103,6 +92,8 @@ namespace DOL.GS.API
                 
             });
             
+            app.MapGet("/bread", () => Properties.BREAD);
+
             app.Run();
         }
         
