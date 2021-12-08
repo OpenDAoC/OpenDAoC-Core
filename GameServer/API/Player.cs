@@ -24,6 +24,7 @@ internal class Player
         public int Midgard {get; set;}
         public int Hibernia {get; set;}
         public int Total {get; set;}
+        public string Timestamp {get; set;}
     }
     public string GetPlayerCount()
     {
@@ -33,13 +34,15 @@ internal class Player
             int AlbPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
             int MidPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
             int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
+            DateTime now = DateTime.Now;
 
             playerCount = new PlayerCount
             {
                 Albion = AlbPlayers,
                 Midgard = MidPlayers,
                 Hibernia = HibPlayers,
-                Total = clients
+                Total = clients,
+                Timestamp = now.ToString("dd-MM-yyyy hh:mm tt")
             };
 
             _cache.Set(_playerCountCacheKey, playerCount, DateTime.Now.AddMinutes(1));
