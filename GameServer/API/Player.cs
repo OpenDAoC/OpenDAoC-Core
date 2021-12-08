@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 using DOL.Database;
@@ -124,16 +125,32 @@ internal class Player
                 KillsMidgardSolo = player.KillsMidgardSolo,
                 KillsHiberniaSolo = player.KillsHiberniaSolo
             };
+            
+            _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
         }
         
-        _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
-        
-        var options = new JsonSerializerOptions()
-        {
-            WriteIndented = true
-        };
-        
         return playerInfo;
+    }
+    public IList<PlayerInfo> GetAllPlayers()
+    {
+        
+        string _allPlayersCacheKey = "api_all_players";
+
+        if (!_cache.TryGetValue(_allPlayersCacheKey, out IList<PlayerInfo> allPlayers))
+        {
+            allPlayers = new List<PlayerInfo>();
+            var players = DOLDB<DOLCharacters>.SelectAllObjects();
+            foreach (var player in players)
+            {
+                var thisPlayer = GetPlayerInfo(player.Name);
+                if (thisPlayer == null)
+                    continue;
+                allPlayers.Add(thisPlayer);
+            }
+            _cache.Set(_allPlayersCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
+        }
+
+        return allPlayers;
     }
 
     #endregion

@@ -70,6 +70,7 @@ namespace DOL.GS.API
                 return Results.Ok(playerInfo);
                 
             });
+            app.MapGet("/player/all", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
             
             // guild
             app.MapGet("/guild", () => "Usage /guild/{guildName}");

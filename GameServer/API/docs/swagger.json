@@ -123,6 +123,31 @@
           }
         }
       }
+    },
+    "/player/all": {
+      "get": {
+        "tags": [
+          "player"
+        ],
+        "summary": "Returns all players",
+        "description": "Returns all players",
+        "operationId": "getAllPlayers",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/allPlayer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      }
     }
   },
   "servers": [
@@ -185,6 +210,12 @@
           }
         }
       },
+      "allPlayer": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/player"
+        }
+      },
       "player": {
         "type": "object",
         "required": [
@@ -205,7 +236,7 @@
           },
           "RealmID": {
             "type": "integer",
-            "example": "Albion",
+            "example": "3",
             "enum": [
               1,
               2,
@@ -215,7 +246,7 @@
           },
           "Realm": {
             "type": "string",
-            "example": "Albion",
+            "example": "Hibernia",
             "enum": [
               "Albion",
               "Midgard",
