@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -81,6 +82,34 @@ internal class Player
         public int KillsAlbionSolo { get; set; }
         public int KillsMidgardSolo { get; set; }
         public int KillsHiberniaSolo { get; set; }
+
+        public PlayerInfo() { }
+
+        public PlayerInfo(DOLCharacters player)
+        {
+            if (player == null)
+                return;
+
+            Name = player.Name;
+            Lastname = player.LastName;
+            Guild = GuildMgr.GetGuildByGuildID(player.GuildID)?.Name;
+            RealmID = player.Realm;
+            Realm = RealmIDtoString(player.Realm);
+            ClassID = player.Class;
+            ClassName = ScriptMgr.FindCharacterClass(player.Class).Name;
+            Level = player.Level;
+            RealmPoints = player.RealmPoints;
+            RealmRank = player.RealmLevel;
+            KillsAlbionPlayers = player.KillsAlbionPlayers;
+            KillsMidgardPlayers = player.KillsMidgardPlayers;
+            KillsHiberniaPlayers = player.KillsHiberniaPlayers;
+            KillsAlbionDeathBlows = player.KillsAlbionDeathBlows;
+            KillsMidgardDeathBlows = player.KillsMidgardDeathBlows;
+            KillsHiberniaDeathBlows = player.KillsHiberniaDeathBlows;
+            KillsAlbionSolo = player.KillsAlbionSolo;
+            KillsMidgardSolo = player.KillsMidgardSolo;
+            KillsHiberniaSolo = player.KillsHiberniaSolo;
+        }
     }
     
     public static string RealmIDtoString(int realm)
@@ -105,51 +134,27 @@ internal class Player
             
             if (player == null)
                 return null;
-            
-            playerInfo = new PlayerInfo()
-            {
-                Name = player.Name,
-                Lastname = player.LastName,
-                Guild = GuildMgr.GetGuildByGuildID(player.GuildID)?.Name,
-                RealmID = player.Realm,
-                Realm = RealmIDtoString(player.Realm),
-                ClassID = player.Class,
-                ClassName = ScriptMgr.FindCharacterClass(player.Class).Name,
-                Level = player.Level,
-                RealmPoints = player.RealmPoints,
-                RealmRank = player.RealmLevel,
-                KillsAlbionPlayers = player.KillsAlbionPlayers,
-                KillsMidgardPlayers = player.KillsMidgardPlayers,
-                KillsHiberniaPlayers = player.KillsHiberniaPlayers,
-                KillsAlbionDeathBlows = player.KillsAlbionDeathBlows,
-                KillsMidgardDeathBlows = player.KillsMidgardDeathBlows,
-                KillsHiberniaDeathBlows = player.KillsHiberniaDeathBlows,
-                KillsAlbionSolo = player.KillsAlbionSolo,
-                KillsMidgardSolo = player.KillsMidgardSolo,
-                KillsHiberniaSolo = player.KillsHiberniaSolo
-            };
+
+            playerInfo = new PlayerInfo(player);
             
             _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
         }
         
         return playerInfo;
     }
-    public IList<PlayerInfo> GetAllPlayers()
+    public List<PlayerInfo> GetAllPlayers()
     {
         
         string _allPlayersCacheKey = "api_all_players";
 
-        if (!_cache.TryGetValue(_allPlayersCacheKey, out IList<PlayerInfo> allPlayers))
-        {
-            allPlayers = new List<PlayerInfo>();
+        if (!_cache.TryGetValue(_allPlayersCacheKey, out List<PlayerInfo> allPlayers))
+        {            
             var players = DOLDB<DOLCharacters>.SelectAllObjects();
-            foreach (var player in players)
-            {
-                var thisPlayer = GetPlayerInfo(player.Name);
-                if (thisPlayer == null)
-                    continue;
-                allPlayers.Add(thisPlayer);
-            }
+
+            allPlayers = new List<PlayerInfo>(players.Count);
+
+            allPlayers.AddRange(players.Select(x => new PlayerInfo(x)));            
+
             _cache.Set(_allPlayersCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
         }
 
