@@ -30,7 +30,7 @@
         "tags": [
           "stats"
         ],
-        "summary": "Returns the current live population",
+        "summary": "/stats",
         "description": "Returns live population",
         "operationId": "getStats",
         "responses": {
@@ -52,7 +52,7 @@
         "tags": [
           "guild"
         ],
-        "summary": "Find guilds by name",
+        "summary": "/guild/{guildName}",
         "description": "Returns a single guild",
         "operationId": "getGuildByName",
         "parameters": [
@@ -89,7 +89,7 @@
         "tags": [
           "guild"
         ],
-        "summary": "Returns all players in a specific guild",
+        "summary": "/guild/{guildName}/members",
         "description": "Returns all players in a guild",
         "operationId": "getPlayersByGuild",
         "parameters": [
@@ -126,7 +126,7 @@
         "tags": [
           "player"
         ],
-        "summary": "Find player by name",
+        "summary": "/player/{playerName}",
         "description": "Returns a single player",
         "operationId": "getPlayerByName",
         "parameters": [
@@ -163,7 +163,7 @@
         "tags": [
           "player"
         ],
-        "summary": "Returns all players",
+        "summary": "/player/getAll",
         "description": "Returns all players",
         "operationId": "getAllPlayers",
         "responses": {

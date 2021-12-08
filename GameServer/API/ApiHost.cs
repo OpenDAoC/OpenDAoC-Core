@@ -49,9 +49,14 @@ namespace DOL.GS.API
                     spa.Options.SourcePath = webRoot; // source path
                 });
             });
-            
-            
-            _player = new Player();
+
+            app.Map("/", async c =>
+            {
+                c.Response.Redirect("/docs");
+            });
+
+
+                _player = new Player();
             _guild = new Guild();
             
             // stats
