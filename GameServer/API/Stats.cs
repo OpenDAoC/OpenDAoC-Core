@@ -9,7 +9,6 @@ namespace DOL.GS.API;
 
 public class Stats
 {
-    private const string _playerCountCacheKey = "api_player_count";
     private IMemoryCache _cache;
 
     public Stats()
@@ -28,6 +27,8 @@ public class Stats
     }
     public string GetPlayerCount()
     {
+        string _playerCountCacheKey = "api_player_count";
+        
         if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
         {
             int clients = WorldMgr.GetAllPlayingClientsCount();
@@ -55,6 +56,28 @@ public class Stats
         
         string jsonString = JsonSerializer.Serialize(playerCount,options);
         return jsonString;
+    }
+    public IList<Player.PlayerInfo> GetTopRP()
+    {
+        string _topRPKey = "api_top_rp";
+        
+        var _player = new Player();
+        
+        if(!_cache.TryGetValue(_topRPKey, out IList<Player.PlayerInfo> topRP))
+        {
+            topRP = new List<Player.PlayerInfo>();
+
+            Dictionary<string,long> topRpPlayers = DOLDB<DOLCharacters>.SelectObjects(DB.Column("RealmPoints").IsLessThan(7000000)).OrderByDescending(x => x.RealmPoints).Take(10).ToDictionary(x => x.Name, x => x.RealmPoints);
+            
+            foreach (var player in topRpPlayers)
+            {
+                var thisPlayer = _player.GetPlayerInfo(player.Key);
+                topRP.Add(thisPlayer);
+            }
+            
+            _cache.Set(_topRPKey, topRP, DateTime.Now.AddMinutes(60));
+        }
+        return topRP;
     }
     #endregion
 }

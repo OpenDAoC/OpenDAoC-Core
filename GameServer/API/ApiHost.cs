@@ -52,6 +52,17 @@ namespace DOL.GS.API
             // STATS
             app.MapGet("/stats", async c =>
                 await c.Response.WriteAsync(_stats.GetPlayerCount()));
+            app.MapGet("/stats/rp", (string guildName) =>
+            {
+                var TopRpPlayers = _stats.GetTopRP();
+                
+                if (TopRpPlayers == null)
+                {
+                    return Results.NotFound();
+                }
+                return Results.Ok(TopRpPlayers);
+                
+            });
             
             // PLAYER
             app.MapGet("/player", () => "Usage /player/{playerName}");
@@ -61,7 +72,7 @@ namespace DOL.GS.API
                 
                 if (playerInfo == null)
                 {
-                    return Results.NotFound($"Player {playerName} not found");
+                    return Results.NotFound("Not found");
                 }
                 return Results.Ok(playerInfo);
                 
