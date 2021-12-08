@@ -84,26 +84,5 @@ internal class Guild
         return guildInfo;
     }
 
-    public Dictionary<string, DOL.GS.GuildMgr.GuildMemberDisplay> GetGuildMembers(string guildName)
-    {
-        string _guildMembersCacheKey = "api_guild_members_" + guildName;
-
-        if (!_cache.TryGetValue(_guildMembersCacheKey, out Dictionary<string, DOL.GS.GuildMgr.GuildMemberDisplay> guildMembersList))
-        {
-            var guild = GuildMgr.GetGuildByName(guildName);
-            
-            if (guild == null)
-                return null;
-            
-            var guildID = guild.GuildID;
-            
-            guildMembersList = GuildMgr.GetAllGuildMembers(guildID);
-            
-            _cache.Set(_guildMembersCacheKey, guildMembersList, DateTime.Now.AddMinutes(1));
-        }
-        
-        return guildMembersList;
-    }
-
     #endregion
 }

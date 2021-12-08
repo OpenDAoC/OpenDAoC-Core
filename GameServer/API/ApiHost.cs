@@ -49,9 +49,14 @@ namespace DOL.GS.API
                     spa.Options.SourcePath = webRoot; // source path
                 });
             });
-            
-            
-            _player = new Player();
+
+            app.Map("/", async c =>
+            {
+                c.Response.Redirect("/docs");
+            });
+
+
+                _player = new Player();
             _guild = new Guild();
             
             // stats
@@ -65,11 +70,12 @@ namespace DOL.GS.API
                 
                 if (playerInfo == null)
                 {
-                    return Results.NotFound("Player not found");
+                    return Results.NotFound($"Player {playerName} not found");
                 }
                 return Results.Ok(playerInfo);
                 
             });
+            app.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
             
             // guild
             app.MapGet("/guild", () => "Usage /guild/{guildName}");
@@ -79,23 +85,23 @@ namespace DOL.GS.API
                 
                 if (guildInfo == null)
                 {
-                    return Results.NotFound("Guild not found");
+                    return Results.NotFound($"Guild {guildName} not found");
                 }
                 return Results.Ok(guildInfo);
                 
             });
             
-            // app.MapGet("/guild/{guildName}/members", (string guildName) =>
-            // {
-            //     var guildMembers = _guild.GetGuildMembers(guildName);
-            //     
-            //     if (guildMembers == null)
-            //     {
-            //         return Results.NotFound();
-            //     }
-            //     return Results.Ok(guildMembers);
-            //     
-            // });
+            app.MapGet("/guild/{guildName}/members", (string guildName) =>
+            {
+                var guildMembers = _player.GetPlayersByGuild(guildName);
+                
+                if (guildMembers == null)
+                {
+                    return Results.NotFound();
+                }
+                return Results.Ok(guildMembers);
+                
+            });
             
             app.Run();
         }

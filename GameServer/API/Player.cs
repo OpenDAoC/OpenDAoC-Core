@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 using DOL.Database;
@@ -6,7 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-internal class Player
+public class Player
 {
     private const string _playerCountCacheKey = "api_player_count";
     private IMemoryCache _cache;
@@ -23,22 +25,25 @@ internal class Player
         public int Midgard {get; set;}
         public int Hibernia {get; set;}
         public int Total {get; set;}
+        public string Timestamp {get; set;}
     }
     public string GetPlayerCount()
     {
         if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
         {
             int clients = WorldMgr.GetAllPlayingClientsCount();
-            int AlbPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
-            int MidPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
-            int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
+            int albPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
+            int midPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
+            int hibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
+            DateTime now = DateTime.Now;
 
             playerCount = new PlayerCount
             {
-                Albion = AlbPlayers,
-                Midgard = MidPlayers,
-                Hibernia = HibPlayers,
-                Total = clients
+                Albion = albPlayers,
+                Midgard = midPlayers,
+                Hibernia = hibPlayers,
+                Total = clients,
+                Timestamp = now.ToString("dd-MM-yyyy hh:mm tt")
             };
 
             _cache.Set(_playerCountCacheKey, playerCount, DateTime.Now.AddMinutes(1));
@@ -77,6 +82,34 @@ internal class Player
         public int KillsAlbionSolo { get; set; }
         public int KillsMidgardSolo { get; set; }
         public int KillsHiberniaSolo { get; set; }
+
+        public PlayerInfo() { }
+
+        public PlayerInfo(DOLCharacters player)
+        {
+            if (player == null)
+                return;
+
+            Name = player.Name;
+            Lastname = player.LastName;
+            Guild = GuildMgr.GetGuildByGuildID(player.GuildID)?.Name;
+            RealmID = player.Realm;
+            Realm = RealmIDtoString(player.Realm);
+            ClassID = player.Class;
+            ClassName = ScriptMgr.FindCharacterClass(player.Class).Name;
+            Level = player.Level;
+            RealmPoints = player.RealmPoints;
+            RealmRank = player.RealmLevel;
+            KillsAlbionPlayers = player.KillsAlbionPlayers;
+            KillsMidgardPlayers = player.KillsMidgardPlayers;
+            KillsHiberniaPlayers = player.KillsHiberniaPlayers;
+            KillsAlbionDeathBlows = player.KillsAlbionDeathBlows;
+            KillsMidgardDeathBlows = player.KillsMidgardDeathBlows;
+            KillsHiberniaDeathBlows = player.KillsHiberniaDeathBlows;
+            KillsAlbionSolo = player.KillsAlbionSolo;
+            KillsMidgardSolo = player.KillsMidgardSolo;
+            KillsHiberniaSolo = player.KillsHiberniaSolo;
+        }
     }
     
     public static string RealmIDtoString(int realm)
@@ -101,40 +134,61 @@ internal class Player
             
             if (player == null)
                 return null;
-            
-            playerInfo = new PlayerInfo()
-            {
-                Name = player.Name,
-                Lastname = player.LastName,
-                Guild = GuildMgr.GetGuildByGuildID(player.GuildID)?.Name,
-                RealmID = player.Realm,
-                Realm = RealmIDtoString(player.Realm),
-                ClassID = player.Class,
-                ClassName = ScriptMgr.FindCharacterClass(player.Class).Name,
-                Level = player.Level,
-                RealmPoints = player.RealmPoints,
-                RealmRank = player.RealmLevel,
-                KillsAlbionPlayers = player.KillsAlbionPlayers,
-                KillsMidgardPlayers = player.KillsMidgardPlayers,
-                KillsHiberniaPlayers = player.KillsHiberniaPlayers,
-                KillsAlbionDeathBlows = player.KillsAlbionDeathBlows,
-                KillsMidgardDeathBlows = player.KillsMidgardDeathBlows,
-                KillsHiberniaDeathBlows = player.KillsHiberniaDeathBlows,
-                KillsAlbionSolo = player.KillsAlbionSolo,
-                KillsMidgardSolo = player.KillsMidgardSolo,
-                KillsHiberniaSolo = player.KillsHiberniaSolo
-            };
+
+            playerInfo = new PlayerInfo(player);
             
             _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
-            
         }
-
-        var options = new JsonSerializerOptions()
-        {
-            WriteIndented = true
-        };
         
         return playerInfo;
+    }
+    public List<PlayerInfo> GetAllPlayers()
+    {
+        string _allPlayersCacheKey = "api_all_players";
+
+        if (!_cache.TryGetValue(_allPlayersCacheKey, out List<PlayerInfo> allPlayers))
+        {            
+            var players = DOLDB<DOLCharacters>.SelectAllObjects();
+
+            allPlayers = new List<PlayerInfo>(players.Count);
+
+            allPlayers.AddRange(players.Select(x => new PlayerInfo(x)));            
+
+            _cache.Set(_allPlayersCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
+        }
+
+        return allPlayers;
+    }
+    
+    public IList<PlayerInfo> GetPlayersByGuild(string guildName)
+    {
+        string _allPlayerByGuildCacheKey = "api_all_players_" + guildName;
+        
+        if (guildName == null)
+            return null;
+        
+        var guild = GuildMgr.GetGuildByName(guildName);
+        if (guild == null)
+            return null;
+
+        var guildId = guild.GuildID;
+        
+        if (!_cache.TryGetValue(_allPlayerByGuildCacheKey, out IList<PlayerInfo> allPlayers))
+        {
+            allPlayers = new List<PlayerInfo>();
+            var players = DOLDB<DOLCharacters>.SelectObjects(DB.Column("GuildID").IsEqualTo(guildId));
+            
+            foreach (var player in players)
+            {
+                var thisPlayer = GetPlayerInfo(player.Name);
+                if (thisPlayer == null)
+                    continue;
+                allPlayers.Add(thisPlayer);
+            }
+            _cache.Set(_allPlayerByGuildCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
+        }
+
+        return allPlayers;
     }
 
     #endregion

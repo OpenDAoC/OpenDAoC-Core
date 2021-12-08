@@ -1,0 +1,253 @@
+﻿# use this file to generate the swagger.json at https://editor.swagger.io/
+# then update both this source and the necessary swagger.json file
+
+openapi: 3.0.0
+info:
+  description:
+    Use this documentation to navigate the available Atlas APIs
+    <br><br>
+    <h2>Changes</h2>
+    <h3>0.1.3</h3>
+    Timestamp (`dd-MM-yyyy hh:mm tt`) added to `stats` schema<br>
+    <h3>0.1.2</h3>
+    Refactored `/player` and `/stats`<br>
+    Added `/guild` endpoint<br>
+    Added `/player/getAll` endpoint<br>
+    <h3>0.1.1</h3>
+    Initial release<br><br>
+  version: 0.1.3
+  title: AtlasAPI
+  termsOfService: https://www.atlasfreeshard.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: stats
+    description: Everything about server statistics
+  - name: guild
+    description: Everything about Guilds
+  - name: player
+    description: Everything about Players
+paths:
+  /stats:
+    get:
+      tags:
+        - stats
+      summary: /stats
+      description: Returns live population
+      operationId: getStats
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stats'
+  /guild/{guildName}:
+    get:
+      tags:
+        - guild
+      summary: /guild/{guildName}
+      description: Returns a single guild
+      operationId: getGuildByName
+      parameters:
+        - name: guildName
+          in: path
+          description: Name of the guild to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/guild'
+        '404':
+          description: $guildName not found
+  /guild/{guildName}/members:
+    get:
+      tags:
+        - guild
+      summary: /guild/{guildName}/members
+      description: Returns all players in a guild
+      operationId: getPlayersByGuild
+      parameters:
+        - name: guildName
+          in: path
+          description: Name of the guild of which return players
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allPlayers'
+        '404':
+          description: $guildName not found
+  /player/{playerName}:
+    get:
+      tags:
+        - player
+      summary: /player/{playerName}
+      description: Returns a single player
+      operationId: getPlayerByName
+      parameters:
+        - name: playerName
+          in: path
+          description: Name of the player to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/player'
+        '404':
+          description: $playerName not found
+  /player/getAll:
+    get:
+      tags:
+        - player
+      summary: /player/getAll
+      description: Returns all players
+      operationId: getAllPlayers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allPlayers'
+servers:
+  - url: http://api.atlasfreeshard.com/
+components:
+  schemas:
+    stats:
+      type: object
+      properties:
+        Albion:
+          type: integer
+          example: 159
+        Midgard:
+          type: integer
+          example: 156
+        Hibernia:
+          type: integer
+          example: 163
+        Total:
+          type: integer
+          example: 478
+        Timestamp:
+          type: string
+          format: date-time
+          example: 08-12-2021 11:18 AM
+    guild:
+      type: object
+      required:
+        - Name
+      properties:
+        Name:
+          type: string
+          example: Clan Cotswold
+        realmID:
+          type: integer
+          example: 1
+        realm:
+          type: string
+          example: Albion
+        emblem:
+          type: integer
+          example: 0
+        realmPoints:
+          type: integer
+          example: 77845992
+        bountyPoints:
+          type: integer
+          example: 24669
+    allPlayers:
+      type: array
+      items:
+        $ref: '#/components/schemas/player'
+    player:
+      type: object
+      required:
+        - Name
+      properties:
+        Name:
+          type: string
+          example: Player
+        Lastname:
+          type: string
+          example: Lastname
+        Guild:
+          type: string
+          example: Atlas
+        RealmID:
+          type: integer
+          example: '3'
+          enum:
+            - 1
+            - 2
+            - 3
+            - 0
+        Realm:
+          type: string
+          example: Hibernia
+          enum:
+            - Albion
+            - Midgard
+            - Hibernia
+            - None
+        ClassID:
+          example: 48
+          type: integer
+        ClassName:
+          example: Bard
+          type: string
+        Level:
+          example: 50
+          type: integer
+        RealmPoints:
+          example: 61750
+          type: integer
+        RealmRank:
+          example: 25
+          type: integer
+        KillsAlbionPlayers:
+          example: 12
+          type: integer
+        KillsMidgardPlayers:
+          example: 45
+          type: integer
+        KillsHiberniaPlayers:
+          example: 0
+          type: integer
+        KillsAlbionDeathBlows:
+          example: 2
+          type: integer
+        KillsMidgardDeathBlows:
+          example: 3
+          type: integer
+        KillsHiberniaDeathBlows:
+          example: 0
+          type: integer
+        KillsAlbionSolo:
+          example: 1
+          type: integer
+        KillsMidgardSolo:
+          example: 1
+          type: integer
+        KillsHiberniaSolo:
+          example: 0
+          type: integer
