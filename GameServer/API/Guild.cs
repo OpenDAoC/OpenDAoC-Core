@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using DOL.Database;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
@@ -14,8 +12,7 @@ internal class Guild
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
-    
-    
+
     #region Guild Info
 
     public class GuildInfo
@@ -75,12 +72,7 @@ internal class Guild
         }
         
         _cache.Set(_guildInfoCacheKey, guildInfo, DateTime.Now.AddMinutes(1));
-        
-        var options = new JsonSerializerOptions()
-        {
-            WriteIndented = true
-        };
-        
+
         return guildInfo;
     }
 
