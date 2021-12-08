@@ -9,9 +9,6 @@ namespace DOL.GS.API
 {
     internal class ApiHost
     {
-        private readonly Player _player;
-        private readonly Guild _guild;
-
         public ApiHost()
         {
             var builder = WebApplication.CreateBuilder();
@@ -25,6 +22,10 @@ namespace DOL.GS.API
             });
             
             var app = builder.Build();
+            
+            var _player = new Player();
+            var _guild = new Guild();
+            var _stats = new Stats();
 
             // API DOCS
             app.UseStaticFiles();
@@ -48,10 +49,22 @@ namespace DOL.GS.API
                 c.Response.Redirect("/docs");
             });
 
-            // stats
+            // STATS
             app.MapGet("/stats", async c =>
-                await c.Response.WriteAsync(_player.GetPlayerCount()));
-            // player
+                await c.Response.WriteAsync(_stats.GetPlayerCount()));
+            app.MapGet("/stats/rp", (string guildName) =>
+            {
+                var TopRpPlayers = _stats.GetTopRP();
+                
+                if (TopRpPlayers == null)
+                {
+                    return Results.NotFound();
+                }
+                return Results.Ok(TopRpPlayers);
+                
+            });
+            
+            // PLAYER
             app.MapGet("/player", () => "Usage /player/{playerName}");
             app.MapGet("/player/{playerName}", (string playerName) =>
             {
@@ -59,14 +72,14 @@ namespace DOL.GS.API
                 
                 if (playerInfo == null)
                 {
-                    return Results.NotFound($"Player {playerName} not found");
+                    return Results.NotFound("Not found");
                 }
                 return Results.Ok(playerInfo);
                 
             });
             app.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
             
-            // guild
+            // GUILD
             app.MapGet("/guild", () => "Usage /guild/{guildName}");
             app.MapGet("/guild/{guildName}", (string guildName) =>
             {
@@ -79,7 +92,6 @@ namespace DOL.GS.API
                 return Results.Ok(guildInfo);
                 
             });
-            
             app.MapGet("/guild/{guildName}/members", (string guildName) =>
             {
                 var guildMembers = _player.GetPlayersByGuild(guildName);
