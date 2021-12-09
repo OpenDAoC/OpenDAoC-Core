@@ -24,11 +24,13 @@ public class Player
         public string Guild { get; set; }
         public string Realm { get; set; }
         public int RealmID { get; set; }
-        public string ClassName { get; set; }
+        public string Race { get; set; }
+        public int RaceID { get; set; }
+        public string Class { get; set; }
         public int ClassID { get; set; }
         public int Level { get; set; }
         public long RealmPoints { get; set; }
-        public int RealmRank { get; set; }
+        public string RealmRank { get; set; }
         public int KillsAlbionPlayers { get; set; }
         public int KillsMidgardPlayers { get; set; }
         public int KillsHiberniaPlayers { get; set; }
@@ -38,6 +40,7 @@ public class Player
         public int KillsAlbionSolo { get; set; }
         public int KillsMidgardSolo { get; set; }
         public int KillsHiberniaSolo { get; set; }
+        public int pvpDeaths { get; set; }
 
         public PlayerInfo() { }
 
@@ -45,17 +48,21 @@ public class Player
         {
             if (player == null)
                 return;
+            
+            var DBRace = DOLDB<Race>.SelectObject(DB.Column("ID").IsEqualTo(player.Race));
 
             Name = player.Name;
             Lastname = player.LastName;
             Guild = GuildMgr.GetGuildByGuildID(player.GuildID)?.Name;
-            RealmID = player.Realm;
             Realm = RealmIDtoString(player.Realm);
+            RealmID = player.Realm;
+            Race = DBRace.Name;
+            RaceID = player.Race;
+            Class = ScriptMgr.FindCharacterClass(player.Class).Name;
             ClassID = player.Class;
-            ClassName = ScriptMgr.FindCharacterClass(player.Class).Name;
             Level = player.Level;
             RealmPoints = player.RealmPoints;
-            RealmRank = player.RealmLevel;
+            RealmRank = GetRR(player.RealmLevel);
             KillsAlbionPlayers = player.KillsAlbionPlayers;
             KillsMidgardPlayers = player.KillsMidgardPlayers;
             KillsHiberniaPlayers = player.KillsHiberniaPlayers;
@@ -65,7 +72,27 @@ public class Player
             KillsAlbionSolo = player.KillsAlbionSolo;
             KillsMidgardSolo = player.KillsMidgardSolo;
             KillsHiberniaSolo = player.KillsHiberniaSolo;
+            pvpDeaths = player.DeathsPvP;
+            
         }
+    }
+
+    public static string GetRR(int realmLevel)
+    {
+        int RR = realmLevel + 10;
+        
+        string realmRank = "";
+
+        if (RR >= 100)
+        { 
+            realmRank = $"{RR.ToString().Substring(0, 2)}L{RR.ToString().Substring(2, 1)}";
+        }
+        else
+        {
+            realmRank = $"{RR.ToString().Substring(0, 1)}L{RR.ToString().Substring(1, 1)}";
+        }
+        
+        return realmRank;
     }
     
     public static string RealmIDtoString(int realm)
