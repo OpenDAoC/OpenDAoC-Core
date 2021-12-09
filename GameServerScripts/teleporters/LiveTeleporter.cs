@@ -92,7 +92,7 @@ namespace DOL.GS.Scripts
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
                                     // "[The Inconnu Crypt] in the Catacombs\n" +
                                     "[Camelot] our glorious capital\n" +
-                                    "[Entrance] to the areas of [Housing]\n" +
+                                    // "[Entrance] to the areas of [Housing]\n" +
                                     // "A [Battleground] appropriate to your season\n\n" +
                                     "Or one of the many [towns] throughout Albion");
                     // if (player.Level < 15) // Add server rule check for tutorial
@@ -115,7 +115,7 @@ namespace DOL.GS.Scripts
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
                                     // "[Kobold Undercity] in the Catacombs\n" +
                                     "Our glorious city of [Jordheim]\n" +
-                                    "[Entrance] to the areas of [Housing]\n" +
+                                    //"[Entrance] to the areas of [Housing]\n" +
                                     // "A [Battleground] appropriate to your season\n\n" +
                                     "Or one of the many [towns] throughout Midgard");
                     // if (player.Level < 15) // Add server rule check for tutorial
@@ -138,7 +138,7 @@ namespace DOL.GS.Scripts
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
                                     // "[Shar Labyrinth] in the Catacombs\n" +
                                     "[Tir na Nog] our glorious capital\n" +
-                                    "[Entrance] to the areas of [Housing]\n" +
+                                    // "[Entrance] to the areas of [Housing]\n" +
                                     // "A [Battleground] appropriate to your season\n\n" +
                                     "Or one of the many [towns] throughout Hibernia");
                     // if (player.Level < 15) // Add server rule check for tutorial
