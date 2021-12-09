@@ -85,7 +85,7 @@ namespace DOL.GS.Scripts
             {
                 case eRealm.Albion:
                     SayTo(player, "Greetings, " + player.Name + " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                    "[Forest Sauvage] or [Snowdonia] in the Frontiers\n" +
+                                    //"[Forest Sauvage] or [Snowdonia] in the Frontiers\n" +
                                     "[Castle Sauvage] in Camelot Hills or [Snowdonia Fortress] in Black Mtns. North\n" +
                                     "[Avalon Marsh] wharf\n" +
                                     "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
@@ -108,7 +108,7 @@ namespace DOL.GS.Scripts
 
                 case eRealm.Midgard:
                     SayTo(player, "Greetings, " + player.Name + " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                    "[Uppland] or [Yggdra Forest] in the Frontiers\n" +
+                                    //"[Uppland] or [Yggdra Forest] in the Frontiers\n" +
                                     "[Svasud Faste] in Mularn or [Vindsaul Faste] in West Svealand\n" +
                                     "Beaches of [Gotar] near Nailiten\n" +
                                     "[Aegirhamn] in the [Shrouded Isles]\n" +
@@ -131,7 +131,7 @@ namespace DOL.GS.Scripts
 
                 case eRealm.Hibernia:
                     SayTo(player, "Greetings, I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                    "[Cruachan Gorge] or [Mount Collory] in the Frontiers\n" +
+                                    //"[Cruachan Gorge] or [Mount Collory] in the Frontiers\n" +
                                     "[Druim Ligen] in Connacht or [Druim Cain] in Bri Leith\n" +
                                     "[Shannon Estuary] watchtower\n" +
                                     "[Domnann] Grove in the [Shrouded Isles]\n" +
