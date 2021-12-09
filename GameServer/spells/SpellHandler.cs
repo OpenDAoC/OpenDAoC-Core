@@ -641,7 +641,7 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .9 ))// Stage < 2) //only interrupt if we're under 90% of the way through the cast
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))// Stage < 2) //only interrupt if we're under 50% of the way through the cast
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -2009,7 +2009,7 @@ namespace DOL.GS.Spells
 						m_stage = 3;
 						m_handler.Stage = 3;
 						Interval = 100;
-
+						
 						if (m_handler.CheckEndCast(m_target))
 						{
 							m_handler.FinishSpellCast(m_target);
