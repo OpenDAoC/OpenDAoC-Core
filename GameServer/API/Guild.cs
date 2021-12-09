@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using DOL.Database;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
@@ -14,8 +11,7 @@ internal class Guild
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
-    
-    
+
     #region Guild Info
 
     public class GuildInfo
@@ -72,37 +68,12 @@ internal class Guild
                 RealmPoints = guild.RealmPoints,
                 BountyPoints = guild.BountyPoints
             };
+            
+            _cache.Set(_guildInfoCacheKey, guildInfo, DateTime.Now.AddMinutes(1));
         }
         
-        _cache.Set(_guildInfoCacheKey, guildInfo, DateTime.Now.AddMinutes(1));
-        
-        var options = new JsonSerializerOptions()
-        {
-            WriteIndented = true
-        };
-        
+
         return guildInfo;
-    }
-
-    public Dictionary<string, DOL.GS.GuildMgr.GuildMemberDisplay> GetGuildMembers(string guildName)
-    {
-        string _guildMembersCacheKey = "api_guild_members_" + guildName;
-
-        if (!_cache.TryGetValue(_guildMembersCacheKey, out Dictionary<string, DOL.GS.GuildMgr.GuildMemberDisplay> guildMembersList))
-        {
-            var guild = GuildMgr.GetGuildByName(guildName);
-            
-            if (guild == null)
-                return null;
-            
-            var guildID = guild.GuildID;
-            
-            guildMembersList = GuildMgr.GetAllGuildMembers(guildID);
-            
-            _cache.Set(_guildMembersCacheKey, guildMembersList, DateTime.Now.AddMinutes(1));
-        }
-        
-        return guildMembersList;
     }
 
     #endregion
