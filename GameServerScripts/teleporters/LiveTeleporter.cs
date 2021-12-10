@@ -47,7 +47,7 @@ namespace DOL.GS.Scripts
                 default:
                     break;
             }
-                    Level = 75;
+                    Level = 60;
                     Size = 50;
                     Flags |= GameNPC.eFlags.PEACE;
             //Fix Templates Alb is this below mid and hib are different
@@ -85,14 +85,14 @@ namespace DOL.GS.Scripts
             {
                 case eRealm.Albion:
                     SayTo(player, "Greetings, " + player.Name + " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                    "[Forest Sauvage] or [Snowdonia] in the Frontiers\n" +
+                                    //"[Forest Sauvage] or [Snowdonia] in the Frontiers\n" +
                                     "[Castle Sauvage] in Camelot Hills or [Snowdonia Fortress] in Black Mtns. North\n" +
                                     "[Avalon Marsh] wharf\n" +
                                     "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
                                     // "[The Inconnu Crypt] in the Catacombs\n" +
                                     "[Camelot] our glorious capital\n" +
-                                    "[Entrance] to the areas of [Housing]\n" +
+                                    // "[Entrance] to the areas of [Housing]\n" +
                                     // "A [Battleground] appropriate to your season\n\n" +
                                     "Or one of the many [towns] throughout Albion");
                     // if (player.Level < 15) // Add server rule check for tutorial
@@ -108,14 +108,14 @@ namespace DOL.GS.Scripts
 
                 case eRealm.Midgard:
                     SayTo(player, "Greetings, " + player.Name + " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                    "[Uppland] or [Yggdra Forest] in the Frontiers\n" +
+                                    //"[Uppland] or [Yggdra Forest] in the Frontiers\n" +
                                     "[Svasud Faste] in Mularn or [Vindsaul Faste] in West Svealand\n" +
                                     "Beaches of [Gotar] near Nailiten\n" +
                                     "[Aegirhamn] in the [Shrouded Isles]\n" +
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
                                     // "[Kobold Undercity] in the Catacombs\n" +
                                     "Our glorious city of [Jordheim]\n" +
-                                    "[Entrance] to the areas of [Housing]\n" +
+                                    //"[Entrance] to the areas of [Housing]\n" +
                                     // "A [Battleground] appropriate to your season\n\n" +
                                     "Or one of the many [towns] throughout Midgard");
                     // if (player.Level < 15) // Add server rule check for tutorial
@@ -131,14 +131,14 @@ namespace DOL.GS.Scripts
 
                 case eRealm.Hibernia:
                     SayTo(player, "Greetings, I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                    "[Cruachan Gorge] or [Mount Collory] in the Frontiers\n" +
+                                    //"[Cruachan Gorge] or [Mount Collory] in the Frontiers\n" +
                                     "[Druim Ligen] in Connacht or [Druim Cain] in Bri Leith\n" +
                                     "[Shannon Estuary] watchtower\n" +
                                     "[Domnann] Grove in the [Shrouded Isles]\n" +
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
                                     // "[Shar Labyrinth] in the Catacombs\n" +
                                     "[Tir na Nog] our glorious capital\n" +
-                                    "[Entrance] to the areas of [Housing]\n" +
+                                    // "[Entrance] to the areas of [Housing]\n" +
                                     // "A [Battleground] appropriate to your season\n\n" +
                                     "Or one of the many [towns] throughout Hibernia");
                     // if (player.Level < 15) // Add server rule check for tutorial
@@ -176,7 +176,7 @@ namespace DOL.GS.Scripts
                     switch (str.ToLower())
                     {
                         //Begin Main
-                        case "forest sauvage":
+                        /*case "forest sauvage":
                             if (!t.InCombat)
                             {
                                 Say("I'm now teleporting you to Forest Sauvage");
@@ -196,6 +196,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
+                            */
                         case "castle sauvage":
                             if (!t.InCombat)
                             {
@@ -249,7 +250,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
-                        case "housing":
+                        /*case "housing":
                             SayTo(t, "I can send you to your [personal] house. If you do not have a personal house or wish to be sent to the housing [entrance] then you will arrive just inside the housing area. I can also send you to your [guild] house. If your guild does not own a house then you will not be transported. You may go to your [Hearth] bind as well if you are bound inside a house");
                             break;
                         case "battleground":
@@ -336,6 +337,7 @@ namespace DOL.GS.Scripts
                                 break;
                             }
                              break;
+                             */
                         case "towns":
                              SayTo(t, "I can send you to:\n" +
                                         "[Cotswold]\n" +
@@ -387,7 +389,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
-                        case "entrance":
+                        /*case "entrance":
                             if (!t.InCombat)
                             {
                                 Say("I'm now teleporting you to Housing.");
@@ -399,6 +401,7 @@ namespace DOL.GS.Scripts
                             break;
                             //End Si
                             //Begin Towns
+                            */
                         case "cotswold":
                             if (!t.InCombat)
                             {
@@ -462,7 +465,7 @@ namespace DOL.GS.Scripts
                             //End Towns
                             // Only offer tutorial if player is under 15 and its enabled, must add this otherwise player can /whisper the npc
                             // And be teleported even if they dont meet the level requirements.
-                        case "holtham":
+                        /*case "holtham":
                             if (ServerProperties.Properties.DISABLE_TUTORIAL && t.Client.Account.PrivLevel == (uint)ePrivLevel.Player && t.Level <15)
                             {
                                 SayTo(t, "The Tutorial is disabled.");
@@ -479,6 +482,7 @@ namespace DOL.GS.Scripts
                                 else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             }
                             break;
+                            */
                         // Stonecrush Dragonsworn place for alb, put check in like for tutorial, but dont know what to check for yet, so just open it.
                         case "stonecrush":
                             if (t.Level < 100) // and a && check for the players flag for this, must complete a quest.
@@ -494,7 +498,7 @@ namespace DOL.GS.Scripts
                 case eRealm.Midgard:
                     switch (str.ToLower())
                     {
-                        case "uppland":
+                        /*case "uppland":
                             if (!t.InCombat)
                             {
                                 Say("I'm now teleporting you to Uppland");
@@ -514,6 +518,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
+                            */
                         case "svasud faste":
                             if (!t.InCombat)
                             {
@@ -558,9 +563,9 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
-                        case "housing":
+                        /*case "housing":
                             SayTo(t, "I can send you to your [personal] house. If you do not have a personal house or wish to be sent to the housing [entrance] then you will arrive just inside the housing area. I can also send you to your [guild] house. If your guild does not own a house then you will not be transported. You may go to your [Hearth] bind as well if you are bound inside a house");
-                            break;
+                            break;                           
                         case "battleground":
                             if (!ServerProperties.Properties.BG_ZONES_OPENED && t.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
                             {
@@ -645,6 +650,7 @@ namespace DOL.GS.Scripts
                                 break;
                             }
                             break;
+                            */
                         case "towns":
                             SayTo(t, "I can send you to:\n" +
                                         "[Mularn]\n" +
@@ -704,7 +710,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
-                        case "entrance":
+                        /*case "entrance":
                             if (!t.InCombat)
                             {
                                 Say("I'm now teleporting you to Housing.");
@@ -716,6 +722,7 @@ namespace DOL.GS.Scripts
                             break;
                             // End Towns
                             //Begin Si
+                            */
                         case "aegirhamn":
                             if (!t.InCombat)
                             {
@@ -757,7 +764,7 @@ namespace DOL.GS.Scripts
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
                             // End SI
-                        case "hafheim":
+                        /*case "hafheim":
                             if (ServerProperties.Properties.DISABLE_TUTORIAL && t.Client.Account.PrivLevel == (uint)ePrivLevel.Player && t.Level < 15)
                             {
                                 SayTo(t, "The Tutorial is disabled.");
@@ -774,6 +781,7 @@ namespace DOL.GS.Scripts
                                 else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             }
                             break;
+                            */
                         // Svarhamr Dragonsworn place for mid, put check in like for tutorial, but dont know what to check for yet, so just open it.
                         case "svarhamr":
                             if (t.Level < 100) // and a && check for the players flag for this, must complete a quest.
@@ -796,7 +804,7 @@ namespace DOL.GS.Scripts
                 case eRealm.Hibernia:
                     switch (str.ToLower())
                     {
-                        case "cruachan gorge":
+                        /*case "cruachan gorge":
                             if (!t.InCombat)
                             {
                                 Say("I'm now teleporting you to Cruachan Gorge");
@@ -816,6 +824,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
+                            */
                         case "druim ligen":
                             if (!t.InCombat)
                             {
@@ -859,7 +868,7 @@ namespace DOL.GS.Scripts
                                 //MoveTo(regionid, x , y, z, heading)
                             }
                             break;
-                        case "housing":
+                        /*case "housing":
                             SayTo(t, "I can send you to your [personal] house. If you do not have a personal house or wish to be sent to the housing [entrance] then you will arrive just inside the housing area. I can also send you to your [guild] house. If your guild does not own a house then you will not be transported. You may go to your [Hearth] bind as well if you are bound inside a house");
                             break;
                         case "battleground":
@@ -946,6 +955,7 @@ namespace DOL.GS.Scripts
                                 break;
                             }
                             break;
+                            */
                         case "towns":
                             SayTo(t, "I can send you to:\n" +
                                         "[Mag Mell]\n" +
@@ -1056,7 +1066,7 @@ namespace DOL.GS.Scripts
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
-                        case "entrance":
+                        /*case "entrance":
                             if (!t.InCombat)
                             {
                                 Say("I'm now teleporting you to Housing.");
@@ -1065,7 +1075,7 @@ namespace DOL.GS.Scripts
                                 t.MoveTo(202, 555396, 526607, 3008, 1309);
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
-                            break;
+                            break;                         
                             // End SI
                         case "fintain":
                             if (ServerProperties.Properties.DISABLE_TUTORIAL && t.Client.Account.PrivLevel == (uint)ePrivLevel.Player && t.Level < 15)
@@ -1084,6 +1094,7 @@ namespace DOL.GS.Scripts
                                 else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             }
                             break;
+                            */
                         // Tailtiu Dragonsworn place for hib, put check in like for tutorial, but dont know what to check for yet, so just open it.
                         case "tailtiu":
                             if (t.Level < 100) // and a && check for the players flag for this, must complete a quest.
