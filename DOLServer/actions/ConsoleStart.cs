@@ -118,7 +118,7 @@ namespace DOL.DOLServer.Actions
 				Console.Write("> ");
 				string line = Console.ReadLine();
 
-				switch (line.ToLower())
+				switch (line?.ToLower())
 				{
 					case "exit":
 						run = false;
