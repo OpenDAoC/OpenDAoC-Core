@@ -157,7 +157,7 @@ namespace DOL.GS
 						switch ((eRace)player.Race)
 						{
 							case eRace.Lurikeen:
-								mount.Size = 31;
+								mount.Size = 38;
 								break;
 							case eRace.Kobold:
 								mount.Size = 38;
