@@ -822,8 +822,11 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("GameServer is now open for connections!");
 
-				var webserver = new DOL.GS.API.ApiHost();
-				log.Info("Game WebAPI open for connections.");
+				if (Properties.ATLAS_API)
+				{
+					var webserver = new DOL.GS.API.ApiHost();
+					log.Info("Game WebAPI open for connections.");
+				}
 
 
 				//INIT WAS FINE!
