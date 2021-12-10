@@ -2559,6 +2559,12 @@ namespace DOL.GS.ServerProperties
 		public static string BREAD;
 		
 		/// <summary>
+		/// Enables the API endpoints on the port :5000
+		/// </summary>
+		[ServerProperty("atlas", "atlas_api", "Enables the API endpoints on the port :5000", false)]
+		public static bool ATLAS_API;
+		
+		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
