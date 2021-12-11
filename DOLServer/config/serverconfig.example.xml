@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <Server>
+        <Port>10300</Port>
+        <IP>0.0.0.0</IP>
+        <RegionIP>0.0.0.0</RegionIP>
+        <RegionPort>10400</RegionPort>
+        <UdpIP>0.0.0.0</UdpIP>
+        <UdpPort>10400</UdpPort>
+        <EnableUPnP>True</EnableUPnP>
+        <DetectRegionIP>True</DetectRegionIP>
+        <ServerName>Dawn Of Light</ServerName>
+        <ServerNameShort>DOLSERVER</ServerNameShort>
+        <LogConfigFile>./config/logconfig.xml</LogConfigFile>
+        <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
+        <ScriptAssemblies> </ScriptAssemblies>
+        <EnableCompilation>True</EnableCompilation>
+        <AutoAccountCreation>True</AutoAccountCreation>
+        <GameType>Normal</GameType>
+        <CheatLoggerName>cheats</CheatLoggerName>
+        <GMActionLoggerName>gmactions</GMActionLoggerName>
+        <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
+        <DBType>MYSQL</DBType>
+        <DBConnectionString>server=localhost;port=3306;database=DBNAME;user id=USERNAME;password=PASSWORD;treattinyasboolean=false</DBConnectionString>
+        <DBAutosave>True</DBAutosave>
+        <DBAutosaveInterval>10</DBAutosaveInterval>
+        <CpuUse>8</CpuUse>
+    </Server>
+</root>
