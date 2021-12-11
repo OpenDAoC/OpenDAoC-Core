@@ -55,7 +55,7 @@ namespace DOL.GS.Scripts
             return true;
         }
         public void CastEffect()
-        {
+        {           
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendSpellCastAnimation(this, 4468, 50);
@@ -111,8 +111,10 @@ namespace DOL.GS.Scripts
         }
         public void StartTeleporting()
         {
+            
             bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-
+            if (GetSkillDisabledDuration(PortSpell) > 0)
+                cast = false;
             if (Assistants == null) {
                 Assistants = new List<OFAssistant>();
             }
