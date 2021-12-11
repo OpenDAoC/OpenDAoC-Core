@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using DOL.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,8 @@ namespace DOL.GS.API
             var builder = WebApplication.CreateBuilder();
 
             var contentRoot = Directory.GetCurrentDirectory();
+            DateTime startupTime = DateTime.Now;
+            
             var webRoot = Path.Combine(contentRoot,"wwwroot", "docs");
             
             builder.Services.AddSpaStaticFiles(configuration =>
@@ -63,6 +66,8 @@ namespace DOL.GS.API
                 return Results.Ok(TopRpPlayers);
                 
             });
+            app.MapGet("/stats/uptime", async c =>
+                await c.Response.WriteAsJsonAsync(_stats.GetUptime(startupTime)));
             
             // PLAYER
             app.MapGet("/player", () => "Usage /player/{playerName}");

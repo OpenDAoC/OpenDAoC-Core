@@ -7,6 +7,8 @@ info:
     Use this documentation to navigate the available Atlas APIs
     <br><br>
     <h2>Changes</h2>
+    <h3>0.1.5.1</h3>
+    Added `/stats/uptime`<br>
     <h3>0.1.5</h3>
     `PvPDeaths`, `Race` and `RaceID` added to `player` response schema<br>
     `realmRank` now returns a string value
@@ -20,7 +22,7 @@ info:
     Added `/player/getAll` endpoint<br>
     <h3>0.1.1</h3>
     Initial release<br><br>
-  version: 0.1.5
+  version: 0.1.5.1
   title: AtlasAPI
   termsOfService: https://www.atlasfreeshard.com
   license:
@@ -28,7 +30,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 tags:
   - name: stats
-    description: Everything about server statistics
+    description: Everything about server statistics <br><br>[cache 1 min]
   - name: guild
     description: Everything about Guilds
   - name: player
@@ -53,7 +55,7 @@ paths:
       tags:
         - stats
       summary: /stats/rp
-      description: Returns Top 10 RP holders
+      description: Returns Top 10 RP holders <br><br>[cache 60 min]
       operationId: getStatsRP
       responses:
         '200':
@@ -64,12 +66,26 @@ paths:
                 $ref: '#/components/schemas/allPlayers'
         '404':
           description: Not found
+  /stats/uptime:
+    get:
+      tags:
+        - stats
+      summary: /stats/uptime
+      description: Returns server uptime <br><br>[cache 30 sec]
+      operationId: getUptime
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/serverUptime'
   /guild/{guildName}:
     get:
       tags:
         - guild
       summary: /guild/{guildName}
-      description: Returns a single guild
+      description: Returns a single guild <br><br>[cache 1 min]
       operationId: getGuildByName
       parameters:
         - name: guildName
@@ -93,7 +109,7 @@ paths:
       tags:
         - guild
       summary: /guild/{guildName}/members
-      description: Returns all players in a guild
+      description: Returns all players in a guild <br><br>[cache 120 min]
       operationId: getPlayersByGuild
       parameters:
         - name: guildName
@@ -117,7 +133,7 @@ paths:
       tags:
         - player
       summary: /player/{playerName}
-      description: Returns a single player
+      description: Returns a single player <br><br>[cache 1 min]
       operationId: getPlayerByName
       parameters:
         - name: playerName
@@ -141,7 +157,7 @@ paths:
       tags:
         - player
       summary: /player/getAll
-      description: Returns all players
+      description: Returns all players<br><br>[cache 120 min]
       operationId: getAllPlayers
       responses:
         '200':
@@ -154,25 +170,10 @@ servers:
   - url: http://api.atlasfreeshard.com/
 components:
   schemas:
-    stats:
-      type: object
-      properties:
-        Albion:
-          type: integer
-          example: 159
-        Midgard:
-          type: integer
-          example: 156
-        Hibernia:
-          type: integer
-          example: 163
-        Total:
-          type: integer
-          example: 478
-        Timestamp:
-          type: string
-          format: date-time
-          example: 08-12-2021 11:18 AM
+    allPlayers:
+      type: array
+      items:
+        $ref: '#/components/schemas/player'
     guild:
       type: object
       required:
@@ -196,10 +197,6 @@ components:
         bountyPoints:
           type: integer
           example: 24669
-    allPlayers:
-      type: array
-      items:
-        $ref: '#/components/schemas/player'
     player:
       type: object
       required:
@@ -281,3 +278,40 @@ components:
         pvpDeaths:
           example: 549
           type: integer
+    serverUptime:
+      type: object
+      properties:
+        seconds:
+          type: integer
+          example: 45
+        minutes:
+          type: integer
+          example: 32
+        hours:
+          type: integer
+          example: 13
+        days:
+          type: integer
+          example: 4
+        uptime:
+          type: string
+          example: 4d 13h 32m 45s
+    stats:
+      type: object
+      properties:
+        Albion:
+          type: integer
+          example: 159
+        Midgard:
+          type: integer
+          example: 156
+        Hibernia:
+          type: integer
+          example: 163
+        Total:
+          type: integer
+          example: 478
+        Timestamp:
+          type: string
+          format: date-time
+          example: 08-12-2021 11:18 AM
