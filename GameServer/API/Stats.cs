@@ -25,6 +25,45 @@ public class Stats
         public int Total {get; set;}
         public string Timestamp {get; set;}
     }
+
+    public class ServerUptime
+    {
+        public long Seconds { get; set; }
+        public long Minutes { get; set; }
+        public long Hours { get; set; }
+        public long Days { get; set; }
+        public string Uptime { get; set; }
+    }
+
+    public ServerUptime GetUptime(DateTime startupTime)
+    {
+        string _uptimeCacheKey = "api_player_count";
+
+        if (!_cache.TryGetValue(_uptimeCacheKey, out ServerUptime serverUptime))
+        {
+            var uptime = DateTime.Now.Subtract(startupTime);
+
+            // ServerStats Uptime = new ServerStats();
+        
+            double sec = uptime.TotalSeconds;
+            long min = Convert.ToInt64(sec) / 60;
+            long hours = min / 60;
+            long days = hours / 24;
+
+            serverUptime = new ServerUptime
+            {
+                Seconds = Convert.ToInt64(sec % 60),
+                Minutes = min % 60,
+                Hours = hours % 24,
+                Days = days,
+                Uptime = string.Format("{0}d {1}h {2}m {3:00}s", days, hours % 24, min % 60, sec % 60)
+            };
+            
+            _cache.Set(_uptimeCacheKey, serverUptime, DateTime.Now.AddSeconds(30));
+        }
+        
+        return serverUptime;
+    }
     public string GetPlayerCount()
     {
         string _playerCountCacheKey = "api_player_count";
