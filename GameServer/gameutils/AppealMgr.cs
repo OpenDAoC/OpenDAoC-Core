@@ -38,7 +38,7 @@ namespace DOL.GS.Appeal
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static int m_CallbackFrequency = 5 * 60 * 1000; // How often appeal stat updates are sent out.
+		private static int m_CallbackFrequency = 10 * 1000; // How often appeal stat updates are sent out.
 		private static volatile Timer m_timer = null;
 		public enum eSeverity
 		{
@@ -153,6 +153,11 @@ namespace DOL.GS.Appeal
 			{
 				if (staffplayer.Client != null && staffplayer.Client.Player != null)
 					MessageToClient(staffplayer.Client, msg);
+				// If GM has '/alert appeal on' set, receive audible alert when an appeal is submitted or requires assistance
+				if (staffplayer.TempProperties.getProperty<bool>("AppealAlert") == false)
+				{
+					staffplayer.Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
+				}
 			}
 			return;
 		}
@@ -171,6 +176,12 @@ namespace DOL.GS.Appeal
 
 			foreach (GamePlayer staffplayer in StaffList)
 			{
+				// If GM has '/alert appeal on' set, receive audible alert when an appeal is submitted or requires assistance
+				if (staffplayer.TempProperties.getProperty<bool>("AppealAlert") == false)
+				{
+					staffplayer.Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
+				}
+				
 				staffplayer.Out.SendMessage("[Appeals]: " + msg, chattype, chatloc);
 			}
 			return;
