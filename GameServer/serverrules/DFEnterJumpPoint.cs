@@ -76,7 +76,7 @@ namespace DOL.GS.ServerRules
 			int albcount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Albion);
 			int midcount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Midgard);
 			int hibcount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Hibernia);
-
+			
 			if (albcount > midcount && albcount > hibcount)
 			{
 				DarknessFallOwner = eRealm.Albion;

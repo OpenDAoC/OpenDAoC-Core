@@ -568,7 +568,8 @@ namespace DOL.GS.Keeps
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
-					if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
+					// if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
+					if (keep.Region != 1 || keep.Region != 100 || keep.Region != 200) continue;
 					if (((eRealm)keep.Realm == realm) && (keep is GameKeep))
 						index++;
 				}
