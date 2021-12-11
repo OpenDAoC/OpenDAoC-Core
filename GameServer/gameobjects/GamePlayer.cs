@@ -9754,6 +9754,9 @@ namespace DOL.GS
         public virtual bool PrivateMessageReceive(GamePlayer source, string str)
         {
             var onSendReceive = OnSendReceive;
+            // Fetch prop value for '/alert send'
+            var alert = TempProperties.getProperty<bool>("SendAlert");
+            
             if (onSendReceive != null && !onSendReceive(source, this, str))
                 return false;
 
@@ -9765,8 +9768,13 @@ namespace DOL.GS
                 type = eChatType.CT_Staff;
 
             if (GameServer.ServerRules.IsAllowedToUnderstand(source, this))
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.Sends", source.Name, str), type,
-                    eChatLoc.CL_ChatWindow);
+            {
+                // If GM uses '/alert send on', receive audio alert for only Player sends
+                if (alert == false && source.Client.Account.PrivLevel < 2)
+                    this.Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_06.wav
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.Sends", source.Name,
+                        str), type, eChatLoc.CL_ChatWindow);
+            }
             else
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.FalseLanguage", source.Name),
