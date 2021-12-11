@@ -400,6 +400,9 @@ namespace DOL.GS.Keeps
 			{
 				if (keep.CurrentRegion.ID != region)
 					continue;
+				
+				if (keep.Name.Contains("Portal"))
+					continue;
 
 				regionKeeps.Add(keep);
 			}
