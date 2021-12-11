@@ -44,6 +44,7 @@
         <Content Include=".\config\serverconfig.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <Content Include="config\serverconfig.example.xml" />
     </ItemGroup>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
