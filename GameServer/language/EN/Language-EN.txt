@@ -870,6 +870,8 @@ Titles.Time.Character.Veteran:				Veteran
 # /Atlas
 Titles.Atlas.Bugged:				I'm bugged
 Titles.Atlas.LD:				    Linkdead
+Titles.Atlas.PvEBeta:               I'm growing
+Titles.Atlas.PvEBeta50:             I'm big
 
 # /CL
 Titles.CL.Level1:					Seeker
