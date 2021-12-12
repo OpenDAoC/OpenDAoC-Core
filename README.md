@@ -2,6 +2,7 @@ Atlas Freeshard - Core
 
 # Changelog
 
+21/12/12 - leftygamer - Added template and additional information regarding `serverconfig.xml`.
 21/12/06 - leftygamer - Added information about accessing the test server, updated AtlasPack information, added info about server properties to remove, fixed incorrect SQL setup commands.
 21/09/14 - leftygamer - Revised to account for removal of `Net5` directory. Changes made to `serverconfig.xml` instruction and building/running the project. Moved **Before You Start** section.
 21/08/31 - leftygamer - Expanded documentation for setting up environments for both Ubuntu & Window environments.
@@ -266,7 +267,47 @@ With Git ready, it's time to clone the `AtlasCore` repository.
 
 ### Altering `serverconfig.xml` (Ubuntu)
 
-Depending on your needs, you may need to alter the `serverconfig.xml` file. By default, it is set to use the IP address `127.0.0.1` and port `10400` for local builds, which allows you to run an Atlas server and access it via instances of DAoC from the same machine. If you need to change the IP to allow for other devices to connect to your server:
+Depending on your needs, you may need to alter the `serverconfig.xml` file. By default, it is set to use the IP address `127.0.0.1` and port `10400` for local builds, which allows you to run an Atlas server and access it via instances of DAoC from the same machine.
+
+If your project does not have the `serverconfig.xml` file at **DOLServer > config**, then you should create one manually. 
+
+Open a text editor and copy/paste the following template:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <Server>
+        <Port>10400</Port>
+        <IP>0.0.0.0</IP>
+        <RegionIP>0.0.0.0</RegionIP>
+        <RegionPort>10400</RegionPort>
+        <UdpIP>0.0.0.0</UdpIP>
+        <UdpPort>10400</UdpPort>
+        <EnableUPnP>True</EnableUPnP>
+        <DetectRegionIP>True</DetectRegionIP>
+        <ServerName>Atlas Local Server</ServerName>
+        <ServerNameShort>DOLSERVER</ServerNameShort>
+        <LogConfigFile>./config/logconfig.xml</LogConfigFile>
+        <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
+        <ScriptAssemblies> </ScriptAssemblies>
+        <EnableCompilation>True</EnableCompilation>
+        <AutoAccountCreation>True</AutoAccountCreation>
+        <GameType>Normal</GameType>
+        <CheatLoggerName>cheats</CheatLoggerName>
+        <GMActionLoggerName>gmactions</GMActionLoggerName>
+        <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
+        <DBType>MYSQL</DBType>
+        <DBConnectionString>server=localhost;port=3306;database=atlas;user id=atlas;password=atlas;treattinyasboolean=false</DBConnectionString>
+        <DBAutosave>True</DBAutosave>
+        <DBAutosaveInterval>10</DBAutosaveInterval>
+        <CpuUse>8</CpuUse>
+    </Server>
+</root>
+```
+
+Save this file with the name `serverconfig.xml` and place it in the project at: **DOLServer> config**.
+
+If you need to change the IP to allow other devices to connect to your server:
 
 1. Open the file at `/AtlasCore/Debug/config/serverconfig.xml`.
 2. Within the `IP` tags, change the value `127.0.0.1` to one of these:
@@ -466,6 +507,46 @@ With Git ready, it's time to clone the `AtlasScripts` and `AtlasCore` repositori
 ### Altering `serverconfig.xml` (Win)
 
 Depending on your needs, you may need to alter the `serverconfig.xml` file. By default, it is set to use the IP address `127.0.0.1` and port `10400` for local builds, which allows you to run an Atlas server and access it via instances of DAoC from the same machine. If you need to change the IP to allow for other devices to connect to your server:
+
+If your project does not have the `serverconfig.xml` file at **DOLServer > config**, then you should create one manually.
+
+Open a text editor and copy/paste the following template:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <Server>
+        <Port>10400</Port>
+        <IP>0.0.0.0</IP>
+        <RegionIP>0.0.0.0</RegionIP>
+        <RegionPort>10400</RegionPort>
+        <UdpIP>0.0.0.0</UdpIP>
+        <UdpPort>10400</UdpPort>
+        <EnableUPnP>True</EnableUPnP>
+        <DetectRegionIP>True</DetectRegionIP>
+        <ServerName>Atlas Local Server</ServerName>
+        <ServerNameShort>DOLSERVER</ServerNameShort>
+        <LogConfigFile>./config/logconfig.xml</LogConfigFile>
+        <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
+        <ScriptAssemblies> </ScriptAssemblies>
+        <EnableCompilation>True</EnableCompilation>
+        <AutoAccountCreation>True</AutoAccountCreation>
+        <GameType>Normal</GameType>
+        <CheatLoggerName>cheats</CheatLoggerName>
+        <GMActionLoggerName>gmactions</GMActionLoggerName>
+        <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
+        <DBType>MYSQL</DBType>
+        <DBConnectionString>server=localhost;port=3306;database=atlas;user id=atlas;password=atlas;treattinyasboolean=false</DBConnectionString>
+        <DBAutosave>True</DBAutosave>
+        <DBAutosaveInterval>10</DBAutosaveInterval>
+        <CpuUse>8</CpuUse>
+    </Server>
+</root>
+```
+
+Save this file with the name `serverconfig.xml` and place it in the project at: **DOLServer> config**.
+
+If you need to change the IP to allow other devices to connect to your server:
 
 1. Open the file at `/AtlasCore/Debug/config/serverconfig.xml`.
 2. Within the `IP` tags, change the value `127.0.0.1` to one of these:
