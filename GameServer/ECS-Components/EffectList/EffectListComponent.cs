@@ -110,7 +110,7 @@ namespace DOL.GS
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect))
+                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) || spellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
