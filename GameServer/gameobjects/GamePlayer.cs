@@ -28,6 +28,7 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.API;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -5237,6 +5238,39 @@ namespace DOL.GS
             if (FreeLevelState == 2)
             {
                 Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.FreeLevelEligible"));
+            }
+            // PvE Beta Custom Params
+            
+            if (Level == 35)
+            {
+                const string customKey = "PvEBeta35";
+                var hasPvEBeta35Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+                if (hasPvEBeta35Title == null)
+                {
+                    AccountXCustomParam PvEBeta35Title = new AccountXCustomParam();
+                    PvEBeta35Title.Name = Client.Account.Name;
+                    PvEBeta35Title.KeyName = customKey;
+                    PvEBeta35Title.Value = "1";
+                    GameServer.Database.AddObject(PvEBeta35Title);
+                    Client.Player.Out.SendPlayerTitleUpdate(this);
+                }
+            }
+            
+            if (Level == 50)
+            {
+                const string customKey = "PvEBeta50";
+                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+                if (hasPvEBeta50Title == null)
+                {
+                    AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
+                    PvEBeta50Title.Name = Client.Account.Name;
+                    PvEBeta50Title.KeyName = customKey;
+                    PvEBeta50Title.Value = "1";
+                    GameServer.Database.AddObject(PvEBeta50Title);
+                    Client.Player.Out.SendPlayerTitleUpdate(this);
+                }
             }
 
             if (Level == MaxLevel)
