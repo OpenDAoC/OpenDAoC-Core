@@ -91,6 +91,7 @@ namespace DOL.GS.Scripts
         private DBSpell m_buffSpell;
         private Spell m_portSpell;
 
+        private RegionTimer castTimer;
         public Spell PortSpell
         {
             get
@@ -111,10 +112,13 @@ namespace DOL.GS.Scripts
         }
         public void StartTeleporting()
         {
-            
+            if (castTimer is null)
+                castTimer = new RegionTimer(this);
+
             bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             if (GetSkillDisabledDuration(PortSpell) > 0)
                 cast = false;
+
             if (Assistants == null) {
                 Assistants = new List<OFAssistant>();
             }
@@ -128,18 +132,31 @@ namespace DOL.GS.Scripts
                     }
                 }
 
-                Console.WriteLine(Assistants.ToString());
+                //Console.WriteLine(Assistants.ToString());
             }
 
-            if (cast) {
-                foreach(OFAssistant assi in Assistants) {
+            if (cast) 
+            {
+                castTimer.Interval = PortSpell.CastTime;
+                castTimer.Callback += new RegionTimerCallback(CastTimerCallback);
+                castTimer.Start(PortSpell.CastTime);
+
+                foreach (OFAssistant assi in Assistants) {
                     assi.CastEffect();
                 }
             }
         }
+
+        private int CastTimerCallback(RegionTimer selfRegenerationTimer)
+        {
+            castTimer.Callback -= new RegionTimerCallback(CastTimerCallback);
+            OnAfterSpellCastSequence(null);
+            return 10;
+        }
         public override void OnAfterSpellCastSequence(ISpellHandler handler)
         {
-            base.OnAfterSpellCastSequence(handler);
+            castTimer.Stop();
+            //base.OnAfterSpellCastSequence(handler);
 
             InventoryItem medallion = null;
 
