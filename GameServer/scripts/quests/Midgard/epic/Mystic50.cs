@@ -137,12 +137,13 @@ namespace DOL.GS.Quests.Midgard
 				Danica.GuildName = "";
 				Danica.Realm = eRealm.Midgard;
 				Danica.CurrentRegionID = 100;
+				Danica.EquipmentTemplateID = "Danica";
 				Danica.Size = 51;
 				Danica.Level = 50;
-				Danica.X = 802818;
-				Danica.Y = 727413;
-				Danica.Z = 4760;
-				Danica.Heading = 2116;
+				Danica.X = 803559;
+				Danica.Y = 723329;
+				Danica.Z = 4719;
+				Danica.Heading = 2193;
 				Danica.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

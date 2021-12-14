@@ -182,12 +182,13 @@ namespace DOL.GS.Quests.Midgard
 				Elizabeth.Name = "Elizabeth";
 				Elizabeth.Realm = eRealm.Midgard;
 				Elizabeth.CurrentRegionID = 100;
+				Elizabeth.EquipmentTemplateID = "Elizabeth";
 				Elizabeth.Size = 51;
 				Elizabeth.Level = 41;
-				Elizabeth.X = 802597;
-				Elizabeth.Y = 727896;
-				Elizabeth.Z = 4760;
-				Elizabeth.Heading = 2480;
+				Elizabeth.X = 802808;
+				Elizabeth.Y = 727114;
+				Elizabeth.Z = 4696;
+				Elizabeth.Heading = 2353;
 				Elizabeth.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
