@@ -729,7 +729,7 @@ namespace DOL.GS.Scripts
                                 Say("I'm now teleporting you to Aegirhamn.");
                                 foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                                     player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(151, 293382, 357369, 3488, 1096);
+                                t.MoveTo(151, 294213, 355955, 3570, 4070);
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
