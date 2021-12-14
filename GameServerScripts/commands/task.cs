@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace DOL.GS.Scripts
 {
     [CmdAttribute(
-       "&task",
+       "&realmtask",
        ePrivLevel.Player,
-         "Displays the current realm bonuses status.", "/task")]
+         "Displays the current realm bonuses status.", "/realmtask")]
     public class TaskCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
