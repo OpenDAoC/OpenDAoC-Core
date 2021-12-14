@@ -305,6 +305,11 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
             _brain.Body.ResetHeading();
             return;
         }
+        if (_brain.Body.InCombat || _brain.HasAggressionTable())
+        {
+            _brain.Body.CancelWalkToSpawn();
+            _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+        }
 
         base.Think();
     }

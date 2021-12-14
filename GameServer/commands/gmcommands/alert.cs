@@ -68,8 +68,11 @@ namespace DOL.GS.Commands
 		)]
 	public class AlertCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
+
 		public void OnCommand(GameClient client, string[] args)
 		{
+			
+			
 			if (args.Length == 1)
 			{
 				// Lists all '/alert' subcommand syntax (see '&alert' above)

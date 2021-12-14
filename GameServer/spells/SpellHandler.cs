@@ -3064,9 +3064,10 @@ namespace DOL.GS.Spells
 			{
 				OnDirectEffect(target, effectiveness);
 			}
-
+				
 			if (!HasPositiveEffect)
 			{
+				SendEffectAnimation(target, 0, false, 1);
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;

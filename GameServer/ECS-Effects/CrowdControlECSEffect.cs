@@ -14,6 +14,8 @@ namespace DOL.GS
             Owner.attackComponent.LivingStopAttack();
             Owner.StopCurrentSpellcast();
             Owner.DisableTurning(true);
+            if (Owner is GameNPC npc)
+                npc.StopMoving();
             UpdatePlayerStatus();
         }
 
