@@ -569,9 +569,20 @@ namespace DOL.GS.Keeps
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
 					// if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
-					if (keep.Region != 1 || keep.Region != 100 || keep.Region != 200) continue;
-					if (((eRealm)keep.Realm == realm) && (keep is GameKeep))
-						index++;
+
+					switch (keep.Region)
+					{
+						case 1:
+						case 100:
+						case 200:
+							if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfotha") || keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner") || keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur") || keep.Name.ToLower().Contains("portal"))
+								break;
+							if (((eRealm)keep.Realm == realm) && (keep is GameKeep))
+								index++;
+							break;
+					}
+					// if (keep.CurrentRegion.ID != 1 || keep.CurrentRegion.ID != 100 || keep.CurrentRegion.ID != 200) continue;
+					
 				}
 			}
 			return index;
