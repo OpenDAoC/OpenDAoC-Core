@@ -101,8 +101,7 @@ namespace DOL.GS.Quests.Albion
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
-			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initializing ...");
+			
 
 			#region defineNPCs
 

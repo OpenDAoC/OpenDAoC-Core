@@ -126,8 +126,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
-			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initializing ...");
+			
 
 			#region defineNPCs
 

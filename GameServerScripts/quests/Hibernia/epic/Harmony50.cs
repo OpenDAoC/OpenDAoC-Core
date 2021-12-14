@@ -108,8 +108,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
-			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initializing ...");
+			
 
 			#region NPC Declarations
 
