@@ -65,10 +65,10 @@ namespace DOL.GS.Commands
 		"AdminCommands.Shutdown.Syntax.Comm",
 		// Message: "Provides additional information regarding the '/shutdown' command type."
 		"AdminCommands.Shutdown.Usage.Comm",
-		// Syntax: /shutdown <minutes>
-		"AdminCommands.Shutdown.Syntax.Mins",
-		// Message: "Schedules a manual shutdown of the server, counting down from the specified number of minutes."
-		"AdminCommands.Shutdown.Usage.Mins",
+		// Syntax: /shutdown <seconds>
+		"AdminCommands.Shutdown.Syntax.Secs",
+		// Message: "Schedules a manual shutdown of the server, counting down from the specified number of seconds."
+		"AdminCommands.Shutdown.Usage.Secs",
 		// Syntax: /shutdown on <HH>:<MM>
 		"AdminCommands.Shutdown.Syntax.HrMin",
 		// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT."
@@ -497,19 +497,19 @@ namespace DOL.GS.Commands
 				#endregion On HH:MM
 				
 				#region Minutes
-				// Schedules a server shutdown in the specified number of minutes
-				// Syntax: /shutdown <minutes>
+				// Schedules a server shutdown in the specified number of seconds
+				// Syntax: /shutdown <seconds>
 				// Args:   /shutdown args[1]
 				// See the comments above 'using' about SendMessage translation IDs
 				default:
 				{
-					// Check for '/shutdown <minutes>'
+					// Check for '/shutdown <seconds>'
 					if (args.Length == 2)
 					{
 						// Try to convert args[1] into seconds (minutes * 60)
 						try
 						{
-							m_counter = System.Convert.ToInt32(args[1]) * 60;
+							m_counter = System.Convert.ToInt32(args[1]);
 						}
 						// If an unexpected value for args[1]
 						catch (Exception)
@@ -518,8 +518,8 @@ namespace DOL.GS.Commands
 							DisplaySyntax(client);
 							return;
 						}
-						// Require a value equal to or between 1 and 360 (1 minute to 6 hours)
-						if (m_counter is <= 59 or >= 43200)
+						// Require a value equal to or between 10 and 43200 (10 seconds to 6 hours)
+						if (m_counter is <= 9 or >= 43200)
 						{
 							// Message: "A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'."
 							ChatUtil.SendErrorMessage(client, "AdminCommands.Shutdown.Err.WrongNumber", null);

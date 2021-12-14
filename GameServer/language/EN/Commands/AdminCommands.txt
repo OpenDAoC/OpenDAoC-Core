@@ -149,8 +149,8 @@ AdminCommands.Shutdown.Msg.AttentionShutdown:       ATTENTION: A server shutdown
 AdminCommands.Shutdown.Description:                 Initiates a total shutdown of the Atlas server. The server must then be manually started by an authorized staff member, such as Clait, Fen, or Suite.
 AdminCommands.Shutdown.Syntax.Comm:                 /shutdown command
 AdminCommands.Shutdown.Usage.Comm:                 Provides additional information regarding the '/shutdown' command type.
-AdminCommands.Shutdown.Syntax.Mins:                 /shutdown <minutes>
-AdminCommands.Shutdown.Usage.Mins:                  Schedules a manual shutdown of the server, counting down from the specified number of minutes.
+AdminCommands.Shutdown.Syntax.Secs:                 /shutdown <seconds>
+AdminCommands.Shutdown.Usage.Secs:                  Schedules a manual shutdown of the server, counting down from the specified number of seconds.
 AdminCommands.Shutdown.Syntax.HrMin:                /shutdown on <HH>:<MM>
 AdminCommands.Shutdown.Usage.HrMin:                  Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT.
 AdminCommands.Shutdown.Syntax.Stop:                 /shutdown stop
