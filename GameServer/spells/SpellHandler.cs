@@ -4363,7 +4363,15 @@ namespace DOL.GS.Spells
 
 			int criticalchance = (this as DoTSpellHandler) != null ? m_caster.SpellCriticalChance - 10 :(m_caster.SpellCriticalChance);
 
-			if (Util.Chance(Math.Min(50, criticalchance)) && (finalDamage >= 1))
+			int randNum = Util.CryptoNextInt(1, 100); //grab our random number
+			int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
+
+			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+			{
+				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+			}
+
+			if (critCap > randNum && (finalDamage >= 1))
 			{
 				int critmax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
 				cdamage = Util.Random(finalDamage / 10, critmax); //think min crit is 10% of damage
