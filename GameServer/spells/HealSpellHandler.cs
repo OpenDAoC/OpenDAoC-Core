@@ -177,6 +177,7 @@ namespace DOL.GS.Spells
             if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
             {
                 spellCaster.Out.SendMessage($"heal crit chance: {criticalchance} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                spellCaster.Out.SendMessage($"heal effectiveness: {Caster.GetModified(eProperty.HealingEffectiveness)}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
             }
 
             if (criticalchance > randNum)
