@@ -535,7 +535,7 @@ namespace DOL.GS.Scripts
                                 Say("I'm now teleporting you to Vindsaul Faste");
                                 foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                                     player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 704404, 738841, 5704, 817);
+                                t.MoveTo(100, 703389, 738621, 5704, 3097);
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
