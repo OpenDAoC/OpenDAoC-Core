@@ -135,10 +135,36 @@ namespace DOL.GS.Scripts
             
             if (cast) 
             {
+                string portMessage = "";
+
+                switch (Realm)
+                {
+                    case eRealm.Albion:
+                    {
+                        portMessage =
+                            "From sodden ground to the glow of the moon, let each vessel in this circle depart to lands now lost from the light of our fair Camelot!";
+                        break;
+                    }
+                    case eRealm.Midgard:
+                    {
+                        portMessage = "Huginn and Munnin guide you all and return with news of your journeys.";
+                        break;
+                    }
+                    case eRealm.Hibernia:
+                    {
+                        Console.WriteLine("Hibernia");
+                        portMessage = "Go forth and rid Hibernia of the threat of foreign barbarians and fools forever.";
+                        break;
+                    }
+                }
+                foreach (GamePlayer player in GetPlayersInRadius(500))
+                {
+                    player.Out.SendMessage(this.Name + " says, \"" + portMessage + "\"", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                }
+                
                 castTimer.Interval = PortSpell.CastTime;
                 castTimer.Callback += new RegionTimerCallback(CastTimerCallback);
                 castTimer.Start(PortSpell.CastTime);
-
                 foreach (OFAssistant assi in Assistants) {
                     assi.CastEffect();
                 }
@@ -147,6 +173,7 @@ namespace DOL.GS.Scripts
 
         private int CastTimerCallback(RegionTimer selfRegenerationTimer)
         {
+
             castTimer.Callback -= new RegionTimerCallback(CastTimerCallback);
             OnAfterSpellCastSequence(null);
             return 10;
@@ -308,7 +335,6 @@ namespace DOL.GS.Scripts
                         Name = "Master Visur";
                         Model = 63; 
                         LoadEquipmentTemplateFromDatabase("visur");
-
                     }
                     break;
                 case eRealm.Hibernia:
@@ -350,29 +376,6 @@ namespace DOL.GS.Scripts
 
             if (effect != null || teleporter.IsCasting)
                 return;
-            
-            string portMessage = "";
-
-            switch (teleporter.Realm)
-            {
-                case eRealm.Albion:
-                {
-                    portMessage = "From sodden ground to the glow of the moon, let each vessel in this circle depart to lands now lost from the light of our fair Camelot!";
-                    break;
-                }
-                case eRealm.Midgard:
-                {
-                    portMessage = "Huginn and Munnin guide you all and return with news of your journeys.";
-                    break;
-                }
-                case eRealm.Hibernia:
-                {
-                    portMessage = "Go forth and rid Hibernia of the threat of foreign barbarians and fools forever.";
-                    break;
-                }
-                        
-            }
-            teleporter.Say(portMessage);
 
             teleporter.StartTeleporting();
         }
