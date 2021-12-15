@@ -7,6 +7,7 @@ using DOL.GS.Spells;
 using DOL.AI;
 using DOL.GS.Effects;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
@@ -18,7 +19,7 @@ namespace DOL.GS.Scripts
                 return false;
 
             Level = 100;
-            Flags |= GameNPC.eFlags.PEACE;
+            Flags |= eFlags.PEACE;
 
             if (Realm == eRealm.None)
                 Realm = eRealm.Albion;
@@ -30,7 +31,7 @@ namespace DOL.GS.Scripts
                         Name = "Master Elementalist";
                         Model = 61;
                         LoadEquipmentTemplateFromDatabase("master_elementalist");
-
+                        
                     }
                     break;
                 case eRealm.Hibernia:
@@ -42,7 +43,7 @@ namespace DOL.GS.Scripts
                     break;
                 case eRealm.Midgard:
                     {
-                        Name = "Master Runemaster";
+                        Name = "Gothi of Odin";
                         Model = 153;
                         LoadEquipmentTemplateFromDatabase("master_runemaster");
                     }
@@ -65,7 +66,7 @@ namespace DOL.GS.Scripts
     public class OFTeleporter : GameNPC
     {
         //Re-Port every 45 seconds.
-        public const int ReportInterval = 45;
+        public const int ReportInterval = 10;
         //RvR medallions
         public const string HadrianID = "hadrian_necklace";
         public const string EmainID = "emain_necklace";
@@ -131,7 +132,7 @@ namespace DOL.GS.Scripts
 
                 //Console.WriteLine(Assistants.ToString());
             }
-
+            
             if (cast) 
             {
                 castTimer.Interval = PortSpell.CastTime;
@@ -319,7 +320,7 @@ namespace DOL.GS.Scripts
                     break;
                 case eRealm.Midgard:
                     {
-                        Name = "Stor Gothi";
+                        Name = "Stor Gothi Annark";
                         Model = 153;
                         LoadEquipmentTemplateFromDatabase("stor_gothi");
                     }
@@ -349,6 +350,29 @@ namespace DOL.GS.Scripts
 
             if (effect != null || teleporter.IsCasting)
                 return;
+            
+            string portMessage = "";
+
+            switch (teleporter.Realm)
+            {
+                case eRealm.Albion:
+                {
+                    portMessage = "From sodden ground to the glow of the moon, let each vessel in this circle depart to lands now lost from the light of our fair Camelot!";
+                    break;
+                }
+                case eRealm.Midgard:
+                {
+                    portMessage = "Huginn and Munnin guide you all and return with news of your journeys.";
+                    break;
+                }
+                case eRealm.Hibernia:
+                {
+                    portMessage = "Go forth and rid Hibernia of the threat of foreign barbarians and fools forever.";
+                    break;
+                }
+                        
+            }
+            teleporter.Say(portMessage);
 
             teleporter.StartTeleporting();
         }
