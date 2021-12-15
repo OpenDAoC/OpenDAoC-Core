@@ -213,7 +213,7 @@ namespace DOL.GS.Scripts
                                 Say("I'm now teleporting you to Snowdonia Fortress");
                                 foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                                     player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 516801, 373238, 8208, 1784);
+                                t.MoveTo(1, 527543, 358900, 8320, 3074);
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
