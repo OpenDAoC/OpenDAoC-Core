@@ -172,7 +172,14 @@ namespace DOL.GS.Spells
 
             amount = cache;
 
-            if (Util.Chance(criticalchance))
+            int randNum = Util.CryptoNextInt(1, 100); //grab our random number
+
+            if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+            {
+                spellCaster.Out.SendMessage($"heal crit chance: {criticalchance} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+            }
+
+            if (criticalchance > randNum)
             {
                 double minValue = amount / 10;
                 double maxValue = amount / 2 + 1;
