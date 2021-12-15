@@ -203,7 +203,7 @@ namespace DOL.GS.Scripts
                                 Say("I'm now teleporting you to Castle Sauvage");
                                 foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                                     player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 583913, 487012, 2184, 2048);
+                                t.MoveTo(1, 584151, 477177, 2600, 3058);
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
