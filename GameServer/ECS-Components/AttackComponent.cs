@@ -1294,6 +1294,7 @@ namespace DOL.GS
             if (ad.Target == null)
             {
                 ad.AttackResult = (target == null) ? eAttackResult.NoTarget : eAttackResult.NoValidTarget;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
@@ -1301,6 +1302,7 @@ namespace DOL.GS
             if (ad.Target.CurrentRegionID != owner.CurrentRegionID || ad.Target.ObjectState != eObjectState.Active)
             {
                 ad.AttackResult = eAttackResult.NoValidTarget;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
@@ -1309,6 +1311,7 @@ namespace DOL.GS
                 !(ad.Target is GameKeepComponent) && !(owner.IsObjectInFront(ad.Target, 120, true) && owner.TargetInView))
             {
                 ad.AttackResult = eAttackResult.TargetNotVisible;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
@@ -1316,12 +1319,14 @@ namespace DOL.GS
             if (!ad.Target.IsAlive)
             {
                 ad.AttackResult = eAttackResult.TargetDead;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
             //We have no attacking distance!
             if (!owner.IsWithinRadius(ad.Target, ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard ? Math.Max(AttackRange + addRange, ad.Target.attackComponent.AttackRange + addRange) : AttackRange + addRange))
             {
                 ad.AttackResult = eAttackResult.OutOfRange;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
@@ -1333,12 +1338,14 @@ namespace DOL.GS
             if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, false))
             {
                 ad.AttackResult = eAttackResult.NotAllowed_ServerRules;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
             if (SpellHandler.FindEffectOnTarget(owner, "Phaseshift") != null)
             {
                 ad.AttackResult = eAttackResult.Phaseshift;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
@@ -1352,6 +1359,7 @@ namespace DOL.GS
                     if (owner is GamePlayer)
                         ((GamePlayer)owner).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)owner).Client.Account.Language, "GameLiving.AttackData.InvisibleToYou"), ad.Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                     ad.AttackResult = eAttackResult.NoValidTarget;
+                    SendAttackingCombatMessages(ad);
                     return ad;
                 }
             }
@@ -1361,6 +1369,7 @@ namespace DOL.GS
             {
                 //if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(string.Format("{0} can't be attacked!", ad.Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                 ad.AttackResult = eAttackResult.NoValidTarget;
+                SendAttackingCombatMessages(ad);
                 return ad;
             }
 
