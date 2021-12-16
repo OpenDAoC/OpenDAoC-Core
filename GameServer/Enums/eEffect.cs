@@ -135,6 +135,7 @@ namespace DOL.GS
         DirtyTricks,
         DirtyTricksDetrimental,
         Charge,
+        NPCStunImmunity,
 
         // Realm Abilities
         BunkerOfFaith,
