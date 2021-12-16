@@ -2028,6 +2028,8 @@ namespace DOL.GS
                 if (lastAD != null &&lastAD.AttackResult != eAttackResult.HitStyle)
                     lastAD = null;
 
+                double defensePenetration = Math.Round(ad.Attacker.GetAttackerDefensePenetration(ad.Attacker), 2);
+
                 double evadeChance = owner.TryEvade(ad, lastAD, attackerConLevel, attackerCount);
                 ad.EvadeChance = evadeChance;
                 double randomEvadeNum = Util.CryptoNextDouble() * 10000;
@@ -2036,12 +2038,12 @@ namespace DOL.GS
                 evadeChance *= 100;
                 if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
                 {
-                    evadeAtk.Out.SendMessage($"Target chance to evade: {evadeChance} RandomNumber: {randomEvadeNum} EvadeSuccess? {evadeChance > randomEvadeNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
                 {
-                    evadeTarg.Out.SendMessage($"Your chance to evade: {evadeChance} RandomNumber: {randomEvadeNum} EvadeSuccess? {evadeChance > randomEvadeNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (evadeChance > randomEvadeNum)
@@ -2058,12 +2060,12 @@ namespace DOL.GS
 
                     if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
                     {
-                        parryAtk.Out.SendMessage($"Target chance to parry: {parryChance} RandomNumber: {ranParryNum} ParrySuccess? {parryChance > ranParryNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
                     if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
                     {
-                        parryTarg.Out.SendMessage($"Your chance to parry: {parryChance} RandomNumber: {ranParryNum} ParrySuccess? {parryChance > ranParryNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
                     if (parryChance > ranParryNum)
@@ -2079,12 +2081,12 @@ namespace DOL.GS
 
                 if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                 {
-                    blockAttk.Out.SendMessage($"Target chance to block: {blockChance} RandomNumber: {ranBlockNum} BlockSuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockAttk.Out.SendMessage($"target block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                 {
-                    blockTarg.Out.SendMessage($"Your chance to block: {blockChance} RandomNumber: {ranBlockNum} BlockSuccess? {blockChance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (blockChance > ranBlockNum)
