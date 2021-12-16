@@ -79,6 +79,7 @@ namespace DOL.GS
 							} 
 							else if (Convert.ToString(args[1]).ToUpper() == "SELF") {
 								item = new GeneratedUniqueItem(client.Player.Realm, (eCharacterClass)client.Player.CharacterClass.ID, client.Player.Level);
+								item.CapUtility(client.Player.Level);
 								//item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 50));
 							} 
 							else
@@ -131,13 +132,13 @@ namespace DOL.GS
 	
 	
 		//base chance in %
-		public static ushort BASE_ROG_CHANCE = 10;
+		public static ushort BASE_ROG_CHANCE = 15;
 		
 		//Named loot chance (added to base chance)
 		public static ushort NAMED_ROG_CHANCE = 10;
 		
 		//base TOA chance in % (0 to disable TOA in other region than TOA)
-		public static ushort BASE_TOA_CHANCE = 33;
+		public static ushort BASE_TOA_CHANCE = 0;
 			
 		//Named TOA loot chance (added to named rog chance)
 		public static ushort NAMED_TOA_CHANCE = 3;
@@ -160,9 +161,14 @@ namespace DOL.GS
 				if (player == null)
 					return loot;
 
+				eCharacterClass classForLoot = (eCharacterClass)player.CharacterClass.ID;
 				// allow the leader to decide the loot realm
 				if (player.Group != null)
+                {
 					player = player.Group.Leader;
+					classForLoot = GetRandomClassFromGroup(player.Group);
+				}			
+
 			
 				double killedCon = player.GetConLevel(mob);
 			
@@ -173,7 +179,7 @@ namespace DOL.GS
 				// chance to get a RoG Item
 				int chance = BASE_ROG_CHANCE + ((int)killedCon + 3)*2;
 				// toa item
-				bool toachance = Util.Chance(BASE_TOA_CHANCE);
+				bool toachance = false;
 				
 				if (IsMobInTOA(mob) && mob.Name.ToLower() != mob.Name && mob.Level >= 50)
 				{
@@ -190,9 +196,10 @@ namespace DOL.GS
 					chance += NAMED_ROG_CHANCE;
 				}
 
-				Console.WriteLine($"Generating loot for class ID: {player.CharacterClass.ID}");
-				GeneratedUniqueItem item = new GeneratedUniqueItem(toachance, player.Realm, (eCharacterClass)player.CharacterClass.ID, (byte)Math.Min(mob.Level+1, 51));
-				
+				GeneratedUniqueItem item = new GeneratedUniqueItem(toachance, player.Realm, classForLoot, (byte)Math.Min(mob.Level+1, 51));
+
+				item.CapUtility(mob.Level+1);
+
 				item.AllowAdd = true;
 				item.GenerateItemQuality(killedCon);
 			
@@ -209,6 +216,17 @@ namespace DOL.GS
 			return loot;
 			
 		}
+
+		private eCharacterClass GetRandomClassFromGroup(Group group)
+        {
+			List<eCharacterClass> validClasses = new List<eCharacterClass>();
+            foreach (GamePlayer player in group.GetMembersInTheGroup())
+            {
+				validClasses.Add((eCharacterClass)player.CharacterClass.ID);
+            }
+
+			return validClasses[Util.Random(validClasses.Count-1)];
+        }
 		
 		public static bool IsMobInTOA(GameNPC mob)
 		{

@@ -80,7 +80,9 @@ namespace DOL.GS.Keeps
 			// default to NF if no frontier regions found
 			if (m_frontierRegionsList.Count == 0)
 			{
-				m_frontierRegionsList.Add(DEFAULT_FRONTIERS_REGION);
+				m_frontierRegionsList.Add(1);
+				m_frontierRegionsList.Add(100);
+				m_frontierRegionsList.Add(200);
 			}
 
 			ClothingMgr.LoadTemplates();
@@ -568,24 +570,15 @@ namespace DOL.GS.Keeps
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
-					// if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
+					if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
+					if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfotha") || keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner") || keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur") || keep.Name.ToLower().Contains("portal"))
+						continue;
 
-					switch (keep.Region)
-					{
-						case 1:
-						case 100:
-						case 200:
-							if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfotha") || keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner") || keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur") || keep.Name.ToLower().Contains("portal"))
-								break;
-							if (((eRealm)keep.Realm == realm) && (keep is GameKeep))
-								index++;
-							break;
-					}
-					// if (keep.CurrentRegion.ID != 1 || keep.CurrentRegion.ID != 100 || keep.CurrentRegion.ID != 200) continue;
-					
+					if ((keep.Realm == realm) && (keep is GameKeep)) 
+						index++;
 				}
+				return index;
 			}
-			return index;
 		}
 
 		public virtual ICollection<AbstractGameKeep> GetAllKeeps()

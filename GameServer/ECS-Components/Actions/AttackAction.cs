@@ -192,7 +192,7 @@ namespace DOL.GS
                     if (attackTarget == null || attackTarget == owner)
                     {
                         Interval = 100;
-                        return;
+                        //return;
                     }
 
                     AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
@@ -278,7 +278,7 @@ namespace DOL.GS
                     {
                         owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
                         Interval = 100;
-                        return;
+                        //return;
                     }
                 }
 

@@ -26,23 +26,24 @@ namespace DOL.GS.Scripts
 
         public override bool AddToWorld()
         {
-
+            GuildName = "Medallion Merchant";
             Level = 75;
-            Name = "Frontier Assistant";
-            GuildName = "Necklace Vendor";
-            Flags |= GameNPC.eFlags.PEACE;
+            Flags |= eFlags.PEACE;
 
             switch (Realm)
             {
                 case eRealm.Albion:
+                    Name = "Sall Fadri";
                     Model = 61;
                     TradeItems = new MerchantTradeItems("OFMerchant_Alb");
                     break;
                 case eRealm.Midgard:
+                    Name = "Gwulla";
                     Model = 215;
                     TradeItems = new MerchantTradeItems("OFMerchant_Mid");
                     break;
                 case eRealm.Hibernia:
+                    Name = "Araisa";
                     Model = 342;
                     TradeItems = new MerchantTradeItems("OFMerchant_Hib");
                     break;
@@ -77,31 +78,30 @@ namespace DOL.GS.Scripts
         public override bool AddToWorld()
         {
 
+            GuildName = "Medallion Merchant";
             Level = 75;
-            Name = "Frontier Assistant";
-            GuildName = "Necklace Vendor";
+            Flags |= eFlags.PEACE;
 
             switch (Realm)
             {
                 case eRealm.Albion:
+                    Name = "Sall Fadri";
                     Model = 61;
                     TradeItems = new MerchantTradeItems("OFMerchant_Alb_Home");
                     break;
                 case eRealm.Midgard:
+                    Name = "Gwulla";
                     Model = 215;
                     TradeItems = new MerchantTradeItems("OFMerchant_Mid_Home");
                     break;
                 case eRealm.Hibernia:
+                    Name = "Araisa";
                     Model = 342;
                     TradeItems = new MerchantTradeItems("OFMerchant_Hib_Home");
-                    break;
-                default:
                     break;
             }
          
             MaxSpeedBase = 0;
-
-
             return base.AddToWorld();
         }
 
