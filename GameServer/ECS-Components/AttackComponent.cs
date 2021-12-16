@@ -1424,7 +1424,13 @@ namespace DOL.GS
                 lowerboundary = Math.Max(lowerboundary, lowerLimit);
                 lowerboundary = Math.Min(lowerboundary, 100);
                 int upperboundary = Math.Max(lowerboundary + 50, 125);
-                
+
+                if (owner is GameNPC)
+                {
+                    lowerboundary = 75;
+                    upperboundary = 125;
+                }
+
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
 
                 // Badge Of Valor Calculation 1+ absorb or 1- absorb
