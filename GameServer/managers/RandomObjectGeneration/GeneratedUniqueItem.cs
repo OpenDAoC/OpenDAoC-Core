@@ -58,7 +58,7 @@ namespace DOL.GS
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 45;
 		// Weapon Chance in %
-		public const ushort ROG_WEAPON_CHANCE = 45;
+		public const ushort ROG_WEAPON_CHANCE = 40;
 
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
@@ -70,16 +70,16 @@ namespace DOL.GS
 		public const ushort ROG_TOA_STAT_CHANCE = 0;
 		
 		// Item chance to get stat bonus
-		public const ushort ROG_ITEM_STAT_CHANCE = 45;
+		public const ushort ROG_ITEM_STAT_CHANCE = 50;
 		
 		// Item chance to get resist bonus
-		public const ushort ROG_ITEM_RESIST_CHANCE = 50;
+		public const ushort ROG_ITEM_RESIST_CHANCE = 45;
 
 		//item chance to get skills
-		public const ushort ROG_ITEM_SKILL_CHANCE = 66;
+		public const ushort ROG_ITEM_SKILL_CHANCE = 50;
 
 		// Item chance to get All skills stat
-		public const ushort ROG_STAT_ALLSKILL_CHANCE = 25;
+		public const ushort ROG_STAT_ALLSKILL_CHANCE = 0;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
 		public const ushort ROG_100_MAGICAL_OFFSET = 50;
@@ -183,6 +183,11 @@ namespace DOL.GS
 			this.IsPickable = true;
 			this.IsTradable = true;
 
+			if (this.Level > 51)
+            {
+				this.Level = 51;
+            }
+
 			//item bonus
 			int temp = this.Level - 15;
 			temp -= temp % 5;
@@ -199,7 +204,7 @@ namespace DOL.GS
 
 			this.GenerateItemWeight();
 			
-			this.Description = "Atlas ROG";
+			this.Description = "";
 			
 			//don't add to database implicitly, must be done explicitly
 			this.AllowAdd = false;
@@ -227,6 +232,13 @@ namespace DOL.GS
 		
 		private void GenerateItemStats()
 		{
+			int templevel = 0;
+			if(Level > 51)
+            {
+				templevel = this.Level;
+				this.Level = 51;
+			}
+			
 			eObjectType type = (eObjectType)this.Object_Type;
 
 			//special property for instrument
@@ -331,6 +343,9 @@ namespace DOL.GS
 						break;
 					}
 			}
+
+			if (templevel != 0)
+				this.Level = templevel;
 		}
 		
 		private void GenerateMagicalBonuses(bool toa)
@@ -340,11 +355,11 @@ namespace DOL.GS
 			int number = 0;
 			
 			// WHRIA
+			//if (this.Level>60) number++;
 			if (this.Level>60 && Util.Chance(3)) number++;
-			if (this.Level>60 && Util.Chance(3)) number++;
-			if (this.Level>70 && Util.Chance(3)) number++;
-			if (this.Level>70 && Util.Chance(3)) number++;
-			if (this.Level>80 && Util.Chance(5)) number++;
+			if (this.Level>70 && Util.Chance(5)) number++;
+			if (this.Level>70 && Util.Chance(5)) number++;
+			if (this.Level>80 && Util.Chance(10)) number++;
 			// END
 
 			if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2)) // 100% magical starting at level 40
@@ -367,13 +382,14 @@ namespace DOL.GS
 							//4
 							number++;
 
-							if (toa)
+							if (this.Level > 75)
 								number++; // 5
 						}
 					}
 				}
 
 			}
+
 
 			// Magical items have at least 1 bonus
 			if (this.Object_Type == (int)eObjectType.Magical && number < 1)
@@ -385,7 +401,7 @@ namespace DOL.GS
 
 			double quality = (double)this.Quality * .01;
 
-			double multiplier = (quality * quality * quality) + 0.15;
+			double multiplier = (quality * quality * quality) + 0.20;
 
 			if (toa)
 			{
@@ -435,7 +451,7 @@ namespace DOL.GS
 			if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
 			if (Util.Chance(ROG_ITEM_SKILL_CHANCE) && !hasSkill) { bonTypes.Add(eBonusType.Skill); }
 
-			//if none of the object types were added, default to magical
+			//if none of the object types were added, randomly pick between stat/resist
 			if (bonTypes.Count < 1)
 			{
 				int bonType = Util.Random(3);
@@ -3925,7 +3941,7 @@ namespace DOL.GS
 					}
 				case eBonusType.Skill:
 					{
-						int max = (int)Util.Random(1, 4);
+						int max = (int)Util.Random(1, 5);
 						if (property == eProperty.AllSkills || 
 							property == eProperty.AllMagicSkills ||
 							property == eProperty.AllDualWieldingSkills ||
@@ -3965,10 +3981,624 @@ namespace DOL.GS
 			return 1;
 		}
 		#endregion
-		
+
+		public void CapUtility(int mobLevel)
+        {
+			int cap = 0;
+			if (mobLevel > 80)
+				cap = 80;
+			else if (mobLevel >= 50)
+				cap = mobLevel;
+			else
+				cap = mobLevel - 10;
+
+			if (cap < 10)
+				cap = 10; //all items can gen with up to 10 uti
+
+			//randomize cap to be 90-105% of normal value
+			double random = (90 + Util.Random(15)) / 100.0;
+			cap = (int)Math.Floor(cap*random);
+
+			//Console.WriteLine($"Cap: {cap} TotalUti: {GetTotalUtility()}");
+
+			while (GetTotalUtility() > cap)
+            {
+				//find highest utility line on the item
+				int bestLine = GetHighestUtilitySingleLine();
+				//Console.WriteLine($"TotalUti: {GetTotalUtility()}");
+				//lower the value of it by
+				//1-5% for resist
+				//1-15 for stat
+				//1-3 for skill
+				switch (bestLine)
+                {
+					case 1:
+						Bonus1 = ReduceSingleLineUtility(Bonus1Type, Bonus1);
+						break;
+					case 2:
+						Bonus2 = ReduceSingleLineUtility(Bonus2Type, Bonus2);
+						break;
+					case 3:
+						Bonus3 = ReduceSingleLineUtility(Bonus3Type, Bonus3);
+						break;
+					case 4:
+						Bonus4 = ReduceSingleLineUtility(Bonus4Type, Bonus4);
+						break;
+					case 5:
+						Bonus5 = ReduceSingleLineUtility(Bonus5Type, Bonus5);
+						break;
+					case 6:
+						Bonus6 = ReduceSingleLineUtility(Bonus6Type, Bonus6);
+						break;
+					case 7:
+						Bonus7 = ReduceSingleLineUtility(Bonus7Type, Bonus7);
+						break;
+					case 8:
+						Bonus8 = ReduceSingleLineUtility(Bonus8Type, Bonus8);
+						break;
+					case 9:
+						Bonus9 = ReduceSingleLineUtility(Bonus9Type, Bonus9);
+						break;
+					case 10:
+						Bonus10 = ReduceSingleLineUtility(Bonus10Type, Bonus10);
+						break;
+					case 11:
+						ExtraBonus = ReduceSingleLineUtility(ExtraBonusType, ExtraBonus);
+						break;
+				}
+
+				
+				//then recalculate
+			}
+        }
+
+		private int GetHighestUtilitySingleLine()
+        {
+			double highestUti = GetSingleUtility(Bonus1Type, Bonus1);
+			int highestLine = highestUti > 0 ? 1 : 0 ; //if line1 had a bonus, set it as highest line, otherwise default to 0
+
+			if(GetSingleUtility(Bonus2Type, Bonus2) > highestUti)
+            {
+				highestUti = GetSingleUtility(Bonus2Type, Bonus2);
+				highestLine = 2;
+            }
+
+			if (GetSingleUtility(Bonus3Type, Bonus3) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus3Type, Bonus3);
+				highestLine = 3;
+			}
+
+			if (GetSingleUtility(Bonus4Type, Bonus4) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus4Type, Bonus4);
+				highestLine = 4;
+			}
+
+			if (GetSingleUtility(Bonus5Type, Bonus5) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus5Type, Bonus5);
+				highestLine = 5;
+			}
+
+			if (GetSingleUtility(Bonus6Type, Bonus6) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus6Type, Bonus6);
+				highestLine = 2;
+			}
+
+			if (GetSingleUtility(Bonus7Type, Bonus7) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus7Type, Bonus7);
+				highestLine = 7;
+			}
+
+			if (GetSingleUtility(Bonus8Type, Bonus8) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus8Type, Bonus8);
+				highestLine = 8;
+			}
+
+			if (GetSingleUtility(Bonus9Type, Bonus9) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus9Type, Bonus9);
+				highestLine = 9;
+			}
+
+			if (GetSingleUtility(Bonus10Type, Bonus10) > highestUti)
+			{
+				highestUti = GetSingleUtility(Bonus10Type, Bonus10);
+				highestLine = 10;
+			}
+
+			if (GetSingleUtility(ExtraBonusType, ExtraBonus) > highestUti)
+			{
+				highestLine = 11;
+			}
+
+			return highestLine;
+		}
+
+		private int ReduceSingleLineUtility(int BonusType, int Bonus)
+        {
+			//Console.WriteLine($"Reducing utility for {this.Name}. Total bonus before: {Bonus}");
+			//based off of eProperty
+			//1-8 == stats = *.6667
+			//9 == power cap = *2
+			//10 == maxHP =  *.25
+			//11-19 == resists = *2
+			//20-115 == skill = *5
+			//163 == all magic = *10
+			//164 == all melee = *10
+			//167 == all dual weild = *10
+			//168 == all archery = *10
+			if (BonusType != 0 &&
+				Bonus != 0)
+			{
+				if (BonusType < 9 || BonusType == 156)
+				{
+					//reduce by 1-4, but not more than exists
+					Bonus = Bonus - Util.Random(1, Math.Min(Bonus,10)); //up to ~7 uti reduction
+				}
+				else if (BonusType == 9)
+				{
+					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 2)); //up to 4 uti reduction
+				}
+				else if (BonusType == 10)
+				{
+					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 20)); //up to 5 uti reduction
+				}
+				else if (BonusType < 20)
+				{
+					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 3)); //up to 6 uti reduction
+				}
+				else if (BonusType < 115)
+				{
+					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 2)); //up to 10 uti reduction
+				}
+				else if (BonusType == 163
+				  || BonusType == 164
+				  || BonusType == 167
+				  || BonusType == 168
+				  || BonusType == 213)
+				{
+					Bonus = 0; //no +all skills on rogs
+				}
+			}
+			//Console.WriteLine($"Total bonus after: {Bonus}");
+			return Bonus;
+		}
+
+		private double GetTotalUtility()
+		{
+			double totalUti = 0;
+
+			//based off of eProperty
+			//1-8 == stats = *.6667
+			//9 == power cap = *2
+			//10 == maxHP =  *.25
+			//11-19 == resists = *2
+			//20-115 == skill = *5
+			//163 == all magic = *10
+			//164 == all melee = *10
+			//167 == all dual weild = *10
+			//168 == all archery = *10
+			if (Bonus1Type != 0 &&
+				Bonus1 != 0)
+			{
+				if (Bonus1Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus1 * .6667;
+				}
+				else if (Bonus1Type == 9)
+				{
+					totalUti += Bonus1 * 2;
+				}
+				else if (Bonus1Type == 10)
+				{
+					totalUti += Bonus1 * .25;
+				}
+				else if (Bonus1Type < 20)
+				{
+					totalUti += Bonus1 * 2;
+				}
+				else if (Bonus1Type < 115)
+				{
+					totalUti += Bonus1 * 5;
+				}
+				else if (Bonus1Type == 163
+				  || Bonus1Type == 164
+				  || Bonus1Type == 167
+				  || Bonus1Type == 168
+				  || Bonus1Type == 213)
+				{
+					totalUti += Bonus1 * 10;
+				}
+			}
+
+			if (Bonus2Type != 0 &&
+				Bonus2 != 0)
+			{
+				if (Bonus2Type < 9 || Bonus2Type == 156)
+				{
+					totalUti += Bonus2 * .6667;
+				}
+				else if (Bonus2Type == 9)
+				{
+					totalUti += Bonus2 * 2;
+				}
+				else if (Bonus2Type == 10)
+				{
+					totalUti += Bonus2 * .25;
+				}
+				else if (Bonus2Type < 20)
+				{
+					totalUti += Bonus2 * 2;
+				}
+				else if (Bonus2Type < 115)
+				{
+					totalUti += Bonus2 * 5;
+				}
+				else if (Bonus2Type == 163
+				  || Bonus2Type == 164
+				  || Bonus2Type == 167
+				  || Bonus2Type == 168
+				  || Bonus2Type == 213)
+				{
+					totalUti += Bonus2 * 10;
+				}
+			}
+
+			if (Bonus3Type != 0 &&
+				Bonus3 != 0)
+			{
+				if (Bonus3Type < 9 || Bonus3Type == 156)
+				{
+					totalUti += Bonus3 * .6667;
+				}
+				else if (Bonus3Type == 9)
+				{
+					totalUti += Bonus3 * 2;
+				}
+				else if (Bonus3Type == 10)
+				{
+					totalUti += Bonus3 * .25;
+				}
+				else if (Bonus3Type < 20)
+				{
+					totalUti += Bonus3 * 2;
+				}
+				else if (Bonus3Type < 115)
+				{
+					totalUti += Bonus3 * 5;
+				}
+				else if (Bonus3Type == 163
+				  || Bonus3Type == 164
+				  || Bonus3Type == 167
+				  || Bonus3Type == 168
+				  || Bonus3Type == 213)
+				{
+					totalUti += Bonus3 * 10;
+				}
+			}
+
+			if (Bonus4Type != 0 &&
+				Bonus4 != 0)
+			{
+				if (Bonus4Type < 9 || Bonus4Type == 156)
+				{
+					totalUti += Bonus4 * .6667;
+				}
+				else if (Bonus4Type == 9)
+				{
+					totalUti += Bonus4 * 2;
+				}
+				else if (Bonus4Type == 10)
+				{
+					totalUti += Bonus4 * .25;
+				}
+				else if (Bonus4Type < 20)
+				{
+					totalUti += Bonus4 * 2;
+				}
+				else if (Bonus4Type < 115)
+				{
+					totalUti += Bonus4 * 5;
+				}
+				else if (Bonus4Type == 163
+				  || Bonus4Type == 164
+				  || Bonus4Type == 167
+				  || Bonus4Type == 168
+				  || Bonus4Type == 213)
+				{
+					totalUti += Bonus4 * 10;
+				}
+			}
+
+			if (Bonus5Type != 0 &&
+				Bonus5 != 0)
+			{
+				if (Bonus5Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus5 * .6667;
+				}
+				else if (Bonus5Type == 9)
+				{
+					totalUti += Bonus5 * 2;
+				}
+				else if (Bonus5Type == 10)
+				{
+					totalUti += Bonus5 * .25;
+				}
+				else if (Bonus5Type < 20)
+				{
+					totalUti += Bonus5 * 2;
+				}
+				else if (Bonus5Type < 115)
+				{
+					totalUti += Bonus5 * 5;
+				}
+				else if (Bonus5Type == 163
+				  || Bonus5Type == 164
+				  || Bonus5Type == 167
+				  || Bonus5Type == 168
+				  || Bonus5Type == 213)
+				{
+					totalUti += Bonus5 * 10;
+				}
+			}
+
+			if (Bonus6Type != 0 &&
+				Bonus6 != 0)
+			{
+				if (Bonus6Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus6 * .6667;
+				}
+				else if (Bonus6Type == 9)
+				{
+					totalUti += Bonus6 * 2;
+				}
+				else if (Bonus6Type == 10)
+				{
+					totalUti += Bonus6 * .25;
+				}
+				else if (Bonus6Type < 20)
+				{
+					totalUti += Bonus6 * 2;
+				}
+				else if (Bonus6Type < 115)
+				{
+					totalUti += Bonus6 * 5;
+				}
+				else if (Bonus6Type == 163
+				  || Bonus6Type == 164
+				  || Bonus6Type == 167
+				  || Bonus6Type == 168
+				  || Bonus6Type == 213)
+				{
+					totalUti += Bonus6 * 10;
+				}
+			}
+
+			if (Bonus7Type != 0 &&
+				Bonus7 != 0)
+			{
+				if (Bonus7Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus7 * .6667;
+				}
+				else if (Bonus7Type == 9)
+				{
+					totalUti += Bonus7 * 2;
+				}
+				else if (Bonus7Type == 10)
+				{
+					totalUti += Bonus7 * .25;
+				}
+				else if (Bonus7Type < 20)
+				{
+					totalUti += Bonus7 * 2;
+				}
+				else if (Bonus7Type < 115)
+				{
+					totalUti += Bonus7 * 5;
+				}
+				else if (Bonus7Type == 163
+				  || Bonus7Type == 164
+				  || Bonus7Type == 167
+				  || Bonus7Type == 168
+				  || Bonus7Type == 213)
+				{
+					totalUti += Bonus7 * 10;
+				}
+			}
+			if (Bonus8Type != 0 &&
+				Bonus8 != 0)
+			{
+				if (Bonus8Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus8 * .6667;
+				}
+				else if (Bonus8Type == 9)
+				{
+					totalUti += Bonus8 * 2;
+				}
+				else if (Bonus8Type == 10)
+				{
+					totalUti += Bonus8 * .25;
+				}
+				else if (Bonus8Type < 20)
+				{
+					totalUti += Bonus8 * 2;
+				}
+				else if (Bonus8Type < 115)
+				{
+					totalUti += Bonus8 * 5;
+				}
+				else if (Bonus8Type == 163
+				  || Bonus8Type == 164
+				  || Bonus8Type == 167
+				  || Bonus8Type == 168
+				  || Bonus8Type == 213)
+				{
+					totalUti += Bonus8 * 10;
+				}
+			}
+			if (Bonus9Type != 0 &&
+				Bonus9 != 0)
+			{
+				if (Bonus9Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus9 * .6667;
+				}
+				else if (Bonus9Type == 9)
+				{
+					totalUti += Bonus9 * 2;
+				}
+				else if (Bonus9Type == 10)
+				{
+					totalUti += Bonus9 * .25;
+				}
+				else if (Bonus9Type < 20)
+				{
+					totalUti += Bonus9 * 2;
+				}
+				else if (Bonus9Type < 115)
+				{
+					totalUti += Bonus9 * 5;
+				}
+				else if (Bonus9Type == 163
+				  || Bonus9Type == 164
+				  || Bonus9Type == 167
+				  || Bonus9Type == 168
+				  || Bonus9Type == 213)
+				{
+					totalUti += Bonus9 * 10;
+				}
+			}
+			if (Bonus10Type != 0 &&
+				Bonus10 != 0)
+			{
+				if (Bonus10Type < 9 || Bonus1Type == 156)
+				{
+					totalUti += Bonus10 * .6667;
+				}
+				else if (Bonus10Type == 9)
+				{
+					totalUti += Bonus10 * 2;
+				}
+				else if (Bonus10Type == 10)
+				{
+					totalUti += Bonus10 * .25;
+				}
+				else if (Bonus10Type < 20)
+				{
+					totalUti += Bonus10 * 2;
+				}
+				else if (Bonus10Type < 115)
+				{
+					totalUti += Bonus10 * 5;
+				}
+				else if (Bonus10Type == 163
+				  || Bonus10Type == 164
+				  || Bonus10Type == 167
+				  || Bonus10Type == 168
+				  || Bonus10Type == 213)
+				{
+					totalUti += Bonus10 * 10;
+				}
+			}
+			if (ExtraBonusType != 0 &&
+				ExtraBonus != 0)
+			{
+				if (ExtraBonusType < 9 || Bonus1Type == 156)
+				{
+					totalUti += ExtraBonus * .6667;
+				}
+				else if (ExtraBonusType == 9)
+				{
+					totalUti += ExtraBonus * 2;
+				}
+				else if (ExtraBonusType == 10)
+				{
+					totalUti += ExtraBonus * .25;
+				}
+				else if (ExtraBonusType < 20)
+				{
+					totalUti += ExtraBonus * 2;
+				}
+				else if (ExtraBonusType < 115)
+				{
+					totalUti += ExtraBonus * 5;
+				}
+				else if (ExtraBonusType == 163
+				  || ExtraBonusType == 164
+				  || ExtraBonusType == 167
+				  || ExtraBonusType == 168
+				  || ExtraBonusType == 213)
+				{
+					totalUti += ExtraBonus * 10;
+				}
+			}
+
+			return totalUti;
+		}
+
+		private double GetSingleUtility(int BonusType, int Bonus)
+		{
+			double totalUti = 0;
+
+			//based off of eProperty
+			//1-8 == stats = *.6667
+			//9 == power cap = *2
+			//10 == maxHP =  *.25
+			//11-19 == resists = *2
+			//20-115 == skill = *5
+			//163 == all magic = *10
+			//164 == all melee = *10
+			//167 == all dual weild = *10
+			//168 == all archery = *10
+			if (BonusType != 0 &&
+				Bonus != 0)
+			{
+				if (BonusType < 9 || BonusType == 156)
+				{
+					totalUti += Bonus * .6667;
+				}
+				else if (BonusType == 9)
+				{
+					totalUti += Bonus * 2;
+				}
+				else if (BonusType == 10)
+				{
+					totalUti += Bonus * .25;
+				}
+				else if (BonusType < 20)
+				{
+					totalUti += Bonus * 2;
+				}
+				else if (BonusType < 115)
+				{
+					totalUti += Bonus * 5;
+				}
+				else if (BonusType == 163
+				  || BonusType == 164
+				  || BonusType == 167
+				  || BonusType == 168
+				  || BonusType == 213)
+				{
+					totalUti += Bonus * 10;
+				}
+			}
+
+
+			return totalUti;
+		}
+
 		#region generate item type
-		
-		
+
+
 		private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
 		{
 			eGenerateType type = GetObjectTypeByWeight();
