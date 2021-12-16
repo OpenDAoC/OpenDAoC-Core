@@ -2028,7 +2028,7 @@ namespace DOL.GS
                 if (lastAD != null &&lastAD.AttackResult != eAttackResult.HitStyle)
                     lastAD = null;
 
-                double defensePenetration = Math.Round(ad.Attacker.GetAttackerDefensePenetration(ad.Attacker), 2);
+                double defensePenetration = Math.Round(ad.Attacker.GetAttackerDefensePenetration(ad.Attacker, ad.Weapon), 2);
 
                 double evadeChance = owner.TryEvade(ad, lastAD, attackerConLevel, attackerCount);
                 ad.EvadeChance = evadeChance;

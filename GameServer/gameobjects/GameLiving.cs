@@ -3701,7 +3701,7 @@ namespace DOL.GS
                     evadeChance += 15 * 0.01;
                 }
 
-                evadeChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
+                evadeChance -= GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
 
 				if ( ad.AttackType == AttackData.eAttackType.Ranged )
 					evadeChance /= 5.0;
@@ -3802,7 +3802,7 @@ namespace DOL.GS
 						parryChance += 25 * 0.01;
 					}
 
-					parryChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
+					parryChance -= GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
 
 					if ( parryChance < 0.01 )
 						parryChance = 0.01;
@@ -3896,7 +3896,7 @@ namespace DOL.GS
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
 				}
 					
-				blockChance -= GetAttackerDefensePenetration(ad.Attacker) / 100; //reduce chance by attacker's defense penetration
+				blockChance -= GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
@@ -3952,11 +3952,11 @@ namespace DOL.GS
 			return blockChance;
 		}
 
-		public double GetAttackerDefensePenetration(GameLiving living)
+		public double GetAttackerDefensePenetration(GameLiving living, InventoryItem weapon)
         {            
 			//double statBasedReduction = (living.GetWeaponStat(living.attackComponent?.AttackWeapon) - 50) / 25.0;
 			//double weaponskillBasedReduction = living.GetWeaponSkill(living.attackComponent?.AttackWeapon) / 100;
-			double skillBasedReduction = living.WeaponSpecLevel(living.attackComponent?.AttackWeapon) * 0.15;
+			double skillBasedReduction = living.WeaponSpecLevel(weapon) * 0.15;
 
 			//double combinedReduction = statBasedReduction + skillBasedReduction;
 
