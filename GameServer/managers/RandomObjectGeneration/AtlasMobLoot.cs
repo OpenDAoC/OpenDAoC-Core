@@ -1,4 +1,5 @@
 ﻿using DOL.AI.Brain;
+using System.Collections.Generic;
 
 namespace DOL.GS
 {
@@ -9,6 +10,10 @@ namespace DOL.GS
     /// </summary>
     public class ROGMobGenerator : LootGeneratorBase
     {
+
+        //base chance in %
+        public static ushort BASE_ROG_CHANCE = 15;
+
 
         /// <summary>
         /// Generate loot for given mob
@@ -33,7 +38,15 @@ namespace DOL.GS
                     return loot;
                 }
 
-                int killedcon = (int)player.GetConLevel(mob) + 3;
+                eCharacterClass classForLoot = (eCharacterClass)player.CharacterClass.ID;
+                // allow the leader to decide the loot realm
+                if (player.Group != null)
+                {
+                    player = player.Group.Leader;
+                    classForLoot = GetRandomClassFromGroup(player.Group);
+                }
+
+                    int killedcon = (int)player.GetConLevel(mob) + 3;
 
                 if (killedcon <= 0)
                 {
@@ -58,5 +71,16 @@ namespace DOL.GS
 
             return loot;
         }
+
+        private eCharacterClass GetRandomClassFromGroup(Group group)
+        {
+            List<eCharacterClass> validClasses = new List<eCharacterClass>();
+            foreach (GamePlayer player in group.GetMembersInTheGroup())
+            {
+                validClasses.Add((eCharacterClass)player.CharacterClass.ID);
+            }
+
+            return validClasses[Util.Random(validClasses.Count - 1)];
+
+        }
     }
-}
