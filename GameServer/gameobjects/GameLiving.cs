@@ -3952,23 +3952,23 @@ namespace DOL.GS
 			return blockChance;
 		}
 
-		private double GetAttackerDefensePenetration(GameLiving living)
+		public double GetAttackerDefensePenetration(GameLiving living)
         {            
-			double statBasedReduction = (living.GetWeaponStat(living.attackComponent?.AttackWeapon) - 50) / 25.0;
+			//double statBasedReduction = (living.GetWeaponStat(living.attackComponent?.AttackWeapon) - 50) / 25.0;
 			//double weaponskillBasedReduction = living.GetWeaponSkill(living.attackComponent?.AttackWeapon) / 100;
 			double skillBasedReduction = living.WeaponSpecLevel(living.attackComponent?.AttackWeapon) * 0.15;
 
-			double combinedReduction = statBasedReduction + skillBasedReduction;
+			//double combinedReduction = statBasedReduction + skillBasedReduction;
 
 			if (living is GamePlayer p)
             {
 				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
 				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
 				//divide by final 2 to use the 2.0 damage table as our anchor. classes below 2.0 damage table will have slightly reduced penetration, above 2.0 will have increased penetration
-				combinedReduction *= p.CharacterClass.WeaponSkillBase / 200.0 / 2;
+				skillBasedReduction *= p.CharacterClass.WeaponSkillBase / 200.0 / 1.8;
 			}
 				
-			return combinedReduction;
+			return skillBasedReduction;
 		}
 
 		/// <summary>
