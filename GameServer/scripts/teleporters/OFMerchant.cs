@@ -26,7 +26,7 @@ namespace DOL.GS.Scripts
 
         public override bool AddToWorld()
         {
-            GuildName = "Merchant";
+            GuildName = "Medallion Merchant";
             Level = 75;
             Flags |= eFlags.PEACE;
 
@@ -43,7 +43,7 @@ namespace DOL.GS.Scripts
                     TradeItems = new MerchantTradeItems("OFMerchant_Mid");
                     break;
                 case eRealm.Hibernia:
-                    Name = "Merchant";
+                    Name = "Araisa";
                     Model = 342;
                     TradeItems = new MerchantTradeItems("OFMerchant_Hib");
                     break;
@@ -87,17 +87,17 @@ namespace DOL.GS.Scripts
                 case eRealm.Albion:
                     Name = "Sall Fadri";
                     Model = 61;
-                    TradeItems = new MerchantTradeItems("OFMerchant_Alb");
+                    TradeItems = new MerchantTradeItems("OFMerchant_Alb_Home");
                     break;
                 case eRealm.Midgard:
                     Name = "Gwulla";
                     Model = 215;
-                    TradeItems = new MerchantTradeItems("OFMerchant_Mid");
+                    TradeItems = new MerchantTradeItems("OFMerchant_Mid_Home");
                     break;
                 case eRealm.Hibernia:
                     Name = "Araisa";
                     Model = 342;
-                    TradeItems = new MerchantTradeItems("OFMerchant_Hib");
+                    TradeItems = new MerchantTradeItems("OFMerchant_Hib_Home");
                     break;
             }
          
