@@ -46,4 +46,22 @@ namespace DOL.GS
             }
         }
     }
-}
+    public class NPCECSImmunityEffect : ECSGameEffect
+    {
+        private int timesStunned = 1;
+        public NPCECSImmunityEffect(ECSGameEffectInitParams initParams) : base()
+        {
+            Owner = initParams.Target;
+            Duration = 60000;
+            EffectType = eEffect.NPCStunImmunity;
+            EffectService.RequestStartEffect(this);
+        }
+
+        public long CalclulateStunDuration(long duration)
+        {
+            var retVal = duration / (2 * timesStunned);
+            timesStunned++;
+            return retVal;
+        }
+    }
+ }
