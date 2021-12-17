@@ -74,12 +74,21 @@ namespace DOL.GS
 
         public override void TryApplyImmunity()
         {
-            if (TriggersImmunity && (OwnerPlayer != null || Owner is NecromancerPet))
+            if (TriggersImmunity)
             {
-                if (EffectType == eEffect.Stun && SpellHandler.Caster is GamePet)
-                    return;
+                if (OwnerPlayer != null)
+                {
+                    if (EffectType == eEffect.Stun && SpellHandler.Caster is GamePet)
+                        return;
 
-                new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
+                    new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
+                }
+                else if (Owner is GameNPC && EffectType == eEffect.Stun)
+                {
+                    NPCECSImmunityEffect npcImmune = (NPCECSImmunityEffect)EffectListService.GetEffectOnTarget(Owner, eEffect.NPCStunImmunity);
+                    if (npcImmune is null)
+                        new NPCECSImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness));
+                }
             }
         }
     }

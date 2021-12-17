@@ -74,5 +74,18 @@ namespace DOL.GS {
             }
         }
 
+        public static GeneratedUniqueItem GenerateMonsterLootROG(eRealm realm, eCharacterClass charClass, byte level)
+        {
+            GeneratedUniqueItem item = null;
+            item = new GeneratedUniqueItem(realm, charClass, level);
+            item.CapUtility(level);
+            item.AllowAdd = true;
+            item.IsTradable = true;
+            GameServer.Database.AddObject(item);
+
+            return item;
+            
+        }
+
     }
 }

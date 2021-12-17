@@ -355,6 +355,18 @@ namespace DOL.GS.Commands
 					info.Add("  - XPs : " + target.Experience);
 					info.Add("  - RPs : " + target.RealmPoints);
 					info.Add("  - BPs : " + target.BountyPoints);
+					info.Add(" ");
+					var customParams = target.Client.Account.CustomParams;
+					foreach (CustomParam param in customParams)
+					{
+						info.Add("  Custom Params " + param.KeyName + " " + param.Value);
+					}
+					if(target.Client.Account.CustomParams[0].KeyName == "PvEBeta50")
+					{
+						info.Add("scemo " + target.Client.Account.CustomParams[0].KeyName);
+					}
+					
+					
 
 					String sCurrent = "";
 					String sTitle = "";
