@@ -1499,23 +1499,26 @@ namespace DOL.GS
                     if (Realm == eRealm.Hibernia)
                     {
                         relRegion = 201; // Tir Na Nog
-                        relX = 8192 + 15780;
-                        relY = 8192 + 22727;
-                        relZ = 7060;
+                        relX = 34149;
+                        relY = 32063;
+                        relZ = 8047;
+                        relHeading = 1025;
                     }
                     else if (Realm == eRealm.Midgard)
                     {
                         relRegion = 101; // Jordheim
-                        relX = 8192 + 24664;
-                        relY = 8192 + 21402;
-                        relZ = 8759;
+                        relX = 30094;
+                        relY = 27589;
+                        relZ = 8763;
+                        relHeading = 3468;
                     }
                     else
                     {
                         relRegion = 10; // City of Camelot
-                        relX = 8192 + 26315;
-                        relY = 8192 + 21177;
-                        relZ = 8256;
+                        relX = 36240;
+                        relY = 29695;
+                        relZ = 7985;
+                        relHeading = 4095;
                     }
                     relHeading = 2048;
                     break;
