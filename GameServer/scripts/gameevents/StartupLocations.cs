@@ -110,7 +110,7 @@ namespace DOL.GS.GameEvents
 				// get the first entry according to Tutorial Enabling.
 				foreach (var location in availableLocation)
 				{
-					if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_PVP || ServerProperties.Properties.DISABLE_TUTORIAL && location.ClientRegionID == TUTORIAL_REGIONID)
+					if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_PVP)
 						continue;
 					
 					dbStartupLocation = location;
@@ -130,6 +130,8 @@ namespace DOL.GS.GameEvents
 					ch.Region = dbStartupLocation.Region;
 					ch.Direction = dbStartupLocation.Heading;
 					BindCharacter(ch);
+					Console.WriteLine("startup location: account={0}; char name={1}; region={2}; realm={3}; class={4} ({5}); race={6} ({7}); version={8}",
+						ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (eCharacterClass) ch.Class, ch.Race, (eRace)ch.Race, chArgs.GameClient.Version); 
 				}				
 			}
 			catch (Exception e)
