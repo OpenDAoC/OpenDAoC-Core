@@ -82,7 +82,7 @@ namespace DOL.GS
 		public const ushort ROG_STAT_ALLSKILL_CHANCE = 0;
 		
 		// base Chance to get a magical RoG item, Level*2 is added to get final value
-		public const ushort ROG_100_MAGICAL_OFFSET = 50;
+		public const ushort ROG_100_MAGICAL_OFFSET = 60;
 
 		private bool hasSkill;
 
