@@ -41,7 +41,7 @@ namespace DOL.GS.Commands
 	{
 		
 		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public long GuildFormCost = Money.GetMoney(0, 0, 10, 0, 0); //Cost to form guild : live = 1g : (mith/plat/gold/silver/copper)
+		public long GuildFormCost = Money.GetMoney(0, 0, 1, 0, 0); //Cost to form guild : live = 1g : (mith/plat/gold/silver/copper)
 		/// <summary>
 		/// Checks if a guildname has valid characters
 		/// </summary>
@@ -135,7 +135,7 @@ namespace DOL.GS.Commands
 							ply.TempProperties.removeProperty("Guild_Consider");
 						}
 						player.Group.Leader.TempProperties.removeProperty("Guild_Name");
-						player.Group.Leader.RemoveMoney(10000);
+						player.Group.Leader.RemoveMoney(GuildFormCost);
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 					}
 				}
