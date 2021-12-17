@@ -204,7 +204,7 @@ namespace DOL.GS
 
 			this.GenerateItemWeight();
 			
-			this.Description = "";
+			this.Description = "Atlas ROG";
 			
 			//don't add to database implicitly, must be done explicitly
 			this.AllowAdd = false;
