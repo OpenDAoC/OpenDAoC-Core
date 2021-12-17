@@ -1356,7 +1356,7 @@ namespace DOL.GS.ServerRules
 					{
 						//If a gameplayer with privlevel > 1 attacked the
 						//mob, then the players won't gain xp ...
-						if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
+						if (((GamePlayer)obj).Client.Account.PrivLevel > 1 || ((GamePlayer)obj).isInBG)
 						{
 							dealNoXP = true;
 							break;
