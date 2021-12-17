@@ -77,7 +77,12 @@ namespace DOL.GS {
 
                 GeneratedUniqueItem item = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
                 item.GenerateItemQuality(killedcon);
-                loot.AddRandom(BASE_ROG_CHANCE, item, 1);
+                if(mob.Level < 10)
+                    loot.AddRandom(100, item, 1);
+                else if (mob.Level < 20)
+                    loot.AddRandom(BASE_ROG_CHANCE + (100 * (10-(mob.Level-10)/10)), item, 1);
+                else
+                    loot.AddRandom(BASE_ROG_CHANCE, item, 1);
 
             }
             catch
