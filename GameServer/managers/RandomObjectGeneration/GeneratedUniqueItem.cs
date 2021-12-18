@@ -606,7 +606,7 @@ namespace DOL.GS
 						ArrayList validStats = new ArrayList();
 						foreach (eProperty property in StatBonus)
 						{
-							if (!BonusExists(property) && StatIsValidForObjectType(property) && StatIsValidForRealm(property))
+							if (!BonusExists(property) && StatIsValidForObjectType(property) && StatIsValidForRealm(property) &&  StatIsValidForClass(property))
 							{
 								validStats.Add(property);
 							}
