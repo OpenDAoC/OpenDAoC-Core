@@ -72,7 +72,7 @@ namespace DOL.GS
         {
             Owner = initParams.Target;
             Duration = 60000;
-            EffectType = eEffect.NPCStunImmunity;
+            EffectType = eEffect.NPCMezImmunity;
             EffectService.RequestStartEffect(this);
         }
 

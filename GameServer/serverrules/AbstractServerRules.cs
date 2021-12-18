@@ -1256,7 +1256,7 @@ namespace DOL.GS.ServerRules
 					double fullCampBonus = ServerProperties.Properties.MAX_CAMP_BONUS;
 					double campBonusPerc = 0;
 
-					if (killedNPC.CurrentRegion.Time - killedNPC.SpawnTick > 1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
+					if (GameLoop.GameLoopTime - killedNPC.SpawnTick > 1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
 					{
 						campBonusPerc = fullCampBonus;
 						killedNPC.CampBonus = 0.95;
@@ -1329,6 +1329,10 @@ namespace DOL.GS.ServerRules
 
 						if (!living.IsAlive)//Dead living gets 25% exp only
 							xpReward = (long)(xpReward * 0.25);
+
+						//scale xp reward based off of # of groups who participated in the kill
+						if(plrGrpExp.Count > 0)
+							xpReward /= plrGrpExp.Count;
 
 						//XP Rate is handled in GainExperience
 						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true, true, true);

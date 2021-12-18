@@ -55,7 +55,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the distance which player get experience from a living object
 		/// </summary>
-		public const int MAX_EXPFORKILL_DISTANCE = 16384;
+		public const int MAX_EXPFORKILL_DISTANCE = VISIBILITY_DISTANCE;
 		/// <summary>
 		/// Is the distance a whisper can be heard
 		/// </summary>

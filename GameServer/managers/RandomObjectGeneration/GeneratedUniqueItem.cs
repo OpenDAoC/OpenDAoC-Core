@@ -58,7 +58,7 @@ namespace DOL.GS
 		// Magical Chance in %
 		public const ushort ROG_MAGICAL_CHANCE = 45;
 		// Weapon Chance in %
-		public const ushort ROG_WEAPON_CHANCE = 40;
+		public const ushort ROG_WEAPON_CHANCE = 45;
 
 		// Item lowest quality
 		public const ushort ROG_STARTING_QUAL = 95;
@@ -362,7 +362,7 @@ namespace DOL.GS
 			if (this.Level>80 && Util.Chance(10)) number++;
 			// END
 
-			if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2)) // 100% magical starting at level 40
+			if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
 			{
 				//1
 				number++;
@@ -606,7 +606,7 @@ namespace DOL.GS
 						ArrayList validStats = new ArrayList();
 						foreach (eProperty property in StatBonus)
 						{
-							if (!BonusExists(property) && StatIsValidForObjectType(property) && StatIsValidForRealm(property))
+							if (!BonusExists(property) && StatIsValidForObjectType(property) && StatIsValidForRealm(property) &&  StatIsValidForClass(property))
 							{
 								validStats.Add(property);
 							}
@@ -4727,6 +4727,7 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.ThrustWeapon);
 					weaponTypes.Add(eObjectType.CrushingWeapon);
 					weaponTypes.Add(eObjectType.TwoHandedWeapon);
+					weaponTypes.Add(eObjectType.Crossbow);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Paladin:
@@ -4752,6 +4753,7 @@ namespace DOL.GS
 				case eCharacterClass.Infiltrator:
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.Crossbow);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Scout:
