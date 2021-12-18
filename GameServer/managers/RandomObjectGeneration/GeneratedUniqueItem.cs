@@ -4611,7 +4611,7 @@ namespace DOL.GS
 
 		private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
 		{
-			eGenerateType type = GetObjectTypeByWeight(byte level);
+			eGenerateType type = GetObjectTypeByWeight(level);
 
 			switch ((eRealm)realm)
 			{
