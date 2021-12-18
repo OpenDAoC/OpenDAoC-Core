@@ -35,17 +35,20 @@ namespace DOL.GS.Commands
 					output.Add("Same IP violation #" + i);
 					output.Add("IP: " + ip1);
 					output.Add("Account 1: " + cl.Account.Name);
-					output.Add("Player 1: " + name1 + " (L" + cl.Player.Level + " " + cl.Player?.CharacterClass.Name + " in " + cl.Player.CurrentZone.Description + ")");
-					output.Add("X: " + cl.Player.X + " Y: " + cl.Player.Y + " Z: " + cl.Player.Z + " Region: " + cl.Player.CurrentRegionID);
+					output.Add("Player 1: " + name1 + " (L" + cl.Player?.Level + " " + cl.Player?.CharacterClass.Name + " in " + cl.Player?.CurrentZone.Description + ")");
+					output.Add("X: " + cl.Player?.X + " Y: " + cl.Player?.Y + " Z: " + cl.Player?.Z + " Region: " + cl.Player?.CurrentRegionID);
 					output.Add("Account 2: " + cls.Account.Name);
-					output.Add("Player 2: " + name2 + " (L" + cls.Player.Level + " " + cls.Player?.CharacterClass.Name + " in " + cls.Player.CurrentZone.Description + ")");
-					output.Add("X: " + cls.Player.X + " Y: " + cls.Player.Y + " Z: " + cls.Player.Z + " Region: " + cls.Player.CurrentRegionID);
+					output.Add("Player 2: " + name2 + " (L" + cls.Player?.Level + " " + cls.Player?.CharacterClass.Name + " in " + cls.Player?.CurrentZone.Description + ")");
+					output.Add("X: " + cls.Player?.X + " Y: " + cls.Player?.Y + " Z: " + cls.Player?.Z + " Region: " + cls.Player?.CurrentRegionID);
 					output.Add("\n");
 					i++;
 				}
 			}
-			DisplayMessage(client, "{0} double IP found.", i-1);	
-			client.Out.SendCustomTextWindow(i-1 + " double IP found", output);
+			DisplayMessage(client, "{0} double IP found.", i-1);
+			if (i - 1 > 0)
+			{
+				client.Out.SendCustomTextWindow(i-1 + " double IP found", output);
+			}
 		}
 	}
 }
