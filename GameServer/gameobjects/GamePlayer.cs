@@ -1774,6 +1774,7 @@ namespace DOL.GS
             Health = MaxHealth;
             StartPowerRegeneration();
             StartEnduranceRegeneration();
+            UpdatePlayerStatus();
 
             Region region = null;
             if ((region = WorldMgr.GetRegion((ushort)BindRegion)) != null && region.GetZone(BindXpos, BindYpos) != null)
@@ -1928,6 +1929,8 @@ namespace DOL.GS
 			
             GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             m_deathtype = eDeathType.None;
+
+            UpdatePlayerStatus();
         }
 
         /// <summary>
