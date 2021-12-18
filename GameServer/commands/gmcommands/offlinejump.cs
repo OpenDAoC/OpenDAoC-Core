@@ -12,7 +12,8 @@ namespace DOL.GS.Commands
 	[CmdAttribute("&offlinejump",
 		ePrivLevel.GM,
 		"GMCommands.Offlinejump.Description",
-		"GMCommands.Offlinejump.Information"
+		"GMCommands.Offlinejump.Usage.Jail",
+		"GMCommands.Offlinejump.Usage.Capital"
 	)]
 	public class OfflinejumpCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
