@@ -22,9 +22,6 @@ namespace DOL.GS
             // attack ignores DoT damage, since only the first tick of a DoT should remove stealth.            
             if (OwnerPlayer != null)
                 OwnerPlayer.Stealth(false);
-
-            if (!IsBuffActive)
-                OnEffectPulse();
         }
 
         public override void OnStopEffect()
