@@ -362,7 +362,7 @@ namespace DOL.GS
 			if (this.Level>80 && Util.Chance(10)) number++;
 			// END
 
-			if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2)) // 100% magical starting at level 40
+			if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
 			{
 				//1
 				number++;
