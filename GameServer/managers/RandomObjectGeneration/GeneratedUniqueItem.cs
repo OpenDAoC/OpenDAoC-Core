@@ -4727,6 +4727,7 @@ namespace DOL.GS
 					weaponTypes.Add(eObjectType.ThrustWeapon);
 					weaponTypes.Add(eObjectType.CrushingWeapon);
 					weaponTypes.Add(eObjectType.TwoHandedWeapon);
+					weaponTypes.Add(eObjectType.Crossbow);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Paladin:
@@ -4752,6 +4753,7 @@ namespace DOL.GS
 				case eCharacterClass.Infiltrator:
 					weaponTypes.Add(eObjectType.SlashingWeapon);
 					weaponTypes.Add(eObjectType.ThrustWeapon);
+					weaponTypes.Add(eObjectType.Crossbow);
 					weaponTypes.Add(eObjectType.Shield);
 					break;
 				case eCharacterClass.Scout:
