@@ -92,11 +92,19 @@ namespace DOL.GS.Spells
 			base.OnDirectEffect(target, effectiveness);
 			double heal = Spell.Value * effectiveness;
 			
-			target.Health += (int)heal;
-            if (target is NecromancerPet && Caster.Equals(target))
-                MessageToLiving((target as NecromancerPet).Owner, "Your " + target.GetName(0, false) + " is healed for " + heal + " hit points!", eChatType.CT_Spell);
+			if(target.Health < target.MaxHealth)
+            {
+				target.Health += (int)heal;
+				if (target is NecromancerPet && Caster.Equals(target))
+					MessageToLiving((target as NecromancerPet).Owner, "Your " + target.GetName(0, false) + " is healed for " + heal + " hit points!", eChatType.CT_Spell);
+				else
+					MessageToLiving(target, "You are healed by " + m_caster.GetName(0, false) + " for " + heal + " hit points.", eChatType.CT_Spell);
+			}
             else
-                MessageToLiving(target, "You are healed by " + m_caster.GetName(0, false) + " for " + heal + " hit points.", eChatType.CT_Spell);
+            {
+				MessageToLiving(target, "You are full health.", eChatType.CT_SpellResisted);
+            }
+			
 
             #region PVP DAMAGE
 
