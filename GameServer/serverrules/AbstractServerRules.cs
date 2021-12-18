@@ -1581,6 +1581,22 @@ namespace DOL.GS.ServerRules
 					int rpCap = living.RealmPointsValue * 2;
 					int realmPoints = (int)(playerRPValue * damagePercent * 0.5);
 
+                    switch (expGainPlayer.GetConLevel(killedPlayer))
+                    {
+						case <= -3:
+							rpCap = 0;
+							expGainPlayer.Out.SendMessage("You shamefully killed a defenseless opponent and gain no realm points from this kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							break;
+						case -2:
+							rpCap /= 4;
+							break;
+						case -1:
+							rpCap /= 2;
+							break;
+						default:
+							break;
+                    }
+
 					//moved to after realmPoints assignment so that dead players retain full RP
 					if (!living.IsAlive)//Dead living gets 25% exp only
 						damagePercent *= 0.25;
