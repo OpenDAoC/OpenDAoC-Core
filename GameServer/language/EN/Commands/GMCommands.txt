@@ -233,6 +233,11 @@ GMCommands.Jump.Pushed:						Current location pushed
 GMCommands.Jump.PushedTotal:				({0} total)
 GMCommands.Jump.PopInstructions:			type '/jump pop' to return to it.
 GMCommands.Jump.NothingPushed:				No locations in stack - you need to use '/jump push' first.
+
+# /offlinejump Command
+
+GMCommands.Offlinejump.Description:         Teleports a character to a specific location while offline
+GMCommands.Offlinejump.Information:				/offlinejump <PlayerName> to jail
 		
 # /keep Command
 GMCommands.Keep.Description:				Various keep creation commands!
