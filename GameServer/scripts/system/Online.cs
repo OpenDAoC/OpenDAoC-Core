@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -429,9 +430,13 @@ namespace DOL.GS.Commands
                 }
                 zoneXnumbers.Add(c.Player.CurrentZone.Description, count);
             }
+
+            var sortedZones = zoneXnumbers.ToList();
+            
+            sortedZones.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
             
             output.Add(string.Format("\n"));
-            foreach (KeyValuePair<string, int> kvp in zoneXnumbers)
+            foreach (KeyValuePair<string, int> kvp in sortedZones)
             {
                 output.Add(kvp.Value + " players in " + kvp.Key);
             }
