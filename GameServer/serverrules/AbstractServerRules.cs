@@ -1330,6 +1330,10 @@ namespace DOL.GS.ServerRules
 						if (!living.IsAlive)//Dead living gets 25% exp only
 							xpReward = (long)(xpReward * 0.25);
 
+						//scale xp reward based off of # of groups who participated in the kill
+						if(plrGrpExp.Count > 0)
+							xpReward /= plrGrpExp.Count;
+
 						//XP Rate is handled in GainExperience
 						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true, true, true);
 					}
