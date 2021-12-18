@@ -83,11 +83,20 @@ namespace DOL.GS
 
                     new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
                 }
-                else if (Owner is GameNPC && EffectType == eEffect.Stun)
+                else if (Owner is GameNPC)
                 {
-                    NPCECSImmunityEffect npcImmune = (NPCECSImmunityEffect)EffectListService.GetEffectOnTarget(Owner, eEffect.NPCStunImmunity);
-                    if (npcImmune is null)
-                        new NPCECSImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness));
+                    if (EffectType == eEffect.Stun)
+                    {
+                        NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(Owner, eEffect.NPCStunImmunity);
+                        if (npcImmune is null)
+                            new NPCECSStunImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness));
+                    }
+                    else if (EffectType == eEffect.Mez)
+                    {
+                        NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(Owner, eEffect.NPCMezImmunity);
+                        if (npcImmune is null)
+                            new NPCECSMezImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness));
+                    }
                 }
             }
         }

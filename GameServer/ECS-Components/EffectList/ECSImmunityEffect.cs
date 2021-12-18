@@ -46,10 +46,10 @@ namespace DOL.GS
             }
         }
     }
-    public class NPCECSImmunityEffect : ECSGameEffect
+    public class NPCECSStunImmunityEffect : ECSGameEffect
     {
         private int timesStunned = 1;
-        public NPCECSImmunityEffect(ECSGameEffectInitParams initParams) : base()
+        public NPCECSStunImmunityEffect(ECSGameEffectInitParams initParams) : base()
         {
             Owner = initParams.Target;
             Duration = 60000;
@@ -64,4 +64,23 @@ namespace DOL.GS
             return retVal;
         }
     }
- }
+
+    public class NPCECSMezImmunityEffect : ECSGameEffect
+    {
+        private int timesStunned = 1;
+        public NPCECSMezImmunityEffect(ECSGameEffectInitParams initParams) : base()
+        {
+            Owner = initParams.Target;
+            Duration = 60000;
+            EffectType = eEffect.NPCStunImmunity;
+            EffectService.RequestStartEffect(this);
+        }
+
+        public long CalclulateStunDuration(long duration)
+        {
+            var retVal = duration / (2 * timesStunned);
+            timesStunned++;
+            return retVal;
+        }
+    }
+}
