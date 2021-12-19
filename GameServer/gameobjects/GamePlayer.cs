@@ -5161,7 +5161,7 @@ namespace DOL.GS
                 }
                 if(soloBonus > 0)
                 {
-                    expSoloBonusStr = "("+ soloBonus.ToString("N0", format) + " atlas bonus)";
+                    expSoloBonusStr = "("+ soloBonus.ToString("N0", format) + " Atlas bonus)";
                 }
 
                 
