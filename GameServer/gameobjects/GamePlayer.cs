@@ -5177,7 +5177,7 @@ namespace DOL.GS
                     if(XPLogState == eXPLogState.Verbose)
                     {
                         double soloPercent = ((double)soloBonus / (expTotal - soloBonus)) * 100.0;
-                        double campPercent = ((double)expCampBonus / (expTotal-expCampBonus)) * 100.0;
+                        double campPercent = ((double)expCampBonus / (baseXP)) * 100.0;
                         double groupPercent = ((double)expGroupBonus / (expTotal-expGroupBonus)) * 100.0;
                         double outpostPercent = ((double)expOutpostBonus / (expTotal-expOutpostBonus)) * 100.0;
 
