@@ -1277,6 +1277,12 @@ namespace DOL.GS.ServerRules
 					else if (campBonusPerc > fullCampBonus)
 						campBonusPerc = fullCampBonus;
 
+					if (player.XPLogState == GamePlayer.eXPLogState.Verbose)
+					{
+						player.Out.SendMessage($"% of Camp remaining: {(campBonusPerc * 100 / fullCampBonus).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					}
+
 					campBonus = (long)(xpReward * campBonusPerc);
 					#endregion
 
