@@ -173,6 +173,20 @@ namespace DOL.GS
             set { m_usedetailedcombatlog = value;}
         }
 
+        public enum eXPLogState {
+            Off = 0,
+            On = 1,
+            Verbose = 2
+        }
+
+        public eXPLogState XPLogState
+        {
+            get { return m_xplogstate; }
+            set { m_xplogstate = value; }
+        }
+
+        private eXPLogState m_xplogstate = 0;
+
         /// <summary>
         /// Current warmap page
         /// </summary>
@@ -5043,6 +5057,8 @@ namespace DOL.GS
             if (!GainXP && expTotal > 0)
                 return;
 
+            
+
             //xp rate modifier
             if (allowMultiply)
             {
@@ -5077,9 +5093,6 @@ namespace DOL.GS
                 }
 
                 long hardXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_HARDCAP_PERCENT / 100);
-
-                //long softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
-                //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
 
                 if (expTotal > hardXPCap)
                     expTotal = hardXPCap;
@@ -5149,6 +5162,37 @@ namespace DOL.GS
                 if(soloBonus > 0)
                 {
                     expSoloBonusStr = "("+ soloBonus.ToString("N0", format) + " atlas bonus)";
+                }
+
+                
+                if(XPLogState == eXPLogState.On || XPLogState == eXPLogState.Verbose)
+                {
+                    double baseXP = expTotal - soloBonus - expCampBonus - expGroupBonus - expOutpostBonus;
+                    double softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
+                    double expPercent = (double)((baseXP) / (softXPCap)) * 100;
+                    //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
+
+                    Out.SendMessage($"BaseXP: {baseXP.ToString("N0", format)} XP Cap: {softXPCap.ToString("N0", format)} % of Cap: {expPercent.ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    
+                    if(XPLogState == eXPLogState.Verbose)
+                    {
+                        double soloPercent = ((double)soloBonus / (expTotal - soloBonus)) * 100.0;
+                        double campPercent = ((double)expCampBonus / (expTotal-expCampBonus)) * 100.0;
+                        double groupPercent = ((double)expGroupBonus / (expTotal-expGroupBonus)) * 100.0;
+                        double outpostPercent = ((double)expOutpostBonus / (expTotal-expOutpostBonus)) * 100.0;
+
+                        Out.SendMessage($"Atlas: {soloBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage($"Camp: {expCampBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        if(Group != null)
+                            Out.SendMessage($"Group: {expGroupBonus.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        if(expOutpostBonus > 0)
+                            Out.SendMessage($"Output: {expOutpostBonus.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage($"Total Bonus: {((double)((soloBonus + expCampBonus + expGroupBonus) / baseXP) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                        Out.SendMessage($"XP needed: {ExperienceForNextLevel.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage($"# of kills needed to level at this rate: {(ExperienceForNextLevel - Experience) / expTotal}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        
+                    }                    
                 }
 
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);

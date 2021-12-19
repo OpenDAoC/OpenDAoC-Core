@@ -15,7 +15,7 @@ namespace DOL.GS.Commands {
 				return;
 			}
 
-			if (IsSpammingCommand(client.Player, "xp"))
+			if (IsSpammingCommand(client.Player, "combatstats"))
 				return;
 
 			if (args[1].ToLower().Equals("on"))
