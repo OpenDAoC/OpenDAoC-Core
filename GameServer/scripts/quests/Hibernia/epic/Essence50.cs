@@ -127,17 +127,18 @@ namespace DOL.GS.Quests.Hibernia
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Brigit , creating it ...");
 				Brigit = new GameNPC();
-				Brigit.Model = 384;
+				Brigit.LoadEquipmentTemplateFromDatabase("4d0ceec2-6812-4d38-8b83-e56a7ee89821");
+				Brigit.Model = 346;
 				Brigit.Name = "Brigit";
 				Brigit.GuildName = "";
 				Brigit.Realm = eRealm.Hibernia;
 				Brigit.CurrentRegionID = 201;
-				Brigit.Size = 51;
-				Brigit.Level = 50;
-				Brigit.X = 32927;
-				Brigit.Y = 32743;
+				Brigit.Size = 50;
+				Brigit.Level = 54;
+				Brigit.X = 33105;
+				Brigit.Y = 32909;
 				Brigit.Z = 8008;
-				Brigit.Heading = 3254;
+				Brigit.Heading = 2055;
 				Brigit.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
