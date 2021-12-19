@@ -80,7 +80,6 @@ namespace DOL.GS {
                 if (mob.Level < 10)
                 {                
                     loot.AddRandom(100, item, 1);
-                    loot.DropCount++;
                 }
                 else if (mob.Level < 20)
                     loot.AddRandom(BASE_ROG_CHANCE + (100 * (10-(mob.Level-10)/10)), item, 1);
