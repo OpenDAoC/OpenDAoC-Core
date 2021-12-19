@@ -5078,6 +5078,9 @@ namespace DOL.GS
 
                 long hardXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_HARDCAP_PERCENT / 100);
 
+                //long softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
+                //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
+
                 if (expTotal > hardXPCap)
                     expTotal = hardXPCap;
 
@@ -5087,30 +5090,26 @@ namespace DOL.GS
 
             }
 
-            // Get Champion Experience too
-            GainChampionExperience(expTotal);
-
-            //catacombs characters get 50% boost if they are elligable for slash level
-            switch ((eCharacterClass)CharacterClass.ID)
+            long soloBonus = 0;
+            if (Group != null)
             {
-                case eCharacterClass.Heretic:
-                case eCharacterClass.Valkyrie:
-                case eCharacterClass.Warlock:
-                case eCharacterClass.Bainshee:
-                case eCharacterClass.Vampiir:
-                case eCharacterClass.MaulerAlb:
-                case eCharacterClass.MaulerHib:
-                case eCharacterClass.MaulerMid:
+                if (Group.GetPlayersInTheGroup().Count > 4)
                 {
-                    //we don't want to allow catacombs classes to use free levels and
-                    //have a 50% bonus
-                    if (!ServerProperties.Properties.ALLOW_CATA_SLASH_LEVEL && CanUseSlashLevel && Level < 20)
-                    {
-                        expTotal = (long)(expTotal * 1.5);
-                    }
-                    break;
+                    //no bonus
+                }
+                else
+                {
+                    //up to 33% more exp while solo, scaled lower as group size grows
+                    soloBonus = (expTotal / 2) / Group.GetPlayersInTheGroup().Count;
                 }
             }
+            else
+                soloBonus = (expTotal / 2);
+
+            expTotal += soloBonus;
+
+            // Get Champion Experience too
+            GainChampionExperience(expTotal);
 
             base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, notify);
 
@@ -5133,21 +5132,26 @@ namespace DOL.GS
                 string expCampBonusStr = "";
                 string expGroupBonusStr = "";
                 string expOutpostBonusStr = "";
+                string expSoloBonusStr = "";
 
                 if (expCampBonus > 0)
                 {
-                    expCampBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.CampBonus", expCampBonus.ToString("N0", format));
+                    expCampBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.CampBonus", expCampBonus.ToString("N0", format)) + " ";
                 }
                 if (expGroupBonus > 0)
                 {
-                    expGroupBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.GroupBonus", expGroupBonus.ToString("N0", format));
+                    expGroupBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.GroupBonus", expGroupBonus.ToString("N0", format)) + " ";
                 }
                 if (expOutpostBonus > 0)
                 {
-                    expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", expOutpostBonus.ToString("N0", format));
+                    expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", expOutpostBonus.ToString("N0", format)) + " ";
+                }
+                if(soloBonus > 0)
+                {
+                    expSoloBonusStr = "("+ soloBonus.ToString("N0", format) + " atlas bonus)";
                 }
 
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             Experience += expTotal;
