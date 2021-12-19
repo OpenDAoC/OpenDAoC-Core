@@ -4139,32 +4139,22 @@ namespace DOL.GS
 				{
 					//reduce by 1-4, but not more than exists
 					Bonus = Bonus - Util.Random(1, Math.Min(Bonus,10)); //up to ~7 uti reduction
-					if (Bonus <= 0)
-						Bonus = 1;
 				}
 				else if (BonusType == 9)
 				{
 					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 2)); //up to 4 uti reduction
-					if (Bonus <= 0)
-						Bonus = 1;
 				}
 				else if (BonusType == 10)
 				{
 					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 20)); //up to 5 uti reduction
-					if (Bonus <= 0)
-						Bonus = 1;
 				}
 				else if (BonusType < 20)
 				{
 					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 3)); //up to 6 uti reduction
-					if (Bonus <= 0)
-						Bonus = 1;
 				}
 				else if (BonusType < 115)
 				{
 					Bonus = Bonus - Util.Random(1, Math.Min(Bonus, 2)); //up to 10 uti reduction
-					if (Bonus <= 0)
-						Bonus = 1;
 				}
 				else if (BonusType == 163
 				  || BonusType == 164
