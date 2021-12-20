@@ -138,7 +138,7 @@ namespace DOL.GS.Commands
 				//	}
 				case "all":
 					{
-                        if (client.Player.Level >= 50 || TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
+                        if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
                         {
                             // Check for full respecs.
                             if ( client.Player.RespecAmountAllSkill < 1
@@ -170,7 +170,7 @@ namespace DOL.GS.Commands
 				//	}
 				case "realm":
 					{
-                        if (client.Player.Level >= 50 || TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
+                        if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
                         {
                             if (client.Player.RespecAmountRealmSkill < 1
                                 && !ServerProperties.Properties.FREE_RESPEC)
@@ -195,12 +195,15 @@ namespace DOL.GS.Commands
 				//	}
 				default:
 					{
-						// Check for single-line respecs.
-						if (client.Player.RespecAmountSingleSkill < 1
-							&& !ServerProperties.Properties.FREE_RESPEC)
+						if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
 						{
-							DisplayMessage(client, "You don't seem to have any single-line respecs available.");
-							return;
+							// Check for single-line respecs.
+							if (client.Player.RespecAmountSingleSkill < 1
+							&& !ServerProperties.Properties.FREE_RESPEC)
+							{
+								DisplayMessage(client, "You don't seem to have any single-line respecs available.");
+								return;
+							}
 						}
 
 						string lineName = string.Join(" ", args, 1, args.Length - 1);
