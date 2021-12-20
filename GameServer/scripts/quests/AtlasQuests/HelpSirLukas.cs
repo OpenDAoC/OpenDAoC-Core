@@ -126,7 +126,7 @@ namespace DOL.GS.Quests.Albion
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
