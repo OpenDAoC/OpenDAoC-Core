@@ -319,6 +319,7 @@ namespace DOL.GS
 					case 23:
 					case 24:
 					case 50:
+					case 60:
 					case 61:
 					case 65:
 					case 66:
