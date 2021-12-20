@@ -1804,9 +1804,12 @@ namespace DOL.GS
 
             int oldRegion = CurrentRegionID;
 
+            //KN - Adding this call to see if the packet being sent before a load screen helps the dead on release issue
+            Out.SendPlayerRevive(this);
+
             //Call MoveTo after new GameGravestone(this...
             //or the GraveStone will be located at the player's bindpoint
-			
+
             MoveTo(relRegion, relX, relY, relZ, relHeading);
             //It is enough if we revive the player on this client only here
             //because for other players the player will be removed in the MoveTo
@@ -1946,6 +1949,7 @@ namespace DOL.GS
             m_deathtype = eDeathType.None;
 
             UpdatePlayerStatus();
+            Out.SendPlayerRevive(this);
         }
 
         /// <summary>
