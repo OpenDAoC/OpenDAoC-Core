@@ -32,7 +32,7 @@ namespace DOL.GS.Quests.Albion
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected const string questTitle = "[Memorial] All in the Gold";
-		protected const int minimumLevel = 50;
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Danica = null; // Start NPC
