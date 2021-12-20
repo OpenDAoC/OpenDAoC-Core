@@ -315,6 +315,7 @@ namespace DOL.GS
 				{
 					case 20:
 					case 21:
+					case 23:
 					case 24:
 					case 65:
 					case 66:
