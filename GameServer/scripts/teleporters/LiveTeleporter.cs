@@ -484,12 +484,12 @@ namespace DOL.GS.Scripts
                             break;
                             */
                         // Stonecrush Dragonsworn place for alb, put check in like for tutorial, but dont know what to check for yet, so just open it.
-                        case "stonecrush":
+                        /*case "stonecrush":
                             if (t.Level < 100) // and a && check for the players flag for this, must complete a quest.
                             {
                                 SayTo(t, "Stonecrush. - Not in DB att.");
                             }
-                            break;
+                            break;*/
                         default:
                             // Clicked nothing
                             break;
@@ -783,7 +783,7 @@ namespace DOL.GS.Scripts
                             break;
                             */
                         // Svarhamr Dragonsworn place for mid, put check in like for tutorial, but dont know what to check for yet, so just open it.
-                        case "svarhamr":
+                        /*case "svarhamr":
                             if (t.Level < 100) // and a && check for the players flag for this, must complete a quest.
                             {
                                 if (!t.InCombat)
@@ -795,7 +795,7 @@ namespace DOL.GS.Scripts
                                 }
                                 else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             }
-                            break;
+                            break;*/
                         default:
                             // Clicked nothing
                             break;
@@ -1096,7 +1096,7 @@ namespace DOL.GS.Scripts
                             break;
                             */
                         // Tailtiu Dragonsworn place for hib, put check in like for tutorial, but dont know what to check for yet, so just open it.
-                        case "tailtiu":
+                        /*case "tailtiu":
                             if (t.Level < 100) // and a && check for the players flag for this, must complete a quest.
                             {
                                 if (!t.InCombat)
@@ -1108,7 +1108,7 @@ namespace DOL.GS.Scripts
                                 }
                                 else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             }
-                            break;
+                            break;*/
                         default:
                             // Clicked nothing
                             break;
