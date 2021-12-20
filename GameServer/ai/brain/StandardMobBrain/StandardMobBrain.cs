@@ -1627,6 +1627,7 @@ namespace DOL.AI.Brain
 
             lock (target.effectListComponent)
             {
+                spell.IsSpec = true;
                 if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell))){
                     return true;
                 }
