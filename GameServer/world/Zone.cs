@@ -356,6 +356,7 @@ namespace DOL.GS
 					case 245:
 					case 246:
 					case 247:
+					case 248:
 					case 249:
 					case 276:
 					case 277:
