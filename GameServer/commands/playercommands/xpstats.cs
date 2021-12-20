@@ -4,7 +4,7 @@ namespace DOL.GS.Commands {
 	[CmdAttribute(
 		"&xpstats",
 		ePrivLevel.Player,
-		"toggle receiving experience points",
+		"Toggle showing XP statistics",
 		"/xpstats <off|on|verbose>")]
 	public class XPStatsCommandHandler : AbstractCommandHandler, ICommandHandler {
 		public void OnCommand(GameClient client, string[] args)
