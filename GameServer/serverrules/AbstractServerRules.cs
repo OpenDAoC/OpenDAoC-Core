@@ -1653,27 +1653,8 @@ namespace DOL.GS.ServerRules
 					// bounty points
 					int bpCap = living.BountyPointsValue * 2;
 					int bountyPoints = (int)(playerBPValue * damagePercent);
-
-					switch (expGainPlayer?.GetConLevel(killedPlayer))
-					{
-						case <= -3:
-							bpCap = 0;
-							expGainPlayer.Out.SendMessage("You killed a defenseless opponent and gain no bps from this kill, you animal!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							break;
-						case -2:
-							bpCap /= 4;
-							break;
-						case -1:
-							bpCap /= 2;
-							break;
-						default:
-							break;
-					}
-
 					if (bountyPoints > bpCap)
 						bountyPoints = bpCap;
-
-					
 
 					//FIXME: [WARN] this is guessed, i do not believe this is the right way, we will most likely need special messages to be sent
 					//apply the keep bonus for bounty points
@@ -1695,23 +1676,6 @@ namespace DOL.GS.ServerRules
 					long xpReward = (long)(playerExpValue * damagePercent); // exp for damage percent
 
 					long expCap = (long)(living.ExperienceValue * ServerProperties.Properties.XP_PVP_CAP_PERCENT / 100);
-
-					switch (expGainPlayer?.GetConLevel(killedPlayer))
-					{
-						case <= -3:
-							expCap = 0;
-							expGainPlayer.Out.SendMessage("No experience points awarded for killing greys, you degenerate.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							break;
-						case -2:
-							expCap /= 4;
-							break;
-						case -1:
-							expCap /= 2;
-							break;
-						default:
-							break;
-					}
-
 					if (xpReward > expCap)
 						xpReward = expCap;
 
@@ -1739,9 +1703,7 @@ namespace DOL.GS.ServerRules
 							outpostXP = (xpReward / 100) * bonus;
 						}
 					}
-
-					if(xpReward > 0)
-						xpReward += outpostXP;
+					xpReward += outpostXP;
 
 					living.GainExperience(eXPSource.Player, xpReward);
 
