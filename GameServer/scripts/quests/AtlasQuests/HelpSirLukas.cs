@@ -36,7 +36,7 @@ namespace DOL.GS.Quests.Albion
 		protected const int maximumLevel = 50;
 
 		private static GameNPC SirLukas = null; // Start NPC
-		private static GameNPC EllynWeyland = null; // Mob to kill
+		private static GameMerchant EllynWeyland = null; // Mob to kill
 
 		private static ItemTemplate kelics_totem = null;
 		private static ItemTemplate SpiritmasterEpicBoots = null;
@@ -129,10 +129,10 @@ namespace DOL.GS.Quests.Albion
 			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", eRealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 621577 && npc.Y == 745848)
+				foreach (GameNPC merchant in npcs)
+					if (merchant.CurrentRegionID == 100 && merchant.X == 621577 && merchant.Y == 745848)
 					{
-						EllynWeyland = npc;
+						EllynWeyland = (GameMerchant)merchant;
 						break;
 					}
 
@@ -140,7 +140,9 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find EllynWeyland , creating it ...");
-				EllynWeyland = new GameNPC();
+				EllynWeyland = new GameMerchant();
+				EllynWeyland.TradeItems = new MerchantTradeItems("00c1e711-8d1b-4b72-8012-932d940f2567");
+				EllynWeyland.LoadEquipmentTemplateFromDatabase("AlbMerchantArmorStudded");
 				EllynWeyland.Model = 26;
 				EllynWeyland.Name = "Ellyn Weyland";
 				EllynWeyland.GuildName = "";
