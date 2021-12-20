@@ -40,6 +40,7 @@ namespace DOL.GS.Quests.Albion
 
 		private static ItemTemplate funeral_speech_scroll = null;
 		private static ItemTemplate FlitzitinaBow = null;
+		private static Object FlitzitinaGrave = null;
 
 		// Constructors
 		public HelpSirLukas() : base()
@@ -434,11 +435,12 @@ namespace DOL.GS.Quests.Albion
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == EllynWeyland.Name)
 				{
-					EllynWeyland.SayTo(player, "Ah, I can see how he wore the curse around the totem. I can now break the curse that is destroying the clan!");
-
+					EllynWeyland.SayTo(player, "Hello "+ player.Name +", I have sad news for Sir Lukas.\n" +
+					                           "This delivery is very important! The bow is from Flitzitina, his mother.\n" +
+					                           "I found it in Pennine Mountains near the merchant routes.\n" +
+					                           "Please get this and go back to him.");
 					
-					m_questPlayer.Out.SendMessage("Ellyn Weyland drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					GiveItem(m_questPlayer, funeral_speech_scroll);
+					GiveItem(m_questPlayer, FlitzitinaBow);
 					Step = 2;
 					return;
 				}
@@ -447,21 +449,41 @@ namespace DOL.GS.Quests.Albion
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == SirLukas.Name && gArgs.Item.Id_nb == funeral_speech_scroll.Id_nb)
+				if (gArgs.Target.Name == SirLukas.Name && gArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
 				{
-					RemoveItem(SirLukas, player, funeral_speech_scroll);
-					SirLukas.SayTo(player, "Ah, I can see how he wore the curse around the totem. I can now break the curse that is destroying the clan!");
-					SirLukas.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+					RemoveItem(SirLukas, player, FlitzitinaBow);
+					SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot!");
 					Step = 3;
 				}
 			}
+			if (Step == 3 && e == GameLivingEvent.Interact)
+			{
+				
+				InteractEventArgs gArgs = (InteractEventArgs) args;
+				if (gArgs.Source.Name == SirLukas.Name)
+				{
+					GiveItem(m_questPlayer, funeral_speech_scroll);
+					SirLukas.SayTo(player, "We will prepare a dignified funeral for her, please bring this speech to Vetusta Abbey!");
+					Step = 4;
+				}
+			}
+
+			/*if (Step == 4 && e = GameObjectEvent.Interact)
+			{
+				InteractEventArgs gArgs = (InteractEventArgs) args;
+				if (gArgs.Equals(FlitzitinaGrave))
+				{
+					RemoveItem(FlitzitinaGrave, player, funeral_speech_scroll);
+					FinishQuest();
+				}
+			}*/
 
 		}
 
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
+			RemoveItem(m_questPlayer, FlitzitinaBow, false);
 			RemoveItem(m_questPlayer, funeral_speech_scroll, false);
 		}
 
@@ -481,41 +503,5 @@ namespace DOL.GS.Quests.Albion
 				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
-
-		#region Allakhazam Epic Source
-
-		/*
-        *#25 talk to Inaksha
-        *#26 seek out Loken in Raumarik Loc 47k, 25k, 4k, and kill him purp and 2 blue adds 
-        *#27 return to Inaksha 
-        *#28 give her the ball of flame
-        *#29 talk with Inaksha about Loken�s demise
-        *#30 go to Miri in Jordheim 
-        *#31 give her the sealed pouch
-        *#32 you get your epic armor as a reward
-        */
-
-		/*
-Spirit Touched Boots 
-Spirit Touched Cap 
-Spirit Touched Gloves 
-Spirit Touched Pants 
-Spirit Touched Sleeves 
-Spirit Touched Vest 
-Raven-Rune Boots 
-Raven-Rune Cap 
-Raven-Rune Gloves 
-Raven-Rune Pants 
-Raven-Rune Sleeves 
-Raven-Rune Vest 
-Raven-boned Boots 
-Raven-Boned Cap 
-Raven-boned Gloves 
-Raven-Boned Pants 
-Raven-Boned Sleeves 
-Bone-rune Vest 
-        */
-
-		#endregion
 	}
 }
