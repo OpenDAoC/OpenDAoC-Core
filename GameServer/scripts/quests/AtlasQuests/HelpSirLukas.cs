@@ -130,7 +130,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (npcs.Length > 0)
 				foreach (GameNPC merchant in npcs)
-					if (merchant.CurrentRegionID == 100 && merchant.X == 621577 && merchant.Y == 745848)
+					if (merchant.CurrentRegionID == 1 && merchant.X == 561409 && merchant.Y == 509960)
 					{
 						EllynWeyland = (GameMerchant)merchant;
 						break;
@@ -143,17 +143,17 @@ namespace DOL.GS.Quests.Albion
 				EllynWeyland = new GameMerchant();
 				EllynWeyland.TradeItems = new MerchantTradeItems("00c1e711-8d1b-4b72-8012-932d940f2567");
 				EllynWeyland.LoadEquipmentTemplateFromDatabase("AlbMerchantArmorStudded");
-				EllynWeyland.Model = 26;
+				EllynWeyland.Model = 38;
 				EllynWeyland.Name = "Ellyn Weyland";
-				EllynWeyland.GuildName = "";
+				EllynWeyland.GuildName = "Armor Merchant";
 				EllynWeyland.Realm = eRealm.Albion;
-				EllynWeyland.CurrentRegionID = 100;
-				EllynWeyland.Size = 100;
-				EllynWeyland.Level = 65;
-				EllynWeyland.X = 621577;
-				EllynWeyland.Y = 745848;
-				EllynWeyland.Z = 4593;
-				EllynWeyland.Heading = 3538;
+				EllynWeyland.CurrentRegionID = 1;
+				EllynWeyland.Size = 50;
+				EllynWeyland.Level = 1;
+				EllynWeyland.X = 561409;
+				EllynWeyland.Y = 509960;
+				EllynWeyland.Z = 2423;
+				EllynWeyland.Heading = 115;
 				EllynWeyland.Flags ^= GameNPC.eFlags.PEACE;
 				EllynWeyland.MaxSpeedBase = 200;
 				EllynWeyland.AddToWorld();
