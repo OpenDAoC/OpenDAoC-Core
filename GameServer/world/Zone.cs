@@ -338,6 +338,7 @@ namespace DOL.GS
 					case 160:
 					case 161:
 					case 196:
+					case 220:
 					case 221:
 					case 222:
 					case 223:
