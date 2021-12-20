@@ -327,7 +327,7 @@ namespace DOL.GS
 
 				if (Attacker is GamePlayer p && p.UseDetailedCombatLog)
 				{
-					p.Out.SendMessage($"Your chance to fumble: {fumbleChance} RandomNumber: {randNum} Fumble? {fumbleChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					p.Out.SendMessage($"Your chance to fumble: {(100 * fumbleChance).ToString("0.##")}% rand: {(100 * randNum).ToString("0.##")} Fumble? {fumbleChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
 
 				return (IsMeleeAttack) 
