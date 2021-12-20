@@ -35,8 +35,8 @@ namespace DOL.GS.Quests.Albion
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC Danica = null; // Start NPC
-		private static GameNPC Kelic = null; // Mob to kill
+		private static GameNPC SirLukas = null; // Start NPC
+		private static GameNPC EllynWeyland = null; // Mob to kill
 
 		private static ItemTemplate kelics_totem = null;
 		private static ItemTemplate SpiritmasterEpicBoots = null;
@@ -91,73 +91,73 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Danica", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 802818 && npc.Y == 727413)
 					{
-						Danica = npc;
+						SirLukas = npc;
 						break;
 					}
 
-			if (Danica == null)
+			if (SirLukas == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Danica , creating it ...");
-				Danica = new GameNPC();
-				Danica.Model = 227;
-				Danica.Name = "Danica";
-				Danica.GuildName = "";
-				Danica.Realm = eRealm.Midgard;
-				Danica.CurrentRegionID = 100;
-				Danica.EquipmentTemplateID = "Danica";
-				Danica.Size = 51;
-				Danica.Level = 50;
-				Danica.X = 803559;
-				Danica.Y = 723329;
-				Danica.Z = 4719;
-				Danica.Heading = 2193;
-				Danica.AddToWorld();
+					log.Warn("Could not find SirLukas , creating it ...");
+				SirLukas = new GameNPC();
+				SirLukas.Model = 227;
+				SirLukas.Name = "Sir Lukas";
+				SirLukas.GuildName = "";
+				SirLukas.Realm = eRealm.Midgard;
+				SirLukas.CurrentRegionID = 100;
+				SirLukas.EquipmentTemplateID = "Danica";
+				SirLukas.Size = 51;
+				SirLukas.Level = 50;
+				SirLukas.X = 803559;
+				SirLukas.Y = 723329;
+				SirLukas.Z = 4719;
+				SirLukas.Heading = 2193;
+				SirLukas.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Danica.SaveIntoDatabase();
+					SirLukas.SaveIntoDatabase();
 				}
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Kelic", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", eRealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 621577 && npc.Y == 745848)
 					{
-						Kelic = npc;
+						EllynWeyland = npc;
 						break;
 					}
 
-			if (Kelic == null)
+			if (EllynWeyland == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Kelic , creating it ...");
-				Kelic = new GameNPC();
-				Kelic.Model = 26;
-				Kelic.Name = "Kelic";
-				Kelic.GuildName = "";
-				Kelic.Realm = eRealm.None;
-				Kelic.CurrentRegionID = 100;
-				Kelic.Size = 100;
-				Kelic.Level = 65;
-				Kelic.X = 621577;
-				Kelic.Y = 745848;
-				Kelic.Z = 4593;
-				Kelic.Heading = 3538;
-				Kelic.Flags ^= GameNPC.eFlags.GHOST;
-				Kelic.MaxSpeedBase = 200;
-				Kelic.AddToWorld();
+					log.Warn("Could not find EllynWeyland , creating it ...");
+				EllynWeyland = new GameNPC();
+				EllynWeyland.Model = 26;
+				EllynWeyland.Name = "Ellyn Weyland";
+				EllynWeyland.GuildName = "";
+				EllynWeyland.Realm = eRealm.Albion;
+				EllynWeyland.CurrentRegionID = 100;
+				EllynWeyland.Size = 100;
+				EllynWeyland.Level = 65;
+				EllynWeyland.X = 621577;
+				EllynWeyland.Y = 745848;
+				EllynWeyland.Z = 4593;
+				EllynWeyland.Heading = 3538;
+				EllynWeyland.Flags ^= GameNPC.eFlags.PEACE;
+				EllynWeyland.MaxSpeedBase = 200;
+				EllynWeyland.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Kelic.SaveIntoDatabase();
+					EllynWeyland.SaveIntoDatabase();
 				}
 			}
 			// end npc
@@ -1265,11 +1265,11 @@ namespace DOL.GS.Quests.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Danica, GameObjectEvent.Interact, new DOLEventHandler(TalkToDanica));
-			GameEventMgr.AddHandler(Danica, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDanica));
+			GameEventMgr.AddHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToDanica));
+			GameEventMgr.AddHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDanica));
 
 			/* Now we bring to Danica the possibility to give this quest to players */
-			Danica.AddQuestToGive(typeof (HelpSirLukas));
+			SirLukas.AddQuestToGive(typeof (HelpSirLukas));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -1279,17 +1279,17 @@ namespace DOL.GS.Quests.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Danica == null)
+			if (SirLukas == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Danica, GameObjectEvent.Interact, new DOLEventHandler(TalkToDanica));
-			GameEventMgr.RemoveHandler(Danica, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDanica));
+			GameEventMgr.RemoveHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToDanica));
+			GameEventMgr.RemoveHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDanica));
 
 			/* Now we remove to Danica the possibility to give this quest to players */
-			Danica.RemoveQuestToGive(typeof (HelpSirLukas));
+			SirLukas.RemoveQuestToGive(typeof (HelpSirLukas));
 		}
 
 		protected static void TalkToDanica(DOLEvent e, object sender, EventArgs args)
@@ -1299,7 +1299,7 @@ namespace DOL.GS.Quests.Albion
 			if (player == null)
 				return;
 
-			if(Danica.CanGiveQuest(typeof (HelpSirLukas), player)  <= 0)
+			if(SirLukas.CanGiveQuest(typeof (HelpSirLukas), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -1312,25 +1312,25 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Danica.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
-								"He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
-								"I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
-								"According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
-								"Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
-								"Return to me when you have the totem. May all the gods be with you.");
+							SirLukas.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
+							                       "He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
+							                       "I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
+							                       "According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
+							                       "Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
+							                       "Return to me when you have the totem. May all the gods be with you.");
 							break;
 						case 2:
-							Danica.SayTo(player, "It is good to see you were strong enough to survive Kelic. I can sense you have the controlling totem on you. Give me Kelic's totem now! Hurry!");
+							SirLukas.SayTo(player, "It is good to see you were strong enough to survive Kelic. I can sense you have the controlling totem on you. Give me Kelic's totem now! Hurry!");
 							quest.Step = 3;
 							break;
 						case 3:
-							Danica.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+							SirLukas.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
 							break;
 					}
 				}
 				else
 				{
-					Danica.SayTo(player, "Ah, this reveals exactly where Jango and his deserters took Kelic to dispose of him. He also has a note here about how strong Kelic really was. That [worries me].");
+					SirLukas.SayTo(player, "Ah, this reveals exactly where Jango and his deserters took Kelic to dispose of him. He also has a note here about how strong Kelic really was. That [worries me].");
 				}
 			}
 				// The player whispered to the NPC
@@ -1342,10 +1342,10 @@ namespace DOL.GS.Quests.Albion
 					switch (wArgs.Text)
 					{
 						case "worries me":
-							Danica.SayTo(player, "Yes, it worries me, but I think that you are ready to [face Kelic] and his minions.");
+							SirLukas.SayTo(player, "Yes, it worries me, but I think that you are ready to [face Kelic] and his minions.");
 							break;
 						case "face Kelic":
-							player.Out.SendQuestSubscribeCommand(Danica, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you face Kelic [Mystic Level 50 Epic]?");
+							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you face Kelic [Mystic Level 50 Epic]?");
 							break;
 					}
 				}
@@ -1431,7 +1431,7 @@ namespace DOL.GS.Quests.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Danica.CanGiveQuest(typeof (HelpSirLukas), player)  <= 0)
+			if(SirLukas.CanGiveQuest(typeof (HelpSirLukas), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (HelpSirLukas)) != null)
@@ -1444,15 +1444,15 @@ namespace DOL.GS.Quests.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Danica.GiveQuest(typeof (HelpSirLukas), player, 1))
+				if (!SirLukas.GiveQuest(typeof (HelpSirLukas), player, 1))
 					return;
 
-				Danica.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
-					"He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
-					"I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
-					"According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
-					"Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
-					"Return to me when you have the totem. May all the gods be with you.");
+				SirLukas.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
+				                       "He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
+				                       "I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
+				                       "According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
+				                       "Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
+				                       "Return to me when you have the totem. May all the gods be with you.");
 			}
 		}
 
@@ -1490,11 +1490,11 @@ namespace DOL.GS.Quests.Albion
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name == Kelic.Name)
+				if (gArgs.Target.Name == EllynWeyland.Name)
 				{
 					Step = 2;
 					GiveItem(m_questPlayer, kelics_totem);
-					m_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					m_questPlayer.Out.SendMessage("Ellyn Weyland drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -1502,11 +1502,11 @@ namespace DOL.GS.Quests.Albion
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Danica.Name && gArgs.Item.Id_nb == kelics_totem.Id_nb)
+				if (gArgs.Target.Name == SirLukas.Name && gArgs.Item.Id_nb == kelics_totem.Id_nb)
 				{
-					RemoveItem(Danica, player, kelics_totem);
-					Danica.SayTo(player, "Ah, I can see how he wore the curse around the totem. I can now break the curse that is destroying the clan!");
-					Danica.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+					RemoveItem(SirLukas, player, kelics_totem);
+					SirLukas.SayTo(player, "Ah, I can see how he wore the curse around the totem. I can now break the curse that is destroying the clan!");
+					SirLukas.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
 					Step = 3;
 				}
 			}
@@ -1569,7 +1569,7 @@ namespace DOL.GS.Quests.Albion
 							break;
 						}
 				}
-				Danica.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
+				SirLukas.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
 
 				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
 				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
