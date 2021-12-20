@@ -5172,7 +5172,8 @@ namespace DOL.GS
                     double expPercent = (double)((baseXP) / (softXPCap)) * 100;
                     //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
 
-                    Out.SendMessage($"BaseXP: {baseXP.ToString("N0", format)} XP Cap: {softXPCap.ToString("N0", format)} % of Cap: {expPercent.ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | XP Cap: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage($"% of Cap: {expPercent.ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     
                     if(XPLogState == eXPLogState.Verbose)
                     {
