@@ -111,7 +111,7 @@ namespace DOL.GS.Quests.Albion
 				SirLukas.GuildName = "Emissary of the King";
 				SirLukas.Realm = eRealm.Albion;
 				SirLukas.CurrentRegionID = 10;
-				SirLukas.EquipmentTemplateID = "SirLukas";
+				SirLukas.LoadEquipmentTemplateFromDatabase("SirLukas");
 				SirLukas.Size = 52;
 				SirLukas.Level = 55;
 				SirLukas.X = 30763;
