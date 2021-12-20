@@ -39,7 +39,7 @@ namespace DOL.GS.Quests.Albion
 		private static GameMerchant EllynWeyland = null; // Mob to kill
 
 		private static ItemTemplate funeral_speech_scroll = null;
-		private static ItemTemplate SpiritmasterEpicBoots = null;
+		private static ItemTemplate FlitzitinaBow = null;
 
 		// Constructors
 		public HelpSirLukas() : base()
@@ -175,45 +175,32 @@ namespace DOL.GS.Quests.Albion
 
 			}
 
-			SpiritmasterEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("SpiritmasterEpicBoots");
-			if (SpiritmasterEpicBoots == null)
+			FlitzitinaBow = GameServer.Database.FindObjectByKey<ItemTemplate>("FlitzitinaBow");
+			if (FlitzitinaBow == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Spiritmaster Epic Boots , creating it ...");
-				SpiritmasterEpicBoots = new ItemTemplate();
-				SpiritmasterEpicBoots.Id_nb = "SpiritmasterEpicBoots";
-				SpiritmasterEpicBoots.Name = "Spirit Touched Boots";
-				SpiritmasterEpicBoots.Level = 50;
-				SpiritmasterEpicBoots.Item_Type = 23;
-				SpiritmasterEpicBoots.Model = 803;
-				SpiritmasterEpicBoots.IsDropable = true;
-				SpiritmasterEpicBoots.IsPickable = true;
-				SpiritmasterEpicBoots.DPS_AF = 50;
-				SpiritmasterEpicBoots.SPD_ABS = 0;
-				SpiritmasterEpicBoots.Object_Type = 32;
-				SpiritmasterEpicBoots.Quality = 100;
-				SpiritmasterEpicBoots.Weight = 22;
-				SpiritmasterEpicBoots.Bonus = 35;
-				SpiritmasterEpicBoots.MaxCondition = 50000;
-				SpiritmasterEpicBoots.MaxDurability = 50000;
-				SpiritmasterEpicBoots.Condition = 50000;
-				SpiritmasterEpicBoots.Durability = 50000;
-
-				SpiritmasterEpicBoots.Bonus1 = 16;
-				SpiritmasterEpicBoots.Bonus1Type = (int) eStat.CON;
-
-				SpiritmasterEpicBoots.Bonus2 = 16;
-				SpiritmasterEpicBoots.Bonus2Type = (int) eStat.DEX;
-
-				SpiritmasterEpicBoots.Bonus3 = 8;
-				SpiritmasterEpicBoots.Bonus3Type = (int) eResist.Matter;
-
-				SpiritmasterEpicBoots.Bonus4 = 10;
-				SpiritmasterEpicBoots.Bonus4Type = (int) eResist.Heat;
-
+					log.Warn("Could not find Flitzitina Bow , creating it ...");
+				FlitzitinaBow = new ItemTemplate();
+				FlitzitinaBow.Id_nb = "FlitzitinaBow";
+				FlitzitinaBow.Name = "Flitzitina\'s Bow";
+				FlitzitinaBow.Level = 50;
+				FlitzitinaBow.Item_Type = 40;
+				FlitzitinaBow.Model = 3275;
+				FlitzitinaBow.IsDropable = true;
+				FlitzitinaBow.IsPickable = true;
+				FlitzitinaBow.DPS_AF = 50;
+				FlitzitinaBow.SPD_ABS = 0;
+				FlitzitinaBow.Object_Type = 9;
+				FlitzitinaBow.Quality = 100;
+				FlitzitinaBow.Weight = 10;
+				FlitzitinaBow.Bonus = 35;
+				FlitzitinaBow.MaxCondition = 50000;
+				FlitzitinaBow.MaxDurability = 50000;
+				FlitzitinaBow.Condition = 50000;
+				FlitzitinaBow.Durability = 50000;
 				if (SAVE_INTO_DATABASE)
 				{
-					GameServer.Database.AddObject(SpiritmasterEpicBoots);
+					GameServer.Database.AddObject(FlitzitinaBow);
 				}
 
 			} //end item
