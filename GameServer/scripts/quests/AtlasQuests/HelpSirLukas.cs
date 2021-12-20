@@ -1,43 +1,17 @@
 /*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
+ * Atlas Custom Quest - Atlas 1.65v Classic Freeshard
  */
 /*
-*Author         : Etaew - Fallen Realms
-*Editor			: Gandulf
-*Source         : http://camelot.allakhazam.com
-*               : http://daoc.warcry.com/quests/display_spoilquest.php?id=741
-*Date           : 22 November 2004
-*Quest Name     : Saving the Clan (Level 50)
-*Quest Classes  : Runemaster, Bonedancer, Spiritmaster (Mystic)
-*Quest Version  : v1.2
+*Author         : Kelt
+*Editor			: Kelt, Clait
+*Source         : Custom
+*Date           : 20 December 2021
+*Quest Name     : [Memorial] All in the gold
+*Quest Classes  : all
+*Quest Version  : v1.0
 *
 *Changes:
-*   Fixed the texts to be like live.
-*   The epic armor should now be described correctly
-*   The epic armor should now fit into the correct slots
-*   The epic armor should now have the correct durability and condition
-*   The armour will now be correctly rewarded with all pieces
-*   The items used in the quest cannot be traded or dropped
-*   The items / itemtemplates / NPCs are created if they are not found
-*
-*ToDo:
-*   Find Helm ModelID for epics..
-*   checks for all other epics done, once they are implemented
+* 
 */
 
 using System;
