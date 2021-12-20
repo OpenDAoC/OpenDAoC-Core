@@ -198,7 +198,7 @@ namespace DOL.GS
 
 				GeneratedUniqueItem item = new GeneratedUniqueItem(toachance, player.Realm, classForLoot, (byte)Math.Min(mob.Level+1, 51));
 
-				item.CapUtility(mob.Level+1);
+				//item.CapUtility(mob.Level+1);
 
 				item.AllowAdd = true;
 				item.GenerateItemQuality(killedCon);
