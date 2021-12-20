@@ -412,7 +412,7 @@ namespace DOL.GS.Quests.Albion
 		//Set quest name
 		public override string Name
 		{
-			get { return "Saving the Clan (Level 50 Mystic Epic)"; }
+			get { return "[Memorial] All in the Gold"; }
 		}
 
 		// Define Steps
