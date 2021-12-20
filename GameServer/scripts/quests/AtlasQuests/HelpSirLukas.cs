@@ -393,7 +393,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Each arrow leaves a memory in your heart and the sum of those memories will make you shoot better every time.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -401,12 +401,10 @@ namespace DOL.GS.Quests.Albion
 				if (!SirLukas.GiveQuest(typeof (HelpSirLukas), player, 1))
 					return;
 
-				SirLukas.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
-				                       "He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
-				                       "I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
-				                       "According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
-				                       "Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
-				                       "Return to me when you have the totem. May all the gods be with you.");
+				SirLukas.SayTo(player, "Hello "+ player.Name +",I am Sir Lukas and protector of Camelot and Albion.\n"+
+					"I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot.\n"+
+					"We are expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up.\n" +
+					"\nCan you support Camelot and get this for us?");
 			}
 		}
 
