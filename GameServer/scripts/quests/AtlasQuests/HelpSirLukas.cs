@@ -424,11 +424,13 @@ namespace DOL.GS.Quests.Albion
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Find Kelic in Raumarik. Head to the river and go north. At the end go northwest to the next river, cross and head west. Follow the snowline until you reach a group of trees.";
+						return "[Step #1] Find Ellyn Weyland in Cotswold inside the forge and get the delivery.";
 					case 2:
-						return "[Step #2] Return to Danica and give her the totem!";
+						return "[Step #2] Return to Sir Lukas and give him the bow of Flitzitina!";
 					case 3:
-						return "[Step #3] Tell Danica you can 'take them' for your rewards!";
+						return "[Step #3] Speak with Sir Lukas and find out where the grave will be placed!";
+					case 4:
+						return "[Step #4] Find Flitzitina\'s Grave in Vetusta Abbey near North Camelot Entrance.";
 				}
 				return base.Description;
 			}
@@ -441,14 +443,17 @@ namespace DOL.GS.Quests.Albion
 			if (player==null || player.IsDoingQuest(typeof (HelpSirLukas)) == null)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (Step == 1 && e == GameLivingEvent.Interact)
 			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name == EllynWeyland.Name)
+				InteractEventArgs gArgs = (InteractEventArgs) args;
+				if (gArgs.Source.Name == EllynWeyland.Name)
 				{
-					Step = 2;
-					GiveItem(m_questPlayer, funeral_speech_scroll);
+					EllynWeyland.SayTo(player, "Ah, I can see how he wore the curse around the totem. I can now break the curse that is destroying the clan!");
+
+					
 					m_questPlayer.Out.SendMessage("Ellyn Weyland drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					GiveItem(m_questPlayer, funeral_speech_scroll);
+					Step = 2;
 					return;
 				}
 			}
