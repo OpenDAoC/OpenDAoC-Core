@@ -225,10 +225,10 @@ namespace DOL.GS.Quests.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToDanica));
-			GameEventMgr.AddHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDanica));
+			GameEventMgr.AddHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToSirLukas));
+			GameEventMgr.AddHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSirLukas));
 
-			/* Now we bring to Danica the possibility to give this quest to players */
+			/* Now we bring to Sir Lukas the possibility to give this quest to players */
 			SirLukas.AddQuestToGive(typeof (HelpSirLukas));
 
 			if (log.IsInfoEnabled)
@@ -245,14 +245,14 @@ namespace DOL.GS.Quests.Albion
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToDanica));
-			GameEventMgr.RemoveHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDanica));
+			GameEventMgr.RemoveHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToSirLukas));
+			GameEventMgr.RemoveHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSirLukas));
 
-			/* Now we remove to Danica the possibility to give this quest to players */
+			/* Now we remove to Sir Lukas the possibility to give this quest to players */
 			SirLukas.RemoveQuestToGive(typeof (HelpSirLukas));
 		}
 
-		protected static void TalkToDanica(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToSirLukas(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -272,25 +272,30 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							SirLukas.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
-							                       "He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
-							                       "I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
-							                       "According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
-							                       "Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
-							                       "Return to me when you have the totem. May all the gods be with you.");
+							SirLukas.SayTo(player, "Hello "+ player.Name +",I am Sir Lukas and protector of Camelot and Albion.\n"+
+							                       "I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot.\n"+
+							                       "We are expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up.\n" +
+							                       "\nCan you [support Camelot] and get this for us?");
+							//SirLukas.SayTo(player, "Ellyn Weyland, an armor merchant, has a delivery for Camelot which is very important!\n" +
+							//                       "Find her in the forge of Cotswold, get the delivery and return to me.");
 							break;
 						case 2:
-							SirLukas.SayTo(player, "It is good to see you were strong enough to survive Kelic. I can sense you have the controlling totem on you. Give me Kelic's totem now! Hurry!");
+							SirLukas.SayTo(player, "Hey "+ player.Name +", good to see you. Do you have Ellyn Weylands [delivery]?");
 							quest.Step = 3;
 							break;
 						case 3:
-							SirLukas.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+							SirLukas.SayTo(player, "Thank you prospective protecter!\n " +
+							                       "Flitzitina is my mother, she was a strong and protective scout, her Bow and Arrows were perfectly crafted. " +
+							                       "Her eyes are like falcon eyes, her shots were precise and i am proud to be the son of such an incredible woman. " +
+							                       "\nThank you for the delivery and I hope we will see you more often in Camelot!\n" +
+							                       "I have one last request, please bring [this speech] to Vetusta Abbey, we will prepare a dignified funeral for her.");
+							quest.Step = 4;
 							break;
 					}
 				}
 				else
 				{
-					SirLukas.SayTo(player, "Ah, this reveals exactly where Jango and his deserters took Kelic to dispose of him. He also has a note here about how strong Kelic really was. That [worries me].");
+					SirLukas.SayTo(player, "");
 				}
 			}
 				// The player whispered to the NPC
@@ -301,10 +306,16 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "worries me":
-							SirLukas.SayTo(player, "Yes, it worries me, but I think that you are ready to [face Kelic] and his minions.");
+						case "delivery":
+							SirLukas.SayTo(player, "Fantastic, please hand it to me!");
+							//SirLukas.ReceiveItem(flitzitina_bow);
+							//quest.Step = 3;
 							break;
-						case "face Kelic":
+						case "this speech":
+							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me!");
+							//player.ReceiveItem(player, funeral_speech_scroll);
+							break;
+						case "support Camelot":
 							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you face Kelic [Mystic Level 50 Epic]?");
 							break;
 					}
@@ -313,11 +324,6 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "take them":
-							if (quest.Step == 3)
-								quest.FinishQuest();
-							break;
-
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
@@ -345,11 +351,6 @@ namespace DOL.GS.Quests.Albion
 			return true;
 		}
 
-		/* This is our callback hook that will be called when the player clicks
-		 * on any button in the quest offer dialog. We check if he accepts or
-		 * declines here...
-		 */
-
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			HelpSirLukas quest = player.IsDoingQuest(typeof (HelpSirLukas)) as HelpSirLukas;
@@ -359,7 +360,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, no go out there and finish your work!");
+				SendSystemMessage(player, "Good, now go out there and finish your work!");
 			}
 			else
 			{
