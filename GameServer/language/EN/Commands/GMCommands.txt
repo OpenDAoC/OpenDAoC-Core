@@ -131,7 +131,7 @@ GMCommands.GMRelic.Usage:					/gmrelic <magic|strength> <realm>
 
 # /gmrelicpad Command
 GMCommands.GMRelicPad.Description:			Create a new RelicPad
-GMCommands.GMRelicPad.Usage:				/gmrelic <magic|strength> <name> <realm>
+GMCommands.GMRelicPad.Usage:				/gmrelicpad <magic|strength> <name> <realm>
 
 # /harm Command
 GMCommands.Harm.Description:				Harms your target (health)
@@ -213,8 +213,10 @@ GMCommands.Item.FindName.MatchingNamesForX:	Matching Names for {0} count {1}.
 GMCommands.Jump.Description:				Teleports a player or yourself to the specified location xp
 GMCommands.Jump.Information:				Playername can be [me]:
 GMCommands.Jump.Usage.ToPlayerName:			/jump to <PlayerName or MobName>
+GMCommands.Jump.Usage.AbovePlayerName:		/jump above <PlayerName> - Teleports you 10k units above the player. Disabled for players in dungeons.
 GMCommands.Jump.Usage.ToNameRealmID:		/jump to <Name> <RealmID>
 GMCommands.Jump.Usage.ToXYZRegionID:		/jump to <x> <y> <z> [<RegionID>]
+GMCommands.Jump.Usage.ToJail:               /jump <name> to jail  - ports the player to DF jail
 GMCommands.Jump.Usage.PlayerNameToXYZ:		/jump <PlayerName> to <x> <y> <z>
 GMCommands.Jump.Usage.PlayerNameToXYZRegID:	/jump <PlayerName> to <x> <y> <z> [<RegionID>]
 GMCommands.Jump.Usage.PlayerNToPlayerN:		/jump <PlayerName> to <PlayerName>

@@ -81,7 +81,7 @@ namespace DOL.GS {
             item.CapUtility(level);
             item.AllowAdd = true;
             item.IsTradable = true;
-            GameServer.Database.AddObject(item);
+            //GameServer.Database.AddObject(item);
 
             return item;
             

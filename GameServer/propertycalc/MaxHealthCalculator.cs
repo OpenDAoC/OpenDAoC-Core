@@ -151,7 +151,7 @@ namespace DOL.GS.PropertyCalc
 
 				if (living.Level<10)
 				{
-					hp = living.Level * 10 + 20 + (living as GameNPC).Constitution /*living.BaseBuffBonusCategory[(int)property]*/;	// default
+					hp = living.Level * 10 + 20 + ((living as GameNPC).Constitution / 1 + (10-living.Level)) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
 				}
 				else
 				{

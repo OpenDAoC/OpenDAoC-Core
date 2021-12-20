@@ -66,8 +66,8 @@ namespace DOL.GS.Scripts
         {
             PvETimer = 7200 * 1000;
             RvRTimer = 2700 * 1000;
-            PvEExperienceBonusAmount = 100;
-            RvRExperienceBonusAmount = 200;
+            PvEExperienceBonusAmount = 50;
+            RvRExperienceBonusAmount = 100;
             RPBonusAmount = 100;
             BPBonusAmount = 100;
              

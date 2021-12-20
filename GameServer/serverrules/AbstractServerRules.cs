@@ -1277,6 +1277,12 @@ namespace DOL.GS.ServerRules
 					else if (campBonusPerc > fullCampBonus)
 						campBonusPerc = fullCampBonus;
 
+					if (player.XPLogState == GamePlayer.eXPLogState.Verbose)
+					{
+						player.Out.SendMessage($"% of Camp remaining: {(campBonusPerc * 100 / fullCampBonus).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					}
+
 					campBonus = (long)(xpReward * campBonusPerc);
 					#endregion
 
@@ -1317,7 +1323,7 @@ namespace DOL.GS.ServerRules
 						if (player != null)
 						{
 							if (player.Group != null && plrGrpExp.ContainsKey(player.Group))
-								groupExp += (long)(0.125 * xpReward * (int)plrGrpExp[player.Group]);
+								groupExp += (long)(0.05 * xpReward * (int)plrGrpExp[player.Group]);
 
 							// tolakram - remove this for now.  Correct calculation should be reduced XP based on damage pet did, not a flat reduction
 							//if (player.ControlledNpc != null)
@@ -1581,6 +1587,22 @@ namespace DOL.GS.ServerRules
 					int rpCap = living.RealmPointsValue * 2;
 					int realmPoints = (int)(playerRPValue * damagePercent * 0.5);
 
+                    switch (expGainPlayer?.GetConLevel(killedPlayer))
+                    {
+						case <= -3:
+							rpCap = 0;
+							expGainPlayer.Out.SendMessage("You shamefully killed a defenseless opponent and gain no realm points from this kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							break;
+						case -2:
+							rpCap /= 4;
+							break;
+						case -1:
+							rpCap /= 2;
+							break;
+						default:
+							break;
+                    }
+
 					//moved to after realmPoints assignment so that dead players retain full RP
 					if (!living.IsAlive)//Dead living gets 25% exp only
 						damagePercent *= 0.25;
@@ -1631,8 +1653,27 @@ namespace DOL.GS.ServerRules
 					// bounty points
 					int bpCap = living.BountyPointsValue * 2;
 					int bountyPoints = (int)(playerBPValue * damagePercent);
+
+					switch (expGainPlayer?.GetConLevel(killedPlayer))
+					{
+						case <= -3:
+							bpCap = 0;
+							expGainPlayer.Out.SendMessage("You killed a defenseless opponent and gain no bps from this kill, you animal!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							break;
+						case -2:
+							bpCap /= 4;
+							break;
+						case -1:
+							bpCap /= 2;
+							break;
+						default:
+							break;
+					}
+
 					if (bountyPoints > bpCap)
 						bountyPoints = bpCap;
+
+					
 
 					//FIXME: [WARN] this is guessed, i do not believe this is the right way, we will most likely need special messages to be sent
 					//apply the keep bonus for bounty points
@@ -1654,6 +1695,23 @@ namespace DOL.GS.ServerRules
 					long xpReward = (long)(playerExpValue * damagePercent); // exp for damage percent
 
 					long expCap = (long)(living.ExperienceValue * ServerProperties.Properties.XP_PVP_CAP_PERCENT / 100);
+
+					switch (expGainPlayer?.GetConLevel(killedPlayer))
+					{
+						case <= -3:
+							expCap = 0;
+							expGainPlayer.Out.SendMessage("No experience points awarded for killing greys, you degenerate.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							break;
+						case -2:
+							expCap /= 4;
+							break;
+						case -1:
+							expCap /= 2;
+							break;
+						default:
+							break;
+					}
+
 					if (xpReward > expCap)
 						xpReward = expCap;
 
@@ -1681,7 +1739,9 @@ namespace DOL.GS.ServerRules
 							outpostXP = (xpReward / 100) * bonus;
 						}
 					}
-					xpReward += outpostXP;
+
+					if(xpReward > 0)
+						xpReward += outpostXP;
 
 					living.GainExperience(eXPSource.Player, xpReward);
 

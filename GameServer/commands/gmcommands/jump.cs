@@ -29,12 +29,13 @@ namespace DOL.GS.Commands
 		"GMCommands.Jump.Description",
 		"GMCommands.Jump.Information",
 		"GMCommands.Jump.Usage.ToPlayerName",
+		"GMCommands.Jump.Usage.ToPlayerName",
 		"/jump to <#ClientID> ex. /jump to #10",
 		"GMCommands.Jump.Usage.ToNameRealmID",
 		"GMCommands.Jump.Usage.ToXYZRegionID",
 		"/jump to <myhouse | house [#]>",
 		"/jump to region [#] - jump to same location in new region",
-		"/jump <name> to jail  - ports the player to DF jail",
+		"GMCommands.Jump.Usage.ToJail",
 		"GMCommands.Jump.Usage.PlayerNameToXYZ",
 		"GMCommands.Jump.Usage.PlayerNameToXYZRegID",
 		"GMCommands.Jump.Usage.PlayerNToPlayerN",
@@ -217,6 +218,32 @@ namespace DOL.GS.Commands
 					return;
 				}
 				#endregion Jump to Name Realm
+				#region Jump above PlayerName
+				else if (args.Length == 3 && args[1].ToLower() == "above")
+				{
+					GameClient clientc = null;
+					
+					clientc = WorldMgr.GetClientByPlayerName(args[2], false, true);
+					
+					if (clientc == null)
+					{
+						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Jump.CannotBeFound", args[2]), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+
+					if (CheckExpansion(client, clientc, clientc.Player.CurrentRegionID))
+					{
+						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Jump.JumpToX", clientc.Player.CurrentRegion.Description), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						if (clientc.Player.CurrentRegion.IsDungeon)
+							client.Out.SendMessage("Player is currently in a dungeon and it's not safe to port above them.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+						else
+							client.Player.MoveTo(clientc.Player.CurrentRegionID, clientc.Player.X, clientc.Player.Y, clientc.Player.Z + 10000, client.Player.Heading);
+						return;
+					}
+					client.Out.SendMessage("You don't have an expansion needed to jump to this location.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				#endregion
 				#region Jump Name to Jail
 				else if (args.Length == 4 && args[2] == "to" && args[3] == "jail")
 				{

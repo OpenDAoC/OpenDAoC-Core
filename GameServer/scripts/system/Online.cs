@@ -29,7 +29,7 @@ namespace DOL.GS.Commands
 {
     [CmdAttribute(
         "&online",
-         new string[] { "&on" },
+        new string[] { "&on" },
         ePrivLevel.Player,
         "Shows all Players that are currently online",
         "Usage: /online")]
@@ -49,6 +49,8 @@ namespace DOL.GS.Commands
         //add the ID´s of the zones(!) you want the command to display here
         //get the ID´s from your Zone Table, keep in mind Zones != Regions.
         private static ushort[] zoneIDs = { 335, 26 };
+
+        private static bool showZoneBreakzone = false;
 
         // set this to true or false to display a displayed list of currently loged in classes.
         private static bool showDetailedClass = true;
@@ -184,167 +186,163 @@ namespace DOL.GS.Commands
                 switch (c.Player.CharacterClass.ID)
                 {   // Alb tanks:
                     case (int)eCharacterClass.Armsman:
-                        { ++albTanks; classcount[0].count++; }
+                    { ++albTanks; classcount[0].count++; }
                         break;
                     case (int)eCharacterClass.Mercenary:
-                        { ++albTanks; classcount[1].count++; }
+                    { ++albTanks; classcount[1].count++; }
                         break;
                     case (int)eCharacterClass.Paladin:
-                        { ++albTanks; classcount[2].count++; }
+                    { ++albTanks; classcount[2].count++; }
                         break;
                     case (int)eCharacterClass.Reaver:
-                        { ++albTanks; classcount[3].count++; }
+                    { ++albTanks; classcount[3].count++; }
                         break;
                     case (int)eCharacterClass.Heretic:
-                        { ++albTanks; classcount[4].count++; }
+                    { ++albTanks; classcount[4].count++; }
                         break;
                     case (int)eCharacterClass.MaulerAlb:
-                        { ++albTanks; classcount[5].count++; }
+                    { ++albTanks; classcount[5].count++; }
                         break;
 
                     // Alb casters:
                     case (int)eCharacterClass.Cabalist:
-                        { ++albCasters; classcount[6].count++; }
+                    { ++albCasters; classcount[6].count++; }
                         break;
                     case (int)eCharacterClass.Sorcerer:
-                        { ++albCasters; classcount[7].count++; }
+                    { ++albCasters; classcount[7].count++; }
                         break;
                     case (int)eCharacterClass.Theurgist:
-                        { ++albCasters; classcount[8].count++; }
+                    { ++albCasters; classcount[8].count++; }
                         break;
                     case (int)eCharacterClass.Wizard:
-                        { ++albCasters; classcount[9].count++; }
+                    { ++albCasters; classcount[9].count++; }
                         break;
                     case (int)eCharacterClass.Necromancer:
-                        { ++albCasters; classcount[10].count++; }
+                    { ++albCasters; classcount[10].count++; }
                         break;
                     // Alb support:
                     case (int)eCharacterClass.Cleric:
-                        { ++albSupport; classcount[11].count++; }
+                    { ++albSupport; classcount[11].count++; }
                         break;
                     case (int)eCharacterClass.Friar:
-                        { ++albSupport; classcount[12].count++; }
+                    { ++albSupport; classcount[12].count++; }
                         break;
                     case (int)eCharacterClass.Minstrel:
-                        { ++albSupport; classcount[13].count++; }
+                    { ++albSupport; classcount[13].count++; }
                         break;
                     // Alb stealthers:
                     case (int)eCharacterClass.Infiltrator:
-                        { ++albStealthers; classcount[14].count++; }
+                    { ++albStealthers; classcount[14].count++; }
                         break;
                     case (int)eCharacterClass.Scout:
-                        { ++albStealthers; classcount[15].count++; }
+                    { ++albStealthers; classcount[15].count++; }
                         break;
                     // Mid tanks:
                     case (int)eCharacterClass.Berserker:
-                        { ++midTanks; classcount[16].count++; }
+                    { ++midTanks; classcount[16].count++; }
                         break;
                     case (int)eCharacterClass.Savage:
-                        { ++midTanks; classcount[17].count++; }
+                    { ++midTanks; classcount[17].count++; }
                         break;
                     case (int)eCharacterClass.Skald:
-                        { ++midTanks; classcount[18].count++; }
+                    { ++midTanks; classcount[18].count++; }
                         break;
                     case (int)eCharacterClass.Thane:
-                        { ++midTanks; classcount[19].count++; }
+                    { ++midTanks; classcount[19].count++; }
                         break;
                     case (int)eCharacterClass.Warrior:
-                        { ++midTanks; classcount[20].count++; }
+                    { ++midTanks; classcount[20].count++; }
                         break;
                     case (int)eCharacterClass.Valkyrie:
-                        { ++midTanks; classcount[21].count++; }
+                    { ++midTanks; classcount[21].count++; }
                         break;
                     case (int)eCharacterClass.MaulerMid:
-                        { ++midTanks; classcount[22].count++; }
+                    { ++midTanks; classcount[22].count++; }
                         break;
                     // Mid casters:
                     case (int)eCharacterClass.Bonedancer:
-                        { ++midCasters; classcount[23].count++; }
+                    { ++midCasters; classcount[23].count++; }
                         break;
                     case (int)eCharacterClass.Runemaster:
-                        { ++midCasters; classcount[24].count++; }
+                    { ++midCasters; classcount[24].count++; }
                         break;
                     case (int)eCharacterClass.Spiritmaster:
-                        { ++midCasters; classcount[25].count++; }
+                    { ++midCasters; classcount[25].count++; }
                         break;
                     case (int)eCharacterClass.Warlock:
-                        { ++midCasters; classcount[26].count++; }
+                    { ++midCasters; classcount[26].count++; }
                         break;
                     // Mid support:
                     case (int)eCharacterClass.Healer:
-                        { ++midSupport; classcount[27].count++; }
+                    { ++midSupport; classcount[27].count++; }
                         break;
                     case (int)eCharacterClass.Shaman:
-                        { ++midSupport; classcount[28].count++; }
+                    { ++midSupport; classcount[28].count++; }
                         break;
                     // Mid stealthers:
                     case (int)eCharacterClass.Hunter:
-                        { ++midStealthers; classcount[29].count++; }
+                    { ++midStealthers; classcount[29].count++; }
                         break;
                     case (int)eCharacterClass.Shadowblade:
-                        { ++midStealthers; classcount[30].count++; }
+                    { ++midStealthers; classcount[30].count++; }
                         break;
                     // Hib tanks:
                     case (int)eCharacterClass.Blademaster:
-                        { ++hibTanks; classcount[31].count++; }
+                    { ++hibTanks; classcount[31].count++; }
                         break;
                     case (int)eCharacterClass.Champion:
-                        { ++hibTanks; classcount[32].count++; }
+                    { ++hibTanks; classcount[32].count++; }
                         break;
                     case (int)eCharacterClass.Hero:
-                        { ++hibTanks; classcount[33].count++; }
+                    { ++hibTanks; classcount[33].count++; }
                         break;
                     case (int)eCharacterClass.Valewalker:
-                        { ++hibTanks; classcount[34].count++; }
+                    { ++hibTanks; classcount[34].count++; }
                         break;
                     case (int)eCharacterClass.MaulerHib:
-                        { ++hibTanks; classcount[35].count++; }
+                    { ++hibTanks; classcount[35].count++; }
                         break;
                     case (int)eCharacterClass.Vampiir:
-                        { ++hibTanks; classcount[36].count++; }
+                    { ++hibTanks; classcount[36].count++; }
                         break;
                     // Hib casters:
                     case (int)eCharacterClass.Eldritch:
-                        { ++hibCasters; classcount[37].count++; }
+                    { ++hibCasters; classcount[37].count++; }
                         break;
                     case (int)eCharacterClass.Enchanter:
-                        { ++hibCasters; classcount[38].count++; }
+                    { ++hibCasters; classcount[38].count++; }
                         break;
                     case (int)eCharacterClass.Mentalist:
-                        { ++hibCasters; classcount[39].count++; }
+                    { ++hibCasters; classcount[39].count++; }
                         break;
                     case (int)eCharacterClass.Animist:
-                        { ++hibCasters; classcount[40].count++; }
+                    { ++hibCasters; classcount[40].count++; }
                         break;
                     case (int)eCharacterClass.Bainshee:
-                        { ++hibCasters; classcount[41].count++; }
+                    { ++hibCasters; classcount[41].count++; }
                         break;
                     // Hib support:
                     case (int)eCharacterClass.Bard:
-                        { ++hibSupport; classcount[42].count++; }
+                    { ++hibSupport; classcount[42].count++; }
                         break;
                     case (int)eCharacterClass.Druid:
-                        { ++hibSupport; classcount[43].count++; }
+                    { ++hibSupport; classcount[43].count++; }
                         break;
                     case (int)eCharacterClass.Warden:
-                        { ++hibSupport; classcount[44].count++; }
+                    { ++hibSupport; classcount[44].count++; }
                         break;
 
                     // Hib stealthers:
                     case (int)eCharacterClass.Nightshade:
-                        { ++hibStealthers; classcount[45].count++; }
+                    { ++hibStealthers; classcount[45].count++; }
                         break;
                     case (int)eCharacterClass.Ranger:
-                        { ++hibStealthers; classcount[46].count++; }
+                    { ++hibStealthers; classcount[46].count++; }
                         break;
                 }
                 #endregion
             }
-
-
-
-
-
+            
             #region overview and class-specific
             int entering = connecting + enterworld + charscreen;
             int leaving = disconnecting + linkdeath;
@@ -353,20 +351,20 @@ namespace DOL.GS.Commands
             int hibTotal = hibTanks + hibCasters + hibSupport + hibStealthers;
             int total = entering + playing + leaving;
             output.Add(string.Format("Currently online:  {0}\n Playing:  {1} | Entering:  {2} | Leaving:  {3}",
-                                      total, playing, entering, leaving));
+                total, playing, entering, leaving));
             if (showAddOnlineInfo == true)
             {
                 output.Add(string.Format("\n (Connecting:  {0} | CharScreen:  {1} | EnterWorld:  {2} | Playing:  {3} | GMs:  {4})",
-                                              connecting, enterworld, charscreen, playing, gms));
+                    connecting, enterworld, charscreen, playing, gms));
             }
             if (showRealms == true)
             {
                 output.Add(string.Format("\nAlbion:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
-                                          albTanks, albCasters, albSupport, albStealthers, albTotal, (int)(albTotal * 100 / total)));
+                    albTanks, albCasters, albSupport, albStealthers, albTotal, (int)(albTotal * 100 / total)));
                 output.Add(string.Format("\nMidgard:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
-                                              midTanks, midCasters, midSupport, midStealthers, midTotal, (int)(midTotal * 100 / total)));
+                    midTanks, midCasters, midSupport, midStealthers, midTotal, (int)(midTotal * 100 / total)));
                 output.Add(string.Format("\nHibernia:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
-                                          hibTanks, hibCasters, hibSupport, hibStealthers, hibTotal, (int)(hibTotal * 100 / total)));
+                    hibTanks, hibCasters, hibSupport, hibStealthers, hibTotal, (int)(hibTotal * 100 / total)));
             }
             Zone zone = null;
             IList<GameClient> cls = new List<GameClient>();
@@ -374,7 +372,7 @@ namespace DOL.GS.Commands
             int midsinregion = 0;
             int hibsinregion = 0;
             int totalinregion = 0;
-            if (zoneIDs.Length > 0 && showByZone == true)
+            if (zoneIDs.Length > 0 && showByZone)
             {
                 for (int r = 0; r < zoneIDs.Length; r++)
                 {
@@ -389,9 +387,9 @@ namespace DOL.GS.Commands
                     foreach (GameClient cir in cls)
                     {
                         if (!cir.IsPlaying
-                    || cir.Account == null
-                    || cir.Player == null
-                    || cir.Player.ObjectState != GameObject.eObjectState.Active)
+                            || cir.Account == null
+                            || cir.Player == null
+                            || cir.Player.ObjectState != GameObject.eObjectState.Active)
                             continue;
 
                         if (cir.Account.PrivLevel >= (uint)ePrivLevel.GM)
@@ -415,34 +413,36 @@ namespace DOL.GS.Commands
 
                 }
             }
-            
-            Dictionary<string, int> zoneXnumbers = new Dictionary<string, int>();
-            foreach (GameClient c in clients)
-            {
-                if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null || c.Account.PrivLevel > 1 && c.Player.IsAnonymous )
-                    continue;
 
-                int count = 1;
-                if (zoneXnumbers.ContainsKey(c.Player.CurrentZone.Description))
+            if (showZoneBreakzone) {
+                
+                Dictionary<string, int> zoneXnumbers = new Dictionary<string, int>();
+                foreach (GameClient c in clients)
                 {
-                    count += zoneXnumbers[c.Player.CurrentZone.Description];
-                    zoneXnumbers.Remove(c.Player.CurrentZone.Description);
+                    if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null || c.Account.PrivLevel > 1 && c.Player.IsAnonymous )
+                        continue;
+
+                    int count = 1;
+                    if (zoneXnumbers.ContainsKey(c.Player.CurrentZone.Description))
+                    {
+                        count += zoneXnumbers[c.Player.CurrentZone.Description];
+                        zoneXnumbers.Remove(c.Player.CurrentZone.Description);
+                    }
+                    zoneXnumbers.Add(c.Player.CurrentZone.Description, count);
                 }
-                zoneXnumbers.Add(c.Player.CurrentZone.Description, count);
+
+                var sortedZones = zoneXnumbers.ToList();
+            
+                sortedZones.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            
+                output.Add(string.Format("\n"));
+                foreach (KeyValuePair<string, int> kvp in sortedZones)
+                {
+                    output.Add(kvp.Value + " players in " + kvp.Key);
+                } 
             }
 
-            var sortedZones = zoneXnumbers.ToList();
-            
-            sortedZones.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-            
-            output.Add(string.Format("\n"));
-            foreach (KeyValuePair<string, int> kvp in sortedZones)
-            {
-                output.Add(kvp.Value + " players in " + kvp.Key);
-            }
-            
-            
-            if (showDetailedClass == true)
+            if (showDetailedClass)
             {
                 output.Add(string.Format("\n"));
                 lock (classcount)
@@ -458,8 +458,7 @@ namespace DOL.GS.Commands
             }
 
             #endregion
-
-
+            
             return output;
         }
     }

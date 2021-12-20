@@ -4601,7 +4601,7 @@ namespace DOL.GS
 
 		private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
 		{
-			eGenerateType type = GetObjectTypeByWeight();
+			eGenerateType type = GetObjectTypeByWeight(level);
 
 			switch ((eRealm)realm)
 			{
@@ -4673,12 +4673,28 @@ namespace DOL.GS
 			return eObjectType.GenericItem;
 		}
 
-		private static eGenerateType GetObjectTypeByWeight()
+		private static eGenerateType GetObjectTypeByWeight(byte level)
 		{
 			List<eGenerateType> genTypes = new List<eGenerateType>();
-			if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
-			if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical);	}
-			if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+
+			//weighted so that early levels get many more weapons/armor
+			if(level < 10)
+            {
+				genTypes.Add(eGenerateType.Weapon);
+				genTypes.Add(eGenerateType.Armor);
+				if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
+			} else if (level < 20)
+            {
+				if (Util.Chance(ROG_ARMOR_CHANCE * 2)) { genTypes.Add(eGenerateType.Armor); }
+				if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
+				if (Util.Chance(ROG_WEAPON_CHANCE * 2)) { genTypes.Add(eGenerateType.Weapon); }
+			}
+			else
+            {
+				if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
+				if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
+				if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+			}
 			
 			//if none of the object types were added, default to magical
 			if(genTypes.Count < 1)
