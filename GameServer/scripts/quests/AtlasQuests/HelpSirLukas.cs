@@ -1372,12 +1372,6 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof (HelpSirLukas)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) eCharacterClass.Spiritmaster &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Runemaster &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Bonedancer &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Warlock)
-				return false;
-
 			// This checks below are only performed is player isn't doing quest already
 
 			//if (player.HasFinishedQuest(typeof(Academy_47)) == 0) return false;
