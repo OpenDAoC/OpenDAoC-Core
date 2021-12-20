@@ -95,7 +95,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 802818 && npc.Y == 727413)
+					if (npc.CurrentRegionID == 10 && npc.X == 30763 && npc.Y == 29908)
 					{
 						SirLukas = npc;
 						break;
@@ -106,18 +106,18 @@ namespace DOL.GS.Quests.Albion
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find SirLukas , creating it ...");
 				SirLukas = new GameNPC();
-				SirLukas.Model = 227;
+				SirLukas.Model = 33;
 				SirLukas.Name = "Sir Lukas";
-				SirLukas.GuildName = "";
-				SirLukas.Realm = eRealm.Midgard;
-				SirLukas.CurrentRegionID = 100;
-				SirLukas.EquipmentTemplateID = "Danica";
-				SirLukas.Size = 51;
-				SirLukas.Level = 50;
-				SirLukas.X = 803559;
-				SirLukas.Y = 723329;
-				SirLukas.Z = 4719;
-				SirLukas.Heading = 2193;
+				SirLukas.GuildName = "Emissary of the King";
+				SirLukas.Realm = eRealm.Albion;
+				SirLukas.CurrentRegionID = 10;
+				SirLukas.EquipmentTemplateID = "SirLukas";
+				SirLukas.Size = 52;
+				SirLukas.Level = 55;
+				SirLukas.X = 30763;
+				SirLukas.Y = 29908;
+				SirLukas.Z = 8000;
+				SirLukas.Heading = 3083;
 				SirLukas.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
