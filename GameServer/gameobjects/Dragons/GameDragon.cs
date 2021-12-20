@@ -107,7 +107,7 @@ namespace DOL.GS
 
 		public int AttackRange
 		{
-			get { return 400; }
+			get { return 450; }
 			set { }
 		}
 
