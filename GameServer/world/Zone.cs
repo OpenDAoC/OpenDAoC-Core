@@ -313,18 +313,42 @@ namespace DOL.GS
 			{
 				switch (m_Region.ID)
 				{
+					case 20:
 					case 21:
+					case 22:
+					case 23:
 					case 24:
+					case 50:
+					case 60:
+					case 61:
 					case 65:
 					case 66:
 					case 67:
 					case 68:
+					case 69:
 					case 92:
 					case 93:
+					case 98:
 					case 109:
+					case 125:
+					case 126:
+					case 127:
+					case 128:
+					case 129:
 					case 149:
+					case 150:
+					case 160:
+					case 161:
+					case 180:
+					case 188:
+					case 190:
+					case 191:
 					case 196:
+					case 220:
 					case 221:
+					case 222:
+					case 223:
+					case 224:
 					case 227:
 					case 228:
 					case 229:
@@ -332,6 +356,7 @@ namespace DOL.GS
 					case 245:
 					case 246:
 					case 247:
+					case 248:
 					case 249:
 					case 276:
 					case 277:
@@ -339,6 +364,7 @@ namespace DOL.GS
 					case 297:
 					case 298:
 					case 326:
+					case 340:
 					// case 335:
 					case 352:
 					case 356:
