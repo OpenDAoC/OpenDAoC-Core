@@ -570,13 +570,8 @@ namespace DOL.GS.Quests.Albion
 				}
 			}
 
-			if (Step == 2 && e == GamePlayerEvent.ReceiveItem)
+			if (Step == 2 && e == GamePlayerEvent.ReceiveItem || Step == 3 && e == GameLivingEvent.Interact)
 			{
-				Step = 3;
-			}
-			if (Step == 3 && e == GameLivingEvent.Interact)
-			{
-				
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == SirLukas.Name)
 				{
