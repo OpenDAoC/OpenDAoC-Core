@@ -15,6 +15,8 @@
 */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
@@ -40,7 +42,15 @@ namespace DOL.GS.Quests.Albion
 
 		private static ItemTemplate funeral_speech_scroll = null;
 		private static ItemTemplate FlitzitinaBow = null;
-		private static Object FlitzitinaGrave = null;
+
+		private static WorldObject FlitzitinasGrave = null;
+
+		private IList<WorldObject> GetItems()
+		{
+			string FlitzitinaGrave = "Name = 'Flitzitina\'s Grave'";
+			
+			return (GameServer.Database.SelectObjects<WorldObject>(FlitzitinaGrave));
+		}
 
 		// Constructors
 		public HelpSirLukas() : base()
@@ -144,7 +154,7 @@ namespace DOL.GS.Quests.Albion
 
 				#endregion
 
-				#region defineItems
+			#region defineItems
 
 				funeral_speech_scroll = GameServer.Database.FindObjectByKey<ItemTemplate>("funeral_speech_flitzitina");
 			if (funeral_speech_scroll == null)
@@ -207,6 +217,31 @@ namespace DOL.GS.Quests.Albion
 			} //end item
 
 			//Item Descriptions End
+
+			#endregion
+
+			#region defineObject
+
+			FlitzitinasGrave = GameServer.Database.FindObjectByKey<WorldObject>("Name = 'Flitzitina\'s Grave'");
+			if (FlitzitinasGrave == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Flitzitinas Grave, creating it ...");
+				FlitzitinasGrave = new WorldObject();
+				FlitzitinasGrave.Name = "Flitzitina\'s Grave";
+				FlitzitinasGrave.X = 505153;
+				FlitzitinasGrave.Y = 496310;
+				FlitzitinasGrave.Z = 2432;
+				FlitzitinasGrave.Heading = 833;
+				FlitzitinasGrave.Region = 1;
+				FlitzitinasGrave.Model = 145;
+				FlitzitinasGrave.ObjectId = "flitzitina_grave_questitem";
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(FlitzitinasGrave);
+				}
+
+			}
 
 			#endregion
 
@@ -559,7 +594,7 @@ namespace DOL.GS.Quests.Albion
 			if (Step == 4 && e == GameObjectEvent.Interact)
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name.Contains("Flitzitina"))
+				if (GetItems() == null)
 				{
 					RemoveItem(player, funeral_speech_scroll);
 					FinishQuest();
