@@ -568,7 +568,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				SirLukas.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
+				SirLukas.SayTo(m_questPlayer, "Thank you once again, knowing that you helped preserve the Albion heroine's story!");
 
 				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You recieve {0} as a reward.");		
