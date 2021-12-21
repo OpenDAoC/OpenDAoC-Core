@@ -572,12 +572,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (Step == 2 && e == GamePlayerEvent.ReceiveItem)
 			{
-				/*RecieveItemEventArgs gArgs = (RecieveItemEventArgs) args;
-				if (gArgs.Target.Name == SirLukas.Name && gArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
-				{*/
-					//SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot!");
-					Step = 3;
-				//}
+				Step = 3;
 			}
 			if (Step == 3 && e == GameLivingEvent.Interact)
 			{
