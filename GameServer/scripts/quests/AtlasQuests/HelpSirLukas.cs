@@ -302,7 +302,7 @@ namespace DOL.GS.Quests.Albion
 							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Now go to [Vetusta Abbey].");
 							break;
 						case "support Camelot":
-							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you help Sir Lukas [[Memorial] All in the Gold]?");
+							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you help Sir Lukas [Memorial] All in the Gold]?");
 							break;
 					}
 				}
@@ -332,7 +332,8 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (rArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
 					{
-						SirLukas.SayTo(player, "Thank you for bringing this to me, I will be sure to give you a reward for your efforts.");
+						SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot! \n");
+						//quest.Step = 3;
 					}
 				}
 			}
@@ -529,19 +530,14 @@ namespace DOL.GS.Quests.Albion
 				}
 			}
 
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			if (Step == 2 && e == GamePlayerEvent.ReceiveItem)
 			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				/*RecieveItemEventArgs gArgs = (RecieveItemEventArgs) args;
 				if (gArgs.Target.Name == SirLukas.Name && gArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
-				{
-
-					/*if (ReceiveItem(SirLukas, FlitzitinaBow))
-					{
-						SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot!");
-						Step = 3;
-					}*/
-	
-				}
+				{*/
+					//SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot!");
+					Step = 3;
+				//}
 			}
 			if (Step == 3 && e == GameLivingEvent.Interact  && e == GamePlayerEvent.GiveItem)
 			{
