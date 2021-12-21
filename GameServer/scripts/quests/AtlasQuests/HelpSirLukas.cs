@@ -375,7 +375,7 @@ namespace DOL.GS.Quests.Albion
 							                           "I heard you gave Sir Lukas the delivery. I know he will make a handsome grave for his mother!");
 							break;
 						case 4:
-							EllynWeyland.SayTo(player, "Vetusta Abbey? I know this place, when I was a child, I played there with some pigs and with some friends.");
+							EllynWeyland.SayTo(player, "Vetusta Abbey? I know this place, when I was a child, I played there with some pigs and with my friends.");
 							break;
 					}
 				}
@@ -556,10 +556,10 @@ namespace DOL.GS.Quests.Albion
 				}
 			}
 
-			if (Step == 4 && e == GameObjectEvent.Interact)
+			if (e == GameObjectEvent.Interact && Step == 4)
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Equals(FlitzitinaGrave))
+				if (gArgs.Source.Name.Contains("Flitzitina\'s Grave"))
 				{
 					FinishQuest();
 				}
