@@ -137,7 +137,7 @@ namespace DOL.GS.Quests.Midgard
 				Danica.GuildName = "";
 				Danica.Realm = eRealm.Midgard;
 				Danica.CurrentRegionID = 100;
-				Danica.EquipmentTemplateID = "Danica";
+				Danica.LoadEquipmentTemplateFromDatabase("Danica");
 				Danica.Size = 51;
 				Danica.Level = 50;
 				Danica.X = 803559;

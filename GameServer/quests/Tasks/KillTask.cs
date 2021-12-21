@@ -131,16 +131,6 @@ namespace DOL.GS.Quests
 			set { SetCustomProperty(MOB_NAME,value);}
 		}
 
-
-		/// <summary>
-		/// Called to finish the task.
-		/// Should be overridden and some rewards given etc.
-		/// </summary>
-		public override void FinishTask()
-		{
-			base.FinishTask();
-		}
-
 		/// <summary>
 		/// This method needs to be implemented in each task.
 		/// It is the core of the task. The global event hook of the GamePlayer.
@@ -173,8 +163,7 @@ namespace DOL.GS.Quests
 					if (((KillTask)player.Task).MobName == target.Name)
 					{
 						((KillTask)player.Task).MobKilled = true;
-						player.Out.SendMessage("You must now return to " + target.Name + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
+						player.Out.SendMessage("You must now return to " + player.Task.RecieverName + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 				}
 				else
@@ -298,10 +287,6 @@ namespace DOL.GS.Quests
 
 		}
 		
-
-		
-		
-		
 		/// <summary>
 		/// Search for a Mob to Kill and Give the KillTask to the Player
 		/// </summary>
@@ -363,7 +348,7 @@ namespace DOL.GS.Quests
 		public static GameNPC GetRandomMob(GamePlayer Player)
 		{
 			int minLevel = GameLiving.NoXPForLevel[Player.Level]+1;
-			int maxLevel = (int) (2 * ( (double)(Player.Level / 10 + 1) )) + Player.Level;
+			int maxLevel = Player.Level;
 
 			GameNPC npc = Player.CurrentZone.GetRandomNPC(eRealm.None, minLevel,maxLevel);
 			return npc;

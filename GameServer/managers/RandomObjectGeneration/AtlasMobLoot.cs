@@ -10,7 +10,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 35;
+        public static ushort BASE_ROG_CHANCE = 20;
 
 
         /// <summary>
@@ -36,10 +36,10 @@ namespace DOL.GS {
                     return loot;
                 }
 
-                int killedcon = (int)player.GetConLevel(mob) + 3; //+3 offsets grey mobs
+                int killedcon = (int)player.GetConLevel(mob); //+ 3; //+3 offsets grey mobs
 
                 //grey con dont drop loot
-                if (killedcon <= 0)
+                if (killedcon <= -3)
                 {
                     return loot;
                 }
@@ -52,7 +52,7 @@ namespace DOL.GS {
                 }
 
                 // chance to get a RoG Item
-                int chance = BASE_ROG_CHANCE + ((int)killedcon) * 2;
+                int chance = BASE_ROG_CHANCE + ((int)killedcon) * 5;
 
                 int lvl = mob.Level + 1;
                 if (lvl < 1)

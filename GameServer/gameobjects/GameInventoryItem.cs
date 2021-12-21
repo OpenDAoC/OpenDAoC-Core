@@ -1315,7 +1315,7 @@ namespace DOL.GS {
                     list.Add(singleUti + string.Format(
                         " | {0}: {1}{2}",
                         SkillBase.GetPropertyName((eProperty)bonusCat),
-                        bonusValue.ToString("+0 ;-0 ;0 "), //Eden
+                        bonusValue.ToString("0 ;-0 ;0 "), //Eden
                         ((bonusCat == (int)eProperty.PowerPool)
                          || (bonusCat >= (int)eProperty.Resist_First && bonusCat <= (int)eProperty.Resist_Last)
                          || (bonusCat >= (int)eProperty.ResCapBonus_First && bonusCat <= (int)eProperty.ResCapBonus_Last)
