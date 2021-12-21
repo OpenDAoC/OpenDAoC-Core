@@ -524,9 +524,13 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == SirLukas.Name && gArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
 				{
-					RemoveItem(SirLukas, player, FlitzitinaBow);
-					SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot!");
-					Step = 3;
+
+					/*if (ReceiveItem(SirLukas, FlitzitinaBow))
+					{
+						SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot!");
+						Step = 3;
+					}*/
+	
 				}
 			}
 			if (Step == 3 && e == GameLivingEvent.Interact  && e == GamePlayerEvent.GiveItem)
@@ -553,6 +557,34 @@ namespace DOL.GS.Quests.Albion
 
 		}
 
+		public bool ReceiveItem(GameLiving source, InventoryItem item)
+		{
+			if (source == null || item == null) 
+				return false;
+
+			if (!(source is GamePlayer)) 
+				return false;
+
+			var player = (GamePlayer) source;
+
+			switch (item.Id_nb)
+			{
+				case "FlitzitinaBow":
+					// remove the item
+					player.Inventory.RemoveItem(item);
+					Step = 3;
+					break;
+				case "funeral_speech_flitzitina":
+					// remove the item
+					player.Inventory.RemoveItem(item);
+					FinishQuest();
+					break;
+				default:
+					return false;
+			}
+			return true;
+		}
+		
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
