@@ -2782,12 +2782,13 @@ namespace DOL.GS
                 value = Math.Min(value, MaxEndurance);
                 value = Math.Max(value, 0);
                 //If it is already set, don't do anything
-                if (Endurance == value)
-                {
-                    base.Endurance = value; //needed to start regeneration
-                    return;
-                }
-                else if (IsAlive && value < MaxEndurance)
+                //if (Endurance == value)
+                //{
+                //    base.Endurance = value; //needed to start regeneration
+                //    return;
+                //}
+                //else
+                if (IsAlive && value < MaxEndurance)
                     StartEnduranceRegeneration();
                 int oldPercent = EndurancePercent;
                 base.Endurance = value;
