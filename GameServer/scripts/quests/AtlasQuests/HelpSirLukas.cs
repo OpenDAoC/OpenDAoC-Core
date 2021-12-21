@@ -572,13 +572,14 @@ namespace DOL.GS.Quests.Albion
 
 			if (Step == 2 && e == GamePlayerEvent.ReceiveItem || Step == 3 && e == GameLivingEvent.Interact)
 			{
+				/*
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == SirLukas.Name)
-				{
-					GiveItem(m_questPlayer, funeral_speech_scroll);
-					SirLukas.SayTo(player, "We will prepare a dignified funeral for her, please bring this speech to Vetusta Abbey!");
-					Step = 4;
-				}
+				{*/
+				GiveItem(m_questPlayer, funeral_speech_scroll);
+				SirLukas.SayTo(player, "We will prepare a dignified funeral for her, please bring this speech to Vetusta Abbey!");
+				Step = 4;
+				//}
 			}
 
 			if (Step == 4 && e == GameObjectEvent.Interact)
