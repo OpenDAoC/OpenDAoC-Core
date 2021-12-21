@@ -113,7 +113,7 @@ namespace DOL.GS
 			if (Strength < 1)
 				Strength = 1;
 
-			Constitution = NPCTemplate.Constitution;
+			Constitution = Properties.PET_AUTOSET_CON_BASE;
 			if (Constitution < 1)
 				Constitution = 1;
 
