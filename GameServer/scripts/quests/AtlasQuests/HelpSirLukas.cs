@@ -239,6 +239,7 @@ namespace DOL.GS.Quests.Albion
 				if (SAVE_INTO_DATABASE)
 				{
 					GameServer.Database.AddObject(FlitzitinasGrave);
+					HelpSirLukas.FlitzitinasGrave = FlitzitinasGrave;
 				}
 
 			}
@@ -301,29 +302,29 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							SirLukas.SayTo(player, "You will find Ellyn Weyland in the forge of Cotswold, she has something for me, please go and get it for me!");
+							SirLukas.SayTo(player, "You will find Ellyn Weyland in the forge of Cotswold. She says she has something for me, could you please go and see what she's found?");
 							break;
 						case 2:
 							SirLukas.SayTo(player, "Hey "+ player.Name +", good to see you. Do you have Ellyn Weylands [delivery]?");
 							break;
 						case 3:
-							SirLukas.SayTo(player, "Thank you prospective protecter! \n " +
-							                       "Flitzitina is my mother, she was a strong and protective scout, her Bow and Arrows were perfectly crafted. " +
-							                       "Her eyes are like falcon eyes, her shots were precise and i am proud to be the son of such an incredible woman. " +
-							                       "\nThank you for the delivery and I hope we will see you more often in Camelot! \n" +
-							                       "I have one last request, please bring [this speech] to Vetusta Abbey, we will prepare a dignified funeral for her.");
+							SirLukas.SayTo(player, "Thank you prospective protector! \n " +
+							                       "Flitzitina is my mother. She was a strong and protective scout; her bow and arrows perfectly crafted. " +
+							                       "Her eyes were as sharp as a falcon's and she never missed her mark. I am proud to be the son of such an incredible woman. " +
+							                       "\nThank you for returning her bow to me. I have one last request, if you don't mind. " +
+                                                   "\nPlease bring [this speech] to Vetusta Abbey so we may prepare a dignified funeral for her.");
 							break;
 						case 4:
-							SirLukas.SayTo(player, "Hey "+ player.Name +", \nI want you to see the grave of my mother! Please bring the funeral speech to the grave in [Vetusta Abbey].");
+							SirLukas.SayTo(player, player.Name +", \nI will meet you at the grave of my mother. Please bring the funeral speech to the grave in [Vetusta Abbey].");
 							break;
 					}
 				}
 				else
 				{
-					SirLukas.SayTo(player, "Hello "+ player.Name +",I am Sir Lukas and protector of Camelot and Albion. \n"+
+					SirLukas.SayTo(player, "Hello "+ player.Name +", I am Sir Lukas, protector of Camelot and Albion. \n"+
 					                       "I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot. \n"+
-					                       "We are expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. \n" +
-					                       "\nCan you [support Camelot] and get this for us?");
+					                       "I am expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. However I cannot leave my post for many hours.\n" +
+					                       "\nCan you [support Camelot] and get this for me?");
 				}
 			}
 				// The player whispered to the NPC
@@ -345,7 +346,7 @@ namespace DOL.GS.Quests.Albion
 					{
 						case "this speech":
 							GiveItem(player, funeral_speech_scroll);
-							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Now go to [Vetusta Abbey].");
+							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Please go to [Vetusta Abbey].");
 							break;
 						case "Vetusta Abbey":
 							SirLukas.SayTo(player, "Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates!");
@@ -372,7 +373,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (rArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
 					{
-						SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow is clearly sad news for me and Camelot! \n");
+						SirLukas.SayTo(player, "Thank you "+ player.Name +", this bow... marks a terrible loss for our realm.\n");
 						//quest.Step = 3;
 					}
 				}
@@ -398,16 +399,16 @@ namespace DOL.GS.Quests.Albion
 						case 1:
 							EllynWeyland.SayTo(player, "Hello "+ player.Name +",\n" +
 							                           "I have sad news for Sir Lukas. This delivery is very important! " +
-							                           "The bow is from Flitzitina, his mother. \n" +
-							                           "I found it in Pennine Mountains near the merchant routes. \n" +
-							                           "\nPlease get [her bow] and return to Sir Lukas.");
+													   "I found this bow in Pennine Mountains near the merchant routes. \n" +
+													   "It is from Flitzitina... his mother. \n" +							                           
+							                           "\nPlease, take [her bow] and return it to Sir Lukas. It belongs in his care.");
 							break;
 						case 2:
 							EllynWeyland.SayTo(player, "Hey "+ player.Name +",\n did you hand the delivery to Sir Lukas? \nPlease do it, it is very important!");
 							break;
 						case 3:
 							EllynWeyland.SayTo(player, "Hello Adventurer,\n" +
-							                           "I heard you gave Sir Lukas the delivery. I know he will make a handsome grave for his mother!");
+							                           "I heard you gave Sir Lukas the delivery. I know he will honor his mother!");
 							break;
 						case 4:
 							EllynWeyland.SayTo(player, "Vetusta Abbey? I know this place, when I was a child, I played there with some pigs and with my friends.");
@@ -514,10 +515,10 @@ namespace DOL.GS.Quests.Albion
 				if (!SirLukas.GiveQuest(typeof (HelpSirLukas), player, 1))
 					return;
 
-				SirLukas.SayTo(player, "Hello "+ player.Name +",I am Sir Lukas and protector of Camelot and Albion. \n"+
-					"I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot. \n"+
-					"We are expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. \n" +
-					"\nCan you support Camelot and get this for us?");
+				SirLukas.SayTo(player, "Hello " + player.Name + ", I am Sir Lukas, protector of Camelot and Albion. \n" +
+										   "I heard from your " + player.CharacterClass.Name + " Trainer that you are ready to take on tasks from Camelot. \n" +
+										   "I am expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. However I cannot leave my post for many hours.\n" +
+										   "\nCan you [support Camelot] and get this for me?");
 			}
 		}
 
@@ -539,7 +540,7 @@ namespace DOL.GS.Quests.Albion
 					case 2:
 						return "Return to Sir Lukas and give him the bow of Flitzitina!";
 					case 3:
-						return "Speak with Sir Lukas and find out where the grave will be placed!";
+						return "Speak with Sir Lukas and find out where the grave will be placed.";
 					case 4:
 						return "Find Flitzitina\'s Grave in Vetusta Abbey near North Camelot Entrance.";
 				}
@@ -559,11 +560,12 @@ namespace DOL.GS.Quests.Albion
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == EllynWeyland.Name)
 				{
-					EllynWeyland.SayTo(player, "Hello "+ player.Name +", I have sad news for Sir Lukas. \n" +
-					                           "This delivery is very important! The bow is from Flitzitina, his mother. \n" +
-					                           "I found it in Pennine Mountains near the merchant routes. \n" +
-					                           "Please get this and go back to him.");
-					
+					EllynWeyland.SayTo(player, "Hello " + player.Name + ",\n" +
+													   "I have sad news for Sir Lukas. This delivery is very important! " +
+													   "I found this bow in Pennine Mountains near the merchant routes. \n" +
+													   "It is from Flitzitina... his mother. \n" +
+													   "\nPlease, take [her bow] and return it to Sir Lukas. It belongs in his care.");
+
 					GiveItem(m_questPlayer, FlitzitinaBow);
 					Step = 2;
 					return;
@@ -607,7 +609,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				SirLukas.SayTo(m_questPlayer, "Thank you once again, knowing that you helped preserve the Albion heroine's history!");
+				SirLukas.SayTo(m_questPlayer, "Thank you once again, knowing that you helped preserve this Albion heroine's history!");
 
 				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You recieve {0} as a reward.");		
