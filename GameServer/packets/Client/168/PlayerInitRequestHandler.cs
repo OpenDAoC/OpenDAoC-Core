@@ -70,6 +70,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (player.CurrentRegion != null)
 				{
 					player.CurrentRegion.Notify(RegionEvent.PlayerEnter, player.CurrentRegion, new RegionPlayerEventArgs(player));
+					player.Out.SendPlayerRevive(player);
 				}
 
 				int mobs = SendMobsAndMobEquipmentToPlayer(player);

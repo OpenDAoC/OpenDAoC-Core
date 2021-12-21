@@ -1804,9 +1804,6 @@ namespace DOL.GS
 
             int oldRegion = CurrentRegionID;
 
-            //KN - Adding this call to see if the packet being sent before a load screen helps the dead on release issue
-            Out.SendPlayerRevive(this);
-
             //Call MoveTo after new GameGravestone(this...
             //or the GraveStone will be located at the player's bindpoint
 
