@@ -326,6 +326,18 @@ namespace DOL.GS.Quests.Albion
 					}
 				}
 			}
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+				{
+					if (rArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
+					{
+						SirLukas.SayTo(player, "Thank you for bringing this to me, I will be sure to give you a reward for your efforts.");
+						quest.FinishQuest();
+					}
+				}
+			}
 		}
 		
 		protected static void TalkToEllynWeyland(DOLEvent e, object sender, EventArgs args)
