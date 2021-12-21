@@ -5185,16 +5185,22 @@ namespace DOL.GS
                         double campPercent = ((double)expCampBonus / (baseXP)) * 100.0;
                         double groupPercent = ((double)expGroupBonus / (expTotal-expGroupBonus)) * 100.0;
                         double outpostPercent = ((double)expOutpostBonus / (expTotal-expOutpostBonus)) * 100.0;
+                        double levelPercent = ((double)(Experience + expTotal - ExperienceForCurrentLevel) / (ExperienceForNextLevel - ExperienceForCurrentLevel)) * 100;
 
-                        Out.SendMessage($"Atlas: {soloBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage($"Camp: {expCampBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        if(soloBonus > 0)
+                            Out.SendMessage($"Atlas: {soloBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                        if(expCampBonus > 0)
+                            Out.SendMessage($"Camp: {expCampBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
                         if(Group != null)
                             Out.SendMessage($"Group: {expGroupBonus.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
                         if(expOutpostBonus > 0)
                             Out.SendMessage($"Output: {expOutpostBonus.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage($"Total Bonus: {((double)((soloBonus + expCampBonus + expGroupBonus) / baseXP) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                        Out.SendMessage($"XP needed: {ExperienceForNextLevel.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage($"Total Bonus: {((double)((soloBonus + expCampBonus + expGroupBonus) / baseXP) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage($"XP needed: {ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         Out.SendMessage($"# of kills needed to level at this rate: {(ExperienceForNextLevel - Experience) / expTotal}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         
                     }                    
