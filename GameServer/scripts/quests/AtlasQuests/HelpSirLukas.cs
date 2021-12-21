@@ -266,12 +266,7 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							SirLukas.SayTo(player, "Hello "+ player.Name +",I am Sir Lukas and protector of Camelot and Albion.\n"+
-							                       "I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot.\n"+
-							                       "We are expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up.\n" +
-							                       "\nCan you [support Camelot] and get this for us?");
-							//SirLukas.SayTo(player, "Ellyn Weyland, an armor merchant, has a delivery for Camelot which is very important!\n" +
-							//                       "Find her in the forge of Cotswold, get the delivery and return to me.");
+							SirLukas.SayTo(player, "You will find Ellyn Weyland in the forge of Cotswold, she has something for me, please go and get it for me!");
 							break;
 						case 2:
 							SirLukas.SayTo(player, "Hey "+ player.Name +", good to see you. Do you have Ellyn Weylands [delivery]?");
