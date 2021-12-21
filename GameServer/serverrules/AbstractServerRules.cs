@@ -1815,18 +1815,20 @@ namespace DOL.GS.ServerRules
                 }
 
 				//distribute ROGs
-				if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
-				{
-                    foreach (var player in playersToAward)
+
+                foreach (var player in playersToAward)
+                {
+	                if (player.Level < 35) continue;
+                    AtlasROGManager.GenerateOrbs(player);
+                    if (Properties.EVENT_THIDRANKI || Properties.EVENT_TUTORIAL)
                     {
-	                    AtlasROGManager.GenerateOrbs(player);
 	                    if (!player.ReceiveROG) continue;
 	                    //Console.WriteLine($"Generating ROG for {player}");
 	                    AtlasROGManager.GenerateROG(player, true);
                     }
-				}
+                }
 
-				if (ServerProperties.Properties.LOG_PVP_KILLS && playerKillers.Count > 0)
+                if (ServerProperties.Properties.LOG_PVP_KILLS && playerKillers.Count > 0)
 				{
 					try
 					{
