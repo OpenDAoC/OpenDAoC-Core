@@ -81,7 +81,7 @@ namespace DOL.GS.PropertyCalc
 				int hp = 1;
 				if (theu.Level < 10)
 				{
-					hp += theu.Level * 2;
+					hp += theu.Constitution + theu.Level * 2;
 				} else
 				{
 					hp = theu.Constitution * theu.Level * 10 / 44;
