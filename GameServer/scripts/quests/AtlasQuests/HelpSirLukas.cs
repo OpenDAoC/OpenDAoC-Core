@@ -333,7 +333,6 @@ namespace DOL.GS.Quests.Albion
 					if (rArgs.Item.Id_nb == FlitzitinaBow.Id_nb)
 					{
 						SirLukas.SayTo(player, "Thank you for bringing this to me, I will be sure to give you a reward for your efforts.");
-						quest.FinishQuest();
 					}
 				}
 			}
@@ -568,34 +567,6 @@ namespace DOL.GS.Quests.Albion
 
 		}
 
-		public bool ReceiveItem(GameLiving source, InventoryItem item)
-		{
-			if (source == null || item == null) 
-				return false;
-
-			if (!(source is GamePlayer)) 
-				return false;
-
-			var player = (GamePlayer) source;
-
-			switch (item.Id_nb)
-			{
-				case "FlitzitinaBow":
-					// remove the item
-					player.Inventory.RemoveItem(item);
-					Step = 3;
-					break;
-				case "funeral_speech_flitzitina":
-					// remove the item
-					player.Inventory.RemoveItem(item);
-					FinishQuest();
-					break;
-				default:
-					return false;
-			}
-			return true;
-		}
-		
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
