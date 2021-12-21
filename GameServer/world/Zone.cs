@@ -389,6 +389,36 @@ namespace DOL.GS
 				}
 			}
 		}
+		
+		public bool IsRvR
+		{
+			get
+			{
+				switch (m_ID)
+				{
+					case 11://forest sauvage
+					case 12://snowdonia
+					case 14://pennine mountains
+					case 15://hadrian's wall
+					case 111://uppland
+					case 112://yggdra forest
+					case 113://jamtland mountains
+					case 115://odin's gate
+					case 210://mount collory
+					case 211://cruachan gorge
+					case 212://breifine
+					case 214://emain macha
+					case 250://caledonia
+					case 251://murdaigean
+					case 252://thidranki
+					case 253://abermenai
+					case 249://darkness falls
+						return true;
+					default:
+						return false;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Returns the region of this zone
