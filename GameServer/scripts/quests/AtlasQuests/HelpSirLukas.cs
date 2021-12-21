@@ -555,15 +555,14 @@ namespace DOL.GS.Quests.Albion
 				}
 			}
 
-			/*if (Step == 4 && e = GameObjectEvent.Interact)
+			if (Step == 4 && e == GameObjectEvent.Interact)
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Equals(FlitzitinaGrave))
 				{
-					RemoveItem(FlitzitinaGrave, player, funeral_speech_scroll);
 					FinishQuest();
 				}
-			}*/
+			}
 
 		}
 
