@@ -81,6 +81,9 @@ namespace DOL.GS.Scripts
         public override bool Interact(GamePlayer player) // What to do when a player clicks on me
         {
             if (!base.Interact(player)) return false;
+
+            if (player.Realm != this.Realm) return false;
+
             switch (Realm)
             {
                 case eRealm.Albion:
