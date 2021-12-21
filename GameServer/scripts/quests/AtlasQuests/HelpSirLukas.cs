@@ -45,7 +45,7 @@ namespace DOL.GS.Quests.Albion
 
 		private static WorldObject FlitzitinasGrave = null;
 
-		private IList<WorldObject> GetItems()
+		private static IList<WorldObject> GetItems()
 		{
 			string FlitzitinaGrave = "Name = 'Flitzitina\'s Grave'";
 			
@@ -222,12 +222,12 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineObject
 
-			FlitzitinasGrave = GameServer.Database.FindObjectByKey<WorldObject>("Name = 'Flitzitina\'s Grave'");
-			if (FlitzitinasGrave == null)
+			var graveCheck = GetItems();
+			if (graveCheck.Count == 0)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Flitzitinas Grave, creating it ...");
-				FlitzitinasGrave = new WorldObject();
+				var FlitzitinasGrave = new WorldObject();
 				FlitzitinasGrave.Name = "Flitzitina\'s Grave";
 				FlitzitinasGrave.X = 505153;
 				FlitzitinasGrave.Y = 496310;
