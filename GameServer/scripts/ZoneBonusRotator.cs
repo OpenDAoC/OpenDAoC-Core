@@ -434,12 +434,18 @@ namespace DOL.GS.Scripts
             GameServer.Database.SaveObject(hibDBZone);
             GameServer.Database.SaveObject(midDBZoneSI);
 
+            foreach (var zone in WorldMgr.Zones.Values)
+            {
+                zone.BonusExperience = 0;
+            }
+            /*
             WorldMgr.Zones[(ushort)albionClassicZones[currentAlbionZone]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)albionSIZones[currentAlbionZoneSI]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)midgardClassicZones[currentMidgardZone]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)midgardSIZones[currentMidgardZoneSI]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)hiberniaClassicZones[currentHiberniaZone]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)hiberniaSIZones[currentHiberniaZoneSI]].BonusExperience = 0;
+            */
         }
     }
 }
