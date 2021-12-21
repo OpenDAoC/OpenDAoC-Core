@@ -308,7 +308,7 @@ namespace DOL.GS.Quests.Albion
 							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Now go to [Vetusta Abbey].");
 							break;
 						case "support Camelot":
-							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you face Kelic [Mystic Level 50 Epic]?");
+							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you help Sir Lukas [[Memorial] All in the Gold]?");
 							break;
 					}
 				}
