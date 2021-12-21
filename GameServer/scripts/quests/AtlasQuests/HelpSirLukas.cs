@@ -278,6 +278,9 @@ namespace DOL.GS.Quests.Albion
 							                       "\nThank you for the delivery and I hope we will see you more often in Camelot! \n" +
 							                       "I have one last request, please bring [this speech] to Vetusta Abbey, we will prepare a dignified funeral for her.");
 							break;
+						case 4:
+							SirLukas.SayTo(player, "Hey "+ player.Name +", \nI want you to see the grave of my mother! Please bring the funeral speech to the grave in Vetusta Abbey.");
+							break;
 					}
 				}
 				else
@@ -296,11 +299,6 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						
-						case "this speech":
-							GiveItem(player, funeral_speech_scroll);
-							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Now go to [Vetusta Abbey].");
-							break;
 						case "support Camelot":
 							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you help Sir Lukas [Memorial] All in the Gold]?");
 							break;
@@ -310,6 +308,10 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
+						case "this speech":
+							GiveItem(player, funeral_speech_scroll);
+							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Now go to [Vetusta Abbey].");
+							break;
 						case "Vetusta Abbey":
 							SirLukas.SayTo(player, "Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates!");
 							quest.Step = 4;
@@ -357,13 +359,13 @@ namespace DOL.GS.Quests.Albion
 					{
 						case 1:
 							EllynWeyland.SayTo(player, "Hello "+ player.Name +",\n" +
-							                           "I have sad news for Sir Lukas. This delivery is very important!" +
+							                           "I have sad news for Sir Lukas. This delivery is very important! " +
 							                           "The bow is from Flitzitina, his mother. \n" +
 							                           "I found it in Pennine Mountains near the merchant routes. \n" +
-							                           "Please get [her bow] and return to Sir Lukas.");
+							                           "\nPlease get [her bow] and return to Sir Lukas.");
 							break;
 						case 2:
-							EllynWeyland.SayTo(player, "Hey "+ player.Name +",\n did you hand the delivery to Sir Lukas? Please do it, it is very important!");
+							EllynWeyland.SayTo(player, "Hey "+ player.Name +",\n did you hand the delivery to Sir Lukas? \nPlease do it, it is very important!");
 							break;
 						case 3:
 							EllynWeyland.SayTo(player, "Hello Adventurer,\n" +
@@ -539,7 +541,7 @@ namespace DOL.GS.Quests.Albion
 					Step = 3;
 				//}
 			}
-			if (Step == 3 && e == GameLivingEvent.Interact  && e == GamePlayerEvent.GiveItem)
+			if (Step == 3 && e == GameLivingEvent.Interact)
 			{
 				
 				InteractEventArgs gArgs = (InteractEventArgs) args;
@@ -575,7 +577,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				SirLukas.SayTo(m_questPlayer, "Thank you once again, knowing that you helped preserve the Albion heroine's story!");
+				SirLukas.SayTo(m_questPlayer, "Thank you once again, knowing that you helped preserve the Albion heroine's history!");
 
 				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You recieve {0} as a reward.");		
