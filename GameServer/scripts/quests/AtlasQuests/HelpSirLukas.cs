@@ -215,6 +215,9 @@ namespace DOL.GS.Quests.Albion
 
 			GameEventMgr.AddHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToSirLukas));
 			GameEventMgr.AddHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSirLukas));
+			
+			GameEventMgr.AddHandler(EllynWeyland, GameObjectEvent.Interact, new DOLEventHandler(TalkToEllynWeyland));
+			GameEventMgr.AddHandler(EllynWeyland, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToEllynWeyland));
 
 			/* Now we bring to Sir Lukas the possibility to give this quest to players */
 			SirLukas.AddQuestToGive(typeof (HelpSirLukas));
@@ -235,6 +238,9 @@ namespace DOL.GS.Quests.Albion
 
 			GameEventMgr.RemoveHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToSirLukas));
 			GameEventMgr.RemoveHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSirLukas));
+			
+			GameEventMgr.RemoveHandler(EllynWeyland, GameObjectEvent.Interact, new DOLEventHandler(TalkToEllynWeyland));
+			GameEventMgr.RemoveHandler(EllynWeyland, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToEllynWeyland));
 
 			/* Now we remove to Sir Lukas the possibility to give this quest to players */
 			SirLukas.RemoveQuestToGive(typeof (HelpSirLukas));
