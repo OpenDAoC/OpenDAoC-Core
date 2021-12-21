@@ -177,14 +177,15 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Elizabeth , creating it ...");
-				Elizabeth = new GameNPC();
+				Elizabeth = new Enchanter();
 				Elizabeth.Model = 217;
+				Elizabeth.GuildName = "Enchanter";
 				Elizabeth.Name = "Elizabeth";
 				Elizabeth.Realm = eRealm.Midgard;
 				Elizabeth.CurrentRegionID = 100;
-				Elizabeth.EquipmentTemplateID = "Elizabeth";
+				Elizabeth.LoadEquipmentTemplateFromDatabase("Elizabeth");
 				Elizabeth.Size = 51;
-				Elizabeth.Level = 41;
+				Elizabeth.Level = 17;
 				Elizabeth.X = 802808;
 				Elizabeth.Y = 727114;
 				Elizabeth.Z = 4696;
