@@ -275,7 +275,6 @@ namespace DOL.GS.Quests.Albion
 							break;
 						case 2:
 							SirLukas.SayTo(player, "Hey "+ player.Name +", good to see you. Do you have Ellyn Weylands [delivery]?");
-							quest.Step = 3;
 							break;
 						case 3:
 							SirLukas.SayTo(player, "Thank you prospective protecter!\n " +
@@ -300,14 +299,10 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "delivery":
-							SirLukas.SayTo(player, "Fantastic, please hand it to me!");
-							//SirLukas.ReceiveItem(flitzitina_bow);
-							//quest.Step = 3;
-							break;
+						
 						case "this speech":
-							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me!");
-							//player.ReceiveItem(player, funeral_speech_scroll);
+							GiveItem(player, funeral_speech_scroll);
+							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Now go to [Vetusta Abbey].");
 							break;
 						case "support Camelot":
 							player.Out.SendQuestSubscribeCommand(SirLukas, QuestMgr.GetIDForQuestType(typeof(HelpSirLukas)), "Will you face Kelic [Mystic Level 50 Epic]?");
@@ -318,6 +313,15 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
+						case "Vetusta Abbey":
+							SirLukas.SayTo(player, "Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates!");
+							quest.Step = 4;
+							break;
+						case "delivery":
+							SirLukas.SayTo(player, "Fantastic, please hand it to me!");
+							RemoveItem(player, FlitzitinaBow);
+							quest.Step = 3;
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
