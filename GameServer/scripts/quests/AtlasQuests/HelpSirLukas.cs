@@ -508,9 +508,9 @@ namespace DOL.GS.Quests.Albion
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == EllynWeyland.Name)
 				{
-					EllynWeyland.SayTo(player, "Hello "+ player.Name +", I have sad news for Sir Lukas.\n" +
-					                           "This delivery is very important! The bow is from Flitzitina, his mother.\n" +
-					                           "I found it in Pennine Mountains near the merchant routes.\n" +
+					EllynWeyland.SayTo(player, "Hello "+ player.Name +", I have sad news for Sir Lukas. \n" +
+					                           "This delivery is very important! The bow is from Flitzitina, his mother. \n" +
+					                           "I found it in Pennine Mountains near the merchant routes. \n" +
 					                           "Please get this and go back to him.");
 					
 					GiveItem(m_questPlayer, FlitzitinaBow);
@@ -529,7 +529,7 @@ namespace DOL.GS.Quests.Albion
 					Step = 3;
 				}
 			}
-			if (Step == 3 && e == GameLivingEvent.Interact)
+			if (Step == 3 && e == GameLivingEvent.Interact  && e == GamePlayerEvent.GiveItem)
 			{
 				
 				InteractEventArgs gArgs = (InteractEventArgs) args;
