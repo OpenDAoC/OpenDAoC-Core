@@ -319,6 +319,71 @@ namespace DOL.GS.Quests.Albion
 				}
 			}
 		}
+		
+		protected static void TalkToEllynWeyland(DOLEvent e, object sender, EventArgs args)
+		{
+			//We get the player from the event arguments and check if he qualifies		
+			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+			if (player == null)
+				return;
+
+			//We also check if the player is already doing the quest
+			HelpSirLukas quest = player.IsDoingQuest(typeof (HelpSirLukas)) as HelpSirLukas;
+
+			if (e == GameObjectEvent.Interact)
+			{
+				if (quest != null)
+				{
+					switch (quest.Step)
+					{
+						case 1:
+							EllynWeyland.SayTo(player, "Hello "+ player.Name +",\n" +
+							                           "I have sad news for Sir Lukas. This delivery is very important!" +
+							                           "The bow is from Flitzitina, his mother.\n" +
+							                           "I found it in Pennine Mountains near the merchant routes.\n" +
+							                           "Please get [her bow] and return to Sir Lukas.");
+							break;
+						case 2:
+							EllynWeyland.SayTo(player, "Hey "+ player.Name +",\n did you hand the delivery to Sir Lukas? Please do it, it is very important!");
+							break;
+						case 3:
+							EllynWeyland.SayTo(player, "Hello Adventurer,\n" +
+							                           "I heard you gave Sir Lukas the delivery. I know he will make a handsome grave for his mother!");
+							break;
+						case 4:
+							EllynWeyland.SayTo(player, "Vetusta Abbey? I know this place, when I was a child, I played there with some pigs and with some friends.");
+							break;
+					}
+				}
+				else
+				{
+					EllynWeyland.SayTo(player, "Hello Adventurer,\nI sell many armor pieces, maybe you find something for your use.");
+				}
+			}
+				// The player whispered to the NPC
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				if (quest == null)
+				{
+					switch (wArgs.Text)
+					{
+						
+					}
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+						case "her bow":
+							EllynWeyland.SayTo(player, "Here is the bow, thank you for helping Camelot!");
+							GiveItem(player, FlitzitinaBow);
+							quest.Step = 2;
+							break;
+					}
+				}
+			}
+		}
 
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
