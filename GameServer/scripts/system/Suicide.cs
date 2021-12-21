@@ -42,10 +42,14 @@ namespace DOL.GS.Commands
             {
                 DisplayMessage(client, "You can't kill yourself while in combat!");
                 return;
+            } else if (client.Player.CurrentZone.IsRvR)
+            {
+                DisplayMessage(client, "There are other ways to die in the Frontiers.");
+                return;
             }
             else if (!client.Player.IsAlive)
             {
-                DisplayMessage(client, "You're already dead!");
+                DisplayMessage(client, "You are already dead!");
                 return;
             }
             else
