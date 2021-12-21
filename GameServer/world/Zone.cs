@@ -408,11 +408,16 @@ namespace DOL.GS
 					case 211://cruachan gorge
 					case 212://breifine
 					case 214://emain macha
+					case 233://summoner's hall
+					case 244://passage of conflict
+					case 246://dodens gruva
 					case 250://caledonia
 					case 251://murdaigean
 					case 252://thidranki
 					case 253://abermenai
 					case 249://darkness falls
+					case 276://marfach caverns
+					case 277://hall of the corrupt
 						return true;
 					default:
 						return false;
