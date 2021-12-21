@@ -47,7 +47,7 @@ namespace DOL.GS.Quests.Albion
 
 		private static IList<WorldObject> GetItems()
 		{
-			string FlitzitinaGrave = "Name LIKE 'Flitzitina\\'s Grave'";
+			string FlitzitinaGrave = "Name = \"Flitzitina\'s Grave\"";
 			
 			return (GameServer.Database.SelectObjects<WorldObject>(FlitzitinaGrave));
 		}
