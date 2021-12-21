@@ -484,13 +484,13 @@ namespace DOL.GS.Quests.Albion
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Find Ellyn Weyland in Cotswold inside the forge and get the delivery.";
+						return "Find Ellyn Weyland in Cotswold inside the forge and get the delivery.";
 					case 2:
-						return "[Step #2] Return to Sir Lukas and give him the bow of Flitzitina!";
+						return "Return to Sir Lukas and give him the bow of Flitzitina!";
 					case 3:
-						return "[Step #3] Speak with Sir Lukas and find out where the grave will be placed!";
+						return "Speak with Sir Lukas and find out where the grave will be placed!";
 					case 4:
-						return "[Step #4] Find Flitzitina\'s Grave in Vetusta Abbey near North Camelot Entrance.";
+						return "Find Flitzitina\'s Grave in Vetusta Abbey near North Camelot Entrance.";
 				}
 				return base.Description;
 			}
