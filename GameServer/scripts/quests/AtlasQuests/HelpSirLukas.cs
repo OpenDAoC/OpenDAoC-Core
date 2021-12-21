@@ -47,7 +47,7 @@ namespace DOL.GS.Quests.Albion
 
 		private static IList<WorldObject> GetItems()
 		{
-			string FlitzitinaGrave = "Name = 'Flitzitina\'s Grave'";
+			string FlitzitinaGrave = "Name = \"Flitzitina\'s Grave\"";
 			
 			return (GameServer.Database.SelectObjects<WorldObject>(FlitzitinaGrave));
 		}
@@ -589,7 +589,7 @@ namespace DOL.GS.Quests.Albion
 			if (Step == 4 && e == GameObjectEvent.Interact)
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == "Flitzitina\'s Grave")
+				if (gArgs.Source.Name == FlitzitinasGrave.Name)
 				{
 					RemoveItem(player, funeral_speech_scroll);
 					FinishQuest();
