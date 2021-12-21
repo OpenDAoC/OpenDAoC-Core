@@ -277,7 +277,6 @@ namespace DOL.GS.Quests.Albion
 							                       "Her eyes are like falcon eyes, her shots were precise and i am proud to be the son of such an incredible woman. " +
 							                       "\nThank you for the delivery and I hope we will see you more often in Camelot! \n" +
 							                       "I have one last request, please bring [this speech] to Vetusta Abbey, we will prepare a dignified funeral for her.");
-							quest.Step = 4;
 							break;
 					}
 				}
