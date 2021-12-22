@@ -41,11 +41,13 @@ namespace DOL.GS
             {
                 if (SpellHandler is DoTSpellHandler handler)
                 {
-                    // An acidic cloud surrounds you!
-                    handler.MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                    // {0} is surrounded by an acidic cloud!
-                    Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
-
+                    if (OwnerPlayer != null)
+                    {
+                        // An acidic cloud surrounds you!
+                        handler.MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
+                        // {0} is surrounded by an acidic cloud!
+                        Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
+                    }
                     handler.OnDirectEffect(Owner, Effectiveness, true);
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
@@ -54,7 +56,8 @@ namespace DOL.GS
                     if (Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed)
                         && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) > bleedHandler.Spell.Damage)
                     {
-                        bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", eChatType.CT_SpellResisted);
+                        if (OwnerPlayer != null)
+                            bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", eChatType.CT_SpellResisted);
                         EffectService.RequestCancelEffect(this);
                         return;
                     }
@@ -64,8 +67,11 @@ namespace DOL.GS
                         Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage); 
                     }
 
-                    bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
-                    Message.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
+                    if (OwnerPlayer != null)
+                    {
+                        bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
+                        Message.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
+                    }
 
                     int bleedValue = Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
 

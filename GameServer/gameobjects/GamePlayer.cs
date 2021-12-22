@@ -57,6 +57,12 @@ namespace DOL.GS
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly object m_LockObject = new object();
+        public int Regen { get; set; }
+        public int Endchant { get; set; }
+        public long LastEnduTick { get; set; }
+        public int RegenRateAtChange { get; set; }
+
+        public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
 
         #region Client/Character/VariousFlags
 
@@ -2552,6 +2558,8 @@ namespace DOL.GS
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
 
+            LastEnduTick = GameLoop.GameLoopTime;
+
             bool sprinting = IsSprinting;
 
             if (Endurance < MaxEndurance || sprinting)
@@ -2559,6 +2567,9 @@ namespace DOL.GS
                 int regen = GetModified(eProperty.EnduranceRegenerationRate);  //default is 1
                 int endchant = GetModified(eProperty.FatigueConsumption);      //Pull chant/buff value
                 var charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
+
+                Regen = regen;
+                Endchant = endchant;
 
                 int longwind = 5;
                 if (sprinting && IsMoving)
@@ -2585,7 +2596,7 @@ namespace DOL.GS
                         }
                     }
                 }
-
+                RegenRateAtChange = regen;
                 if (regen != 0)
                 {
                     ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);

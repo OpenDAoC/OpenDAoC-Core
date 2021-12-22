@@ -332,7 +332,14 @@ namespace DOL.GS.Commands
 				if (client.Player.TargetObject is GamePlayer)
 				{
 					var target = client.Player.TargetObject as GamePlayer;
-										
+
+					info.Add("ENDURANCE INFORMANTION");
+					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
+					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
+					info.Add("Last Regen amount: " + target.Regen);
+					info.Add("Last EndChant amount (FatigueConsumption): " + target.Endchant + "%");
+					info.Add("Last Regen at change: " + target.RegenRateAtChange);
+					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);
 					info.Add("  - Lastname : " + target.LastName);
