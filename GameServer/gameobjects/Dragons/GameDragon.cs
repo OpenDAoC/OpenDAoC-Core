@@ -76,7 +76,8 @@ namespace DOL.GS
 			m_deathAnnounce = new String[] { "The earth lurches beneath your feet as {0} staggers and topples to the ground.",
 				"A glowing light begins to form on the mound that served as {0}'s lair." };
 
-			TetherRange = 2500;	// TODO: Can be removed once there is an NPCTemplate.
+			TetherRange = 2500; // TODO: Can be removed once there is an NPCTemplate.
+			ScalingFactor = 70;
 		}
 
 		public ushort LairRadius
