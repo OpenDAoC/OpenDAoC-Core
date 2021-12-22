@@ -68,7 +68,7 @@ namespace DOL.GS {
         public const ushort ROG_TOA_STAT_CHANCE = 0;
 
         // Item chance to get stat bonus
-        public const ushort ROG_ITEM_STAT_CHANCE = 55;
+        public const ushort ROG_ITEM_STAT_CHANCE = 50;
 
         // Item chance to get resist bonus
         public const ushort ROG_ITEM_RESIST_CHANCE = 45;
@@ -4056,7 +4056,7 @@ namespace DOL.GS {
                     }
                 case eBonusType.Skill:
                     {
-                        int max = (int)Util.Random(1, 5);
+                        int max = (int)Util.Random(1, 4);
                         if (property == eProperty.AllSkills ||
                             property == eProperty.AllMagicSkills ||
                             property == eProperty.AllDualWieldingSkills ||
