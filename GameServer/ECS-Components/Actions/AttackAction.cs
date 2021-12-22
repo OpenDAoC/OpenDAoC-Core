@@ -117,11 +117,13 @@ namespace DOL.GS
                     {
                         case eRangedAttackType.Critical:
                             {
-                                effectiveness *= 2 - 0.3 * owner.GetConLevel(attackTarget);
-                                if (effectiveness > 2)
+                                var tmpEffectiveness = 2 - 0.3 * owner.GetConLevel(attackTarget);
+                                if (tmpEffectiveness > 2)
                                     effectiveness *= 2;
-                                else if (effectiveness < 1.1)
+                                else if (tmpEffectiveness < 1.1)
                                     effectiveness *= 1.1;
+                                else
+                                    effectiveness *= tmpEffectiveness;
                             }
                             break;
 
