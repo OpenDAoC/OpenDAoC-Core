@@ -322,8 +322,8 @@ namespace DOL.GS.Quests.Albion
 				}
 				else
 				{
-					SirLukas.SayTo(player, "Hello "+ player.Name +", I am Sir Lukas, protector of Camelot and Albion. \n"+
-					                       "I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot. \n"+
+					SirLukas.SayTo(player, "Hello "+ player.Name +", I am Sir Lukas, protector of Camelot and Albion. "+
+					                       "I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot. \n\n"+
 					                       "I am expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. However I cannot leave my post for many hours.\n" +
 					                       "\nCan you [support Camelot] and get this for me?");
 				}
@@ -360,6 +360,7 @@ namespace DOL.GS.Quests.Albion
 							SirLukas.SayTo(player, "Fantastic, please hand it to me!");
 							RemoveItem(player, FlitzitinaBow);
 							quest.Step = 3;
+							SirLukas.Interact(player);
 							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
@@ -398,7 +399,7 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							EllynWeyland.SayTo(player, "Hello "+ player.Name +",\n" +
+							EllynWeyland.SayTo(player, "Hello "+ player.Name +", " +
 							                           "I have sad news for Sir Lukas." +
 													   " I found this bow in Pennine Mountains near the merchant routes. \n" +
 													   "It is from Flitzitina... his mother. \n" +							                           
@@ -437,7 +438,7 @@ namespace DOL.GS.Quests.Albion
 					switch (wArgs.Text)
 					{
 						case "her bow":
-							EllynWeyland.SayTo(player, "Here is the bow, thank you for helping Camelot!");
+							EllynWeyland.SayTo(player, "Here is the bow, thank you for doing this.");
 							GiveItem(player, FlitzitinaBow);
 							quest.Step = 2;
 							break;
