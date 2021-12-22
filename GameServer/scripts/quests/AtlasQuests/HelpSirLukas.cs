@@ -475,8 +475,11 @@ namespace DOL.GS.Quests.Albion
 					{
 						case "her bow":
 							EllynWeyland.SayTo(player, "Here is the bow, thank you for doing this.");
-							GiveItem(player, FlitzitinaBow);
-							quest.Step = 2;
+							if (quest.Step == 1)
+							{
+								quest.Step = 2;
+								GiveItem(player, FlitzitinaBow);
+							}
 							break;
 					}
 				}
