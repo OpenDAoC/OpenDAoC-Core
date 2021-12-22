@@ -308,10 +308,11 @@ namespace DOL.GS.Quests.Albion
 							SirLukas.SayTo(player, "Hey "+ player.Name +", good to see you. Do you have Ellyn Weylands [delivery]?");
 							break;
 						case 3:
-							SirLukas.SayTo(player, "Thank you prospective protector! \n " +
-							                       "Flitzitina is my mother. She was a strong and protective scout; her bow and arrows perfectly crafted. " +
-							                       "Her eyes were as sharp as a falcon's and she never missed her mark. I am proud to be the son of such an incredible woman. " +
-							                       "\nThank you for returning her bow to me. I have one last request, if you don't mind. " +
+							SirLukas.Emote(eEmote.No);
+							SirLukas.SayTo(player, "Thank you, " + player.Name + ". This bow... marks a terrible loss for our realm." +
+												   "\n\nFlitzitina is my mother. She was a strong and protective scout; her bow and arrows perfectly crafted. " +
+							                       "Her eyes were as sharp as a falcon's and she never missed her mark. I am proud to be the son of such an incredible woman." +
+							                       "\n\nThank you for returning her bow to me. I have one last request, if you don't mind. " +
                                                    "\nPlease bring [this speech] to Vetusta Abbey so we may prepare a dignified funeral for her.");
 							break;
 						case 4:
@@ -346,7 +347,7 @@ namespace DOL.GS.Quests.Albion
 					{
 						case "this speech":
 							GiveItem(player, funeral_speech_scroll);
-							SirLukas.SayTo(player, "Thank you "+ player.Name +", that means a lot for me! Please go to [Vetusta Abbey].");
+							SirLukas.SayTo(player, "Thank you "+ player.Name +", I need some time to collect my thoughts. Please go to [Vetusta Abbey] and I will meet you there.");
 							break;
 						case "Vetusta Abbey":
 							SirLukas.SayTo(player, "Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates!");
@@ -398,10 +399,10 @@ namespace DOL.GS.Quests.Albion
 					{
 						case 1:
 							EllynWeyland.SayTo(player, "Hello "+ player.Name +",\n" +
-							                           "I have sad news for Sir Lukas. This delivery is very important! " +
-													   "I found this bow in Pennine Mountains near the merchant routes. \n" +
+							                           "I have sad news for Sir Lukas." +
+													   " I found this bow in Pennine Mountains near the merchant routes. \n" +
 													   "It is from Flitzitina... his mother. \n" +							                           
-							                           "\nPlease, take [her bow] and return it to Sir Lukas. It belongs in his care.");
+							                           "\nPlease, take [her bow] and return it to Sir Lukas. This delivery is very important, it belongs in his care.");
 							break;
 						case 2:
 							EllynWeyland.SayTo(player, "Hey "+ player.Name +",\n did you hand the delivery to Sir Lukas? \nPlease do it, it is very important!");
@@ -515,8 +516,8 @@ namespace DOL.GS.Quests.Albion
 				if (!SirLukas.GiveQuest(typeof (HelpSirLukas), player, 1))
 					return;
 
-				SirLukas.SayTo(player, "Hello " + player.Name + ", I am Sir Lukas, protector of Camelot and Albion. \n" +
-										   "I heard from your " + player.CharacterClass.Name + " Trainer that you are ready to take on tasks from Camelot. \n" +
+				SirLukas.SayTo(player, "Hello " + player.Name + ", I am Sir Lukas, protector of Camelot and Albion. " +
+										   "I heard from your " + player.CharacterClass.Name + " Trainer that you are ready to take on tasks from Camelot. \n\n\n" +
 										   "I am expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. However I cannot leave my post for many hours.\n" +
 										   "\nCan you [support Camelot] and get this for me?");
 			}
@@ -561,10 +562,10 @@ namespace DOL.GS.Quests.Albion
 				if (gArgs.Source.Name == EllynWeyland.Name)
 				{
 					EllynWeyland.SayTo(player, "Hello " + player.Name + ",\n" +
-													   "I have sad news for Sir Lukas. This delivery is very important! " +
-													   "I found this bow in Pennine Mountains near the merchant routes. \n" +
+													   "I have sad news for Sir Lukas." +
+													   " I found this bow in Pennine Mountains near the merchant routes. \n" +
 													   "It is from Flitzitina... his mother. \n" +
-													   "\nPlease, take [her bow] and return it to Sir Lukas. It belongs in his care.");
+													   "\nPlease, take [her bow] and return it to Sir Lukas. This delivery is very important, it belongs in his care.");
 
 					GiveItem(m_questPlayer, FlitzitinaBow);
 					Step = 2;
@@ -579,15 +580,15 @@ namespace DOL.GS.Quests.Albion
 				if (gArgs.Source.Name == SirLukas.Name)
 				{*/
 				GiveItem(m_questPlayer, funeral_speech_scroll);
-				SirLukas.SayTo(player, "We will prepare a dignified funeral for her, please bring this speech to Vetusta Abbey!");
+				SirLukas.SayTo(player, "We will prepare a dignified funeral for her, please bring this speech to Vetusta Abbey.");
 				Step = 4;
 				//}
 			}
 
-			if (Step == 4 && e == GameObjectEvent.Interact)
+			if (Step == 4 && e == GameObjectEvent.InteractWith)
 			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name.Equals("Flitzitina\'s Grave"))
+				InteractWithEventArgs gArgs = (InteractWithEventArgs) args;
+				if (gArgs.Target.Name.Equals("Flitzitina\'s Grave"))
 				{
 					RemoveItem(player, funeral_speech_scroll);
 					FinishQuest();
@@ -607,12 +608,13 @@ namespace DOL.GS.Quests.Albion
 		{
 			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				SirLukas.SayTo(m_questPlayer, "Thank you once again, knowing that you helped preserve this Albion heroine's history!");
+				SirLukas.SayTo(m_questPlayer, "You helped me preserve the history of this heroine of Albion, and I will follow in her steps and make her proud. " +
+                    "Thank you again, " + m_questPlayer.Name + ", it means more than you know.");
 
 				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
-				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You recieve {0} as a reward.");		
+				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You recieve {0} as a reward.");
+
+				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			}
 			else
 			{
