@@ -4903,6 +4903,8 @@ namespace DOL.GS {
                 case eCharacterClass.Infiltrator:
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
+                    weaponTypes.Add(eObjectType.SlashingWeapon);
+                    weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.Crossbow);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -4915,6 +4917,9 @@ namespace DOL.GS {
                     break;
                 case eCharacterClass.Mercenary:
                     weaponTypes.Add(eObjectType.Fired); //shortbow
+                    weaponTypes.Add(eObjectType.SlashingWeapon);
+                    weaponTypes.Add(eObjectType.ThrustWeapon);
+                    weaponTypes.Add(eObjectType.CrushingWeapon);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
@@ -5105,6 +5110,9 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
+                    weaponTypes.Add(eObjectType.Sword);
+                    weaponTypes.Add(eObjectType.Axe);
+                    weaponTypes.Add(eObjectType.Hammer);
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -5113,11 +5121,17 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
+                    weaponTypes.Add(eObjectType.Sword);
+                    weaponTypes.Add(eObjectType.Axe);
+                    weaponTypes.Add(eObjectType.Hammer);
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Skald:
                     //hi Catkain <3
+                    weaponTypes.Add(eObjectType.Sword);
+                    weaponTypes.Add(eObjectType.Axe);
+                    weaponTypes.Add(eObjectType.Hammer);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
@@ -5256,6 +5270,8 @@ namespace DOL.GS {
                 case eCharacterClass.Nightshade:
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -5292,11 +5308,16 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Blunt);
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Piercing);
+                    weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Fired); //shortbow
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Warden:
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Shield);
