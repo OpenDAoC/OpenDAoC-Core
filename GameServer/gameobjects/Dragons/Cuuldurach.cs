@@ -133,6 +133,7 @@ namespace DOL.GS
 
 				if (glimmer != null && glimmer.Brain is StandardMobBrain && this.Brain is DragonBrain)
 				{
+					glimmer.Faction = FactionMgr.GetFactionByID(83);
 					(Brain as DragonBrain).AddAggroListTo(glimmer.Brain as StandardMobBrain);
 				}
 			}

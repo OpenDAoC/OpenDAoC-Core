@@ -69,7 +69,16 @@ namespace DOL.GS
 
             if (spellHandler != null)
             {
-                if (m_newSpellHandler.Spell.IsInstantCast)
+                if (spellHandler.Spell.IsFocus)
+                {
+                    (spellHandler as SpellHandler).FocusSpellAction();
+
+                    if (m_newSpellHandler.Spell.IsInstantCast)
+                        instantSpellHandler = m_newSpellHandler;
+                    else
+                        spellHandler = m_newSpellHandler;
+                }
+                else if (m_newSpellHandler.Spell.IsInstantCast)
                 {
                     //queuedSpellHandler = spellHandler;
                     //spellHandler = m_newSpellHandler;
