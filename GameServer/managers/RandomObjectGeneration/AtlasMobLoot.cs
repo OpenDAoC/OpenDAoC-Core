@@ -62,14 +62,14 @@ namespace DOL.GS {
 
                 //players below level 50 will always get loot for their class, 
                 //or a valid class for one of their groupmates
-                if (player.Level < 50 && player.Group != null)
+                if (player.Group != null)
                 {
                     classForLoot = GetRandomClassFromGroup(player.Group);
                 }
                 else
                 {
                     //level 50 players have a base 10% chance to recieve ROGs from a random class other than their own
-                    if (Util.Chance(10))
+                    if (player.Level == 50 && Util.Chance(10))
                     {
                         classForLoot = GetRandomClassFromRealm(player.Realm);
                     }

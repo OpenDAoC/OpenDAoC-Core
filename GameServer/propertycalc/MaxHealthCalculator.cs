@@ -166,9 +166,12 @@ namespace DOL.GS.PropertyCalc
 			{
 				int hp = 0;
 
-				if (living.Level<10)
+				if (living.Level<20)
 				{
-					hp = living.Level * 10 + 20 + ((living as GameNPC).Constitution / 1 + (10-living.Level)) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
+					//12 hp per level
+					//30 base
+					//con * level HP, scaled by level
+					hp = (int)((living.Level * 12) + 15 + (Math.Floor((double)((living as GameNPC).Constitution * living.Level) / (1 + (22-living.Level))))) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
 				}
 				else
 				{
@@ -183,22 +186,25 @@ namespace DOL.GS.PropertyCalc
 
 				// first adjust hitpoints based on base CON
 
-				if (basecon != ServerProperties.Properties.GAMENPC_BASE_CON)
+				if (basecon != ServerProperties.Properties.GAMENPC_BASE_CON && living.Level >= 10)
 				{
 					hp = Math.Max(1, hp + ((basecon - ServerProperties.Properties.GAMENPC_BASE_CON) * ServerProperties.Properties.GAMENPC_HP_GAIN_PER_CON));
 				}
 
 				// Now adjust for buffs
+				if (living.Level > 10)
+				{
 
-				// adjust hit points based on constitution difference from base con
-				// modified from http://www.btinternet.com/~challand/hp_calculator.htm
-				int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
+					// adjust hit points based on constitution difference from base con
+					// modified from http://www.btinternet.com/~challand/hp_calculator.htm
+					int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
 
-				// 50% buff / debuff cap
-				if (conhp > hp * 1.5)
-					conhp = (int)(hp * 1.5);
-				else if (conhp < hp / 2)
-					conhp = hp / 2;
+					// 50% buff / debuff cap
+					if (conhp > hp * 1.5)
+						conhp = (int)(hp * 1.5);
+					else if (conhp < hp / 2)
+						conhp = hp / 2;
+				}
 
 				return hp;
 				//return conhp;

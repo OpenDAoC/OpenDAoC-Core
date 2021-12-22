@@ -68,7 +68,7 @@ namespace DOL.GS {
         public const ushort ROG_TOA_STAT_CHANCE = 0;
 
         // Item chance to get stat bonus
-        public const ushort ROG_ITEM_STAT_CHANCE = 55;
+        public const ushort ROG_ITEM_STAT_CHANCE = 50;
 
         // Item chance to get resist bonus
         public const ushort ROG_ITEM_RESIST_CHANCE = 45;
@@ -189,8 +189,8 @@ namespace DOL.GS {
             int temp = this.Level - 15;
             temp -= temp % 5;
             this.Bonus = temp;
-            if (this.Bonus < 0)
-                this.Bonus = 0;
+            if (this.Bonus < 5)
+                this.Bonus = 5;
 
             //constants
             int condition = this.Level * 2000;
@@ -4056,7 +4056,7 @@ namespace DOL.GS {
                     }
                 case eBonusType.Skill:
                     {
-                        int max = (int)Util.Random(1, 5);
+                        int max = (int)Util.Random(1, 4);
                         if (property == eProperty.AllSkills ||
                             property == eProperty.AllMagicSkills ||
                             property == eProperty.AllDualWieldingSkills ||
@@ -4170,12 +4170,14 @@ namespace DOL.GS {
 
             //Console.WriteLine($"Capped Uti: {GetTotalUtility()}");
             //write name of item based off of capped lines
-            eProperty bonus = GetPropertyFromBonusLine(GetHighestUtilitySingleLine());
+            int utiLine = GetHighestUtilitySingleLine();
+            eProperty bonus = GetPropertyFromBonusLine(utiLine);
+            //Console.WriteLine($"HighUti: {utiLine} bonus: {bonus}");
             WriteMagicalName(bonus);
             //Console.WriteLine($"Item name: {Name}");
         }
 
-        private int GetHighestUtilitySingleLine()
+        public int GetHighestUtilitySingleLine()
         {
             double highestUti = GetSingleUtility(Bonus1Type, Bonus1);
             int highestLine = highestUti > 0 ? 1 : 0; //if line1 had a bonus, set it as highest line, otherwise default to 0
@@ -4860,10 +4862,13 @@ namespace DOL.GS {
                     break;
                 case eCharacterClass.Friar:
                     weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Armsman:
+                    weaponTypes.Add(eObjectType.PolearmWeapon);
+                    weaponTypes.Add(eObjectType.PolearmWeapon);
                     weaponTypes.Add(eObjectType.PolearmWeapon);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
@@ -4877,9 +4882,11 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
                     weaponTypes.Add(eObjectType.TwoHandedWeapon);
+                    weaponTypes.Add(eObjectType.TwoHandedWeapon);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Reaver:
+                    weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
@@ -4887,6 +4894,7 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Minstrel:
+                    weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
@@ -4901,6 +4909,7 @@ namespace DOL.GS {
                 case eCharacterClass.Scout:
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
+                    weaponTypes.Add(eObjectType.Longbow);
                     weaponTypes.Add(eObjectType.Longbow);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -5070,10 +5079,13 @@ namespace DOL.GS {
                 case eCharacterClass.Hunter:
                     weaponTypes.Add(eObjectType.Spear);
                     weaponTypes.Add(eObjectType.CompositeBow);
+                    weaponTypes.Add(eObjectType.Spear);
+                    weaponTypes.Add(eObjectType.CompositeBow);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Savage:
+                    weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
@@ -5083,10 +5095,12 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.LeftAxe);
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Berserker:
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
@@ -5236,6 +5250,7 @@ namespace DOL.GS {
                     break;
                 case eCharacterClass.Valewalker:
                     weaponTypes.Add(eObjectType.Scythe);
+                    weaponTypes.Add(eObjectType.Scythe);
                     weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Nightshade:
@@ -5248,6 +5263,7 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.RecurvedBow);
+                    weaponTypes.Add(eObjectType.RecurvedBow);
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -5256,6 +5272,7 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.LargeWeapons);
+                    weaponTypes.Add(eObjectType.LargeWeapons);
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -5263,6 +5280,8 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Blunt);
+                    weaponTypes.Add(eObjectType.LargeWeapons);
+                    weaponTypes.Add(eObjectType.CelticSpear);
                     weaponTypes.Add(eObjectType.LargeWeapons);
                     weaponTypes.Add(eObjectType.CelticSpear);
                     weaponTypes.Add(eObjectType.Staff);
@@ -5294,6 +5313,7 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Shield);
+                    weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.Staff);
                     break;
@@ -5909,15 +5929,18 @@ namespace DOL.GS {
         }
 
         #endregion
-
+        bool m_named = false;
         #region Naming and Modeling
         public bool WriteMagicalName(eProperty property)
         {
-            if (hPropertyToMagicPrefix.ContainsKey(property))
+            if (hPropertyToMagicPrefix.ContainsKey(property) && !m_named)
             {
                 string str = hPropertyToMagicPrefix[property];
+                //Console.WriteLine($"Str: {str}");
                 if (str != string.Empty)
                     this.Name = str + " " + this.Name;
+                m_named = true;
+                //Console.WriteLine("Named = true, name = " + this.Name);
                 return true;
             }
 
