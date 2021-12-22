@@ -39,7 +39,8 @@ namespace DOL.GS.Quests.Albion
 		protected const int maximumLevel = 50;
 
 		private static GameNPC SirLukas = null; // Start NPC
-		private static GameMerchant EllynWeyland = null; // Mob to kill
+		private static GameNPC Lukas = null; // Step 4 NPC
+		private static GameMerchant EllynWeyland = null; // Step 1, speak and get questitem
 
 		private static ItemTemplate funeral_speech_scroll = null;
 		private static ItemTemplate FlitzitinaBow = null;
@@ -80,7 +81,41 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lukas", eRealm.Albion);
+
+			if (npcs.Length > 0)
+				foreach (GameNPC npc in npcs)
+					if (npc.CurrentRegionID == 1 && npc.X == 505313 && npc.Y == 496252)
+					{
+						Lukas = npc;
+						break;
+					}
+
+			if (Lukas == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Lukas , creating it ...");
+				Lukas = new GameNPC();
+				Lukas.Model = 33;
+				Lukas.Name = "Lukas";
+				Lukas.GuildName = "Emissary of the King";
+				Lukas.Realm = eRealm.Albion;
+				Lukas.CurrentRegionID = 1;
+				Lukas.LoadEquipmentTemplateFromDatabase("SirLukasVetusta");
+				Lukas.Size = 50;
+				Lukas.Level = 55;
+				Lukas.X = 505313;
+				Lukas.Y = 496252;
+				Lukas.Z = 2432;
+				Lukas.Heading = 820;
+				Lukas.AddToWorld();
+				if (SAVE_INTO_DATABASE)
+				{
+					Lukas.SaveIntoDatabase();
+				}
+			}
+			
+			npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -581,9 +616,10 @@ namespace DOL.GS.Quests.Albion
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == SirLukas.Name)
 				{*/
-				GiveItem(m_questPlayer, funeral_speech_scroll);
+				
 				SirLukas.SayTo(player, "We will prepare a dignified funeral for her, please bring this speech to Vetusta Abbey.");
 				Step = 4;
+				GiveItem(m_questPlayer, funeral_speech_scroll);
 				//}
 			}
 
@@ -668,8 +704,11 @@ namespace DOL.GS.Quests.Albion
 		{
 			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				SirLukas.SayTo(m_questPlayer, "You helped me preserve the history of this heroine of Albion, and I will follow in her steps and make her proud. " +
+				Lukas.SayTo(m_questPlayer, "You helped me preserve the history of this heroine of Albion, and I will follow in her steps and make her proud. " +
                     "Thank you again, " + m_questPlayer.Name + ", it means more than you know.");
+				Lukas.TurnTo(m_questPlayer);
+				Lukas.Emote(eEmote.Curtsey);
+				Lukas.ResetHeading();
 
 				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
