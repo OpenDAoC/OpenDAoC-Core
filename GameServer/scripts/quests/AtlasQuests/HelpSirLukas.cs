@@ -553,10 +553,8 @@ namespace DOL.GS.Quests.Albion
 				if (!SirLukas.GiveQuest(typeof (HelpSirLukas), player, 1))
 					return;
 
-				SirLukas.SayTo(player, "Hello " + player.Name + ", I am Sir Lukas, protector of Camelot and Albion. " +
-										   "I heard from your " + player.CharacterClass.Name + " Trainer that you are ready to take on tasks from Camelot. \n\n\n" +
-										   "I am expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. However I cannot leave my post for many hours.\n" +
-										   "\nCan you [support Camelot] and get this for me?");
+				SirLukas.SayTo(player, "You will find Ellyn Weyland in the forge of Cotswold. She says she has something for me, could you please go and see what she's found?");
+
 			}
 		}
 
