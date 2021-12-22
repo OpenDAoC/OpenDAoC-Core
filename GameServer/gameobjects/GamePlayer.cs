@@ -5121,7 +5121,8 @@ namespace DOL.GS
             else
                 soloBonus = (expTotal / 2);
 
-            expTotal += soloBonus;
+            if(xpSource == eXPSource.NPC || xpSource == eXPSource.Player)
+                expTotal += soloBonus;
 
             // Get Champion Experience too
             GainChampionExperience(expTotal);
