@@ -189,8 +189,8 @@ namespace DOL.GS {
             int temp = this.Level - 15;
             temp -= temp % 5;
             this.Bonus = temp;
-            if (this.Bonus < 0)
-                this.Bonus = 0;
+            if (this.Bonus < 5)
+                this.Bonus = 5;
 
             //constants
             int condition = this.Level * 2000;
