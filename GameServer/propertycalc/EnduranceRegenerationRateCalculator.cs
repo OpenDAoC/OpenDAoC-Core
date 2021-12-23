@@ -46,20 +46,32 @@ namespace DOL.GS.PropertyCalc
 			if (debuff < 0)
 				debuff = -debuff;
 
+			var p = living as GamePlayer;
+			if (p != null)
+				p.EnduDebuff = debuff;
 			// buffs allow to regenerate endurance even in combat and while moving			
 			double regenBuff =
 				 living.BaseBuffBonusCategory[(int)property]
 				+living.ItemBonus[(int)property];
+			if (p != null)
+				p.RegenBuff = regenBuff;
 			double regen = regenBuff;
 			if (regen == 0 && living is GamePlayer) //&& ((GamePlayer)living).HasAbility(Abilities.Tireless))
 				regen++;
 
+			if (p != null)
+				p.RegenAfterTireless = regen;
 			/*    Patch 1.87 - COMBAT AND REGENERATION CHANGES
-    			- The bonus to regeneration while standing out of combat has been greatly increased. The amount of ticks 
-				  a player receives while standing has been doubled and it will now match the bonus to regeneration while sitting.
- 				  Players will no longer need to sit to regenerate faster.
-			    - Fatigue now regenerates at the standing rate while moving.
+				- The bonus to regeneration while standing out of combat has been greatly increased. The amount of ticks 
+					a player receives while standing has been doubled and it will now match the bonus to regeneration while sitting.
+					Players will no longer need to sit to regenerate faster.
+				- Fatigue now regenerates at the standing rate while moving.
 			*/
+			if (p != null)
+			{
+				p.NonCombatNonSprintRegen = 0;
+				p.CombatRegen = 0;
+			}
 			if (!living.InCombat)
 			{
 				if (living is GamePlayer)
@@ -69,6 +81,8 @@ namespace DOL.GS.PropertyCalc
 						regen += 4;
 					}
 				}
+				if (p != null)
+					p.NonCombatNonSprintRegen = regen;
 			}
             else
             {
@@ -77,6 +91,8 @@ namespace DOL.GS.PropertyCalc
 					regen = 0.1;
 				if (regenBuff > 0)
 					regen = regenBuff;
+				if (p != null)
+					p.CombatRegen = regen;
 			}
 				
 

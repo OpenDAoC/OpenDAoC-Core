@@ -61,7 +61,11 @@ namespace DOL.GS
         public int Endchant { get; set; }
         public long LastEnduTick { get; set; }
         public int RegenRateAtChange { get; set; }
-
+        public int EnduDebuff { get; set; }
+        public double RegenBuff { get; set; }
+        public double RegenAfterTireless { get; set; }
+        public double NonCombatNonSprintRegen { get; set; }
+        public double CombatRegen { get; set; }
         public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
 
         #region Client/Character/VariousFlags
