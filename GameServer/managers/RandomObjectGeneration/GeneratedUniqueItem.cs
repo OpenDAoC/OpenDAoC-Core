@@ -1215,6 +1215,7 @@ namespace DOL.GS {
                         charClass == eCharacterClass.Mercenary ||
                         charClass == eCharacterClass.Infiltrator ||
                         charClass == eCharacterClass.Scout ||
+                        charClass == eCharacterClass.Paladin ||
                         charClass == eCharacterClass.Blademaster ||
                         charClass == eCharacterClass.Hero ||
                         charClass == eCharacterClass.Nightshade ||
