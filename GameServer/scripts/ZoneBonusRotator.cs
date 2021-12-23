@@ -264,6 +264,7 @@ namespace DOL.GS.Scripts
 
         private static void GetNextPvEZones()
         {
+            /*
             if (currentAlbionZone < albionClassicZones.Count - 1)
                 currentAlbionZone += 1;
             else
@@ -293,7 +294,18 @@ namespace DOL.GS.Scripts
                 currentHiberniaZoneSI += 1;
             else
                 currentHiberniaZoneSI = 0;
+            */
+            currentAlbionZone = Util.Random(albionClassicZones.Count - 1);
+            currentAlbionZoneSI = Util.Random(albionSIZones.Count - 1);
+
+            currentMidgardZone = Util.Random(midgardClassicZones.Count - 1);
+            currentMidgardZoneSI = Util.Random(midgardSIZones.Count - 1);
+
+            currentHiberniaZone = Util.Random(hiberniaClassicZones.Count - 1);
+            currentHiberniaZoneSI = Util.Random(hiberniaSIZones.Count - 1);
+
         }
+
 
         private static void TellClient(GameClient client)
         {

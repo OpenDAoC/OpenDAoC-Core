@@ -72,6 +72,7 @@ namespace DOL.GS
 				{
 					if (dogSpawn != null && dogSpawn.Brain != null && dogSpawn.Brain is RetrieverMobBrain)
 					{
+						dogSpawn.Faction = FactionMgr.GetFactionByID(154);
 						(dogSpawn.Brain as RetrieverMobBrain).Master = this;
 						m_retrieverList.Add(dogSpawn);
 						dogSpawn.WalkTo(GetExitCoordinates(Util.Random(1, 4)), 200);	// Pick 1 out of 4 possible exits.

@@ -1061,14 +1061,24 @@ namespace DOL.AI.Brain
                 return;
 
             GamePlayer puller;  // player that triggered the BAF
+            GameLiving actualPuller;
 
             // Only BAF on players and pets of players
             if (attacker is GamePlayer)
+            {
                 puller = (GamePlayer)attacker;
+                actualPuller = puller;
+            }
             else if (attacker is GamePet pet && pet.Owner is GamePlayer owner)
+            {
                 puller = owner;
+                actualPuller = attacker;
+            }
             else if (attacker is BDSubPet bdSubPet && bdSubPet.Owner is GamePet bdPet && bdPet.Owner is GamePlayer bdOwner)
+            {
                 puller = bdOwner;
+                actualPuller = bdPet;
+            }
             else
                 return;
 
@@ -1171,11 +1181,11 @@ namespace DOL.AI.Brain
                         {
                             brain.CanBAF = false; // Mobs brought cannot bring friends of their own
 
-                            GamePlayer target;
+                            GameLiving target;
                             if (victims != null && victims.Count > 0)
                                 target = victims[Util.Random(0, victims.Count - 1)];
                             else
-                                target = puller;
+                                target = actualPuller;
 
                             brain.AddToAggroList(target, 1);
                             brain.AttackMostWanted();
