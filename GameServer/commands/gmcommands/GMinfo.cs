@@ -340,6 +340,13 @@ namespace DOL.GS.Commands
 					info.Add("Last EndChant amount (FatigueConsumption): " + target.Endchant + "%");
 					info.Add("Last Regen at change: " + target.RegenRateAtChange);
 					info.Add(" ");
+					info.Add("REGEN INFORMATION");
+					info.Add("Last EnduDebuff:" + target.EnduDebuff);
+					info.Add("Last RegenBuff: " + target.RegenBuff);
+					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
+					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
+					info.Add("Last Combat Regen: " + target.CombatRegen);
+					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);
 					info.Add("  - Lastname : " + target.LastName);

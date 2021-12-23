@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -16,6 +18,9 @@ namespace DOL.GS
 {
     public static class EffectService
     {
+        static int _segmentsize = 100;
+        static List<Task> _tasks = new List<Task>();
+
         private const string ServiceName = "EffectService";
 
         static EffectService()
@@ -28,22 +33,57 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var e in EntityManager.GetAllEffects())
+            ECSGameEffect[] arr = EntityManager.GetAllEffects();
+
+            lock (arr)
             {
-                // Effect Cancel/Disables requests are processed immediately on the same frame they are requested and not through this queue.
-                if (e.CancelEffect || e.IsDisabled)
+                for (int ctr = 1; ctr <= Math.Ceiling(((double)arr.Count()) / _segmentsize); ctr++)
                 {
-                    HandleCancelEffect(e);
+                    int elements = _segmentsize;
+                    int offset = (ctr - 1) * _segmentsize;
+                    int upper = offset + elements;
+                    if ((upper) > arr.Count())
+                        elements = arr.Count() - offset;
+
+                    ArraySegment<ECSGameEffect> segment = new ArraySegment<ECSGameEffect>(arr, offset, elements);
+
+                    _tasks.Add(Task.Factory.StartNew((Object obj) =>
+                    {
+                        TaskStats data = obj as TaskStats;
+                        if (data == null)
+                            return;
+
+                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
+                        IList<ECSGameEffect> effects = (IList<ECSGameEffect>)segment;
+
+                        for (int index = 0; index < effects.Count; index++)
+                        {
+                            if (effects[index] == null)
+                                continue;
+
+                            if (effects[index].CancelEffect || effects[index].IsDisabled)
+                            {
+                                HandleCancelEffect(effects[index]);
+                            }
+                            else
+                            {
+                                HandlePropertyModification(effects[index]);
+                            }
+                        }
+                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
+                    },
+                    new TaskStats() { Name = ctr, CreationTime = DateTime.Now.Ticks }));
                 }
-                else
-                {
-                    HandlePropertyModification(e);
-                }
-                //EntityManager.RemoveEffect(e);
+                Task.WaitAll(_tasks.ToArray());
             }
+
+
+            _tasks.Clear();
+
 
             Diagnostics.StopPerfCounter(ServiceName);
         }
+    
 
         private static void HandlePropertyModification(ECSGameEffect e)
         {

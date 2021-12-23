@@ -61,7 +61,11 @@ namespace DOL.GS
         public int Endchant { get; set; }
         public long LastEnduTick { get; set; }
         public int RegenRateAtChange { get; set; }
-
+        public int EnduDebuff { get; set; }
+        public double RegenBuff { get; set; }
+        public double RegenAfterTireless { get; set; }
+        public double NonCombatNonSprintRegen { get; set; }
+        public double CombatRegen { get; set; }
         public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
 
         #region Client/Character/VariousFlags
@@ -1909,7 +1913,7 @@ namespace DOL.GS
         public virtual void OnRevive(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = (GamePlayer)sender;
-            effectListComponent.CancelAll();
+            //effectListComponent.CancelAll();
             m_isDead = false;
 
             bool applyRezSick = true;
@@ -8021,7 +8025,7 @@ namespace DOL.GS
                 DeathTime = PlayedTime;
 
 			CancelAllConcentrationEffects();
-			effectListComponent.CancelAll();
+			//effectListComponent.CancelAll();
 
             IsSwimming = false;
         }
