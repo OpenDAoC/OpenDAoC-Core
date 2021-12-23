@@ -256,10 +256,21 @@ namespace DOL.GS.Scripts
         /// </summary>
         private static void GetNextRvRZone()
         {
+            /*
             if (currentRvRRealm < 3)
                 currentRvRRealm += 1; // currentRvRRealm++;// currentRealm + 1;
             else
                 currentRvRRealm = 1;
+            */
+            //get random int from 1-3 to decide realm
+            //if realm is undefined or current realm, reroll to new result
+            //set new realm
+            int rand = Util.Random(2) + 1;
+            while(rand == currentRvRRealm)
+            {
+                rand = Util.Random(2) + 1;
+            }
+            currentRvRRealm = rand;
         }
 
         private static void GetNextPvEZones()
