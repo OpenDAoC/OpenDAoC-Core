@@ -1913,7 +1913,7 @@ namespace DOL.GS
         public virtual void OnRevive(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = (GamePlayer)sender;
-            effectListComponent.CancelAll();
+            //effectListComponent.CancelAll();
             m_isDead = false;
 
             bool applyRezSick = true;
@@ -8025,7 +8025,7 @@ namespace DOL.GS
                 DeathTime = PlayedTime;
 
 			CancelAllConcentrationEffects();
-			effectListComponent.CancelAll();
+			//effectListComponent.CancelAll();
 
             IsSwimming = false;
         }
