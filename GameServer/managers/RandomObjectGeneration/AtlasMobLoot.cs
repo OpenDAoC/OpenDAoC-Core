@@ -65,6 +65,7 @@ namespace DOL.GS {
                 if (player.Group != null)
                 {
                     classForLoot = GetRandomClassFromGroup(player.Group);
+                    //chance += 3 * player.Group.GetPlayersInTheGroup().Count; //3% extra drop chance per group member
                 }
                 else
                 {
@@ -82,10 +83,10 @@ namespace DOL.GS {
                     loot.AddRandom(100, item, 1);
                 }
                 else if (mob.Level < 20)
-                    loot.AddRandom(BASE_ROG_CHANCE + (100 * (10-(mob.Level-10)/10)), item, 1);
+                    loot.AddRandom(chance + (100 * (10-(mob.Level-10)/10)), item, 1);
                 //135% chance at level 10, 85% chance at level 15, 35% chance at level 20
                 else
-                    loot.AddRandom(BASE_ROG_CHANCE, item, 1);
+                    loot.AddRandom(chance, item, 1);
 
             }
             catch
