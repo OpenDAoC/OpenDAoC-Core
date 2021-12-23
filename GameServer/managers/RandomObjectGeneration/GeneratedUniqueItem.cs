@@ -488,7 +488,7 @@ namespace DOL.GS {
 
             if (Level < 10)
             {
-                if (Util.Chance(50))
+                if (Util.Chance(65))
                     return eBonusType.Stat;
                 else
                     return eBonusType.Skill;
