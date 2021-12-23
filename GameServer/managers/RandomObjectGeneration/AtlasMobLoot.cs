@@ -65,7 +65,7 @@ namespace DOL.GS {
                 if (player.Group != null)
                 {
                     classForLoot = GetRandomClassFromGroup(player.Group);
-                    //chance += 3 * player.Group.GetPlayersInTheGroup().Count; //3% extra drop chance per group member
+                    chance += 4 * player.Group.GetPlayersInTheGroup().Count; //3% extra drop chance per group member
                 }
                 else
                 {
