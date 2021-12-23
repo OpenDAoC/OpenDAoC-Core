@@ -4,11 +4,16 @@ using ECS.Debug;
 using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
+using System.Threading.Tasks;
+using System;
+using System.Threading;
 
 namespace DOL.GS
 {
     public static class EffectListService
     {
+        static int _segmentsize = 1000;
+        static List<Task> _tasks = new List<Task>();
         private const string ServiceName = "EffectListService";
 
         static EffectListService()
@@ -21,10 +26,45 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(ServiceName);
 
-            foreach (var living in EntityManager.GetLivingByComponent(typeof(EffectListComponent)))
+            GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(EffectListComponent));
+
+            lock (arr)
             {
-                HandleEffects(tick, living);
+                for (int ctr = 1; ctr <= Math.Ceiling(((double)arr.Count()) / _segmentsize); ctr++)
+                {
+                    int elements = _segmentsize;
+                    int offset = (ctr - 1) * _segmentsize;
+                    int upper = offset + elements;
+                    if ((upper) > arr.Count())
+                        elements = arr.Count() - offset;
+
+                    ArraySegment<GameLiving> segment = new ArraySegment<GameLiving>(arr, offset, elements);
+
+                    _tasks.Add(Task.Factory.StartNew((Object obj) =>
+                    {
+                        TaskStats data = obj as TaskStats;
+                        if (data == null)
+                            return;
+
+                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
+                        IList<GameLiving> livings = (IList<GameLiving>)segment;
+
+                        for (int index = 0; index < livings.Count; index++)
+                        {
+                            if (livings[index] == null)
+                                continue;
+
+                            HandleEffects(tick, livings[index]);
+                        }
+                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
+                    },
+                    new TaskStats() { Name = ctr, CreationTime = DateTime.Now.Ticks }));
+                }
+                Task.WaitAll(_tasks.ToArray());
             }
+
+
+            _tasks.Clear();
 
             Diagnostics.StopPerfCounter(ServiceName);               
         }

@@ -1252,7 +1252,7 @@ namespace DOL.GS
 			SaveTimerProc(null);
 
 			WorldMgr.Exit();
-
+			GameLoop.Exit();
 			//Save the database
 			// 2008-01-29 Kakuri - Obsolete
 			/*if ( m_database != null )
