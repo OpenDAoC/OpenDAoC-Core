@@ -146,7 +146,7 @@ namespace DOL.GS.Styles
 							//Back Styles
 							//60 degree since 1.62 patch
 							case Style.eOpeningPosition.Back:
-								if (!(angle >= 150 && angle <= 210)) return false;
+								if (!(angle > 120 && angle < 240)) return false;
 								break;
 							// Side Styles  
 							//105 degree since 1.62 patch
