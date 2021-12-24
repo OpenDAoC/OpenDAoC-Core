@@ -5996,7 +5996,18 @@ namespace DOL.GS {
                                     case eInventorySlot.ArmsArmor: model = 141; break;
                                     case eInventorySlot.LegsArmor: model = 140; break;
                                     case eInventorySlot.FeetArmor: model = 143; break;
-                                    case eInventorySlot.HeadArmor: model = 822; break;
+                                    case eInventorySlot.HeadArmor:
+                                        if (Util.Chance(1))
+                                            model = 1284; //1% chance of tarboosh
+                                        else if (Util.Chance(1))
+                                            model = 1281; //1% chance of robin hood hat
+                                        else if (Util.Chance(1))
+                                            model = 1287; //1% chance of jester hat
+                                        else if (Util.Chance(10))
+                                            model = 1278; //10% chance of wizard hat
+                                        else
+                                            model = 822; 
+                                        break;
                                     case eInventorySlot.HandsArmor: model = 142; break;
                                     case eInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
@@ -6024,7 +6035,18 @@ namespace DOL.GS {
                                     case eInventorySlot.ArmsArmor: model = 247; break;
                                     case eInventorySlot.LegsArmor: model = 246; break;
                                     case eInventorySlot.FeetArmor: model = 249; break;
-                                    case eInventorySlot.HeadArmor: model = 825; break;
+                                    case eInventorySlot.HeadArmor:
+                                        if (Util.Chance(1))
+                                            model = 1289; //1% chance of wolf hat
+                                        else if (Util.Chance(1))
+                                            model = 1283; //1% chance of fur cap
+                                        else if (Util.Chance(1))
+                                            model = 1286; //1% chance of wing hat
+                                        else if (Util.Chance(10))
+                                            model = 1280; //10% chance of wizard hat
+                                        else
+                                            model = 825;
+                                        break;
                                     case eInventorySlot.HandsArmor: model = 248; break;
                                     case eInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
@@ -6052,7 +6074,18 @@ namespace DOL.GS {
                                     case eInventorySlot.ArmsArmor: model = 380; break;
                                     case eInventorySlot.LegsArmor: model = 379; break;
                                     case eInventorySlot.FeetArmor: model = 382; break;
-                                    case eInventorySlot.HeadArmor: model = 826; break;
+                                    case eInventorySlot.HeadArmor:
+                                        if (Util.Chance(1))
+                                            model = 1282; //1% chance of robin hood hat
+                                        else if (Util.Chance(1))
+                                            model = 1285; //1% chance of leaf hat
+                                        else if (Util.Chance(1))
+                                            model = 1288; //1% chance of stag helm
+                                        else if (Util.Chance(10))
+                                            model = 1279; //10% chance of wizard hat
+                                        else
+                                            model = 826; 
+                                        break;
                                     case eInventorySlot.HandsArmor: model = 381; break;
                                     case eInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
