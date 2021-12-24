@@ -208,7 +208,7 @@ namespace DOL.GS
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void SortSpells(int scaleLevel)
 		{
-			if (Spells.Count < 1 || Level < 1)
+			if (Spells.Count < 1 || Level < 1 || this is TurretPet)
 				return;
 
 			if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
@@ -316,7 +316,6 @@ namespace DOL.GS
 
 			if (casterLevel < 1)
 				casterLevel = Level;
-
 			switch ((eSpellType)spell.SpellType)
 			{
 				// Scale Damage
@@ -327,7 +326,6 @@ namespace DOL.GS
 				case eSpellType.Lifedrain:
 				case eSpellType.DamageSpeedDecrease:
 				case eSpellType.StyleBleeding: // Style bleed effect
-				
 					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					spell.ScaledToPetLevel = true;
 					break;
