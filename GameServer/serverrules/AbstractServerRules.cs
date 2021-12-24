@@ -1151,7 +1151,7 @@ namespace DOL.GS.ServerRules
 						//100% if full group,scales down according to player count in group and their range to target
 						if (player != null && player.Group != null && plrGrpExp.ContainsKey(player.Group))
 						{
-							realmPoints = (int)(realmPoints * (1.0 + plrGrpExp[player.Group] * 0.125));
+							realmPoints = (int)(realmPoints * (1.0 + plrGrpExp[player.Group] * 0.5));
 						}
 					}
 
@@ -1346,6 +1346,16 @@ namespace DOL.GS.ServerRules
 				}
 			}
 		}
+
+		private int GetUniqueClassCount(Group group)
+        {
+			HashSet<eCharacterClass> groupClasses = new HashSet<eCharacterClass>();
+            foreach (var player in group.GetPlayersInTheGroup())
+            {
+				groupClasses.Add((eCharacterClass)player.CharacterClass.ID);
+            }
+			return groupClasses.Count;
+        }
 
 		/// <summary>
 		/// Called on living death that is not gameplayer or gamenpc
