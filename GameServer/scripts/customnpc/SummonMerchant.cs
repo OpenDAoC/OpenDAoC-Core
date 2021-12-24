@@ -195,6 +195,7 @@ namespace DOL.GS.Spells
     public class SummonMerchantSpellHandler : SpellHandler
     {
         protected GameMerchant Npc;
+        protected RegionTimer timer;
 
         public SummonMerchantSpellHandler(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
@@ -204,8 +205,8 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
             var template = NpcTemplateMgr.GetTemplate((int) m_spell.Value);
-
-            base.ApplyEffectOnTarget(target, effectiveness);
+            
+            //base.ApplyEffectOnTarget(target, effectiveness);
 
             if (template.ClassType == "")
                 Npc = new GameMerchant();
@@ -251,12 +252,15 @@ namespace DOL.GS.Spells
             Npc.Name = m_caster.Name + "'s Merchant";
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
+            timer = new RegionTimer(Npc, new RegionTimerCallback(OnEffectExpires), Spell.Duration);
         }
 
-        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
+        public int OnEffectExpires(RegionTimer timer)
         {
             Npc?.Delete();
-            return base.OnEffectExpires(effect, noMessages);
+            timer.Stop();
+            return 0;
+            //return base.OnEffectExpires(effect, noMessages);
         }
 
         public override bool IsOverwritable(GameSpellEffect compare)
