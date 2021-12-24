@@ -349,7 +349,7 @@ namespace DOL.GS.Quests.Albion
 												   "\n\nFlitzitina is my mother. She was a strong and protective scout; her bow and arrows perfectly crafted. " +
 							                       "Her eyes were as sharp as a falcon's and she never missed her mark. I am proud to be the son of such an incredible woman." +
 							                       "\n\nThank you for returning her bow to me. I have one last request, if you don't mind. " +
-                                                   "\nPlease bring [this speech] to Vetusta Abbey so we may prepare a dignified funeral for her.");
+                                                   "\nPlease bring this speech to [Vetusta Abbey] so we may prepare a dignified funeral for her.");
 							break;
 						case 4:
 							SirLukas.SayTo(player, player.Name +", \nI will meet you at the grave of my mother. Please bring the funeral speech to the grave in [Vetusta Abbey].");
