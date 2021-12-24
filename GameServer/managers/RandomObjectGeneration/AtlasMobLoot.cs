@@ -1,4 +1,5 @@
 ﻿using DOL.AI.Brain;
+using System;
 using System.Collections.Generic;
 
 namespace DOL.GS {
@@ -10,7 +11,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 20;
+        public static ushort BASE_ROG_CHANCE = 25;
 
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace DOL.GS {
                 if (player.Group != null)
                 {
                     classForLoot = GetRandomClassFromGroup(player.Group);
-                    chance += 4 * player.Group.GetPlayersInTheGroup().Count; //3% extra drop chance per group member
+                    chance += 4 * player.Group.GetPlayersInTheGroup().Count; //4% extra drop chance per group member
                 }
                 else
                 {
@@ -78,6 +79,7 @@ namespace DOL.GS {
 
                 GeneratedUniqueItem item = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
                 item.GenerateItemQuality(killedcon);
+                item.CapUtility(mob.Level + 1);
                 if (mob.Level < 10)
                 {                
                     loot.AddRandom(100, item, 1);
@@ -100,12 +102,14 @@ namespace DOL.GS {
         private eCharacterClass GetRandomClassFromGroup(Group group)
         {
             List<eCharacterClass> validClasses = new List<eCharacterClass>();
+
             foreach (GamePlayer player in group.GetMembersInTheGroup())
             {
                 validClasses.Add((eCharacterClass)player.CharacterClass.ID);
             }
+            eCharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
 
-            return validClasses[Util.Random(validClasses.Count - 1)];
+            return ranClass;
 
         }
 
