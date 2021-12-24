@@ -199,6 +199,7 @@ namespace DOL.GS
         DexterityConstitutionDebuff = 193,
         ComfortingFlames = 194,
         AllRegenBuff = 195,
+        SummonMerchant = 196,
         Null = 200
 
 
