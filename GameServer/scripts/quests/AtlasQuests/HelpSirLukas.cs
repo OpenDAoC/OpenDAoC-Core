@@ -352,7 +352,7 @@ namespace DOL.GS.Quests.Albion
                                                    "\nPlease bring [this speech] to Vetusta Abbey so we may prepare a dignified funeral for her.");
 							break;
 						case 4:
-							SirLukas.SayTo(player, player.Name +", \nI will meet you at the grave of my mother. Please bring the funeral speech to the grave in [Vetusta Abbey].");
+							SirLukas.SayTo(player, player.Name +", \nI will meet you at the grave of my mother. Please bring the funeral speech to [the grave] in Vetusta Abbey.");
 							break;
 					}
 				}
@@ -383,6 +383,9 @@ namespace DOL.GS.Quests.Albion
 					{
 						case "this speech":
 							SirLukas.SayTo(player, "Thank you "+ player.Name +", I need some time to collect my thoughts. Please go to [Vetusta Abbey] and I will meet you there.");
+							break;
+						case "the grave":
+							SirLukas.SayTo(player, "Please go to the North Gates of Camelot. You will find Vetusta Abbey near the gates!");
 							break;
 						case "Vetusta Abbey":
 							GiveItem(player, funeral_speech_scroll);
