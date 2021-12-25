@@ -489,6 +489,52 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
+		protected static void TalkToLukas(DOLEvent e, object sender, EventArgs args)
+		{
+			//We get the player from the event arguments and check if he qualifies		
+			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+			if (player == null)
+				return;
+
+			//We also check if the player is already doing the quest
+			HelpSirLukas quest = player.IsDoingQuest(typeof (HelpSirLukas)) as HelpSirLukas;
+
+			if (e == GameObjectEvent.Interact)
+			{
+				if (quest != null)
+				{
+					switch (quest.Step)
+					{
+						case 4:
+							Lukas.SayTo(player, "Vetusta Abbey is a special and perfect place for my mother\'s funeral, thanks again for your help "+ player.Name +"!");
+							break;
+					}
+				}
+				else
+				{
+					Lukas.SayTo(player, "Hello "+ player.Name +", good to see you. I know that you get stronger and more inquisitive every day, stick with it, you are doing well! You can [visit me] at anytime in Camelot if you want. \nHave a wonderful day!");
+				}
+			}
+				// The player whispered to the NPC
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				if (quest == null)
+				{
+					switch (wArgs.Text)
+					{
+						case "visit me":
+							Lukas.SayTo(player, "You can find me at the archery ranges where scouts are trained for the realm.");
+							break;
+					}
+				}
+				else
+				{
+					
+				}
+			}
+		}
+		
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
