@@ -19,6 +19,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS.Quests.Hibernia
@@ -2256,7 +2257,7 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs)args;
 
-				if (gArgs.Target.Name == Cailean.Name)
+				if (gArgs.Target.Name == Cailean.Name && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{
 					m_questPlayer.Out.SendMessage("You collect the Horn from Cailean", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, Horn);
