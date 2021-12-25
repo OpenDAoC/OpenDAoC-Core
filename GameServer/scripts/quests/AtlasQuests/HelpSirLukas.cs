@@ -381,12 +381,10 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "this speech":
-							SirLukas.SayTo(player, "Thank you "+ player.Name +", I need some time to collect my thoughts. Please go to [Vetusta Abbey] and I will meet you there.");
-							break;
 						case "Vetusta Abbey":
 							GiveItem(player, funeral_speech_scroll);
-							SirLukas.SayTo(player, "Here, is the speech. Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates.");
+							SirLukas.SayTo(player, "Thank you " + player.Name + ", here is the speech. Go to the North Gates of Camelot. " +
+                                "You will find Vetusta Abbey near the gates. I will meet you there... I need some time to collect my thoughts.");
 							if (quest.Step == 3)
 							{
 								quest.Step = 4;
