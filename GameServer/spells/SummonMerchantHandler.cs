@@ -60,6 +60,7 @@ namespace DOL.GS.Spells
             Npc.X = x;
             Npc.Y = y;
             Npc.Z = m_caster.Z;
+            Npc.Flags += (byte) GameNPC.eFlags.GHOST + (byte) GameNPC.eFlags.PEACE;
             Npc.CurrentRegion = m_caster.CurrentRegion;
             Npc.Heading = (ushort) ((m_caster.Heading + 2048)%4096);
             Npc.Realm = m_caster.Realm;
@@ -69,10 +70,21 @@ namespace DOL.GS.Spells
             Npc.GuildName = "Temp Worker";
             switch (Npc.Realm)
             {
-                case eRealm.Albion: Npc.Model = 10;break;
-                case eRealm.Hibernia: Npc.Model = 307;break;
-                case eRealm.Midgard:Npc.Model = 158;break;
-                case eRealm.None: Npc.Model = 10;break;
+                case eRealm.Albion:
+                    Npc.Model = 10;
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant_alb");
+                    break;
+                case eRealm.Hibernia: 
+                    Npc.Model = 307;
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant_hib");
+                    break;
+                case eRealm.Midgard:
+                    Npc.Model = 158;
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant_mid");
+                    break;
+                case eRealm.None: 
+                    Npc.Model = 10;
+                    break;
             }
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();

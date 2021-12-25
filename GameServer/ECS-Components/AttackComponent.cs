@@ -1349,6 +1349,9 @@ namespace DOL.GS
                 return ad;
             }
 
+            if (ad.Target.IsSitting)
+                effectiveness *= 2;
+
             // Apply Mentalist RA5L
             SelectiveBlindnessEffect SelectiveBlindness = owner.EffectList.GetOfType<SelectiveBlindnessEffect>();
             if (SelectiveBlindness != null)
@@ -1487,7 +1490,7 @@ namespace DOL.GS
                 {
                     ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVE_MELEE_DAMAGE);
                 }
-
+                
                 ad.UncappedDamage = ad.Damage;
 
                 //Eden - Conversion Bonus (Crocodile Ring)  - tolakram - critical damage is always 0 here, needs to be moved
