@@ -7227,33 +7227,37 @@ namespace DOL.GS {
             }
 
             //each realm has a chance for special helmets during generation
-            switch (realm)
+            if(slot == eInventorySlot.HeadArmor)
             {
-                case eRealm.Albion:
-                    if (Util.Chance(1))
-                        model = 1284; //1% chance of tarboosh
-                    else if (Util.Chance(1))
-                        model = 1281; //1% chance of robin hood hat
-                    else if (Util.Chance(1))
-                        model = 1287; //1% chance of jester hat
-                    break;
-                case eRealm.Hibernia:
-                    if (Util.Chance(1))
-                        model = 1282; //1% chance of robin hood hat
-                    else if (Util.Chance(1))
-                        model = 1285; //1% chance of leaf hat
-                    else if (Util.Chance(1))
-                        model = 1288; //1% chance of stag helm
-                    break;
-                case eRealm.Midgard:
-                    if (Util.Chance(1))
-                        model = 1289; //1% chance of wolf hat
-                    else if (Util.Chance(1))
-                        model = 1283; //1% chance of fur cap
-                    else if (Util.Chance(1))
-                        model = 1286; //1% chance of wing hat
-                    break;
+                switch (realm)
+                {
+                    case eRealm.Albion:
+                        if (Util.Chance(1))
+                            model = 1284; //1% chance of tarboosh
+                        else if (Util.Chance(1))
+                            model = 1281; //1% chance of robin hood hat
+                        else if (Util.Chance(1))
+                            model = 1287; //1% chance of jester hat
+                        break;
+                    case eRealm.Hibernia:
+                        if (Util.Chance(1))
+                            model = 1282; //1% chance of robin hood hat
+                        else if (Util.Chance(1))
+                            model = 1285; //1% chance of leaf hat
+                        else if (Util.Chance(1))
+                            model = 1288; //1% chance of stag helm
+                        break;
+                    case eRealm.Midgard:
+                        if (Util.Chance(1))
+                            model = 1289; //1% chance of wolf hat
+                        else if (Util.Chance(1))
+                            model = 1283; //1% chance of fur cap
+                        else if (Util.Chance(1))
+                            model = 1286; //1% chance of wing hat
+                        break;
+                }
             }
+            
 
             this.Name = name;
             this.Model = model;
