@@ -206,6 +206,9 @@ namespace DOL.GS.PropertyCalc
 						conhp = hp / 2;
 				}
 
+				if (living is GameEpicNPC)
+					hp *= 1.5; //epic NPCs get 50% extra hp
+
 				return hp;
 				//return conhp;
 			}
