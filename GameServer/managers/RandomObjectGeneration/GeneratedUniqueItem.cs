@@ -6109,7 +6109,7 @@ namespace DOL.GS {
                                     case eInventorySlot.LegsArmor: model = 37; break;
                                     case eInventorySlot.FeetArmor: model = 40; break;
                                     case eInventorySlot.HeadArmor: model = 62; break;
-                                    case eInventorySlot.TorsoArmor: model = 36; break;
+                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Albion); break;
                                     case eInventorySlot.HandsArmor: model = 39; break;
                                 }
                                 break;
@@ -6121,7 +6121,7 @@ namespace DOL.GS {
                                     case eInventorySlot.LegsArmor: model = 241; break;
                                     case eInventorySlot.FeetArmor: model = 244; break;
                                     case eInventorySlot.HeadArmor: model = 335; break;
-                                    case eInventorySlot.TorsoArmor: model = 240; break;
+                                    case eInventorySlot.TorsoArmor: GetLeatherTorsoForLevel(Level, eRealm.Midgard); break;
                                     case eInventorySlot.HandsArmor: model = 243; break;
                                 }
                                 break;
@@ -6133,7 +6133,7 @@ namespace DOL.GS {
                                     case eInventorySlot.LegsArmor: model = 394; break;
                                     case eInventorySlot.FeetArmor: model = 397; break;
                                     case eInventorySlot.HeadArmor: model = 438; break;
-                                    case eInventorySlot.TorsoArmor: model = 393; break;
+                                    case eInventorySlot.TorsoArmor: GetLeatherTorsoForLevel(Level, eRealm.Hibernia); break;
                                     case eInventorySlot.HandsArmor: model = 396; break;
                                 }
                                 break;
@@ -7295,9 +7295,53 @@ namespace DOL.GS {
                     ext = GetTorsoExtensionForLevel(Level);
 
                 this.Extension = ext;
-                Console.WriteLine($"Generated extension: {this.Extension} on {this.Name}");
             }
 
+        }
+
+        private static int GetLeatherTorsoForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(31);
+                    if (Level > 20)
+                        validModels.Add(36);
+                    if (Level > 30)
+                        validModels.Add(74);
+                    if (Level > 40)
+                        validModels.Add(134);
+                    if (Level > 50)
+                        validModels.Add(2797);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(240);
+                    if (Level > 20)
+                        validModels.Add(260);
+                    if (Level > 30)
+                        validModels.Add(280);
+                    if (Level > 40)
+                        validModels.Add(300);
+                    if (Level > 50)
+                        validModels.Add(2859);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(373);
+                    if (Level >= 10)
+                        validModels.Add(393);
+                    if (Level >= 20)
+                        validModels.Add(413);
+                    if (Level >= 30)
+                        validModels.Add(433);
+                    if (Level >= 40)
+                        validModels.Add(1256);
+                    if(Level > 50)
+                        validModels.Add(2828);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
         }
 
         private static byte GetTorsoExtensionForLevel(int Level)
@@ -7316,8 +7360,6 @@ namespace DOL.GS {
             appliedExtension = (byte)Util.Random(possibleExtensions);
             if (Level > 50)
                 appliedExtension++; //increment by 1 to unlock special extension for lvl 51+, as well as remove possibility of getting extension 0
-
-            Console.WriteLine($"Applying ext {appliedExtension} to torso");
             return appliedExtension;
         }
 
@@ -7339,7 +7381,6 @@ namespace DOL.GS {
                 possibleExt.Remove(0);
             }
             byte appliedExtension = possibleExt[Util.Random(possibleExt.Count - 1)];
-            Console.WriteLine($"Applying ext {appliedExtension} to non-torso");
             return appliedExtension;
         }
 
