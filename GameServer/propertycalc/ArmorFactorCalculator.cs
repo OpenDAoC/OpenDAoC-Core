@@ -68,9 +68,16 @@ namespace DOL.GS.PropertyCalc
 					return amount;
 				else return amount / 2;
 			}
+			else if (living is GameEpicNPC)
+            {
+				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * 5) //5* factor for tough mobs
+				+ living.SpecBuffBonusCategory[(int)property]
+				- Math.Abs(living.DebuffCategory[(int)property])
+				+ living.BuffBonusCategory4[(int)property];
+			}
 			else
 			{
-				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * 3.3)
+				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * 3.3) //3.3* factor for weak mobs
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];
