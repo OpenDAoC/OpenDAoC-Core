@@ -8,7 +8,7 @@ namespace DOL.GS {
     public class GameEpicNPC : GameNPC {
         public GameEpicNPC() : base()
         {
-            ScalingFactor = 55;
+            ScalingFactor = 60;
         }
     }
 }
