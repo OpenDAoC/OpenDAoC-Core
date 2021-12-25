@@ -68,10 +68,10 @@ namespace DOL.GS {
         public const ushort ROG_TOA_STAT_CHANCE = 0;
 
         // Item chance to get stat bonus
-        public const ushort ROG_ITEM_STAT_CHANCE = 50;
+        public const ushort ROG_ITEM_STAT_CHANCE = 45;
 
         // Item chance to get resist bonus
-        public const ushort ROG_ITEM_RESIST_CHANCE = 45;
+        public const ushort ROG_ITEM_RESIST_CHANCE = 48;
 
         //item chance to get skills
         public const ushort ROG_ITEM_SKILL_CHANCE = 50;
@@ -213,7 +213,7 @@ namespace DOL.GS {
         public void GenerateItemQuality(double conlevel)
         {
             // set base quality
-            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 46);
+            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 47);
             int maxQuality = (int)(1.310 * conlevel + 94.29 + 3);
 
             // CAPS
@@ -6000,7 +6000,7 @@ namespace DOL.GS {
                                         if (Util.Chance(10))
                                             model = 1278; //10% chance of wizard hat
                                         else
-                                            model = 822; 
+                                            model = 822;
                                         break;
                                     case eInventorySlot.HandsArmor: model = 142; break;
                                     case eInventorySlot.TorsoArmor:
@@ -6066,7 +6066,7 @@ namespace DOL.GS {
                                         if (Util.Chance(10))
                                             model = 1279; //10% chance of wizard hat
                                         else
-                                            model = 826; 
+                                            model = 826;
                                         break;
                                     case eInventorySlot.HandsArmor: model = 381; break;
                                     case eInventorySlot.TorsoArmor:
@@ -7171,13 +7171,35 @@ namespace DOL.GS {
                                 }
                             case eDamageType.Crush:
                                 {
-                                    name = "Great Hammer";
-                                    model = 17;
-                                    break;
+                                    if (Level < 35)
+                                    {
+                                        name = "Great Hammer";
+                                        model = 17;
+                                        break;
+                                    }
+                                    else if (Level < 50)
+                                    {
+                                        name = "Battle Hammer";
+                                        model = 842;
+                                        break;
+                                    }
+                                    else if (Util.Chance(50))
+                                    {
+                                        name = "War Maul";
+                                        model = 844;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        name = "Arch Mace";
+                                        model = 644;
+                                        break;
+                                    }
+
                                 }
                             case eDamageType.Thrust:
                                 {
-                                    if (this.SPD_ABS < 46)
+                                    if (Level < 46)
                                     {
                                         name = "War Mattock";
                                         model = 16;
@@ -7227,7 +7249,7 @@ namespace DOL.GS {
             }
 
             //each realm has a chance for special helmets during generation
-            if(slot == eInventorySlot.HeadArmor)
+            if (slot == eInventorySlot.HeadArmor)
             {
                 switch (realm)
                 {
@@ -7257,19 +7279,68 @@ namespace DOL.GS {
                         break;
                 }
             }
-            
+
 
             this.Name = name;
             this.Model = model;
 
+            //
             if (canAddExtension)
             {
-                if (this.Level > 50)
-                    this.Extension = 3;
-                if (this.Level > 35)
-                    this.Extension = 2;
+                byte ext = 0;
+                if (slot == eInventorySlot.HandsArmor ||
+                     slot == eInventorySlot.FeetArmor)
+                    ext = GetNonTorsoExtensionForLevel(Level);
+                else if (slot == eInventorySlot.TorsoArmor)
+                    ext = GetTorsoExtensionForLevel(Level);
+
+                this.Extension = ext;
+                Console.WriteLine($"Generated extension: {this.Extension} on {this.Name}");
             }
 
+        }
+
+        private static byte GetTorsoExtensionForLevel(int Level)
+        {
+            int possibleExtensions = 1;
+            byte appliedExtension = 0;
+
+            if (Level > 10)
+                possibleExtensions++;
+            if (Level > 20)
+                possibleExtensions++;
+            if (Level > 30)
+                possibleExtensions++;
+            if (Level > 40)
+                possibleExtensions++;
+            appliedExtension = (byte)Util.Random(possibleExtensions);
+            if (Level > 50)
+                appliedExtension++; //increment by 1 to unlock special extension for lvl 51+, as well as remove possibility of getting extension 0
+
+            Console.WriteLine($"Applying ext {appliedExtension} to torso");
+            return appliedExtension;
+        }
+
+        private static byte GetNonTorsoExtensionForLevel(int Level)
+        {
+            List<byte> possibleExt = new List<byte>();
+            possibleExt.Add(0);
+            if (Level > 10)
+                possibleExt.Add(8);
+            if (Level > 20)
+                possibleExt.Add(7);
+            if (Level > 30)
+                possibleExt.Add(5);
+            if (Level > 40)
+                possibleExt.Add(6);
+            if (Level > 50)
+            {
+                possibleExt.Add(4);
+                possibleExt.Remove(0);
+            }
+            byte appliedExtension = possibleExt[Util.Random(possibleExt.Count - 1)];
+            Console.WriteLine($"Applying ext {appliedExtension} to non-torso");
+            return appliedExtension;
         }
 
         private static string ArmorSlotToName(eInventorySlot slot, eObjectType type)
@@ -7418,11 +7489,11 @@ namespace DOL.GS {
             eProperty.Skill_Stealth,
             eProperty.Skill_Thrusting,
             eProperty.Skill_Wind,
-			//eProperty.Skill_Aura_Manipulation, //Maulers
-			//eProperty.Skill_FistWraps, //Maulers
-			//eProperty.Skill_MaulerStaff, //Maulers
-			//eProperty.Skill_Magnetism, //Maulers
-			//eProperty.Skill_Power_Strikes, //Maulers
+            //eProperty.Skill_Aura_Manipulation, //Maulers
+            //eProperty.Skill_FistWraps, //Maulers
+            //eProperty.Skill_MaulerStaff, //Maulers
+            //eProperty.Skill_Magnetism, //Maulers
+            //eProperty.Skill_Power_Strikes, //Maulers
         };
 
 
@@ -7453,19 +7524,19 @@ namespace DOL.GS {
             eProperty.Skill_Creeping,
             eProperty.Skill_Arboreal,
             eProperty.Skill_Scythe,
-	        //eProperty.Skill_Nightshade, // bonus not used
-	        //eProperty.Skill_Pathfinding, // bonus not used
-	        //eProperty.Skill_Dementia,
-	        //eProperty.Skill_ShadowMastery,
-	        //eProperty.Skill_VampiiricEmbrace,
-	        //eProperty.Skill_EtherealShriek,
-	        //eProperty.Skill_PhantasmalWail,
-	        //eProperty.Skill_SpectralForce,
-			//eProperty.Skill_Aura_Manipulation, //Maulers
-			//eProperty.Skill_FistWraps, //Maulers
-			//eProperty.Skill_MaulerStaff, //Maulers
-			//eProperty.Skill_Magnetism, //Maulers
-			//eProperty.Skill_Power_Strikes, //Maulers
+            //eProperty.Skill_Nightshade, // bonus not used
+            //eProperty.Skill_Pathfinding, // bonus not used
+            //eProperty.Skill_Dementia,
+            //eProperty.Skill_ShadowMastery,
+            //eProperty.Skill_VampiiricEmbrace,
+            //eProperty.Skill_EtherealShriek,
+            //eProperty.Skill_PhantasmalWail,
+            //eProperty.Skill_SpectralForce,
+            //eProperty.Skill_Aura_Manipulation, //Maulers
+            //eProperty.Skill_FistWraps, //Maulers
+            //eProperty.Skill_MaulerStaff, //Maulers
+            //eProperty.Skill_Magnetism, //Maulers
+            //eProperty.Skill_Power_Strikes, //Maulers
         };
 
         private static eProperty[] MidSkillBonus = new eProperty[]
@@ -7501,12 +7572,12 @@ namespace DOL.GS {
 	        //eProperty.Skill_Hexing,
 	        //eProperty.Skill_Witchcraft,
     		eProperty.Skill_Summoning,
-			//eProperty.Skill_Aura_Manipulation, //Maulers
-			//eProperty.Skill_FistWraps, //Maulers
-			//eProperty.Skill_MaulerStaff, //Maulers
-			//eProperty.Skill_Magnetism, //Maulers
-			//eProperty.Skill_Power_Strikes, //Maulers
-		};
+            //eProperty.Skill_Aura_Manipulation, //Maulers
+            //eProperty.Skill_FistWraps, //Maulers
+            //eProperty.Skill_MaulerStaff, //Maulers
+            //eProperty.Skill_Magnetism, //Maulers
+            //eProperty.Skill_Power_Strikes, //Maulers
+        };
 
 
 
@@ -7619,7 +7690,7 @@ namespace DOL.GS {
             eObjectType.Instrument,
             eObjectType.FistWraps,//Maulers
 			eObjectType.MaulerStaff,//Maulers
-		};
+        };
 
         private static eObjectType[] HiberniaArmor = new eObjectType[]
         {
