@@ -6155,24 +6155,24 @@ namespace DOL.GS {
                             case eRealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 83; break;
-                                    case eInventorySlot.LegsArmor: model = 82; break;
-                                    case eInventorySlot.FeetArmor: model = 84; break;
-                                    case eInventorySlot.HeadArmor: model = 824; break;
-                                    case eInventorySlot.TorsoArmor: model = 81; break;
-                                    case eInventorySlot.HandsArmor: model = 85; break;
+                                    case eInventorySlot.ArmsArmor: GetStuddedSleevesForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.LegsArmor: GetStuddedPantsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.FeetArmor: GetStuddedBootsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HeadArmor: GetStuddedHelmForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.TorsoArmor: GetStuddedTorsoForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HandsArmor: GetStuddedHandsForLevel(Level, eRealm.Albion); break;
                                 }
                                 break;
 
                             case eRealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 232; break;
-                                    case eInventorySlot.LegsArmor: model = 231; break;
-                                    case eInventorySlot.FeetArmor: model = 234; break;
-                                    case eInventorySlot.HeadArmor: model = 829; break;
-                                    case eInventorySlot.TorsoArmor: model = 230; break;
-                                    case eInventorySlot.HandsArmor: model = 233; break;
+                                    case eInventorySlot.ArmsArmor: GetStuddedSleevesForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.LegsArmor: GetStuddedPantsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.FeetArmor: GetStuddedBootsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HeadArmor: GetStuddedHelmForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.TorsoArmor: GetStuddedTorsoForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HandsArmor: GetStuddedHandsForLevel(Level, eRealm.Midgard); break;
                                 }
                                 break;
                         }
@@ -7747,31 +7747,25 @@ namespace DOL.GS {
             switch (realm)
             {
                 case eRealm.Albion:
-                    validModels.Add(62);
+                    validModels.Add(824);
                     if (Level > 35)
-                        validModels.Add(1231);
+                        validModels.Add(1233);
                     if (Level > 45)
-                        validModels.Add(2800);
+                        validModels.Add(1234);
                     if (Level > 50)
-                        validModels.Add(1232);
+                        validModels.Add(1235);
                     break;
                 case eRealm.Midgard:
-                    validModels.Add(335);
+                    validModels.Add(829);
                     if (Level > 35)
-                        validModels.Add(336);
+                        validModels.Add(830);
                     if (Level > 45)
-                        validModels.Add(337);
+                        validModels.Add(831);
                     if (Level > 50)
-                        validModels.Add(1214);
+                        validModels.Add(1215);
                     break;
-                case eRealm.Hibernia:
-                    validModels.Add(438);
-                    if (Level > 35)
-                        validModels.Add(439);
-                    if (Level > 45)
-                        validModels.Add(440);
-                    if (Level > 50)
-                        validModels.Add(1198);
+                default:
+                    validModels.Add(824);
                     break;
             }
 
