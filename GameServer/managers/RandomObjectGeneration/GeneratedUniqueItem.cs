@@ -6760,29 +6760,26 @@ namespace DOL.GS {
                     }
                 case eObjectType.Piercing:
                     {
+                        model = GetThrustModelForLevel(Level, eRealm.Hibernia);
                         if (this.SPD_ABS < 24)
                         {
                             name = "Dirk";
-                            model = 454;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 29)
                         {
                             name = "Stiletto";
-                            model = 456;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
                             name = "Curved Dagger";
-                            model = 457;
                         }
                         else
                         {
                             name = "Rapier";
-                            model = 455;
                         }
                         break;
                     }
@@ -7044,36 +7041,32 @@ namespace DOL.GS {
                     }
                 case eObjectType.ThrustWeapon:
                     {
+                        model = GetThrustModelForLevel(Level, eRealm.Albion);
                         if (this.SPD_ABS < 24)
                         {
                             name = "Dirk";
-                            model = 21;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 28)
                         {
                             name = "Stiletto";
-                            model = 71;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
                             name = "Main Gauche";
-                            model = 25;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 36)
                         {
                             name = "Rapier";
-                            model = 22;
                         }
                         else
                         {
                             name = "Gladius";
-                            model = 30;
                         }
                         break;
                     }
@@ -8826,15 +8819,27 @@ namespace DOL.GS {
             {
                 case eRealm.Hibernia:
                     validModels.Add(71);
+                    validModels.Add(454);
                     if (Level > 10)
+                    {
+                        validModels.Add(455);
                         validModels.Add(902);
+                    }                        
                     if (Level > 20)
+                    {
+                        validModels.Add(456);
                         validModels.Add(898);
+                    }                        
                     if (Level > 30)
+                    {
+                        validModels.Add(457);
+                        validModels.Add(472);
                         validModels.Add(895);
+                    }                        
                     if (Level > 40)
                     {
                         validModels.Add(460);
+                        validModels.Add(643);
                         validModels.Add(3678);
                         validModels.Add(3679);
                     }
@@ -8842,25 +8847,39 @@ namespace DOL.GS {
                     {
                         validModels.Add(453);
                         validModels.Add(940);
+                        validModels.Add(943);
+                        validModels.Add(944);
+                        validModels.Add(945);
+                        validModels.Add(946);
                         validModels.Add(3721);
                         validModels.Add(3722);
                     }
                     break;
                 case eRealm.Albion:
                     validModels.Add(1);
+                    validModels.Add(21);
                     if (Level > 10)
                     {
                         validModels.Add(876);
+                        validModels.Add(22);
+                        validModels.Add(23);
                     }
                     if (Level > 20)
+                    {
                         validModels.Add(889);
+                        validModels.Add(24);
+                        validModels.Add(25);
+                    }                        
                     if (Level > 30)
                     {
                         validModels.Add(888);
                         validModels.Add(887);
+                        validModels.Add(29);
+                        validModels.Add(30);
                     }
                     if (Level > 40)
                     {
+                        validModels.Add(653);
                         validModels.Add(2209);
                         validModels.Add(3721);
                         validModels.Add(3722);
