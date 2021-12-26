@@ -6369,6 +6369,9 @@ namespace DOL.GS {
                         {
                             name = "Pick Hammer";
                         }
+
+                        if (Util.Chance(1))
+                            model = 3458;
                         break;
                     }
                 case eObjectType.CelticSpear:
@@ -8530,6 +8533,44 @@ namespace DOL.GS {
                     if (Level > 10)
                     {
                         validModels.Add(451);
+                    }
+                    if (Level > 30)
+                    {
+                        validModels.Add(452);
+
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(461);
+                        validModels.Add(3676);
+                        validModels.Add(3677);
+                    }
+
+                    if (Level > 50)
+                    {
+                        validModels.Add(3719);
+                        validModels.Add(3720);
+                    }
+                    break;
+                default:
+                    validModels.Add(449);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetCeltSpearModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(469);
+                    validModels.Add(470);
+                    if (Level > 10)
+                    {
+                        validModels.Add(475);
                     }
                     if (Level > 30)
                     {
