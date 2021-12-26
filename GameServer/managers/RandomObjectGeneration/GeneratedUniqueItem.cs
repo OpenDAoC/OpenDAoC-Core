@@ -6821,20 +6821,18 @@ namespace DOL.GS {
                     }
                 case eObjectType.Scythe:
                     {
+                        model = GetScytheModelForLevel(Level, eRealm.Hibernia);
                         if (this.SPD_ABS < 47)
                         {
                             name = "Scythe";
-                            model = 931;
                         }
                         else if (this.SPD_ABS < 51)
                         {
                             name = "Martial Scythe";
-                            model = 930;
                         }
                         else
                         {
                             name = "War Scythe";
-                            model = 932;
                         }
                         break;
                     }
@@ -9270,6 +9268,41 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(226);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetScytheModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(931);
+                    if (Level > 10)
+                        validModels.Add(929);
+                    if (Level > 20)
+                        validModels.Add(928);
+                    if (Level > 30)
+                        validModels.Add(930);
+                    if (Level > 40)
+                    {
+                        validModels.Add(932);
+                        validModels.Add(926);
+                        validModels.Add(927);
+                        validModels.Add(3665);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(3825);
+                        validModels.Add(3708);
+                        validModels.Add(3885);
+                    }
+                    break;
+                default:
+                    validModels.Add(931);
                     break;
             }
 
