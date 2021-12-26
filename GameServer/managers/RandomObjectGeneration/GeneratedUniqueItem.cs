@@ -6870,24 +6870,22 @@ namespace DOL.GS {
                     }
                 case eObjectType.SlashingWeapon:
                     {
+                        model = GetBladeModelForLevel(Level, eRealm.Albion);
                         if (this.SPD_ABS < 26)
                         {
                             name = "Dagger";
-                            model = 1;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
-                            if (Util.Chance(25))
+                            if (model == 651)
                             {
                                 name = "Jambiya";
-                                model = 651;
                             }
                             else
                             {
                                 name = "Short Sword";
-                                model = 3;
                             }
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
@@ -6895,22 +6893,18 @@ namespace DOL.GS {
                         else if (this.SPD_ABS < 32)
                         {
                             name = "Broadsword";
-                            model = 5;
                         }
                         else if (this.SPD_ABS < 35)
                         {
                             name = "Scimitar";
-                            model = 8;
                         }
                         else if (this.SPD_ABS < 40)
                         {
                             name = "Long Sword";
-                            model = 4;
                         }
                         else
                         {
                             name = "Bastard Sword";
-                            model = 10;
                         }
                         break;
                     }
@@ -7024,30 +7018,26 @@ namespace DOL.GS {
                         }
                         else
                         {
+                            model = GetBladeModelForLevel(Level, eRealm.Midgard);
                             if (this.SPD_ABS < 25)
                             {
                                 name = "Dagger";
-                                model = 571;
                             }
                             else if (this.SPD_ABS < 30)
                             {
                                 name = "Short Sword";
-                                model = 311;
                             }
                             else if (this.SPD_ABS < 32)
                             {
                                 name = "Broadsword";
-                                model = 312;
                             }
                             else if (this.SPD_ABS < 35)
                             {
                                 name = "Long Sword";
-                                model = 310;
                             }
                             else
                             {
                                 name = "Bastard Sword";
-                                model = 313;
                             }
                         }
                         break;
