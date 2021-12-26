@@ -7129,15 +7129,14 @@ namespace DOL.GS {
                                 }
                             case eDamageType.Thrust:
                                 {
-                                    if (Level < 46)
+                                    model = Get2HThrustForLevel(Level, eRealm.Albion);
+                                    if (Util.Chance(50))
                                     {
                                         name = "War Mattock";
-                                        model = 16;
                                     }
                                     else
                                     {
                                         name = "War Pick";
-                                        model = 646;
                                     }
                                     break;
                                 }
@@ -8511,6 +8510,7 @@ namespace DOL.GS {
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
+
         private static int GetBladeModelForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
@@ -8700,15 +8700,11 @@ namespace DOL.GS {
                     validModels.Add(449);
                     validModels.Add(450);
                     if (Level > 10)
-                    {
                         validModels.Add(451);
-                    }
-                    if (Level > 30)
-                    {
+                    if(Level > 20)
                         validModels.Add(452);
+                    if (Level > 30)
                         validModels.Add(461);
-
-                    }
                     if (Level > 40)
                     {
                         validModels.Add(913);
@@ -8716,7 +8712,6 @@ namespace DOL.GS {
                         validModels.Add(3676);
                         validModels.Add(3677);
                     }
-
                     if (Level > 50)
                     {
                         validModels.Add(916);
@@ -8787,6 +8782,99 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(449);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int Get2HThrustForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(846);
+
+                    if (Level > 20)
+                        validModels.Add(646);
+                    if (Level > 30)
+                        validModels.Add(2661);
+                    if (Level > 40)
+                    {
+                        validModels.Add(3817);
+                        validModels.Add(3657);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(2208);
+                        validModels.Add(3700);
+                    }
+                    break;
+                default:
+                    validModels.Add(449);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetThrustModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(71);
+                    if (Level > 10)
+                        validModels.Add(902);
+                    if (Level > 20)
+                        validModels.Add(898);
+                    if (Level > 30)
+                        validModels.Add(895);
+                    if (Level > 40)
+                    {
+                        validModels.Add(460);
+                        validModels.Add(3678);
+                        validModels.Add(3679);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(453);
+                        validModels.Add(940);
+                        validModels.Add(3721);
+                        validModels.Add(3722);
+                    }
+                    break;
+                case eRealm.Albion:
+                    validModels.Add(1);
+                    if (Level > 10)
+                    {
+                        validModels.Add(876);
+                    }
+                    if (Level > 20)
+                        validModels.Add(889);
+                    if (Level > 30)
+                    {
+                        validModels.Add(888);
+                        validModels.Add(887);
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(2209);
+                        validModels.Add(3721);
+                        validModels.Add(3722);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(885);
+                        validModels.Add(886);
+                        validModels.Add(3721);
+                        validModels.Add(3722);
+                    }
+                    break;
+                default:
+                    validModels.Add(1);
                     break;
             }
 
