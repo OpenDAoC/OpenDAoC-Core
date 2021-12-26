@@ -6140,7 +6140,7 @@ namespace DOL.GS {
 
                         }
 
-                        if (slot != eInventorySlot.HeadArmor 
+                        if (slot != eInventorySlot.HeadArmor
                             && slot != eInventorySlot.ArmsArmor
                             && slot != eInventorySlot.LegsArmor)
                             canAddExtension = true;
@@ -6190,9 +6190,9 @@ namespace DOL.GS {
                             case eInventorySlot.ArmsArmor: model = GetPlateSleevesForLevel(Level, eRealm.Albion); break;
                             case eInventorySlot.LegsArmor: model = GetPlatePantsForLevel(Level, eRealm.Albion); break;
                             case eInventorySlot.FeetArmor: model = GetPlateBootsForLevel(Level, eRealm.Albion); break;
-                            case eInventorySlot.HeadArmor: 
+                            case eInventorySlot.HeadArmor:
                                 model = GetPlateHelmForLevel(Level, eRealm.Albion);
-                                if(model == 93 || model == 95)
+                                if (model == 93 || model == 95)
                                     name = "Plate Full Helm";
                                 break;
                             case eInventorySlot.TorsoArmor: model = GetPlateTorsoForLevel(Level, eRealm.Albion); break;
@@ -6346,7 +6346,8 @@ namespace DOL.GS {
                     {
                         // Blunt; speed 22 - 45; Club (449), Mace (450), Hammer (461), Spiked Mace (451), Pick Hammer (641)
                         model = GetBluntModelForLevel(Level, eRealm.Hibernia);
-                        if(this.SPD_ABS < 31){
+                        if (this.SPD_ABS < 31)
+                        {
                             name = "Club";
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
@@ -6502,20 +6503,18 @@ namespace DOL.GS {
                     {
                         if (this.Hand == 1)
                         {
+                            model = Get2HHammerForLevel(Level, eRealm.Midgard);
                             if (this.SPD_ABS < 50)
                             {
                                 name = "Two Handed Hammer";
-                                model = 574;
                             }
                             if (this.SPD_ABS < 53)
                             {
                                 name = "Two Handed War Hammer";
-                                model = 575;
                             }
                             else
                             {
                                 name = "Great Hammer";
-                                model = 576;
                             }
                         }
                         else
@@ -6642,15 +6641,14 @@ namespace DOL.GS {
                                 }
                             case eDamageType.Crush:
                                 {
-                                    if (this.SPD_ABS < 50)
+                                    model = Get2HHammerForLevel(Level, eRealm.Hibernia);
+                                    if (model == 474 || model == 912)
                                     {
                                         name = "Big Shillelagh";
-                                        model = 474;
                                     }
                                     else
                                     {
                                         name = "Great Hammer";
-                                        model = 462;
                                     }
                                     break;
                                 }
@@ -7133,28 +7131,25 @@ namespace DOL.GS {
                                 }
                             case eDamageType.Crush:
                                 {
+                                    model = Get2HHammerForLevel(Level, eRealm.Albion);
                                     if (Level < 35)
                                     {
                                         name = "Great Hammer";
-                                        model = 17;
                                         break;
                                     }
                                     else if (Level < 50)
                                     {
                                         name = "Battle Hammer";
-                                        model = 842;
                                         break;
                                     }
                                     else if (Util.Chance(50))
                                     {
                                         name = "War Maul";
-                                        model = 844;
                                         break;
                                     }
                                     else
                                     {
                                         name = "Arch Mace";
-                                        model = 644;
                                         break;
                                     }
 
@@ -7299,7 +7294,7 @@ namespace DOL.GS {
                         validModels.Add(433);
                     if (Level >= 40)
                         validModels.Add(1256);
-                    if(Level > 50)
+                    if (Level > 50)
                         validModels.Add(2828);
                     break;
             }
@@ -7990,7 +7985,7 @@ namespace DOL.GS {
                     {
                         validModels.Add(1273);
                         validModels.Add(2816);
-                    }  
+                    }
                     break;
                 default:
                     validModels.Add(47);
@@ -8451,7 +8446,7 @@ namespace DOL.GS {
                         validModels.Add(3681);
                         validModels.Add(3680);
                     }
-                        
+
                     if (Level > 50)
                     {
                         validModels.Add(3723);
@@ -8459,7 +8454,7 @@ namespace DOL.GS {
                         validModels.Add(3942);
                         validModels.Add(3941);
                     }
-                        
+
                     break;
                 default:
                     validModels.Add(2);
@@ -8508,6 +8503,92 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
+        private static int Get2HHammerForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(474);
+                    validModels.Add(463);
+                    if (Level > 10)
+                    {
+                        validModels.Add(462);
+                    }
+                    if (Level > 30)
+                    {
+                        validModels.Add(640);
+                        validModels.Add(912);
+
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(904);
+                        validModels.Add(906);
+                        validModels.Add(908);
+                        validModels.Add(909);
+                        validModels.Add(3661);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(905);
+                        validModels.Add(917);
+                        validModels.Add(905);
+                        validModels.Add(3704);
+                    }
+                    break;
+                case eRealm.Albion:
+                    validModels.Add(16);
+
+                    if (Level > 20)
+                        validModels.Add(17);
+                    if (Level > 30)
+                        validModels.Add(644);
+                    if (Level > 40)
+                    {
+                        validModels.Add(842);
+                        validModels.Add(3661);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(844);
+                        validModels.Add(3704);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(574);
+                    if (Level > 10)
+                        validModels.Add(575);
+
+                    if (Level > 20)
+                    {
+                        validModels.Add(576);
+                        validModels.Add(659);
+                    }
+
+                    if (Level > 30)
+                        validModels.Add(956);
+
+                    if (Level > 40)
+                    {
+                        validModels.Add(1031);
+                        validModels.Add(1034);
+                        validModels.Add(3661);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(1028);
+                        validModels.Add(3704);
+                    }
+                    break;
+                default:
+                    validModels.Add(449);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
         private static int GetBluntModelForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
@@ -8550,7 +8631,7 @@ namespace DOL.GS {
                         validModels.Add(13);
                         validModels.Add(14);
                     }
-                    if(Level > 20)
+                    if (Level > 20)
                         validModels.Add(15);
                     if (Level > 30)
                     {
@@ -8617,7 +8698,7 @@ namespace DOL.GS {
             {
                 case eRealm.Hibernia:
                     validModels.Add(556);
-                    if(Level > 10)
+                    if (Level > 10)
                         validModels.Add(469);
                     if (Level > 20)
                         validModels.Add(470);
@@ -8746,7 +8827,7 @@ namespace DOL.GS {
                     validModels.Add(226);
                     if (Level > 10)
                         validModels.Add(890);
-                    if(Level > 20)
+                    if (Level > 20)
                         validModels.Add(891);
                     if (Level > 30)
                         validModels.Add(892);
