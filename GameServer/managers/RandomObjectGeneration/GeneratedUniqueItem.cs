@@ -6838,24 +6838,22 @@ namespace DOL.GS {
                     }
                 case eObjectType.Shield:
                     {
+                        model = GetShieldModelForLevel(Level, realm, (int)damage);
                         switch ((int)damage)
                         {
                             case 1:
                                 {
                                     name = "Small Shield";
-                                    model = 59;
                                     break;
                                 }
                             case 2:
                                 {
                                     name = "Medium Shield";
-                                    model = 61;
                                     break;
                                 }
                             case 3:
                                 {
                                     name = "Large Shield";
-                                    model = 60;
                                     break;
                                 }
                         }
@@ -8682,7 +8680,7 @@ namespace DOL.GS {
                     validModels.Add(450);
                     if (Level > 10)
                         validModels.Add(451);
-                    if(Level > 20)
+                    if (Level > 20)
                         validModels.Add(452);
                     if (Level > 30)
                         validModels.Add(461);
@@ -8812,18 +8810,18 @@ namespace DOL.GS {
                     {
                         validModels.Add(455);
                         validModels.Add(902);
-                    }                        
+                    }
                     if (Level > 20)
                     {
                         validModels.Add(456);
                         validModels.Add(898);
-                    }                        
+                    }
                     if (Level > 30)
                     {
                         validModels.Add(457);
                         validModels.Add(472);
                         validModels.Add(895);
-                    }                        
+                    }
                     if (Level > 40)
                     {
                         validModels.Add(460);
@@ -8857,7 +8855,7 @@ namespace DOL.GS {
                         validModels.Add(889);
                         validModels.Add(24);
                         validModels.Add(25);
-                    }                        
+                    }
                     if (Level > 30)
                     {
                         validModels.Add(888);
@@ -8951,7 +8949,7 @@ namespace DOL.GS {
                                 validModels.Add(3714);
                             }
                             break;
-                    }                    
+                    }
                     break;
                 default:
                     validModels.Add(328);
@@ -8973,7 +8971,7 @@ namespace DOL.GS {
                     {
                         validModels.Add(470);
                         validModels.Add(475);
-                    }                        
+                    }
                     if (Level > 20)
                     {
                         validModels.Add(476);
@@ -8983,7 +8981,7 @@ namespace DOL.GS {
                     {
                         validModels.Add(934);
                         validModels.Add(935);
-                    }   
+                    }
                     if (Level > 40)
                     {
                         validModels.Add(556);
@@ -9376,6 +9374,283 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(931);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetShieldModelForLevel(int Level, eRealm realm, int size)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    switch (size)
+                    {
+                        case 1:
+                            validModels.Add(1046);
+                            validModels.Add(1047);
+                            validModels.Add(1048);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1082);
+                                validModels.Add(1083);
+                                validModels.Add(1084);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1100);
+                                validModels.Add(1101);
+                                validModels.Add(1102);
+                            }
+                            if (Level > 40)
+                            {
+                                validModels.Add(1163);
+                                validModels.Add(1164);
+                                validModels.Add(1165);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3888);
+                            break;
+                        case 2:
+                            validModels.Add(1055);
+                            validModels.Add(1056);
+                            validModels.Add(1057);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1091);
+                                validModels.Add(1092);
+                                validModels.Add(1093);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1145);
+                                validModels.Add(1146);
+                                validModels.Add(1147);
+                            }
+                            if (Level > 30)
+                            {
+                                validModels.Add(1148);
+                                validModels.Add(1149);
+                                validModels.Add(1150);
+                            }
+                            if (Level > 40)
+                            {
+                                validModels.Add(1160);
+                                validModels.Add(1161);
+                                validModels.Add(1162);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3889);
+                            break;
+                        case 3:
+                            validModels.Add(1082);
+                            validModels.Add(1083);
+                            validModels.Add(1084);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1073);
+                                validModels.Add(1074);
+                                validModels.Add(1075);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1064);
+                                validModels.Add(1065);
+                                validModels.Add(1066);
+                            }
+                            if (Level > 30)
+                            {
+                                validModels.Add(1151);
+                                validModels.Add(1152);
+                                validModels.Add(1153);
+                            }
+                            if (Level > 40)
+                            {
+                                validModels.Add(1154);
+                                validModels.Add(1155);
+                                validModels.Add(1156);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3890);
+                            break;
+                    }
+                    break;
+                case eRealm.Albion:
+                    switch (size)
+                    {
+                        case 1:
+                            validModels.Add(1040);
+                            validModels.Add(1041);
+                            validModels.Add(1042);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1103);
+                                validModels.Add(1104);
+                                validModels.Add(1105);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1118);
+                                validModels.Add(1119);
+                                validModels.Add(1120);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3965);
+                            break;
+                        case 2:
+                            validModels.Add(1094);
+                            validModels.Add(1095);
+                            validModels.Add(1096);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1049);
+                                validModels.Add(1050);
+                                validModels.Add(1051);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1085);
+                                validModels.Add(1086);
+                                validModels.Add(1087);
+                            }
+                            if (Level > 30)
+                            {
+                                validModels.Add(1106);
+                                validModels.Add(1107);
+                                validModels.Add(1108);
+                            }
+                            if (Level > 40)
+                            {
+                                validModels.Add(1115);
+                                validModels.Add(1116);
+                                validModels.Add(1117);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3966);
+                            break;
+                        case 3:
+                            validModels.Add(1058);
+                            validModels.Add(1059);
+                            validModels.Add(1060);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1067);
+                                validModels.Add(1068);
+                                validModels.Add(1069);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1112);
+                                validModels.Add(1113);
+                                validModels.Add(1114);
+                            }
+                            if (Level > 30)
+                            {
+                                validModels.Add(1109);
+                                validModels.Add(1110);
+                                validModels.Add(1111);
+                            }
+                            if (Level > 40)
+                            {
+                                validModels.Add(1121);
+                                validModels.Add(1122);
+                                validModels.Add(1123);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3967);
+                            break;
+                    }
+                    break;
+                case eRealm.Midgard:
+                    switch (size)
+                    {
+                        case 1:
+                            validModels.Add(1043);
+                            validModels.Add(1044);
+                            validModels.Add(1045);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1124);
+                                validModels.Add(1125);
+                                validModels.Add(1126);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1139);
+                                validModels.Add(1140);
+                                validModels.Add(1141);
+                            }
+                            if(Level > 30)
+                            {
+                                validModels.Add(1130);
+                                validModels.Add(1131);
+                                validModels.Add(1132);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3929);
+                            break;
+                        case 2:
+                            validModels.Add(1097);
+                            validModels.Add(1098);
+                            validModels.Add(1099);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1088);
+                                validModels.Add(1089);
+                                validModels.Add(1090);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1052);
+                                validModels.Add(1053);
+                                validModels.Add(1054);
+                            }
+                            if (Level > 30)
+                            {
+                                validModels.Add(1127);
+                                validModels.Add(1128);
+                                validModels.Add(1129);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3930);
+                            break;
+                        case 3:
+                            validModels.Add(1079);
+                            validModels.Add(1080);
+                            validModels.Add(1081);
+                            if (Level > 10)
+                            {
+                                validModels.Add(1061);
+                                validModels.Add(1062);
+                                validModels.Add(1063);
+                            }
+                            if (Level > 20)
+                            {
+                                validModels.Add(1133);
+                                validModels.Add(1134);
+                                validModels.Add(1135);
+                            }
+                            if (Level > 30)
+                            {
+                                validModels.Add(1136);
+                                validModels.Add(1137);
+                                validModels.Add(1138);
+                            }
+                            if (Level > 40)
+                            {
+                                validModels.Add(1142);
+                                validModels.Add(1143);
+                                validModels.Add(1144);
+                            }
+                            if (Level > 50)
+                                validModels.Add(3931);
+                            break;
+                    }
+                    break;
+                default:
+                    validModels.Add(59);
                     break;
             }
 
