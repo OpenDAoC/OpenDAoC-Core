@@ -6105,42 +6105,44 @@ namespace DOL.GS {
                             case eRealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 38; break;
-                                    case eInventorySlot.LegsArmor: model = 37; break;
-                                    case eInventorySlot.FeetArmor: model = 40; break;
-                                    case eInventorySlot.HeadArmor: model = 62; break;
+                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, eRealm.Albion); break;
                                     case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = 39; break;
+                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, eRealm.Albion); break;
                                 }
                                 break;
 
                             case eRealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 242; break;
-                                    case eInventorySlot.LegsArmor: model = 241; break;
-                                    case eInventorySlot.FeetArmor: model = 244; break;
-                                    case eInventorySlot.HeadArmor: model = 335; break;
-                                    case eInventorySlot.TorsoArmor: GetLeatherTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = 243; break;
+                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, eRealm.Midgard); break;
                                 }
                                 break;
 
                             case eRealm.Hibernia:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 395; break;
-                                    case eInventorySlot.LegsArmor: model = 394; break;
-                                    case eInventorySlot.FeetArmor: model = 397; break;
-                                    case eInventorySlot.HeadArmor: model = 438; break;
-                                    case eInventorySlot.TorsoArmor: GetLeatherTorsoForLevel(Level, eRealm.Hibernia); break;
-                                    case eInventorySlot.HandsArmor: model = 396; break;
+                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, eRealm.Hibernia); break;
+                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, eRealm.Hibernia); break;
+                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, eRealm.Hibernia); break;
+                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, eRealm.Hibernia); break;
+                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Hibernia); break;
+                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, eRealm.Hibernia); break;
                                 }
                                 break;
 
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != eInventorySlot.HeadArmor 
+                            && slot != eInventorySlot.ArmsArmor
+                            && slot != eInventorySlot.LegsArmor)
                             canAddExtension = true;
 
                         break;
@@ -7299,6 +7301,7 @@ namespace DOL.GS {
 
         }
 
+        #region Leather Model Generation
         private static int GetLeatherTorsoForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
@@ -7343,6 +7346,438 @@ namespace DOL.GS {
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
+
+        private static int GetLeatherPantsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(32);
+                    if (Level > 20)
+                        validModels.Add(37);
+                    if (Level > 30)
+                        validModels.Add(75);
+                    if (Level > 40)
+                        validModels.Add(135);
+                    if (Level > 50)
+                        validModels.Add(2798);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(241);
+                    if (Level > 20)
+                        validModels.Add(261);
+                    if (Level > 30)
+                        validModels.Add(281);
+                    if (Level > 40)
+                        validModels.Add(301);
+                    if (Level > 50)
+                        validModels.Add(2860);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(374);
+                    if (Level >= 10)
+                        validModels.Add(394);
+                    if (Level >= 20)
+                        validModels.Add(414);
+                    if (Level >= 30)
+                        validModels.Add(434);
+                    if (Level >= 40)
+                        validModels.Add(1257);
+                    if (Level > 50)
+                        validModels.Add(2829);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetLeatherSleevesForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(33);
+                    if (Level > 20)
+                        validModels.Add(38);
+                    if (Level > 30)
+                        validModels.Add(76);
+                    if (Level > 40)
+                        validModels.Add(136);
+                    if (Level > 50)
+                        validModels.Add(2799);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(242);
+                    if (Level > 20)
+                        validModels.Add(262);
+                    if (Level > 30)
+                        validModels.Add(282);
+                    if (Level > 40)
+                        validModels.Add(302);
+                    if (Level > 50)
+                        validModels.Add(2861);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(375);
+                    if (Level >= 10)
+                        validModels.Add(395);
+                    if (Level >= 20)
+                        validModels.Add(415);
+                    if (Level >= 30)
+                        validModels.Add(435);
+                    if (Level >= 40)
+                        validModels.Add(355);
+                    if (Level > 50)
+                        validModels.Add(2830);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetLeatherHandsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(34);
+                    if (Level > 20)
+                        validModels.Add(39);
+                    if (Level > 30)
+                        validModels.Add(77);
+                    if (Level > 40)
+                        validModels.Add(137);
+                    if (Level > 50)
+                        validModels.Add(2802);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(243);
+                    if (Level > 20)
+                        validModels.Add(263);
+                    if (Level > 30)
+                        validModels.Add(283);
+                    if (Level > 40)
+                        validModels.Add(303);
+                    if (Level > 50)
+                        validModels.Add(2864);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(376);
+                    if (Level >= 10)
+                        validModels.Add(396);
+                    if (Level >= 20)
+                        validModels.Add(416);
+                    if (Level >= 30)
+                        validModels.Add(436);
+                    if (Level >= 40)
+                        validModels.Add(1259);
+                    if (Level > 50)
+                        validModels.Add(2833);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetLeatherBootsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(40);
+                    if (Level > 20)
+                        validModels.Add(133);
+                    if (Level > 30)
+                        validModels.Add(78);
+                    if (Level > 40)
+                        validModels.Add(138);
+                    if (Level > 50)
+                        validModels.Add(2801);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(244);
+                    if (Level > 20)
+                        validModels.Add(264);
+                    if (Level > 30)
+                        validModels.Add(284);
+                    if (Level > 40)
+                        validModels.Add(304);
+                    if (Level > 50)
+                        validModels.Add(2863);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(377);
+                    if (Level >= 10)
+                        validModels.Add(397);
+                    if (Level >= 20)
+                        validModels.Add(417);
+                    if (Level >= 30)
+                        validModels.Add(437);
+                    if (Level >= 40)
+                        validModels.Add(1260);
+                    if (Level > 50)
+                        validModels.Add(2832);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetLeatherHelmForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(62);
+                    if (Level > 35)
+                        validModels.Add(1231);
+                    if (Level > 45)
+                        validModels.Add(2800);
+                    if (Level > 50)
+                        validModels.Add(1232);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(335);
+                    if (Level > 35)
+                        validModels.Add(336);
+                    if (Level > 45)
+                        validModels.Add(337);
+                    if (Level > 50)
+                        validModels.Add(1214);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(438);
+                    if (Level > 35)
+                        validModels.Add(439);
+                    if (Level > 45)
+                        validModels.Add(440);
+                    if (Level > 50)
+                        validModels.Add(1198);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
+
+        #region Studded Model Generation
+        private static int GetStuddedTorsoForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(51);
+                    if (Level > 20)
+                        validModels.Add(81);
+                    if (Level > 30)
+                        validModels.Add(156);
+                    if (Level > 40)
+                        validModels.Add(216);
+                    if (Level > 50)
+                        validModels.Add(2803);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(230);
+                    if (Level > 20)
+                        validModels.Add(250);
+                    if (Level > 30)
+                        validModels.Add(270);
+                    if (Level > 40)
+                        validModels.Add(3012);
+                    if (Level > 50)
+                        validModels.Add(2865);
+                    break;
+                default:
+                    validModels.Add(0);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetStuddedPantsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(52);
+                    if (Level > 20)
+                        validModels.Add(82);
+                    if (Level > 30)
+                        validModels.Add(217);
+                    if (Level > 40)
+                        validModels.Add(157);
+                    if (Level > 50)
+                        validModels.Add(2804);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(231);
+                    if (Level > 20)
+                        validModels.Add(251);
+                    if (Level > 30)
+                        validModels.Add(271);
+                    if (Level > 40)
+                        validModels.Add(291);
+                    if (Level > 50)
+                        validModels.Add(2866);
+                    break;
+                default:
+                    validModels.Add(52);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetStuddedSleevesForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(53);
+                    if (Level > 20)
+                        validModels.Add(83);
+                    if (Level > 30)
+                        validModels.Add(218);
+                    if (Level > 40)
+                        validModels.Add(158);
+                    if (Level > 50)
+                        validModels.Add(2805);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(232);
+                    if (Level > 20)
+                        validModels.Add(252);
+                    if (Level > 30)
+                        validModels.Add(272);
+                    if (Level > 40)
+                        validModels.Add(292);
+                    if (Level > 50)
+                        validModels.Add(2867);
+                    break;
+                default:
+                    validModels.Add(53);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetStuddedHandsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(80);
+                    if (Level > 20)
+                        validModels.Add(85);
+                    if (Level > 30)
+                        validModels.Add(219);
+                    if (Level > 40)
+                        validModels.Add(159);
+                    if (Level > 50)
+                        validModels.Add(2808);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(233);
+                    if (Level > 20)
+                        validModels.Add(253);
+                    if (Level > 30)
+                        validModels.Add(273);
+                    if (Level > 40)
+                        validModels.Add(293);
+                    if (Level > 50)
+                        validModels.Add(2870);
+                    break;
+                default:
+                    validModels.Add(80);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetStuddedBootsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(54);
+                    if (Level > 20)
+                        validModels.Add(84);
+                    if (Level > 30)
+                        validModels.Add(220);
+                    if (Level > 40)
+                        validModels.Add(160);
+                    if (Level > 50)
+                        validModels.Add(2807);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(234);
+                    if (Level > 20)
+                        validModels.Add(254);
+                    if (Level > 30)
+                        validModels.Add(274);
+                    if (Level > 40)
+                        validModels.Add(294);
+                    if (Level > 50)
+                        validModels.Add(2869);
+                    break;
+                default:
+                    validModels.Add(54);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetStuddedHelmForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(62);
+                    if (Level > 35)
+                        validModels.Add(1231);
+                    if (Level > 45)
+                        validModels.Add(2800);
+                    if (Level > 50)
+                        validModels.Add(1232);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(335);
+                    if (Level > 35)
+                        validModels.Add(336);
+                    if (Level > 45)
+                        validModels.Add(337);
+                    if (Level > 50)
+                        validModels.Add(1214);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(438);
+                    if (Level > 35)
+                        validModels.Add(439);
+                    if (Level > 45)
+                        validModels.Add(440);
+                    if (Level > 50)
+                        validModels.Add(1198);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
 
         private static byte GetTorsoExtensionForLevel(int Level)
         {
