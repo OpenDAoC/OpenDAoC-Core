@@ -6455,6 +6455,7 @@ namespace DOL.GS {
                     }
                 case eObjectType.Flexible:
                     {
+                        model = GetFlexModelForLevel(Level, eRealm.Albion, damage);
                         switch (damage)
                         {
                             case eDamageType.Crush:
@@ -6462,17 +6463,14 @@ namespace DOL.GS {
                                     if (this.SPD_ABS < 33)
                                     {
                                         name = "Morning Star";
-                                        model = 862;
                                     }
                                     else if (this.SPD_ABS < 40)
                                     {
                                         name = "Flail";
-                                        model = 861;
                                     }
                                     else
                                     {
                                         name = "Weighted Flail";
-                                        model = 864;
                                     }
                                     break;
                                 }
@@ -6481,17 +6479,14 @@ namespace DOL.GS {
                                     if (this.SPD_ABS < 33)
                                     {
                                         name = "Whip";
-                                        model = 867;
                                     }
                                     else if (this.SPD_ABS < 40)
                                     {
                                         name = "Chain";
-                                        model = 857;
                                     }
                                     else
                                     {
                                         name = "War Chain";
-                                        model = 866;
                                     }
                                     break;
                                 }
@@ -8808,6 +8803,66 @@ namespace DOL.GS {
                         validModels.Add(851);
                         validModels.Add(852);
                         validModels.Add(3706);
+                    }
+                    break;
+                default:
+                    validModels.Add(132);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetFlexModelForLevel(int Level, eRealm realm, eDamageType dtype)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    switch (dtype)
+                    {
+                        case eDamageType.Crush:
+                            validModels.Add(861);
+                            if (Level > 10)
+                                validModels.Add(862);
+                            if (Level > 20)
+                                validModels.Add(864);
+                            if (Level > 30)
+                                validModels.Add(869);
+                            if (Level > 40)
+                            {
+                                validModels.Add(2669);
+                                validModels.Add(3653);
+                            }
+                            if (Level > 50)
+                            {
+                                validModels.Add(3696);
+                                validModels.Add(3815);
+                                validModels.Add(3952);
+                            }
+                            break;
+                        case eDamageType.Slash:
+                            validModels.Add(857);
+                            validModels.Add(859);
+                            validModels.Add(865);
+                            if (Level > 10)
+                                validModels.Add(863);
+                            if (Level > 20)
+                                validModels.Add(867);
+                            if (Level > 30)
+                                validModels.Add(868);
+                            if (Level > 40)
+                            {
+                                validModels.Add(2670);
+                                validModels.Add(3654);
+                            }
+                            if (Level > 50)
+                            {
+                                validModels.Add(3697);
+                                validModels.Add(3814);
+                                validModels.Add(3951);
+                            }
+                            break;
                     }
                     break;
                 default:
