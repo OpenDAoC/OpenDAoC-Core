@@ -6617,15 +6617,14 @@ namespace DOL.GS {
                         {
                             case eDamageType.Slash:
                                 {
-                                    if (this.SPD_ABS < 50)
+                                    model = Get2HSwordForLevel(Level, eRealm.Hibernia);
+                                    if (model == 639)
                                     {
                                         name = "Great Falcata";
-                                        model = 639;
                                     }
                                     else
                                     {
                                         name = "Great Sword";
-                                        model = 459;
                                     }
                                     break;
                                 }
@@ -7013,15 +7012,14 @@ namespace DOL.GS {
                     {
                         if (this.Hand == 1)
                         {
+                            model = Get2HSwordForLevel(Level, eRealm.Midgard);
                             if (this.SPD_ABS > 46)
                             {
                                 name = "Great Sword";
-                                model = 572;
                             }
                             else
                             {
                                 name = "Two Handed Sword";
-                                model = 314;
                             }
                         }
                         else
@@ -7095,25 +7093,22 @@ namespace DOL.GS {
                         {
                             case eDamageType.Slash:
                                 {
+                                    model = Get2HSwordForLevel(Level, eRealm.Albion);
                                     if (this.SPD_ABS < 44)
                                     {
                                         name = "Two Handed Sword";
-                                        model = 6;
                                     }
                                     else if (this.SPD_ABS < 48)
                                     {
                                         name = "Great Axe";
-                                        model = 72;
                                     }
                                     else if (this.SPD_ABS < 51)
                                     {
                                         name = "Great Scimitar";
-                                        model = 645;
                                     }
                                     else
                                     {
                                         name = "Great Sword";
-                                        model = 7;
                                     }
                                     break;
                                 }
@@ -8452,6 +8447,80 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
+        private static int Get2HSwordForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(459);
+                    if (Level > 10)
+                        validModels.Add(448);
+                    if (Level > 20)
+                        validModels.Add(639);
+                    if (Level > 30)
+                        validModels.Add(907);
+                    if (Level > 40)
+                    {
+                        validModels.Add(910);
+                        validModels.Add(3658);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(911);
+                        validModels.Add(3701);
+                    }
+                    break;
+                case eRealm.Albion:
+                    validModels.Add(6);
+                    if (Level > 10)
+                        validModels.Add(7);
+                    if (Level > 20)
+                        validModels.Add(9);
+                    if (Level > 30)
+                        validModels.Add(72);
+                    if (Level > 40)
+                    {
+                        validModels.Add(73);
+                        validModels.Add(645);
+                        validModels.Add(841);
+                        validModels.Add(3658);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(843);
+                        validModels.Add(845);
+                        validModels.Add(847);
+                        validModels.Add(3701);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(314);
+                    if (Level > 10)
+                        validModels.Add(572);
+                    if (Level > 20)
+                        validModels.Add(658);
+                    if (Level > 30)
+                        validModels.Add(956);
+                    if (Level > 40)
+                    {
+                        validModels.Add(957);
+                        validModels.Add(660);
+                        validModels.Add(3658);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(1032);
+                        validModels.Add(3701);
+                    }
+                    break;
+                default:
+                    validModels.Add(6);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
         private static int GetBladeModelForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
@@ -8481,6 +8550,61 @@ namespace DOL.GS {
                         validModels.Add(473);
                         validModels.Add(3717);
                         validModels.Add(3718);
+                    }
+                    break;
+                case eRealm.Albion:
+                    validModels.Add(3);
+                    if (Level > 10)
+                    {
+                        validModels.Add(4);
+                        validModels.Add(5);
+                    }
+                    if (Level > 20)
+                        validModels.Add(8);
+                    if (Level > 30)
+                    {
+                        validModels.Add(10);
+                        validModels.Add(652);
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(877);
+                        validModels.Add(3675);
+                        validModels.Add(3674);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(879);
+                        validModels.Add(3718);
+                        validModels.Add(3717);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(311);
+                    if (Level > 10)
+                    {
+                        validModels.Add(310);
+                        validModels.Add(312);
+                    }
+                    if (Level > 20)
+                        validModels.Add(313);
+                    if (Level > 30)
+                        validModels.Add(949);
+                    if (Level > 40)
+                    {
+                        validModels.Add(948);
+                        validModels.Add(952);
+                        validModels.Add(3675);
+                        validModels.Add(3674);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(654);
+                        validModels.Add(655);
+                        validModels.Add(1017);
+                        validModels.Add(1015);
+                        validModels.Add(3718);
+                        validModels.Add(3717);
                     }
                     break;
                 default:
