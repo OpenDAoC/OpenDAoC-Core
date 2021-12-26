@@ -6155,24 +6155,24 @@ namespace DOL.GS {
                             case eRealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: GetStuddedSleevesForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: GetStuddedPantsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: GetStuddedBootsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: GetStuddedHelmForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: GetStuddedTorsoForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: GetStuddedHandsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, eRealm.Albion); break;
                                 }
                                 break;
 
                             case eRealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: GetStuddedSleevesForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: GetStuddedPantsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: GetStuddedBootsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: GetStuddedHelmForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: GetStuddedTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: GetStuddedHandsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, eRealm.Midgard); break;
                                 }
                                 break;
                         }
@@ -6212,24 +6212,24 @@ namespace DOL.GS {
                             case eRealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: GetChainSleevesForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: GetChainPantsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: GetChainBootsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: GetChainHelmForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: GetChainTorsoForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: GetChainHandsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, eRealm.Albion); break;
+                                    case eInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, eRealm.Albion); break;
                                 }
                                 break;
 
                             case eRealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: GetChainSleevesForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: GetChainPantsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: GetChainBootsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: GetChainHelmForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: GetChainTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: GetChainHandsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, eRealm.Midgard); break;
                                 }
                                 break;
                         }
