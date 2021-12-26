@@ -6926,6 +6926,7 @@ namespace DOL.GS {
                     }
                 case eObjectType.Staff:
                     {
+                        model = GetStaffModelForLevel(Level, realm);
                         switch (realm)
                         {
                             case eRealm.Albion:
@@ -6937,17 +6938,14 @@ namespace DOL.GS {
                                     if (this.SPD_ABS < 40)
                                     {
                                         name = "Quarterstaff";
-                                        model = 442;
                                     }
                                     else if (this.SPD_ABS < 50)
                                     {
                                         name = "Shod Quarterstaff";
-                                        model = 567;
                                     }
                                     else
                                     {
                                         name = "Heavy Shod Quarterstaff";
-                                        model = 884;
                                     }
                                 }
                                 else
@@ -6955,12 +6953,10 @@ namespace DOL.GS {
                                     if (this.SPD_ABS < 40)
                                     {
                                         name = "Staff";
-                                        model = 568;
                                     }
                                     else
                                     {
                                         name = "Wand";
-                                        model = 19;
                                     }
                                 }
                                 break;
@@ -6970,12 +6966,10 @@ namespace DOL.GS {
                                 if (this.SPD_ABS < 40)
                                 {
                                     name = "Staff";
-                                    model = 327;
                                 }
                                 else
                                 {
                                     name = "Rod";
-                                    model = 565;
                                 }
                                 break;
 
@@ -6984,12 +6978,10 @@ namespace DOL.GS {
                                 if (this.SPD_ABS < 40)
                                 {
                                     name = "Staff";
-                                    model = 468;
                                 }
                                 else
                                 {
                                     name = "Wand";
-                                    model = 1178;
                                 }
                                 break;
                         }
@@ -9299,6 +9291,87 @@ namespace DOL.GS {
                         validModels.Add(3825);
                         validModels.Add(3708);
                         validModels.Add(3885);
+                    }
+                    break;
+                default:
+                    validModels.Add(931);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetStaffModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(19);
+                    if (Level > 10)
+                        validModels.Add(442);
+                    if (Level > 20)
+                        validModels.Add(567);
+                    if (Level > 30)
+                        validModels.Add(568);
+                    if (Level > 40)
+                    {
+                        validModels.Add(882);
+                        validModels.Add(883);
+                        validModels.Add(1166);
+                        validModels.Add(1169);
+                        validModels.Add(3667);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(821);
+                        validModels.Add(881);
+                        validModels.Add(1168);
+                        validModels.Add(1167);
+                        validModels.Add(1170);
+                        validModels.Add(3710);
+                    }
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(1180);
+                    if (Level > 10)
+                        validModels.Add(1181);
+                    if (Level > 20)
+                        validModels.Add(1185);
+                    if (Level > 30)
+                        validModels.Add(1184);
+                    if (Level > 40)
+                    {
+                        validModels.Add(1178);
+                        validModels.Add(1174);
+                        validModels.Add(1175);
+                        validModels.Add(3667);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(1179);
+                        validModels.Add(1173);
+                        validModels.Add(3710);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(327);
+                    if (Level > 10)
+                        validModels.Add(565);
+                    if (Level > 20)
+                        validModels.Add(828);
+                    if (Level > 30)
+                        validModels.Add(1171);
+                    if (Level > 40)
+                    {
+                        validModels.Add(1172);
+                        validModels.Add(1176);
+                        validModels.Add(3667);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(1177);
+                        validModels.Add(3710);
                     }
                     break;
                 default:
