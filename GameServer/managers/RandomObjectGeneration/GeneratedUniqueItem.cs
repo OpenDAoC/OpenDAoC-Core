@@ -6187,25 +6187,16 @@ namespace DOL.GS {
                         name = "Plate " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 48; break;
-                            case eInventorySlot.LegsArmor: model = 47; break;
-                            case eInventorySlot.FeetArmor: model = 50; break;
-                            case eInventorySlot.HandsArmor: model = 49; break;
-                            case eInventorySlot.HeadArmor:
-                                if (Util.Chance(25))
-                                {
-                                    model = 93;
+                            case eInventorySlot.ArmsArmor: model = GetPlateSleevesForLevel(Level, eRealm.Albion); break;
+                            case eInventorySlot.LegsArmor: model = GetPlatePantsForLevel(Level, eRealm.Albion); break;
+                            case eInventorySlot.FeetArmor: model = GetPlateBootsForLevel(Level, eRealm.Albion); break;
+                            case eInventorySlot.HeadArmor: 
+                                model = GetPlateHelmForLevel(Level, eRealm.Albion);
+                                if(model == 93 || model == 95)
                                     name = "Plate Full Helm";
-                                }
-                                else
-                                    model = 64;
-
                                 break;
-
-                            case eInventorySlot.TorsoArmor:
-                                name = ArmorSlotToName(slot, type); // Breastplate
-                                model = 46;
-                                break;
+                            case eInventorySlot.TorsoArmor: model = GetPlateTorsoForLevel(Level, eRealm.Albion); break;
+                            case eInventorySlot.HandsArmor: model = GetPlateHandsForLevel(Level, eRealm.Albion); break;
                         }
 
                         if (slot != eInventorySlot.HeadArmor)
@@ -7766,6 +7757,429 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(824);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
+
+        #region Chain Model Generation
+        private static int GetChainTorsoForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(41);
+                    if (Level > 10)
+                        validModels.Add(181);
+                    if (Level > 20)
+                        validModels.Add(186);
+                    if (Level > 30)
+                        validModels.Add(191);
+                    if (Level > 40)
+                        validModels.Add(1251);
+                    if (Level > 50)
+                        validModels.Add(1246);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(235);
+                    if (Level > 10)
+                        validModels.Add(255);
+                    if (Level > 20)
+                        validModels.Add(275);
+                    if (Level > 30)
+                        validModels.Add(295);
+                    if (Level > 40)
+                        validModels.Add(999);
+                    if (Level > 50)
+                        validModels.Add(1262);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(373);
+                    if (Level >= 10)
+                        validModels.Add(393);
+                    if (Level >= 20)
+                        validModels.Add(413);
+                    if (Level >= 30)
+                        validModels.Add(433);
+                    if (Level >= 40)
+                        validModels.Add(1256);
+                    if (Level > 50)
+                        validModels.Add(2828);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetChainPantsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(32);
+                    if (Level > 20)
+                        validModels.Add(37);
+                    if (Level > 30)
+                        validModels.Add(75);
+                    if (Level > 40)
+                        validModels.Add(135);
+                    if (Level > 50)
+                        validModels.Add(2798);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(241);
+                    if (Level > 20)
+                        validModels.Add(261);
+                    if (Level > 30)
+                        validModels.Add(281);
+                    if (Level > 40)
+                        validModels.Add(301);
+                    if (Level > 50)
+                        validModels.Add(2860);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(374);
+                    if (Level >= 10)
+                        validModels.Add(394);
+                    if (Level >= 20)
+                        validModels.Add(414);
+                    if (Level >= 30)
+                        validModels.Add(434);
+                    if (Level >= 40)
+                        validModels.Add(1257);
+                    if (Level > 50)
+                        validModels.Add(2829);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetChainSleevesForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(33);
+                    if (Level > 20)
+                        validModels.Add(38);
+                    if (Level > 30)
+                        validModels.Add(76);
+                    if (Level > 40)
+                        validModels.Add(136);
+                    if (Level > 50)
+                        validModels.Add(2799);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(242);
+                    if (Level > 20)
+                        validModels.Add(262);
+                    if (Level > 30)
+                        validModels.Add(282);
+                    if (Level > 40)
+                        validModels.Add(302);
+                    if (Level > 50)
+                        validModels.Add(2861);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(375);
+                    if (Level >= 10)
+                        validModels.Add(395);
+                    if (Level >= 20)
+                        validModels.Add(415);
+                    if (Level >= 30)
+                        validModels.Add(435);
+                    if (Level >= 40)
+                        validModels.Add(355);
+                    if (Level > 50)
+                        validModels.Add(2830);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetChainHandsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(34);
+                    if (Level > 20)
+                        validModels.Add(39);
+                    if (Level > 30)
+                        validModels.Add(77);
+                    if (Level > 40)
+                        validModels.Add(137);
+                    if (Level > 50)
+                        validModels.Add(2802);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(243);
+                    if (Level > 20)
+                        validModels.Add(263);
+                    if (Level > 30)
+                        validModels.Add(283);
+                    if (Level > 40)
+                        validModels.Add(303);
+                    if (Level > 50)
+                        validModels.Add(2864);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(376);
+                    if (Level >= 10)
+                        validModels.Add(396);
+                    if (Level >= 20)
+                        validModels.Add(416);
+                    if (Level >= 30)
+                        validModels.Add(436);
+                    if (Level >= 40)
+                        validModels.Add(1259);
+                    if (Level > 50)
+                        validModels.Add(2833);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetChainBootsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(40);
+                    if (Level > 20)
+                        validModels.Add(133);
+                    if (Level > 30)
+                        validModels.Add(78);
+                    if (Level > 40)
+                        validModels.Add(138);
+                    if (Level > 50)
+                        validModels.Add(2801);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(244);
+                    if (Level > 20)
+                        validModels.Add(264);
+                    if (Level > 30)
+                        validModels.Add(284);
+                    if (Level > 40)
+                        validModels.Add(304);
+                    if (Level > 50)
+                        validModels.Add(2863);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(377);
+                    if (Level >= 10)
+                        validModels.Add(397);
+                    if (Level >= 20)
+                        validModels.Add(417);
+                    if (Level >= 30)
+                        validModels.Add(437);
+                    if (Level >= 40)
+                        validModels.Add(1260);
+                    if (Level > 50)
+                        validModels.Add(2832);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetChainHelmForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(62);
+                    if (Level > 35)
+                        validModels.Add(1231);
+                    if (Level > 45)
+                        validModels.Add(2800);
+                    if (Level > 50)
+                        validModels.Add(1232);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(335);
+                    if (Level > 35)
+                        validModels.Add(336);
+                    if (Level > 45)
+                        validModels.Add(337);
+                    if (Level > 50)
+                        validModels.Add(1214);
+                    break;
+                case eRealm.Hibernia:
+                    validModels.Add(438);
+                    if (Level > 35)
+                        validModels.Add(439);
+                    if (Level > 45)
+                        validModels.Add(440);
+                    if (Level > 50)
+                        validModels.Add(1198);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
+
+        #region Plate Model Generation
+        private static int GetPlateTorsoForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(46);
+                    if (Level > 20)
+                        validModels.Add(86);
+                    if (Level > 30)
+                        validModels.Add(201);
+                    if (Level > 40)
+                        validModels.Add(206);
+                    if (Level > 50)
+                    {
+                        validModels.Add(1272);
+                        validModels.Add(2815);
+                    }
+                    break;
+                default:
+                    validModels.Add(0);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetPlatePantsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(47);
+                    if (Level > 20)
+                        validModels.Add(87);
+                    if (Level > 30)
+                        validModels.Add(202);
+                    if (Level > 40)
+                        validModels.Add(207);
+                    if (Level > 50)
+                    {
+                        validModels.Add(1273);
+                        validModels.Add(2816);
+                    }  
+                    break;
+                default:
+                    validModels.Add(47);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetPlateSleevesForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(48);
+                    if (Level > 20)
+                        validModels.Add(88);
+                    if (Level > 30)
+                        validModels.Add(203);
+                    if (Level > 40)
+                        validModels.Add(208);
+                    if (Level > 50)
+                    {
+                        validModels.Add(1274);
+                        validModels.Add(2817);
+                    }
+                    break;
+                default:
+                    validModels.Add(48);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetPlateHandsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(49);
+                    if (Level > 20)
+                        validModels.Add(89);
+                    if (Level > 30)
+                        validModels.Add(204);
+                    if (Level > 40)
+                        validModels.Add(209);
+                    if (Level > 50)
+                        validModels.Add(2820);
+                    break;
+                default:
+                    validModels.Add(49);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetPlateBootsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(50);
+                    if (Level > 20)
+                        validModels.Add(90);
+                    if (Level > 30)
+                        validModels.Add(205);
+                    if (Level > 40)
+                        validModels.Add(210);
+                    if (Level > 50)
+                        validModels.Add(2819);
+                    break;
+                default:
+                    validModels.Add(50);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetPlateHelmForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(64);
+                    if (Level > 10)
+                        validModels.Add(93);
+                    if (Level > 35)
+                        validModels.Add(1238);
+                    if (Level > 45)
+                        validModels.Add(1239);
+                    if (Level > 50)
+                        validModels.Add(95);
+                    break;
+                default:
+                    validModels.Add(64);
                     break;
             }
 
