@@ -9752,7 +9752,7 @@ namespace DOL.GS {
                 case 453:
                     return "Sickle";
                 default:
-                    return "Weapon";
+                    return "Staff";
             }
         }
         #endregion
