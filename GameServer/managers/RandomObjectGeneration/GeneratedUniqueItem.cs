@@ -6224,12 +6224,12 @@ namespace DOL.GS {
                             case eRealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: GetStuddedSleevesForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: GetStuddedPantsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: GetStuddedBootsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: GetStuddedHelmForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: GetStuddedTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: GetStuddedHandsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.ArmsArmor: GetChainSleevesForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.LegsArmor: GetChainPantsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.FeetArmor: GetChainBootsForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HeadArmor: GetChainHelmForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.TorsoArmor: GetChainTorsoForLevel(Level, eRealm.Midgard); break;
+                                    case eInventorySlot.HandsArmor: GetChainHandsForLevel(Level, eRealm.Midgard); break;
                                 }
                                 break;
                         }
