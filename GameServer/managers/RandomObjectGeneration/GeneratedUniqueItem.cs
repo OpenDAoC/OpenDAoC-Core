@@ -6536,6 +6536,7 @@ namespace DOL.GS {
                     }
                 case eObjectType.HandToHand:
                     {
+                        model = GetH2HModelForLevel(Level, eRealm.Midgard, damage);
                         switch (damage)
                         {
                             case eDamageType.Slash:
@@ -6543,17 +6544,14 @@ namespace DOL.GS {
                                     if (this.SPD_ABS < 30)
                                     {
                                         name = "Moon Claw";
-                                        model = 981;
                                     }
                                     else if (this.SPD_ABS < 35)
                                     {
                                         name = "Bladed Moon Claw";
-                                        model = 961;
                                     }
                                     else
                                     {
                                         name = "Heavy Bladed Moon Claw";
-                                        model = 975;
                                     }
                                     break;
                                 }
@@ -6562,17 +6560,14 @@ namespace DOL.GS {
                                     if (this.SPD_ABS < 30)
                                     {
                                         name = "Claw Greave";
-                                        model = 963;
                                     }
                                     else if (this.SPD_ABS < 35)
                                     {
                                         name = "Bladed Claw Greave";
-                                        model = 959;
                                     }
                                     else
                                     {
                                         name = "Heavy Bladed Claw Greave";
-                                        model = 973;
                                     }
                                     break;
                                 }
@@ -6652,20 +6647,18 @@ namespace DOL.GS {
                     }
                 case eObjectType.LeftAxe:
                     {
+                        model = GetAxeModelForLevel(Level, eRealm.Midgard);
                         if (this.SPD_ABS < 25)
                         {
                             name = "Hand Axe";
-                            model = 578;
                         }
                         else if (this.SPD_ABS < 30)
                         {
                             name = "Bearded Axe";
-                            model = 316;
                         }
                         else
                         {
                             name = "War Axe";
-                            model = 319;
                         }
                         break;
                     }
@@ -8861,6 +8854,78 @@ namespace DOL.GS {
                                 validModels.Add(3697);
                                 validModels.Add(3814);
                                 validModels.Add(3951);
+                            }
+                            break;
+                    }
+                    break;
+                default:
+                    validModels.Add(132);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetH2HModelForLevel(int Level, eRealm realm, eDamageType dtype)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Midgard:
+                    switch (dtype)
+                    {
+                        case eDamageType.Thrust:
+                            validModels.Add(960);
+                            validModels.Add(962);
+                            validModels.Add(964);
+                            if (Level > 10)
+                                validModels.Add(966);
+                            if (Level > 20)
+                                validModels.Add(968);
+                            if (Level > 30)
+                                validModels.Add(970);
+                            if (Level > 40)
+                            {
+                                validModels.Add(972);
+                                validModels.Add(974);
+                                validModels.Add(976);
+                                validModels.Add(3686);
+                                validModels.Add(3687);
+                            }
+                            if (Level > 50)
+                            {
+                                validModels.Add(978);
+                                validModels.Add(980);
+                                validModels.Add(982);
+                                validModels.Add(3729);
+                                validModels.Add(3730);
+                            }
+                            break;
+                        case eDamageType.Slash:
+                            validModels.Add(959);
+                            validModels.Add(961);
+                            validModels.Add(963);
+                            if (Level > 10)
+                                validModels.Add(965);
+                            if (Level > 20)
+                                validModels.Add(967);
+                            if (Level > 30)
+                                validModels.Add(969);
+                            if (Level > 40)
+                            {
+                                validModels.Add(971);
+                                validModels.Add(973);
+                                validModels.Add(975);
+                                validModels.Add(3682);
+                                validModels.Add(3683);
+                            }
+                            if (Level > 50)
+                            {
+                                validModels.Add(977);
+                                validModels.Add(979);
+                                validModels.Add(981);
+                                validModels.Add(3725);
+                                validModels.Add(3726);
                             }
                             break;
                     }
