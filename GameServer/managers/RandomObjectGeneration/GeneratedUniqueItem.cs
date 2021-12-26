@@ -6244,12 +6244,12 @@ namespace DOL.GS {
                         name = "Reinforced " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 385; break;
-                            case eInventorySlot.LegsArmor: model = 384; break;
-                            case eInventorySlot.FeetArmor: model = 387; break;
-                            case eInventorySlot.HeadArmor: model = 835; break;
-                            case eInventorySlot.TorsoArmor: model = 383; break;
-                            case eInventorySlot.HandsArmor: model = 386; break;
+                            case eInventorySlot.ArmsArmor: model = GetReinforcedSleevesForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.LegsArmor: model = GetReinforcedPantsForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.FeetArmor: model = GetReinforcedBootsForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.HeadArmor: model = GetReinforcedHelmForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.TorsoArmor: model = GetReinforcedTorsoForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.HandsArmor: model = GetReinforcedHandsForLevel(Level, eRealm.Hibernia); break;
                         }
 
                         if (slot != eInventorySlot.HeadArmor)
@@ -6262,12 +6262,12 @@ namespace DOL.GS {
                         name = "Scale " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 390; break;
-                            case eInventorySlot.LegsArmor: model = 389; break;
-                            case eInventorySlot.FeetArmor: model = 392; break;
-                            case eInventorySlot.HeadArmor: model = 838; break;
-                            case eInventorySlot.TorsoArmor: model = 388; break;
-                            case eInventorySlot.HandsArmor: model = 391; break;
+                            case eInventorySlot.ArmsArmor: model = GetScaleSleevesForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.LegsArmor: model = GetScalePantsForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.FeetArmor: model = GetScaleBootsForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.HeadArmor: model = GetScaleHelmForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.TorsoArmor: model = GetScaleTorsoForLevel(Level, eRealm.Hibernia); break;
+                            case eInventorySlot.HandsArmor: model = GetScaleHandsForLevel(Level, eRealm.Hibernia); break;
                         }
 
                         if (slot != eInventorySlot.HeadArmor)
@@ -8124,6 +8124,318 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(64);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
+
+        #region Reinforced Model Generation
+        private static int GetReinforcedTorsoForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(363);
+                    if (Level > 10)
+                        validModels.Add(383);
+                    if (Level > 20)
+                        validModels.Add(403);
+                    if (Level > 30)
+                        validModels.Add(423);
+                    if (Level > 40)
+                        validModels.Add(1256);
+                    if (Level > 50)
+                        validModels.Add(3012);
+                    break;
+                default:
+                    validModels.Add(363);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetReinforcedPantsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(364);
+                    if (Level > 10)
+                        validModels.Add(384);
+                    if (Level > 20)
+                        validModels.Add(404);
+                    if (Level > 30)
+                        validModels.Add(424);
+                    if (Level > 40)
+                        validModels.Add(1257);
+                    if (Level > 50)
+                        validModels.Add(3013);
+                    break;
+                default:
+                    validModels.Add(364);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetReinforcedSleevesForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(365);
+                    if (Level > 10)
+                        validModels.Add(385);
+                    if (Level > 20)
+                        validModels.Add(405);
+                    if (Level > 30)
+                        validModels.Add(425);
+                    if (Level > 40)
+                        validModels.Add(1258);
+                    if (Level > 50)
+                        validModels.Add(3014);
+                    break;
+                default:
+                    validModels.Add(365);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetReinforcedHandsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(366);
+                    if (Level > 10)
+                        validModels.Add(386);
+                    if (Level > 20)
+                        validModels.Add(406);
+                    if (Level > 30)
+                        validModels.Add(426);
+                    if (Level > 40)
+                        validModels.Add(1259);
+                    if (Level > 50)
+                        validModels.Add(3016);
+                    break;
+                default:
+                    validModels.Add(366);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetReinforcedBootsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(367);
+                    if (Level > 10)
+                        validModels.Add(387);
+                    if (Level > 20)
+                        validModels.Add(407);
+                    if (Level > 30)
+                        validModels.Add(427);
+                    if (Level > 40)
+                        validModels.Add(1260);
+                    if (Level > 50)
+                        validModels.Add(3015);
+                    break;
+                default:
+                    validModels.Add(50);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetReinforcedHelmForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(835);
+                    if (Level > 10)
+                        validModels.Add(836);
+                    if (Level > 35)
+                        validModels.Add(837);
+                    if (Level > 45)
+                        validModels.Add(1199);
+                    if (Level > 50)
+                        validModels.Add(2837);
+                    break;
+                default:
+                    validModels.Add(64);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
+
+        #region Scale Model Generation
+        private static int GetScaleTorsoForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(368);
+                    if (Level > 10)
+                        validModels.Add(388);
+                    if (Level > 20)
+                        validModels.Add(408);
+                    if (Level > 30)
+                        validModels.Add(428);
+                    if (Level > 40)
+                        validModels.Add(988);
+                    if (Level > 50)
+                        validModels.Add(3000);
+                    break;
+                default:
+                    validModels.Add(368);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetScalePantsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(369);
+                    if (Level > 10)
+                        validModels.Add(389);
+                    if (Level > 20)
+                        validModels.Add(409);
+                    if (Level > 30)
+                        validModels.Add(429);
+                    if (Level > 40)
+                        validModels.Add(989);
+                    if (Level > 50)
+                        validModels.Add(3001);
+                    break;
+                default:
+                    validModels.Add(369);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetScaleSleevesForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(370);
+                    if (Level > 10)
+                        validModels.Add(390);
+                    if (Level > 20)
+                        validModels.Add(410);
+                    if (Level > 30)
+                        validModels.Add(430);
+                    if (Level > 40)
+                        validModels.Add(990);
+                    if (Level > 50)
+                        validModels.Add(3002);
+                    break;
+                default:
+                    validModels.Add(365);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetScaleHandsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(371);
+                    if (Level > 10)
+                        validModels.Add(391);
+                    if (Level > 20)
+                        validModels.Add(411);
+                    if (Level > 30)
+                        validModels.Add(431);
+                    if (Level > 40)
+                        validModels.Add(991);
+                    if (Level > 50)
+                        validModels.Add(3005);
+                    break;
+                default:
+                    validModels.Add(371);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetScaleBootsForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(372);
+                    if (Level > 10)
+                        validModels.Add(392);
+                    if (Level > 20)
+                        validModels.Add(412);
+                    if (Level > 30)
+                        validModels.Add(432);
+                    if (Level > 40)
+                        validModels.Add(992);
+                    if (Level > 50)
+                        validModels.Add(3004);
+                    break;
+                default:
+                    validModels.Add(372);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetScaleHelmForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(838);
+                    if (Level > 10)
+                        validModels.Add(839);
+                    if (Level > 35)
+                        validModels.Add(840);
+                    if (Level > 45)
+                        validModels.Add(1200);
+                    if (Level > 50)
+                        validModels.Add(2843);
+                    break;
+                default:
+                    validModels.Add(838);
                     break;
             }
 
