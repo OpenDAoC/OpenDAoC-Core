@@ -6376,26 +6376,23 @@ namespace DOL.GS {
                     }
                 case eObjectType.CelticSpear:
                     {
+                        model = GetSpearModelForLevel(Level, eRealm.Hibernia);
                         // Short Spear (470), Spear (469), Long Spear (476), War Spear (477)
                         if (this.SPD_ABS < 35)
                         {
                             name = "Short Spear";
-                            model = 470;
                         }
                         else if (this.SPD_ABS < 45)
                         {
                             name = "Spear";
-                            model = 469;
                         }
                         else if (this.SPD_ABS < 50)
                         {
                             name = "Long Spear";
-                            model = 476;
                         }
                         else
                         {
                             name = "War Spear";
-                            model = 477;
                         }
                         break;
                     }
@@ -6943,20 +6940,18 @@ namespace DOL.GS {
                     }
                 case eObjectType.Spear:
                     {
+                        model = GetSpearModelForLevel(Level, eRealm.Midgard);
                         if (this.SPD_ABS < 43)
                         {
                             name = "Spear";
-                            model = 328;
                         }
                         else if (this.SPD_ABS < 50)
                         {
                             name = "Long Spear";
-                            model = 329;
                         }
                         else
                         {
                             name = "Great Spear";
-                            model = 332;
                         }
                         break;
                     }
@@ -8560,38 +8555,56 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetCeltSpearModelForLevel(int Level, eRealm realm)
+        private static int GetSpearModelForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
                 case eRealm.Hibernia:
-                    validModels.Add(469);
-                    validModels.Add(470);
-                    if (Level > 10)
-                    {
-                        validModels.Add(475);
-                    }
+                    validModels.Add(556);
+                    if(Level > 10)
+                        validModels.Add(469);
+                    if (Level > 20)
+                        validModels.Add(470);
                     if (Level > 30)
-                    {
-                        validModels.Add(452);
-
-                    }
+                        validModels.Add(475);
                     if (Level > 40)
                     {
-                        validModels.Add(461);
-                        validModels.Add(3676);
-                        validModels.Add(3677);
+                        validModels.Add(477);
+                        validModels.Add(476);
+                        validModels.Add(3660);
                     }
-
                     if (Level > 50)
                     {
-                        validModels.Add(3719);
-                        validModels.Add(3720);
+                        validModels.Add(556);
+                        validModels.Add(642);
+                        validModels.Add(2689);
+                        validModels.Add(3703);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(328);
+                    if (Level > 10)
+                        validModels.Add(329);
+                    if (Level > 20)
+                        validModels.Add(330);
+                    if (Level > 30)
+                        validModels.Add(331);
+                    if (Level > 40)
+                    {
+                        validModels.Add(332);
+                        validModels.Add(958);
+                        validModels.Add(3660);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(657);
+                        validModels.Add(1029);
+                        validModels.Add(3703);
                     }
                     break;
                 default:
-                    validModels.Add(449);
+                    validModels.Add(328);
                     break;
             }
 
