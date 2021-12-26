@@ -6314,35 +6314,31 @@ namespace DOL.GS {
                     }
                 case eObjectType.Blades:
                     {
+                        model = GetBladeModelForLevel(Level, eRealm.Hibernia);
                         // Blades; speed 22 - 45; Short Sword (445), Falcata (444), Broadsword (447), Longsword (446), Bastard Sword (473)
                         if (this.SPD_ABS < 27)
                         {
                             name = "Short Sword";
-                            model = 445;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
                             name = "Falcata";
-                            model = 444;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 33)
                         {
                             name = "Broadsword";
-                            model = 447;
                         }
                         else if (this.SPD_ABS < 40)
                         {
                             name = "Long Sword";
-                            model = 446;
                         }
                         else
                         {
                             name = "Bastard Sword";
-                            model = 473;
                         }
                         break;
                     }
@@ -8484,6 +8480,83 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(2);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetBladeModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(444);
+                    validModels.Add(445);
+                    if (Level > 10)
+                    {
+                        validModels.Add(446);
+                    }
+                    if (Level > 30)
+                    {
+                        validModels.Add(447);
+
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(460);
+                        validModels.Add(3674);
+                        validModels.Add(3675);
+                    }
+
+                    if (Level > 50)
+                    {
+                        validModels.Add(473);
+                        validModels.Add(3717);
+                        validModels.Add(3718);
+                    }
+                    break;
+                default:
+                    validModels.Add(445);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetBluntModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(449);
+                    validModels.Add(450);
+                    if (Level > 10)
+                    {
+                        validModels.Add(451);
+                    }
+                    if (Level > 30)
+                    {
+                        validModels.Add(452);
+
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(461);
+                        validModels.Add(3676);
+                        validModels.Add(3677);
+                    }
+
+                    if (Level > 50)
+                    {
+                        validModels.Add(3719);
+                        validModels.Add(3720);
+                    }
+                    break;
+                default:
+                    validModels.Add(445);
                     break;
             }
 
