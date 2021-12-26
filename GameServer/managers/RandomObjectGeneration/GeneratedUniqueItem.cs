@@ -4820,7 +4820,7 @@ namespace DOL.GS {
             {
                 if (Util.Chance(ROG_ARMOR_CHANCE + Util.Random(ROG_ARMOR_CHANCE))) { genTypes.Add(eGenerateType.Armor); }
                 if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(ROG_WEAPON_CHANCE + Util.Random(ROG_WEAPON_CHANCE)) ) { genTypes.Add(eGenerateType.Weapon); }
+                if (Util.Chance(ROG_WEAPON_CHANCE + Util.Random(ROG_WEAPON_CHANCE)/2) ) { genTypes.Add(eGenerateType.Weapon); }
             }
 
             //if none of the object types were added, default to magical
@@ -6279,13 +6279,13 @@ namespace DOL.GS {
                 //weapons
                 case eObjectType.Axe:
                     {
-                        model = GetAxeModelForLevel(Level, realm);
                         if (this.Hand == 1)
                         {
                             name = GetNameFromId(model);
                         }
                         else // 1 handed axe; speed 28-45; 578 (hand), 316 (Bearded), 319 (War), 315 (Spiked), 573 (Double)
                         {
+                            model = GetAxeModelForLevel(Level, realm);
                             name = GetNameFromId(model);
                         }
                         break;
