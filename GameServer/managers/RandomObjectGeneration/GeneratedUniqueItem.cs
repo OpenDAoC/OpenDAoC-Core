@@ -6409,35 +6409,32 @@ namespace DOL.GS {
                 case eObjectType.Crossbow:
                     {
                         name = "Crossbow";
-                        model = 226;
+                        model = GetCrossbowModelForLevel(Level, eRealm.Albion);
                         break;
                     }
                 case eObjectType.CrushingWeapon:
                     {
+                        model = GetBluntModelForLevel(Level, eRealm.Albion);
                         // Hammer (12), Mace (13), Flanged Mace (14), War Hammer (15)
                         if (this.SPD_ABS < 33)
                         {
                             name = "Hammer";
-                            model = 12;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 35)
                         {
                             name = "Mace";
-                            model = 13;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 40)
                         {
                             name = "Flanged Mace";
-                            model = 14;
                         }
                         else
                         {
                             name = "War Hammer";
-                            model = 15;
                         }
                         break;
                     }
@@ -6523,25 +6520,22 @@ namespace DOL.GS {
                         }
                         else
                         {
+                            model = GetBluntModelForLevel(Level, eRealm.Midgard);
                             if (this.SPD_ABS < 30)
                             {
-                                name = "Small Hammer";
-                                model = 320;
+                                name = "Hammer";
                             }
                             else if (this.SPD_ABS < 35)
                             {
-                                name = "Hammer";
-                                model = 321;
+                                name = "War Hammer";
                             }
                             else if (this.SPD_ABS < 40)
                             {
                                 name = "Pick Hammer";
-                                model = 323;
                             }
                             else
                             {
                                 name = "Battle Hammer";
-                                model = 324;
                             }
                         }
                         break;
@@ -8529,17 +8523,81 @@ namespace DOL.GS {
                     if (Level > 30)
                     {
                         validModels.Add(452);
+                        validModels.Add(461);
 
                     }
                     if (Level > 40)
                     {
-                        validModels.Add(461);
+                        validModels.Add(913);
+                        validModels.Add(914);
                         validModels.Add(3676);
                         validModels.Add(3677);
                     }
 
                     if (Level > 50)
                     {
+                        validModels.Add(916);
+                        validModels.Add(915);
+                        validModels.Add(3719);
+                        validModels.Add(3720);
+                    }
+                    break;
+                case eRealm.Albion:
+                    validModels.Add(11);
+                    validModels.Add(12);
+                    if (Level > 10)
+                    {
+                        validModels.Add(13);
+                        validModels.Add(14);
+                    }
+                    if(Level > 20)
+                        validModels.Add(15);
+                    if (Level > 30)
+                    {
+                        validModels.Add(18);
+                        validModels.Add(20);
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(853);
+                        validModels.Add(854);
+                        validModels.Add(3676);
+                        validModels.Add(3677);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(855);
+                        validModels.Add(856);
+                        validModels.Add(3719);
+                        validModels.Add(3720);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(320);
+                    validModels.Add(321);
+                    if (Level > 10)
+                    {
+                        validModels.Add(322);
+                        validModels.Add(323);
+                    }
+                    if (Level > 20)
+                        validModels.Add(324);
+                    if (Level > 30)
+                    {
+                        validModels.Add(950);
+                        validModels.Add(954);
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(1019);
+                        validModels.Add(1016);
+                        validModels.Add(3676);
+                        validModels.Add(3677);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(1016);
+                        validModels.Add(1009);
                         validModels.Add(3719);
                         validModels.Add(3720);
                     }
@@ -8673,6 +8731,40 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(132);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
+        private static int GetCrossbowModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(226);
+                    if (Level > 10)
+                        validModels.Add(890);
+                    if(Level > 20)
+                        validModels.Add(891);
+                    if (Level > 30)
+                        validModels.Add(892);
+                    if (Level > 40)
+                    {
+                        validModels.Add(893);
+                        validModels.Add(894);
+                        validModels.Add(3656);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(3816);
+                        validModels.Add(3953);
+                        validModels.Add(3699);
+                    }
+                    break;
+                default:
+                    validModels.Add(226);
                     break;
             }
 
