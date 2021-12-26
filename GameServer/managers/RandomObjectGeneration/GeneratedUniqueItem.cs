@@ -6785,24 +6785,22 @@ namespace DOL.GS {
                     }
                 case eObjectType.PolearmWeapon:
                     {
+                        model = GetPolearmModelForLevel(Level, eRealm.Albion, damage);
                         switch (damage)
                         {
                             case eDamageType.Slash:
                                 {
                                     name = "Lochaber Axe";
-                                    model = 68;
                                     break;
                                 }
                             case eDamageType.Thrust:
                                 {
                                     name = "Pike";
-                                    model = 69;
                                     break;
                                 }
                             case eDamageType.Crush:
                                 {
                                     name = "Lucerne Hammer";
-                                    model = 70;
                                     break;
                                 }
                         }
@@ -8900,6 +8898,79 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
+        private static int GetPolearmModelForLevel(int Level, eRealm realm, eDamageType dtype)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    switch (dtype)
+                    {
+                        case eDamageType.Slash:
+                            validModels.Add(67);
+                            if (Level > 10)
+                                validModels.Add(68);
+                            if (Level > 20)
+                                validModels.Add(648);
+                            if (Level > 30)
+                                validModels.Add(649);
+                            if (Level > 40)
+                            {
+                                validModels.Add(873);
+                                validModels.Add(3672);
+                            }
+                            if (Level > 50)
+                            {
+                                validModels.Add(874);
+                                validModels.Add(2689);
+                                validModels.Add(3715);
+                            }
+                            break;
+                        case eDamageType.Crush:
+                            validModels.Add(70);
+                            if (Level > 10)
+                                validModels.Add(650);
+                            if (Level > 20)
+                                validModels.Add(870);
+                            if (Level > 30)
+                                validModels.Add(875);
+                            if (Level > 40)
+                                validModels.Add(3673);
+                            if (Level > 50)
+                            {
+                                validModels.Add(3833);
+                                validModels.Add(3716);
+                            }
+                            break;
+                        case eDamageType.Thrust:
+                            validModels.Add(26);
+                            if (Level > 10)
+                                validModels.Add(69);
+                            if (Level > 20)
+                                validModels.Add(458);
+                            if (Level > 30)
+                                validModels.Add(649);
+                            if (Level > 40)
+                            {
+                                validModels.Add(871);
+                                validModels.Add(3671);
+                            }
+                            if (Level > 50)
+                            {
+                                validModels.Add(872);
+                                validModels.Add(3714);
+                            }
+                            break;
+                    }                    
+                    break;
+                default:
+                    validModels.Add(328);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
         private static int GetSpearModelForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
@@ -8907,22 +8978,34 @@ namespace DOL.GS {
             {
                 case eRealm.Hibernia:
                     validModels.Add(556);
+                    validModels.Add(469);
                     if (Level > 10)
-                        validModels.Add(469);
-                    if (Level > 20)
+                    {
                         validModels.Add(470);
-                    if (Level > 30)
                         validModels.Add(475);
+                    }                        
+                    if (Level > 20)
+                    {
+                        validModels.Add(476);
+                        validModels.Add(477);
+                    }
+                    if (Level > 30)
+                    {
+                        validModels.Add(934);
+                        validModels.Add(935);
+                    }   
                     if (Level > 40)
                     {
-                        validModels.Add(477);
-                        validModels.Add(476);
+                        validModels.Add(556);
+                        validModels.Add(933);
+                        validModels.Add(936);
                         validModels.Add(3660);
                     }
                     if (Level > 50)
                     {
-                        validModels.Add(556);
-                        validModels.Add(642);
+                        validModels.Add(937);
+                        validModels.Add(938);
+                        validModels.Add(939);
                         validModels.Add(2689);
                         validModels.Add(3703);
                     }
