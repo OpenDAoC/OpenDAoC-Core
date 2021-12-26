@@ -1040,9 +1040,10 @@ namespace DOL.GS.Commands
 							}
 							foreach (DBRank rank in client.Player.Guild.Ranks)
 							{
+								/*
 								List<DBRank> list = new List<DBRank>();
 								list.OrderBy(rank => rank.RankLevel);
-
+								*/
 								client.Out.SendMessage("RANK: " + rank.RankLevel.ToString() + " \nNAME: " + rank.Title, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								client.Out.SendMessage("AcHear: " + (rank.AcHear ? "y" : "n") + " AcSpeak: " + (rank.AcSpeak ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								client.Out.SendMessage("OcHear: " + (rank.OcHear ? "y" : "n") + " OcSpeak: " + (rank.OcSpeak ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
