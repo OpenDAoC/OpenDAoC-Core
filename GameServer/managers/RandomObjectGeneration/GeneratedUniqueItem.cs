@@ -6345,35 +6345,29 @@ namespace DOL.GS {
                 case eObjectType.Blunt:
                     {
                         // Blunt; speed 22 - 45; Club (449), Mace (450), Hammer (461), Spiked Mace (451), Pick Hammer (641)
-
-                        if (this.SPD_ABS < 30)
-                        {
+                        model = GetBluntModelForLevel(Level, eRealm.Hibernia);
+                        if(this.SPD_ABS < 31){
                             name = "Club";
-                            model = 449;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 35)
                         {
                             name = "Mace";
-                            model = 450;
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 40)
                         {
                             name = "Hammer";
-                            model = 461;
                         }
                         else if (this.SPD_ABS < 43)
                         {
                             name = "Spiked Mace";
-                            model = 451;
                         }
                         else
                         {
                             name = "Pick Hammer";
-                            model = 641;
                         }
                         break;
                     }
@@ -8556,7 +8550,7 @@ namespace DOL.GS {
                     }
                     break;
                 default:
-                    validModels.Add(445);
+                    validModels.Add(449);
                     break;
             }
 
