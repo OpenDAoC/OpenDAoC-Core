@@ -52,11 +52,11 @@ namespace DOL.GS {
         // TOA Chance in %
         public const ushort ROG_TOA_ITEM_CHANCE = 0;
         // Armor Chance in %
-        public const ushort ROG_ARMOR_CHANCE = 50;
+        public const ushort ROG_ARMOR_CHANCE = 40;
         // Magical Chance in %
         public const ushort ROG_MAGICAL_CHANCE = 45;
         // Weapon Chance in %
-        public const ushort ROG_WEAPON_CHANCE = 50;
+        public const ushort ROG_WEAPON_CHANCE = 40;
 
         // Item lowest quality
         public const ushort ROG_STARTING_QUAL = 95;
@@ -4818,9 +4818,9 @@ namespace DOL.GS {
             }
             else
             {
-                if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
+                if (Util.Chance(ROG_ARMOR_CHANCE + Util.Random(ROG_ARMOR_CHANCE))) { genTypes.Add(eGenerateType.Armor); }
                 if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+                if (Util.Chance(ROG_WEAPON_CHANCE + Util.Random(ROG_WEAPON_CHANCE)) ) { genTypes.Add(eGenerateType.Weapon); }
             }
 
             //if none of the object types were added, default to magical
@@ -6282,33 +6282,11 @@ namespace DOL.GS {
                         model = GetAxeModelForLevel(Level, realm);
                         if (this.Hand == 1)
                         {
-                            if (this.SPD_ABS < 51)
-                            {
-                                name = "Large Axe";
-                            }
-                            else
-                            {
-                                name = "Great Axe";
-                            }
+                            name = GetNameFromId(model);
                         }
                         else // 1 handed axe; speed 28-45; 578 (hand), 316 (Bearded), 319 (War), 315 (Spiked), 573 (Double)
                         {
-                            if (this.SPD_ABS < 25)
-                            {
-                                name = "Hand Axe";
-                            }
-                            else if (this.SPD_ABS < 30)
-                            {
-                                name = "Bearded Axe";
-                            }
-                            else if (this.SPD_ABS < 36)
-                            {
-                                name = "War Axe";
-                            }
-                            else
-                            {
-                                name = "Spiked Axe";
-                            }
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -6318,27 +6296,27 @@ namespace DOL.GS {
                         // Blades; speed 22 - 45; Short Sword (445), Falcata (444), Broadsword (447), Longsword (446), Bastard Sword (473)
                         if (this.SPD_ABS < 27)
                         {
-                            name = "Short Sword";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
-                            name = "Falcata";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 33)
                         {
-                            name = "Broadsword";
+                            name = GetNameFromId(model);
                         }
                         else if (this.SPD_ABS < 40)
                         {
-                            name = "Long Sword";
+                            name = GetNameFromId(model);
                         }
                         else
                         {
-                            name = "Bastard Sword";
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -6348,31 +6326,31 @@ namespace DOL.GS {
                         model = GetBluntModelForLevel(Level, eRealm.Hibernia);
                         if (this.SPD_ABS < 31)
                         {
-                            name = "Club";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 35)
                         {
-                            name = "Mace";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 40)
                         {
-                            name = "Hammer";
+                            name = GetNameFromId(model);
                         }
                         else if (this.SPD_ABS < 43)
                         {
-                            name = "Spiked Mace";
+                            name = GetNameFromId(model);
                         }
                         else
                         {
-                            name = "Pick Hammer";
+                            name = GetNameFromId(model);
                         }
 
                         if (Util.Chance(1))
-                            model = 3458;
+                            model = 3458; //1% chance of being a rolling pin
                         break;
                     }
                 case eObjectType.CelticSpear:
@@ -6419,23 +6397,23 @@ namespace DOL.GS {
                         // Hammer (12), Mace (13), Flanged Mace (14), War Hammer (15)
                         if (this.SPD_ABS < 33)
                         {
-                            name = "Hammer";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 35)
                         {
-                            name = "Mace";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 40)
                         {
-                            name = "Flanged Mace";
+                            name = GetNameFromId(model);
                         }
                         else
                         {
-                            name = "War Hammer";
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -6499,38 +6477,12 @@ namespace DOL.GS {
                         if (this.Hand == 1)
                         {
                             model = Get2HHammerForLevel(Level, eRealm.Midgard);
-                            if (this.SPD_ABS < 50)
-                            {
-                                name = "Two Handed Hammer";
-                            }
-                            if (this.SPD_ABS < 53)
-                            {
-                                name = "Two Handed War Hammer";
-                            }
-                            else
-                            {
-                                name = "Great Hammer";
-                            }
+                            name = GetNameFromId(model);
                         }
                         else
                         {
                             model = GetBluntModelForLevel(Level, eRealm.Midgard);
-                            if (this.SPD_ABS < 30)
-                            {
-                                name = "Hammer";
-                            }
-                            else if (this.SPD_ABS < 35)
-                            {
-                                name = "War Hammer";
-                            }
-                            else if (this.SPD_ABS < 40)
-                            {
-                                name = "Pick Hammer";
-                            }
-                            else
-                            {
-                                name = "Battle Hammer";
-                            }
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -6541,34 +6493,12 @@ namespace DOL.GS {
                         {
                             case eDamageType.Slash:
                                 {
-                                    if (this.SPD_ABS < 30)
-                                    {
-                                        name = "Moon Claw";
-                                    }
-                                    else if (this.SPD_ABS < 35)
-                                    {
-                                        name = "Bladed Moon Claw";
-                                    }
-                                    else
-                                    {
-                                        name = "Heavy Bladed Moon Claw";
-                                    }
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                             case eDamageType.Thrust:
                                 {
-                                    if (this.SPD_ABS < 30)
-                                    {
-                                        name = "Claw Greave";
-                                    }
-                                    else if (this.SPD_ABS < 35)
-                                    {
-                                        name = "Bladed Claw Greave";
-                                    }
-                                    else
-                                    {
-                                        name = "Heavy Bladed Claw Greave";
-                                    }
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                         }
@@ -6618,14 +6548,7 @@ namespace DOL.GS {
                             case eDamageType.Slash:
                                 {
                                     model = Get2HSwordForLevel(Level, eRealm.Hibernia);
-                                    if (model == 639)
-                                    {
-                                        name = "Great Falcata";
-                                    }
-                                    else
-                                    {
-                                        name = "Great Sword";
-                                    }
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                             case eDamageType.Crush:
@@ -6637,7 +6560,7 @@ namespace DOL.GS {
                                     }
                                     else
                                     {
-                                        name = "Great Hammer";
+                                        name = GetNameFromId(model);
                                     }
                                     break;
                                 }
@@ -6763,23 +6686,23 @@ namespace DOL.GS {
                         model = GetThrustModelForLevel(Level, eRealm.Hibernia);
                         if (this.SPD_ABS < 24)
                         {
-                            name = "Dirk";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 29)
                         {
-                            name = "Stiletto";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
-                            name = "Curved Dagger";
+                            name = GetNameFromId(model);
                         }
                         else
                         {
-                            name = "Rapier";
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -6864,56 +6787,38 @@ namespace DOL.GS {
                         model = GetBladeModelForLevel(Level, eRealm.Albion);
                         if (this.SPD_ABS < 26)
                         {
-                            name = "Dagger";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
-                            if (model == 651)
-                            {
-                                name = "Jambiya";
-                            }
-                            else
-                            {
-                                name = "Short Sword";
-                            }
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 32)
                         {
-                            name = "Broadsword";
+                            name = GetNameFromId(model);
                         }
                         else if (this.SPD_ABS < 35)
                         {
-                            name = "Scimitar";
+                            name = GetNameFromId(model);
                         }
                         else if (this.SPD_ABS < 40)
                         {
-                            name = "Long Sword";
+                            name = GetNameFromId(model);
                         }
                         else
                         {
-                            name = "Bastard Sword";
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
                 case eObjectType.Spear:
                     {
                         model = GetSpearModelForLevel(Level, eRealm.Midgard);
-                        if (this.SPD_ABS < 43)
-                        {
-                            name = "Spear";
-                        }
-                        else if (this.SPD_ABS < 50)
-                        {
-                            name = "Long Spear";
-                        }
-                        else
-                        {
-                            name = "Great Spear";
-                        }
+                        name = GetNameFromId(model);
                         break;
                     }
                 case eObjectType.MaulerStaff:
@@ -6948,39 +6853,16 @@ namespace DOL.GS {
                                 }
                                 else
                                 {
-                                    if (this.SPD_ABS < 40)
-                                    {
-                                        name = "Staff";
-                                    }
-                                    else
-                                    {
-                                        name = "Wand";
-                                    }
+                                    name = GetNameFromId(model);
                                 }
                                 break;
 
                             case eRealm.Midgard:
-
-                                if (this.SPD_ABS < 40)
-                                {
-                                    name = "Staff";
-                                }
-                                else
-                                {
-                                    name = "Rod";
-                                }
+                                name = GetNameFromId(model);
                                 break;
 
                             case eRealm.Hibernia:
-
-                                if (this.SPD_ABS < 40)
-                                {
-                                    name = "Staff";
-                                }
-                                else
-                                {
-                                    name = "Wand";
-                                }
+                                name = GetNameFromId(model);
                                 break;
                         }
                         break;
@@ -6990,38 +6872,12 @@ namespace DOL.GS {
                         if (this.Hand == 1)
                         {
                             model = Get2HSwordForLevel(Level, eRealm.Midgard);
-                            if (this.SPD_ABS > 46)
-                            {
-                                name = "Great Sword";
-                            }
-                            else
-                            {
-                                name = "Two Handed Sword";
-                            }
+                            name = GetNameFromId(model);
                         }
                         else
                         {
                             model = GetBladeModelForLevel(Level, eRealm.Midgard);
-                            if (this.SPD_ABS < 25)
-                            {
-                                name = "Dagger";
-                            }
-                            else if (this.SPD_ABS < 30)
-                            {
-                                name = "Short Sword";
-                            }
-                            else if (this.SPD_ABS < 32)
-                            {
-                                name = "Broadsword";
-                            }
-                            else if (this.SPD_ABS < 35)
-                            {
-                                name = "Long Sword";
-                            }
-                            else
-                            {
-                                name = "Bastard Sword";
-                            }
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -7030,29 +6886,29 @@ namespace DOL.GS {
                         model = GetThrustModelForLevel(Level, eRealm.Albion);
                         if (this.SPD_ABS < 24)
                         {
-                            name = "Dirk";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 28)
                         {
-                            name = "Stiletto";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 30)
                         {
-                            name = "Main Gauche";
+                            name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
                         else if (this.SPD_ABS < 36)
                         {
-                            name = "Rapier";
+                            name = GetNameFromId(model);
                         }
                         else
                         {
-                            name = "Gladius";
+                            name = GetNameFromId(model);
                         }
                         break;
                     }
@@ -7063,60 +6919,19 @@ namespace DOL.GS {
                             case eDamageType.Slash:
                                 {
                                     model = Get2HSwordForLevel(Level, eRealm.Albion);
-                                    if (this.SPD_ABS < 44)
-                                    {
-                                        name = "Two Handed Sword";
-                                    }
-                                    else if (this.SPD_ABS < 48)
-                                    {
-                                        name = "Great Axe";
-                                    }
-                                    else if (this.SPD_ABS < 51)
-                                    {
-                                        name = "Great Scimitar";
-                                    }
-                                    else
-                                    {
-                                        name = "Great Sword";
-                                    }
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                             case eDamageType.Crush:
                                 {
                                     model = Get2HHammerForLevel(Level, eRealm.Albion);
-                                    if (Level < 35)
-                                    {
-                                        name = "Great Hammer";
-                                        break;
-                                    }
-                                    else if (Level < 50)
-                                    {
-                                        name = "Battle Hammer";
-                                        break;
-                                    }
-                                    else if (Util.Chance(50))
-                                    {
-                                        name = "War Maul";
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        name = "Arch Mace";
-                                        break;
-                                    }
-
+                                    name = GetNameFromId(model);
+                                    break;
                                 }
                             case eDamageType.Thrust:
                                 {
                                     model = Get2HThrustForLevel(Level, eRealm.Albion);
-                                    if (Util.Chance(50))
-                                    {
-                                        name = "War Mattock";
-                                    }
-                                    else
-                                    {
-                                        name = "War Pick";
-                                    }
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                         }
@@ -8815,24 +8630,27 @@ namespace DOL.GS {
                     {
                         validModels.Add(456);
                         validModels.Add(898);
+                        validModels.Add(940);
                     }
                     if (Level > 30)
                     {
                         validModels.Add(457);
                         validModels.Add(472);
                         validModels.Add(895);
+                        validModels.Add(941);
                     }
                     if (Level > 40)
                     {
                         validModels.Add(460);
                         validModels.Add(643);
+                        validModels.Add(947);
                         validModels.Add(3678);
                         validModels.Add(3679);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(453);
-                        validModels.Add(940);
+                        validModels.Add(942);
                         validModels.Add(943);
                         validModels.Add(944);
                         validModels.Add(945);
@@ -9657,6 +9475,286 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
+        #endregion
+
+        #region Naming
+        private static string GetNameFromId(int modelId)
+        {
+            switch (modelId)
+            {
+                case 1:
+                case 21:
+                case 23:
+                case 25:
+                case 28:
+                case 454:
+                case 457:
+                case 472:
+                case 571:
+                case 876:
+                case 885:
+                case 887:
+                case 889:
+                case 895:
+                case 898:
+                case 902:
+                case 943:
+                case 944:
+                case 949:
+                case 1013:
+                case 1021:
+                case 3678:
+                case 3679:
+                case 3721:
+                case 3722:
+                case 3838:
+                case 3839:
+                    return "Dagger";
+                case 30:
+                    return "Gladius";
+                case 456:
+                case 71:
+                    return "Stiletto";
+                case 2:
+                case 315:
+                case 316:
+                case 319:
+                case 573:
+                case 578:
+                case 878:
+                case 880:
+                case 951:
+                case 953:
+                case 1010:
+                case 1011:
+                case 1014:
+                case 1018:
+                case 1023:
+                case 1025:
+                case 2657:
+                case 2672:
+                case 3680:
+                case 3681:
+                case 3723:
+                case 3724:
+                case 3840:
+                case 3841:
+                    return "Axe";
+                case 654:
+                    return "Cleaver";
+                case 22:
+                case 24:
+                case 29:
+                case 455:
+                case 643:
+                case 653:
+                case 886:
+                case 888:
+                case 945:
+                case 946:
+                case 2686:
+                case 2687:
+                case 2658:
+                    return "Rapier";
+                case 3:
+                case 4:
+                case 5:
+                case 10:
+                case 310:
+                case 311:
+                case 312:
+                case 313:
+                case 445:
+                case 446:
+                case 447:
+                case 473:
+                case 655:
+                case 877:
+                case 879:
+                case 896:
+                case 897:
+                case 899:
+                case 900:
+                case 901:
+                case 903:
+                case 948:
+                case 952:
+                case 1015:
+                case 1017:
+                case 1020:
+                case 1024:
+                case 2671:
+                case 2682:
+                case 3674:
+                case 3675:
+                case 3717:
+                case 3718:
+                case 3834:
+                case 3835:
+                    return "Sword";
+                case 460:
+                    return "Hooked Sword";
+                case 444:
+                    return "Falcata";
+                case 8:
+                    return "Scimitar";
+                case 651:
+                    return "Jambiya";
+                case 652:
+                    return "Sabre";
+                case 2195:
+                    return "Khopesh";
+                case 2209:
+                    return "Wakazashi";
+                case 6:
+                case 7:
+                case 314:
+                case 448:
+                case 459:
+                case 572:
+                case 658:
+                case 841:
+                case 843:
+                case 907:
+                case 911:
+                case 957:
+                case 1032:
+                case 1035:
+                case 2660:
+                case 2674:
+                case 2690:
+                case 3657:
+                case 3658:
+                case 3700:
+                case 3701:
+                case 3817:
+                case 3818:
+                case 3954:
+                case 3955:
+                    return "Greatsword";
+                case 660:
+                    return "War Cleaver";
+                case 639:
+                    return "Great Falcata";
+                case 847:
+                    return "Great Falchion";
+                case 910:
+                    return "Troll Splitter";
+                case 2208:
+                    return "Katana";
+                case 9:
+                case 72:
+                case 73:
+                case 317:
+                case 318:
+                case 577:
+                case 845:
+                case 955:
+                case 1027:
+                case 1030:
+                case 1033:
+                case 2675:
+                case 2985:
+                case 3662:
+                case 3705:
+                case 3822:
+                case 3882:
+                case 3923:
+                case 3959:
+                    return "Greataxe";
+                case 17:
+                case 462:
+                case 463:
+                case 574:
+                case 575:
+                case 576:
+                case 640:
+                case 644:
+                case 659:
+                case 844:
+                case 904:
+                case 905:
+                case 906:
+                case 908:
+                case 909:
+                case 917:
+                case 956:
+                case 1028:
+                case 1031:
+                case 1034:
+                case 2215:
+                case 2662:
+                case 2676:
+                case 2691:
+                case 3661:
+                case 3704:
+                case 3821:
+                case 3881:
+                case 3922:
+                    return "Great Hammer";
+                case 474:
+                case 912:
+                    return "Shillelagh";
+                case 846:
+                    return "War Mattock";
+                case 11:
+                case 13:
+                case 14:
+                case 18:
+                case 20:
+                case 450:
+                case 451:
+                case 647:
+                case 853:
+                case 854:
+                case 855:
+                case 856:
+                case 914:
+                case 915:
+                case 2659:
+                case 2683:
+                    return "Mace";
+                case 12:
+                case 15:
+                case 320:
+                case 321:
+                case 322:
+                case 323:
+                case 324:
+                case 461:
+                case 641:
+                case 656:
+                case 913:
+                case 916:
+                case 950:
+                case 954:
+                case 1009:
+                case 1012:
+                case 1022:
+                case 1026:
+                case 2673:
+                case 3676:
+                case 3677:
+                case 3836:
+                case 3837:
+                    return "Hammer";
+                case 940:
+                case 941:
+                case 942:
+                case 947:
+                case 2684:
+                    return "Adze";
+                case 449:
+                case 452:
+                case 1016:
+                case 1019:
+                    return "Club";
+                case 453:
+                    return "Sickle";
+                default:
+                    return "Weapon";
+            }
+        }
         #endregion
 
         private static byte GetTorsoExtensionForLevel(int Level)
