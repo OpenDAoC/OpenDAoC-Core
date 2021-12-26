@@ -6279,17 +6279,16 @@ namespace DOL.GS {
                 //weapons
                 case eObjectType.Axe:
                     {
+                        model = GetAxeModelForLevel(Level, realm);
                         if (this.Hand == 1)
                         {
                             if (this.SPD_ABS < 51)
                             {
                                 name = "Large Axe";
-                                model = 577;
                             }
                             else
                             {
                                 name = "Great Axe";
-                                model = 317;
                             }
                         }
                         else // 1 handed axe; speed 28-45; 578 (hand), 316 (Bearded), 319 (War), 315 (Spiked), 573 (Double)
@@ -6297,27 +6296,18 @@ namespace DOL.GS {
                             if (this.SPD_ABS < 25)
                             {
                                 name = "Hand Axe";
-                                model = 578;
                             }
                             else if (this.SPD_ABS < 30)
                             {
                                 name = "Bearded Axe";
-                                model = 316;
                             }
                             else if (this.SPD_ABS < 36)
                             {
                                 name = "War Axe";
-                                model = 319;
-                            }
-                            else if (this.SPD_ABS < 40)
-                            {
-                                name = "Spiked Axe";
-                                model = 315;
                             }
                             else
                             {
-                                name = "Double-bladed Axe";
-                                model = 573;
+                                name = "Spiked Axe";
                             }
                         }
                         break;
@@ -8436,6 +8426,64 @@ namespace DOL.GS {
                     break;
                 default:
                     validModels.Add(838);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+        #endregion
+
+        #region Weapon Model Generation
+        private static int GetAxeModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(2);
+                    if (Level > 10)
+                        validModels.Add(878);
+                    if (Level > 30)
+                        validModels.Add(880);
+                    if (Level > 40)
+                        validModels.Add(3681);
+                    if (Level > 50)
+                        validModels.Add(3724);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(315);
+                    validModels.Add(316);
+                    if (Level > 10)
+                    {
+                        validModels.Add(319);
+                        validModels.Add(573);
+                    }
+                    if (Level > 30)
+                    {
+                        validModels.Add(951);
+                        validModels.Add(953);
+                    }
+                    if (Level > 40)
+                    {
+                        validModels.Add(1010);
+                        validModels.Add(1011);
+                        validModels.Add(1014);
+                        validModels.Add(1018);
+                        validModels.Add(3681);
+                        validModels.Add(3680);
+                    }
+                        
+                    if (Level > 50)
+                    {
+                        validModels.Add(3723);
+                        validModels.Add(3724);
+                        validModels.Add(3942);
+                        validModels.Add(3941);
+                    }
+                        
+                    break;
+                default:
+                    validModels.Add(2);
                     break;
             }
 
