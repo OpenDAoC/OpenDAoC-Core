@@ -325,7 +325,7 @@ namespace DOL.AI.Brain
                     continue; // add only new NPCs
                 if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
                     continue;
-                if (npc is GameTaxi)
+                if (npc is GameTaxi || npc is GameTrainingDummy)
                     continue; //do not attack horses
 
                 if (CalculateAggroLevelToTarget(npc) > 0)
