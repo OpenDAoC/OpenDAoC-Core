@@ -60,7 +60,11 @@ namespace DOL.GS
 
 				try
 				{
-
+					if(args.Length <= 1)
+                    {
+						DisplaySyntax(client);
+						return;
+					}
 					for (int x = 0; x < 8; x++)
 					{
 						GeneratedUniqueItem item = null;

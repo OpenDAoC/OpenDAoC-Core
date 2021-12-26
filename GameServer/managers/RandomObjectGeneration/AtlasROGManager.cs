@@ -78,11 +78,9 @@ namespace DOL.GS {
         {
             GeneratedUniqueItem item = null;
             item = new GeneratedUniqueItem(realm, charClass, level);
-            item.CapUtility(level);
             item.AllowAdd = true;
             item.IsTradable = true;
-            //GameServer.Database.AddObject(item);
-
+            item.CapUtility(level);
             return item;
             
         }

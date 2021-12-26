@@ -5180,6 +5180,10 @@ namespace DOL.GS
                 {
                     double baseXP = expTotal - atlasBonus - expCampBonus - expGroupBonus - expOutpostBonus;
                     double softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
+                    if (this.CurrentRegion.IsRvR)
+                        softXPCap = (long)(softXPCap * ServerProperties.Properties.RvR_XP_RATE);
+                    else
+                        softXPCap = (long)(softXPCap * ServerProperties.Properties.XP_RATE);
                     double expPercent = (double)((baseXP) / (softXPCap)) * 100;
                     //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
 
@@ -5189,7 +5193,7 @@ namespace DOL.GS
                     if(XPLogState == eXPLogState.Verbose)
                     {
                         double soloPercent = ((double)atlasBonus / (expTotal - atlasBonus)) * 100.0;
-                        double campPercent = ((double)expCampBonus / (baseXP)) * 100.0;
+                        double campPercent = ((double)expCampBonus / (expTotal-expCampBonus)) * 100.0;
                         double groupPercent = ((double)expGroupBonus / (baseXP)) * 100.0;
                         double outpostPercent = ((double)expOutpostBonus / (expTotal-expOutpostBonus)) * 100.0;
                         double levelPercent = ((double)(Experience + expTotal - ExperienceForCurrentLevel) / (ExperienceForNextLevel - ExperienceForCurrentLevel)) * 100;
