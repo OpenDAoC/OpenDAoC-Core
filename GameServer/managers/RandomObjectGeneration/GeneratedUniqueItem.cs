@@ -6403,7 +6403,7 @@ namespace DOL.GS {
                         else
                             name = "Composite Bow";
 
-                        model = 564;
+                        model = GetBowModelForLevel(Level, eRealm.Midgard);
                         break;
                     }
                 case eObjectType.Crossbow:
@@ -6684,20 +6684,18 @@ namespace DOL.GS {
                     }
                 case eObjectType.Longbow:
                     {
+                        model = GetBowModelForLevel(Level, eRealm.Albion);
                         if (this.SPD_ABS < 44)
                         {
                             name = "Hunting Bow";
-                            model = 569;
                         }
                         else if (this.SPD_ABS < 55)
                         {
                             name = "Longbow";
-                            model = 132;
                         }
                         else
                         {
                             name = "Heavy Longbow";
-                            model = 570;
                         }
                         break;
                     }
@@ -6836,15 +6834,14 @@ namespace DOL.GS {
                     }
                 case eObjectType.RecurvedBow:
                     {
+                        model = GetBowModelForLevel(Level, eRealm.Hibernia);
                         if (this.SPD_ABS > 49)
                         {
                             name = "Great Recurve Bow";
-                            model = 925;
                         }
                         else
                         {
                             name = "Recurve Bow";
-                            model = 924;
                         }
                         break;
                     }
@@ -8610,6 +8607,78 @@ namespace DOL.GS {
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
+
+        private static int GetBowModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Hibernia:
+                    validModels.Add(471);
+                    if (Level > 10)
+                        validModels.Add(918);
+                    if (Level > 20)
+                        validModels.Add(919);
+                    if (Level > 30)
+                        validModels.Add(920);
+                    if (Level > 40)
+                    {
+                        validModels.Add(921);
+                        validModels.Add(922);
+                        validModels.Add(3663);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(923);
+                        validModels.Add(925);
+                        validModels.Add(3706);
+                    }
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(564);
+                    if (Level > 30)
+                        validModels.Add(1037);
+                    if (Level > 40)
+                    {
+                        validModels.Add(1038);
+                        validModels.Add(3660);
+                        validModels.Add(3824);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(1039);
+                        validModels.Add(3703);
+                        validModels.Add(3823);
+                    }
+                    break;
+                case eRealm.Albion:
+                    validModels.Add(132);
+                    if (Level > 10)
+                        validModels.Add(570);
+                    if (Level > 20)
+                        validModels.Add(848);
+                    if (Level > 30)
+                        validModels.Add(849);
+                    if (Level > 40)
+                    {
+                        validModels.Add(850);
+                        validModels.Add(3663);
+                    }
+                    if (Level > 50)
+                    {
+                        validModels.Add(851);
+                        validModels.Add(852);
+                        validModels.Add(3706);
+                    }
+                    break;
+                default:
+                    validModels.Add(132);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
         #endregion
 
         private static byte GetTorsoExtensionForLevel(int Level)
