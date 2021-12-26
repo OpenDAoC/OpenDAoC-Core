@@ -5083,16 +5083,17 @@ namespace DOL.GS
                 expTotal -= expGroupBonus;
                 expTotal -= expCampBonus;
                 expTotal -= expOutpostBonus;
-
+                Console.WriteLine(expTotal);
                 //[StephenxPimentel] - Zone Bonus XP Support
                 if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
                 {
-                    int zoneBonus = (((int)expTotal * ZoneBonus.GetXPBonus(this)) / 100);
+                    long zoneBonus = expTotal * ZoneBonus.GetXPBonus(this) / 100;
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.XP_RATE), ZoneBonus.eZoneBonusType.XP),
+                        long tmpBonus = (long)(zoneBonus * ServerProperties.Properties.XP_RATE);
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.eZoneBonusType.XP),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        GainExperience(eXPSource.Other, (long)(zoneBonus * ServerProperties.Properties.XP_RATE), 0, 0, 0, false, false, false);
+                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, false, false, false);
                     }
                 }
 
