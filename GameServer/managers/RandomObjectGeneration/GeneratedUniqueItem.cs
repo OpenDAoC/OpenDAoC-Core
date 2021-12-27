@@ -5997,8 +5997,8 @@ namespace DOL.GS {
                                     case eInventorySlot.LegsArmor: model = 140; break;
                                     case eInventorySlot.FeetArmor: model = 143; break;
                                     case eInventorySlot.HeadArmor:
-                                        if (Util.Chance(10))
-                                            model = 1278; //10% chance of wizard hat
+                                        if (Util.Chance(30))
+                                            model = 1278; //30% chance of wizard hat
                                         else
                                             model = 822;
                                         break;
@@ -6030,8 +6030,8 @@ namespace DOL.GS {
                                     case eInventorySlot.LegsArmor: model = 246; break;
                                     case eInventorySlot.FeetArmor: model = 249; break;
                                     case eInventorySlot.HeadArmor:
-                                        if (Util.Chance(10))
-                                            model = 1280; //10% chance of wizard hat
+                                        if (Util.Chance(30))
+                                            model = 1280; //30% chance of wizard hat
                                         else
                                             model = 825;
                                         break;
@@ -6063,8 +6063,8 @@ namespace DOL.GS {
                                     case eInventorySlot.LegsArmor: model = 379; break;
                                     case eInventorySlot.FeetArmor: model = 382; break;
                                     case eInventorySlot.HeadArmor:
-                                        if (Util.Chance(10))
-                                            model = 1279; //10% chance of wizard hat
+                                        if (Util.Chance(30))
+                                            model = 1279; //30% chance of wizard hat
                                         else
                                             model = 826;
                                         break;
