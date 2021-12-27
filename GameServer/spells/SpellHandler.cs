@@ -2756,7 +2756,7 @@ namespace DOL.GS.Spells
 			{
 				foreach (GameLiving living in Caster.Group.GetMembersInTheGroup().ToList())
 				{
-					if (living.GetDistanceTo(Caster) > Spell.Range)
+					if (living.GetDistanceTo(Caster) > spell.Range)
 					{
 						continue;
 					}
@@ -2772,7 +2772,7 @@ namespace DOL.GS.Spells
             {
 				foreach (GameLiving living in nPet.Owner.Group.GetMembersInTheGroup().ToList())
 				{
-					if (living.GetDistanceTo(Caster) > Spell.Range)
+					if (living.GetDistanceTo(Caster) > spell.Range)
 					{
 						continue;
 					}
