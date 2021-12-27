@@ -2745,7 +2745,7 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public virtual List<GameLiving> GetGroupAndPets()
+		public virtual List<GameLiving> GetGroupAndPets(Spell spell)
         {
 			List<GameLiving> livings = new List<GameLiving>();
 
@@ -2756,6 +2756,11 @@ namespace DOL.GS.Spells
 			{
 				foreach (GameLiving living in Caster.Group.GetMembersInTheGroup().ToList())
 				{
+					if (living.GetDistanceTo(Caster) > Spell.Range)
+					{
+						continue;
+					}
+					
 					livings.Add(living);
 
 					if (living.ControlledBrain != null)
@@ -2767,6 +2772,11 @@ namespace DOL.GS.Spells
             {
 				foreach (GameLiving living in nPet.Owner.Group.GetMembersInTheGroup().ToList())
 				{
+					if (living.GetDistanceTo(Caster) > Spell.Range)
+					{
+						continue;
+					}
+					
 					livings.Add(living);
 
 					if (living.ControlledBrain != null)
@@ -2814,7 +2824,7 @@ namespace DOL.GS.Spells
 			IList<GameLiving> targets;
 			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster && !Spell.IsHealing && Spell.IsBuff && 
 				Spell.SpellType != (byte)eSpellType.Bladeturn)
-				targets = GetGroupAndPets();
+				targets = GetGroupAndPets(Spell);
 			else
 				targets = SelectTargets(m_spellTarget);
 
