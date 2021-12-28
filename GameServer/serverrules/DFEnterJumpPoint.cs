@@ -22,6 +22,7 @@ using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Events;
+using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS.ServerRules
 {
@@ -142,8 +143,25 @@ namespace DOL.GS.ServerRules
 			
 			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 			{
-				var hook = new DolWebHook(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
-				hook.SendMessage(message);
+				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+
+				// Create your DiscordMessage with all parameters of your message.
+				var discordMessage = new DiscordMessage(
+					"",
+					username: "Atlas RvR",
+					avatarUrl: "https://cdn.discordapp.com/avatars/924819559058378782/7b11edbd9ca764893d4863fcb17e58c6.webp",
+					tts: false,
+					embeds: new[]
+					{
+						new DiscordMessageEmbed(
+							author: new DiscordMessageEmbedAuthor("Darkness Falls"),
+							color: 0,
+							description: message
+						)
+					}
+				);
+				
+				client.SendToDiscord(discordMessage);
 			}
 			
 		}
