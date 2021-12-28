@@ -249,8 +249,16 @@ namespace DOL.GS.Spells
 			// no interrupts on DoT direct effect
 			// calc damage
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
-			ad.CausesCombat = true;
+			//ad.CausesCombat = true;
 			SendDamageMessages(ad);
+			if (ad.Attacker.Realm == 0)
+			{
+				ad.Target.LastAttackTickPvE = GameLoop.GameLoopTime;
+			}
+			else
+			{
+				ad.Target.LastAttackTickPvP = GameLoop.GameLoopTime;
+			}
 			DamageTarget(ad, false);
 		}
 
