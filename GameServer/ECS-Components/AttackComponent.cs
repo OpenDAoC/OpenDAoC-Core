@@ -662,31 +662,15 @@ namespace DOL.GS
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
-                    }                    
-
-                    lock (p.effectListComponent.Effects)
-                    {
-                        foreach (ECSGameAbilityEffect effect in p.effectListComponent.GetAbilityEffects()) // switch to the correct range attack type
-                        {
-                            if (effect is SureShotECSGameEffect)
-                            {
-                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                                break;
-                            }
-
-                            if (effect is RapidFireECSGameEffect)
-                            {
-                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                                break;
-                            }
-
-                            if (effect is TrueShotECSGameEffect)
-                            {
-                                p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-                                break;
-                            }
-                        }
                     }
+
+                    if (EffectListService.GetAbilityEffectOnTarget(p, eEffect.SureShot) != null)
+                        p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                    if (EffectListService.GetAbilityEffectOnTarget(p, eEffect.RapidFire) != null)
+                        p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+                    if (EffectListService.GetAbilityEffectOnTarget(p, eEffect.TrueShot) != null)
+                        p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
+
 
                     if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical && p.Endurance < RangeAttackComponent.CRITICAL_SHOT_ENDURANCE)
                     {
@@ -1832,128 +1816,35 @@ namespace DOL.GS
             //owner.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out List<ECSGameEffect> btlist);
             //ecsbladeturn = btlist?.FirstOrDefault();
 
-            lock (owner.effectListComponent.Effects)
+            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) is GuardECSGameEffect guardEffect)
             {
-                foreach (ECSGameEffect effect in owner.effectListComponent.GetAllEffects())
-                {
-                    if (effect is GuardECSGameEffect)
-                    {
-                        if (guard == null && ((GuardECSGameEffect)effect).GuardTarget == owner)
-                            guard = (GuardECSGameEffect)effect;
-                        continue;
-                    }
-
-                    //if (effect is DashingDefenseECSGameEffect)
-                    //{
-                    //    if (dashing == null && ((DashingDefenseECSGameEffect)effect).GuardTarget == owner)
-                    //        dashing = (DashingDefenseECSGameEffect)effect; //Dashing
-                    //    continue;
-                    //}
-
-                    if (effect is BerserkECSGameEffect)
-                    {
-                        defenseDisabled = true;
-                        continue;
-                    }
-
-                    if (effect is EngageECSGameEffect)
-                    {
-                        if (engage == null)
-                            engage = (EngageECSGameEffect)effect;
-                        continue;
-                    }
-
-                    if (effect.EffectType == eEffect.Bladeturn)
-                    {
-                        if (ecsbladeturn == null)
-                            ecsbladeturn = (ECSGameSpellEffect)effect;
-                        continue;
-                    }
-
-                    // We check if interceptor can intercept
-
-                    // we can only intercept attacks on livings, and can only intercept when active
-                    // you cannot intercept while you are sitting
-                    // if you are stuned or mesmeried you cannot intercept...
-
-                    InterceptECSGameEffect inter = effect as InterceptECSGameEffect;
-                    if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
-                        && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
-                    {
-                        intercept = inter;
-                        continue;
-                    }
-                }
+                if (guard == null && guardEffect.GuardTarget == owner)
+                    guard = guardEffect;
             }
 
-            lock (owner.EffectList)
+            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Berserk) != null)
+                defenseDisabled = true;
+
+            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Berserk) is EngageECSGameEffect engageEffect)
+                if (engage == null)
+                    engage = engageEffect;
+
+            if (EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) is ECSGameSpellEffect bladeturnEffect)
+                if (ecsbladeturn == null)
+                    ecsbladeturn = bladeturnEffect;
+
+            // We check if interceptor can intercept
+
+            // we can only intercept attacks on livings, and can only intercept when active
+            // you cannot intercept while you are sitting
+            // if you are stuned or mesmeried you cannot intercept...
+            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Intercept) is InterceptECSGameEffect inter)
             {
-                foreach (IGameEffect effect in owner.EffectList)
+                if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
+                    && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
+                    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
                 {
-                    //if (effect is GuardEffect)
-                    //{
-                    //    if (guard == null && ((GuardEffect)effect).GuardTarget == owner)
-                    //        guard = (GuardEffect)effect;
-                    //    continue;
-                    //}
-
-                    if (effect is DashingDefenseEffect)
-                    {
-                        if (dashing == null && ((DashingDefenseEffect)effect).GuardTarget == owner)
-                            dashing = (DashingDefenseEffect)effect; //Dashing
-                        continue;
-                    }
-
-                    //if (effect is BerserkEffect)
-                    //{
-                    //    defenseDisabled = true;
-                    //    continue;
-                    //}
-
-                    //if (effect is EngageEffect)
-                    //{
-                    //    if (engage == null)
-                    //        engage = (EngageEffect)effect;
-                    //    continue;
-                    //}
-
-                    if (effect is GameSpellEffect)
-                    {
-                        switch ((effect as GameSpellEffect).Spell.SpellType)
-                        {
-                            case (byte)eSpellType.Phaseshift:
-                                if (phaseshift == null)
-                                    phaseshift = (GameSpellEffect)effect;
-                                continue;
-                            case (byte)eSpellType.Grapple:
-                                if (grapple == null)
-                                    grapple = (GameSpellEffect)effect;
-                                continue;
-                            case (byte)eSpellType.BrittleGuard:
-                                if (brittleguard == null)
-                                    brittleguard = (GameSpellEffect)effect;
-                                continue;
-                            case (byte)eSpellType.Bladeturn:
-                                if (bladeturn == null)
-                                    bladeturn = (GameSpellEffect)effect;
-                                continue;
-                        }
-                    }
-
-                    // We check if interceptor can intercept
-
-                    // we can only intercept attacks on livings, and can only intercept when active
-                    // you cannot intercept while you are sitting
-                    // if you are stuned or mesmeried you cannot intercept...
-                    //InterceptEffect inter = effect as InterceptEffect;
-                    //if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
-                    //    && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                    //    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
-                    //{
-                    //    intercept = inter;
-                    //    continue;
-                    //}
+                    intercept = inter;
                 }
             }
 
