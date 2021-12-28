@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(1500, 5000 - (AggroLevel/2) * 100); }
+            get { return Math.Max(1500, 3000 - (AggroLevel/3) * 100); }
         }
 
         /// <summary>
