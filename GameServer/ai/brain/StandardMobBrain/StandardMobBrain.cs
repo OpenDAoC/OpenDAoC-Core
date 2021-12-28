@@ -325,7 +325,7 @@ namespace DOL.AI.Brain
                     continue; // add only new NPCs
                 if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
                     continue;
-                if (npc is GameTaxi)
+                if (npc is GameTaxi || npc is GameTrainingDummy)
                     continue; //do not attack horses
 
                 if (CalculateAggroLevelToTarget(npc) > 0)
@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(1500, 10000 - AggroLevel * 100); }
+            get { return Math.Max(1500, 5000 - (AggroLevel/2) * 100); }
         }
 
         /// <summary>

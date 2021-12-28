@@ -1151,7 +1151,7 @@ namespace DOL.GS.ServerRules
 						//100% if full group,scales down according to player count in group and their range to target
 						if (player != null && player.Group != null && plrGrpExp.ContainsKey(player.Group))
 						{
-							realmPoints = (int)(realmPoints * (1.0 + plrGrpExp[player.Group] * 0.125));
+							realmPoints = (int)(realmPoints * (1.0 + plrGrpExp[player.Group] * 0.5));
 						}
 					}
 
@@ -1323,7 +1323,7 @@ namespace DOL.GS.ServerRules
 							}
 							
 							if (player.Group != null && plrGrpExp.ContainsKey(player.Group))
-								groupExp += (long)(0.05 * xpReward * (int)plrGrpExp[player.Group]);
+								groupExp += (long)(0.05 * xpReward * GetUniqueClassCount(player.Group)/*(int)plrGrpExp[player.Group]*/);
 
 							// tolakram - remove this for now.  Correct calculation should be reduced XP based on damage pet did, not a flat reduction
 							//if (player.ControlledNpc != null)
@@ -1346,6 +1346,16 @@ namespace DOL.GS.ServerRules
 				}
 			}
 		}
+
+		private int GetUniqueClassCount(Group group)
+        {
+			HashSet<eCharacterClass> groupClasses = new HashSet<eCharacterClass>();
+            foreach (var player in group.GetPlayersInTheGroup())
+            {
+				groupClasses.Add((eCharacterClass)player.CharacterClass.ID);
+            }
+			return groupClasses.Count;
+        }
 
 		/// <summary>
 		/// Called on living death that is not gameplayer or gamenpc
@@ -1818,7 +1828,7 @@ namespace DOL.GS.ServerRules
 
                 foreach (var player in playersToAward)
                 {
-	                if (player.Level < 35) continue;
+	                if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
                     AtlasROGManager.GenerateOrbs(player);
                     if (Properties.EVENT_THIDRANKI || Properties.EVENT_TUTORIAL)
                     {

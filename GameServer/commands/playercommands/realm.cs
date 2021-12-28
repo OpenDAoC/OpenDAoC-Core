@@ -105,7 +105,7 @@ namespace DOL.GS.Commands
 			
 			foreach (AbstractGameKeep keep in hibKeepList)
 			{
-				if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfotha"))
+				if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfhota"))
 					continue;
 				
 				if (keep is GameKeep)

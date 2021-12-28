@@ -65,7 +65,7 @@ namespace DOL.GS.Commands
 
         private void Broadcast(GamePlayer player, string message)
         {
-            foreach (GameClient c in WorldMgr.GetClientsOfRegion(player.CurrentRegionID))
+            foreach (GameClient c in WorldMgr.GetClientsOfRealm(player.Realm))
             {
                 if (GameServer.ServerRules.IsAllowedToUnderstand(c.Player, player))
                 {
