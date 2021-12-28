@@ -32,7 +32,7 @@
 // **** Atlas ROG Generation system ****
 //
 //	Based on the above mentioned software releases
-//	Converted for use by Atlas server by Fen - Sept 2021 
+//	Converted for use by Atlas server by Fen - Sept 2021 - Dec 21
 //
 
 
@@ -651,6 +651,7 @@ namespace DOL.GS {
                     }
                 case eBonusType.Stat:
                     {
+                        /*
                         // ToDo: this does not check for duplicates like INT and Acuity
                         ArrayList validStats = new ArrayList();
                         foreach (eProperty property in StatBonus)
@@ -661,6 +662,8 @@ namespace DOL.GS {
                             }
                         }
                         return (eProperty)validStats[Util.Random(0, validStats.Count - 1)];
+                        */
+                        return GetWeightedStatForClass(this.charClass);
                     }
                 case eBonusType.AdvancedStat:
                     {
@@ -675,6 +678,162 @@ namespace DOL.GS {
                     }
             }
             return eProperty.MaxHealth;
+        }
+
+        private eProperty GetWeightedStatForClass(eCharacterClass charClass)
+        {
+            int rand = Util.Random(100);
+            switch (charClass)
+            {
+                case eCharacterClass.Armsman:
+                case eCharacterClass.Mercenary:
+                case eCharacterClass.Infiltrator:
+                case eCharacterClass.Scout:
+                case eCharacterClass.Blademaster:
+                case eCharacterClass.Hero:
+                case eCharacterClass.Berserker:
+                case eCharacterClass.Warrior:
+                case eCharacterClass.Savage:
+                case eCharacterClass.Hunter:
+                case eCharacterClass.Shadowblade:
+                case eCharacterClass.Nightshade:
+                case eCharacterClass.Ranger:
+                    //25% chance of getting any useful stat
+                    //for classes who do not need mana/acuity/casting stats
+                    if (rand <= 25)
+                        return eProperty.Strength;
+                    else if (rand <= 50)
+                        return eProperty.Dexterity;
+                    else if (rand <= 75)
+                        return eProperty.Constitution;
+                    else return eProperty.Quickness;
+
+                case eCharacterClass.Cabalist:
+                case eCharacterClass.Sorcerer:
+                case eCharacterClass.Theurgist:
+                case eCharacterClass.Wizard:
+                case eCharacterClass.Necromancer:
+                case eCharacterClass.Eldritch:
+                case eCharacterClass.Enchanter:
+                case eCharacterClass.Mentalist:
+                case eCharacterClass.Animist:
+                case eCharacterClass.Runemaster:
+                case eCharacterClass.Spiritmaster:
+                case eCharacterClass.Bonedancer:
+                    //weight stats for casters towards dex, acu, con
+                    //keep some 10% chance of str or quick since useful for carrying/occasional melee
+                    if (rand <= 30)
+                        return eProperty.Dexterity;
+                    else if (rand <= 40)
+                        return eProperty.Strength;
+                    else if (rand <= 70)
+                        return eProperty.Acuity;
+                    else if (rand <= 80)
+                        return eProperty.Quickness;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Paladin:
+                    if (rand <= 25)
+                        return eProperty.Strength;
+                    else if (rand <= 40)
+                        return eProperty.Dexterity;
+                    else if (rand <= 60)
+                        return eProperty.Quickness;
+                    else if (rand <= 75)
+                        return eProperty.Piety;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Reaver:
+                case eCharacterClass.Cleric:
+                case eCharacterClass.Thane:
+                case eCharacterClass.Shaman:
+                case eCharacterClass.Minstrel:
+                    if (rand <= 20)
+                        return eProperty.Strength;
+                    else if (rand <= 40)
+                        return eProperty.Dexterity;
+                    else if (rand <= 60)
+                        return eProperty.Quickness;
+                    else if (rand <= 80)
+                        return eProperty.Piety;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Friar:
+                    if (rand <= 25)
+                        return eProperty.Piety;
+                    else if (rand <= 50)
+                        return eProperty.Dexterity;
+                    else if (rand <= 75)
+                        return eProperty.Constitution;
+                    else return eProperty.Quickness;
+
+                case eCharacterClass.Bard:
+                case eCharacterClass.Druid:
+                    if (rand <= 10)
+                        return eProperty.Strength;
+                    else if (rand <= 40)
+                        return eProperty.Dexterity;
+                    else if (rand <= 50)
+                        return eProperty.Quickness;
+                    else if (rand <= 80)
+                        return eProperty.Empathy;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Warden:
+                    if (rand <= 20)
+                        return eProperty.Strength;
+                    else if (rand <= 40)
+                        return eProperty.Dexterity;
+                    else if (rand <= 60)
+                        return eProperty.Quickness;
+                    else if (rand <= 80)
+                        return eProperty.Empathy;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Champion:
+                    if (rand <= 20)
+                        return eProperty.Strength;
+                    else if (rand <= 40)
+                        return eProperty.Dexterity;
+                    else if (rand <= 60)
+                        return eProperty.Quickness;
+                    else if (rand <= 80)
+                        return eProperty.Empathy;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Valewalker:
+                    if (rand <= 22)
+                        return eProperty.Strength;
+                    else if (rand <= 44)
+                        return eProperty.Dexterity;
+                    else if (rand <= 66)
+                        return eProperty.Quickness;
+                    else if (rand <= 88)
+                        return eProperty.Constitution;
+                    else return eProperty.Intelligence;
+
+                case eCharacterClass.Skald:
+                    if (rand <= 22)
+                        return eProperty.Strength;
+                    else if (rand <= 44)
+                        return eProperty.Dexterity;
+                    else if (rand <= 66)
+                        return eProperty.Quickness;
+                    else if (rand <= 88)
+                        return eProperty.Constitution;
+                    else return eProperty.Charisma;
+
+                case eCharacterClass.Healer:
+                    if (rand <= 30)
+                        return eProperty.Dexterity;
+                    else if (rand <= 60)
+                        return eProperty.Piety;
+                    else if (rand <= 85)
+                        return eProperty.Constitution;
+                    else return eProperty.Strength;
+            }
+            return eProperty.Constitution;
+
         }
 
         private bool SkillIsValidForClass(eProperty property)
