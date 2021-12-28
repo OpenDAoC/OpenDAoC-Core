@@ -74,7 +74,7 @@ namespace DOL.GS.Commands
 				if ((playerClient.Player.Advisor &&
 					playerClient.Player.Realm == client.Player.Realm) ||
 					playerClient.Account.PrivLevel > 1)
-					playerClient.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Advice.Advice", getRealmString(client.Player.Realm), client.Player.Name, msg), eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+					playerClient.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Advice.Advice", getRealmString(client.Player.Realm), client.Player.Name, msg), eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
 
 			}
 		}

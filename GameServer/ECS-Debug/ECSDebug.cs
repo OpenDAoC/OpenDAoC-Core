@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using DOL.Database;
 using DOL.Events;
+using log4net;
 
 namespace ECS.Debug
 {
     public static class Diagnostics
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static object _GameEventMgrNotifyLock = new object();
         private static bool PerfCountersEnabled = false;
         private static bool stateMachineDebugEnabled = false;
@@ -91,7 +94,8 @@ namespace ECS.Debug
                     elapsedString = DOL.GS.Util.TruncateString(elapsedString, 4);
                     logString += ($"{counterName} {elapsedString}ms | ");
                 }
-                Console.WriteLine(logString);
+                //Console.WriteLine(logString);
+                log.Debug(logString);
                 PerfCounters.Clear();
             }
         }
