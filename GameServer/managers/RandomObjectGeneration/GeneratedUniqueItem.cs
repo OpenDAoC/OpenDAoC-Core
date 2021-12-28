@@ -9211,7 +9211,7 @@ namespace DOL.GS {
                             }
                             if (Level > 50 && Util.Chance(1))
                             {
-                                validModels.Clear()
+                                validModels.Clear();
                                 validModels.Add(3696);
                                 validModels.Add(3815);
                                 validModels.Add(3952);
