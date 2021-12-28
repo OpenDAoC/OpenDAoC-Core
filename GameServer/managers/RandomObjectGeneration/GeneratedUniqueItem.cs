@@ -8364,6 +8364,17 @@ namespace DOL.GS {
                     break;
             }
 
+            if(Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3662);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3705);
+            }
+
             return validModels[Util.Random(validModels.Count - 1)];
         }
         private static int GetAxeModelForLevel(int Level, eRealm realm)
@@ -8398,25 +8409,44 @@ namespace DOL.GS {
                     if (Level > 40)
                     {
                         validModels.Add(1010);
-                        validModels.Add(1011);
-                        validModels.Add(1014);
-                        validModels.Add(1018);
-                        validModels.Add(3681);
-                        validModels.Add(3680);
+                        validModels.Add(1011);                      
                     }
 
                     if (Level > 50)
                     {
+                        validModels.Add(1014);
+                        validModels.Add(1018);
+                        validModels.Add(654);
+                    }
+
+                    if (Util.Chance(1) && Level > 40)
+                    {
+                        validModels.Clear();
+                        validModels.Add(3681);
+                        validModels.Add(3680);
+                    }
+                    if (Util.Chance(1) && Level > 50)
+                    {
+                        validModels.Clear();
                         validModels.Add(3723);
                         validModels.Add(3724);
-                        validModels.Add(3942);
-                        validModels.Add(3941);
                     }
 
                     break;
                 default:
                     validModels.Add(2);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3662);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3705);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8459,14 +8489,13 @@ namespace DOL.GS {
                         validModels.Add(73);
                         validModels.Add(645);
                         validModels.Add(841);
-                        validModels.Add(3658);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(843);
                         validModels.Add(845);
                         validModels.Add(847);
-                        validModels.Add(3701);
+
                     }
                     break;
                 case eRealm.Midgard:
@@ -8481,17 +8510,26 @@ namespace DOL.GS {
                     {
                         validModels.Add(957);
                         validModels.Add(660);
-                        validModels.Add(3658);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(1032);
-                        validModels.Add(3701);
                     }
                     break;
                 default:
                     validModels.Add(6);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3658);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3701);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8517,15 +8555,11 @@ namespace DOL.GS {
                     if (Level > 40)
                     {
                         validModels.Add(460);
-                        validModels.Add(3674);
-                        validModels.Add(3675);
                     }
 
                     if (Level > 50)
                     {
-                        validModels.Add(473);
-                        validModels.Add(3717);
-                        validModels.Add(3718);
+                        validModels.Add(473);                        
                     }
                     break;
                 case eRealm.Albion:
@@ -8545,14 +8579,10 @@ namespace DOL.GS {
                     if (Level > 40)
                     {
                         validModels.Add(877);
-                        validModels.Add(3675);
-                        validModels.Add(3674);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(879);
-                        validModels.Add(3718);
-                        validModels.Add(3717);
                     }
                     break;
                 case eRealm.Midgard:
@@ -8570,8 +8600,6 @@ namespace DOL.GS {
                     {
                         validModels.Add(948);
                         validModels.Add(952);
-                        validModels.Add(3675);
-                        validModels.Add(3674);
                     }
                     if (Level > 50)
                     {
@@ -8579,13 +8607,24 @@ namespace DOL.GS {
                         validModels.Add(655);
                         validModels.Add(1017);
                         validModels.Add(1015);
-                        validModels.Add(3718);
-                        validModels.Add(3717);
                     }
                     break;
                 default:
                     validModels.Add(445);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3675);
+                validModels.Add(3674);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3717);
+                validModels.Add(3718);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8633,15 +8672,9 @@ namespace DOL.GS {
                     if (Level > 30)
                         validModels.Add(644);
                     if (Level > 40)
-                    {
                         validModels.Add(842);
-                        validModels.Add(3661);
-                    }
                     if (Level > 50)
-                    {
                         validModels.Add(844);
-                        validModels.Add(3704);
-                    }
                     break;
                 case eRealm.Midgard:
                     validModels.Add(574);
@@ -8660,18 +8693,25 @@ namespace DOL.GS {
                     if (Level > 40)
                     {
                         validModels.Add(1031);
-                        validModels.Add(1034);
-                        validModels.Add(3661);
+                        validModels.Add(1034); 
                     }
                     if (Level > 50)
-                    {
                         validModels.Add(1028);
-                        validModels.Add(3704);
-                    }
                     break;
                 default:
                     validModels.Add(449);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3661);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3704);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8695,15 +8735,11 @@ namespace DOL.GS {
                     {
                         validModels.Add(913);
                         validModels.Add(914);
-                        validModels.Add(3676);
-                        validModels.Add(3677);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(916);
                         validModels.Add(915);
-                        validModels.Add(3719);
-                        validModels.Add(3720);
                     }
                     break;
                 case eRealm.Albion:
@@ -8725,15 +8761,11 @@ namespace DOL.GS {
                     {
                         validModels.Add(853);
                         validModels.Add(854);
-                        validModels.Add(3676);
-                        validModels.Add(3677);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(855);
                         validModels.Add(856);
-                        validModels.Add(3719);
-                        validModels.Add(3720);
                     }
                     break;
                 case eRealm.Midgard:
@@ -8755,20 +8787,29 @@ namespace DOL.GS {
                     {
                         validModels.Add(1019);
                         validModels.Add(1016);
-                        validModels.Add(3676);
-                        validModels.Add(3677);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(1016);
                         validModels.Add(1009);
-                        validModels.Add(3719);
-                        validModels.Add(3720);
                     }
                     break;
                 default:
                     validModels.Add(449);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3676);
+                validModels.Add(3677);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3719);
+                validModels.Add(3720);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8788,18 +8829,30 @@ namespace DOL.GS {
                         validModels.Add(2661);
                     if (Level > 40)
                     {
-                        validModels.Add(3817);
-                        validModels.Add(3657);
+                        
                     }
                     if (Level > 50)
                     {
                         validModels.Add(2208);
-                        validModels.Add(3700);
+                        
                     }
                     break;
                 default:
                     validModels.Add(449);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                
+                validModels.Add(3657);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3700);
+                validModels.Add(3817);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8836,8 +8889,6 @@ namespace DOL.GS {
                         validModels.Add(460);
                         validModels.Add(643);
                         validModels.Add(947);
-                        validModels.Add(3678);
-                        validModels.Add(3679);
                     }
                     if (Level > 50)
                     {
@@ -8847,8 +8898,7 @@ namespace DOL.GS {
                         validModels.Add(944);
                         validModels.Add(945);
                         validModels.Add(946);
-                        validModels.Add(3721);
-                        validModels.Add(3722);
+                        validModels.Add(2209);
                     }
                     break;
                 case eRealm.Albion:
@@ -8874,23 +8924,30 @@ namespace DOL.GS {
                         validModels.Add(30);
                     }
                     if (Level > 40)
-                    {
                         validModels.Add(653);
-                        validModels.Add(2209);
-                        validModels.Add(3721);
-                        validModels.Add(3722);
-                    }
                     if (Level > 50)
                     {
                         validModels.Add(885);
                         validModels.Add(886);
-                        validModels.Add(3721);
-                        validModels.Add(3722);
+                        validModels.Add(2209);
                     }
                     break;
                 default:
                     validModels.Add(1);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3721);
+                validModels.Add(3722);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3721);
+                validModels.Add(3722);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -8915,13 +8972,20 @@ namespace DOL.GS {
                             if (Level > 40)
                             {
                                 validModels.Add(873);
-                                validModels.Add(3672);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Clear();
+                                    validModels.Add(3672);
+                                }
                             }
                             if (Level > 50)
                             {
                                 validModels.Add(874);
-                                validModels.Add(2689);
-                                validModels.Add(3715);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Clear();
+                                    validModels.Add(3715);
+                                }
                             }
                             break;
                         case eDamageType.Crush:
@@ -8932,10 +8996,11 @@ namespace DOL.GS {
                                 validModels.Add(870);
                             if (Level > 30)
                                 validModels.Add(875);
-                            if (Level > 40)
+                            if (Level > 40 &&  Util.Chance(1))
                                 validModels.Add(3673);
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                             {
+
                                 validModels.Add(3833);
                                 validModels.Add(3716);
                             }
@@ -8951,12 +9016,20 @@ namespace DOL.GS {
                             if (Level > 40)
                             {
                                 validModels.Add(871);
-                                validModels.Add(3671);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Clear();
+                                    validModels.Add(3671);
+                                }
                             }
                             if (Level > 50)
                             {
                                 validModels.Add(872);
-                                validModels.Add(3714);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Clear();
+                                    validModels.Add(3714);
+                                }
                             }
                             break;
                     }
@@ -8997,7 +9070,6 @@ namespace DOL.GS {
                         validModels.Add(556);
                         validModels.Add(933);
                         validModels.Add(936);
-                        validModels.Add(3660);
                     }
                     if (Level > 50)
                     {
@@ -9005,7 +9077,6 @@ namespace DOL.GS {
                         validModels.Add(938);
                         validModels.Add(939);
                         validModels.Add(2689);
-                        validModels.Add(3703);
                     }
                     break;
                 case eRealm.Midgard:
@@ -9020,18 +9091,27 @@ namespace DOL.GS {
                     {
                         validModels.Add(332);
                         validModels.Add(958);
-                        validModels.Add(3660);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(657);
                         validModels.Add(1029);
-                        validModels.Add(3703);
                     }
                     break;
                 default:
                     validModels.Add(328);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3660);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3703);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -9054,13 +9134,11 @@ namespace DOL.GS {
                     {
                         validModels.Add(921);
                         validModels.Add(922);
-                        validModels.Add(3663);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(923);
                         validModels.Add(925);
-                        validModels.Add(3706);
                     }
                     break;
                 case eRealm.Midgard:
@@ -9068,17 +9146,9 @@ namespace DOL.GS {
                     if (Level > 30)
                         validModels.Add(1037);
                     if (Level > 40)
-                    {
                         validModels.Add(1038);
-                        validModels.Add(3660);
-                        validModels.Add(3824);
-                    }
                     if (Level > 50)
-                    {
                         validModels.Add(1039);
-                        validModels.Add(3703);
-                        validModels.Add(3823);
-                    }
                     break;
                 case eRealm.Albion:
                     validModels.Add(132);
@@ -9089,20 +9159,29 @@ namespace DOL.GS {
                     if (Level > 30)
                         validModels.Add(849);
                     if (Level > 40)
-                    {
                         validModels.Add(850);
-                        validModels.Add(3663);
-                    }
                     if (Level > 50)
                     {
                         validModels.Add(851);
-                        validModels.Add(852);
-                        validModels.Add(3706);
+                        validModels.Add(852); 
                     }
                     break;
                 default:
                     validModels.Add(132);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3824);
+                validModels.Add(3663);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3706);
+                validModels.Add(3823);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -9127,10 +9206,12 @@ namespace DOL.GS {
                             if (Level > 40)
                             {
                                 validModels.Add(2669);
-                                validModels.Add(3653);
+                                if(Util.Chance(1))
+                                    validModels.Add(3653);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                             {
+                                validModels.Clear()
                                 validModels.Add(3696);
                                 validModels.Add(3815);
                                 validModels.Add(3952);
@@ -9149,9 +9230,10 @@ namespace DOL.GS {
                             if (Level > 40)
                             {
                                 validModels.Add(2670);
-                                validModels.Add(3654);
+                                if (Util.Chance(1))
+                                    validModels.Add(3654);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                             {
                                 validModels.Add(3697);
                                 validModels.Add(3814);
@@ -9191,16 +9273,22 @@ namespace DOL.GS {
                                 validModels.Add(972);
                                 validModels.Add(974);
                                 validModels.Add(976);
-                                validModels.Add(3686);
-                                validModels.Add(3687);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Add(3686);
+                                    validModels.Add(3687);
+                                }                                
                             }
                             if (Level > 50)
                             {
                                 validModels.Add(978);
                                 validModels.Add(980);
                                 validModels.Add(982);
-                                validModels.Add(3729);
-                                validModels.Add(3730);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Add(3729);
+                                    validModels.Add(3730);
+                                }                                
                             }
                             break;
                         case eDamageType.Slash:
@@ -9218,16 +9306,22 @@ namespace DOL.GS {
                                 validModels.Add(971);
                                 validModels.Add(973);
                                 validModels.Add(975);
-                                validModels.Add(3682);
-                                validModels.Add(3683);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Add(3682);
+                                    validModels.Add(3683);
+                                }                                
                             }
                             if (Level > 50)
                             {
                                 validModels.Add(977);
                                 validModels.Add(979);
                                 validModels.Add(981);
-                                validModels.Add(3725);
-                                validModels.Add(3726);
+                                if (Util.Chance(1))
+                                {
+                                    validModels.Add(3725);
+                                    validModels.Add(3726);
+                                }
                             }
                             break;
                     }
@@ -9256,19 +9350,25 @@ namespace DOL.GS {
                     if (Level > 40)
                     {
                         validModels.Add(893);
-                        validModels.Add(894);
-                        validModels.Add(3656);
-                    }
-                    if (Level > 50)
-                    {
-                        validModels.Add(3816);
-                        validModels.Add(3953);
-                        validModels.Add(3699);
+                        validModels.Add(894); 
                     }
                     break;
                 default:
                     validModels.Add(226);
                     break;
+            }
+
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3656);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3816);
+                validModels.Add(3953);
+                validModels.Add(3699);
             }
 
             return validModels[Util.Random(validModels.Count - 1)];
@@ -9292,10 +9392,12 @@ namespace DOL.GS {
                         validModels.Add(932);
                         validModels.Add(926);
                         validModels.Add(927);
-                        validModels.Add(3665);
+                        if(Util.Chance(1))
+                            validModels.Add(3665);
                     }
-                    if (Level > 50)
+                    if (Level > 50 && Util.Chance(1))
                     {
+                        validModels.Clear();
                         validModels.Add(3825);
                         validModels.Add(3708);
                         validModels.Add(3885);
@@ -9328,7 +9430,7 @@ namespace DOL.GS {
                         validModels.Add(883);
                         validModels.Add(1166);
                         validModels.Add(1169);
-                        validModels.Add(3667);
+
                     }
                     if (Level > 50)
                     {
@@ -9336,8 +9438,7 @@ namespace DOL.GS {
                         validModels.Add(881);
                         validModels.Add(1168);
                         validModels.Add(1167);
-                        validModels.Add(1170);
-                        validModels.Add(3710);
+                        validModels.Add(1170); 
                     }
                     break;
                 case eRealm.Hibernia:
@@ -9353,13 +9454,11 @@ namespace DOL.GS {
                         validModels.Add(1178);
                         validModels.Add(1174);
                         validModels.Add(1175);
-                        validModels.Add(3667);
                     }
                     if (Level > 50)
                     {
                         validModels.Add(1179);
                         validModels.Add(1173);
-                        validModels.Add(3710);
                     }
                     break;
                 case eRealm.Midgard:
@@ -9374,19 +9473,26 @@ namespace DOL.GS {
                     {
                         validModels.Add(1172);
                         validModels.Add(1176);
-                        validModels.Add(3667);
                     }
                     if (Level > 50)
-                    {
                         validModels.Add(1177);
-                        validModels.Add(3710);
-                    }
                     break;
                 default:
                     validModels.Add(931);
                     break;
             }
 
+            if (Util.Chance(1) && Level > 40)
+            {
+                validModels.Clear();
+                validModels.Add(3667);
+            }
+            if (Util.Chance(1) && Level > 50)
+            {
+                validModels.Clear();
+                validModels.Add(3710);
+            }
+            
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
@@ -9420,7 +9526,7 @@ namespace DOL.GS {
                                 validModels.Add(1164);
                                 validModels.Add(1165);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3888);
                             break;
                         case 2:
@@ -9451,7 +9557,7 @@ namespace DOL.GS {
                                 validModels.Add(1161);
                                 validModels.Add(1162);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3889);
                             break;
                         case 3:
@@ -9482,7 +9588,7 @@ namespace DOL.GS {
                                 validModels.Add(1155);
                                 validModels.Add(1156);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3890);
                             break;
                     }
@@ -9506,7 +9612,7 @@ namespace DOL.GS {
                                 validModels.Add(1119);
                                 validModels.Add(1120);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3965);
                             break;
                         case 2:
@@ -9537,7 +9643,7 @@ namespace DOL.GS {
                                 validModels.Add(1116);
                                 validModels.Add(1117);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3966);
                             break;
                         case 3:
@@ -9568,7 +9674,7 @@ namespace DOL.GS {
                                 validModels.Add(1122);
                                 validModels.Add(1123);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3967);
                             break;
                     }
@@ -9598,7 +9704,7 @@ namespace DOL.GS {
                                 validModels.Add(1131);
                                 validModels.Add(1132);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3929);
                             break;
                         case 2:
@@ -9623,7 +9729,7 @@ namespace DOL.GS {
                                 validModels.Add(1128);
                                 validModels.Add(1129);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3930);
                             break;
                         case 3:
@@ -9654,7 +9760,7 @@ namespace DOL.GS {
                                 validModels.Add(1143);
                                 validModels.Add(1144);
                             }
-                            if (Level > 50)
+                            if (Level > 50 && Util.Chance(1))
                                 validModels.Add(3931);
                             break;
                     }
