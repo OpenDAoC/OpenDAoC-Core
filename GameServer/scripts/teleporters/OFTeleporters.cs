@@ -72,6 +72,10 @@ namespace DOL.GS.Scripts
         public const string EmainID = "emain_necklace";
         public const string OdinID = "odin_necklace";
         public const string HomeID = "home_necklace";
+
+        //QoL medallions
+        public const string BindID = "bind_necklace";
+        public const string CityID = "city_necklace";
         
         //BG medallions
         public const string BattlegroundsID = "battlegrounds_necklace";
@@ -201,6 +205,7 @@ namespace DOL.GS.Scripts
                                     case OdinID: PortLocation = new GameLocation("Odin Alb", 100, 596364, 631509, 5971); break;
                                     case EmainID: PortLocation = new GameLocation("Emain Alb", 200, 475835, 343661, 4080); break;
                                     case HomeID: PortLocation = new GameLocation("Home Alb", 1, 583908, 486608, 2184); break;
+                                    case CityID: PortLocation = new GameLocation("City Alb", 10, 36226, 29820, 7971); break;
                                     case BattlegroundsID:
                                     {
                                         if (player.Level is >= 15 and <= 19)
@@ -237,9 +242,11 @@ namespace DOL.GS.Scripts
                             {
                                 switch (medallion.Id_nb)
                                 {
+                                    
                                     case HadrianID: PortLocation = new GameLocation("Hadrian Mid", 1, 655200, 293217, 4879); break;
                                     case EmainID: PortLocation = new GameLocation("Emain Mid", 200, 474107, 295199, 3871); break;
                                     case HomeID: PortLocation = new GameLocation("Home Mid", 100, 765381, 673533, 5736); break;
+                                    case CityID: PortLocation = new GameLocation("City Mid", 101, 31746, 27429, 8792); break;
                                     case BattlegroundsID:
                                     {
                                         if (player.Level >= 15 && player.Level <= 19)
@@ -278,6 +285,7 @@ namespace DOL.GS.Scripts
                                     case OdinID: PortLocation = new GameLocation("Odin Hib", 100, 596055, 581400, 6031); break;
                                     case HadrianID: PortLocation = new GameLocation("Hadrian Hib", 1, 605743, 293676, 4839); break;
                                     case HomeID: PortLocation = new GameLocation("Home Hib", 200, 334335, 420404, 5184); break;
+                                    case CityID: PortLocation = new GameLocation("City Hib", 201, 34140, 32058, 8047); break;
                                     case BattlegroundsID:
                                     {
                                         if (player.Level >= 15 && player.Level <= 19)
