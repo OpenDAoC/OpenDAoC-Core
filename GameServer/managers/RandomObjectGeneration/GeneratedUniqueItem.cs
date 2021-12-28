@@ -747,7 +747,6 @@ namespace DOL.GS {
                 case eCharacterClass.Cleric:
                 case eCharacterClass.Thane:
                 case eCharacterClass.Shaman:
-                case eCharacterClass.Minstrel:
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -803,6 +802,7 @@ namespace DOL.GS {
                     else return eProperty.Intelligence;
 
                 case eCharacterClass.Skald:
+                case eCharacterClass.Minstrel:
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
