@@ -791,16 +791,6 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Champion:
-                    if (rand <= 20)
-                        return eProperty.Strength;
-                    else if (rand <= 40)
-                        return eProperty.Dexterity;
-                    else if (rand <= 60)
-                        return eProperty.Quickness;
-                    else if (rand <= 80)
-                        return eProperty.Empathy;
-                    else return eProperty.Constitution;
-
                 case eCharacterClass.Valewalker:
                     if (rand <= 22)
                         return eProperty.Strength;
