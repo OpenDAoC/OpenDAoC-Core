@@ -6669,7 +6669,7 @@ namespace DOL.GS {
                             case 3:
                                 {
                                     name = "Harp";
-                                    model = 3688;
+                                    model = 2116;
                                     break;
                                 }
                                 /*
