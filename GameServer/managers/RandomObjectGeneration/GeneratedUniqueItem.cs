@@ -6432,6 +6432,7 @@ namespace DOL.GS {
                     {
                         if (this.Hand == 1)
                         {
+                            model = Get2HAxeModelForLevel(Level, realm);
                             name = GetNameFromId(model);
                         }
                         else // 1 handed axe; speed 28-45; 578 (hand), 316 (Bearded), 319 (War), 315 (Spiked), 573 (Double)
@@ -8325,6 +8326,46 @@ namespace DOL.GS {
         #endregion
 
         #region Weapon Model Generation
+
+        private static int Get2HAxeModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    validModels.Add(9);
+                    if (Level > 10)
+                        validModels.Add(72);
+                    if (Level > 30)
+                        validModels.Add(73);
+                    break;
+                case eRealm.Midgard:
+                    validModels.Add(317);
+                    if (Level > 10)
+                    {
+                        validModels.Add(318);
+                    }
+                    if(Level > 20)
+                        validModels.Add(1030);
+                    if (Level > 30)
+                    {
+                        validModels.Add(955);
+                        validModels.Add(1033);
+                    }
+                    if (Level > 40)
+                        validModels.Add(1027);
+
+                    if (Level > 50)
+                        validModels.Add(660);
+                    
+                    break;
+                default:
+                    validModels.Add(2);
+                    break;
+            }
+
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
         private static int GetAxeModelForLevel(int Level, eRealm realm)
         {
             List<int> validModels = new List<int>();
