@@ -30,6 +30,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
+using static DOL.GS.GamePlayer;
 
 namespace DOL.GS.ServerRules
 {
@@ -1048,6 +1049,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="killer">killer</param>
 		public virtual void OnNPCKilled(GameNPC killedNPC, GameObject killer)
 		{
+			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
 			lock (killedNPC.XPGainers.SyncRoot)
 			{
 				#region Worth no experience
@@ -1100,7 +1102,6 @@ namespace DOL.GS.ServerRules
 					// tolakram: only prepare for xp challenge code if player is in a group
 					if (highestPlayer == null || (player.Level > highestPlayer.Level))
 						highestPlayer = player;
-
 				}
 				#endregion
 
@@ -1198,6 +1199,13 @@ namespace DOL.GS.ServerRules
 					else
 						xpReward = npcExpValue;
 
+					//xp should divided across all members in the group, per this article: https://camelot.allakhazam.com/story.html?story=491
+					if (player != null && player.Group != null && player.Group.MemberCount > 1)
+					{
+						int scalingFactor = (int)Math.Ceiling((decimal)player.Group.MemberCount);
+						xpReward /= scalingFactor;
+					}
+
 					// exp cap
 					/*
 					
@@ -1251,6 +1259,13 @@ namespace DOL.GS.ServerRules
 					if (xpReward > expCap)
 						xpReward = expCap;
 
+					if(player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
+                    {
+						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						double expPercent = ((double)(xpReward) / (double)(expCap)) * 100;
+						player.Out.SendMessage($"% of Cap: {expPercent.ToString(".##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+
 					#region Camp Bonus
 					// average max camp bonus is somewhere between 50 and 60%
 					double fullCampBonus = ServerProperties.Properties.MAX_CAMP_BONUS;
@@ -1278,6 +1293,18 @@ namespace DOL.GS.ServerRules
 						campBonusPerc = fullCampBonus;
 
 					campBonus = (long)(xpReward * campBonusPerc);
+					#endregion
+
+					#region Atlas Bonus
+					//up to 100% more exp while solo, scaled lower as group size grows
+					long atlasBonus = 0;
+					if (player.Group != null)
+					{
+						atlasBonus = (xpReward) / player.Group.GetPlayersInTheGroup().Count;
+					}
+					else
+						atlasBonus = (xpReward);
+
 					#endregion
 
 					#region Outpost Bonus
@@ -1331,18 +1358,7 @@ namespace DOL.GS.ServerRules
 						}
 
 						//Ok we've calculated all the base experience.  Now let's add them all together.
-						xpReward += (long)campBonus + groupExp + outpostXP;
-
-						//xp should divided across all members in the group, per this article: https://camelot.allakhazam.com/story.html?story=491
-						if (player != null && player.Group != null && player.Group.MemberCount > 1)
-                        {
-							int scalingFactor = (int)Math.Ceiling((decimal)player.Group.MemberCount / 2);
-							xpReward /= scalingFactor;
-							campBonus /= scalingFactor;
-							groupExp /= scalingFactor;
-							outpostXP /= scalingFactor;
-						}
-							
+						xpReward += (long)campBonus + groupExp + outpostXP + atlasBonus;
 
 						if (!living.IsAlive)//Dead living gets 25% exp only
 							xpReward = (long)(xpReward * 0.25);
@@ -1351,10 +1367,52 @@ namespace DOL.GS.ServerRules
 						if(plrGrpExp.Count > 0)
 							xpReward /= plrGrpExp.Count;
 
-						
+						if (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
+						{
+							double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
+							int scaleFactor = 1;
+							if (player.Group?.MemberCount > 1)
+								scaleFactor = player.Group.MemberCount;
+							double softXPCap = (long)((GameServer.ServerRules.GetExperienceForLiving(highestPlayer.Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100) / scaleFactor);
+							if (player.CurrentRegion.IsRvR)
+								softXPCap = (long)(softXPCap * ServerProperties.Properties.RvR_XP_RATE);
+							else
+								softXPCap = (long)(softXPCap * ServerProperties.Properties.XP_RATE);
+
+							//Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
+
+							//player.Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | XP Cap: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							//player.Out.SendMessage($"% of Cap: {((double)((baseXP) / (softXPCap)) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+							if (player.XPLogState == eXPLogState.Verbose)
+							{
+								double soloPercent = ((double)atlasBonus / (baseXP)) * 100.0;
+								double campPercent = ((double)campBonus / (baseXP)) * 100.0;
+								double groupPercent = ((double)groupExp / (baseXP)) * 100.0;
+								double outpostPercent = ((double)outpostXP / (baseXP)) * 100.0;
+								double levelPercent = ((double)(player.Experience + xpReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel)) * 100;
+
+								if (atlasBonus > 0)
+									player.Out.SendMessage($"Atlas: {atlasBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (campBonus > 0)
+									player.Out.SendMessage($"Camp: {campBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (player.Group != null)
+									player.Out.SendMessage($"Group: {groupExp.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (outpostXP > 0)
+									player.Out.SendMessage($"Output: {outpostXP.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								//player.Out.SendMessage($"Total Bonus: {((double)((atlasBonus + campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage($"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage($"# of kills needed to level at this rate: {(player.ExperienceForNextLevel - player.Experience) / xpReward}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+							}
+						}
 
 						//XP Rate is handled in GainExperience
-						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true, true, true);
+						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, atlasBonus, true, true, true);
 					}
 				}
 			}

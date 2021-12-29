@@ -5040,9 +5040,9 @@ namespace DOL.GS
         /// <param name="expGroupBonus"></param>
         /// <param name="expOutpostBonus"></param>
         /// <param name="sendMessage"></param>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long atlasBonus, long expOutpostBonus, bool sendMessage)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, true);
         }
 
         /// <summary>
@@ -5054,9 +5054,9 @@ namespace DOL.GS
         /// <param name="expOutpostBonus"></param>
         /// <param name="sendMessage"></param>
         /// <param name="allowMultiply"></param>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long atlasBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, true);
         }
 
         /// <summary>
@@ -5069,7 +5069,7 @@ namespace DOL.GS
         /// <param name="sendMessage"></param>
         /// <param name="allowMultiply"></param>
         /// <param name="notify"></param>
-        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
+        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, long atlasBonus, bool sendMessage, bool allowMultiply, bool notify)
         {
             if (!GainXP && expTotal > 0)
                 return;
@@ -5083,7 +5083,7 @@ namespace DOL.GS
                 expTotal -= expGroupBonus;
                 expTotal -= expCampBonus;
                 expTotal -= expOutpostBonus;
-                Console.WriteLine(expTotal);
+                expTotal -= atlasBonus;
                 //[StephenxPimentel] - Zone Bonus XP Support
                 if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
                 {
@@ -5093,7 +5093,7 @@ namespace DOL.GS
                         long tmpBonus = (long)(zoneBonus * ServerProperties.Properties.XP_RATE);
                         Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.eZoneBonusType.XP),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, false, false, false);
+                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, 0, false, false, false);
                     }
                 }
 
@@ -5118,25 +5118,14 @@ namespace DOL.GS
                 expTotal += expOutpostBonus;
                 expTotal += expGroupBonus;
                 expTotal += expCampBonus;
-
-            }
-
-            //up to 100% more exp while solo, scaled lower as group size grows
-            long atlasBonus = 0;
-            if (Group != null)
-            {
-                atlasBonus = (expTotal) / Group.GetPlayersInTheGroup().Count;   
-            }
-            else
-                atlasBonus = (expTotal);
-
-            if(xpSource == eXPSource.NPC || xpSource == eXPSource.Player)
                 expTotal += atlasBonus;
+
+            }
 
             // Get Champion Experience too
             GainChampionExperience(expTotal);
 
-            base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, notify);
+            base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
 
             if (IsLevelSecondStage)
             {
@@ -5174,48 +5163,6 @@ namespace DOL.GS
                 if(atlasBonus > 0)
                 {
                     expSoloBonusStr = "("+ atlasBonus.ToString("N0", format) + " Atlas bonus)";
-                }
-
-                
-                if(XPLogState == eXPLogState.On || XPLogState == eXPLogState.Verbose)
-                {
-                    double baseXP = expTotal - atlasBonus - expCampBonus - expGroupBonus - expOutpostBonus;
-                    double softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
-                    if (this.CurrentRegion.IsRvR)
-                        softXPCap = (long)(softXPCap * ServerProperties.Properties.RvR_XP_RATE);
-                    else
-                        softXPCap = (long)(softXPCap * ServerProperties.Properties.XP_RATE);
-                    double expPercent = (double)((baseXP) / (softXPCap)) * 100;
-                    //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
-
-                    Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | XP Cap: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    Out.SendMessage($"% of Cap: {expPercent.ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    
-                    if(XPLogState == eXPLogState.Verbose)
-                    {
-                        double soloPercent = ((double)atlasBonus / (expTotal - atlasBonus)) * 100.0;
-                        double campPercent = ((double)expCampBonus / (expTotal-expCampBonus)) * 100.0;
-                        double groupPercent = ((double)expGroupBonus / (baseXP)) * 100.0;
-                        double outpostPercent = ((double)expOutpostBonus / (expTotal-expOutpostBonus)) * 100.0;
-                        double levelPercent = ((double)(Experience + expTotal - ExperienceForCurrentLevel) / (ExperienceForNextLevel - ExperienceForCurrentLevel)) * 100;
-
-                        if(atlasBonus > 0)
-                            Out.SendMessage($"Atlas: {atlasBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        if(expCampBonus > 0)
-                            Out.SendMessage($"Camp: {expCampBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        if(Group != null)
-                            Out.SendMessage($"Group: {expGroupBonus.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        if(expOutpostBonus > 0)
-                            Out.SendMessage($"Output: {expOutpostBonus.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        Out.SendMessage($"Total Bonus: {((double)((atlasBonus + expCampBonus + expGroupBonus) / baseXP) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage($"XP needed: {ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage($"# of kills needed to level at this rate: {(ExperienceForNextLevel - Experience) / expTotal}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        
-                    }                    
                 }
 
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -7984,7 +7931,7 @@ namespace DOL.GS
                         DeathCount++;
                         m_deathtype = eDeathType.PvE;
                         long xpLoss = (ExperienceForNextLevel - ExperienceForCurrentLevel) * xpLossPercent / 1000;
-                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, false, true);
+                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, 0, false, true);
                         TempProperties.setProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 
