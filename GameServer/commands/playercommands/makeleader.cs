@@ -25,9 +25,10 @@ using System.Collections;
 namespace DOL.GS.Commands
 {
 	[CmdAttribute("&makeleader",
+		 new string[] { "&m" },
 		 ePrivLevel.Player,
 		 "Set a new group leader (can be used by current leader).",
-		 "/makeleader <playerName>")]
+		 "/m <playerName>")]
 
 	public class MakeLeaderCommandHandler : ICommandHandler
 	{
