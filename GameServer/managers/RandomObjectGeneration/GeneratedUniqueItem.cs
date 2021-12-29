@@ -6668,8 +6668,8 @@ namespace DOL.GS {
                             case 2:
                             case 3:
                                 {
-                                    name = "Harp";
-                                    model = 2116;
+                                    model = GetInstrumentModelForLevel(Level, realm);
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                                 /*
@@ -9773,6 +9773,69 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
+        private static int GetInstrumentModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            validModels.Add(227);
+            validModels.Add(228);
+            validModels.Add(325);
+            if (Level > 10)
+            {
+                validModels.Add(2974);
+                validModels.Add(2975);
+                validModels.Add(2973);
+            }
+            if (Level > 20)
+            {
+                validModels.Add(2970);
+                validModels.Add(2971);
+                validModels.Add(2972);
+            }
+            if (Level > 30)
+            {
+                if(realm == eRealm.Albion)
+                {
+                    validModels.Add(2976);
+                    validModels.Add(2977);
+                    validModels.Add(2978);
+                } else if (realm == eRealm.Hibernia)
+                {
+                    validModels.Add(2979);
+                    validModels.Add(2980);
+                    validModels.Add(2981);
+                }
+               
+            }
+            if(Level > 40)
+            {
+                validModels.Add(2114);
+                validModels.Add(2115);
+                validModels.Add(2116);
+                validModels.Add(2117);
+            }
+            if (Level > 50 && Util.Chance(1))
+            {
+                validModels.Add(3688);
+                validModels.Add(3731);
+                validModels.Add(3848);
+                if (Util.Chance(50))
+                {
+                    if (realm == eRealm.Albion)
+                        validModels.Add(3985);
+                    if (realm == eRealm.Hibernia)
+                        validModels.Add(3908);
+                }
+                if (Util.Chance(5))
+                {
+                    if (realm == eRealm.Albion)
+                        validModels.Add(3280);
+                    if (realm == eRealm.Hibernia)
+                        validModels.Add(3239);
+                }
+            }
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
         #endregion
 
         #region Naming
@@ -10049,6 +10112,38 @@ namespace DOL.GS {
                     return "Club";
                 case 453:
                     return "Sickle";
+                case 227:
+                case 2117:
+                case 2970:
+                case 2973:
+                case 2976:
+                case 2979:
+                    return "Lute";
+                case 3848:
+                    return "Mandolin";
+                case 228:
+                case 2114:
+                case 2971:
+                case 2974:
+                case 2977:
+                case 2980:
+                    return "Drum";
+                case 325:
+                case 2115:
+                case 2972:
+                case 2975:
+                case 2978:
+                case 2981:
+                    return "Flute";
+                case 2116:
+                case 3908:
+                case 3949:
+                case 3985:
+                case 3280:
+                case 3239:
+                case 3688:
+                case 3731:
+                    return "Harp";
                 default:
                     return "Staff";
             }
