@@ -4600,6 +4600,7 @@ namespace DOL.GS
 			Y = m_spawnPoint.Y;
 			Z = m_spawnPoint.Z;
 			Heading = m_spawnHeading;
+			SpawnTick = GameLoop.GameLoopTime;
 			AddToWorld();
 			m_spawnPoint.X = origSpawnX;
 			m_spawnPoint.Y = origSpawnY;

@@ -930,6 +930,7 @@ namespace DOL.GS
 		public long SpawnTick
 		{
 			get { return m_spawnTick; }
+			set { m_spawnTick = value; }
 		}
 
 		#endregion
