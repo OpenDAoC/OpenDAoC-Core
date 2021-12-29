@@ -8504,7 +8504,7 @@ namespace DOL.GS {
                     if (Level > 20)
                         validModels.Add(658);
                     if (Level > 30)
-                        validModels.Add(956);
+                        validModels.Add(1035);
                     if (Level > 40)
                     {
                         validModels.Add(957);
