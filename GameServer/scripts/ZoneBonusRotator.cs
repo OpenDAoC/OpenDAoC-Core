@@ -87,8 +87,8 @@ namespace DOL.GS.Scripts
 
         public static void Initialize()
         {
-            PvETimer = RvRTickTime * 1000;
-            RvRTimer = PvETickTime * 1000;
+            PvETimer = PvETickTime * 1000;
+            RvRTimer = RvRTickTime * 1000;
             PvEExperienceBonusAmount = 50;
             RvRExperienceBonusAmount = 100;
             RPBonusAmount = 100;
