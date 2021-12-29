@@ -1270,7 +1270,7 @@ namespace DOL.GS.ServerRules
 					//1.49 http://news-daoc.goa.com/view_patchnote_archive.php?id_article=2478
 					//"Camp bonuses" have been substantially upped in dungeons. Now camp bonuses in dungeons are, on average, 20% higher than outside camp bonuses.
 					if (killer.CurrentZone.IsDungeon)
-						campBonusPerc *= 1.20;
+						campBonusPerc *= 1.50;
 
 					if (campBonusPerc < 0.01)
 						campBonusPerc = 0;
