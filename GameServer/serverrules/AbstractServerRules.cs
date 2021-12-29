@@ -1333,12 +1333,18 @@ namespace DOL.GS.ServerRules
 						//Ok we've calculated all the base experience.  Now let's add them all together.
 						xpReward += (long)campBonus + groupExp + outpostXP;
 
+						//xp should divided across all members in the group, per this article: https://camelot.allakhazam.com/story.html?story=491
+						if (player.Group != null)
+							xpReward /= player.Group.MemberCount;
+
 						if (!living.IsAlive)//Dead living gets 25% exp only
 							xpReward = (long)(xpReward * 0.25);
 
 						//scale xp reward based off of # of groups who participated in the kill
 						if(plrGrpExp.Count > 0)
 							xpReward /= plrGrpExp.Count;
+
+						
 
 						//XP Rate is handled in GainExperience
 						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true, true, true);
