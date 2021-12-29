@@ -1038,8 +1038,8 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							
-							foreach (DBRank rank in client.Player.Guild.Ranks)
+							List<DBRank> rankList = client.Player.Guild.Ranks.ToList();
+							foreach (DBRank rank in rankList.OrderBy(rank => rank.RankLevel))
 							{
 
 								client.Out.SendMessage("RANK: " + rank.RankLevel.ToString() + " NAME: " + rank.Title,
