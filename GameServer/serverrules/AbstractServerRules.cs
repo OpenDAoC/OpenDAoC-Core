@@ -1259,7 +1259,7 @@ namespace DOL.GS.ServerRules
 					if (xpReward > expCap)
 						xpReward = expCap;
 
-					if(player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
+					if(player != null && player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
                     {
 						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						double expPercent = ((double)(xpReward) / (double)(expCap)) * 100;
@@ -1298,7 +1298,7 @@ namespace DOL.GS.ServerRules
 					#region Atlas Bonus
 					//up to 100% more exp while solo, scaled lower as group size grows
 					long atlasBonus = 0;
-					if (player.Group != null)
+					if (player != null && player.Group != null)
 					{
 						atlasBonus = (xpReward) / player.Group.GetPlayersInTheGroup().Count;
 					}
@@ -1367,7 +1367,7 @@ namespace DOL.GS.ServerRules
 						if(plrGrpExp.Count > 0)
 							xpReward /= plrGrpExp.Count;
 
-						if (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
+						if (player != null && player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
 						{
 							double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
 							int scaleFactor = 1;
