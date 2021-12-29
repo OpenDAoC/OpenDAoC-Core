@@ -1095,11 +1095,11 @@ namespace DOL.GS.ServerRules
 							plrGrpExp[player.Group] += 1;
 						else
 							plrGrpExp[player.Group] = 1;
-
-						// tolakram: only prepare for xp challenge code if player is in a group
-						if (highestPlayer == null || (player.Level > highestPlayer.Level))
-							highestPlayer = player;
 					}
+
+					// tolakram: only prepare for xp challenge code if player is in a group
+					if (highestPlayer == null || (player.Level > highestPlayer.Level))
+						highestPlayer = player;
 
 				}
 				#endregion
