@@ -1323,7 +1323,7 @@ namespace DOL.GS.ServerRules
 							}
 							
 							if (player.Group != null && plrGrpExp.ContainsKey(player.Group))
-								groupExp += (long)(0.05 * xpReward * GetUniqueClassCount(player.Group)/*(int)plrGrpExp[player.Group]*/);
+								groupExp += (long)(0.125 * xpReward * GetUniqueClassCount(player.Group)/*(int)plrGrpExp[player.Group]*/);
 
 							// tolakram - remove this for now.  Correct calculation should be reduced XP based on damage pet did, not a flat reduction
 							//if (player.ControlledNpc != null)
