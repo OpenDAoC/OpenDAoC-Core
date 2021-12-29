@@ -1264,7 +1264,7 @@ namespace DOL.GS.ServerRules
 					else
 					{
 						campBonusPerc = fullCampBonus * killedNPC.CampBonus;
-						if (killedNPC.CampBonus >= 0.05) killedNPC.CampBonus -= 0.05; // decrease camp bonus by 5% per kill
+						if (killedNPC.CampBonus >= 0.03) killedNPC.CampBonus -= 0.03; // decrease camp bonus by 2% per kill
 					}
 
 					//1.49 http://news-daoc.goa.com/view_patchnote_archive.php?id_article=2478
