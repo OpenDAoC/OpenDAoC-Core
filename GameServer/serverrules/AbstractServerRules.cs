@@ -1335,7 +1335,14 @@ namespace DOL.GS.ServerRules
 
 						//xp should divided across all members in the group, per this article: https://camelot.allakhazam.com/story.html?story=491
 						if (player != null && player.Group != null && player.Group.MemberCount > 1)
-							xpReward /= player.Group.MemberCount;
+                        {
+							int scalingFactor = (int)Math.Ceiling((decimal)player.Group.MemberCount / 2);
+							xpReward /= scalingFactor;
+							campBonus /= scalingFactor;
+							groupExp /= scalingFactor;
+							outpostXP /= scalingFactor;
+						}
+							
 
 						if (!living.IsAlive)//Dead living gets 25% exp only
 							xpReward = (long)(xpReward * 0.25);
