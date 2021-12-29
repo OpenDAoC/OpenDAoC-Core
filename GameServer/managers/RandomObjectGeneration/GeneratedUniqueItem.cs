@@ -4252,10 +4252,9 @@ namespace DOL.GS {
             int cap = 0;
             if (mobLevel > 80)
                 cap = 80;
-            else if (mobLevel >= 50)
-                cap = mobLevel - 5;
-            else
+            else 
                 cap = mobLevel - 10;
+
 
             //randomize cap to be 90-105% of normal value
             double random = (90 + Util.Random(15)) / 100.0;
