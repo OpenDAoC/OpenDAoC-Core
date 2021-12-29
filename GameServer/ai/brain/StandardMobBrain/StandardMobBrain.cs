@@ -1636,7 +1636,8 @@ namespace DOL.AI.Brain
             }*/
 
             spell.IsSpec = true;
-            if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell)))
+            if (EffectListService.GetEffectOnTarget(target, EffectService.GetEffectFromSpell(spell)) != null)
+            //if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell)))
             {
                 return true;
             }
