@@ -59,21 +59,18 @@ namespace DOL.GS.Scripts
         public static int PvEExperienceBonusAmount { get; set; }
         public static int RvRExperienceBonusAmount { get; set; } 
         public static int RPBonusAmount { get; set; } 
-        public static int BPBonusAmount { get; set; } 
+        public static int BPBonusAmount { get; set; }
+
+        public static long _lastRvRChangeTick { get; set; }
+        public static long _lastPvEChangeTick { get; set; }
+
+        private static int RvRTickTime = 2700;
+        private static int PvETickTime = 7200;
 
         [GameServerStartedEvent]
         public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
         {
-            PvETimer = 7200 * 1000;
-            RvRTimer = 2700 * 1000;
-            PvEExperienceBonusAmount = 50;
-            RvRExperienceBonusAmount = 100;
-            RPBonusAmount = 100;
-            BPBonusAmount = 100;
-             
-            GetZones();
-            UpdatePvEZones();
-            UpdateRvRZones();
+            Initialize();
             GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
             
         }
@@ -87,7 +84,21 @@ namespace DOL.GS.Scripts
 
             GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
         }
-        
+
+        public static void Initialize()
+        {
+            PvETimer = RvRTickTime * 1000;
+            RvRTimer = PvETickTime * 1000;
+            PvEExperienceBonusAmount = 50;
+            RvRExperienceBonusAmount = 100;
+            RPBonusAmount = 100;
+            BPBonusAmount = 100;
+
+            GetZones();
+            UpdatePvEZones();
+            UpdateRvRZones();
+        }
+
         /// <summary>
         /// Gets all ZoneID's for PvE Zones
         /// </summary>
@@ -140,6 +151,8 @@ namespace DOL.GS.Scripts
 
         private static int UpdatePvEZones()
         {
+            _lastPvEChangeTick = GameLoop.GameLoopTime;
+
             ClearPvEZones();
 
             GetNextPvEZones();
@@ -187,6 +200,9 @@ namespace DOL.GS.Scripts
 
         private static int UpdateRvRZones()
         {
+
+            _lastRvRChangeTick = GameLoop.GameLoopTime;
+
             ClearRvRZones();
 
             // Get new RvR Realm and set Bonuses for each Zone
@@ -244,6 +260,8 @@ namespace DOL.GS.Scripts
             }
 
             scheduler.Start(UpdateRvRZones, RvRTimer);
+
+            
 
             return 0;
         }
@@ -379,6 +397,17 @@ namespace DOL.GS.Scripts
             temp.Add("Current Hibernia Zones: ");
             temp.Add("Classic Zone: " + hibDBZone.Name + " (XP +" + hibDBZone.Experience + "%)");
             temp.Add("SI Zone: " + hibDBZoneSI.Name + " (XP +" + hibDBZoneSI.Experience + "%)");
+
+            temp.Add("");
+            temp.Add("");
+
+            var rvr = _lastRvRChangeTick + RvRTimer - GameLoop.GameLoopTime;
+            temp.Add("RvR Time Remaining: " + TimeSpan.FromMilliseconds(rvr).Hours + "h " + TimeSpan.FromMilliseconds(rvr).Minutes + "m " + TimeSpan.FromMilliseconds(rvr).Seconds + "s");
+            
+            var pve = _lastPvEChangeTick + PvETimer - GameLoop.GameLoopTime;
+            temp.Add("PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+
+
 
             return temp;
         }
