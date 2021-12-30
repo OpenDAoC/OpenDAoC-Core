@@ -91,8 +91,8 @@ namespace DOL.GS.Scripts
             RvRTimer = RvRTickTime * 1000;
             PvEExperienceBonusAmount = 50;
             RvRExperienceBonusAmount = 100;
-            RPBonusAmount = 100;
-            BPBonusAmount = 100;
+            RPBonusAmount = 25;
+            BPBonusAmount = 25;
 
             GetZones();
             UpdatePvEZones();
