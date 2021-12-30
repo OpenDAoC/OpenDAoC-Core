@@ -397,7 +397,7 @@ namespace DOL.GS.Commands
 					return false;
 				if (player.CharacterClass.Name.ToLower().StartsWith(m_filterString))
 					return true;
-				if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString))
+				if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString) && !player.CurrentZone.IsOF)
 					return true;
 				return false;
 			}
