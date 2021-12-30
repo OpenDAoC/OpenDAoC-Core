@@ -2188,6 +2188,7 @@ namespace DOL.GS {
                             charClass != eCharacterClass.Hero &&
                             charClass != eCharacterClass.Ranger &&
                             charClass != eCharacterClass.Nightshade &&
+                            charClass != eCharacterClass.Bard &&
                             charClass != eCharacterClass.Blademaster &&
                             charClass != eCharacterClass.Warden)
                         {
