@@ -6455,25 +6455,17 @@ namespace DOL.GS {
                     {
                         model = GetBladeModelForLevel(Level, eRealm.Hibernia);
                         // Blades; speed 22 - 45; Short Sword (445), Falcata (444), Broadsword (447), Longsword (446), Bastard Sword (473)
-                        if (this.SPD_ABS < 27)
+                        if (this.SPD_ABS <= 27)
                         {
                             name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
-                        else if (this.SPD_ABS < 30)
+                        else if (this.SPD_ABS < 32)
                         {
                             name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
-                        }
-                        else if (this.SPD_ABS < 33)
-                        {
-                            name = GetNameFromId(model);
-                        }
-                        else if (this.SPD_ABS < 40)
-                        {
-                            name = GetNameFromId(model);
                         }
                         else
                         {
