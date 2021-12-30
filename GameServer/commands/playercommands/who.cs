@@ -256,7 +256,7 @@ namespace DOL.GS.Commands
 				if (log.IsErrorEnabled)
 					log.Error("no character class spec in who commandhandler for player " + player.Name);
 			}
-			if (player.CurrentZone != null)
+			if (player.CurrentZone != null && player.Client.Account.PrivLevel != (uint)ePrivLevel.Admin)
 			{
 				result.Append(" in ");
 				result.Append(player.CurrentZone.Description);
