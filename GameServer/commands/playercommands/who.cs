@@ -272,7 +272,7 @@ namespace DOL.GS.Commands
 					// Counter-espionage behavior: Change zone description to "Frontiers" if source is a Player and target(s) located in OF (RVR-enabled zone in classic Alb/Hib/Mid region)
 					if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
 					{
-						result.Append("Frontiers");
+						result.Append("the Frontiers");
 					}
 					// If target player(s) are not in RvR-enabled zones in classic region, return zone name/description
 					else
