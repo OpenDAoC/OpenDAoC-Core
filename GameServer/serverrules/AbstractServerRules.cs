@@ -1366,7 +1366,7 @@ namespace DOL.GS.ServerRules
 						if(plrGrpExp.Count > 0)
 							xpReward /= plrGrpExp.Count;
 
-						if (player != null && player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
+						if (player != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
 						{
 							double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
 							int scaleFactor = 1;
