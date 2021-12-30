@@ -400,7 +400,7 @@ namespace DOL.AI.Brain
                 if (CalculateAggroLevelToTarget(player) > 0)
                 {
                     if (useLOS && !AggroLOS) return;
-                    AddToAggroList(player, player.EffectiveLevel << 1, true);
+                    AddToAggroList(player, 1, true);
                 }
             }
         }
