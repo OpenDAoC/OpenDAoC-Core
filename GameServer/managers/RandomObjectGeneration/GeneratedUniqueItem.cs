@@ -494,12 +494,13 @@ namespace DOL.GS {
                     return eBonusType.Skill;
             }
 
-
+            int rand = Util.Random(100);
+            /*
             List<eBonusType> bonTypes = new List<eBonusType>();
             if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
             if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
             if (Util.Chance(ROG_ITEM_SKILL_CHANCE) && !hasSkill) { bonTypes.Add(eBonusType.Skill); }
-
+            
             //if none of the object types were added, randomly pick between stat/resist
             if (bonTypes.Count < 1)
             {
@@ -509,6 +510,14 @@ namespace DOL.GS {
             }
 
             return bonTypes[Util.Random(bonTypes.Count - 1)];
+            */
+
+            if (rand < 33)
+                return eBonusType.Skill;
+            if (rand < 66)
+                return eBonusType.Resist;
+            return eBonusType.Stat;
+
         }
 
         private bool CanAddFocus()
