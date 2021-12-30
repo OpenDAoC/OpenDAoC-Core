@@ -1899,7 +1899,7 @@ namespace DOL.GS.ServerRules
 
                 foreach (var player in playersToAward)
                 {
-	                if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
+	                if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
                     AtlasROGManager.GenerateOrbs(player);
                     if (Properties.EVENT_THIDRANKI || Properties.EVENT_TUTORIAL)
                     {
