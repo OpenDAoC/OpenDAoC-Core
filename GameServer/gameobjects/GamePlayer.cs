@@ -183,12 +183,6 @@ namespace DOL.GS
             set { m_usedetailedcombatlog = value;}
         }
 
-        public enum eXPLogState {
-            Off = 0,
-            On = 1,
-            Verbose = 2
-        }
-
         public eXPLogState XPLogState
         {
             get { return m_xplogstate; }

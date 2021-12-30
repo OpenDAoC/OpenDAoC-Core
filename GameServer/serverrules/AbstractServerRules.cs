@@ -30,7 +30,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
-using static DOL.GS.GamePlayer;
 
 namespace DOL.GS.ServerRules
 {
@@ -1259,7 +1258,7 @@ namespace DOL.GS.ServerRules
 					if (xpReward > expCap)
 						xpReward = expCap;
 
-					if(player != null && player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose)
+					if(player != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
                     {
 						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						double expPercent = ((double)(xpReward) / (double)(expCap)) * 100;
@@ -1343,7 +1342,7 @@ namespace DOL.GS.ServerRules
 					{
 						if (player != null)
 						{
-							if (player.XPLogState == GamePlayer.eXPLogState.Verbose)
+							if (player.XPLogState == eXPLogState.Verbose)
 							{
 								player.Out.SendMessage($"% of Camp remaining: {(campBonusPerc * 100 / fullCampBonus).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
