@@ -256,10 +256,13 @@ namespace DOL.GS.Commands
 				if (log.IsErrorEnabled)
 					log.Error("no character class spec in who commandhandler for player " + player.Name);
 			}
-			if (player.CurrentZone != null && player.Client.Account.PrivLevel != (uint)ePrivLevel.Admin)
+			if (player.CurrentZone != null)
 			{
-				result.Append(" in ");
-				result.Append(player.CurrentZone.Description);
+				if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.Client.Account.PrivLevel != (uint) ePrivLevel.Admin || source.Account.PrivLevel == (uint)ePrivLevel.Admin)
+				{
+					result.Append(" in ");
+					result.Append(player.CurrentZone.Description);
+				}
 			}
 			else
 			{
