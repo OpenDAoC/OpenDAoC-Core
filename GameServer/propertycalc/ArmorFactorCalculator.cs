@@ -70,11 +70,19 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is GameEpicNPC epic)
             {
-				double epicScaleFactor = 5;
-				int numAttackers = epic.attackComponent.Attackers.Count;
-				epicScaleFactor -= 0.1 * numAttackers;
+				double epicScaleFactor = 10;
+                foreach (var attacker in epic.attackComponent.Attackers)
+                {
+					if(attacker is GamePlayer)
+						epicScaleFactor -= 0.2;
+					if (attacker is GamePet)
+						epicScaleFactor -= 0.05;
+				}
 
-				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * epicScaleFactor) //5* factor for tough mobs
+				if (epicScaleFactor < 5)
+					epicScaleFactor = 5;
+
+				return (int)((1 + (living.Level / 170.0)) * (living.Level << 2) * epicScaleFactor) //5* factor for tough mobs
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];
