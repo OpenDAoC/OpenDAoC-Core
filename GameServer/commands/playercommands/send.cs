@@ -65,7 +65,7 @@ namespace DOL.GS.Commands
 				if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
 				{
 					client.Out.SendMessage(targetName + " is not in the game, or in another realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					targetClient.Player.Out.SendMessage(string.Format("You're anon but {0} tried to send: {1}", client.Player.Name, message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+					targetClient.Player.Out.SendMessage(string.Format("{0} tried to send: {1}", client.Player.Name, message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
 				}
 				else
 				{
