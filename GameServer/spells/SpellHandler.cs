@@ -4085,7 +4085,10 @@ namespace DOL.GS.Spells
 					if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
 						spellDamage = CapPetSpellDamage(spellDamage, player);
 
-					spellDamage *= ((pet.Intelligence + 200) / 275.0);
+					if (pet is NecromancerPet nPet)
+						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + 200) / 275.0);
+					else
+						spellDamage *= ((pet.Intelligence + 200) / 275.0);
 				}
 
 				if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
