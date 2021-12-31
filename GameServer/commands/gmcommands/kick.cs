@@ -14,7 +14,7 @@ namespace DOL.GS.Commands
 		ePrivLevel.GM,
 		"GMCommands.Kick.Description",
 		"GMCommands.Kick.Usage",
-		"/kick <#ClientID> ex. /kick #10")]
+		"/kick <#ClientID>","/kick account <account>"),]
 	public class KickCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -27,6 +27,21 @@ namespace DOL.GS.Commands
 
 			GameClient clientc = null;
 
+			if (args.Length == 3)
+			{
+				if (args[1].Equals("account"))
+				{
+					try
+					{
+						var account = args[2];
+						clientc = WorldMgr.GetClientByAccountName(account, false);
+					}
+					catch
+					{
+						DisplayMessage(client, "Invalid account name");
+					}
+				}
+			} else
 			if (args[1].StartsWith("#"))
 			{
 				try
@@ -38,19 +53,8 @@ namespace DOL.GS.Commands
 				{
 					DisplayMessage(client, "Invalid client ID");
 				}
-			}
-			else if (args[1].StartsWith("$"))
-			{
-				try
-				{
-					var account = args[1].Substring(1);
-					client = WorldMgr.GetClientByAccountName(account, true);
-				}
-				catch
-				{
-					DisplayMessage(client, "Invalid account name");
-				}
-			}
+			} else
+			
 			{
 				clientc = WorldMgr.GetClientByPlayerName(args[1], false, false);
 			}
