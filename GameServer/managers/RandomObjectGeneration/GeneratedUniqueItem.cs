@@ -726,6 +726,18 @@ namespace DOL.GS {
                 case eCharacterClass.Enchanter:
                 case eCharacterClass.Mentalist:
                 case eCharacterClass.Animist:
+                    //weight stats for casters towards dex, acu, con
+                    //keep some 10% chance of str or quick since useful for carrying/occasional melee
+                    if (rand <= 30)
+                        return eProperty.Dexterity;
+                    else if (rand <= 40)
+                        return eProperty.Strength;
+                    else if (rand <= 70)
+                        return eProperty.Intelligence;
+                    else if (rand <= 80)
+                        return eProperty.Quickness;
+                    else return eProperty.Constitution;
+
                 case eCharacterClass.Runemaster:
                 case eCharacterClass.Spiritmaster:
                 case eCharacterClass.Bonedancer:
@@ -736,7 +748,7 @@ namespace DOL.GS {
                     else if (rand <= 40)
                         return eProperty.Strength;
                     else if (rand <= 70)
-                        return eProperty.Intelligence;
+                        return eProperty.Piety;
                     else if (rand <= 80)
                         return eProperty.Quickness;
                     else return eProperty.Constitution;
