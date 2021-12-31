@@ -494,12 +494,13 @@ namespace DOL.GS {
                     return eBonusType.Skill;
             }
 
-
+            int rand = Util.Random(100);
+            /*
             List<eBonusType> bonTypes = new List<eBonusType>();
             if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
             if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
             if (Util.Chance(ROG_ITEM_SKILL_CHANCE) && !hasSkill) { bonTypes.Add(eBonusType.Skill); }
-
+            
             //if none of the object types were added, randomly pick between stat/resist
             if (bonTypes.Count < 1)
             {
@@ -509,6 +510,14 @@ namespace DOL.GS {
             }
 
             return bonTypes[Util.Random(bonTypes.Count - 1)];
+            */
+
+            if (rand < 33)
+                return eBonusType.Skill;
+            if (rand < 66)
+                return eBonusType.Resist;
+            return eBonusType.Stat;
+
         }
 
         private bool CanAddFocus()
@@ -727,7 +736,7 @@ namespace DOL.GS {
                     else if (rand <= 40)
                         return eProperty.Strength;
                     else if (rand <= 70)
-                        return eProperty.Acuity;
+                        return eProperty.Intelligence;
                     else if (rand <= 80)
                         return eProperty.Quickness;
                     else return eProperty.Constitution;
@@ -766,7 +775,7 @@ namespace DOL.GS {
                         return eProperty.Constitution;
                     else return eProperty.Quickness;
 
-                case eCharacterClass.Bard:
+                
                 case eCharacterClass.Druid:
                     if (rand <= 10)
                         return eProperty.Strength;
@@ -801,6 +810,7 @@ namespace DOL.GS {
                         return eProperty.Constitution;
                     else return eProperty.Intelligence;
 
+                case eCharacterClass.Bard:
                 case eCharacterClass.Skald:
                 case eCharacterClass.Minstrel:
                     if (rand <= 22)
@@ -2188,6 +2198,7 @@ namespace DOL.GS {
                             charClass != eCharacterClass.Hero &&
                             charClass != eCharacterClass.Ranger &&
                             charClass != eCharacterClass.Nightshade &&
+                            charClass != eCharacterClass.Bard &&
                             charClass != eCharacterClass.Blademaster &&
                             charClass != eCharacterClass.Warden)
                         {
@@ -4252,10 +4263,9 @@ namespace DOL.GS {
             int cap = 0;
             if (mobLevel > 80)
                 cap = 80;
-            else if (mobLevel >= 50)
-                cap = mobLevel - 5;
-            else
+            else 
                 cap = mobLevel - 10;
+
 
             //randomize cap to be 90-105% of normal value
             double random = (90 + Util.Random(15)) / 100.0;
@@ -6446,25 +6456,17 @@ namespace DOL.GS {
                     {
                         model = GetBladeModelForLevel(Level, eRealm.Hibernia);
                         // Blades; speed 22 - 45; Short Sword (445), Falcata (444), Broadsword (447), Longsword (446), Bastard Sword (473)
-                        if (this.SPD_ABS < 27)
+                        if (this.SPD_ABS <= 27)
                         {
                             name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
-                        else if (this.SPD_ABS < 30)
+                        else if (this.SPD_ABS < 32)
                         {
                             name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
-                        }
-                        else if (this.SPD_ABS < 33)
-                        {
-                            name = GetNameFromId(model);
-                        }
-                        else if (this.SPD_ABS < 40)
-                        {
-                            name = GetNameFromId(model);
                         }
                         else
                         {
@@ -6668,8 +6670,8 @@ namespace DOL.GS {
                             case 2:
                             case 3:
                                 {
-                                    name = "Harp";
-                                    model = 3688;
+                                    model = GetInstrumentModelForLevel(Level, realm);
+                                    name = GetNameFromId(model);
                                     break;
                                 }
                                 /*
@@ -8505,7 +8507,7 @@ namespace DOL.GS {
                     if (Level > 20)
                         validModels.Add(658);
                     if (Level > 30)
-                        validModels.Add(956);
+                        validModels.Add(1035);
                     if (Level > 40)
                     {
                         validModels.Add(957);
@@ -9773,6 +9775,69 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
+        private static int GetInstrumentModelForLevel(int Level, eRealm realm)
+        {
+            List<int> validModels = new List<int>();
+            validModels.Add(227);
+            validModels.Add(228);
+            validModels.Add(325);
+            if (Level > 10)
+            {
+                validModels.Add(2974);
+                validModels.Add(2975);
+                validModels.Add(2973);
+            }
+            if (Level > 20)
+            {
+                validModels.Add(2970);
+                validModels.Add(2971);
+                validModels.Add(2972);
+            }
+            if (Level > 30)
+            {
+                if(realm == eRealm.Albion)
+                {
+                    validModels.Add(2976);
+                    validModels.Add(2977);
+                    validModels.Add(2978);
+                } else if (realm == eRealm.Hibernia)
+                {
+                    validModels.Add(2979);
+                    validModels.Add(2980);
+                    validModels.Add(2981);
+                }
+               
+            }
+            if(Level > 40)
+            {
+                validModels.Add(2114);
+                validModels.Add(2115);
+                validModels.Add(2116);
+                validModels.Add(2117);
+            }
+            if (Level > 50 && Util.Chance(1))
+            {
+                validModels.Add(3688);
+                validModels.Add(3731);
+                validModels.Add(3848);
+                if (Util.Chance(50))
+                {
+                    if (realm == eRealm.Albion)
+                        validModels.Add(3985);
+                    if (realm == eRealm.Hibernia)
+                        validModels.Add(3908);
+                }
+                if (Util.Chance(5))
+                {
+                    if (realm == eRealm.Albion)
+                        validModels.Add(3280);
+                    if (realm == eRealm.Hibernia)
+                        validModels.Add(3239);
+                }
+            }
+            return validModels[Util.Random(validModels.Count - 1)];
+        }
+
         #endregion
 
         #region Naming
@@ -10049,6 +10114,38 @@ namespace DOL.GS {
                     return "Club";
                 case 453:
                     return "Sickle";
+                case 227:
+                case 2117:
+                case 2970:
+                case 2973:
+                case 2976:
+                case 2979:
+                    return "Lute";
+                case 3848:
+                    return "Mandolin";
+                case 228:
+                case 2114:
+                case 2971:
+                case 2974:
+                case 2977:
+                case 2980:
+                    return "Drum";
+                case 325:
+                case 2115:
+                case 2972:
+                case 2975:
+                case 2978:
+                case 2981:
+                    return "Flute";
+                case 2116:
+                case 3908:
+                case 3949:
+                case 3985:
+                case 3280:
+                case 3239:
+                case 3688:
+                case 3731:
+                    return "Harp";
                 default:
                     return "Staff";
             }

@@ -169,6 +169,12 @@ namespace DOL.GS.Commands
 						filters.Add(new RPFilter());
 						break;
 					}
+				case "frontiers":
+				{
+					filters = new ArrayList();
+					filters.Add(new OldFrontiersFilter());
+					break;
+				}
 				default:
 					{
 						filters = new ArrayList();
@@ -256,14 +262,28 @@ namespace DOL.GS.Commands
 				if (log.IsErrorEnabled)
 					log.Error("no character class spec in who commandhandler for player " + player.Name);
 			}
+
 			if (player.CurrentZone != null)
 			{
-				result.Append(" in ");
-				result.Append(player.CurrentZone.Description);
+				// If '/who' source is a Player and target is plvl 3, do not return zone description (only return for Admins if Admin is source)
+				if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player || source.Account.PrivLevel == (uint)ePrivLevel.Admin)
+				{
+					result.Append(" in ");
+					// Counter-espionage behavior: Change zone description to "Frontiers" if source is a Player and target(s) located in OF (RVR-enabled zone in classic Alb/Hib/Mid region)
+					if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
+					{
+						result.Append("the Frontiers");
+					}
+					// If target player(s) are not in RvR-enabled zones in classic region, return zone name/description
+					else
+					{
+						result.Append(player.CurrentZone.Description);	
+					}
+				}
 			}
 			else
 			{
-				if (log.IsErrorEnabled)
+				if (log.IsErrorEnabled && player.Client.Account.PrivLevel != (uint)ePrivLevel.Admin)
 					log.Error("no currentzone in who commandhandler for player " + player.Name);
 			}
 			ChatGroup mychatgroup = (ChatGroup) player.TempProperties.getProperty<object>(ChatGroup.CHATGROUP_PROPERTY, null);
@@ -377,7 +397,7 @@ namespace DOL.GS.Commands
 					return false;
 				if (player.CharacterClass.Name.ToLower().StartsWith(m_filterString))
 					return true;
-				if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString))
+				if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString) && !player.CurrentZone.IsOF)
 					return true;
 				return false;
 			}
@@ -463,11 +483,15 @@ namespace DOL.GS.Commands
 			}
 		}
 
-		private class NewFrontiersFilter : IWhoFilter
+		private class OldFrontiersFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)
 			{
-				return player.CurrentRegionID == 163;
+				if (player.Client.Account.PrivLevel == (uint)ePrivLevel.Admin && player.CurrentZone.IsRvR)
+					return false;
+				if (player.Client.Account.PrivLevel < (uint)ePrivLevel.Admin && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
+					return true;
+				return false;
 			}
 		}
 

@@ -400,7 +400,7 @@ namespace DOL.AI.Brain
                 if (CalculateAggroLevelToTarget(player) > 0)
                 {
                     if (useLOS && !AggroLOS) return;
-                    AddToAggroList(player, player.EffectiveLevel << 1, true);
+                    AddToAggroList(player, 1, true);
                 }
             }
         }
@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(1500, 3000 - (AggroLevel/3) * 100); }
+            get { return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
         }
 
         /// <summary>
