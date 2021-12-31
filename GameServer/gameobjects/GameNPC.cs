@@ -5768,9 +5768,12 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsFriend(GameNPC npc)
 		{
-			if (Faction == null || npc.Faction == null)
-				return false;
-			return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
+			if (npc.Name.Equals(Name))
+				return true;
+			else return false;
+			//if (Faction == null || npc.Faction == null)
+			//	return false;
+			//return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
 		}
 
 		/// <summary>
