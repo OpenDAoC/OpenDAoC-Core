@@ -149,17 +149,14 @@ namespace DOL.GS.Quests
 		}
 
 		// Characters under level 20 can do the same number of tasks as their level.
-		// (eg: Level two can do two tasks) The total xp from these Tasks will be 30% of
-		// the total xp required for that level. This might diminsh to 25% by level 19.
+		// (eg: Level two can do two tasks) The total xp from these Tasks will be 50% of
+		// the total xp required for that level.
 		public virtual long RewardXP
-		{
+		{ 
 			get
 			{
-				long XPNeeded = m_taskPlayer.ExperienceForNextLevel - m_taskPlayer.ExperienceForCurrentLevel;
-				if (m_taskPlayer.Level<19)
-					return (long)(XPNeeded*0.30/(m_taskPlayer.Level)); // 30% of total xp for level
-				else
-					return (long)(XPNeeded*0.25/(m_taskPlayer.Level)); // 25% of total xp for level
+				long XPNeeded = m_taskPlayer.GetExperienceNeededForLevel((byte)(m_taskPlayer.Level));
+				return (long)(XPNeeded*0.50/(m_taskPlayer.Level - 1)); // 50% of total xp for level
 			}
 		}
 
