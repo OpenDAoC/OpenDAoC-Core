@@ -89,7 +89,7 @@ namespace DOL.GS.Scripts
                 case eRealm.Albion:
                     SayTo(player, "Greetings, " + player.Name + " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
                                     //"[Forest Sauvage] or [Snowdonia] in the Frontiers\n" +
-                                    "[Castle Sauvage] in Camelot Hills or [Snowdonia Fortress] in Black Mtns. North\n" +
+                                    "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North\n" +
                                     "[Avalon Marsh] wharf\n" +
                                     "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
@@ -112,7 +112,7 @@ namespace DOL.GS.Scripts
                 case eRealm.Midgard:
                     SayTo(player, "Greetings, " + player.Name + " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
                                     //"[Uppland] or [Yggdra Forest] in the Frontiers\n" +
-                                    "[Svasud Faste] in Mularn or [Vindsaul Faste] in West Svealand\n" +
+                                    "[Svasud Faste] in Mularn or \n[Vindsaul Faste] in West Svealand\n" +
                                     "Beaches of [Gotar] near Nailiten\n" +
                                     "[Aegirhamn] in the [Shrouded Isles]\n" +
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
@@ -135,7 +135,7 @@ namespace DOL.GS.Scripts
                 case eRealm.Hibernia:
                     SayTo(player, "Greetings, I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
                                     //"[Cruachan Gorge] or [Mount Collory] in the Frontiers\n" +
-                                    "[Druim Ligen] in Connacht or [Druim Cain] in Bri Leith\n" +
+                                    "[Druim Ligen] in Connacht or \n[Druim Cain] in Bri Leith\n" +
                                     "[Shannon Estuary] watchtower\n" +
                                     "[Domnann] Grove in the [Shrouded Isles]\n" +
                                     // "[Stygia] haven in the lost lands of Atlantis\n" +
@@ -660,7 +660,8 @@ namespace DOL.GS.Scripts
                                         "[Fort Veldon]\n" +
                                         "[Audliten]\n" +
                                         "[Huginfel]\n" +
-                                        "[Fort Atla]");
+                                        "[Fort Atla]\n" +
+                                        "[West Skona]");
                             break;
                             // Begin Towns
                         case "mularn":
@@ -710,6 +711,16 @@ namespace DOL.GS.Scripts
                                 foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                                     player.Out.SendSpellCastAnimation(this, 4953, 3);
                                 t.MoveTo(100, 749237, 816443, 4408, 2033);
+                            }
+                            else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
+                            break;
+                        case "west skona":
+                            if (!t.InCombat)
+                            {
+                                Say("I'm now teleporting you to West Skona.");
+                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
+                                t.MoveTo(100, 712345, 923847, 5043, 3898);
                             }
                             else { t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say, eChatLoc.CL_PopupWindow); }
                             break;
