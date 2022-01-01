@@ -33,16 +33,47 @@ namespace DOL.GS.Scripts
                     Name = "Master Visur";
                     GuildName = "Teleporter";
                     Model = 61;
+                    
+                    GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate(); // This line creates a new Template for this npc, so now we can add items for him to wear.
+                    /// Add equipment to the teleporter.
+                    templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 57, 66);
+                    templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005, 86);
+                    templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 6);
+                    templateAlb.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 6);
+                    templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 6);
+                    templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 6);
+                    templateAlb.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166);
+                    /// How to pick items not explained in this document.
+                    Inventory = templateAlb.CloseTemplate(); // Close the template after hes dressed
                     break;
                 case eRealm.Midgard:
                     Name = "Stor Gothi Annark";
                     GuildName = "Teleporter";
                     Model = 215;
+                    
+                    GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate(); // This line creates a new Template for this npc, so now we can add items for him to wear.
+                    /// Add equipment to the teleporter.
+                    templateMid.AddNPCEquipment(eInventorySlot.Cloak, 57, 26);
+                    templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 245, 26);
+                    templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 246, 26);
+                    templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 248, 26);
+                    templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 249, 26);
+                    /// How to pick items not explained in this document.
+                    Inventory = templateMid.CloseTemplate(); // Close the template after hes dressed
                     break;
                 case eRealm.Hibernia:
                     Name = "Channeler Glasny";
                     GuildName = "Teleporter";
                     Model = 342;
+                    
+                    GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate(); // This line creates a new Template for this npc, so now we can add items for him to wear.
+                    /// Add equipment to the teleporter.
+                    templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
+                    templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 396);
+                    templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 402);
+                    templateHib.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468);
+                    /// How to pick items not explained in this document.
+                    Inventory = templateHib.CloseTemplate(); // Close the template after hes dressed
                     break;
                 default:
                     break;
@@ -52,17 +83,7 @@ namespace DOL.GS.Scripts
                     Flags |= GameNPC.eFlags.PEACE;
             //Fix Templates Alb is this below mid and hib are different
 
-                    GameNpcInventoryTemplate template = new GameNpcInventoryTemplate(); // This line creates a new Template for this npc, so now we can add items for him to wear.
-                    /// Add equipment to the teleporter.
-                    template.AddNPCEquipment(eInventorySlot.Cloak, 57, 66);
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005, 86);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 6);
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 6);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 6);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 6);
-                    template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166);
-                    /// How to pick items not explained in this document.
-                    Inventory = template.CloseTemplate(); // Close the template after hes dressed
+                    
                     return base.AddToWorld(); // Finish up and add him to the world.
         }
 
