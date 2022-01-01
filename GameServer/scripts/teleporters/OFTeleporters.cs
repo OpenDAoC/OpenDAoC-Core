@@ -284,7 +284,7 @@ namespace DOL.GS.Scripts
                                 {
                                     case OdinID: PortLocation = new GameLocation("Odin Hib", 100, 596055, 581400, 6031); break;
                                     case HadrianID: PortLocation = new GameLocation("Hadrian Hib", 1, 605743, 293676, 4839); break;
-                                    case HomeID: PortLocation = new GameLocation("Home Hib", 200, 334335, 420404, 5184); break;
+                                    case HomeID: PortLocation = new GameLocation("Home Hib", 200, 334386, 420071, 5184); break;
                                     case CityID: PortLocation = new GameLocation("City Hib", 201, 34140, 32058, 8047); break;
                                     case BattlegroundsID:
                                     {
