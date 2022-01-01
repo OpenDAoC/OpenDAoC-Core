@@ -97,7 +97,6 @@ namespace DOL.GS
         {
             lock (_playersLock)
             {
-                Console.WriteLine($"Added {p.Name}");
                 _players.Add(p);
             }
         }
@@ -106,7 +105,6 @@ namespace DOL.GS
         {
             lock (_playersLock)
             {
-                Console.WriteLine($"Removed {p.Name}");
                 _players.Remove(p);
             }
         }
