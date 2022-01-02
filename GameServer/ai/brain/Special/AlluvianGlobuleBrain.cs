@@ -9,7 +9,7 @@ namespace DOL.AI.Brain
 	/// </summary>
     public class AlluvianGlobuleBrain : StandardMobBrain
 	{
-		private bool hasGrown = false;
+		internal bool hasGrown = false;
 
 		/// <summary>
 		/// Put on lower think cycle so mobs spawn a little slower.
