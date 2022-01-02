@@ -82,9 +82,9 @@ namespace DOL.GS {
         // base Chance to get a magical RoG item, Level*2 is added to get final value
         public const ushort ROG_100_MAGICAL_OFFSET = 60;
 
-        private bool hasSkill;
-
         private eCharacterClass charClass = eCharacterClass.Unknown;
+
+        private static Dictionary<int,Spell> ProcSpells = new Dictionary<int,Spell>();
 
         protected static Dictionary<eProperty, string> hPropertyToMagicPrefix = new Dictionary<eProperty, string>();
 
@@ -159,7 +159,6 @@ namespace DOL.GS {
             this.Item_Type = (int)slot;
             this.Type_Damage = (int)dmg;
             this.charClass = charClass;
-            this.hasSkill = false;
 
             // shouldn't need more Randomized public set values
 
@@ -184,6 +183,8 @@ namespace DOL.GS {
             {
                 this.Level = 51;
             }
+
+            this.GenerateProc();
 
             //item bonus
             int temp = this.Level - 15;
@@ -345,6 +346,198 @@ namespace DOL.GS {
                 this.Level = templevel;
         }
 
+        private void GenerateProc()
+        {
+            if (this.Object_Type == (int)eObjectType.Magical)
+                return;
+
+            this.ProcChance = 10;
+
+            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type <= (int)eObjectType.Shield) && Util.Chance(25))
+            {
+                if (Util.Chance(50))
+                {
+                    //LT procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8010;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8011;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8012;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8013;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8014;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8015;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8016;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8017;
+                        this.LevelRequirement = 40;
+                    }
+                }
+                else
+                {
+                    //DD procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8020;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8021;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8022;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8023;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8024;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8025;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8026;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8027;
+                        this.LevelRequirement = 40;
+                    }
+                }
+            }
+            else if(this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO && Util.Chance(25))
+            {
+                if (Util.Chance(50))
+                {
+                    //Heal procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8030;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8031;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8032;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8033;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8034;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8035;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8036;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8037;
+                        this.LevelRequirement = 40;
+                    }
+                }
+                else
+                {
+                    //ABS procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8040;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8041;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8042;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8043;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8044;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8045;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8046;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8047;
+                        this.LevelRequirement = 40;
+                    }
+                }
+                
+            }
+        }
+
         private void GenerateMagicalBonuses(bool toa)
         {
             // unique objects have more bonuses as level rises
@@ -413,8 +606,6 @@ namespace DOL.GS {
                 {
                     int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property) * multiplier);
                     this.WriteBonus(property, amount);
-                    if (type == eBonusType.Skill)
-                        hasSkill = true;
                     fAddedBonus = true;
                     if (!fMagicScaled)
                     {
@@ -4255,7 +4446,6 @@ namespace DOL.GS {
             else 
                 cap = mobLevel - 10;
 
-
             //randomize cap to be 90-105% of normal value
             double random = (90 + Util.Random(15)) / 100.0;
             cap = (int)Math.Floor(cap * random);
@@ -4263,6 +4453,8 @@ namespace DOL.GS {
             if (cap < 15)
                 cap = 15; //all items can gen with up to 15 uti
 
+            if (this.ProcSpellID != 0 || this.ProcSpellID1 != 0)
+                cap = (int)Math.Floor(cap * .7); //proc items generate with lower utility
 
             //Console.WriteLine($"Cap: {cap} TotalUti: {GetTotalUtility()}");
             int bestLine = 1;
@@ -8912,7 +9104,6 @@ namespace DOL.GS {
                     if (Level > 20)
                     {
                         validModels.Add(889);
-                        validModels.Add(24);
                         validModels.Add(25);
                     }
                     if (Level > 30)
@@ -10238,6 +10429,62 @@ namespace DOL.GS {
             }
         }
 
+        private int GetProcFromLevel(byte level)
+        {
+            int procID = 0;
+            //if (Util.Chance(50))
+                procID = GetLifetapProcFromLevel(Level);
+            //else
+                //procID = GetDDProcFromLevel(Level);
+
+            return procID;
+        }
+
+        private int GetDDProcFromLevel(int level)
+        {
+            if (Level <= 10)
+                return 8020;
+            if (Level <= 15)
+                return 8021;
+            if (Level <= 20)
+                return 8022;
+            if (Level <= 25)
+                return 8023;
+            if (Level <= 30)
+                return 8024;
+            if (Level <= 35)
+                return 8025;
+            if (Level <= 40)
+                return 8026;
+            if (Level <= 43)
+                return 8027;
+
+            return 0;
+        }
+
+        private int GetLifetapProcFromLevel(int level)
+        {
+            if (Level <= 10)
+                return 8010;
+            if (Level <= 15)
+                return 8011;
+            if (Level <= 20)
+                return 8012;
+            if (Level <= 25)
+                return 8013;
+            if (Level <= 30)
+                return 8014;
+            if (Level <= 35)
+                return 8015;
+            if (Level <= 40)
+                return 8016;
+            if (Level <= 43)
+                return 8017;
+
+            return 0;
+
+        }
+
         #endregion
 
         #region definitions
@@ -10685,6 +10932,17 @@ namespace DOL.GS {
             hPropertyToMagicPrefix.Add(eProperty.Skill_Power_Strikes, string.Empty);
         }
 
+        private static void CacheProcSpells()
+        {
+            //LT spells
+            DBSpell Level5Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
+            DBSpell Level10Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
+            DBSpell Level15Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
 
+            ProcSpells.Add(8010, new Spell(Level5Lifetap, 0));
+            ProcSpells.Add(8011, new Spell(Level10Lifetap, 0));
+            ProcSpells.Add(8012, new Spell(Level15Lifetap, 0));
+
+        }
     }
 }
