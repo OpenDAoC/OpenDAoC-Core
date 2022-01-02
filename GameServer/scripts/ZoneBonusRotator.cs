@@ -91,8 +91,8 @@ namespace DOL.GS.Scripts
             RvRTimer = RvRTickTime * 1000;
             PvEExperienceBonusAmount = 50;
             RvRExperienceBonusAmount = 100;
-            RPBonusAmount = 100;
-            BPBonusAmount = 100;
+            RPBonusAmount = 25;
+            BPBonusAmount = 25;
 
             GetZones();
             UpdatePvEZones();
@@ -486,10 +486,25 @@ namespace DOL.GS.Scripts
             GameServer.Database.SaveObject(hibDBZone);
             GameServer.Database.SaveObject(midDBZoneSI);
 
-            foreach (var zone in WorldMgr.Zones.Values)
-            {
-                zone.BonusExperience = 0;
-            }
+            
+            foreach (var zone in albionClassicZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in albionSIZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in midgardClassicZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in midgardSIZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in hiberniaClassicZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in hiberniaSIZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
             /*
             WorldMgr.Zones[(ushort)albionClassicZones[currentAlbionZone]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)albionSIZones[currentAlbionZoneSI]].BonusExperience = 0;
