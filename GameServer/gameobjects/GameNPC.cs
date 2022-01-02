@@ -3967,7 +3967,7 @@ namespace DOL.GS
 
 		//}
 
-		private int scalingFactor = 25;
+		private int scalingFactor = 24;
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
