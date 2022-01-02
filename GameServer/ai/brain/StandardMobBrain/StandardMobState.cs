@@ -248,7 +248,7 @@ public class StandardMobState_ROAMING : StandardMobState
         //if randomWalkChance,
         //find new point
         //walk to point
-        if (Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE) && _lastRoamTick + _roamCooldown <= GameLoop.GameLoopTime )
+        if (Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE) && _lastRoamTick <= GameLoop.GameLoopTime + _roamCooldown)
         {
             IPoint3D target = _brain.CalcRandomWalkTarget();
             if (target != null)
