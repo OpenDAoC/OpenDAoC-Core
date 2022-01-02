@@ -23,12 +23,13 @@ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&advice",
+		 new string[] { "&adv" },
 		ePrivLevel.Player,
 		"Ask for advice from an advisor",
 		"Advisors will reply via /send",
 		"Please answer them via /send <Name of the Advisor>",
 		"/advice - shows all advisors",
-		"/advice <message>")]
+		"/adv <message>")]
 	public class AdviceCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
