@@ -71,12 +71,18 @@ namespace DOL.GS.PropertyCalc
 			else if (living is GameEpicNPC epic)
             {
 				double epicScaleFactor = 10;
+				int petCap = 16;
+				int petCount = 0;
                 foreach (var attacker in epic.attackComponent.Attackers)
                 {
 					if(attacker is GamePlayer)
 						epicScaleFactor -= 0.2;
-					if (attacker is GamePet)
-						epicScaleFactor -= 0.05;
+					if (attacker is GamePet && petCount <= petCap)
+                    {
+						epicScaleFactor -= 0.1;
+						petCount++;
+					}
+						
 				}
 
 				if (epicScaleFactor < 5)
