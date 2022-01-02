@@ -685,12 +685,13 @@ namespace DOL.GS {
                     return eBonusType.Skill;
             }
 
-
+            int rand = Util.Random(100);
+            /*
             List<eBonusType> bonTypes = new List<eBonusType>();
             if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
             if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
             if (Util.Chance(ROG_ITEM_SKILL_CHANCE) && !hasSkill) { bonTypes.Add(eBonusType.Skill); }
-
+            
             //if none of the object types were added, randomly pick between stat/resist
             if (bonTypes.Count < 1)
             {
@@ -700,6 +701,14 @@ namespace DOL.GS {
             }
 
             return bonTypes[Util.Random(bonTypes.Count - 1)];
+            */
+
+            if (rand < 33)
+                return eBonusType.Skill;
+            if (rand < 66)
+                return eBonusType.Resist;
+            return eBonusType.Stat;
+
         }
 
         private bool CanAddFocus()
@@ -873,6 +882,9 @@ namespace DOL.GS {
 
         private eProperty GetWeightedStatForClass(eCharacterClass charClass)
         {
+            if (Util.Chance(15))
+                return eProperty.MaxHealth;
+
             int rand = Util.Random(100);
             switch (charClass)
             {
@@ -908,9 +920,9 @@ namespace DOL.GS {
                 case eCharacterClass.Enchanter:
                 case eCharacterClass.Mentalist:
                 case eCharacterClass.Animist:
-                case eCharacterClass.Runemaster:
-                case eCharacterClass.Spiritmaster:
-                case eCharacterClass.Bonedancer:
+
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -918,7 +930,24 @@ namespace DOL.GS {
                     else if (rand <= 40)
                         return eProperty.Strength;
                     else if (rand <= 70)
-                        return eProperty.Acuity;
+                        return eProperty.Intelligence;
+                    else if (rand <= 80)
+                        return eProperty.Quickness;
+                    else return eProperty.Constitution;
+
+                case eCharacterClass.Runemaster:
+                case eCharacterClass.Spiritmaster:
+                case eCharacterClass.Bonedancer:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
+                    //weight stats for casters towards dex, acu, con
+                    //keep some 10% chance of str or quick since useful for carrying/occasional melee
+                    if (rand <= 30)
+                        return eProperty.Dexterity;
+                    else if (rand <= 40)
+                        return eProperty.Strength;
+                    else if (rand <= 70)
+                        return eProperty.Piety;
                     else if (rand <= 80)
                         return eProperty.Quickness;
                     else return eProperty.Constitution;
@@ -938,6 +967,8 @@ namespace DOL.GS {
                 case eCharacterClass.Cleric:
                 case eCharacterClass.Thane:
                 case eCharacterClass.Shaman:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -949,6 +980,8 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Friar:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 25)
                         return eProperty.Piety;
                     else if (rand <= 50)
@@ -957,8 +990,10 @@ namespace DOL.GS {
                         return eProperty.Constitution;
                     else return eProperty.Quickness;
 
-                case eCharacterClass.Bard:
+                
                 case eCharacterClass.Druid:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 10)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -970,6 +1005,8 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Warden:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -982,6 +1019,8 @@ namespace DOL.GS {
 
                 case eCharacterClass.Champion:
                 case eCharacterClass.Valewalker:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -992,8 +1031,11 @@ namespace DOL.GS {
                         return eProperty.Constitution;
                     else return eProperty.Intelligence;
 
+                case eCharacterClass.Bard:
                 case eCharacterClass.Skald:
                 case eCharacterClass.Minstrel:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -1435,7 +1477,7 @@ namespace DOL.GS {
                     if (property == eProperty.Skill_BeastCraft ||
                         property == eProperty.Skill_Stealth ||
                         property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_ShortBow ||
+                        property == eProperty.Skill_Composite ||
                         property == eProperty.Skill_Spear ||
                         property == eProperty.AllMeleeWeaponSkills ||
                         property == eProperty.AllSkills
@@ -2379,6 +2421,7 @@ namespace DOL.GS {
                             charClass != eCharacterClass.Hero &&
                             charClass != eCharacterClass.Ranger &&
                             charClass != eCharacterClass.Nightshade &&
+                            charClass != eCharacterClass.Bard &&
                             charClass != eCharacterClass.Blademaster &&
                             charClass != eCharacterClass.Warden)
                         {
@@ -6637,25 +6680,17 @@ namespace DOL.GS {
                     {
                         model = GetBladeModelForLevel(Level, eRealm.Hibernia);
                         // Blades; speed 22 - 45; Short Sword (445), Falcata (444), Broadsword (447), Longsword (446), Bastard Sword (473)
-                        if (this.SPD_ABS < 27)
+                        if (this.SPD_ABS <= 27)
                         {
                             name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
                         }
-                        else if (this.SPD_ABS < 30)
+                        else if (this.SPD_ABS < 32)
                         {
                             name = GetNameFromId(model);
                             this.Hand = 2; // allow left hand
                             this.Item_Type = Slot.LEFTHAND;
-                        }
-                        else if (this.SPD_ABS < 33)
-                        {
-                            name = GetNameFromId(model);
-                        }
-                        else if (this.SPD_ABS < 40)
-                        {
-                            name = GetNameFromId(model);
                         }
                         else
                         {
@@ -10932,17 +10967,5 @@ namespace DOL.GS {
             hPropertyToMagicPrefix.Add(eProperty.Skill_Power_Strikes, string.Empty);
         }
 
-        private static void CacheProcSpells()
-        {
-            //LT spells
-            DBSpell Level5Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
-            DBSpell Level10Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
-            DBSpell Level15Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
-
-            ProcSpells.Add(8010, new Spell(Level5Lifetap, 0));
-            ProcSpells.Add(8011, new Spell(Level10Lifetap, 0));
-            ProcSpells.Add(8012, new Spell(Level15Lifetap, 0));
-
-        }
     }
 }
