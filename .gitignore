@@ -32,3 +32,5 @@
 /nuget.exe
 /Debug.zip
 mono_crash.*
+.idea
+.vscode
