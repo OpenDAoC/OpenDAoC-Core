@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
 			}
 			//target.IsDisarmed = true;
             target.DisarmedTime = target.CurrentRegion.Time + m_duration;
-			target.StopAttack();
+			target.attackComponent.LivingStopAttack();
 
 		}
 

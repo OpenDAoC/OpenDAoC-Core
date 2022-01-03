@@ -213,7 +213,7 @@ namespace DOL.GS.Commands
                         }
                         else
                         {
-                            pToLevel.GainExperience(GameLiving.eXPSource.Other, pToLevel.ExperienceForCurrentLevelSecondStage - pToLevel.Experience);
+                            pToLevel.GainExperience(eXPSource.Other, pToLevel.ExperienceForCurrentLevelSecondStage - pToLevel.Experience);
 
                             client.Out.SendMessage("You gave " + pToLevel.Name + " a free half level!",
                                                        eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -262,7 +262,7 @@ namespace DOL.GS.Commands
                                 bool curSecondStage = player.IsLevelSecondStage;
                                 if (newLevel > curLevel && curSecondStage)
                                 {
-                                    player.GainExperience(GameLiving.eXPSource.Other, player.GetExperienceValueForLevel(++curLevel));
+                                    player.GainExperience(eXPSource.Other, player.GetExperienceValueForLevel(++curLevel));
                                 }
                                 if (newLevel != curLevel || !curSecondStage)
                                     player.Level = newLevel;
@@ -809,10 +809,10 @@ namespace DOL.GS.Commands
                             if (player == null)
                                 player = client.Player;
 
-                            GameLiving.eXPSource xpSource = GameLiving.eXPSource.Other;
+                            eXPSource xpSource = eXPSource.Other;
                             if (args[1].ToLower() == "xpa")
                             {
-                                xpSource = GameLiving.eXPSource.NPC;
+                                xpSource = eXPSource.NPC;
                             }
 
                             long amount = long.Parse(args[2]);
@@ -848,7 +848,7 @@ namespace DOL.GS.Commands
                                 player = client.Player;
 
                             long amount = long.Parse(args[2]);
-                            player.GainChampionExperience(amount, GameLiving.eXPSource.GM);
+                            player.GainChampionExperience(amount, eXPSource.GM);
                             client.Out.SendMessage("You gave " + player.Name + " " + amount + " Champion experience succesfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                             player.Out.SendMessage(client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + amount + " Champion experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
@@ -2366,7 +2366,7 @@ namespace DOL.GS.Commands
 				string activeBags = "None";
 				if (player.ActiveSaddleBags != 0)
 				{
-					if (player.ActiveSaddleBags == (byte)GamePlayer.eHorseSaddleBag.All)
+					if (player.ActiveSaddleBags == (byte)eHorseSaddleBag.All)
 					{
 						activeBags = "All";
 					}
@@ -2374,28 +2374,28 @@ namespace DOL.GS.Commands
 					{
 						activeBags = "";
 
-						if ((player.ActiveSaddleBags & (byte)GamePlayer.eHorseSaddleBag.LeftFront) > 0)
+						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.LeftFront) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
 
 							activeBags += "LeftFront";
 						}
-						if ((player.ActiveSaddleBags & (byte)GamePlayer.eHorseSaddleBag.RightFront) > 0)
+						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.RightFront) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
 
 							activeBags += "RightFront";
 						}
-						if ((player.ActiveSaddleBags & (byte)GamePlayer.eHorseSaddleBag.LeftRear) > 0)
+						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.LeftRear) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
 
 							activeBags += "LeftRear";
 						}
-						if ((player.ActiveSaddleBags & (byte)GamePlayer.eHorseSaddleBag.RightRear) > 0)
+						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.RightRear) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
@@ -2500,7 +2500,7 @@ namespace DOL.GS.Commands
             //remove all their tricks and abilities!
             target.RemoveAllSpecs();
             target.RemoveAllSpellLines();
-            target.RemoveAllStyles();
+            target.styleComponent.RemoveAllStyles();
 
             //reset before, and after changing the class.
             target.Reset();

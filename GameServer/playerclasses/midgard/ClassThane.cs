@@ -34,7 +34,7 @@ namespace DOL.GS.PlayerClass
 			m_tertiaryStat = eStat.CON;
 			m_manaStat = eStat.PIE;
 			//changed to increase in damage table
-			m_wsbase = 400;
+			m_wsbase = 360;
 			m_baseHP = 720;
 		}
 
@@ -50,7 +50,7 @@ namespace DOL.GS.PlayerClass
 
 		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
 		{
-			 PlayerRace.Dwarf, PlayerRace.Frostalf, PlayerRace.Deifrang, PlayerRace.Norseman, PlayerRace.Troll,
+			 PlayerRace.Dwarf, PlayerRace.Norseman, PlayerRace.Troll,
 		};
 	}
 }

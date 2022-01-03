@@ -36,53 +36,63 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Disease")]
 	public class DiseaseSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// called after normal spell cast is completed and effect has to be started
-		/// </summary>
-		public override void FinishSpellCast(GameLiving target)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new DiseaseECSGameEffect(initParams);
+        }
+
+        /// <summary>
+        /// called after normal spell cast is completed and effect has to be started
+        /// </summary>
+        public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
 		}
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			base.ApplyEffectOnTarget(target, effectiveness);
+        }
 
-		/// <summary>
-		/// When an applied effect starts
-		/// duration spells only
-		/// </summary>
-		/// <param name="effect"></param>
-		public override void OnEffectStart(GameSpellEffect effect)
+        /// <summary>
+        /// When an applied effect starts
+        /// duration spells only
+        /// </summary>
+        /// <param name="effect"></param>
+        public override void OnEffectStart(GameSpellEffect effect)
 		{
-			base.OnEffectStart(effect);
+			//base.OnEffectStart(effect);
 
-			if (effect.Owner.Realm == 0 || Caster.Realm == 0)
-			{
-				effect.Owner.LastAttackedByEnemyTickPvE = effect.Owner.CurrentRegion.Time;
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-			}
-			else
-			{
-				effect.Owner.LastAttackedByEnemyTickPvP = effect.Owner.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
-			}
+			//if (effect.Owner.Realm == 0 || Caster.Realm == 0)
+			//{
+			//	effect.Owner.LastAttackedByEnemyTickPvE = effect.Owner.CurrentRegion.Time;
+			//	Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
+			//}
+			//else
+			//{
+			//	effect.Owner.LastAttackedByEnemyTickPvP = effect.Owner.CurrentRegion.Time;
+			//	Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
+			//}
 
-			GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
- 			if(mezz != null) mezz.Cancel(false);
-			effect.Owner.Disease(true);
-			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 0.15);
-			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, this, 1.0 - 0.075);
+			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
+ 		//	if(mezz != null) mezz.Cancel(false);
+			//effect.Owner.Disease(true);
+			//effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 0.15);
+			//effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, this, 1.0 - 0.075);
 
-			SendUpdates(effect);
+			//SendUpdates(effect);
 
-			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_System, effect.Owner);
+			//MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
+			//Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_System, effect.Owner);
 
-			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-			if (effect.Owner is GameNPC)
-			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)effect.Owner).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-			}
+			//effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			//if (effect.Owner is GameNPC)
+			//{
+			//	IOldAggressiveBrain aggroBrain = ((GameNPC)effect.Owner).Brain as IOldAggressiveBrain;
+			//	if (aggroBrain != null)
+			//		aggroBrain.AddToAggroList(Caster, 1);
+			//}
 		}
 
 		/// <summary>
@@ -94,18 +104,18 @@ namespace DOL.GS.Spells
 		/// <returns>immunity duration in milliseconds</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			base.OnEffectExpires(effect, noMessages);
-			effect.Owner.Disease(false);
-			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, this);
+			//base.OnEffectExpires(effect, noMessages);
+			//effect.Owner.Disease(false);
+			//effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+			//effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, this);
 
-			if (!noMessages)
-			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
-			}
+			//if (!noMessages)
+			//{
+			//	MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+			//	Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
+			//}
 
-			SendUpdates(effect);
+			//SendUpdates(effect);
 
 			return 0;
 		}
@@ -132,25 +142,25 @@ namespace DOL.GS.Spells
 		/// Sends needed updates on start/stop
 		/// </summary>
 		/// <param name="effect"></param>
-		protected virtual void SendUpdates(GameSpellEffect effect)
+		public virtual void SendUpdates(ECSGameEffect effect)
 		{
-			GamePlayer player = effect.Owner as GamePlayer;
-			if (player != null)
-			{
-				if (!player.IsMezzed && !player.IsStunned)
-					player.Out.SendUpdateMaxSpeed();
-				player.Out.SendCharStatsUpdate();
-				player.Out.SendUpdateWeaponAndArmorStats();
-			}
+            GamePlayer player = effect.Owner as GamePlayer;
+            if (player != null)
+            {
+                if (!player.IsMezzed && !player.IsStunned)
+                    player.Out.SendUpdateMaxSpeed();
+                player.Out.SendCharStatsUpdate();
+                player.Out.SendUpdateWeaponAndArmorStats();
+            }
 
-			GameNPC npc = effect.Owner as GameNPC;
-			if (npc != null)
-			{
-				short maxSpeed = npc.MaxSpeed;
-				if (npc.CurrentSpeed > maxSpeed)
-					npc.CurrentSpeed = maxSpeed;
-			}
-		}
+            GameNPC npc = effect.Owner as GameNPC;
+            if (npc != null)
+            {
+                short maxSpeed = npc.MaxSpeed;
+                if (npc.CurrentSpeed > maxSpeed)
+                    npc.CurrentSpeed = maxSpeed;
+            }
+        }
 
 		public override PlayerXEffect GetSavedEffect(GameSpellEffect e)
 		{

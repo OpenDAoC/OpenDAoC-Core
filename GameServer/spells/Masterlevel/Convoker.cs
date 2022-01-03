@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "Prescience";
+			dbs.Type = eSpellType.Prescience.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -145,7 +145,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "PowerRend";
+			dbs.Type = eSpellType.PowerRend.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "SpeedWrap";
+			dbs.Type = eSpellType.SpeedWrap.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -426,7 +426,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "DirectDamage";
+			dbs.Type = eSpellType.DirectDamage.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -828,7 +828,7 @@ namespace DOL.AI.Brain
 			if (Body.TargetObject is GameNPC)
 				Body.TargetObject = null;
 
-			if (Body.AttackState)
+			if (Body.attackComponent.AttackState)
 				return;
 
 			IList enemies = new ArrayList();
@@ -884,10 +884,10 @@ public class MLBrain : GuardBrain
 	{
 		get { return 400; }
 	}
-	protected override void CheckNPCAggro()
+	public override void CheckNPCAggro()
 	{
 		//Check if we are already attacking, return if yes
-		if (Body.AttackState)
+		if (Body.attackComponent.AttackState)
 			return;
 
 		foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))

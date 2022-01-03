@@ -48,20 +48,20 @@ namespace DOL.GS.PlayerClass
 		/// <returns></returns>
 		public override bool CanChangeCastingSpeed(SpellLine line, Spell spell)
 		{
-			if (spell.SpellType == "Chamber")
+			if (spell.SpellType == (byte)eSpellType.Chamber)
 				return false;
 
 			if ((line.KeyName == "Cursing"
 				 || line.KeyName == "Cursing Spec"
 				 || line.KeyName == "Hexing"
 				 || line.KeyName == "Witchcraft")
-				&& (spell.SpellType != "ArmorFactorBuff"
-					&& spell.SpellType != "Bladeturn"
-					&& spell.SpellType != "ArmorAbsorptionBuff"
-					&& spell.SpellType != "MatterResistDebuff"
-					&& spell.SpellType != "Uninterruptable"
-					&& spell.SpellType != "Powerless"
-					&& spell.SpellType != "Range"
+				&& (spell.SpellType != (byte)eSpellType.ArmorFactorBuff
+					&& spell.SpellType != (byte)eSpellType.Bladeturn
+					&& spell.SpellType != (byte)eSpellType.ArmorAbsorptionBuff
+					&& spell.SpellType != (byte)eSpellType.MatterResistDebuff
+					&& spell.SpellType != (byte)eSpellType.Uninterruptable
+					&& spell.SpellType != (byte)eSpellType.Powerless
+					&& spell.SpellType != (byte)eSpellType.Range
 					&& spell.Name != "Lesser Twisting Curse"
 					&& spell.Name != "Twisting Curse"
 					&& spell.Name != "Lesser Winding Curse"
@@ -79,7 +79,7 @@ namespace DOL.GS.PlayerClass
 
 		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
 		{
-			 PlayerRace.Frostalf, PlayerRace.Kobold, PlayerRace.Norseman,
+			// PlayerRace.Frostalf, PlayerRace.Kobold, PlayerRace.Norseman,
 		};
 	}
 }

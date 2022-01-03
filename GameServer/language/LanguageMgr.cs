@@ -88,7 +88,7 @@ namespace DOL.Language
         }
 
         #region Variables
-        private const string TRANSLATION_ID_EMPTY = "Empty translation id.";
+        private const string TRANSLATION_ID_EMPTY = "No translation ID could be found for this message.";
         private const string TRANSLATION_NULL = "NULL";
 
         /// <summary>

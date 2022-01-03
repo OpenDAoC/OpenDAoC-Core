@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				var player = (GamePlayer) m_actionSource;
 
-				if (player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Distance)
+				if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				{
 					if (m_userAction)
 						player.Out.SendMessage("You can't enter melee combat mode with a fired weapon!", eChatType.CT_YouHit,
@@ -73,16 +73,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 					return;
 				}
 
-				if (m_start)
+				if (m_start || EffectListService.GetEffectOnTarget(player, eEffect.Engage) != null)
 				{
-					player.StartAttack(player.TargetObject);
+					player.attackComponent.StartAttack(player.TargetObject);
 					// unstealth right after entering combat mode if anything is targeted
-					if (player.AttackState && player.TargetObject != null)
+					if (player.attackComponent.AttackState && player.TargetObject != null)
 						player.Stealth(false);
 				}
 				else
 				{
-					player.StopAttack(false);
+					player.attackComponent.StopAttack(false);
 				}
 			}
 		}

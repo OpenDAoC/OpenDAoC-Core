@@ -280,12 +280,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteShortLowEndian((ushort)(twoHandWeapon != null ? twoHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(distanceWeapon != null ? distanceWeapon.Model : 0));
 	
-							if (c.ActiveWeaponSlot == (byte)DOL.GS.GameLiving.eActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)DOL.GS.GameLiving.eActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);

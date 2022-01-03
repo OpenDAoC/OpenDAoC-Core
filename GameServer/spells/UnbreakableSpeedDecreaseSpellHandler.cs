@@ -30,11 +30,20 @@ namespace DOL.GS.Spells
 	[SpellHandler("UnbreakableSpeedDecrease")]
 	public class UnbreakableSpeedDecreaseSpellHandler : ImmunityEffectSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new StatDebuffECSEffect(initParams);
+		}
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity))
+			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);
+			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
+				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null || 
+				(effect != null && effect.SpellHandler.Spell.Value == 99))
 			{
+				//EffectService.RequestCancelEffect(effect);
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+				OnSpellResisted(target);
 				return;
 			}
 			if (target.EffectList.GetOfType<ChargeEffect>() != null)
@@ -116,7 +125,7 @@ namespace DOL.GS.Spells
 		/// Sends updates on effect start/stop
 		/// </summary>
 		/// <param name="owner"></param>
-		protected static void SendUpdates(GameLiving owner)
+		public static void SendUpdates(GameLiving owner)
 		{
 			if (owner.IsMezzed || owner.IsStunned)
 				return;
@@ -137,7 +146,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		private sealed class RestoreSpeedTimer : GameTimer
+		public sealed class RestoreSpeedTimer : GameTimer
 		{
 			/// <summary>
 			/// The speed changing effect

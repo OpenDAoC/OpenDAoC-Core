@@ -68,7 +68,7 @@ namespace DOL.AI.Brain
 			Body.TargetObject = null;
 			switch (spell.SpellType)
 			{
-				case "CombatSpeedDebuff":
+				case (byte)eSpellType.CombatSpeedDebuff:
 					Body.TargetObject = lastTarget;
 					break;
 			}
@@ -78,7 +78,7 @@ namespace DOL.AI.Brain
 				if (LivingHasEffect((GameLiving)Body.TargetObject, spell))
 					return false;
 				Body.CastSpell(spell, m_mobSpellLine);
-				Body.TargetObject = lastTarget;
+				//Body.TargetObject = lastTarget;
 				return true;
 			}
 			Body.TargetObject = lastTarget;

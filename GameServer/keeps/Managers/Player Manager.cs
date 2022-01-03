@@ -2,6 +2,7 @@ using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using JNogueira.Discord.Webhook.Client;
 using log4net;
 
 namespace DOL.GS.Keeps
@@ -66,6 +67,12 @@ namespace DOL.GS.Keeps
 
 			BroadcastMessage(message, eRealm.None);
 			NewsMgr.CreateNews(message, keep.Realm, eNewsType.RvRGlobal, false);
+
+			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+			{
+				BroadcastDiscordRvR(message, keep.Realm, keep.Name);
+			}
+			
 		}
 
 		/// <summary>
@@ -86,7 +93,16 @@ namespace DOL.GS.Keeps
 		/// <param name="keep">The keep object</param>
 		public static void BroadcastClaim(AbstractGameKeep keep)
 		{
-			BroadcastMessage(string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastClaim.Claimed", keep.Guild.Name, keep.Name)), (eRealm)keep.Realm);
+
+			string claimMessage = string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,
+				"PlayerManager.BroadcastClaim.Claimed", keep.Guild.Name, keep.Name));
+			
+			BroadcastMessage(claimMessage, (eRealm)keep.Realm);
+			
+			// if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+			// {
+			// 	BroadcastDiscordRvR(claimMessage, keep.Realm, keep.Name);
+			// }
 		}
 
 		/// <summary>
@@ -95,7 +111,17 @@ namespace DOL.GS.Keeps
 		/// <param name="keep">The keep object</param>
 		public static void BroadcastRelease(AbstractGameKeep keep)
 		{
-			BroadcastMessage(string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRelease.LostControl", keep.Guild.Name, keep.Name)), (eRealm)keep.Realm);
+			string lostClaimMessage = string.Format(LanguageMgr.GetTranslation(
+				ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRelease.LostControl",
+				keep.Guild.Name, keep.Name));
+			
+			BroadcastMessage(lostClaimMessage, (eRealm)keep.Realm);
+			
+			// if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+			// {
+			// 	BroadcastDiscordRvR(lostClaimMessage, keep.Guild.Realm, keep.Name);
+			// }
+			
 		}
 
 		/// <summary>
@@ -115,6 +141,47 @@ namespace DOL.GS.Keeps
 					client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
+		}
+		
+		/// <summary>
+		/// Method to broadcast RvR messages over Discord
+		/// </summary>
+		/// <param name="message">The message</param>
+		/// <param name="realm">The realm</param>
+		public static void BroadcastDiscordRvR(string message, eRealm realm, string keepName)
+		{
+			int color = 0;
+			switch (realm)
+			{
+				case eRealm._FirstPlayerRealm:
+					color = 16711680;
+					break;
+				case eRealm._LastPlayerRealm:
+					color = 32768;
+					break;
+				default:
+					color = 255;
+					break;
+			}
+			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+
+			// Create your DiscordMessage with all parameters of your message.
+			var discordMessage = new DiscordMessage(
+				"",
+				username: "Atlas RvR",
+				avatarUrl: "https://cdn.discordapp.com/avatars/924819559058378782/7b11edbd9ca764893d4863fcb17e58c6.webp",
+				tts: false,
+				embeds: new[]
+				{
+					new DiscordMessageEmbed(
+						author: new DiscordMessageEmbedAuthor(keepName),
+						color: color,
+						description: message
+					)
+				}
+			);
+			
+			client.SendToDiscord(discordMessage);
 		}
 
 		/// <summary>

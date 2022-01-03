@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.DamageType = (int)eDamageType.Natural;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "DamageSpeedDecreaseNoVariance";
+			dbs.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
 			dbs.Value = 50;
 			dbs.Duration = 5;
 			dbs.Pulse = 0;

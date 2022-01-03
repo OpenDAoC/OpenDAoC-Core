@@ -60,7 +60,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			GamePlayer player = (GamePlayer)sender;
 
-			BarrierOfFortitudeEffect BoFEffect = player.EffectList.GetOfType<BarrierOfFortitudeEffect>();
+			BedazzlingAuraEffect BoFEffect = player.EffectList.GetOfType<BedazzlingAuraEffect>();
 			if (BoFEffect != null)
 			{
 				BoFEffect.Cancel(false);

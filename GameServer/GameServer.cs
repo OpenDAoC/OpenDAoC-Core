@@ -46,6 +46,7 @@ using DOL.Network;
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS
 {
@@ -800,6 +801,12 @@ namespace DOL.GS
 				if (!InitComponent(base.Start(), "base.Start()"))
 					return false;
 
+				//This is stupid and odd
+				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
+				{
+					return false;
+				}
+
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
 				//---------------------------------------------------------------
@@ -809,12 +816,35 @@ namespace DOL.GS
 				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
 				{
 
-					var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
-					hook.SendMessage("Server open for connections");
+					var client = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+					
+ 					var message = new DiscordMessage(
+ 						"",
+ 						username: "Atlas GameServer",
+ 						avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+ 						tts: false,
+ 						embeds: new[]
+ 						{
+ 							new DiscordMessageEmbed(
+	                            color: 65280,
+	                            description: "Server open for connections!",
+                                thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/865577034087923742.png")
+                            )
+ 						}
+ 					);
+
+					client.SendToDiscord(message);
 				}
 
 				if (log.IsInfoEnabled)
 					log.Info("GameServer is now open for connections!");
+
+				if (Properties.ATLAS_API)
+				{
+					var webserver = new DOL.GS.API.ApiHost();
+					log.Info("Game WebAPI open for connections.");
+				}
+
 
 				//INIT WAS FINE!
 				return true;
@@ -1239,7 +1269,7 @@ namespace DOL.GS
 			SaveTimerProc(null);
 
 			WorldMgr.Exit();
-
+			GameLoop.Exit();
 			//Save the database
 			// 2008-01-29 Kakuri - Obsolete
 			/*if ( m_database != null )

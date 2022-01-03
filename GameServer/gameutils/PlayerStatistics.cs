@@ -473,7 +473,7 @@ namespace DOL.GS.GameEvents
 			if (caster == null || fargs == null)
 				return;
 
-			if (fargs.SpellHandler.Spell.SpellType == "Resurrect")
+			if (fargs.SpellHandler.Spell.SpellType == (byte)eSpellType.Resurrect)
 			{
 				PlayerStatistics stats = caster.Statistics as PlayerStatistics;
                 if (stats != null)
@@ -486,7 +486,7 @@ namespace DOL.GS.GameEvents
 		public static void HealthChangedCallback(DOLEvent e, object sender, EventArgs args)
 		{
 			HealthChangedEventArgs hargs = args as HealthChangedEventArgs;
-			if (hargs.ChangeType == GameLiving.eHealthChangeType.Spell)
+			if (hargs.ChangeType == eHealthChangeType.Spell)
 			{
 				GamePlayer player = hargs.ChangeSource as GamePlayer;
 				if (player == null)

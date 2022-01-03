@@ -452,12 +452,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteShortLowEndian((ushort)(twoHandWeapon != null ? twoHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(distanceWeapon != null ? distanceWeapon.Model : 0));
 
-							if (c.ActiveWeaponSlot == (byte)DOL.GS.GameLiving.eActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)DOL.GS.GameLiving.eActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);
@@ -576,163 +576,172 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-
-			eStat[] updateStats =
+			try
 			{
-				eStat.STR,
-				eStat.DEX,
-				eStat.CON,
-				eStat.QUI,
-				eStat.INT,
-				eStat.PIE,
-				eStat.EMP,
-				eStat.CHR,
-			};
-
-			int[] baseStats = new int[updateStats.Length];
-			int[] modStats = new int[updateStats.Length];
-			int[] itemCaps = new int[updateStats.Length];
-
-			int itemCap = (int)(m_gameClient.Player.Level * 1.5);
-			int bonusCap = (int)(m_gameClient.Player.Level / 2 + 1);
-			for (int i = 0; i < updateStats.Length; i++)
-			{
-				int cap = itemCap;
-				switch ((eProperty)updateStats[i])
+				eStat[] updateStats =
 				{
-					case eProperty.Strength:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.StrCapBonus];
-						break;
-					case eProperty.Dexterity:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.DexCapBonus];
-						break;
-					case eProperty.Constitution:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.ConCapBonus];
-						break;
-					case eProperty.Quickness:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.QuiCapBonus];
-						break;
-					case eProperty.Intelligence:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.IntCapBonus];
-						break;
-					case eProperty.Piety:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.PieCapBonus];
-						break;
-					case eProperty.Charisma:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.ChaCapBonus];
-						break;
-					case eProperty.Empathy:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.EmpCapBonus];
-						break;
-					default: break;
+					eStat.STR,
+					eStat.DEX,
+					eStat.CON,
+					eStat.QUI,
+					eStat.INT,
+					eStat.PIE,
+					eStat.EMP,
+					eStat.CHR,
+				};
+
+				int[] baseStats = new int[updateStats.Length];
+				int[] modStats = new int[updateStats.Length];
+				int[] itemCaps = new int[updateStats.Length];
+
+				int itemCap = (int)(m_gameClient.Player.Level * 1.5);
+				int bonusCap = (int)(m_gameClient.Player.Level / 2 + 1);
+				for (int i = 0; i < updateStats.Length; i++)
+				{
+					int cap = itemCap;
+					switch ((eProperty)updateStats[i])
+					{
+						case eProperty.Strength:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.StrCapBonus];
+							break;
+						case eProperty.Dexterity:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.DexCapBonus];
+							break;
+						case eProperty.Constitution:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.ConCapBonus];
+							break;
+						case eProperty.Quickness:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.QuiCapBonus];
+							break;
+						case eProperty.Intelligence:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.IntCapBonus];
+							break;
+						case eProperty.Piety:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.PieCapBonus];
+							break;
+						case eProperty.Charisma:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.ChaCapBonus];
+							break;
+						case eProperty.Empathy:
+							cap += m_gameClient.Player.ItemBonus[(int)eProperty.EmpCapBonus];
+							break;
+						default: break;
+					}
+
+					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+						cap += m_gameClient.Player.ItemBonus[(int)eProperty.AcuCapBonus];
+
+					itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
 				}
 
-				if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
-					cap += m_gameClient.Player.ItemBonus[(int)eProperty.AcuCapBonus];
 
-				itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
+				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.StatsUpdate)))
+				{
+
+					// base
+					for (int i = 0; i < updateStats.Length; i++)
+					{
+						baseStats[i] = m_gameClient.Player.GetBaseStat(updateStats[i]);
+
+						if (updateStats[i] == eStat.CON)
+							baseStats[i] -= m_gameClient.Player.TotalConstitutionLostAtDeath;
+
+						pak.WriteShort((ushort)baseStats[i]);
+					}
+
+					pak.WriteShort(0);
+
+					// buffs/debuffs only; remove base, item bonus, RA bonus, class bonus
+					for (int i = 0; i < updateStats.Length; i++)
+					{
+						modStats[i] = m_gameClient.Player.GetModified((eProperty)updateStats[i]);
+
+						int abilityBonus = m_gameClient.Player.AbilityBonus[(int)updateStats[i]];
+
+						int acuityItemBonus = 0;
+						if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+						{
+							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
+								&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+							{
+								abilityBonus += m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
+
+								if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
+									acuityItemBonus = m_gameClient.Player.ItemBonus[(int)eProperty.Acuity];
+							}
+						}
+
+						int buff = modStats[i] - baseStats[i];
+						buff -= abilityBonus;
+						buff -= Math.Min(itemCaps[i], m_gameClient.Player.ItemBonus[(int)updateStats[i]] + acuityItemBonus);
+
+						pak.WriteShort((ushort)buff);
+					}
+
+					pak.WriteShort(0);
+
+					// item bonuses
+					for (int i = 0; i < updateStats.Length; i++)
+					{
+						int acuityItemBonus = 0;
+
+						if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+						{
+							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
+								&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+							{
+
+								if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
+									acuityItemBonus = m_gameClient.Player.ItemBonus[(int)eProperty.Acuity];
+							}
+						}
+
+						pak.WriteShort((ushort)(m_gameClient.Player.ItemBonus[(int)updateStats[i]] + acuityItemBonus));
+					}
+
+					pak.WriteShort(0);
+
+					// item caps
+					for (int i = 0; i < updateStats.Length; i++)
+					{
+						pak.WriteByte((byte)itemCaps[i]);
+					}
+
+					pak.WriteByte(0);
+
+					// RA bonuses
+					for (int i = 0; i < updateStats.Length; i++)
+					{
+						int acuityItemBonus = 0;
+						if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.CharacterClass.ManaStat)
+						{
+							if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
+								&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+							{
+								acuityItemBonus = m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
+							}
+						}
+						pak.WriteByte((byte)(m_gameClient.Player.AbilityBonus[(int)updateStats[i]] + acuityItemBonus));
+					}
+
+					pak.WriteByte(0);
+
+					//Why don't we and mythic use this class bonus byte?
+					//pak.Fill(0, 9);
+					//if (_gameClient.Player.CharacterClass.ID == (int)eCharacterClass.Vampiir)
+					//	pak.WriteByte((byte)(_gameClient.Player.Level - 5)); // Vampire bonuses
+					//else
+					pak.WriteByte(0x00); // FF if resists packet
+					pak.WriteByte((byte)m_gameClient.Player.TotalConstitutionLostAtDeath);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
+					pak.WriteShort(0);
+
+					SendTCP(pak);
+				}
 			}
-
-
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.StatsUpdate)))
+			catch (NullReferenceException e)
 			{
-
-				// base
-				for (int i = 0; i < updateStats.Length; i++)
-				{
-					baseStats[i] = m_gameClient.Player.GetBaseStat(updateStats[i]);
-
-					if (updateStats[i] == eStat.CON)
-						baseStats[i] -= m_gameClient.Player.TotalConstitutionLostAtDeath;
-
-					pak.WriteShort((ushort)baseStats[i]);
-				}
-
-				pak.WriteShort(0);
-
-				// buffs/debuffs only; remove base, item bonus, RA bonus, class bonus
-				for (int i = 0; i < updateStats.Length; i++)
-				{
-					modStats[i] = m_gameClient.Player.GetModified((eProperty)updateStats[i]);
-
-					int abilityBonus = m_gameClient.Player.AbilityBonus[(int)updateStats[i]];
-
-					int acuityItemBonus = 0;
-					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
-					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger)
-						{
-							abilityBonus += m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
-
-							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
-								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)eProperty.Acuity];
-						}
-					}
-
-					int buff = modStats[i] - baseStats[i];
-					buff -= abilityBonus;
-					buff -= Math.Min(itemCaps[i], m_gameClient.Player.ItemBonus[(int)updateStats[i]] + acuityItemBonus);
-
-					pak.WriteShort((ushort)buff);
-				}
-
-				pak.WriteShort(0);
-
-				// item bonuses
-				for (int i = 0; i < updateStats.Length; i++)
-				{
-					int acuityItemBonus = 0;
-
-					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
-					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger)
-						{
-
-							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
-								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)eProperty.Acuity];
-						}
-					}
-
-					pak.WriteShort((ushort)(m_gameClient.Player.ItemBonus[(int)updateStats[i]] + acuityItemBonus));
-				}
-
-				pak.WriteShort(0);
-
-				// item caps
-				for (int i = 0; i < updateStats.Length; i++)
-				{
-					pak.WriteByte((byte)itemCaps[i]);
-				}
-
-				pak.WriteByte(0);
-
-				// RA bonuses
-				for (int i = 0; i < updateStats.Length; i++)
-				{
-					int acuityItemBonus = 0;
-					if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.CharacterClass.ManaStat)
-					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger)
-						{
-							acuityItemBonus = m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
-						}
-					}
-					pak.WriteByte((byte)(m_gameClient.Player.AbilityBonus[(int)updateStats[i]] + acuityItemBonus));
-				}
-
-				pak.WriteByte(0);
-
-				//Why don't we and mythic use this class bonus byte?
-				//pak.Fill(0, 9);
-				//if (_gameClient.Player.CharacterClass.ID == (int)eCharacterClass.Vampiir)
-				//	pak.WriteByte((byte)(_gameClient.Player.Level - 5)); // Vampire bonuses
-				//else
-				pak.WriteByte(0x00); // FF if resists packet
-				pak.WriteByte((byte)m_gameClient.Player.TotalConstitutionLostAtDeath);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
-				pak.WriteShort(0);
-
-				SendTCP(pak);
+				Console.WriteLine($"Error encountered attempting to SendCharStatsUpdate");
 			}
 		}
 		public virtual void SendConcentrationList()
@@ -749,23 +758,23 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-					for (int i = 0; i < m_gameClient.Player.ConcentrationEffects.Count; i++)
-					{
-						IConcentrationEffect effect = m_gameClient.Player.ConcentrationEffects[i];
-						pak.WriteByte((byte)i);
-						pak.WriteByte(0); // unknown
-						pak.WriteByte(effect.Concentration);
-						pak.WriteShort(effect.Icon);
-						if (effect.Name.Length > 14)
-							pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
-						else
-							pak.WritePascalString(effect.Name);
-						if (effect.OwnerName.Length > 14)
-							pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
-						else
-							pak.WritePascalString(effect.OwnerName);
-					}
-				}
+                    for (int i = 0; i < m_gameClient.Player.ConcentrationEffects.Count; i++)
+                    {
+                        IConcentrationEffect effect = m_gameClient.Player.ConcentrationEffects[i];
+                        pak.WriteByte((byte)i);
+                        pak.WriteByte(0); // unknown
+                        pak.WriteByte(effect.Concentration);
+                        pak.WriteShort(effect.Icon);
+                        if (effect.Name.Length > 14)
+                            pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
+                        else
+                            pak.WritePascalString(effect.Name);
+                        if (effect.OwnerName.Length > 14)
+                            pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
+                        else
+                            pak.WritePascalString(effect.OwnerName);
+                    }
+                }
 				SendTCP(pak);
 			}
 
@@ -1267,7 +1276,7 @@ namespace DOL.GS.PacketHandler
 				if (windowType == eInventoryWindowType.HouseVault && houseVault != null)
 					pak.WriteByte((byte)(houseVault.Index + 1));    // Add the vault number to the window caption
 				else
-					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 																																	  // ^ in 1.89b+, 0 bit - showing hooded cloack, if not hooded not show cloack at all ?
 				pak.WriteByte(m_gameClient.Player.VisibleActiveWeaponSlots);
 				pak.WriteByte((byte)windowType);
@@ -1301,7 +1310,7 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 				}
 
 				pak.WriteByte((byte)m_gameClient.Player.VisibleActiveWeaponSlots);
@@ -1536,7 +1545,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
 				pak.WriteByte((byte)living.CurrentSpeed); // new in 189b+, speed
 				pak.WriteByte((byte)((living.IsCloakInvisible ? 0x01 : 0x00) | (living.IsHelmInvisible ? 0x02 : 0x00))); // new in 189b+, cloack/helm visibility
-				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 
 				if (items != null)
 				{
@@ -2296,7 +2305,7 @@ namespace DOL.GS.PacketHandler
 				}
 
 				GameObject target = npc.TargetObject;
-				if (npc.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
+				if (npc.attackComponent.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
 					targetOID = (ushort)target.ObjectID;
 			}
 
@@ -2378,25 +2387,46 @@ namespace DOL.GS.PacketHandler
 
 				if (pet != null)
 				{
-					lock (pet.EffectList)
-					{
-						ArrayList icons = new ArrayList();
-						foreach (IGameEffect effect in pet.EffectList)
-						{
-							if (icons.Count >= 8)
-								break;
-							if (effect.Icon == 0)
-								continue;
-							icons.Add(effect.Icon);
-						}
-						pak.WriteByte((byte)icons.Count); // effect count
-														  // 0x08 - null terminated - (byte) list of shorts - spell icons on pet
-						foreach (ushort icon in icons)
-						{
-							pak.WriteShort(icon);
-						}
-					}
-				}
+					//lock (pet.EffectList)
+					//{
+					//	ArrayList icons = new ArrayList();
+					//	foreach (IGameEffect effect in pet.EffectList)
+					//	{
+					//		if (icons.Count >= 8)
+					//			break;
+					//		if (effect.Icon == 0)
+					//			continue;
+					//		icons.Add(effect.Icon);
+					//	}
+					//	pak.WriteByte((byte)icons.Count); // effect count
+					//									  // 0x08 - null terminated - (byte) list of shorts - spell icons on pet
+					//	foreach (ushort icon in icons)
+					//	{
+					//		pak.WriteShort(icon);
+					//	}
+					//}
+                    lock (pet.EffectList)
+                    {
+                        ArrayList icons = new ArrayList();
+                        foreach (var effects in pet.effectListComponent.Effects.Values)
+                        {
+							foreach (ECSGameEffect effect in effects)
+							{
+								if (icons.Count >= 8)
+									break;
+								if (effect.Icon == 0)
+									continue;
+								icons.Add(effect.Icon);
+							}
+                        }
+                        pak.WriteByte((byte)icons.Count); // effect count
+                                                          // 0x08 - null terminated - (byte) list of shorts - spell icons on pet
+                        foreach (ushort icon in icons)
+                        {
+                            pak.WriteShort(icon);
+                        }
+                    }
+                }
 				else
 					pak.WriteByte((byte)0); // effect count
 				SendTCP(pak);
@@ -3413,6 +3443,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success)
 		{
+			//Console.WriteLine($"Spell Effect sent at {GameLoop.GameLoopTime}");
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
 				pak.WriteShort((ushort)spellCaster.ObjectID);
@@ -3428,25 +3459,33 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterStatusUpdate)))
-			{
-				pak.WriteByte(m_gameClient.Player.HealthPercent);
-				pak.WriteByte(m_gameClient.Player.ManaPercent);
-				pak.WriteByte(sittingFlag);
-				pak.WriteByte(m_gameClient.Player.EndurancePercent);
-				pak.WriteByte(m_gameClient.Player.ConcentrationPercent);
-				//			pak.WriteShort((byte) (_gameClient.Player.IsAlive ? 0x00 : 0x0f)); // 0x0F if dead ??? where it now ?
-				pak.WriteByte(0);// unk
-				pak.WriteShort((ushort)m_gameClient.Player.MaxMana);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxEndurance);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxConcentration);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
-				pak.WriteShort((ushort)m_gameClient.Player.Health);
-				pak.WriteShort((ushort)m_gameClient.Player.Endurance);
-				pak.WriteShort((ushort)m_gameClient.Player.Mana);
-				pak.WriteShort((ushort)m_gameClient.Player.Concentration);
-				SendTCP(pak);
+            try
+            {
+				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterStatusUpdate)))
+				{
+					pak.WriteByte(m_gameClient.Player.HealthPercent);
+					pak.WriteByte(m_gameClient.Player.ManaPercent);
+					pak.WriteByte(sittingFlag);
+					pak.WriteByte(m_gameClient.Player.EndurancePercent);
+					pak.WriteByte(m_gameClient.Player.ConcentrationPercent);
+					//			pak.WriteShort((byte) (_gameClient.Player.IsAlive ? 0x00 : 0x0f)); // 0x0F if dead ??? where it now ?
+					pak.WriteByte(0);// unk
+					pak.WriteShort((ushort)m_gameClient.Player.MaxMana);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxEndurance);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxConcentration);
+					pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
+					pak.WriteShort((ushort)m_gameClient.Player.Health);
+					pak.WriteShort((ushort)m_gameClient.Player.Endurance);
+					pak.WriteShort((ushort)m_gameClient.Player.Mana);
+					pak.WriteShort((ushort)m_gameClient.Player.Concentration);
+					SendTCP(pak);
+				}
 			}
+            catch (NullReferenceException e)
+            {
+				Console.WriteLine($"Error encountered attempting to SendStatusUpdate");                
+            }
+			
 		}
 		protected virtual void SendTaskInfo()
 		{
@@ -3794,7 +3833,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte((byte)ra.CostForUpgrade(i));
 
 					if (ra.CheckRequirement(m_gameClient.Player))
-						pak.WritePascalString(ra.KeyName);
+						pak.WritePascalString(ra.Name);
 					else
 						pak.WritePascalString(string.Format("[{0}]", ra.Name));
 				}
@@ -3850,7 +3889,18 @@ namespace DOL.GS.PacketHandler
 					}
 
 					if (m_gameClient.CanSendTooltip(24, spell.InternalID))
+					{
 						SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, spell));
+						if (spell.HasSubSpell)
+						{
+							if (m_gameClient.CanSendTooltip(24, SkillBase.GetSpellByID(spell.SubSpellID).InternalID))
+								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID(spell.SubSpellID)));
+
+						}
+						if (spell.SpellType == (byte)eSpellType.DefensiveProc || spell.SpellType == (byte)eSpellType.OffensiveProc)
+							SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID((int)spell.Value)));
+						
+					}
 				}
 			}
 		}
@@ -3871,12 +3921,12 @@ namespace DOL.GS.PacketHandler
 				int fxcount = 0;
 				int entriesCount = 0;
 
-				pak.WriteByte(0); // effects count set in the end
+				pak.WriteByte(0); // effects count set in the end0
 				pak.WriteByte(0); // unknown
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (IGameEffect effect in m_gameClient.Player.EffectList)
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
 				{
 					if (effect.Icon != 0)
 					{
@@ -3887,53 +3937,105 @@ namespace DOL.GS.PacketHandler
 						}
 
 						// store tooltip update for gamespelleffect.
-						if (ForceTooltipUpdate && effect is GameSpellEffect gameEffect)
+						if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)
 						{
 							tooltipSpellHandlers.Add(gameEffect.SpellHandler);
 						}
 
 						//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
-						pak.WriteByte((byte)(fxcount - 1)); // icon index
-						pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
+						// icon index
+						pak.WriteByte((byte)(fxcount - 1));
+                        // Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
+                        pak.WriteByte((effect is ECSGameAbilityEffect && effect.Icon <= 5000) ? (byte)0xff : (byte)(fxcount - 1)); 
+                        //pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); // <- [Takii] previous version
 
-						byte ImmunByte = 0;
-						var gsp = effect as GameSpellEffect;
-						if (gsp != null && gsp.IsDisabled)
-							ImmunByte = 1;
+                        byte ImmunByte = 0;
+						var gsp = effect as ECSGameEffect;
+                        if (gsp is ECSImmunityEffect || gsp.IsDisabled)
+                            ImmunByte = 1;
+						//todo this should be the ImmunByte
 						pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
 
 						// bit 0x08 adds "more..." to right click info
 						pak.WriteShort(effect.Icon);
-						//pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
-						pak.WriteShort((ushort)(effect.RemainingTime / 1000));
-						if (effect is GameSpellEffect)
-							pak.WriteShort((ushort)((GameSpellEffect)effect).Spell.InternalID); //v1.110+ send the spell ID for delve info in active icon
+						pak.WriteShort((ushort)(effect.GetRemainingTimeForClient() / 1000));
+						if (effect is ECSGameEffect || effect is ECSImmunityEffect)
+							pak.WriteShort(effect.Icon); //v1.110+ send the spell ID for delve info in active icon
 						else
 							pak.WriteShort(0);//don't override existing tooltip ids
 
 						byte flagNegativeEffect = 0;
-						if (effect is StaticEffect)
+
+						if (!effect.HasPositiveEffect)
 						{
-							if (((StaticEffect)effect).HasNegativeEffect)
-							{
-								flagNegativeEffect = 1;
-							}
+							flagNegativeEffect = 1;
 						}
-						else if (effect is GameSpellEffect)
-						{
-							if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
-							{
-								flagNegativeEffect = 1;
-							}
-						}
-						pak.WriteByte(flagNegativeEffect);
+
+                        pak.WriteByte(flagNegativeEffect);
 
 						pak.WritePascalString(effect.Name);
 						entriesCount++;
 					}
 				}
 
-				int oldCount = lastUpdateEffectsCount;
+                foreach (IGameEffect effect in m_gameClient.Player.EffectList)
+                {
+                    if (effect.Icon != 0)
+                    {
+                        fxcount++;
+                        if (changedEffects != null && !changedEffects.Contains(effect))
+                        {
+                            continue;
+                        }
+
+                        // store tooltip update for gamespelleffect.
+                        if (ForceTooltipUpdate && effect is GameSpellEffect gameEffect)
+                        {
+                            tooltipSpellHandlers.Add(gameEffect.SpellHandler);
+                        }
+
+                        //						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
+                        pak.WriteByte((byte)(fxcount - 1)); // icon index
+                        pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
+
+                        byte ImmunByte = 0;
+                        var gsp = effect as GameSpellEffect;
+                        if (gsp != null && gsp.IsDisabled)
+                            ImmunByte = 1;
+                        pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
+
+                        // bit 0x08 adds "more..." to right click info
+                        pak.WriteShort(effect.Icon);
+                        //pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
+                        pak.WriteShort((ushort)(effect.RemainingTime / 1000));
+                        if (effect is GameSpellEffect)
+                            pak.WriteShort((ushort)((GameSpellEffect)effect).Spell.InternalID); //v1.110+ send the spell ID for delve info in active icon
+                        else
+                            pak.WriteShort(0);//don't override existing tooltip ids
+
+                        byte flagNegativeEffect = 0;
+                        if (effect is StaticEffect)
+                        {
+                            if (((StaticEffect)effect).HasNegativeEffect)
+                            {
+                                flagNegativeEffect = 1;
+                            }
+                        }
+                        else if (effect is GameSpellEffect)
+                        {
+                            if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
+                            {
+                                flagNegativeEffect = 1;
+                            }
+                        }
+                        pak.WriteByte(flagNegativeEffect);
+
+                        pak.WritePascalString(effect.Name);
+                        entriesCount++;
+                    }
+                }
+
+                int oldCount = lastUpdateEffectsCount;
 				lastUpdateEffectsCount = fxcount;
 
 				while (oldCount > fxcount)
@@ -4316,7 +4418,7 @@ namespace DOL.GS.PacketHandler
 						if (fx is GameSpellEffect)
 						{
 							GameSpellEffect effect = (GameSpellEffect)fx;
-							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == "Chamber"))
+							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Chamber))
 							{
 								ChamberSpellHandler chamber = (ChamberSpellHandler)effect.SpellHandler;
 								sortList[chamber.EffectSlot] = effect;
@@ -4338,19 +4440,19 @@ namespace DOL.GS.PacketHandler
 							}
 							else if (chamber.PrimarySpell != null && chamber.SecondarySpell != null)
 							{
-								if (chamber.SecondarySpell.SpellType == "Lifedrain")
+								if (chamber.SecondarySpell.SpellType == (byte)eSpellType.Lifedrain)
 									pak.WriteByte(0x11);
-								else if (chamber.SecondarySpell.SpellType.IndexOf("SpeedDecrease") != -1)
+								else if (chamber.SecondarySpell.SpellType.ToString().IndexOf("SpeedDecrease") != -1)
 									pak.WriteByte(0x33);
-								else if (chamber.SecondarySpell.SpellType == "PowerRegenBuff")
+								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.PowerRegenBuff)
 									pak.WriteByte(0x77);
-								else if (chamber.SecondarySpell.SpellType == "DirectDamage")
+								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.DirectDamage)
 									pak.WriteByte(0x66);
-								else if (chamber.SecondarySpell.SpellType == "SpreadHeal")
+								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.SpreadHeal)
 									pak.WriteByte(0x55);
-								else if (chamber.SecondarySpell.SpellType == "Nearsight")
+								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.Nearsight)
 									pak.WriteByte(0x44);
-								else if (chamber.SecondarySpell.SpellType == "DamageOverTime")
+								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.DamageOverTime)
 									pak.WriteByte(0x22);
 							}
 						}
@@ -4738,21 +4840,40 @@ namespace DOL.GS.PacketHandler
 			if (updateIcons)
 			{
 				pak.WriteByte((byte)(0x80 | living.GroupIndex));
-				lock (living.EffectList)
-				{
-					byte i = 0;
-					foreach (IGameEffect effect in living.EffectList)
-						if (effect is GameSpellEffect)
-							i++;
-					pak.WriteByte(i);
-					foreach (IGameEffect effect in living.EffectList)
-						if (effect is GameSpellEffect)
-						{
-							pak.WriteByte(0);
-							pak.WriteShort(effect.Icon);
-						}
-				}
-			}
+				//lock (living.EffectList)
+				//{
+				//	byte i = 0;
+				//	foreach (IGameEffect effect in living.EffectList)
+				//		if (effect is GameSpellEffect)
+				//			i++;
+				//	pak.WriteByte(i);
+				//	foreach (IGameEffect effect in living.EffectList)
+				//		if (effect is GameSpellEffect)
+				//		{
+				//			pak.WriteByte(0);
+				//			pak.WriteShort(effect.Icon);
+				//		}
+				//}
+                lock (living.effectListComponent.Effects.Values)
+                {
+                    byte i = 0;
+					var effects = living.effectListComponent.GetAllEffects();
+					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
+                    foreach (var effect in effects)//.Effects.Values)
+						//foreach (ECSGameEffect effect in effects)
+							if (effect is ECSGameEffect && !effect.IsDisabled)
+								i++;
+                    pak.WriteByte(i);
+                    foreach (var effect in effects)//.Effects.Values)
+						//foreach (ECSGameEffect effect in effects)
+							if (effect is ECSGameEffect && !effect.IsDisabled)
+							{
+								pak.WriteByte(0);
+								pak.WriteShort(effect.Icon);
+							}
+                }
+            }
 			if (updateMap)
 				WriteGroupMemberMapUpdate(pak, living);
 		}
@@ -5953,19 +6074,21 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00); //unk
 
 				// weapondamage
-				var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.AttackWeapon) * 100.0);
-				pak.WriteByte((byte)(wd / 100));
+				var wd = (int)(m_gameClient.Player?.WeaponDamage(m_gameClient.Player?.AttackWeapon) * 100.0);
+				pak.WriteByte((byte)(wd / 256));
 				pak.WritePascalString(" ");
-				pak.WriteByte((byte)(wd % 100));
+				pak.WriteByte((byte)(wd % 256));
 				pak.WritePascalString(" ");
 				// weaponskill
-				int ws = m_gameClient.Player.DisplayedWeaponSkill;
+				int? ws = m_gameClient.Player?.DisplayedWeaponSkill;
+				if (ws is null) ws = 0;
 				pak.WriteByte((byte)(ws >> 8));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(ws & 0xff));
 				pak.WritePascalString(" ");
 				// overall EAF
-				int eaf = m_gameClient.Player.EffectiveOverallAF;
+				int? eaf = m_gameClient.Player?.EffectiveOverallAF;
+				if (eaf is null) eaf = 0;
 				pak.WriteByte((byte)(eaf >> 8));
 				pak.WritePascalString(" ");
 				pak.WriteByte((byte)(eaf & 0xff));

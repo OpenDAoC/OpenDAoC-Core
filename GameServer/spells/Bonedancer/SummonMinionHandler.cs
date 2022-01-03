@@ -30,6 +30,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.SkillHandler;
 using DOL.Language;
 using log4net;
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -147,9 +148,11 @@ namespace DOL.GS.Spells
 
 			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 
-			GameSpellEffect effect = FindEffectOnTarget(pet, this);
-			if (effect != null)
-				effect.Cancel(false);
+			//GameSpellEffect effect = FindEffectOnTarget(pet, this);
+			//if (effect != null)
+			//	effect.Cancel(false);
+			if (pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
+				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)

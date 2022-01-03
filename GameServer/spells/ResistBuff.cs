@@ -34,10 +34,16 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-			base.ApplyEffectOnTarget(target, 1);
+			effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
+			base.ApplyEffectOnTarget(target, effectiveness);
 		}
 
-		protected override void SendUpdates(GameLiving target)
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+			new StatBuffECSEffect(initParams);
+        }
+
+        protected override void SendUpdates(GameLiving target)
 		{
 			base.SendUpdates(target);
 			if (target is GamePlayer)

@@ -66,14 +66,14 @@ namespace DOL.GS.Spells
 			{
 				double effectiveness = Caster.Effectiveness;
 
-				if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-				{
-					MasteryofConcentrationAbility ra = Caster.GetAbility<MasteryofConcentrationAbility>();
-					if (ra != null && ra.Level > 0)
-					{
-						effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-					}
-				}
+// 				if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
+// 				{
+// 					AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
+// 					if (ra != null && ra.Level > 0)
+// 					{
+// 						effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+// 					}
+// 				}
 				return effectiveness;
 			}
 		}
@@ -96,8 +96,8 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				MessageToCaster("You do not have enough mana and your spell was cancelled.", eChatType.CT_SpellExpires);
-				FocusSpellAction(null, Caster, null);
+				MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
+				FocusSpellAction(/*null, Caster, null*/);
 				effect.Cancel(false);
 			}
 		}
@@ -111,8 +111,12 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200)
 				return false;
-			if (Caster.EffectList.CountOfType(typeof(QuickCastEffect), typeof(MasteryofConcentrationEffect), typeof(FacilitatePainworkingEffect)) > 0)
-				return false;
+
+            if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
+                || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
+                || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
+                return false;
+           
 			if (IsCasting && Stage < 2)
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
@@ -126,47 +130,47 @@ namespace DOL.GS.Spells
 			return false;
 		}
 
-		protected override void FocusSpellAction(DOLEvent e, object sender, EventArgs args)
-		{
-			GameLiving living = sender as GameLiving;
-			if (living == null) return;
+		//protected override void FocusSpellAction(DOLEvent e, object sender, EventArgs args)
+		//{
+		//	GameLiving living = sender as GameLiving;
+		//	if (living == null) return;
 
-			GameSpellEffect currentEffect = (GameSpellEffect)living.TempProperties.getProperty<object>(FOCUS_SPELL, null);
-			if (currentEffect == null)
-				return;
+		//	GameSpellEffect currentEffect = (GameSpellEffect)living.TempProperties.getProperty<object>(FOCUS_SPELL, null);
+		//	if (currentEffect == null)
+		//		return;
 
-			if (args is AttackedByEnemyEventArgs attackedByEnemy)
-			{
-				var attacker = attackedByEnemy.AttackData.Attacker;
-				if (e == GameLivingEvent.AttackedByEnemy && Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200) 
-				{ 
-					return; 
-				}
-			}
+		//	if (args is AttackedByEnemyEventArgs attackedByEnemy)
+		//	{
+		//		var attacker = attackedByEnemy.AttackData.Attacker;
+		//		if (e == GameLivingEvent.AttackedByEnemy && Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200) 
+		//		{ 
+		//			return; 
+		//		}
+		//	}
 			
-			GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackFinished, new DOLEventHandler(FocusSpellAction));
-			GameEventMgr.RemoveHandler(Caster, GameLivingEvent.CastStarting, new DOLEventHandler(FocusSpellAction));
-			GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Moving, new DOLEventHandler(FocusSpellAction));
-			GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-			GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
-			GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-			Caster.TempProperties.removeProperty(FOCUS_SPELL);
-			foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				player.Out.SendInterruptAnimation(Caster);
-			}
-			GameSpellEffect effect = FindEffectOnTarget(currentEffect.Owner, this);
-			if (effect != null)
-				effect.Cancel(false);
+		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackFinished, new DOLEventHandler(FocusSpellAction));
+		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.CastStarting, new DOLEventHandler(FocusSpellAction));
+		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Moving, new DOLEventHandler(FocusSpellAction));
+		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
+		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
+		//	GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
+		//	Caster.TempProperties.removeProperty(FOCUS_SPELL);
+		//	foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+		//	{
+		//		player.Out.SendInterruptAnimation(Caster);
+		//	}
+		//	GameSpellEffect effect = FindEffectOnTarget(currentEffect.Owner, this);
+		//	if (effect != null)
+		//		effect.Cancel(false);
 
-			CancelPulsingSpell(Caster, Spell.SpellType);
-			currentEffect.Cancel(false);
+		//	CancelPulsingSpell(Caster, Spell.SpellType);
+		//	currentEffect.Cancel(false);
 
-			if (e == GameLivingEvent.Moving)
-				MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
+		//	if (e == GameLivingEvent.Moving)
+		//		MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
 
-			MessageToCaster(String.Format("You lose your focus on your {0} spell.", currentEffect.Spell.Name), eChatType.CT_SpellExpires);
-		}
+		//	MessageToCaster(String.Format("You lose your focus on your {0} spell.", currentEffect.Spell.Name), eChatType.CT_SpellExpires);
+		//}
 
 		public override void OnDirectEffect(GameLiving target, double effectiveness)
 		{
@@ -201,8 +205,8 @@ namespace DOL.GS.Spells
 
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
 			ad.Damage += (int)(ad.Damage * damageIncreaseInPercent);
-			DamageTarget(ad, true);
 			SendDamageMessages(ad);
+			DamageTarget(ad, true);			
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
 
@@ -244,7 +248,7 @@ namespace DOL.GS.Spells
 			DBSpell dbSpell = new DBSpell();
 			dbSpell.ClientEffect = Spell.ClientEffect;
 			dbSpell.Icon = Spell.Icon;
-			dbSpell.Type = "SpeedDecrease";
+			dbSpell.Type = eSpellType.SpeedDecrease.ToString();
 			dbSpell.Duration = (Spell.Radius == 0) ? 10 : 3;
 			dbSpell.Target = "Enemy";
 			dbSpell.Range = 1500;
@@ -275,7 +279,7 @@ namespace DOL.GS.Spells
 
 	public class FocusSpell : Spell
 	{
-		public FocusSpell(Spell spell) : base(spell, spell.SpellType) 
+		public FocusSpell(Spell spell) : base(spell, (eSpellType)spell.SpellType) 
 		{
 			if (spell.Frequency == 0) Frequency = 5000;
 			else Frequency = spell.Frequency;

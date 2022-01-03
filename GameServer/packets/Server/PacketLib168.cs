@@ -309,12 +309,12 @@ namespace DOL.GS.PacketHandler
 								if (found == 0)
 									pak.WriteShort(0x00);
 							}
-							if (characters[j].ActiveWeaponSlot == (byte) GameLiving.eActiveWeaponSlot.TwoHanded)
+							if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (characters[j].ActiveWeaponSlot == (byte) GameLiving.eActiveWeaponSlot.Distance)
+							else if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);
@@ -332,9 +332,9 @@ namespace DOL.GS.PacketHandler
 								}
 								if (righthand == lefthand)
 								{
-									if (characters[j].ActiveWeaponSlot == (byte) GameLiving.eActiveWeaponSlot.TwoHanded)
+									if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.TwoHanded)
 										righthand = lefthand = 0x02;
-									else if (characters[j].ActiveWeaponSlot == (byte) GameLiving.eActiveWeaponSlot.Distance)
+									else if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.Distance)
 										righthand = lefthand = 0x03;
 								}
 								pak.WriteByte(righthand);
@@ -808,7 +808,7 @@ namespace DOL.GS.PacketHandler
 				}
 
 				GameObject target = npc.TargetObject;
-				if (npc.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
+				if (npc.attackComponent.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
 					targetOID = (ushort) target.ObjectID;
 			}
 
@@ -1109,7 +1109,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
 				pak.WriteShort((ushort) living.ObjectID);
-				pak.WriteByte((byte) ((living.IsCloakHoodUp ? 0x01 : 0x00) | (int) living.ActiveQuiverSlot));
+				pak.WriteByte((byte) ((living.IsCloakHoodUp ? 0x01 : 0x00) | (int) living.rangeAttackComponent.ActiveQuiverSlot));
 				//bit0 is hood up bit4 to 7 is active quiver
 				pak.WriteByte(living.VisibleActiveWeaponSlots);
 
@@ -1285,6 +1285,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid,
 		                                             ushort boltTime, bool noSound, byte success)
 		{
+			//Console.WriteLine($"Spell Effect sent at {GameLoop.GameLoopTime}");
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
 				pak.WriteShort((ushort) spellCaster.ObjectID);
@@ -2151,7 +2152,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(flagcontent);
 
 				// Write health + Attack
-				byte healthcontent = (byte)(player.HealthPercent + (player.AttackState ? 0x80 : 0));
+				byte healthcontent = (byte)(player.HealthPercent + (player.attackComponent.AttackState ? 0x80 : 0));
 			
 				pak.WriteByte(healthcontent);
 
@@ -4120,7 +4121,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte((byte) (slots == null ? 0 : slots.Count));
 				pak.WriteByte(
-					(byte) ((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int) m_gameClient.Player.ActiveQuiverSlot));
+					(byte) ((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int) m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot));
 				//bit0 is hood up bit4 to 7 is active quiver
 				pak.WriteByte(m_gameClient.Player.VisibleActiveWeaponSlots);
 				pak.WriteByte((byte)windowType); //preAction (0x00 - Do nothing)

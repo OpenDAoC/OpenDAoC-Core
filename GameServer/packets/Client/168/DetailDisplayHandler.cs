@@ -556,37 +556,42 @@ namespace DOL.GS.PacketHandler.Client.v168
 				#region Effect
 				case 5: // icons on top (buffs/dots)
 					{
-						IGameEffect foundEffect = null;
-						lock (client.Player.EffectList)
-						{
-							foreach (IGameEffect effect in client.Player.EffectList)
-							{
-								if (effect.InternalID == objectId)
-								{
-									foundEffect = effect;
-									break;
-								}
-							}
-						}
-
+						// IGameEffect foundEffect = null;
+						// lock (client.Player.EffectList)
+						// {
+						// 	foreach (IGameEffect effect in client.Player.EffectList)
+						// 	{
+						// 		if (effect.InternalID == objectId)
+						// 		{
+						// 			foundEffect = effect;
+						// 			break;
+						// 		}
+						// 	}
+						// }
+						ECSGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectFromEffectId(objectId);
+						ECSGameSpellEffect spellEffect = foundEffect as ECSGameSpellEffect;
 						if (foundEffect == null)
 							break;
 
-						caption = foundEffect.Name;
-						objectInfo.AddRange(foundEffect.DelveInfo);
+						// [Takii] This part needs a refactor since it assumes all effects come from spells.
+						if (spellEffect is null)
+							break;							
 
-						if (client.Account.PrivLevel > 1 && foundEffect is GameSpellEffect spellEffect && spellEffect.Spell != null)
+                        caption = spellEffect.Name;
+						objectInfo.AddRange(spellEffect.SpellHandler.DelveInfo);						
+
+						if (client.Account.PrivLevel > 1 && spellEffect.SpellHandler.Spell != null)
 						{
 							objectInfo.Add(" ");
 							objectInfo.Add("----------Technical informations----------");
 							objectInfo.Add($"Line: {spellEffect.SpellHandler?.SpellLine?.Name ?? "unknown"}");
-							objectInfo.Add($"SpellID: {spellEffect.Spell.ID}");
-							objectInfo.Add($"Type: {spellEffect.Spell.SpellType}");
-							objectInfo.Add($"ClientEffect: {spellEffect.Spell.ClientEffect}");
-							objectInfo.Add($"Icon: {spellEffect.Spell.Icon}");
+							objectInfo.Add($"SpellID: {spellEffect.SpellHandler.Spell.ID}");
+							objectInfo.Add($"Type: {spellEffect.SpellHandler.Spell.SpellType}");
+							objectInfo.Add($"ClientEffect: {spellEffect.SpellHandler.Spell.ClientEffect}");
+							objectInfo.Add($"Icon: {spellEffect.SpellHandler.Spell.Icon}");
 							if (spellEffect.SpellHandler != null)
 								objectInfo.Add($"HasPositiveEffect: {spellEffect.SpellHandler.HasPositiveEffect}");
-							objectInfo.Add($"Disabled: {spellEffect.IsDisabled}");
+							objectInfo.Add($"Disabled: No Value in Supplied");
 						}
 						break;
 					}
@@ -1005,7 +1010,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public static void WriteStyleInfo(IList<string> objectInfo, Style style, GameClient client)
 		{
-			client.Player.DelveWeaponStyle(objectInfo, style);
+			client.Player.styleComponent.DelveWeaponStyle(objectInfo, style);
 		}
 
 		/// <summary>
@@ -1733,7 +1738,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					list.Add(string.Format(
 						"- {0}: {1}{2}",
 						SkillBase.GetPropertyName((eProperty)bonusCat),
-						bonusValue.ToString("+0 ;-0 ;0 "), //Eden
+						bonusValue.ToString("0 ;-0 ;0 "), //Eden
 						((bonusCat == (int)eProperty.PowerPool)
 						 || (bonusCat >= (int)eProperty.Resist_First && bonusCat <= (int)eProperty.Resist_Last)
 						 || (bonusCat >= (int)eProperty.ResCapBonus_First && bonusCat <= (int)eProperty.ResCapBonus_Last)
@@ -2038,6 +2043,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <returns></returns>
 		public static string DelveSpell(GameClient clt, Spell spell, SpellLine spellLine = null)
 		{
+			if (spell == null)
+			{
+				log.Error("Tried to delve spell but Spell was null!");
+				return "Null Spell";
+			}
+			
 			// We better rely on the handler to delve it correctly ! using reserved spellline as we can't guess it ! player can delve other object effect !
 			if (spellLine == null)
 				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
@@ -2188,21 +2199,21 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			switch(StyleProcessor.ResolveAttackResult(style,clt.Player.PlayerCharacter.Class))
 			{
-				case GameLiving.eAttackResult.Any:
+				case eAttackResult.Any:
 					return (int)Style.eAttackResult.Any;
-				case GameLiving.eAttackResult.Missed:
+				case eAttackResult.Missed:
 					return (int) Style.eAttackResult.Miss;
-				case GameLiving.eAttackResult.Parried:
+				case eAttackResult.Parried:
 					return (int)Style.eAttackResult.Parry;
-				case GameLiving.eAttackResult.Evaded:
+				case eAttackResult.Evaded:
 					return (int)Style.eAttackResult.Evade;
-				case GameLiving.eAttackResult.Blocked:
+				case eAttackResult.Blocked:
 					return (int)Style.eAttackResult.Block;
-				case GameLiving.eAttackResult.Fumbled:
+				case eAttackResult.Fumbled:
 					return (int)Style.eAttackResult.Fumble;
-				case GameLiving.eAttackResult.HitStyle:
+				case eAttackResult.HitStyle:
 					return (int)Style.eAttackResult.Style;
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitUnstyled:
 					return (int)Style.eAttackResult.Hit;
 			}
 			return 0;

@@ -29,19 +29,22 @@ namespace DOL.GS.Spells
 	/// </summary>
 	[SpellHandler("SpeedDecrease")]
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
-	{
-		/// <summary>
-		/// Apply the effect.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+	{       
+
+        /// <summary>
+        /// Apply the effect.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="effectiveness"></param>
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			// Check for root immunity.
-			if (Spell.Value == 99 &&
-				FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
+			if (Spell.Value == 99 && target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity))
+				//FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
 			{
 				MessageToCaster("Your target is immune!", eChatType.CT_System);
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				OnSpellResisted(target);
 				return;
 			}
 			base.ApplyEffectOnTarget(target, effectiveness);
@@ -63,9 +66,11 @@ namespace DOL.GS.Spells
 			base.OnEffectStart(effect);
 			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
 			// Cancels mezz on the effect owner, if applied
-			GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
+			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
+			ECSGameEffect mezz = EffectListService.GetEffectOnTarget(effect.Owner, eEffect.Mez);
 			if (mezz != null)
-				mezz.Cancel(false);
+				EffectService.RequestImmediateCancelEffect(mezz);
+				//mezz.Cancel(false);
 		}
 
 		/// <summary>
@@ -96,11 +101,13 @@ namespace DOL.GS.Spells
 
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
-					GameSpellEffect effect = FindEffectOnTarget(living, this);
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+					//GameSpellEffect effect = FindEffectOnTarget(living, this);
+					ECSGameEffect effect = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 					if (effect != null)
-						effect.Cancel(false);
+						EffectService.RequestImmediateCancelEffect(effect);
+						//effect.Cancel(false);
 					break;
 			}
 		}

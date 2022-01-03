@@ -840,7 +840,7 @@ namespace DOL.GS
 			CurrentZone.ObjectEnterZone(this);
 			/*********** END OF MODIFICATION ***********/
 
-			m_spawnTick = CurrentRegion.Time;
+			m_spawnTick = GameLoop.GameLoopTime;
 
 			if (m_isDataQuestsLoaded == false)
 			{
@@ -930,6 +930,7 @@ namespace DOL.GS
 		public long SpawnTick
 		{
 			get { return m_spawnTick; }
+			set { m_spawnTick = value; }
 		}
 
 		#endregion

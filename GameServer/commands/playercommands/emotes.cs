@@ -95,7 +95,7 @@ namespace DOL.GS.Commands
 			}
 
 			// no emotes in combat / mez / stun
-			if (client.Player.AttackState || client.Player.IsMezzed || client.Player.IsStunned)
+			if (client.Player.attackComponent.AttackState || client.Player.IsMezzed || client.Player.IsStunned)
 			{
 				DisplayMessage(client, "You can't do that, you're busy!");
 				return;

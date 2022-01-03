@@ -178,9 +178,11 @@ namespace DOL.GS.RealmAbilities
 				if (mob.HasAbility(Abilities.CCImmunity) || mob.HasAbility(Abilities.RootImmunity) || mob.HasAbility(Abilities.DamageImmunity))
 					continue;
 				
-				GameSpellEffect mez = SpellHandler.FindEffectOnTarget(mob, "Mesmerize");
+				//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(mob, "Mesmerize");
+				ECSGameEffect mez = EffectListService.GetEffectOnTarget(mob, eEffect.Mez);
 				if (mez != null)
-					mez.Cancel(false);
+					EffectService.RequestCancelEffect(mez);
+					//mez.Cancel(false);
 				
 				mob.TakeDamage(caster, eDamageType.Spirit, dmgValue, 0);
 
@@ -205,9 +207,11 @@ namespace DOL.GS.RealmAbilities
 				if (!GameServer.ServerRules.IsAllowedToAttack(caster, aeplayer, true))
 					continue;
 
-				GameSpellEffect mez = SpellHandler.FindEffectOnTarget(aeplayer, "Mesmerize");
+				//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(aeplayer, "Mesmerize");
+				ECSGameEffect mez = EffectListService.GetEffectOnTarget(aeplayer, eEffect.Mez);
 				if (mez != null)
-					mez.Cancel(false);
+					EffectService.RequestCancelEffect(mez);
+					//mez.Cancel(false);
 				aeplayer.TakeDamage(caster, eDamageType.Spirit, dmgValue, 0);
 				aeplayer.StartInterruptTimer(3000, AttackData.eAttackType.Spell, caster);
 
@@ -281,8 +285,8 @@ namespace DOL.GS.RealmAbilities
 
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
 					living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 					SendUpdates(living);
 					break;

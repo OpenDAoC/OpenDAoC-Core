@@ -104,7 +104,7 @@ namespace DOL.GS
 						InitControlledBrainArray(1);
 						break;
 					case eCommanderType.BoneCommander:
-						InitControlledBrainArray(3);
+						InitControlledBrainArray(2);
 						break;
 					case eCommanderType.DreadCommander:
 					case eCommanderType.DreadArcher:
@@ -166,12 +166,12 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Adds additional aggro to melee attacks if pet is set to taunt
-		/// </summary>
-		protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+        /// <summary>
+        /// Adds additional aggro to melee attacks if pet is set to taunt
+        /// </summary>
+        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
 		{
-			AttackData ad = base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
+			AttackData ad = attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
 
 			if (Taunting && ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE > 100
 				&& (ad.AttackResult == eAttackResult.HitStyle || ad.AttackResult == eAttackResult.HitUnstyled)
@@ -466,6 +466,11 @@ namespace DOL.GS
 			return base.WhisperReceive(source, str);
 		}
 
+		public override bool Interact(GamePlayer player)
+        {
+			return WhisperReceive(player, "commander");
+        }
+
 		#region Inventory
 		public enum eWeaponType
 		{
@@ -527,7 +532,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Thrust;
 				temp.SPD_ABS = 45;
 				temp.Item_Type = (int)eInventorySlot.DistanceWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Distance;
+				temp.Hand = (int)eActiveWeaponSlot.Distance;
 			}
 			else if (weaponType == eWeaponType.OneHandAxe)
 			{
@@ -538,7 +543,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 37;
 				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Standard;
+				temp.Hand = (int)eActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.OneHandHammer)
 			{
@@ -549,7 +554,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Crush;
 				temp.SPD_ABS = 37;
 				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Standard;
+				temp.Hand = (int)eActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.OneHandSword)
 			{
@@ -560,7 +565,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 34;
 				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.Standard;
+				temp.Hand = (int)eActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.TwoHandAxe)
 			{
@@ -571,7 +576,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 50;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.TwoHandHammer)
 			{
@@ -582,7 +587,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Crush;
 				temp.SPD_ABS = 50;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.TwoHandSword)
 			{
@@ -593,7 +598,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Slash;
 				temp.SPD_ABS = 45;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.Staff)
 			{
@@ -604,7 +609,7 @@ namespace DOL.GS
 				temp.Type_Damage = (int)eDamageType.Crush;
 				temp.SPD_ABS = 50;
 				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
-				temp.Hand = (int)GameLiving.eActiveWeaponSlot.TwoHanded;
+				temp.Hand = (int)eActiveWeaponSlot.TwoHanded;
 			}
 			else
 				return null;
@@ -789,22 +794,22 @@ namespace DOL.GS
 			{
 				if (spell != null)
 				{
-					switch (spell.SpellType.ToUpper())
+					switch (spell.SpellType)
 					{
-						case "DAMAGEOVERTIME":
+                        case (byte)eSpellType.DamageOverTime:
 							CommSpellDot = spell;
 							break;
-						case "DIRECTDAMAGE":
+                        case (byte)eSpellType.DirectDamage:
 							CommSpellDamage = spell;
 							break;
-						case "DIRECTDAMAGEWITHDEBUFF":
+                        case (byte)eSpellType.DirectDamageWithDebuff:
 							CommSpellDamageDebuff = spell;
 							break;
-						case "DISEASE":
+                        case (byte)eSpellType.Disease:
 							CommSpellDebuff = spell;
 							break;
-						case "LIFEDRAIN":
-						case "DAMAGESPEEDDECREASE":
+                        case (byte)eSpellType.Lifedrain:
+                        case (byte)eSpellType.DamageSpeedDecrease:
 							CommSpellOther = spell;
 							break;
 					}

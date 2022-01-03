@@ -48,9 +48,9 @@ namespace DOL.GS.Effects
 		{
 			if (m_player.HasAbility(Abilities.Camouflage))
 			{
-				IGameEffect camouflage = m_player.EffectList.GetOfType<CamouflageEffect>();
+				CamouflageECSGameEffect camouflage = (CamouflageECSGameEffect)EffectListService.GetAbilityEffectOnTarget(m_player, eEffect.Camouflage);
 				if (camouflage!=null)
-					camouflage.Cancel(false);
+					EffectService.RequestImmediateCancelEffect(camouflage, false);
 			}
 			m_player.EffectList.Remove(this);
 		}

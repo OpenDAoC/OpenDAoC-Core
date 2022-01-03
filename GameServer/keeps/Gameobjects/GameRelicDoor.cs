@@ -122,7 +122,7 @@ namespace DOL.GS.Keeps
 			return;
 		}
 
-		public override int ChangeHealth(GameObject changeSource, GameLiving.eHealthChangeType healthChangeType, int changeAmount)
+		public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
 		{
 			return 0;
 		}

@@ -62,7 +62,7 @@ namespace DOL.AI.Brain
 					switch (ab.KeyName)
 					{
 						case Abilities.ChargeAbility:
-							if (!Body.IsWithinRadius(Body.TargetObject, 500 ))
+							if (Body.TargetObject != null && !Body.IsWithinRadius(Body.TargetObject, 500 ))
 							{
 								ChargeAbility charge = Body.GetAbility<ChargeAbility>();
 								if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 			Body.TargetObject = null;
 			switch (spell.SpellType)
 			{
-				case "Taunt":
+				case (byte)eSpellType.Taunt:
 					Body.TargetObject = lastTarget;
 					break;
 			}
@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
 				if (LivingHasEffect((GameLiving)Body.TargetObject, spell))
 					return false;
 				Body.CastSpell(spell, m_mobSpellLine);
-				Body.TargetObject = lastTarget;
+				//Body.TargetObject = lastTarget;
 				return true;
 			}
 			Body.TargetObject = lastTarget;

@@ -70,6 +70,8 @@ namespace DOL.AI.Brain
                 OnIdle();
         }
 
+        public override void KillFSM() { }
+
         #region Behaviour
 
         private object m_syncBehaviour = new object();

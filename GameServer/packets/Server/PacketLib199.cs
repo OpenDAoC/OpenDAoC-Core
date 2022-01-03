@@ -209,12 +209,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -232,9 +232,9 @@ namespace DOL.GS.PacketHandler
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);

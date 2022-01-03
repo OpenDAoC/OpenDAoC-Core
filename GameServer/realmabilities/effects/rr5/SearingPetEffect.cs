@@ -65,7 +65,7 @@ namespace DOL.GS.Effects
             tSpell.Frequency = 0;
             tSpell.Pulse = 0;
             tSpell.Uninterruptible = true;
-            tSpell.Type = "DirectDamage";
+            tSpell.Type = eSpellType.DirectDamage.ToString();
             tSpell.Damage = spellDamage;
             tSpell.DamageType = (int)eDamageType.Heat;
             tSpell.Value = 0;

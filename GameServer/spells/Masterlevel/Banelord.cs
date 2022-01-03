@@ -247,7 +247,7 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
             effect.Owner.IsStunned = true;
-            effect.Owner.StopAttack();
+            effect.Owner.attackComponent.LivingStopAttack();
             effect.Owner.StopCurrentSpellcast();
             effect.Owner.DisableTurning(true);
 
@@ -266,7 +266,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                effect.Owner.StopAttack();
+                effect.Owner.attackComponent.LivingStopAttack();
             }
 
             base.OnEffectStart(effect);
@@ -309,7 +309,7 @@ namespace DOL.GS.Spells
         {
             if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.Spell.EffectGroup;
-            if (compare.Spell.SpellType == "UnrresistableNonImunityStun") return true;
+            if (compare.Spell.SpellType == (byte)eSpellType.UnrresistableNonImunityStun) return true;
             return base.IsOverwritable(compare);
         }
 

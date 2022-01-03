@@ -50,20 +50,21 @@ namespace DOL.GS.PropertyCalc
 
             int itemBonus = CalcValueFromItems(living, property);
             int buffBonus = CalcValueFromBuffs(living, property);
+            
+            // Special cases:
+            // 1) ManaStat (base stat + acuity, players only).
+            // 2) As of patch 1.64: - Acuity - This bonus will increase your casting stat, 
+            //    whatever your casting stat happens to be. If you're a druid, you should get an increase to empathy, 
+            //    while a bard should get an increase to charisma.  http://support.darkageofcamelot.com/kb/article.php?id=540
+            // 3) Constitution lost at death, only affects players.
 
-			// Special cases:
-			// 1) ManaStat (base stat + acuity, players only).
-			// 2) As of patch 1.64: - Acuity - This bonus will increase your casting stat, 
-			//    whatever your casting stat happens to be. If you're a druid, you should get an increase to empathy, 
-			//    while a bard should get an increase to charisma.  http://support.darkageofcamelot.com/kb/article.php?id=540
-			// 3) Constitution lost at death, only affects players.
-
-			if (living is GamePlayer)
+            if (living is GamePlayer)
 			{
 				GamePlayer player = living as GamePlayer;
 				if (property == (eProperty)(player.CharacterClass.ManaStat))
 				{
-					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 					{
 						abilityBonus += player.AbilityBonus[(int)eProperty.Acuity];
 					}
@@ -93,7 +94,7 @@ namespace DOL.GS.PropertyCalc
 
 			stat -= (property == eProperty.Constitution)? deathConDebuff : 0;
 
-			return Math.Max(1, stat);
+			return Math.Max(baseStat, stat);
         }
 
         /// <summary>
@@ -154,7 +155,8 @@ namespace DOL.GS.PropertyCalc
 
 				if (property == (eProperty)player.CharacterClass.ManaStat)
 				{
-					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger 
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 					{
 						itemBonus += living.ItemBonus[(int)eProperty.Acuity];
 					}
@@ -195,7 +197,8 @@ namespace DOL.GS.PropertyCalc
 
 				if (property == (eProperty)player.CharacterClass.ManaStat)
 				{
-					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+					if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
 					{
 						itemBonusCapIncrease += living.ItemBonus[(int)eProperty.AcuCapBonus];
 					}
@@ -219,7 +222,8 @@ namespace DOL.GS.PropertyCalc
 
                 if (property == (eProperty)player.CharacterClass.ManaStat)
                 {
-                    if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger)
+                    if (player.CharacterClass.ID != (int)eCharacterClass.Scout && player.CharacterClass.ID != (int)eCharacterClass.Hunter && player.CharacterClass.ID != (int)eCharacterClass.Ranger
+                        && player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
                     {
                         MythicalitemBonusCapIncrease += living.ItemBonus[(int)eProperty.MythicalAcuCapBonus];
                     }

@@ -26,6 +26,7 @@ using DOL.AI.Brain;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -60,7 +61,7 @@ namespace DOL.GS.Spells
 			
 			// Is PS ?
 			GameSpellEffect Phaseshift = SpellHandler.FindEffectOnTarget(Caster, "Phaseshift");
-			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == "Mesmerize"))
+			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == (byte)eSpellType.Mesmerize))
 			{
 				MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
 				return false;
@@ -175,7 +176,7 @@ namespace DOL.GS.Spells
 			if ((Caster is GamePlayer && target is GamePlayer) == false)
 			{
 				hitchance -= (int)(Caster.GetConLevel(target) * ServerProperties.Properties.PVE_SPELL_CONHITPERCENT);
-				hitchance += Math.Max(0, target.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 			}
 
 			return hitchance;
@@ -215,7 +216,8 @@ namespace DOL.GS.Spells
 		{
 			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
 			GamePlayer player;
-			GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
+			//GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
+            target.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
 			if (bladeturn != null)
 			{
 				switch (Spell.LifeDrainReturn)
@@ -227,7 +229,7 @@ namespace DOL.GS.Spells
 								player = target as GamePlayer;
 								player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							}
-							ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+							ad.AttackResult = eAttackResult.HitUnstyled;
 						}
 						break;
 
@@ -235,10 +237,10 @@ namespace DOL.GS.Spells
 						{
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
-							bladeturn.Cancel(false);
-						}
-						break;
+							ad.AttackResult = eAttackResult.HitUnstyled;
+                            EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
+                        }
+                        break;
 
 					case (int)eShotType.Other:
 					default:
@@ -252,15 +254,15 @@ namespace DOL.GS.Spells
 							{
 								player = target as GamePlayer;
 								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-								ad.AttackResult = GameLiving.eAttackResult.Missed;
-								bladeturn.Cancel(false);
+								ad.AttackResult = eAttackResult.Missed;
+								EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
 							}
 						}
 						break;
 				}
 			}
 
-			if (ad.AttackResult != GameLiving.eAttackResult.Missed)
+			if (ad.AttackResult != eAttackResult.Missed)
 			{
 				GameNPC npc = target as GameNPC;
 				if (npc != null)
@@ -335,14 +337,14 @@ namespace DOL.GS.Spells
 			if (Spell.Target.ToLower() == "area")
 			{
 				// always put archer into combat when using area (volley)
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
+				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 
 				foreach (GameLiving npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
 				{
 					if (npc.Realm == 0 || Caster.Realm == 0)
 					{
-						npc.LastAttackedByEnemyTickPvE = npc.CurrentRegion.Time;
+						npc.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
 					}
 				}
 			}
@@ -350,13 +352,13 @@ namespace DOL.GS.Spells
 			{
 				if (target.Realm == 0 || Caster.Realm == 0)
 				{
-					target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-					Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
+					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
 				}
 				else
 				{
-					target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-					Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
+					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 				}
 			}
 
@@ -436,7 +438,7 @@ namespace DOL.GS.Spells
 				if (attacker is GamePlayer) chance = 100;
 				if (Util.Chance((int)chance))
 				{
-					Caster.TempProperties.setProperty(INTERRUPT_TIMEOUT_PROPERTY, Caster.CurrentRegion.Time + Caster.SpellInterruptDuration);
+					Caster.TempProperties.setProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
 					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", eChatType.CT_SpellResisted);
 					InterruptCasting();
 					return true;

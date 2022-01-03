@@ -33,7 +33,12 @@ namespace DOL.GS.Spells
 			: base(caster, spell, line)
 		{}
 
-		ArrayList targetList = new ArrayList();
+		public ArrayList targetList = new ArrayList();
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new ConfusionECSGameEffect(initParams);
+		}
 
 		public override void FinishSpellCast(GameLiving target)
 		{
@@ -49,113 +54,113 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			if (effect.Owner == null) return;
-			if (!effect.Owner.IsAlive || effect.Owner.ObjectState != GameLiving.eObjectState.Active) return;
+			//if (effect.Owner == null) return;
+			//if (!effect.Owner.IsAlive || effect.Owner.ObjectState != GameLiving.eObjectState.Active) return;
 
-			//SendEffectAnimation(effect.Owner, 0, false, 1); //send the effect
+			////SendEffectAnimation(effect.Owner, 0, false, 1); //send the effect
 
-			if (effect.Owner is GamePlayer)
-			{
-				/*
-				 *Q: What does the confusion spell do against players?
-				 *A: According to the magic man, “Confusion against a player interrupts their current action, whether it's a bow shot or spellcast.
-				 */
-				if (Spell.Value < 0 || Util.Chance(Convert.ToInt32(Math.Abs(Spell.Value))))
-				{
-					//Spell value below 0 means it's 100% chance to confuse.
-					GamePlayer player = effect.Owner as GamePlayer;
+			//if (effect.Owner is GamePlayer)
+			//{
+			//	/*
+			//	 *Q: What does the confusion spell do against players?
+			//	 *A: According to the magic man, “Confusion against a player interrupts their current action, whether it's a bow shot or spellcast.
+			//	 */
+			//	if (Spell.Value < 0 || Util.Chance(Convert.ToInt32(Math.Abs(Spell.Value))))
+			//	{
+			//		//Spell value below 0 means it's 100% chance to confuse.
+			//		GamePlayer player = effect.Owner as GamePlayer;
 
-					player.StartInterruptTimer(player.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-				}
+			//		player.StartInterruptTimer(player.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			//	}
 
-				effect.Cancel(false);
-			}
-			else if (effect.Owner is GameNPC)
-			{
-				//check if we should do anything at all.
+			//	effect.Cancel(false);
+			//}
+			//else if (effect.Owner is GameNPC)
+			//{
+			//	//check if we should do anything at all.
 
-				bool doConfuse = (Spell.Value < 0 || Util.Chance(Convert.ToInt32(Spell.Value)));
+			//	bool doConfuse = (Spell.Value < 0 || Util.Chance(Convert.ToInt32(Spell.Value)));
 
-				if (!doConfuse)
-					return;
+			//	if (!doConfuse)
+			//		return;
 
-				bool doAttackFriend = Spell.Value < 0 && Util.Chance(Convert.ToInt32(Math.Abs(Spell.Value)));
+			//	bool doAttackFriend = Spell.Value < 0 && Util.Chance(Convert.ToInt32(Math.Abs(Spell.Value)));
 				
-				GameNPC npc = effect.Owner as GameNPC;
+			//	GameNPC npc = effect.Owner as GameNPC;
 
-				npc.IsConfused = true;
+			//	npc.IsConfused = true;
 
-				if (log.IsDebugEnabled)
-					log.Debug("CONFUSION: " + npc.Name + " was confused(true," + doAttackFriend.ToString() +")");
+			//	if (log.IsDebugEnabled)
+			//		log.Debug("CONFUSION: " + npc.Name + " was confused(true," + doAttackFriend.ToString() +")");
 
-                if (npc is GamePet && npc.Brain != null && (npc.Brain as IControlledBrain) != null)
-				{
-					//it's a pet.
-					GamePlayer playerowner = (npc.Brain as IControlledBrain).GetPlayerOwner();
-					if (playerowner != null && playerowner.CharacterClass.ID == (int)eCharacterClass.Theurgist)
-					{
-						//Theurgist pets die.
-						npc.Die(Caster);
-						effect.Cancel(false);
-						return;
-					}
-				}
+   //             if (npc is GamePet && npc.Brain != null && (npc.Brain as IControlledBrain) != null)
+			//	{
+			//		//it's a pet.
+			//		GamePlayer playerowner = (npc.Brain as IControlledBrain).GetPlayerOwner();
+			//		if (playerowner != null && playerowner.CharacterClass.ID == (int)eCharacterClass.Theurgist)
+			//		{
+			//			//Theurgist pets die.
+			//			npc.Die(Caster);
+			//			effect.Cancel(false);
+			//			return;
+			//		}
+			//	}
 
-				targetList.Clear();
-				foreach (GamePlayer target in npc.GetPlayersInRadius(1000))
-				{
-					if (doAttackFriend)
-						targetList.Add(target);
-					else
-					{
-						//this should prevent mobs from attacking friends.
-						if (GameServer.ServerRules.IsAllowedToAttack(npc, target, true))
-							targetList.Add(target);
-					}
-				}
+			//	targetList.Clear();
+			//	foreach (GamePlayer target in npc.GetPlayersInRadius(1000))
+			//	{
+			//		if (doAttackFriend)
+			//			targetList.Add(target);
+			//		else
+			//		{
+			//			//this should prevent mobs from attacking friends.
+			//			if (GameServer.ServerRules.IsAllowedToAttack(npc, target, true))
+			//				targetList.Add(target);
+			//		}
+			//	}
 
-				foreach (GameNPC target in npc.GetNPCsInRadius(1000))
-				{
-					//don't agro yourself.
-					if (target == npc)
-						continue;
+			//	foreach (GameNPC target in npc.GetNPCsInRadius(1000))
+			//	{
+			//		//don't agro yourself.
+			//		if (target == npc)
+			//			continue;
 
-					if (doAttackFriend)
-						targetList.Add(target);
-					else
-					{
-						//this should prevent mobs from attacking friends.
-						if (GameServer.ServerRules.IsAllowedToAttack(npc, target, true) && !GameServer.ServerRules.IsSameRealm(npc,target,true))
-							targetList.Add(target);
-					}
-				}
+			//		if (doAttackFriend)
+			//			targetList.Add(target);
+			//		else
+			//		{
+			//			//this should prevent mobs from attacking friends.
+			//			if (GameServer.ServerRules.IsAllowedToAttack(npc, target, true) && !GameServer.ServerRules.IsSameRealm(npc,target,true))
+			//				targetList.Add(target);
+			//		}
+			//	}
 
-				//targetlist should be full, start effect pulse.
-				if (targetList.Count > 0)
-				{
-					npc.StopAttack();
-					npc.StopCurrentSpellcast();
+			//	//targetlist should be full, start effect pulse.
+			//	if (targetList.Count > 0)
+			//	{
+			//		npc.StopAttack();
+			//		npc.StopCurrentSpellcast();
 
-					GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
-					npc.StartAttack(target);
-				}
-			}
+			//		GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
+			//		npc.StartAttack(target);
+			//	}
+			//}
 		}
 
 		public override void OnEffectPulse(GameSpellEffect effect)
 		{
-			base.OnEffectPulse(effect);
+			//base.OnEffectPulse(effect);
 
-			if (targetList.Count > 0)
-			{
-				GameNPC npc = effect.Owner as GameNPC;
-				npc.StopAttack();
-				npc.StopCurrentSpellcast();
+			//if (targetList.Count > 0)
+			//{
+			//	GameNPC npc = effect.Owner as GameNPC;
+			//	npc.StopAttack();
+			//	npc.StopCurrentSpellcast();
 
-				GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
+			//	GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
 
-				npc.StartAttack(target);
-			}
+			//	npc.StartAttack(target);
+			//}
 		}
 
 		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
@@ -174,11 +179,11 @@ namespace DOL.GS.Spells
 
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			if(effect != null && effect.Owner != null && effect.Owner is GameNPC)
-			{
-				GameNPC npc = effect.Owner as GameNPC;
-				npc.IsConfused = false;
-			}
+			//if(effect != null && effect.Owner != null && effect.Owner is GameNPC)
+			//{
+			//	GameNPC npc = effect.Owner as GameNPC;
+			//	npc.IsConfused = false;
+			//}
 			return base.OnEffectExpires(effect, noMessages);
 		}
 	}

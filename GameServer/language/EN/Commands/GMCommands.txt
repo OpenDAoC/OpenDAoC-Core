@@ -11,6 +11,22 @@ GMCommands.HookPoint.Description:			Add hookpoint on a keep component.
 GMCommands.HookPoint.Usage:					'/addhookpoint <skin> <id>' to add a hookpoint (select the GameKeepComponent)
 GMCommands.HookPoint.NoGKCTarget:			You are not targeting a GameKeepComponent!
 
+# '/alert' Commands
+GMCommands.Header.Syntax.Alert:                     <----- '/alert' Commands (plvl 2) ----->
+GMCommands.Alert.Syntax.All:                        /alert all < on | off >
+GMCommands.Alert.Usage.All:                         Activates/Deactivates sound alerts for all alert types.
+GMCommands.Alert.Description:                       Controls whether sound alerts are triggered when receiving Player messages and appeals.
+GMCommands.Alert.Syntax.Send:                       /alert send < on | off >
+GMCommands.Alert.Usage.Send:                        Activates/Deactivates a sound alert each time a '/send' message is received from a Player.
+GMCommands.Alert.Syntax.Appeal:                     /alert appeal < on | off >
+GMCommands.Alert.Usage.Appeal:                      Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance.
+GMCommands.Alert.Msg.AppealOn:                      You will now receive sound alerts when an appeal is filed or awaiting assistance.
+GMCommands.Alert.Msg.AppealOff:                     You will no longer receive sound alerts regarding appeals.
+GMCommands.Alert.Msg.SendOn:                        You will now receive sound alerts when a player sends you a message.
+GMCommands.Alert.Msg.SendOff:                       You will no longer receive sound alerts for player messages.
+GMCommands.Alert.Msg.AllOn:                         You will now receive sound alerts.
+GMCommands.Alert.Msg.AllOff:                        You will no longer receive sound alerts.
+
 # /annunce Command
 GMCommands.Announce.Description:			Send message to all players online
 GMCommands.Announce.Usage:					/announce <log|window|send|center|confirm> <message>
@@ -115,7 +131,7 @@ GMCommands.GMRelic.Usage:					/gmrelic <magic|strength> <realm>
 
 # /gmrelicpad Command
 GMCommands.GMRelicPad.Description:			Create a new RelicPad
-GMCommands.GMRelicPad.Usage:				/gmrelic <magic|strength> <name> <realm>
+GMCommands.GMRelicPad.Usage:				/gmrelicpad <magic|strength> <name> <realm>
 
 # /harm Command
 GMCommands.Harm.Description:				Harms your target (health)
@@ -197,8 +213,10 @@ GMCommands.Item.FindName.MatchingNamesForX:	Matching Names for {0} count {1}.
 GMCommands.Jump.Description:				Teleports a player or yourself to the specified location xp
 GMCommands.Jump.Information:				Playername can be [me]:
 GMCommands.Jump.Usage.ToPlayerName:			/jump to <PlayerName or MobName>
+GMCommands.Jump.Usage.AbovePlayerName:		/jump above <PlayerName> - Teleports you 10k units above the player. Disabled for players in dungeons.
 GMCommands.Jump.Usage.ToNameRealmID:		/jump to <Name> <RealmID>
 GMCommands.Jump.Usage.ToXYZRegionID:		/jump to <x> <y> <z> [<RegionID>]
+GMCommands.Jump.Usage.ToJail:               /jump <name> to jail  - ports the player to DF jail
 GMCommands.Jump.Usage.PlayerNameToXYZ:		/jump <PlayerName> to <x> <y> <z>
 GMCommands.Jump.Usage.PlayerNameToXYZRegID:	/jump <PlayerName> to <x> <y> <z> [<RegionID>]
 GMCommands.Jump.Usage.PlayerNToPlayerN:		/jump <PlayerName> to <PlayerName>
@@ -217,6 +235,12 @@ GMCommands.Jump.Pushed:						Current location pushed
 GMCommands.Jump.PushedTotal:				({0} total)
 GMCommands.Jump.PopInstructions:			type '/jump pop' to return to it.
 GMCommands.Jump.NothingPushed:				No locations in stack - you need to use '/jump push' first.
+
+# /offlinejump Command
+
+GMCommands.Offlinejump.Description:         Teleports a character to a specific location while offline
+GMCommands.Offlinejump.Usage.Jail:			'/offlinejump <PlayerName> to jail' - Teleports a player to jail
+GMCommands.Offlinejump.Usage.Capital:		'/offlinejump <PlayerName> to capital' - Teleports a player to their Realm's Capital
 		
 # /keep Command
 GMCommands.Keep.Description:				Various keep creation commands!
@@ -369,12 +393,3 @@ GMCommands.MinoRelic.ShowAll.Count:			Relic Count: {0}
 GMCommands.MinoRelic.Spawn.AlreadySpawned:	Relic already spawned
 
 # /mob Command
-
-
-
-
-
-
-
-
-

@@ -229,9 +229,9 @@ DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type
 DashingDefenseAbility.Execute.MustInGroup:		You must be in a group to use this ability!
 
 # /FirstAidAbility
-FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 25%
+FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 30%
 FirstAidAbility.AddEffectsInfo.Info2:			Level 2: Value: 60%
-FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 100%
+FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 90%
 FirstAidAbility.AddEffectsInfo.Info4:			Target: Self
 FirstAidAbility.AddEffectsInfo.Info5:			Casting time: instant
 FirstAidAbility.AddEffectsInfo.Info6:			
@@ -239,7 +239,7 @@ FirstAidAbility.Execute.FullyHealed:			You are fully healed.
 FirstAidAbility.Execute.HealYourself:			You heal yourself for {0} hit points.
 
 # /PurgeAbility
-PurgeAbility.AddEffectsInfo.Info1:			Level 1 of this ability has a five second delay when triggering this ability before it activates. Higher levels of Purge do not have this delay.
+PurgeAbility.AddEffectsInfo.Info1:			
 PurgeAbility.AddEffectsInfo.Info2:			Target: Self
 PurgeAbility.AddEffectsInfo.Info3:			Casting time: instant
 PurgeAbility.OnTick.PurgeActivate:			Purge activates in {0} seconds!
@@ -320,8 +320,8 @@ Scripts.Players.Appeal.CantFindAppeal:			Could not find an appeal under that off
 Scripts.Players.Appeal.StaffClosedYourAppeal:	Staffmember {0} has closed your appeal.
 Scripts.Players.Appeal.MustBeAssisting:			You need to be assisting an active player with an appeal first.
 Scripts.Players.Appeal.NoLocationToJump:		No location to jump back to.
-Scripts.Players.Appeal.NoLongerReceiveMsg:		You will no longer recieve Appeal messages for this session.
-Scripts.Players.Appeal.NowReceiveMsg:			You will now recieve Appeal messages again for this session.
+Scripts.Players.Appeal.NoLongerReceiveMsg:		You will no longer receive Appeal messages for this session.
+Scripts.Players.Appeal.NowReceiveMsg:			You will now receive Appeal messages again for this session.
 Scripts.Players.Appeal.UseCmdTurnBackOn:		Use /gmappeal mute again to turn the messages back on.
 Scripts.Players.Appeal.UseCmdTurnBackOff:		Use /gmappeal mute again to turn the messages back off.
 Scripts.Players.Appeal.CantCancelWhile:			You can't cancel your appeal while you are being helped.
@@ -833,7 +833,7 @@ Titles.Deathblows.BattleMaster:				Battle Master
 
 # /Kills
 Titles.Kills.Albion.BaneOfAlbion:			Bane of Albion
-Titles.Kills.Albion.ScourgeOfAlbion:			Scourge of Albion
+Titles.Kills.Albion.ScourgeOfAlbion:		Scourge of Albion
 Titles.Kills.All.MasterAssassine:			Master Assassine
 Titles.Kills.All.MasterEnforcer:			Master Enforcer
 Titles.Kills.All.MasterSoldier:				Master Soldier
@@ -856,7 +856,7 @@ Titles.Level.Level20Info:				Level 20+
 Titles.Level.Level20:					Level {0}
 
 # /PrivLevel
-Titles.PrivLevel.Administrator:				Administrator
+Titles.PrivLevel.Administrator:				Atlas Team
 Titles.PrivLevel.Gamemaster:				Gamemaster
 
 # /Solokills

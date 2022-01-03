@@ -371,11 +371,11 @@ namespace DOL.GS.Quests
 		public virtual void FinishTask()
 		{
 			if (RewardXP>0)
-				m_taskPlayer.GainExperience(GameLiving.eXPSource.Task, RewardXP);
+				m_taskPlayer.GainExperience(eXPSource.Task, RewardXP);
 
             if (RewardMoney > 0)
             {
-                m_taskPlayer.AddMoney(RewardMoney, "You recieve {0} for completing your task.");
+                m_taskPlayer.AddMoney(RewardMoney, "You receive {0} for completing your task.");
                 InventoryLogging.LogInventoryAction("(TASK;" + m_dbTask.TaskType + ")", m_taskPlayer, eInventoryActionType.Quest, RewardMoney);
             }
 
@@ -531,7 +531,7 @@ namespace DOL.GS.Quests
 				player.Out.SendMessage("You cannot do more than "+MaxTasksDone(player.Level).ToString()+" tasks at your level!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
 				return false;
 			}
-			else if (player.TempProperties.getProperty<int>(CHECK_TASK_TICK) > Environment.TickCount)
+			else if (player.TempProperties.getProperty<int>(CHECK_TASK_TICK) > GameLoop.GameLoopTime)
 			{
 				player.Out.SendMessage("I have no tasks for you at the moment. Come back sometime later, perhaps then you can help me with something.",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
@@ -544,7 +544,7 @@ namespace DOL.GS.Quests
 			{
 				player.Out.SendMessage("I have no tasks for you at the moment. Come back sometime later, perhaps then you can help me with something.",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				// stored time of try to disable task for defined time.
-				player.TempProperties.setProperty(CHECK_TASK_TICK, Environment.TickCount + CHECK_TASK_DELAY);
+				player.TempProperties.setProperty(CHECK_TASK_TICK, GameLoop.GameLoopTime + CHECK_TASK_DELAY);
 				return false;
 			}
 		}

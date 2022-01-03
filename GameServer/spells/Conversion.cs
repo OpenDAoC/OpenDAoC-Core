@@ -119,12 +119,12 @@ namespace DOL.GS.Spells
 			}
 			if (Caster.Mana != Caster.MaxMana)
 			{
-				MessageToCaster("You convert " + damageConverted + " damage into mana.", eChatType.CT_Spell);
+				MessageToCaster("You convert " + damageConverted + " damage into power.", eChatType.CT_Spell);
 				Caster.Mana = Caster.Mana + damageConverted;
 			}
 			else
 			{
-				MessageToCaster("You cannot convert anymore mana!", eChatType.CT_Spell);
+				MessageToCaster("You cannot convert anymore power!", eChatType.CT_Spell);
 			}
 
 			if (reduceddmg <= 0)
@@ -217,12 +217,12 @@ namespace DOL.GS.Spells
 							}
 							if (Caster.Mana != Caster.MaxMana)
 							{
-								MessageToCaster("You convert " + damageConverted + " damage into mana.", eChatType.CT_Spell);
+								MessageToCaster("You convert " + damageConverted + " damage into power.", eChatType.CT_Spell);
 								Caster.Mana = Caster.Mana + damageConverted;
 							}
 							else
 							{
-								MessageToCaster("You cannot convert anymore mana!", eChatType.CT_Spell);
+								MessageToCaster("You cannot convert anymore power!", eChatType.CT_Spell);
 							}
 						}
 						break;

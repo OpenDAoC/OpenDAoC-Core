@@ -89,12 +89,12 @@ namespace DOL.AI.Brain
 			switch (spell.SpellType)
 			{
 				#region Heals
-				case "Heal":
+				case (byte)eSpellType.Heal:
 					player = GetPlayerOwner();
 					if (player != null)
 					{
 
-						if (player.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+						if (player.HealthPercent < 90)
 						{
 							Body.TargetObject = player;
 							break;
@@ -102,13 +102,13 @@ namespace DOL.AI.Brain
 					}
 					//Heal owner
 					owner = (this as IControlledBrain).Owner;
-					if (owner.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+					if (owner.HealthPercent < 90)
 					{
 						Body.TargetObject = owner;
 						break;
 					}
 					//Heal self
-					if (Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+					if (Body.HealthPercent < 90)
 					{
 						Body.TargetObject = Body;
 						break;
@@ -122,7 +122,7 @@ namespace DOL.AI.Brain
 					{
 						if (icb == null)
 							continue;
-						if (icb.Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+						if (icb.Body.HealthPercent < 90)
 						{
 							Body.TargetObject = icb.Body;
 							break;
@@ -131,7 +131,7 @@ namespace DOL.AI.Brain
 					break;
 				#endregion
 				#region Buffs
-				case "HealthRegenBuff":
+				case (byte)eSpellType.HealthRegenBuff:
 					{
 						//Buff self
 						if (!LivingHasEffect(Body, spell))
@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
 					Body.StopFollowing();
 				Body.TurnTo(Body.TargetObject);
 				Body.CastSpell(spell, m_mobSpellLine);
-				Body.TargetObject = lastTarget;
+				//Body.TargetObject = lastTarget;
 				return true;
 			}
 			Body.TargetObject = lastTarget;
@@ -230,7 +230,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Selects and attacks the next target or does nothing
 		/// </summary>
-		protected override void AttackMostWanted() { }
+		public override void AttackMostWanted() { }
 
 		/// <summary>
 		/// Owner attacked event
@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void OnOwnerAttacked(DOLEvent e, object sender, EventArgs arguments) { }
+		public override void OnOwnerAttacked(AttackData ad) { }
 
 		#endregion
 	}

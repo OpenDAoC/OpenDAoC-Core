@@ -33,7 +33,12 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The property name for bleed value
 		/// </summary>
-		protected const string BLEED_VALUE_PROPERTY = "BleedValue";
+		public const string BLEED_VALUE_PROPERTY = "BleedValue";
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new DamageOverTimeECSGameEffect(initParams);
+		}
 
 		/// <summary>
 		/// When an applied effect starts
@@ -115,9 +120,9 @@ namespace DOL.GS.Spells
 			ad.Modifier = bleedValue * ad.Target.GetResist( Spell.DamageType ) / -100;
 			ad.Damage = bleedValue + ad.Modifier;
 			ad.DamageType = Spell.DamageType;
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 			ad.SpellHandler = this;
-			ad.CausesCombat = false;
+			ad.CausesCombat = true;
 
 			return ad;
 		}

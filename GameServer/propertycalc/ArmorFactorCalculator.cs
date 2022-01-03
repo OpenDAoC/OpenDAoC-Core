@@ -37,7 +37,7 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			if (living is GamePlayer)
+			if (living is GamePlayer || living is GameTrainingDummy)
 			{
 				int af;
 
@@ -49,6 +49,9 @@ namespace DOL.GS.PropertyCalc
 				af += Math.Min(living.Level, living.ItemBonus[(int)property]);
 				// uncapped category
 				af += living.BuffBonusCategory4[(int)property];
+
+				// buffs should be spread across each armor piece since the damage calculation is based on piece hit
+				af /= 6;
 
 				return af;
 			}
@@ -67,7 +70,7 @@ namespace DOL.GS.PropertyCalc
 			}
 			else
 			{
-				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * 4.67)
+				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * 3.3)
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];

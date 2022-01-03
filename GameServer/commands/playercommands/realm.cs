@@ -76,24 +76,63 @@ namespace DOL.GS.Commands
 			string midKeeps = "";
 			string hibKeeps = "";
 			ICollection<AbstractGameKeep> keepList = GameServer.KeepManager.GetFrontierKeeps();
-			foreach (AbstractGameKeep keep in keepList)
+			ICollection<AbstractGameKeep> albKeepList = GameServer.KeepManager.GetKeepsOfRegion(1);
+			ICollection<AbstractGameKeep> midKeepList = GameServer.KeepManager.GetKeepsOfRegion(100);
+			ICollection<AbstractGameKeep> hibKeepList = GameServer.KeepManager.GetKeepsOfRegion(200);
+
+			foreach (AbstractGameKeep keep in albKeepList)
 			{
+				if (keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur"))
+					continue;
+				
 				if (keep is GameKeep)
 				{
-					switch (keep.OriginalRealm)
-					{
-						case eRealm.Albion:
-							albKeeps += KeepStringBuilder(keep);
-							break;
-						case eRealm.Hibernia:
-							hibKeeps += KeepStringBuilder(keep);
-							break;
-						case eRealm.Midgard:
-							midKeeps += KeepStringBuilder(keep);
-							break;
-					}
+					albKeeps += KeepStringBuilder(keep);
 				}
+					
 			}
+
+			foreach (AbstractGameKeep keep in midKeepList)
+			{
+				if (keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner"))
+					continue;
+				if (keep is GameKeep)
+				{
+					midKeeps += KeepStringBuilder(keep);
+				}
+					
+			}
+			
+			foreach (AbstractGameKeep keep in hibKeepList)
+			{
+				if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfhota"))
+					continue;
+				
+				if (keep is GameKeep)
+				{
+					hibKeeps += KeepStringBuilder(keep);
+				}
+					
+			}
+			
+			// foreach (AbstractGameKeep keep in keepList)
+			// {
+			// 	if (keep is GameKeep)
+			// 	{
+			// 		switch (keep.OriginalRealm)
+			// 		{
+			// 			case eRealm.Albion:
+			// 				albKeeps += KeepStringBuilder(keep);
+			// 				break;
+			// 			case eRealm.Hibernia:
+			// 				hibKeeps += KeepStringBuilder(keep);
+			// 				break;
+			// 			case eRealm.Midgard:
+			// 				midKeeps += KeepStringBuilder(keep);
+			// 				break;
+			// 		}
+			// 	}
+			// }
 			var realmInfo = new List<string>();
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.AlbKeeps") + ":");
 			realmInfo.Add(albKeeps);

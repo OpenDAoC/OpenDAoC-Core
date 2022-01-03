@@ -28,7 +28,7 @@ namespace DOL.GS.Effects
                 p.Out.SendSpellEffectAnimation(target, target, 7042, 0, false, 1);
             }
             owner.IsStunned = true;
-            owner.StopAttack();
+            owner.attackComponent.LivingStopAttack();
             owner.StopCurrentSpellcast();
             owner.DisableTurning(true);
             GamePlayer player = owner as GamePlayer;

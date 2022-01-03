@@ -39,9 +39,9 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
             this.player = caster;
-            if (caster.AttackState) 
+            if (caster.attackComponent.AttackState) 
             {
-                caster.StopAttack();
+                caster.attackComponent.LivingStopAttack();
             }
             caster.StopCurrentSpellcast();
 

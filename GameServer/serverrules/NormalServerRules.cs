@@ -22,6 +22,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 
 namespace DOL.GS.ServerRules
@@ -77,6 +78,12 @@ namespace DOL.GS.ServerRules
 				return false;
 			}
 
+			if(attacker is GamePlayer atkPl && defender is GamePlayer defPl
+				&& atkPl.IsPvP && defPl.IsPvP)
+            {
+				return true;
+            }
+
 			//Don't allow attacks on same realm members on Normal Servers
 			if (attacker.Realm == defender.Realm && !(attacker is GamePlayer && ((GamePlayer)attacker).DuelTarget == defender))
 			{
@@ -126,6 +133,10 @@ namespace DOL.GS.ServerRules
 			// checking as a gm, targets are considered friendly
 			if (source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
 
+			if (target is GamePlayer tPl && source is GamePlayer sPl
+				&& tPl.IsPvP && sPl.IsPvP)
+				return false;
+
 			//Peace flag NPCs are same realm
 			if (target is GameNPC)
 				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
@@ -155,12 +166,20 @@ namespace DOL.GS.ServerRules
 		public override bool IsAllowedToGroup(GamePlayer source, GamePlayer target, bool quiet)
 		{
 			if(source == null || target == null) return false;
-
-			if(source.Realm != target.Realm)
+			
+			if (source.Realm != target.Realm)
 			{
-				if(quiet == false) MessageToLiving(source, "You can't invite a player of another realm.");
+				if(quiet == false) MessageToLiving(source, "You can't group with a player from another realm!");
 				return false;
 			}
+
+			if (source?.CurrentRegionID == 27 || target?.CurrentRegionID == 27)
+            {
+                if (Properties.EVENT_PVP) { return false; }
+            }
+
+			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
+
 			return true;
 		}
 
@@ -209,6 +228,10 @@ namespace DOL.GS.ServerRules
 		public override bool IsAllowedToUnderstand(GameLiving source, GamePlayer target)
 		{
 			if(source == null || target == null) return false;
+			
+			if(Properties.EVENT_CROSS_REALM_GROUPS) return true;
+
+			if (source.CurrentRegionID == 27) return true;
 
 			// clients with priv level > 1 are allowed to talk and hear anyone
 			if(source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
@@ -234,6 +257,26 @@ namespace DOL.GS.ServerRules
 		{
 			if (point.Realm == 0) return true;
 			return player.Realm == (eRealm)point.Realm;
+		}
+
+		/// <summary>
+		/// Gets the server type color handling scheme
+		///
+		/// ColorHandling: this byte tells the client how to handle color for PC and NPC names (over the head)
+		/// 0: standard way, other realm PC appear red, our realm NPC appear light green
+		/// 1: standard PvP way, all PC appear red, all NPC appear with their level color
+		/// 2: Same realm livings are friendly, other realm livings are enemy; nearest friend/enemy buttons work
+		/// 3: standard PvE way, all PC friendly, realm 0 NPC enemy rest NPC appear light green
+		/// 4: All NPC are enemy, all players are friendly; nearest friend button selects self, nearest enemy don't work at all
+		/// </summary>
+		/// <param name="client">The client asking for color handling</param>
+		/// <returns>The color handling</returns>
+		public override byte GetColorHandling(GameClient client)
+		{
+			if (client.Player?.CurrentRegionID == 27)
+				return 1;
+			else
+				return base.GetColorHandling(client);
 		}
 
 		/// <summary>
@@ -277,7 +320,7 @@ namespace DOL.GS.ServerRules
 				m_compatibleObjectTypes[(int)eObjectType.Hammer]       = new eObjectType[] { eObjectType.Hammer };
 				m_compatibleObjectTypes[(int)eObjectType.Sword]        = new eObjectType[] { eObjectType.Sword };
 				m_compatibleObjectTypes[(int)eObjectType.LeftAxe]      = new eObjectType[] { eObjectType.LeftAxe };
-				m_compatibleObjectTypes[(int)eObjectType.Axe]          = new eObjectType[] { eObjectType.Axe };
+				m_compatibleObjectTypes[(int)eObjectType.Axe]          = new eObjectType[] { eObjectType.Axe, eObjectType.LeftAxe };
 				m_compatibleObjectTypes[(int)eObjectType.HandToHand]   = new eObjectType[] { eObjectType.HandToHand };
 				m_compatibleObjectTypes[(int)eObjectType.Spear]        = new eObjectType[] { eObjectType.Spear };
 				m_compatibleObjectTypes[(int)eObjectType.CompositeBow] = new eObjectType[] { eObjectType.CompositeBow };
@@ -313,6 +356,9 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.Name;
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
+				return target.Name;
+
 			return source.RaceToTranslatedName(target.Race, target.Gender);
 		}
 
@@ -325,6 +371,8 @@ namespace DOL.GS.ServerRules
 		public override string GetPlayerLastName(GamePlayer source, GamePlayer target)
 		{
 			if (IsSameRealm(source, target, true))
+				return target.LastName;
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
 				return target.LastName;
 
 			return target.RealmRankTitle(source.Client.Account.Language);
@@ -340,6 +388,8 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.GuildName;
+			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
+				return target.RealmRankTitle(source.Client.Account.Language);
 			return string.Empty;
 		}
 	

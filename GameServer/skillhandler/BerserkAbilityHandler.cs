@@ -38,7 +38,7 @@ namespace DOL.GS.SkillHandler
 		/// <summary>
 		/// The reuse time in milliseconds for berserk ability
 		/// </summary>
-		protected const int REUSE_TIMER = 60000 * 10; // clait: 10 minutes [og: 7]
+		protected const int REUSE_TIMER = 60000 * 7; // clait: 10 minutes [og: 7]
 
 		/// <summary>
 		/// The effect duration in milliseconds
@@ -81,16 +81,20 @@ namespace DOL.GS.SkillHandler
 			}
 
 			//Cancel old berserk effects on player
-			BerserkEffect berserk = player.EffectList.GetOfType<BerserkEffect>();
-			if (berserk!=null)
-			{
-				berserk.Cancel(false);
-				return;
-			}
+			//BerserkEffect berserk = player.EffectList.GetOfType<BerserkEffect>();
+			//if (berserk!=null)
+			//{
+			//	berserk.Cancel(false);
+			//	return;
+			//}
+			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(player, eEffect.Berserk);
+			if (berserk != null)
+				EffectService.RequestImmediateCancelEffect(berserk);
 
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new BerserkEffect().Start(player);
+			//new BerserkEffect().Start(player);
+			new BerserkECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1, null));
 		}                       
     }
 }

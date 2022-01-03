@@ -23,6 +23,7 @@ using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.ServerProperties;
 using DOL.Language;
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -112,9 +113,11 @@ namespace DOL.GS.Spells
 
 			GameEventMgr.RemoveHandler(m_pet, GameLivingEvent.PetReleased, OnNpcReleaseCommand);
 
-			GameSpellEffect effect = FindEffectOnTarget(m_pet, this);
-			if (effect != null)
-				effect.Cancel(false);
+			//GameSpellEffect effect = FindEffectOnTarget(m_pet, this);
+			//if (effect != null)
+			//	effect.Cancel(false);
+			if (m_pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
+				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 
 		/// <summary>

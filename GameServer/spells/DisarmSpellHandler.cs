@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
 				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
 			}
             effect.Owner.DisarmedTime = effect.Owner.CurrentRegion.Time + CalculateEffectDuration(effect.Owner, Caster.Effectiveness);
-			effect.Owner.StopAttack();
+			effect.Owner.attackComponent.LivingStopAttack();
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
 			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
 			{
 				var list = new List<string>();
 
-				list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
+				list.Add("Function: " + (Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString()));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line

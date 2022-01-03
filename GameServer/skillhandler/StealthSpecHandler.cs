@@ -65,7 +65,7 @@ namespace DOL.GS.SkillHandler
 				}
 
 				// Can't stealth if in attack mode
-				if(player.AttackState || (player.CurrentSpellHandler != null && player.CurrentSpellHandler.IsCasting))
+				if(player.attackComponent.AttackState || (player.CurrentSpellHandler != null && player.CurrentSpellHandler.IsCasting))
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseCombatState"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
@@ -143,7 +143,7 @@ namespace DOL.GS.SkillHandler
 			//since 1.88 (?), players which stealth, doesn't be followed by mobs [by Suncheck]
 			//TODO: Some further checks need?
 			var attackers = new List<GameObject>();
-			attackers.AddRange(player.Attackers);
+			attackers.AddRange(player.attackComponent.Attackers);
 			foreach (GameLiving attacker in attackers)
 			{
 				if (attacker.TargetObject == (GameLiving)player)
@@ -160,7 +160,7 @@ namespace DOL.GS.SkillHandler
 						{
 							((IOldAggressiveBrain)npc.Brain).RemoveFromAggroList(player);
 						}
-						attacker.StopAttack();
+						attacker.attackComponent.LivingStopAttack();
 					}
 				}
 			}

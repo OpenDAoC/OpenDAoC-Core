@@ -38,14 +38,16 @@ namespace DOL.GS
 			if (Inventory != null)
 			{
 				if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-					SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+					SwitchWeapon(eActiveWeaponSlot.Distance);
 				else if (Inventory.GetItem(eInventorySlot.RightHandWeapon) != null)
-					SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+					SwitchWeapon(eActiveWeaponSlot.Standard);
 				else if (Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null)
-					SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 			}
 			AddStatsToWeapon();
 			BroadcastLivingEquipmentUpdate();
+
+			ScalingFactor = 19;
 		}
 
         public GamePet(ABrain brain) : base(brain)
@@ -129,14 +131,14 @@ namespace DOL.GS
 			return true;
 		}
 
-		#region Inventory
+        #region Inventory
 
-		/// <summary>
-		/// Load equipment for the pet.
-		/// </summary>
-		/// <param name="templateID">Equipment Template ID.</param>
-		/// <returns>True on success, else false.</returns>
-		protected virtual void AddStatsToWeapon()
+        /// <summary>
+        /// Load equipment for the pet.
+        /// </summary>
+        /// <param name="templateID">Equipment Template ID.</param>
+        /// <returns>True on success, else false.</returns>
+        protected virtual void AddStatsToWeapon()
 		{
 			if (Inventory != null)
 			{
@@ -169,7 +171,7 @@ namespace DOL.GS
 		#endregion
 
 		#region Shared Melee & Spells
-
+		private double m_effectiveness = 1;
 		/// <summary>
 		/// Multiplier for melee and magic.
 		/// </summary>
@@ -178,10 +180,14 @@ namespace DOL.GS
 			get 
             {
                 GameLiving gl = (Brain as IControlledBrain).GetLivingOwner();
-                if (gl != null)
-                    return gl.Effectiveness;
+				if (gl != null)
+					return m_effectiveness;//gl.Effectiveness;
 
                 return 1.0;
+            }
+			set
+            {
+				m_effectiveness = value;
             }
 		}
 		#endregion
@@ -202,7 +208,7 @@ namespace DOL.GS
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void SortSpells(int scaleLevel)
 		{
-			if (Spells.Count < 1 || Level < 1)
+			if (Spells.Count < 1 || Level < 1 || this is TurretPet)
 				return;
 
 			if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
@@ -219,7 +225,7 @@ namespace DOL.GS
 					//	need to keep the original spells in Spells and only scale sorted copies.
 
 					base.SortSpells();
-
+					
 					if (CanCastHarmfulSpells)
 						for (int i = 0; i < HarmfulSpells.Count; i++)
 						{
@@ -289,6 +295,11 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
+			if(castingComponent.queuedSpellHandler != null)
+            {
+				castingComponent.spellHandler = castingComponent.queuedSpellHandler;
+				castingComponent.queuedSpellHandler = null;
+            }
 			base.OnAfterSpellCastSequence(handler);
 			Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
 		}
@@ -300,83 +311,84 @@ namespace DOL.GS
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
 		{
-			if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1)
+			if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1 || spell.ScaledToPetLevel)
 				return;
 
 			if (casterLevel < 1)
 				casterLevel = Level;
-
-			switch (spell.SpellType.ToString().ToLower())
+			switch ((eSpellType)spell.SpellType)
 			{
 				// Scale Damage
-				case "damageovertime":
-				case "damageshield":
-				case "damageadd":
-				case "directdamage":
-				case "lifedrain":
-				case "damagespeeddecrease":
-				case "stylebleeding": // Style bleed effect
+				case eSpellType.DamageOverTime:
+				case eSpellType.DamageShield:
+				case eSpellType.DamageAdd:
+				case eSpellType.DirectDamage:
+				case eSpellType.Lifedrain:
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.StyleBleeding: // Style bleed effect
 					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Value
-				case "enduranceregenbuff":
-				case "enduranceheal":
-				case "endurancedrain":
-				case "powerregenbuff":
-				case "powerheal":
-				case "powerdrain":
-				case "powerhealthenduranceregenbuff":
-				case "combatspeedbuff":
-				case "hastebuff":
-				case "celeritybuff":
-				case "combatspeeddebuff":
-				case "hastedebuff":
-				case "heal":
-				case "combatheal":
-				case "healthregenbuff":
-				case "healovertime":
-				case "constitutionbuff":
-				case "dexteritybuff":
-				case "strengthbuff":
-				case "constitutiondebuff":
-				case "dexteritydebuff":
-				case "strengthdebuff":
-				case "armorfactordebuff":
-				case "armorfactorbuff":
-				case "armorabsorptionbuff":
-				case "armorabsorptiondebuff":
-				case "dexterityquicknessbuff":
-				case "strengthconstitutionbuff":
-				case "dexterityquicknessdebuff":
-				case "strengthconstitutiondebuff":
-				case "taunt":
-				case "unbreakablespeeddecrease":
-				case "speeddecrease":
-				case "stylecombatspeeddebuff": // Style attack speed debuff
+				case eSpellType.EnduranceRegenBuff:
+				case eSpellType.Heal:
+				case eSpellType.StormEnduDrain:
+				case eSpellType.PowerRegenBuff:
+				case eSpellType.PowerHealthEnduranceRegenBuff:
+				case eSpellType.CombatSpeedBuff:
+				case eSpellType.HasteBuff:
+				case eSpellType.CelerityBuff:
+				case eSpellType.CombatSpeedDebuff:
+				case eSpellType.StyleCombatSpeedDebuff:
+				case eSpellType.CombatHeal:
+				case eSpellType.HealthRegenBuff:
+				case eSpellType.HealOverTime:
+				case eSpellType.ConstitutionBuff:
+				case eSpellType.DexterityBuff:
+				case eSpellType.StrengthBuff:
+				case eSpellType.ConstitutionDebuff:
+				case eSpellType.DexterityDebuff:
+				case eSpellType.StrengthDebuff:
+				case eSpellType.ArmorFactorDebuff:
+				case eSpellType.ArmorFactorBuff:
+				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.ArmorAbsorptionDebuff:
+				case eSpellType.DexterityQuicknessBuff:
+				case eSpellType.StrengthConstitutionBuff:
+				case eSpellType.DexterityQuicknessDebuff:
+				case eSpellType.StrengthConstitutionDebuff:
+				case eSpellType.Taunt:
+				case eSpellType.SpeedDecrease:
+				case eSpellType.SavageCombatSpeedBuff:
+				//case eSpellType.OffensiveProc:
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Duration
-				case "disease":
-				case "stun":
-				case "unrresistablenonimunitystun":
-				case "mesmerize":
-				case "stylestun": // Style stun effect
-				case "stylespeeddecrease": // Style hinder effect
+				case eSpellType.Disease:
+				case eSpellType.Stun:
+				case eSpellType.UnrresistableNonImunityStun:
+				case eSpellType.Mesmerize:
+				case eSpellType.StyleStun: // Style stun effet
+				case eSpellType.StyleSpeedDecrease: // Style hinder effet
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Damage and value
-				case "directdamagewithdebuff":
+				case eSpellType.DirectDamageWithDebuff:
 					/* Patch 1.123: For Cabalist, Enchanter, and Spiritmaster pets
 					 * The debuff component of its nuke has been as follows:
 					 *	For pet level 1-23, the debuff is now 10%.
 					 *	For pet level 24-43, the debuff is now 20%.
-					 *	For pet level 44-50, the debuff is now 30%. */
+					 *	For pet level 44-50, the debuff is now 30%.  */
 					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
 					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+					spell.ScaledToPetLevel = true;
 					break;
-				case "styletaunt": // Style taunt effects already scale with damage
-				case "curepoison":
-				case "curedisease":
+				case eSpellType.StyleTaunt: // Style taunt effects already scale with damage
+				case eSpellType.CurePoison:
+				case eSpellType.CureDisease:
 						break;
 				default:
 					break; // Don't mess with types we don't know
@@ -461,7 +473,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public override eDamageType AttackDamageType(InventoryItem weapon)
+		public eDamageType AttackDamageType(InventoryItem weapon)
 		{
 			if (weapon != null)
 			{
@@ -481,7 +493,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapons"></param>
 		/// <returns></returns>
-		public override int AttackSpeed(params InventoryItem[] weapons)
+		public int AttackSpeed(params InventoryItem[] weapons)
 		{
 			double weaponSpeed = 0.0;
 

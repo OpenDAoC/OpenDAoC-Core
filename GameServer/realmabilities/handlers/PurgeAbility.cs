@@ -69,87 +69,75 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
-        protected static bool RemoveNegativeEffects(GameLiving living, PurgeAbility purge)
+        protected static bool RemoveNegativeEffects(GameLiving living, PurgeAbility purge, bool isFromGroupPurge = false)
         {
             bool removed = false;
-            ArrayList effects = new ArrayList();
-
+            ArrayList effectsToRemove = new ArrayList();
 
             GamePlayer player = (GamePlayer)living;
+
+            if (player == null)
+                return false;
+
+            EffectListComponent effectListComponent = null;
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer)
             {
                 NecromancerPet necroPet = (NecromancerPet)player.ControlledBrain.Body;
-                lock (necroPet.EffectList)
+
+                if (necroPet != null)
                 {
-                    foreach (IGameEffect effect in necroPet.EffectList)
-                    {
-                        GameSpellEffect gsp = (GameSpellEffect)effect;
-
-                        if (gsp == null)
-                            continue;
-                        if (gsp is GameSpellAndImmunityEffect && ((GameSpellAndImmunityEffect)gsp).ImmunityState)
-                            continue;
-                        if (gsp.SpellHandler.HasPositiveEffect)
-                            continue;
-
-                        effects.Add(gsp);
-                        removed = true;
-                    }
-                }
-            }
-
-            lock (living.EffectList)
-            {
-                foreach (IGameEffect effect in living.EffectList)
-                {
-                    GameSpellEffect gsp = effect as GameSpellEffect;
-                    if (gsp == null)
-                        continue;
-                    if (gsp is GameSpellAndImmunityEffect && ((GameSpellAndImmunityEffect)gsp).ImmunityState)
-                        continue; // ignore immunity effects
-                    if (gsp.SpellHandler.HasPositiveEffect)//only enemy spells are affected
-                        continue;
-                    /*
-                    if (gsp.SpellHandler is RvRResurrectionIllness)
-                       continue;
-                     */
-                    //if (gsp.Spell.SpellType == "DesperateBowman")//Can't be purged
-                    //continue;
-                    effects.Add(gsp);
-                    removed = true;
-                }
-
-                foreach (IGameEffect effect in effects)
-                {
-                    effect.Cancel(false);
-                }
-            }
-
-            if (player != null)
-            {
-                foreach (GamePlayer rangePlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer)
-                    {
-                        rangePlayer.Out.SendSpellEffectAnimation(player.ControlledBrain.Body,
-                            player.ControlledBrain.Body, 7011, 0,
-                            false, (byte)(removed ? 1 : 0));
-                    }
-
-                    rangePlayer.Out.SendSpellEffectAnimation(player, player, 7011, 0, false, (byte)(removed ? 1 : 0));
-                }
-                if (removed)
-                {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.RemoveNegativeEffects.FallFromYou"), eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+                    effectListComponent = necroPet.effectListComponent;
                 }
                 else
                 {
-                    player.DisableSkill(purge, 5);
+                    effectListComponent = player.effectListComponent;
                 }
             }
+            else
+            {
+                effectListComponent = player.effectListComponent;
+            }
+
+            if (effectListComponent == null)
+                return false;
+
+            // Gather effects to cancel
+            foreach (ECSGameEffect e in effectListComponent.GetAllEffects())
+            {
+                if (e.HasPositiveEffect)
+                    continue;
+
+                if (e is ECSImmunityEffect)
+                    continue;
+
+                effectsToRemove.Add(e);
+            }
+
+            // Cancel effects
+            foreach (ECSGameEffect e in effectsToRemove)
+            {
+                EffectService.RequestCancelEffect(e);
+                removed = true;
+            }
+
+            // Show spell effect
+            foreach (GamePlayer rangePlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                rangePlayer.Out.SendSpellEffectAnimation(effectListComponent.Owner, effectListComponent.Owner, 7011, 0, false, (byte)(removed ? 1 : 0));
+            }
+
+            // Disable purge if an effect was purged
             if (removed)
+            {
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.RemoveNegativeEffects.FallFromYou"), eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
                 player.Stealth(false);
+            }
+            else if (!isFromGroupPurge)
+            {
+                player.DisableSkill(purge, 5);
+            }
+
             return removed;
         }
 

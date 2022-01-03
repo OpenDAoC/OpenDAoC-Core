@@ -22,6 +22,8 @@ using DOL.GS.PacketHandler;
 using DOL.GS;
 using log4net;
 using DOL.Language;
+using System.Linq;
+
 namespace DOL.GS.SkillHandler
 {
 	/// <summary>
@@ -52,8 +54,8 @@ namespace DOL.GS.SkillHandler
 			GameObject targetObject = player.TargetObject;
 			if (targetObject == null)
 			{
-				foreach (GuardEffect guard in player.EffectList.GetAllOfType<GuardEffect>())
-				{
+				foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+				{ 
 					if (guard.GuardSource == player)
 						guard.Cancel(false);
 				}
@@ -79,7 +81,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// check if someone is guarding the target
-			foreach (GuardEffect guard in guardTarget.EffectList.GetAllOfType<GuardEffect>())
+			foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
 			{
 				if (guard.GuardTarget != guardTarget) continue;
 				if (guard.GuardSource == player)
@@ -96,13 +98,13 @@ namespace DOL.GS.SkillHandler
 
 
 			// cancel all guard effects by this player before adding a new one
-			foreach (GuardEffect guard in player.EffectList.GetAllOfType<GuardEffect>())
+			foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
 			{
 				if (guard.GuardSource == player)
 					guard.Cancel(false);
 			}
 
-			new GuardEffect().Start(player, guardTarget);
+			new GuardECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null), player, guardTarget);
 		}
 	}
 }

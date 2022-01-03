@@ -62,23 +62,23 @@ namespace DOL.GS.SkillHandler
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-            if (player.IsMezzed)
-            {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseMezzed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            if (player.IsStunned)
-            {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
+            //if (player.IsMezzed)
+            //{
+            //    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseMezzed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            //    return;
+            //}
+            //if (player.IsStunned)
+            //{
+            //    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            //    return;
+            //}
             if (player.IsSitting)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 			//Cancel old stag effects on player
-			StagEffect stag = player.EffectList.GetOfType<StagEffect>();
+			StagECSGameEffect stag = (StagECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Stag);
 			if (stag != null)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseAlreadyActive"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -86,7 +86,7 @@ namespace DOL.GS.SkillHandler
 			}
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new StagEffect(ab.Level).Start(player);
+			new StagECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1), ab.Level);
 		}
 	}
 }

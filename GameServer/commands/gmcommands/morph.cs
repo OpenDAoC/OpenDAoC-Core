@@ -68,7 +68,7 @@ namespace DOL.GS.Commands
 			dbSpell.Range = 4000;
 			dbSpell.Power = 0;
 			dbSpell.CastTime = 0;
-			dbSpell.Type = "Morph";
+			dbSpell.Type = eSpellType.Morph.ToString();
 			dbSpell.Duration = duration * 60;
 			dbSpell.LifeDrainReturn = model;
 

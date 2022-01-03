@@ -1,94 +1,65 @@
 ﻿<Project>
-  <PropertyGroup>
-    <BaseIntermediateOutputPath>..\build\DOLConfig\$(Configuration)\</BaseIntermediateOutputPath>
-  </PropertyGroup>
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E1131DC5-BA14-4FD3-B717-FA2ACA6E49AA}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>DOLConfig</RootNamespace>
-    <AssemblyName>DOLConfig</AssemblyName>
-    <FileAlignment>4096</FileAlignment>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <NoStdLib>False</NoStdLib>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <RunCodeAnalysis>False</RunCodeAnalysis>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SignAssembly>False</SignAssembly>
-    <DelaySign>False</DelaySign>
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <OutputPath>..\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>..\build\DOLConfig\$(Configuration)\obj</IntermediateOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>false</Deterministic>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <Optimize>False</Optimize>
-    <DebugType>Full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>None</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-    <PackageReference Include="MySql.Data" Version="8.0.25" ExcludeAssets="Runtime" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.2" ExcludeAssets="All" Condition=" '$(OS)' != 'Unix' " />
-    <Reference Include="System.Data.SQLite" Condition=" '$(OS)' == 'Unix' ">
-      <HintPath>..\sharedModules\SQLite\managedOnly\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <ProjectReference Include="..\DOLBase\DOLBase.csproj" Name="DOLBase" Private="False" ExcludeAssets="All" />
-    <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" Private="False" ExcludeAssets="All" />
-    <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" Private="False" ExcludeAssets="All" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="DOLConfig.cs" />
-    <Compile Update="ExtraPropertiesEditor.cs" />
-    <Compile Update="RegExTextBox.cs" />
-    <Compile Update="ServerProperties.cs" />
-    <None Include="DOLConfig.exe.config" CopyToOutputDirectory="Always" />
-    <None Include="app.config" />
-    <Content Include="icon.ico" />
-  </ItemGroup>
-  <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy
-      SourceFiles="serverconfig_extraproperties.xml"
-      DestinationFolder="$(MSBuildProjectDirectory)\..\$(Configuration)\lib\config\" />
-  </Target>
-  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+    <PropertyGroup>
+        <BaseIntermediateOutputPath>..\build\DOLConfig\$(Configuration)\</BaseIntermediateOutputPath>
+    </PropertyGroup>
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+    <PropertyGroup>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <OutputType>WinExe</OutputType>
+        <AssemblyName>DOLConfig</AssemblyName>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+        <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+        <MapFileExtensions>true</MapFileExtensions>
+        <ApplicationRevision>0</ApplicationRevision>
+        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+        <UseApplicationTrust>false</UseApplicationTrust>
+        <OutputPath>..\$(Configuration)\</OutputPath>
+        <IntermediateOutputPath>..\build\DOLConfig\$(Configuration)\obj</IntermediateOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Deterministic>false</Deterministic>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <EmbeddedResourceUseDependentUponConvention>false</EmbeddedResourceUseDependentUponConvention>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <Optimize>False</Optimize>
+        <DebugType>Full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+        <DebugType>None</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+        <RegisterForComInterop>False</RegisterForComInterop>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="MySql.Data" Version="8.0.25" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.2" />
+        <ProjectReference Include="..\DOLBase\DOLBase.csproj" Name="DOLBase" />
+        <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
+        <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="DOLConfig.cs" />
+        <Compile Update="ExtraPropertiesEditor.cs" />
+        <Compile Update="RegExTextBox.cs" />
+        <Compile Update="ServerProperties.cs" />
+        <None Include="serverconfig_extraproperties.xml">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </None>
+        <Content Include="icon.ico" />
+        <None Include="DOLConfig.exe.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <Target Name="CopyFiles" AfterTargets="AfterBuild">
+        <Copy SourceFiles="@(XmlFiles)" DestinationFiles="@(XmlFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\lib\config\%(RecursiveDir)%(Filename)%(Extension)')" />
+    </Target>
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

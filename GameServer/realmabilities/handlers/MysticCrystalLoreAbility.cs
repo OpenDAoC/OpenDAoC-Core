@@ -41,17 +41,17 @@ namespace DOL.GS.RealmAbilities
 					case 3: heal = 100; break;
 				}
 			}
-			int healed = living.ChangeMana(living, GameLiving.eManaChangeType.Spell, living.MaxMana * heal / 100);
+			int healed = living.ChangeMana(living, eManaChangeType.Spell, living.MaxMana * heal / 100);
 
 			SendCasterSpellEffectAndCastMessage(living, 7009, healed > 0);
 
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				if (healed > 0) player.Out.SendMessage("You gain " + healed + " mana.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				if (healed > 0) player.Out.SendMessage("You gain " + healed + " power.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				if (heal > healed)
 				{
-					player.Out.SendMessage("You have full mana.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You have full power.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				}
 			}
 			if (healed > 0) DisableSkill(living);

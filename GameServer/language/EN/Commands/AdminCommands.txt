@@ -1,54 +1,157 @@
-﻿
-# /serverproperties Command
-AdminCommands.ServerProperties.Description:			Reloads server properties from the database
-AdminCommands.ServerProperties.Usage:				/serverproperties
-AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
-AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
+﻿# Admin (plvl 3) Commands
+AdminCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
+AdminCommands.Command.SyntaxCRUD:                           If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:
 
+# Admin Command Headers/Dividers
+AdminCommands.Header.Syntax.Account:                    <----- '/account' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Benchmark:                  <----- '/benchmark' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Code:                       <----- '/code' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Freeze:                     <----- '/freeze' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Plvl:                       <----- '/plvl' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Refresh:                    <----- '/refresh' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Reload:                     <----- '/reload' Commands (plvl 3) ----->
+AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverproperties' Command (plvl 3) ----->
+AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
-# /plvl Command
-AdminCommands.plvl.Description:						Change privilege level and add single permission to player
-AdminCommands.plvl.Usage:							/plvl <newPlvl> [PlayerName]
-AdminCommands.plvl.Usage.Single:					/plvl single <command> [PlayerName]
-AdminCommands.plvl.Usage.SingleAccount:				/plvl singleaccount <command> [AccountName]
-AdminCommands.plvl.Usage.Remove:					/plvl remove <command> [PlayerName]
-AdminCommands.plvl.Usage.RemoveAccount:				/plvl removeaccount <command> [AccountName]
-AdminCommands.plvl.NoSelectPlayer:					You must select a player to changes permission on him.
-AdminCommands.plvl.AddedSinglePermission:			You add the single permission to {0} for {1} command.
-AdminCommands.plvl.AddedSingleAccountPermission:	You add the single permission to account {0} for {1} command.
-AdminCommands.plvl.RemoveSinglePermission:			You removed the single permission of {0} for {1} command.
-AdminCommands.plvl.RemoveSingleAccountPermission:	You removed the single permission of account {0} for {1} command.
-AdminCommands.plvl.NoPermissionForCommand:			There is no permission of {0} for {1} command.
-AdminCommands.plvl.YourPlvlHasBeenSetted:			Your privilege level has been set to {0}.
-AdminCommands.plvl.PlayerPlvlHasBeenSetted:			{0} privilege level has been set to {1}.
+# '/account' Commands
+AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
+AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
+AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
+AdminCommands.Account.Syntax.AccountName:               /account accountname <characterName>
+AdminCommands.Account.Usage.AccountName:			    Identifies the account associated with the character. This may be used on offline characters.
+AdminCommands.Account.Syntax.ChangePassword:            /account changepassword <accountName> <newPassword>
+AdminCommands.Account.Usage.ChangePassword:			    Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
+AdminCommands.Account.Syntax.Comm:                      /account command
+AdminCommands.Account.Usage.Comm:			            Provides additional information regarding the '/account' command type.
+AdminCommands.Account.Syntax.Create:                    /account create <accountName> <password>
+AdminCommands.Account.Usage.Create:					    Creates a new account with the specified login credentials.
+AdminCommands.Account.Syntax.Delete:                    /account delete <accountName>
+AdminCommands.Account.Usage.Delete:					    Deletes the specified account, along with any associated characters.
+AdminCommands.Account.Syntax.DeleteChar:                /account deletecharacter <characterName>
+AdminCommands.Account.Usage.DeleteChar:				    Deletes the matching character from its associated account.
+AdminCommands.Account.Syntax.MoveChar:                  /account movecharacter <characterName> <destAccount>
+AdminCommands.Account.Usage.MoveChar:				    Moves the specified character to the first available slot of the same realm on the destination account.
+AdminCommands.Account.Syntax.Status:                    /account status <accountName> <status>
+AdminCommands.Account.Usage.Status:					    Sets an account's status (between '0' and '255'), which is used to define custom behaviors.
+AdminCommands.Account.Syntax.Unban:                     /account unban <accountName>
+AdminCommands.Account.Usage.Unban:					    Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip'), but will remove '/ban both' and '/ban account' records.
+AdminCommands.Account.Msg.AccNameForChar:				{0} is associated with the account '{1}'.
+AdminCommands.Account.Err.AccountBanNotFound:			The account '{0}' is not currently banned!
+AdminCommands.Account.Msg.AccountCreated:				You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
+AdminCommands.Account.Msg.AccountDeleted:				You have successfully deleted the account '{0}'!
+AdminCommands.Account.Err.AlreadyRegistered:            An account already exists with the name '{0}'! Try again with a different value.
+AdminCommands.Account.Err.AccountNotFound:				No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
+AdminCommands.Account.Msg.AccountUnbanned:              You have successfully removed the ban from the account '{0}'!
+AdminCommands.Account.Msg.CharacterDeleted:				You have successfully deleted the character {0}!
+AdminCommands.Account.Msg.CharacterMovedToAccount:		You have successfully transferred ownership of {0} to account '{1}'!
+AdminCommands.Account.Err.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
+AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue.
+AdminCommands.Account.Err.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
+AdminCommands.Account.Err.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
+AdminCommands.Account.Msg.PasswordChanged:              You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
+AdminCommands.Account.Err.PasswordChars:                A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
+AdminCommands.Account.Msg.SetStatus:                    You have changed the status for account '{0}' from {1} to {2}!
+AdminCommands.Account.Err.SpecialChars:                 A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
+AdminCommands.Account.Err.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
 
-# /code Command
+# '/benchmark' Commands
+AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
+AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
+AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations.
+AdminCommands.Benchmark.Syntax.Listspells:              /benchmark listspells
+AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells.
+AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list {1} usable skills.
+AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
+
+# '/code' Commands
+
+# Old /code Command
 AdminCommands.Code.Description:						Executes custom code!
 AdminCommands.Code.Usage:							/code <codesnippet>
 AdminCommands.Code.ErrorCompiling:					Error Compiling Expression:
 AdminCommands.Code.CodeExecuted:					Code executed...
 
+# '/freeze' Commands
 
-# /account Command
-AdminCommands.Account.Description:					Account modification command
-AdminCommands.Account.Usage.Create:					/account create <AccountName> <Password>
-AdminCommands.Account.Usage.ChangePassword:			/account changepassword <AccountName> <NewPassword>
-AdminCommands.Account.Usage.Delete:					/account delete <AccountName>
-AdminCommands.Account.Usage.DeleteChar:				/account deletecharacter <CharacterName>
-AdminCommands.Account.Usage.MoveChar:				/account movecharacter <CharacterName> <NewAccountName>
-AdminCommands.Account.Usage.Status:					/account status <AccountName> <Level>
-AdminCommands.Account.Usage.UnBan:					/account unban <AccountName>
-AdminCommands.Account.Usage.AccountName:			/account accountname <CharacterName>
-AdminCommands.Account.AccountNotFound:				Account {0} not found!
-AdminCommands.Account.AccountDeleted:				Account {0} deleted!
-AdminCommands.Account.CharacterNotFound:			Character {0} not found!
-AdminCommands.Account.CharacterDeleted:				Character {0} deleted!
-AdminCommands.Account.CharNotFromValidRealm:		The character is not from a valid realm!
-AdminCommands.Account.AccountHasNoFreeSlots:		Account {0} has no free character slots for this realm anymore!
-AdminCommands.Account.CharacterMovedToAccount:		Character {0} moved to Account {1}!
-AdminCommands.Account.InvalidAccountName:			Invalid account name.
-AdminCommands.Account.InvalidAccountNameOrPassword:	Account name and password must be at least 4 letters.
-AdminCommands.Account.AccountNameAlreadyRegistered:	This account name is already registered.
-AdminCommands.Account.AccountCreated:				Account created!
-AdminCommands.Account.AccNameForChar:				Account name for character {0} is: {1}
+# '/plvl' Commands
+AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
+AdminCommands.Plvl.Syntax.Comm:                         /plvl command
+AdminCommands.Plvl.Usage.Comm:                          Provides additional information regarding the '/plvl' command type.
+AdminCommands.Plvl.Syntax.Plvl:                         /plvl <newPlvl> <playerName>
+AdminCommands.Plvl.Usage.Plvl:                          Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player.
+AdminCommands.Plvl.Syntax.Remove:                       /plvl remove <commandType> <playerName>
+AdminCommands.Plvl.Usage.Remove:                        Removes a specific command type previously granted to a player using '/plvl single'.
+AdminCommands.Plvl.Syntax.AcctRemove:                   /plvl removeaccount <commandType> <playerName>
+AdminCommands.Plvl.Usage.AcctRemove:                    Removes a specific command type previously granted to a player's account using '/plvl singleaccount'.
+AdminCommands.Plvl.Syntax.Single:                       /plvl single <commandType> <playerName>
+AdminCommands.Plvl.Usage.Single:                        Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+AdminCommands.Plvl.Syntax.AcctSingle:                      /plvl singleaccount <commandType> <playerName>
+AdminCommands.Plvl.Usage.AcctSingle:                       Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+AdminCommands.Plvl.Comm.Intro:                          The '/plvl' command type allows you to control an account's privilege level and the command types its characters may access when they are a Player. The values used for each plvl are:
+AdminCommands.Plvl.Comm.1:                              1 = Player
+AdminCommands.Plvl.Comm.Usage1:                         You can be attacked by mobs or other players and take falling damage. Players only have access to basic slash commands (such as '/bg', '/gc', '/cg', etc.).
+AdminCommands.Plvl.Comm.2:                              2 = Gamemaster (GM)
+AdminCommands.Plvl.Comm.Usage2:                         You cannot be attacked by mobs or other players or take falling damage. GMs have access to MOST special slash commands (except those requiring ePrivLevel.Admin--such as '/plvl', '/account', '/shutdown', etc.).
+AdminCommands.Plvl.Comm.3:                              3 = Admin
+AdminCommands.Plvl.Comm.Usage3:                         You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
+AdminCommands.Plvl.Comm.UseSingleAcct:                  These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
+AdminCommands.Plvl.Comm.Desc:                           For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum.
+AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
+AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
+AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
+AdminCommands.Plvl.Msg.DelSinglePerm:                   {0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level.
+AdminCommands.Plvl.Msg.AddAcct:                         You have granted {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.GaveAcct:                        {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
+AdminCommands.Plvl.Msg.RevokeAcctPerm:                  You have revoked {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.DelAcctPerm:                     {0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level.
+AdminCommands.Plvl.Msg.YourPlvlSet:                     {0} has changed your account's privilege level to {1}!
+AdminCommands.Plvl.Msg.PlvlSet:                         You have changed {0}'s account privilege level to {1}!
+AdminCommands.Plvl.Err.NoPlayerExists:                  No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online.
+AdminCommands.Plvl.Err.NoPlayerName:                    You must specify a player name for '/plvl' commands!
+AdminCommands.Plvl.Err.NoPermFound:                     No permission has been granted to {0} for the '/{1}' command.
+AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found for {0}'s account and the '/{1}" command!
+AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
+AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
 
+# '/refresh' Commands
+
+# '/reload' Commands
+
+# '/serverproperties' Commands
+
+# Old /serverproperties Command
+AdminCommands.ServerProperties.Description:			Reloads server properties from the database
+AdminCommands.ServerProperties.Usage:				/serverproperties
+AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
+AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
+
+# '/shutdown' Commands
+AdminCommands.Shutdown.Msg.CountdownHours:          A server reboot is scheduled to occur in {0} hours!
+AdminCommands.Shutdown.Msg.CountdownHrMn:           A server reboot is scheduled to occur in {0} hours and {1} minutes!
+AdminCommands.Shutdown.Msg.CountdownMins:           A server reboot will occur in {0} minutes!
+AdminCommands.Shutdown.Msg.CountdownSecs:           A server reboot will occur in {0} seconds!
+AdminCommands.Shutdown.Msg.CountdownMnSc:           A server reboot will occur in {0} minutes and {1} seconds!
+AdminCommands.Shutdown.Msg.CountdownLogoutSecs:     Server reboot in {0} seconds! Log out now to avoid any loss of progress!
+AdminCommands.Shutdown.Msg.ScheduledShutdown:       A server reboot has been scheduled to occur at {0}. The Atlas server will then be unavailable temporarily for maintenance.
+AdminCommands.Account.Msg.ServerClosed:             The Atlas server is now closed to all incoming connections! The server will shut down in {0} seconds!
+AdminCommands.Shutdown.Msg.PlanLogout:              It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
+AdminCommands.Shutdown.Comm.Desc1:                  The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all DOL-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
+AdminCommands.Shutdown.Comm.Desc2:                  Rebooting Atlas is a team effort. Bringing the server back online is performed manually by Clait, Fen, or Suite. Please make sure someone is prepared to run the server once the shutdown is complete. Do not use these commands unless instructed.
+AdminCommands.Shutdown.Comm.Desc3:                  For more information regarding the '/shutdown' command type, see the GM Commands Library on the Atlas Developers forum.
+AdminCommands.Shutdown.Msg.YouCancel:             You have stopped the server shutdown process!
+AdminCommands.Shutdown.Msg.StaffCancel:             {0} stopped the server shutdown!
+AdminCommands.Shutdown.Msg.ShutdownEnd:             The server restart has been canceled! Please stand by for additional information from Atlas staff.
+AdminCommands.Shutdown.Msg.ServerOpen:              The Atlas server is now open and accepting incoming connections!
+AdminCommands.Shutdown.Err.NoShutdown:              No server shutdown is scheduled currently!
+AdminCommands.Shutdown.Err.WrongNumber:             A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
+AdminCommands.Shutdown.Msg.ServerShutdownMins:      The Atlas server will shut down in {0} minutes!
+AdminCommands.Shutdown.Msg.AttentionShutdown:       ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
+AdminCommands.Shutdown.Description:                 Initiates a total shutdown of the Atlas server. The server must then be manually started by an authorized staff member, such as Clait, Fen, or Suite.
+AdminCommands.Shutdown.Syntax.Comm:                 /shutdown command
+AdminCommands.Shutdown.Usage.Comm:                 Provides additional information regarding the '/shutdown' command type.
+AdminCommands.Shutdown.Syntax.Secs:                 /shutdown <seconds>
+AdminCommands.Shutdown.Usage.Secs:                  Schedules a manual shutdown of the server, counting down from the specified number of seconds.
+AdminCommands.Shutdown.Syntax.HrMin:                /shutdown on <HH>:<MM>
+AdminCommands.Shutdown.Usage.HrMin:                  Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT.
+AdminCommands.Shutdown.Syntax.Stop:                 /shutdown stop
+AdminCommands.Shutdown.Usage.Stop:                  Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.

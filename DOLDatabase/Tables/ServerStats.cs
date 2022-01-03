@@ -33,6 +33,9 @@ namespace DOL.Database
 		protected int m_upload;
 		protected int m_download;
 		protected long m_memory;
+		protected int m_palbion;
+		protected int m_pmidgard;
+		protected int m_phibernia;
 
 		public ServerStats()
 		{
@@ -42,6 +45,9 @@ namespace DOL.Database
 			m_upload = 0;
 			m_download = 0;
 			m_memory = 0;
+			m_palbion = 0;
+			m_pmidgard = 0;
+			m_phibernia = 0;
 		}
 
 		[DataElement(AllowDbNull = false)]
@@ -65,6 +71,7 @@ namespace DOL.Database
 				m_clients = value;
 			}
 		}
+		
 		[DataElement(AllowDbNull = false)]
 		public float CPU
 		{
@@ -104,6 +111,37 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_memory = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull = false)]
+		public int AlbionPlayers
+		{
+			get { return m_palbion; }
+			set
+			{
+				Dirty = true;
+				m_palbion = value;
+			}
+		}
+		[DataElement(AllowDbNull = false)]
+		public int MidgardPlayers
+		{
+			get { return m_pmidgard; }
+			set
+			{
+				Dirty = true;
+				m_pmidgard = value;
+			}
+		}
+		[DataElement(AllowDbNull = false)]
+		public int HiberniaPlayers
+		{
+			get { return m_phibernia; }
+			set
+			{
+				Dirty = true;
+				m_phibernia = value;
 			}
 		}
 	}

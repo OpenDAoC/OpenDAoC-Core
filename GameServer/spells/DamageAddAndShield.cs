@@ -52,13 +52,13 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		public void EventHandler(DOLEvent e, object sender, EventArgs arguments, double effectiveness)
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
 
-			if (atkArgs.AttackData.AttackResult != GameLiving.eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != GameLiving.eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
 
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;
@@ -91,12 +91,12 @@ namespace DOL.GS.Spells
 			AttackData ad = new AttackData();
 			ad.Attacker = attacker;
 			ad.Target = target;
-			ad.Damage = (int)(damage + damageResisted);
+			ad.Damage = (int)((damage + damageResisted) * effectiveness);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = Spell.DamageType;
 			ad.AttackType = AttackData.eAttackType.Spell;
 			ad.SpellHandler = this;
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 
 			if ( ad.Attacker is GameNPC )
 			{
@@ -139,8 +139,13 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		// constructor
-		public DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+        public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        // constructor
+        public DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 	}
 
 	/// <summary>
@@ -161,12 +166,12 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
 		{
 			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
 			if (args == null) return;
-			if (args.AttackData.AttackResult != GameLiving.eAttackResult.HitUnstyled
-				&& args.AttackData.AttackResult != GameLiving.eAttackResult.HitStyle) return;
+			if (args.AttackData.AttackResult != eAttackResult.HitUnstyled
+				&& args.AttackData.AttackResult != eAttackResult.HitStyle) return;
 			if (!args.AttackData.IsMeleeAttack) return;
 			GameLiving attacker = sender as GameLiving; //sender is target of attack, becomes attacker for damage shield
 			if (attacker == null) return;
@@ -182,6 +187,13 @@ namespace DOL.GS.Spells
 			double damage = Spell.Damage * target.AttackSpeed(target.AttackWeapon) * spread * 0.00001;
 			double damageResisted = damage * target.GetResist(Spell.DamageType) * -0.01;
 
+            if (!Spell.IsFocus)
+            {
+				var effectiveness = 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
+				damage *= effectiveness;
+			}
+			
+
 			if (Spell.Damage < 0)
 			{
 				damage = args.AttackData.Damage * Spell.Damage / -100.0;
@@ -196,7 +208,7 @@ namespace DOL.GS.Spells
 			ad.DamageType = Spell.DamageType;
 			ad.SpellHandler = this;
 			ad.AttackType = AttackData.eAttackType.Spell;
-			ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+			ad.AttackResult = eAttackResult.HitUnstyled;
 
 			GamePlayer owner = null;
 
@@ -223,8 +235,8 @@ namespace DOL.GS.Spells
 			GameClient targetClient = null;
 			if ( target is GamePlayer ) targetClient = ( (GamePlayer)target ).Client;
 
-			if ( targetClient != null )
-				MessageToLiving(target, String.Format(LanguageMgr.GetTranslation( targetClient, "DamageAddAndShield.EventHandlerDS.DamageToYou" ), attacker.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
+			//if ( targetClient != null )
+			//	MessageToLiving(target, String.Format(LanguageMgr.GetTranslation( targetClient, "DamageAddAndShield.EventHandlerDS.DamageToYou" ), attacker.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
 
             target.OnAttackedByEnemy(ad);
 			attacker.DealDamage(ad);
@@ -255,7 +267,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event handler of given event type
 		/// </summary>
-		protected abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
+		public abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
 
 		/// <summary>
 		/// Holds min damage spread based on spec level caster

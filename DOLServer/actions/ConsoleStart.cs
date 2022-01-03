@@ -118,40 +118,43 @@ namespace DOL.DOLServer.Actions
 				Console.Write("> ");
 				string line = Console.ReadLine();
 
-				switch (line.ToLower())
+				if (line != null)
 				{
-					case "exit":
-						run = false;
-						break;
-					case "stacktrace":
-						log.Debug(PacketProcessor.GetConnectionThreadpoolStacks());
-						break;
-					case "clear":
-						Console.Clear();
-						break;
-					default:
-						if (line.Length <= 0)
+					switch (line.ToLower())
+					{
+						case "exit":
+							run = false;
 							break;
-						if (line[0] == '/')
-						{
-							line = line.Remove(0, 1);
-							line = line.Insert(0, "&");
-						}
-						GameClient client = new GameClient(null);
-						client.Out = new ConsolePacketLib();
-						try
-						{
-							bool res = ScriptMgr.HandleCommandNoPlvl(client, line);
-							if (!res)
+						case "stacktrace":
+							log.Debug(PacketProcessor.GetConnectionThreadpoolStacks());
+							break;
+						case "clear":
+							Console.Clear();
+							break;
+						default:
+							if (line.Length <= 0)
+								break;
+							if (line[0] == '/')
 							{
-								Console.WriteLine("Unknown command: " + line);
+								line = line.Remove(0, 1);
+								line = line.Insert(0, "&");
 							}
-						}
-						catch (Exception e)
-						{
-							Console.WriteLine(e.ToString());
-						}
-						break;
+							GameClient client = new GameClient(null);
+							client.Out = new ConsolePacketLib();
+							try
+							{
+								bool res = ScriptMgr.HandleCommandNoPlvl(client, line);
+								if (!res)
+								{
+									Console.WriteLine("Unknown command: " + line);
+								}
+							}
+							catch (Exception e)
+							{
+								Console.WriteLine(e.ToString());
+							}
+							break;
+					}
 				}
 			}
 			if (GameServer.Instance != null)

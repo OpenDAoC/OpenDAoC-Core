@@ -51,11 +51,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Ping timeout definition in seconds
 		/// </summary>
-		public const long PING_TIMEOUT = 360; // 6 min default ping timeout (ticks are 100 nano seconds)
+		public const long PING_TIMEOUT = 60; // 1 min default ping timeout (ticks are 100 nano seconds)
 		/// <summary>
 		/// Holds the distance which player get experience from a living object
 		/// </summary>
-		public const int MAX_EXPFORKILL_DISTANCE = 16384;
+		public const int MAX_EXPFORKILL_DISTANCE = VISIBILITY_DISTANCE;
 		/// <summary>
 		/// Is the distance a whisper can be heard
 		/// </summary>
@@ -87,7 +87,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Is the distance an player can see
 		/// </summary>
-		public const int VISIBILITY_DISTANCE = 3600;
+		public const int VISIBILITY_DISTANCE = 6000;
 		/// <summary>
 		/// Moving greater than this distance requires the player to do a full world refresh
 		/// </summary>
@@ -95,11 +95,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Is the square distance a player can see
 		/// </summary>
-		public const int VISIBILITY_SQUARE_DISTANCE = 12960000;
+		public const int VISIBILITY_SQUARE_DISTANCE = 36000000;
 		/// <summary>
 		/// Holds the distance at which objects are updated
 		/// </summary>
-		public const int OBJ_UPDATE_DISTANCE = 4096;
+		public const int OBJ_UPDATE_DISTANCE = 6144;
 
 		/// <summary>
 		/// This will store available teleport destinations as read from the 'teleport' table.  These are
@@ -602,7 +602,7 @@ namespace DOL.GS
 						else
 						{
 							// in all other cases client gets 10min to get wether in charscreen or playing state
-							if (client.PingTime + 10 * 60 * 10000000L < DateTime.Now.Ticks)
+							if (client.PingTime + 10 * 60 * 4000000L < DateTime.Now.Ticks)
 							{
 								if (log.IsWarnEnabled)
 									log.Warn("Hard timeout for client " + client.Account.Name + " (" + client.ClientState + ")");

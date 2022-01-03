@@ -96,14 +96,35 @@ namespace DOL.GS.Commands
 			if (attrib.Length == 0)
 				return;
 
-			ChatUtil.SendSystemMessage(client, attrib[0].Description, null);
-
-			foreach (string sentence in attrib[0].Usage)
+			// If a value isn't found for a command type header/divider, ignore it
+			if (string.IsNullOrEmpty(attrib[0].Header))
 			{
-				ChatUtil.SendSystemMessage(client, sentence, null);
+				// Include command description at head of list upon typing '/example'
+				ChatUtil.SendCommMessage(client, attrib[0].Description, null);
 			}
+			else
+			{
+				// Include header/divider at head of return upon typing the main command identifier or alias (e.g., '/command')
+				ChatUtil.SendHeaderMessage(client, attrib[0].Header, null);
 
-			return;
+				// Include main command type description below separator
+				ChatUtil.SendCommMessage(client, attrib[0].Description, null);
+			}
+			
+			// Run for each value found under "params usage" until the whole command list is displayed
+			foreach (var sentence in attrib[0].Usage)
+			{
+				// To contrast the appearance of command syntax against their descriptions, include ".Syntax." in the translation ID (e.g., "AdminCommands.Account.Syntax.AccountName")
+				if (sentence.Contains(".Syntax."))
+				{
+					ChatUtil.SendSyntaxMessage(client, sentence, null);
+				}
+				// All other values display as command descriptions (i.e., CT_System)
+				else
+				{
+					ChatUtil.SendCommMessage(client, sentence, null);	
+				}
+			}
 		}
 
 		public virtual void DisplaySyntax(GameClient client, string subcommand)

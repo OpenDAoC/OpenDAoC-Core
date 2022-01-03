@@ -31,7 +31,7 @@ namespace DOL.GS.SkillHandler
 	{
 		public void Execute(Ability ab, GamePlayer player)
 		{
-			if (player.ActiveWeaponSlot != GameLiving.eActiveWeaponSlot.Distance)
+			if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
@@ -43,25 +43,25 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// cancel rapid fire effect
-			RapidFireEffect rapidFire = player.EffectList.GetOfType<RapidFireEffect>();
+			RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 			if (rapidFire != null)
-				rapidFire.Cancel(false);
+				EffectService.RequestImmediateCancelEffect(rapidFire, false);
 
 			// cancel sure shot effect
-			SureShotEffect sureShot = player.EffectList.GetOfType<SureShotEffect>();
+			SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 			if (sureShot != null)
-				sureShot.Cancel(false);
+				EffectService.RequestImmediateCancelEffect(sureShot);
 
-			TrueshotEffect trueshot = player.EffectList.GetOfType<TrueshotEffect>();
+			TrueShotECSGameEffect trueshot = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot);
 			if (trueshot != null)
-				trueshot.Cancel(false);
+				EffectService.RequestImmediateCancelEffect(trueshot, false);
 
-			if (player.AttackState)
+			if (player.attackComponent.AttackState)
 			{
-				if (player.RangedAttackType == GameLiving.eRangedAttackType.Critical)
+				if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.SwitchToRegular"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					player.RangedAttackType = GameLiving.eRangedAttackType.Normal;
+					player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 				}
 				else
 				{
@@ -69,8 +69,8 @@ namespace DOL.GS.SkillHandler
 				}
 				return;
 			}
-			player.RangedAttackType = GameLiving.eRangedAttackType.Critical;
-			player.StartAttack(player.TargetObject);
+			player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Critical;
+			player.attackComponent.StartAttack(player.TargetObject);
 		}
 	}
 }

@@ -199,6 +199,8 @@ namespace DOL.Database
 
         private long m_playedTimeSinceLevel;
 
+        private bool m_receiveROG;
+
         /// <summary>
         /// Create the character row in table
         /// </summary>
@@ -234,7 +236,8 @@ namespace DOL.Database
 			m_ignoreStatistics = false;
             m_lastLevelUp = DateTime.Now;
             m_playedTimeSinceLevel = 0;
-        }
+            m_receiveROG = true;
+		}
 
 		/// <summary>
 		/// Gets/sets if this character has xp in a gravestone
@@ -815,7 +818,7 @@ namespace DOL.Database
 		}
 
 		/// <summary>
-		/// The character's active weapon slot and quiver slot - <see cref="T:DOL.GS.GameLiving.eActiveWeaponSlot" /> ORed with <see cref="T:DOL.GS.GameLiving.eActiveQuiverSlot" />
+		/// The character's active weapon slot and quiver slot - <see cref="T:DOL.GS.eActiveWeaponSlot" /> ORed with <see cref="T:DOL.GS.GameLiving.eActiveQuiverSlot" />
 		/// </summary>
 		[DataElement(AllowDbNull = false)]
 		public byte ActiveWeaponSlot
@@ -2279,6 +2282,23 @@ namespace DOL.Database
                 Dirty = true;
                 m_playedTimeSinceLevel = value;
             }
+        }
+        
+        /// <summary>
+        /// Gets/sets the characters option to receive ROGs /eventrog
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public bool ReceiveROG
+        {
+	        get
+	        {
+		        return m_receiveROG;
+	        }
+	        set
+	        {
+		        Dirty = true;
+		        m_receiveROG = value;
+	        }
         }
 
         /// <summary>

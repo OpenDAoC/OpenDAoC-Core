@@ -72,7 +72,7 @@ namespace DOL.GS.PacketHandler
 	                    if (fx is GameSpellEffect)
 	                    {
 	                        GameSpellEffect effect = (GameSpellEffect)fx;
-	                        if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == "Chamber"))
+	                        if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Chamber))
 	                        {
 	                            ChamberSpellHandler chamber = (ChamberSpellHandler)effect.SpellHandler;
 	                            sortList[chamber.EffectSlot] = effect;
@@ -94,19 +94,19 @@ namespace DOL.GS.PacketHandler
 	                        }
 	                        else if (chamber.PrimarySpell != null && chamber.SecondarySpell != null)
 	                        {
-	                            if (chamber.SecondarySpell.SpellType == "Lifedrain")
+	                            if (chamber.SecondarySpell.SpellType == (byte)eSpellType.Lifedrain)
 	                                pak.WriteByte(0x11);
-	                            else if (chamber.SecondarySpell.SpellType.IndexOf("SpeedDecrease") != -1)
+	                            else if (chamber.SecondarySpell.SpellType.ToString().IndexOf("SpeedDecrease") != -1)
 	                                pak.WriteByte(0x33);
-	                            else if (chamber.SecondarySpell.SpellType == "PowerRegenBuff")
+	                            else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.PowerRegenBuff)
 	                                pak.WriteByte(0x77);
-	                            else if (chamber.SecondarySpell.SpellType == "DirectDamage")
+	                            else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.DirectDamage)
 	                                pak.WriteByte(0x66);
-	                            else if (chamber.SecondarySpell.SpellType == "SpreadHeal")
+	                            else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.SpreadHeal)
 	                                pak.WriteByte(0x55);
-	                            else if (chamber.SecondarySpell.SpellType == "Nearsight")
+	                            else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.Nearsight)
 	                                pak.WriteByte(0x44);
-	                            else if (chamber.SecondarySpell.SpellType == "DamageOverTime")
+	                            else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.DamageOverTime)
 	                                pak.WriteByte(0x22);
 	                        }
 	                    }
@@ -425,12 +425,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -448,9 +448,9 @@ namespace DOL.GS.PacketHandler
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)GameLiving.eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);

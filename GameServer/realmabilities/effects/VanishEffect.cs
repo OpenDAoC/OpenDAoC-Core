@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			base.Start(target);
 			GamePlayer player = target as GamePlayer;
-			player.StopAttack();
+			player.attackComponent.LivingStopAttack();
 			player.Stealth(true);
 			player.Out.SendUpdateMaxSpeed();
 			m_countDownTimer = new RegionTimer(player, new RegionTimerCallback(CountDown));

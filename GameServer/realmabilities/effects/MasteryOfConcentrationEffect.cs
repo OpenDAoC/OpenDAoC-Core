@@ -9,13 +9,13 @@ namespace DOL.GS.Effects
 	/// <summary>
 	/// 
 	/// </summary>
-	public class MasteryofConcentrationEffect : TimedEffect, IGameEffect
+	public class XMasteryofConcentrationEffect : TimedEffect, IGameEffect
 	{
 		/// <summary>
 		/// Default constructor for MasteryofConcentrationEffect
 		/// </summary>
-		public MasteryofConcentrationEffect()
-			: base(RealmAbilities.MasteryofConcentrationAbility.Duration)
+		public XMasteryofConcentrationEffect(int Duration)
+			: base(Duration)
 		{
 		}
 

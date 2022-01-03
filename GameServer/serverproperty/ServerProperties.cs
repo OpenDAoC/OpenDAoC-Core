@@ -171,7 +171,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The max number of players on the server
 		/// </summary>
-		[ServerProperty("system", "max_players", "Max Players - Edit this to set the maximum players allowed to connect at the same time set 0 for unlimited", 0)]
+		[ServerProperty("system", "max_players", "Max Players - Edit this to set the maximum players allowed to connect at the same time", 4000)]
 		public static int MAX_PLAYERS;
 
 		/// <summary>
@@ -427,7 +427,13 @@ namespace DOL.GS.ServerProperties
 		/// Webhook ID
 		/// </summary>
 		[ServerProperty("server", "Discord_Webhook_ID", "The id of the webhook", "")]
-		public static string DISCORD_WEBHOOK_ID;		
+		public static string DISCORD_WEBHOOK_ID;
+		
+		/// <summary>
+		/// RvRWebhook ID
+		/// </summary>
+		[ServerProperty("atlas", "Discord_RVR_Webhook_ID", "The id of the webhook for RvR updates", "")]
+		public static string DISCORD_RVR_WEBHOOK_ID;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?
@@ -2479,6 +2485,92 @@ namespace DOL.GS.ServerProperties
 
 		#endregion
 
+		#region ATLAS
+		/// <summary>
+		/// Disables all XP gains for PvE and PvP kills
+		/// </summary>
+		[ServerProperty("atlas", "event_disable_xp", "Disables gaining XP for all player actions", false)]
+		public static bool EVENT_DISABLE_XP;
+		
+		/// <summary>
+		/// Moves all newly created characters to the Event Zone and levels them to level 24
+		/// </summary>
+		[ServerProperty("atlas", "event_thidranki", "Enables the Thidranki Event (i24 and port to event zone)", false)]
+		public static bool EVENT_THIDRANKI;
+		
+		/// <summary>
+		/// Enables PvP in the Tutorial event zone
+		/// </summary>
+		[ServerProperty("atlas", "event_pvp", "Enables PvP in the Tutorial event zone", false)]
+		public static bool EVENT_PVP;
+		
+		/// <summary>
+		/// Enables the event in the Tutorial zone
+		/// </summary>
+		[ServerProperty("atlas", "event_tutorial", "Enables the event in the Tutorial zone", false)]
+		public static bool EVENT_TUTORIAL;
+
+		/// <summary>
+		/// Allow cross realm grouping for the Event?
+		/// </summary>
+		[ServerProperty("atlas", "event_cross_realm_groups", "Enables cross Realm groups during the event", false)]
+		public static bool EVENT_CROSS_REALM_GROUPS;
+		
+		/// <summary>
+		/// Allow cross cross realm /say in Safe Zones?
+		/// </summary>
+		[ServerProperty("atlas", "event_cross_realm_say", "Enables cross Realm /say in safe zones", false)]
+		public static bool EVENT_CROSS_REALM_SAY;
+
+		/// <summary>
+		/// Maximum character level for the active event
+		/// </summary>
+		[ServerProperty("atlas", "event_lvcap", "Maximum character level for the active event", 0)]
+		public static int EVENT_LVCAP;
+		
+		/// <summary>
+		/// Maximum character realm points for the active event
+		/// </summary>
+		[ServerProperty("atlas", "event_rpcap", "Maximum character realm points for the active event", 0)]
+		public static int EVENT_RPCAP;
+
+		/// <summary>
+		/// Starting RPs amount for all players during the event
+		/// </summary>
+		[ServerProperty("atlas", "event_starting_rp", "Starting RPs amount for all players during the event", 0)]
+		public static int EVENT_START_RP;
+
+		/// <summary>
+		/// Minimum server population required to enable the solo zone
+		/// </summary>
+		[ServerProperty("atlas", "event_solo_pop", "Minimum server population required to enable the solo zone", 0)]
+		public static int EVENT_SOLO_POP;
+		
+		/// <summary>
+		/// Allow claiming of BG keeps
+		/// </summary>
+		[ServerProperty("atlas", "allow_bg_claim", "Allow claiming of BG keeps", false)]
+		public static bool ALLOW_BG_CLAIM;
+		
+		/// <summary>
+		/// Text breadcrumbs for players
+		/// </summary>
+		[ServerProperty("atlas", "atlas_bread", "Text breadcrumbs for players", "")]
+		public static string BREAD;
+		
+		/// <summary>
+		/// Enables the API endpoints on the port :5000
+		/// </summary>
+		[ServerProperty("atlas", "atlas_api", "Enables the API endpoints on the port :5000", false)]
+		public static bool ATLAS_API;
+		
+		/// <summary>
+		/// Maximum numbers of entities allowed
+		/// </summary>
+		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
+		public static int MAX_ENTITIES;
+
+		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
 			get; private set;

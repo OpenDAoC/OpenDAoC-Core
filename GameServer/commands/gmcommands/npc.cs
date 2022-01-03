@@ -467,9 +467,9 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						GameLiving.eActiveWeaponSlot slot = (GameLiving.eActiveWeaponSlot)Convert.ToInt16(args[2]);
+						eActiveWeaponSlot slot = (eActiveWeaponSlot)Convert.ToInt16(args[2]);
 						npc.SwitchWeapon(slot);
-						client.Player.Out.SendMessage(npc.Name + " will now use its " + Enum.GetName(typeof(GameLiving.eActiveWeaponSlot), slot) + " weapon to attack.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage(npc.Name + " will now use its " + Enum.GetName(typeof(eActiveWeaponSlot), slot) + " weapon to attack.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						break;
 					}

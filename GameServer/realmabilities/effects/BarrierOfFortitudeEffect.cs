@@ -7,7 +7,7 @@ namespace DOL.GS.Effects
 	/// <summary>
 	/// Effect handler for Barrier Of Fortitude
 	/// </summary>
-	public class BarrierOfFortitudeEffect : StaticEffect, IGameEffect
+	public class XBarrierOfFortitudeEffect : StaticEffect, IGameEffect
 	{
 		private const String m_delveString = "Grants the group a melee absorption bonus (Does not stack with Soldier's Barricade or Bedazzling Aura).";
 		private GamePlayer m_player;
@@ -18,9 +18,9 @@ namespace DOL.GS.Effects
 
 
 		/// <summary>
-		/// Default constructor for AmelioratingMelodiesEffect
+		/// Default constructor for BarrierOfFortitudeEffect
 		/// </summary>
-		public BarrierOfFortitudeEffect()
+		public XBarrierOfFortitudeEffect()
 		{
 
 		}
@@ -60,7 +60,7 @@ namespace DOL.GS.Effects
 		{
 			GamePlayer player = (GamePlayer)sender;
 
-			BarrierOfFortitudeEffect BoFEffect = player.EffectList.GetOfType<BarrierOfFortitudeEffect>();
+			XBarrierOfFortitudeEffect BoFEffect = player.EffectList.GetOfType<XBarrierOfFortitudeEffect>();
 			if (BoFEffect != null)
 			{
 				BoFEffect.Cancel(false);

@@ -53,7 +53,7 @@ namespace DOL.GS.Effects
 				foreach (IGameEffect effect in living.EffectList)
 				{
 					if (effect is GameSpellEffect == false) continue;
-					if ((effect as GameSpellEffect).Spell.SpellType == "SpeedEnhancement")
+					if ((effect as GameSpellEffect).Spell.SpellType == (byte)eSpellType.SpeedEnhancement)
 						speedSpells.Add(effect);
 				}
 			}

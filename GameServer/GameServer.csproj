@@ -4,27 +4,13 @@
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{ACB92917-3D42-4F40-97F9-EA904A41DE36}</ProjectGuid>
+    <TargetFramework>net6.0</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DefaultClientScript>JScript</DefaultClientScript>
-    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
-    <DefaultTargetSchema>IE50</DefaultTargetSchema>
-    <DelaySign>false</DelaySign>
+    <AssemblyName>GameServer</AssemblyName>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <NoStdLib>False</NoStdLib>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1570%3b1572%3b1573%3b1587%3b1591%3b1592</NoWarn>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>..\build\GameServer\$(Configuration)\obj\</IntermediateOutputPath>
-    <NoWin32Manifest>False</NoWin32Manifest>
     <OutputPath>..\$(Configuration)\lib\</OutputPath>
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -34,36 +20,35 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>False</Optimize>
     <DebugSymbols>true</DebugSymbols>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>None</DebugType>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugSymbols>false</DebugSymbols>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <PlatformTarget>x86</PlatformTarget>
     <RegisterForComInterop>False</RegisterForComInterop>
-    <BaseAddress>285212672</BaseAddress>
-    <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Net.Http" />
-    <PackageReference Include="log4net" Version="2.0.12" PrivateAssets="all" />
+    <PackageReference Include="discord-webhook-client" Version="3.1.0" />
+    <PackageReference Include="log4net" Version="2.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" />
-    <ProjectReference Include="..\DOLBase\DOLBase.csproj" Name="DOLBase" Private="False" />
-    <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" Private="False" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
+    <ProjectReference Include="..\DOLBase\DOLBase.csproj" Name="DOLBase" />
+    <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="config\logconfig.xml" />
-    <EmbeddedResource Include="config\invalidnames.txt" />
-    <TranslationFiles Include="language\**\*.txt" />
+    <EmbeddedResource Include=".\config\*" />
+    <TranslationFiles Include=".\language\**\*.txt" />
+    <APIDocs Include=".\API\docs\*" />
   </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
     <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(APIDocs)" DestinationFiles="@(APIDocs->'$(MSBuildProjectDirectory)\..\$(Configuration)\wwwroot\docs\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

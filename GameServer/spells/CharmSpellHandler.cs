@@ -27,7 +27,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Language;
 using log4net;
-
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -45,17 +45,17 @@ namespace DOL.GS.Spells
         /// <summary>
         /// Holds the charmed Npc for pulsing spells
         /// </summary>
-        protected GameNPC m_charmedNpc;
+        public GameNPC m_charmedNpc;
 
         /// <summary>
         /// The property that stores the new npc brain
         /// </summary>
-        protected ControlledNpcBrain m_controlledBrain;
+        public ControlledNpcBrain m_controlledBrain;
 
         /// <summary>
         /// Tells pulsing spells to not add brain if it was not removed by expire effect
         /// </summary>
-        protected bool m_isBrainSet;
+        public bool m_isBrainSet;
         
         /// <summary>
         /// What type of mobs this spell can charm. based on amnesia chance value.
@@ -71,6 +71,11 @@ namespace DOL.GS.Spells
         	HumanoidAnimalInsectMagical = 6,
         	HumanoidAnimalInsectMagicalUndead = 7,
         	Reptile = 8,	
+        }
+
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new CharmECSGameEffect(initParams);
         }
 
         /// <summary>
@@ -110,7 +115,11 @@ namespace DOL.GS.Spells
             {
                 ApplyEffectOnTarget(target, 1);
             }
-
+            //if (Spell.IsPulsing)
+            //{
+            //    CreateECSPulseEffect(Caster, 1);
+            //    Caster.LastPulseCast = Spell;
+            //}
             return true;
         }
 
@@ -145,16 +154,16 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            //You should be able to chain pulsing charm on the same mob
-            if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body == (GameNPC)selectedTarget))
-            {
-                ((GamePlayer)Caster).CommandNpcRelease();
-            }
+            ////You should be able to chain pulsing charm on the same mob
+            //if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body == (GameNPC)selectedTarget))
+            //{
+            //    //((GamePlayer)Caster).CommandNpcRelease();
+            //}
 
             if (!base.CheckEndCast(selectedTarget)) 
             	return false;
 
-            if (Caster is GamePlayer && ((GamePlayer)Caster).ControlledBrain != null)
+            if (Caster is GamePlayer && ((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain != ((GameNPC)selectedTarget).Brain)
             {
                 MessageToCaster("You already have a charmed creature, release it first!", eChatType.CT_SpellResisted);
                 return false;
@@ -170,15 +179,19 @@ namespace DOL.GS.Spells
         /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
-        	
-        	// This prevent most of type casting errors
-        	if(target is GameNPC == false) {
+            //You should be able to chain pulsing charm on the same mob
+            if (Spell.Pulse != 0 && Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain != null && ((GamePlayer)Caster).ControlledBrain.Body != (GameNPC)target))
+            {
+                ((GamePlayer)Caster).CommandNpcRelease();
+            }
+            // This prevent most of type casting errors
+            if (target is GameNPC == false) {
         		MessageToCaster("This spell does not charm this type of monster!", eChatType.CT_SpellResisted);
                 return;
         	}
         	
             // check only if brain wasn't changed at least once
-            if (m_controlledBrain == null)
+            if (m_controlledBrain == null && Caster.ControlledBrain == null)
             {
             	 // Target is already controlled
 	    	    if(((GameNPC)target).Brain != null && ((GameNPC)target).Brain is IControlledBrain && (((IControlledBrain)((GameNPC)target).Brain).Owner as GamePlayer) != Caster)
@@ -331,9 +344,12 @@ namespace DOL.GS.Spells
                 if (Util.Chance(resistChance))
                 {
                 	
-                    MessageToCaster(target.GetName(0, true) + " resists the charm!", eChatType.CT_SpellResisted);
+                    MessageToCaster(target.GetName(0, true) + " resists the charm!" + " (" + resistChance + "%)" , eChatType.CT_SpellResisted);
+                    SendEffectAnimation(GetTarget(), 0, false, 0);
                     return;
                 }
+                else
+                    SendEffectAnimation(GetTarget(), 0, false, 1);
             }
 
             base.ApplyEffectOnTarget(target, effectiveness);
@@ -346,52 +362,52 @@ namespace DOL.GS.Spells
         /// <param name="effect"></param>
         public override void OnEffectStart(GameSpellEffect effect)
         {
-            base.OnEffectStart(effect);
+            //    base.OnEffectStart(effect);
 
-            GamePlayer player = Caster as GamePlayer;
-            GameNPC npc = effect.Owner as GameNPC;
-            
-            if (player != null && npc != null)
-            {
-            	
-                if (m_controlledBrain == null)
-                    m_controlledBrain = new ControlledNpcBrain(player);
+            //    GamePlayer player = Caster as GamePlayer;
+            //    GameNPC npc = effect.Owner as GameNPC;
 
-                if (!m_isBrainSet)
-                {
-                	
-                    npc.AddBrain(m_controlledBrain);
-                    m_isBrainSet = true;
+            //    if (player != null && npc != null)
+            //    {
 
-                    GameEventMgr.AddHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler(ReleaseEventHandler));
-                }
+            //        if (m_controlledBrain == null)
+            //            m_controlledBrain = new ControlledNpcBrain(player);
 
-                if (player.ControlledBrain != m_controlledBrain)
-                {
-                	
-                    // sorc: "The slough serpent is enthralled!" ct_spell
-                    Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message1, npc.GetName(0, false)), eChatType.CT_Spell);
-                    MessageToCaster(npc.GetName(0, true) + " is now under your control.", eChatType.CT_Spell);
+            //        if (!m_isBrainSet)
+            //        {
 
-                    player.SetControlledBrain(m_controlledBrain);
-                    
-	                foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)) {
-	                    ply.Out.SendNPCCreate(npc);
-	                    if (npc.Inventory != null)
-								ply.Out.SendLivingEquipmentUpdate(npc);
-	                    
-	                   ply.Out.SendObjectGuildID(npc, player.Guild);
-	                }
-                }
-            }
-            else
-            {
-                // something went wrong.
-                if (log.IsWarnEnabled)
-                    log.Warn(string.Format("charm effect start: Caster={0} effect.Owner={1}",
-                                           (Caster == null ? "(null)" : Caster.GetType().ToString()),
-                                           (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
-            }
+            //            npc.AddBrain(m_controlledBrain);
+            //            m_isBrainSet = true;
+
+            //            GameEventMgr.AddHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler(ReleaseEventHandler));
+            //        }
+
+            //        if (player.ControlledBrain != m_controlledBrain)
+            //        {
+
+            //            // sorc: "The slough serpent is enthralled!" ct_spell
+            //            Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message1, npc.GetName(0, false)), eChatType.CT_Spell);
+            //            MessageToCaster(npc.GetName(0, true) + " is now under your control.", eChatType.CT_Spell);
+
+            //            player.SetControlledBrain(m_controlledBrain);
+
+            //         foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)) {
+            //             ply.Out.SendNPCCreate(npc);
+            //             if (npc.Inventory != null)
+            //ply.Out.SendLivingEquipmentUpdate(npc);
+
+            //            ply.Out.SendObjectGuildID(npc, player.Guild);
+            //         }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // something went wrong.
+            //        if (log.IsWarnEnabled)
+            //            log.Warn(string.Format("charm effect start: Caster={0} effect.Owner={1}",
+            //                                   (Caster == null ? "(null)" : Caster.GetType().ToString()),
+            //                                   (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
+            //    }
         }
 
         /// <summary>
@@ -400,8 +416,9 @@ namespace DOL.GS.Spells
         /// <param name="e"></param>
         /// <param name="sender"></param>
         /// <param name="arguments"></param>
-        private void ReleaseEventHandler(DOLEvent e, object sender, EventArgs arguments)
+        public void ReleaseEventHandler(DOLEvent e, object sender, EventArgs arguments)
         {
+            Console.Write("Charm ReleaseEventHandler Called!");
             IControlledBrain npc = null;
             
             if (e == GameLivingEvent.PetReleased)
@@ -412,19 +429,30 @@ namespace DOL.GS.Spells
             if (npc == null) 
             	return;
 
-            PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
-            if (concEffect != null)
-                concEffect.Cancel(false);
+            //PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
 
-            GameSpellEffect charm = FindEffectOnTarget(npc.Body, this);
+            var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
+
+            if (concEffect != null)
+                EffectService.RequestImmediateCancelConcEffect((ECSPulseEffect)concEffect);
+                //concEffect.CancelEffect = true;
+                //concEffect.Cancel(false);
+
+            //GameSpellEffect charm = FindEffectOnTarget(npc.Body, this);
+            List<ECSGameEffect> charm = new List<ECSGameEffect>();
+            npc.Body?.effectListComponent?.Effects?.TryGetValue(eEffect.Charm, out charm);
             
-            if (charm == null)
+            if (charm?.Count == 0)// == null)
             {
                 log.Warn("charm effect is already canceled");
                 return;
             }
 
-            charm.Cancel(false);
+            //charm.Cancel(false);
+            //charm.FirstOrDefault().CancelEffect = true;
+            //if (charm?.FirstOrDefault().GetRemainingTimeForClient() < 0)
+            if (e == GameLivingEvent.PetReleased)
+                EffectService.RequestImmediateCancelEffect(charm?.FirstOrDefault());
         }
 
         /// <summary>
@@ -435,94 +463,94 @@ namespace DOL.GS.Spells
         /// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
         /// <returns>immunity duration in milliseconds</returns>
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-        {
-            base.OnEffectExpires(effect, noMessages);
+        { return 0; }
+            //base.OnEffectExpires(effect, noMessages);
 
-            GamePlayer player = Caster as GamePlayer;
-            GameNPC npc = effect.Owner as GameNPC;
+        //    GamePlayer player = Caster as GamePlayer;
+        //    GameNPC npc = effect.Owner as GameNPC;
             
-            if (player != null && npc != null)
-            {
-                if (!noMessages) // no overwrite
-                {
+        //    if (player != null && npc != null)
+        //    {
+        //        if (!noMessages) // no overwrite
+        //        {
                 	
-                    GameEventMgr.RemoveHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler(ReleaseEventHandler));
+        //            GameEventMgr.RemoveHandler(npc, GameLivingEvent.PetReleased, new DOLEventHandler(ReleaseEventHandler));
 
-                    player.SetControlledBrain(null);
-                    MessageToCaster("You lose control of " + npc.GetName(0, false) + "!", eChatType.CT_SpellExpires);
+        //            player.SetControlledBrain(null);
+        //            MessageToCaster("You lose control of " + npc.GetName(0, false) + "!", eChatType.CT_SpellExpires);
 
-                    lock (npc.BrainSync)
-                    {
+        //            lock (npc.BrainSync)
+        //            {
                     	
-                        npc.StopAttack();
-                        npc.RemoveBrain(m_controlledBrain);
-                        m_isBrainSet = false;
+        //                npc.StopAttack();
+        //                npc.RemoveBrain(m_controlledBrain);
+        //                m_isBrainSet = false;
 
 
-                        if (npc.Brain != null && npc.Brain is IOldAggressiveBrain)
-                        {
+        //                if (npc.Brain != null && npc.Brain is IOldAggressiveBrain)
+        //                {
                         	
-                        	((IOldAggressiveBrain)npc.Brain).ClearAggroList();
+        //                	((IOldAggressiveBrain)npc.Brain).ClearAggroList();
                             
-                            if (Spell.Pulse != 0 && Caster.ObjectState == GameObject.eObjectState.Active && Caster.IsAlive)
-                            {
-                                ((IOldAggressiveBrain)npc.Brain).AddToAggroList(Caster, Caster.Level * 10);
-                                npc.StartAttack(Caster);
-                            }
-                            else
-                            {
-                                npc.WalkToSpawn();
-                            }
+        //                    if (Spell.Pulse != 0 && Caster.ObjectState == GameObject.eObjectState.Active && Caster.IsAlive)
+        //                    {
+        //                        ((IOldAggressiveBrain)npc.Brain).AddToAggroList(Caster, Caster.Level * 10);
+        //                        npc.StartAttack(Caster);
+        //                    }
+        //                    else
+        //                    {
+        //                        npc.WalkToSpawn();
+        //                    }
                             
-                        }
+        //                }
                         
-                    }
+        //            }
 
-                    // remove NPC with new brain from all attackers aggro list
-                    lock (npc.Attackers)
-	                    foreach (GameObject obj in npc.Attackers)
-	                    {
+        //            // remove NPC with new brain from all attackers aggro list
+        //            lock (npc.attackComponent.Attackers)
+	       //             foreach (GameObject obj in npc.attackComponent.Attackers)
+	       //             {
 	
-	                        if (obj == null || !(obj is GameNPC))
-	                        	continue;
+	       //                 if (obj == null || !(obj is GameNPC))
+	       //                 	continue;
 	                        
-	                        if (((GameNPC)obj).Brain != null && ((GameNPC)obj).Brain is IOldAggressiveBrain)
-	                        	((IOldAggressiveBrain)((GameNPC)obj).Brain).RemoveFromAggroList(npc);
-	                    }
+	       //                 if (((GameNPC)obj).Brain != null && ((GameNPC)obj).Brain is IOldAggressiveBrain)
+	       //                 	((IOldAggressiveBrain)((GameNPC)obj).Brain).RemoveFromAggroList(npc);
+	       //             }
 
-                    m_controlledBrain.ClearAggroList();
-                    npc.StopFollowing();
+        //            m_controlledBrain.ClearAggroList();
+        //            npc.StopFollowing();
 
-                    npc.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, npc.CurrentRegion.Time);
+        //            npc.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, npc.CurrentRegion.Time);
                     
 
-                    foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    {
-                    	if(npc.IsAlive) {
+        //            foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+        //            {
+        //            	if(npc.IsAlive) {
                     		
-                    		ply.Out.SendNPCCreate(npc);
+        //            		ply.Out.SendNPCCreate(npc);
 	                        
-                    		if (npc.Inventory != null)
-								ply.Out.SendLivingEquipmentUpdate(npc);
+        //            		if (npc.Inventory != null)
+								//ply.Out.SendLivingEquipmentUpdate(npc);
 	                        
-	                        ply.Out.SendObjectGuildID(npc, null);
+	       //                 ply.Out.SendObjectGuildID(npc, null);
 	                        
-                    	}
+        //            	}
 
-                    }
-                }
+        //            }
+        //        }
                 
-            }
-            else
-            {
-                if (log.IsWarnEnabled)
-                    log.Warn(string.Format("charm effect expired: Caster={0} effect.Owner={1}",
-                                           (Caster == null ? "(null)" : Caster.GetType().ToString()),
-                                           (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
-            }
+        //    }
+        //    else
+        //    {
+        //        if (log.IsWarnEnabled)
+        //            log.Warn(string.Format("charm effect expired: Caster={0} effect.Owner={1}",
+        //                                   (Caster == null ? "(null)" : Caster.GetType().ToString()),
+        //                                   (effect.Owner == null ? "(null)" : effect.Owner.GetType().ToString())));
+        //    }
 
-            return 0;
-        }
+        //    return 0;
+        //}
 
         /// <summary>
         /// Determines wether this spell is better than given one
@@ -565,7 +593,7 @@ namespace DOL.GS.Spells
             {
                 var list = new List<string>();
 
-                list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "CharmSpellHandler.DelveInfo.Function", (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType)));
+                list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "CharmSpellHandler.DelveInfo.Function", (Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString())));
                 list.Add(" "); //empty line
                 list.Add(Spell.Description);
                 list.Add(" "); //empty line

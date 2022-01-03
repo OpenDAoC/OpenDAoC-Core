@@ -76,7 +76,8 @@ namespace DOL.GS
 			m_deathAnnounce = new String[] { "The earth lurches beneath your feet as {0} staggers and topples to the ground.",
 				"A glowing light begins to form on the mound that served as {0}'s lair." };
 
-			TetherRange = 2500;	// TODO: Can be removed once there is an NPCTemplate.
+			TetherRange = 2500; // TODO: Can be removed once there is an NPCTemplate.
+			ScalingFactor = 70;
 		}
 
 		public ushort LairRadius
@@ -105,9 +106,9 @@ namespace DOL.GS
 			return base.HasAbility(keyName);
 		}
 
-		public override int AttackRange
+		public int AttackRange
 		{
-			get { return 400; }
+			get { return 450; }
 			set { }
 		}
 
@@ -148,7 +149,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override double AttackDamage(InventoryItem weapon)
+		public double AttackDamage(InventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * 1.0 * DragonDifficulty / 100;
 		}
@@ -313,7 +314,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -828,7 +829,7 @@ namespace DOL.GS
 					spell.RecastDelay = 10;
 					spell.SpellID = 6000;
 					spell.Target = "Enemy";
-					spell.Type = "Stun";
+					spell.Type = eSpellType.Stun.ToString();
 					spell.Message1 = "You cannot move!";
 					spell.Message2 = "{0} cannot seem to move!";
 					m_stun = new Spell(spell, 70);

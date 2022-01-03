@@ -84,7 +84,72 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.Player.Heading = (ushort)(heading & 0xfff);
 			}
 
-			new UseSpellAction(client.Player, flagSpeedData, spellLevel, spellLineIndex).Start(1);
+			GamePlayer player = client.Player;
+
+			if ((flagSpeedData & 0x200) != 0)
+			{
+				player.CurrentSpeed = (short)(-(flagSpeedData & 0x1ff)); // backward movement
+			}
+			else
+			{
+				player.CurrentSpeed = (short)(flagSpeedData & 0x1ff); // forward movement
+			}
+			player.IsStrafing = (flagSpeedData & 0x4000) != 0;
+			player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
+			player.GroundTargetInView = ((flagSpeedData & 0x1000) != 0);
+
+			List<Tuple<SpellLine, List<Skill>>> snap = player.GetAllUsableListSpells();
+			Skill sk = null;
+			SpellLine sl = null;
+			
+			// is spelline in index ?
+			if (spellLineIndex < snap.Count)
+			{
+				int index = snap[spellLineIndex].Item2.FindIndex(s => s is Spell ? 
+				                                                   s.Level == spellLevel 
+				                                                   : (s is Styles.Style ? ((Styles.Style)s).SpecLevelRequirement == spellLevel
+				                                                      : (s is Ability ? ((Ability)s).SpecLevelRequirement == spellLevel : false)));
+				
+				if (index > -1)
+				{
+					sk = snap[spellLineIndex].Item2[index];
+				}
+				
+				sl = snap[spellLineIndex].Item1;
+			}
+			
+			if (sk is Spell && sl != null)
+			{
+				//todo How to attach a spell to a player? Casting Service should in theory create spellHandler and add to the player -- not the component
+				//player.CastSpell((Spell)sk, sl);
+				player.castingComponent.StartCastSpell((Spell) sk, sl);
+			}
+			else if (sk is Styles.Style)
+			{
+				player.styleComponent.ExecuteWeaponStyle((Styles.Style)sk);
+			}
+			else if (sk is Ability)
+			{
+				Ability ab = (Ability)sk;
+				IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ab.KeyName);
+				if (handler != null)
+				{
+					handler.Execute(ab, player);
+				}
+				
+				ab.Execute(player);
+			}
+			else
+			{
+				if (Log.IsWarnEnabled)
+					Log.Warn("Client <" + player.Client.Account.Name + "> requested incorrect spell at level " + spellLevel +
+						" in spell-line " + ((sl == null || sl.Name == null) ? "unkown" : sl.Name));
+				
+				player.Out.SendMessage(string.Format("Error : Spell (Line {0}, Level {1}) can't be resolved...", spellLineIndex, spellLevel), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+			}
+			
+
+			//new UseSpellAction(client.Player, flagSpeedData, spellLevel, spellLineIndex).Start(1);
 		}
 
 		/// <summary>
@@ -168,11 +233,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 				
 				if (sk is Spell && sl != null)
 				{
+					//todo How to attach a spell to a player? Casting Service should in theory create spellHandler and add to the player -- not the component
 					player.CastSpell((Spell)sk, sl);
 				}
 				else if (sk is Styles.Style)
 				{
-					player.ExecuteWeaponStyle((Styles.Style)sk);
+					player.styleComponent.ExecuteWeaponStyle((Styles.Style)sk);
 				}
 				else if (sk is Ability)
 				{

@@ -37,9 +37,9 @@ namespace DOL.GS.RealmAbilities
 		}
 	}
 
-	public class ReflexAttackAbility : L3RAPropertyEnhancer
+	public class XReflexAttackAbility : L3RAPropertyEnhancer
 	{
-		public ReflexAttackAbility(DBAbility dba, int level)
+		public XReflexAttackAbility(DBAbility dba, int level)
 			: base(dba, level, eProperty.Undefined)
 		{
 		}

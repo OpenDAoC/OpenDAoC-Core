@@ -211,8 +211,8 @@ namespace DOL.GS
 		private void StopWeather(RegionWeather weather)
 		{
 			var weatherCurrentPosition = weather.CurrentPosition(SimpleScheduler.Ticks);
-			if (EventLogWeather && log.IsInfoEnabled)
-				log.InfoFormat("Weather Stopped in Region {0} (ID {1}) CurrentPosition : {2}\n{3}", weather.Region.Description, weather.Region.ID, weatherCurrentPosition, weather);
+			// if (EventLogWeather && log.IsInfoEnabled)
+			// log.InfoFormat("Weather Stopped in Region {0} (ID {1}) CurrentPosition : {2}\n{3}", weather.Region.Description, weather.Region.ID, weatherCurrentPosition, weather);
 
 			weather.Clear();
 

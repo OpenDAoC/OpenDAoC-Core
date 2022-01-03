@@ -20,14 +20,14 @@ namespace DOL.GS.RealmAbilities
         public virtual void CreateSpell(double damage)
         {
             m_dbspell = new DBSpell();
-            m_dbspell.Name = "Anger of the Gods";
+            m_dbspell.Name = SpellName;
             m_dbspell.Icon = 7023;
             m_dbspell.ClientEffect = 7023;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Group";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = "DamageAdd";
+            m_dbspell.Type = eSpellType.DamageAdd.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 30;
             m_dbspell.Pulse = 0;
@@ -38,38 +38,15 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Range = 1000;
             m_spell = new Spell(m_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
             m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
-        }	
+        }
 
-		public override void Execute(GameLiving living)
+        public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 			m_player = living as GamePlayer;
-			
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
-			{
-				switch (Level)
-				{
-					case 1: m_damage = 10.0; break;
-					case 2: m_damage = 15.0; break;
-					case 3: m_damage = 20.0; break;
-					case 4: m_damage = 25.0; break;
-					case 5: m_damage = 30.0; break;
-					default: return;
-				}				
-			}
-			else
-			{
-				switch (Level)
-				{
-					case 1: m_damage = 10.0; break;
-					case 2: m_damage = 20.0; break;
-					case 3: m_damage = 30.0; break;
-					default: return;
-				}				
-			}
+            m_damage = GetDamageAddAmount();
 
-
-			CreateSpell(m_damage);
+            CreateSpell(m_damage);
 			CastSpell(m_player);
 			DisableSkill(living);
 		}
@@ -113,7 +90,36 @@ namespace DOL.GS.RealmAbilities
 				list.Add("Duration: 30 sec");
 				list.Add("Casting time: instant");				
 			}
-
 		}
+
+        protected virtual string SpellName
+        {
+            get { return "Anger of the Gods"; }
+        }
+
+        protected virtual double GetDamageAddAmount()
+        {
+            if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            {
+                switch (Level)
+                {
+                    case 1: return 10.0;
+                    case 2: return 15.0;
+                    case 3: return 20.0;
+                    case 4: return 25.0;
+                    case 5: return 30.0;
+                }
+            }
+            else
+            {
+                switch (Level)
+                {
+                    case 1: return 10.0;
+                    case 2: return 20.0;
+                    case 3: return 30.0;
+                }
+            }
+            return 0;
+        }
 	}
 }

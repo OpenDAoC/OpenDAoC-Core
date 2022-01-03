@@ -48,10 +48,10 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 
-			QuickCastEffect quickcast = player.EffectList.GetOfType<QuickCastEffect>();
+			QuickCastECSGameEffect quickcast = (QuickCastECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.QuickCast);
 			if (quickcast!=null)
 			{
-				quickcast.Cancel(false);
+				quickcast.Cancel(true);
 				return;
 			}			
 
@@ -63,7 +63,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// Can't quick cast if in attack mode
-			if(player.AttackState)
+			if(player.attackComponent.AttackState)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseInMeleeCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -82,7 +82,7 @@ namespace DOL.GS.SkillHandler
 
 			//player.DisableSkill(ab,DURATION / 10);
 
-			new QuickCastEffect().Start(player);
+			new QuickCastECSGameEffect(new ECSGameEffectInitParams(player, QuickCastECSGameEffect.DURATION, 1));
 		}
 	}
 }

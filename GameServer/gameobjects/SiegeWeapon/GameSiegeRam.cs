@@ -178,7 +178,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override int AttackRange
+		public int AttackRange
 		{
 			get
 			{
@@ -201,7 +201,7 @@ namespace DOL.GS
 				double speed = (10.0 + (5.0 * Level) + 100.0 * CurrentRiders.Length / MAX_PASSENGERS);
 				foreach (GamePlayer player in CurrentRiders)
 				{
-					RealmAbilities.RAPropertyEnhancer ab = player.GetAbility<RealmAbilities.LifterAbility>();
+					RealmAbilities.RAPropertyEnhancer ab = player.GetAbility<RealmAbilities.AtlasOF_LifterAbility>();
 					if (ab != null)
 						speed *= 1 + (ab.Amount / 100);
 				}

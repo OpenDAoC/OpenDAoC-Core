@@ -327,7 +327,7 @@ namespace DOL.GS
 				return;
 
 			// Artifacts only gain XP on NPC and player kills
-			if (xpArgs.XPSource != GameLiving.eXPSource.Player && xpArgs.XPSource != GameLiving.eXPSource.NPC)
+			if (xpArgs.XPSource != eXPSource.Player && xpArgs.XPSource != eXPSource.NPC)
 				return;
 			
 			if (player.IsPraying)

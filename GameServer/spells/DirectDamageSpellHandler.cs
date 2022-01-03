@@ -187,8 +187,10 @@ namespace DOL.GS.Spells
 
 			// calc damage
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
-			DamageTarget(ad, true);
+
 			SendDamageMessages(ad);
+			DamageTarget(ad, true);
+			
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
 

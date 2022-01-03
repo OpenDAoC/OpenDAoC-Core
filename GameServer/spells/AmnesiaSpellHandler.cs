@@ -52,19 +52,20 @@ namespace DOL.GS.Spells
 			if (target == null || !target.IsAlive)
 				return;
 
-			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-				return;
+			/// [Atlas - Takii] This is a silly change by a silly person because disallowing Amnesia while MoC'd has never been a thing in this game.
+			//if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
+ 			//	return;
 
 			//have to do it here because OnAttackedByEnemy is not called to not get aggro
 			if (target.Realm == 0 || Caster.Realm == 0)
-				target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-			else target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
+				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+			else target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
 			SendEffectAnimation(target, 0, false, 1);
 
 			if (target is GamePlayer)
 			{
-				((GamePlayer)target).NextCombatStyle = null;
-				((GamePlayer)target).NextCombatBackupStyle = null;
+				((GamePlayer)target).styleComponent.NextCombatStyle = null;
+				((GamePlayer)target).styleComponent.NextCombatBackupStyle = null;
 			}
 			target.StopCurrentSpellcast(); //stop even if MoC or QC
 

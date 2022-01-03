@@ -150,7 +150,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				player.Out.SendPlayerPositionAndObjectID();
-				player.Out.SendEncumberance(); // Send only max encumberance without used
 				player.Out.SendUpdateMaxSpeed();
 				//TODO 0xDD - Conc Buffs // 0 0 0 0
 				//Now find the friends that are online
@@ -171,8 +170,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.Out.SendQuestListUpdate();
 				player.Out.SendStatusUpdate();
 				player.Out.SendUpdatePoints();
-				player.Out.SendEncumberance();
-                player.Out.SendConcentrationList();
+				player.Out.SendConcentrationList();
 				// Visual 0x4C - Color Name style (0 0 5 0 0 0 0 0) for RvR or (0 0 5 1 0 0 0 0) for PvP
 				// 0xBE - 0 1 0 0
 				//used only on PvP, sets THIS players ID for nearest friend/enemy buttons and "friendly" name colors
@@ -180,9 +178,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.Out.SendObjectGuildID(player, player.Guild);
 				player.Out.SendDebugMode(player.TempProperties.getProperty<object>(GamePlayer.DEBUG_MODE_PROPERTY, null) != null);
 				player.Out.SendUpdateMaxSpeed(); // Speed in debug mode ?
-				//WARNING: This would change problems if a scripter changed the values for plvl
-				//GSMessages.SendDebugMode(client,client.Account.PrivLevel>1);
+												 //WARNING: This would change problems if a scripter changed the values for plvl
+												 //GSMessages.SendDebugMode(client,client.Account.PrivLevel>1);
+				bool isStealthed = player.IsStealthed;
+
+				player.UpdateEncumberance(); // Update encumberance on init.
 				player.Stealth(false);
+				if (player.Client.Account.PrivLevel > 1)
+					player.GMStealthed = isStealthed;
+
 				player.Out.SendSetControlledHorse(player);
 				//check item at world load
 				if (log.IsDebugEnabled)

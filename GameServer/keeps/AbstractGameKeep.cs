@@ -606,11 +606,12 @@ namespace DOL.GS.Keeps
 				player.Out.SendMessage("The keep is not owned by your realm.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
 				return false;
 			}
-
-			if (this.DBKeep.BaseLevel != 50)
+			
+			// Disabled check on DBKeep.BaseLevel to allow claiming of BG keeps
+			if (this.DBKeep.BaseLevel != 50 && !ServerProperties.Properties.ALLOW_BG_CLAIM)
 			{
-				player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
+			 	player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			 	return false;
 			}
 
 			if (player.Guild == null)
@@ -660,7 +661,7 @@ namespace DOL.GS.Keeps
 				int count = 0;
 				foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 				{
-					if (GameServer.KeepManager.GetKeepCloseToSpot(p.CurrentRegionID, p, WorldMgr.VISIBILITY_DISTANCE) == this)
+					if (GameServer.KeepManager.GetKeepCloseToSpot(p.CurrentRegionID, p, 1000) == this)
 						count++;
 				}
 
@@ -702,11 +703,14 @@ namespace DOL.GS.Keeps
 			{
 				banner.ChangeGuild();
 			}
+
+			GameKeepDoor door = new GameKeepDoor();
     		this.SaveIntoDatabase();
             LoadFromDatabase(DBKeep);
+            door.BroadcastDoorStatus();
             StartDeductionTimer();
             GameEventMgr.Notify(KeepEvent.KeepClaimed, this, new KeepEventArgs(this));
-        }
+		}
 
 		/// <summary>
 		/// Starts the deduction timer
@@ -893,6 +897,8 @@ namespace DOL.GS.Keeps
 
 				guard.Level = (byte)(GetBaseLevel(guard) + (bonusLevel * multiplier));
 			}
+
+			guard.StartHealthRegeneration();
 		}
 
 

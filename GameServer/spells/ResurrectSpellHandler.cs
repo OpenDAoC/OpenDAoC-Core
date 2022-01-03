@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -74,7 +75,7 @@ namespace DOL.GS.Spells
 				}
 
 				//send resurrect dialog
-				targetPlayer.Out.SendCustomDialog("Do you allow " + m_caster.GetName(0, true) + " to resurrected you\nwith " + m_spell.ResurrectHealth + " percent hits?", new CustomDialogResponse(ResurrectResponceHandler));
+				targetPlayer.Out.SendCustomDialog("Do you allow " + m_caster.GetName(0, true) + " to resurrected you\n with " + m_spell.ResurrectHealth + " percent hits/power?", new CustomDialogResponse(ResurrectResponceHandler));
 			}
 		}
 
@@ -85,6 +86,9 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public override int PowerCost(GameLiving target)
 		{
+			if (IsPerfectRecovery())
+				return 0;
+
 			float factor = Math.Max (0.1f, 0.5f + (target.Level - m_caster.Level) / (float)m_caster.Level);
 
 			//DOLConsole.WriteLine("res power needed: " + (int) (m_caster.MaxMana * factor) + "; factor="+factor);
@@ -122,29 +126,19 @@ namespace DOL.GS.Spells
 					if (response == 1)
 					{
 						ResurrectLiving(player); //accepted
-						//VaNaTiC->
-						//#warning VaNaTiC: add this in GamePlayer.OnRevive with my RevivedEventArgs
-						// Patch 1.56: Resurrection sickness now goes from 100% to 50% when doing a "full rez" on another player. 
-						// We have do to this here, cause we dont have any other chance to get
-						// an object-relation between the casted spell of the rezzer (here) and
-						// the produced illness for the player (OnRevive()).
-						// -> any better solution -> post :)
-						if ( Spell.ResurrectHealth == 100 )
-						{
-							GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, "PveResurrectionIllness");
-				            if ( effect != null )
-				            	effect.Overwrite(new GameSpellEffect(effect.SpellHandler, effect.Duration / 2, effect.PulseFreq));
-							GameSpellEffect effecttwo = SpellHandler.FindEffectOnTarget(player, "RvrResurrectionIllness");
-				            if ( effecttwo != null )
-				            	effecttwo.Overwrite(new GameSpellEffect(effecttwo.SpellHandler, effecttwo.Duration / 2, effecttwo.PulseFreq));
-						}
-						//VaNaTiC<-
 					}
 					else
 					{
 						player.Out.SendMessage("You decline to be resurrected.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						//refund mana
 						m_caster.Mana += PowerCost(player);
+
+						// Reset PR cooldown if it wasnt accepted.
+						if (IsPerfectRecovery() && Ability != null)
+                        {
+							AtlasOF_PerfectRecovery PRAbility = Ability as AtlasOF_PerfectRecovery;
+							PRAbility.OnRezDeclined(Caster as GamePlayer);
+						}
 					}
 				}
 			}
@@ -160,13 +154,36 @@ namespace DOL.GS.Spells
 			if (m_caster.ObjectState != GameObject.eObjectState.Active) return;
 			if (m_caster.CurrentRegionID != living.CurrentRegionID) return;
 
-			living.Health = living.MaxHealth * m_spell.ResurrectHealth / 100;
-			int tempManaEnd = m_spell.ResurrectMana / 100;
-			living.Mana = living.MaxMana * tempManaEnd;
+            GamePlayer player = living as GamePlayer;
+			if (player != null)
+            {
+				// TempProperty is used to either halve (for high level spec rez) or remove (PR) rez sick.
+				// That's done either in GamePlayer.OnRevive() or in the rez sick spell handler if Effectiveness > 0;
+				double rezSickEffectiveness = 1;
 
-			//The spec rez spells are the only ones that have endurance
-			if (!SpellLine.IsBaseLine)
-				living.Endurance = living.MaxEndurance * tempManaEnd;
+				// Must check PR first since PR also has ResurrectHealth == 100 but should not apply rez sick.
+				if (IsPerfectRecovery())
+                {
+                    rezSickEffectiveness = 0;
+                }
+                else if (Spell.ResurrectHealth == 100)
+                {
+					//Patch 1.56: Resurrection sickness now goes from 100 % to 50 % when doing a "full rez" on another player.
+					rezSickEffectiveness = 0.5;
+				}
+
+                player.TempProperties.setProperty(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS, rezSickEffectiveness);
+
+                player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
+            }
+
+			living.Health = living.MaxHealth * m_spell.ResurrectHealth / 100;
+			double tempManaEnd = m_spell.ResurrectMana / 100.0;
+			living.Mana = (int)(living.MaxMana * tempManaEnd);
+
+            //The spec rez spells are the only ones that have endurance
+            if (!SpellLine.IsBaseLine)
+				living.Endurance = (int)(living.MaxEndurance * tempManaEnd);
 			else
 				living.Endurance = 0;
 
@@ -182,22 +199,21 @@ namespace DOL.GS.Spells
 			{
 				resurrectExpiredTimer.Stop();
 			}
-
-			GamePlayer player = living as GamePlayer;
+		
 			if (player != null)
 			{
 				player.StopReleaseTimer();
 				player.Out.SendPlayerRevive(player);
 				player.UpdatePlayerStatus();
 				player.Out.SendMessage("You have been resurrected by " + m_caster.GetName(0, false) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
-                
-                //Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
-                RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
+				//player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
+
+				//Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
+				RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
                 rezImmune.Start(player);
 
 				IList<GameObject> attackers;
-				lock (player.Attackers) { attackers = new List<GameObject>(player.Attackers); }
+				lock (player.attackComponent.Attackers) { attackers = new List<GameObject>(player.attackComponent.Attackers); }
 
 				foreach (GameObject attacker in attackers)
 				{
@@ -205,7 +221,7 @@ namespace DOL.GS.Spells
 						attacker.Notify(
 							GameLivingEvent.EnemyHealed,
 							attacker,
-							new EnemyHealedEventArgs(living, m_caster, GameLiving.eHealthChangeType.Spell, living.Health));
+							new EnemyHealedEventArgs(living, m_caster, eHealthChangeType.Spell, living.Health));
 				}
 
 				GamePlayer casterPlayer = Caster as GamePlayer;
@@ -310,12 +326,12 @@ namespace DOL.GS.Spells
 
 				var list = new List<string>();
 
-				list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
+				list.Add("Function: " + (Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString()));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line
 				list.Add("Health restored: " + Spell.ResurrectHealth);
-				if(Spell.ResurrectMana != 0) list.Add("Mana restored: " + Spell.ResurrectMana);
+				if(Spell.ResurrectMana != 0) list.Add("Power restored: " + Spell.ResurrectMana);
 				list.Add("Target: " + Spell.Target);
 				if (Spell.Range != 0) list.Add("Range: " + Spell.Range);
 				list.Add("Casting time: " + (Spell.CastTime*0.001).ToString("0.0## sec;-0.0## sec;'instant'"));
@@ -323,5 +339,7 @@ namespace DOL.GS.Spells
 				return list;
 			}
 		}
+
+		private bool IsPerfectRecovery() { return SpellLine.Name == "RealmAbilities"; }
 	}
 }

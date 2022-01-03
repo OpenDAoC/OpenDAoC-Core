@@ -31,6 +31,11 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("HealOverTime")]
 	public class HoTSpellHandler : SpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new HealOverTimeECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// Execute heal over time spell
 		/// </summary>
@@ -68,9 +73,9 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectStart(GameSpellEffect effect)
 		{			
-			SendEffectAnimation(effect.Owner, 0, false, 1);
-			//"{0} seems calm and healthy."
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
+			//SendEffectAnimation(effect.Owner, 0, false, 1);
+			////"{0} seems calm and healthy."
+			//Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
 		}
 
 		public override void OnEffectPulse(GameSpellEffect effect)
@@ -87,7 +92,19 @@ namespace DOL.GS.Spells
 			base.OnDirectEffect(target, effectiveness);
 			double heal = Spell.Value * effectiveness;
 			
-			target.Health += (int)heal;
+			if(target.Health < target.MaxHealth)
+            {
+				target.Health += (int)heal;
+				if (target is NecromancerPet && Caster.Equals(target))
+					MessageToLiving((target as NecromancerPet).Owner, "Your " + target.GetName(0, false) + " is healed for " + heal + " hit points!", eChatType.CT_Spell);
+				else
+					MessageToLiving(target, "You are healed by " + m_caster.GetName(0, false) + " for " + heal + " hit points.", eChatType.CT_Spell);
+			}
+            else
+            {
+				MessageToLiving(target, "You are full health.", eChatType.CT_SpellResisted);
+            }
+			
 
             #region PVP DAMAGE
 

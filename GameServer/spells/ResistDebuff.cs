@@ -38,10 +38,15 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public abstract string DebuffTypeName { get; }
 
-		/// <summary>
-		/// Debuff category is 3 for debuffs
-		/// </summary>
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+			new StatDebuffECSEffect(initParams);
+        }
+
+        /// <summary>
+        /// Debuff category is 3 for debuffs
+        /// </summary>
+        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
 
 		/// <summary>
 		/// Calculates the effect duration in milliseconds
@@ -94,13 +99,13 @@ namespace DOL.GS.Spells
 
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
-				target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
+				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
 			}
 			else
 			{
-				target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
+				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 			}
 			if(target is GameNPC)
 			{

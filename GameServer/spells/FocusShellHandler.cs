@@ -57,7 +57,7 @@ namespace DOL.GS.Spells
 
 					if (currentEffect != null && currentEffect.SpellHandler is FocusShellHandler)
 					{
-						(currentEffect.SpellHandler as FocusShellHandler).FocusSpellAction(null, Caster, null);
+						(currentEffect.SpellHandler as FocusShellHandler).FocusSpellAction(/*null, Caster, null*/);
 					}
 
 					FSTarget = selectedTarget as GamePlayer;
@@ -130,7 +130,7 @@ namespace DOL.GS.Spells
 		private void CancelSpell(DOLEvent e, object sender, EventArgs args)
 		{
 			//Send the cancel signal, we need to use the faster as the sender!
-			FocusSpellAction(null, Caster, null);
+			FocusSpellAction(/*null, Caster, null*/);
 		}
 			
 		private void OnAttacked(DOLEvent e, object sender, EventArgs args)

@@ -34,10 +34,13 @@ namespace DOL.GS.Spells
 			: base(caster, spell, line) 
         {
         }
-
-        protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new FacilitatePainworkingECSGameEffect(initParams);
+		}
+		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
         {
-            return new FacilitatePainworkingEffect(this, 
+            return new FacilitatePainworkingEffect(this,
                 CalculateEffectDuration(target, effectiveness), 0, effectiveness);
         }
 	}

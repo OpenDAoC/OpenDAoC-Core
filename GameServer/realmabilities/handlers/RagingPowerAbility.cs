@@ -20,39 +20,19 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-			int heal = 0;
+			int heal = GetPowerHealAmount();
 			
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
-			{
-				switch (Level)
-				{
-					case 1: heal = 25; break;
-					case 2: heal = 35; break;
-					case 3: heal = 50; break;
-					case 4: heal = 65; break;
-					case 5: heal = 80; break;
-				}
-			}
-			else
-			{
-				switch (Level)
-				{
-					case 1: heal = 25; break;
-					case 2: heal = 60; break;
-					case 3: heal = 100; break;
-				}
-			}
-			int healed = living.ChangeMana(living, GameLiving.eManaChangeType.Spell, living.MaxMana * heal / 100);
+			int healed = living.ChangeMana(living, eManaChangeType.Spell, living.MaxMana * heal / 100);
 
 			SendCasterSpellEffectAndCastMessage(living, 7009, healed > 0);
 
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				if (healed > 0) player.Out.SendMessage("You gain " + healed + " mana.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				if (healed > 0) player.Out.SendMessage("You gain " + healed + " power.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				if (heal > healed)
 				{
-					player.Out.SendMessage("You have full mana.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You have full power.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				}
 			}
 			if (healed > 0) DisableSkill(living);
@@ -86,5 +66,30 @@ namespace DOL.GS.RealmAbilities
 				list.Add("Casting time: instant");
 			}
 		}
+
+		protected virtual int GetPowerHealAmount()
+        {
+            if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            {
+                switch (Level)
+                {
+                    case 1: return 25;
+                    case 2: return 35;
+                    case 3: return 50;
+                    case 4: return 65;
+                    case 5: return 80;
+                }
+            }
+            else
+            {
+                switch (Level)
+                {
+                    case 1: return 25;
+                    case 2: return 60;
+                    case 3: return 100;
+                }
+            }
+			return 0;
+        }
 	}
 }

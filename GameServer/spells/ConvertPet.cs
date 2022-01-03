@@ -39,7 +39,14 @@ namespace DOL.GS.Spells
 		public override bool StartSpell(GameLiving target)
 		{
 			var targets = SelectTargets(target);
-			if (targets.Count <= 0) return false;
+			if (targets.Count <= 0)
+				if (m_caster.ControlledBrain != null)
+					targets.Add(m_caster.ControlledBrain.Body);
+				else
+				{
+					return false;
+				}
+			
 			int mana = 0;
 
 			foreach (GameLiving living in targets)
@@ -48,14 +55,14 @@ namespace DOL.GS.Spells
 				mana += (int)(living.Health * Spell.Value / 100);
 			}
 
-			int absorb = m_caster.ChangeMana(m_caster, GameLiving.eManaChangeType.Spell, mana);
+			int absorb = m_caster.ChangeMana(m_caster, eManaChangeType.Spell, mana);
 
 			if (m_caster is GamePlayer)
 			{
 				if (absorb > 0)
 					MessageToCaster("You absorb " + absorb + " power points.", eChatType.CT_Spell);
 				else
-					MessageToCaster("Your mana is already full!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your power is already full!", eChatType.CT_SpellResisted);
 				((GamePlayer)m_caster).CommandNpcRelease();
 			}
 

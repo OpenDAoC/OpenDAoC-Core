@@ -49,18 +49,16 @@ namespace DOL.GS
 
 
 			if (player.CurrentRegion.IsCapitalCity)
-				SayTo(player, string.Format("{0} {1}. {2} {3} {4}",
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
-					player.CharacterClass.Name,
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.CityMovementOffer"),
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.StrengthOffer"),
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.BorderKeepPortOffer")));
-			else if (IsShroudedIslesStartZone(player.CurrentZone.ID))
 				SayTo(player, string.Format("{0} {1}. {2} {3}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
 					player.CharacterClass.Name,
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.CityMovementOffer"),
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.BorderKeepPortOffer")));
+					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.StrengthOffer")));
+			else if (IsShroudedIslesStartZone(player.CurrentZone.ID))
+				SayTo(player, string.Format("{0} {1}. {2}",
+					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
+					player.CharacterClass.Name,
+					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.CityMovementOffer")));
 			else if(!player.CurrentRegion.IsRvR)//default message outside of RvR
 				SayTo(player, string.Format("{0} {1}. {2}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
@@ -90,23 +88,6 @@ namespace DOL.GS
 							{
 								TargetObject = player;
 								CastSpell(SkillBase.GetSpellByID(STROFTHEREALMID), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-							}
-							break;
-						case "borderkeep":
-							if ((player.CurrentRegion.IsCapitalCity || IsShroudedIslesStartZone(player.CurrentZone.ID)) && player.Level < 10)
-							{
-								if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
-								{
-									SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
-								}
-								else
-								{
-									AbstractGameKeep portalKeep = GameServer.KeepManager.GetBGPK(player);
-									if (portalKeep != null)
-									{
-										player.MoveTo((ushort)portalKeep.Region, portalKeep.X, portalKeep.Y, portalKeep.Z, (ushort)portalKeep.Heading);
-									}
-								}
 							}
 							break;
 					}

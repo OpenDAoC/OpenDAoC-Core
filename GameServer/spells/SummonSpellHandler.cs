@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -52,6 +53,11 @@ namespace DOL.GS.Spells
 		protected bool m_isSilent = false;
 
 		public SummonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new PetECSGameEffect(initParams);
+		}
 
 		/// <summary>
 		/// called after normal spell cast is completed and effect has to be started
@@ -134,9 +140,9 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			GameSpellEffect effect = CreateSpellEffect(target, effectiveness);
+			//GameSpellEffect effect = CreateSpellEffect(target, effectiveness);            
 
-			IControlledBrain brain = null;
+            IControlledBrain brain = null;
 			if (template.ClassType != null && template.ClassType.Length > 0)
 			{
 				Assembly asm = Assembly.GetExecutingAssembly();
@@ -189,7 +195,8 @@ namespace DOL.GS.Spells
 			if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
 				m_pet.Spells = template.Spells; // Have to scale spells again now that the pet level has been assigned
 
-			effect.Start(m_pet);
+            //effect.Start(m_pet);
+            CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, effectiveness), effectiveness, this));
 
 			Caster.OnPetSummoned(m_pet);
 		}
@@ -240,9 +247,12 @@ namespace DOL.GS.Spells
 
             GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 
-            GameSpellEffect effect = FindEffectOnTarget(pet, this);
-            if (effect != null)
-                effect.Cancel(false);
+            //GameSpellEffect effect = FindEffectOnTarget(pet, this);
+            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
+				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
+            //if (effect != null)
+            //    effect.Cancel(false);
+
 		}
 
 		/// <summary>
@@ -254,7 +264,8 @@ namespace DOL.GS.Spells
 			{
 				var list = new List<string>();
 
-				list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
+                // TODO: Fix no spellType
+				//list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line

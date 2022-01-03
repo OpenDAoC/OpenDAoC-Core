@@ -1,105 +1,77 @@
 /*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Atlas
  *
  */
 using System;
-using DOL.AI.Brain;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+using System.Collections.Generic;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("AllStatsBuff")]
-    public class AllStatsBuff : SpellHandler
-    {
-		public override int CalculateSpellResistChance(GameLiving target) { return 0; }
-		
-        public override void OnEffectStart(GameSpellEffect effect)
-        {    
-     		base.OnEffectStart(effect);
-			GameLiving living = effect.Owner as GameLiving;
-            living.AbilityBonus[(int)eProperty.Dexterity] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Strength] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Constitution] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Acuity] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Piety] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Empathy] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Quickness] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Intelligence] += (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Charisma] += (int)m_spell.Value;   
-            living.AbilityBonus[(int)eProperty.ArmorAbsorption] += (int)m_spell.Value; 
-            living.AbilityBonus[(int)eProperty.MagicAbsorption] += (int)m_spell.Value; 
-            
-            if(effect.Owner is GamePlayer)
-            {
-            	GamePlayer player = effect.Owner as GamePlayer;  
-                player.Out.SendCharStatsUpdate();
-                player.UpdateEncumberance();
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();             	
-            }
-        }
-        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
+	/// <summary>
+	/// All Stats buff
+	/// </summary>
+	[SpellHandlerAttribute("AllStatsBarrel")]
+	public class AllStatsBarrel : SingleStatBuff
+	{
+		public static List<int> BuffList = new List<int> {8090,8091,8094,8092,8095,8093/*,8071*/};
+		private int strengthID = 8090;
+		private int conID = 8091;
+		private int strenghtConID = 8094;
+		private int dexID = 8092;
+		private int dexQuickID = 8095;
+		private int acuityID = 8093;
+		private int hasteID = 8071;
+
+        public override bool StartSpell(GameLiving target)
         {
-			GameLiving living = effect.Owner as GameLiving;
-            living.AbilityBonus[(int)eProperty.Dexterity] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Strength] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Constitution] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Acuity] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Piety] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Empathy] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Quickness] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Intelligence] -= (int)m_spell.Value;
-            living.AbilityBonus[(int)eProperty.Charisma] -= (int)m_spell.Value;        
-            living.AbilityBonus[(int)eProperty.ArmorAbsorption] -= (int)m_spell.Value; 
-            living.AbilityBonus[(int)eProperty.MagicAbsorption] -= (int)m_spell.Value; 
- 
-            if(effect.Owner is GamePlayer)
-            {
-            	GamePlayer player = effect.Owner as GamePlayer;    
-                player.Out.SendCharStatsUpdate();
-                player.UpdateEncumberance();
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();  
-            }                       
-            return base.OnEffectExpires(effect, noMessages);
-        }
-        
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
+
+			Spell strengthSpell = SkillBase.FindSpell(strengthID, potionEffectLine);
+			SpellHandler strenghtSpellHandler = ScriptMgr.CreateSpellHandler(target, strengthSpell, potionEffectLine) as SpellHandler;
+
+			Spell conSpell = SkillBase.FindSpell(conID, potionEffectLine);
+			SpellHandler conSpellHandler = ScriptMgr.CreateSpellHandler(target, conSpell, potionEffectLine) as SpellHandler;
+
+			Spell strengthConSpell = SkillBase.FindSpell(strenghtConID, potionEffectLine);
+			SpellHandler strenghtConSpellHandler = ScriptMgr.CreateSpellHandler(target, strengthConSpell, potionEffectLine) as SpellHandler;
+
+			Spell dexSpell = SkillBase.FindSpell(dexID, potionEffectLine);
+			SpellHandler dexSpellHandler = ScriptMgr.CreateSpellHandler(target, dexSpell, potionEffectLine) as SpellHandler;
+
+			Spell dexQuickSpell = SkillBase.FindSpell(dexQuickID, potionEffectLine);
+			SpellHandler dexQuickSpellHandler = ScriptMgr.CreateSpellHandler(target, dexQuickSpell, potionEffectLine) as SpellHandler;
+
+			Spell acuitySpell = SkillBase.FindSpell(acuityID, potionEffectLine);
+			SpellHandler acuitySpellHandler = ScriptMgr.CreateSpellHandler(target, acuitySpell, potionEffectLine) as SpellHandler;
+
+			//Spell hasteSpell = SkillBase.FindSpell(hasteID, potionEffectLine);
+			//SpellHandler hasteSpellHandler = ScriptMgr.CreateSpellHandler(target, hasteSpell, potionEffectLine) as SpellHandler;
+
+			strenghtSpellHandler.StartSpell(target);
+			conSpellHandler.StartSpell(target);
+			strenghtConSpellHandler.StartSpell(target);
+			dexSpellHandler.StartSpell(target);
+			dexQuickSpellHandler.StartSpell(target);
+			acuitySpellHandler.StartSpell(target);
+			//hasteSpellHandler.StartSpell(target);
+
+			return true;
+		}
+        public override eProperty Property1 => eProperty.Strength;
+
+        public override eProperty Property2 => eProperty.Constitution;
+
+        public override eProperty Property3 => eProperty.Dexterity;
+
+        public override eProperty Property4 => eProperty.Quickness;
+
+        public override eProperty Property5 => eProperty.Acuity;
+
+        // constructor
+        public AllStatsBarrel(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
-			if (target.Realm == 0 || Caster.Realm == 0)
-			{
-				target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-			}
-			else
-			{
-				target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
-			}
-			if(target is GameNPC) 
-			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
-			}
-		}		
-        public AllStatsBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-    }
- }
+		}
+	}
+}

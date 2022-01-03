@@ -21,15 +21,15 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				SureShotEffect sureShot = player.EffectList.GetOfType<SureShotEffect>();
+				SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 				if (sureShot != null)
-					sureShot.Cancel(false);
+					EffectService.RequestImmediateCancelEffect(sureShot);
 
-				RapidFireEffect rapidFire = player.EffectList.GetOfType<RapidFireEffect>();
+				RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 				if (rapidFire != null)
-					rapidFire.Cancel(false);
+					EffectService.RequestImmediateCancelEffect(rapidFire, false);
 
-				new TrueshotEffect().Start(player);
+				new TrueShotECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 			}
 			DisableSkill(living);
 		}

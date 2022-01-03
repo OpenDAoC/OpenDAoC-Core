@@ -32,6 +32,10 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("DamageOverTime")]
 	public class DoTSpellHandler : SpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new DamageOverTimeECSGameEffect(initParams);
+		}
 		/// <summary>
 		/// Execute damage over time spell
 		/// </summary>
@@ -168,7 +172,7 @@ namespace DOL.GS.Spells
             }
             if (ad.CriticalDamage > 0)
                 MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourCriticallyHits",
-                    Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)), eChatType.CT_YouHit);
+                    Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
 
                 //			if (ad.Damage > 0)
                 //			{
@@ -245,6 +249,28 @@ namespace DOL.GS.Spells
 			// no interrupts on DoT direct effect
 			// calc damage
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			//ad.CausesCombat = true;
+			SendDamageMessages(ad);
+			if (ad.Attacker.Realm == 0)
+			{
+				ad.Target.LastAttackTickPvE = GameLoop.GameLoopTime;
+			}
+			else
+			{
+				ad.Target.LastAttackTickPvP = GameLoop.GameLoopTime;
+			}
+			DamageTarget(ad, false);
+		}
+
+		public void OnDirectEffect(GameLiving target, double effectiveness, bool causesCombat)
+		{
+			if (target == null) return;
+			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+
+			// no interrupts on DoT direct effect
+			// calc damage
+			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			ad.CausesCombat = causesCombat;
 			SendDamageMessages(ad);
 			DamageTarget(ad, false);
 		}
@@ -255,19 +281,23 @@ namespace DOL.GS.Spells
 			GamePlayer player = null;
 			if (m_caster is GamePlayer)
 				player = m_caster as GamePlayer;
-			if (player != null && player.CharacterClass.ManaStat != eStat.UNDEFINED)
+
+			if (m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons)
 			{
-				int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-				spellDamage *= (manaStatValue + 200) / 275.0;
-				if (spellDamage < 0)
-					spellDamage = 0;
-			}
-			else if (m_caster is GameNPC)
-			{
-				int manaStatValue = m_caster.GetModified(eProperty.Intelligence);
-				spellDamage *= (manaStatValue + 200) / 275.0;
-				if (spellDamage < 0)
-					spellDamage = 0;
+				if (player != null && player.CharacterClass.ManaStat != eStat.UNDEFINED)
+				{
+					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
+					spellDamage *= (manaStatValue + 200) / 275.0;
+					if (spellDamage < 0)
+						spellDamage = 0;
+				}
+				else if (m_caster is GameNPC)
+				{
+					int manaStatValue = m_caster.GetModified(eProperty.Intelligence);
+					spellDamage *= (manaStatValue + 200) / 275.0;
+					if (spellDamage < 0)
+						spellDamage = 0;
+				}
 			}
 			return spellDamage;
 		}

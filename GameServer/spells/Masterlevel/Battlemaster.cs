@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             //spell damage should 25;
             int end = (int)(Spell.Damage);
-            target.ChangeEndurance(target, GameLiving.eEnduranceChangeType.Spell, (-end));
+            target.ChangeEndurance(target, eEnduranceChangeType.Spell, (-end));
 
             if (target is GamePlayer)
                 ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
@@ -71,7 +71,7 @@ namespace DOL.GS.Spells
 
             //spell damage shood be 50-100 (thats the amount power tapped on use) i recommend 90 i think thats it but cood be wrong
             int mana = (int)(Spell.Damage);
-            target.ChangeMana(target, GameLiving.eManaChangeType.Spell, (-mana));
+            target.ChangeMana(target, eManaChangeType.Spell, (-mana));
 
             target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }
@@ -104,7 +104,7 @@ namespace DOL.GS.Spells
                     player.Client.Out.SendUpdateMaxSpeed();
                     check = 1;
                 }
-                effect.Owner.StopAttack();
+                effect.Owner.attackComponent.LivingStopAttack();
                 effect.Owner.StopCurrentSpellcast();
                 effect.Owner.DisarmedTime = effect.Owner.CurrentRegion.Time + Spell.Duration;
             }
@@ -191,7 +191,7 @@ namespace DOL.GS.Spells
                 return;
             }
             AttackData ad = args.AttackData;
-            if (ad.AttackResult != GameLiving.eAttackResult.HitUnstyled && ad.AttackResult != GameLiving.eAttackResult.HitStyle)
+            if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
                 return;
 
             int baseChance = Spell.Frequency / 100;
@@ -204,7 +204,7 @@ namespace DOL.GS.Spells
                     InventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
-                    if (player.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
+                    if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
                     {
                         baseChance /= 2;
                     }
@@ -281,7 +281,7 @@ namespace DOL.GS.Spells
                     spell.Duration = 10;
                     spell.SpellID = 900100;
                     spell.Target = "Self";
-                    spell.Type = "Disarm";
+                    spell.Type = eSpellType.Disarm.ToString();
                     Disarm_Weapon = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Combat_Styles_Effect, Disarm_Weapon);
                 }
@@ -340,8 +340,8 @@ namespace DOL.GS.Spells
 
             // calc damage
             AttackData ad = CalculateDamageToTarget(target, effectiveness);
-            DamageTarget(ad, true);
             SendDamageMessages(ad);
+            DamageTarget(ad, true);            
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
         }
         
@@ -359,19 +359,19 @@ namespace DOL.GS.Spells
 
                 switch (ad.AttackResult)
                 {
-                    case GameLiving.eAttackResult.Missed: resultByte = 0; break;
-                    case GameLiving.eAttackResult.Evaded: resultByte = 3; break;
-                    case GameLiving.eAttackResult.Fumbled: resultByte = 4; break;
-                    case GameLiving.eAttackResult.HitUnstyled: resultByte = 10; break;
-                    case GameLiving.eAttackResult.HitStyle: resultByte = 11; break;
-                    case GameLiving.eAttackResult.Parried:
+                    case eAttackResult.Missed: resultByte = 0; break;
+                    case eAttackResult.Evaded: resultByte = 3; break;
+                    case eAttackResult.Fumbled: resultByte = 4; break;
+                    case eAttackResult.HitUnstyled: resultByte = 10; break;
+                    case eAttackResult.HitStyle: resultByte = 11; break;
+                    case eAttackResult.Parried:
                         resultByte = 1;
                         if (ad.Target != null && ad.Target.AttackWeapon != null)
                         {
                             defendersWeapon = ad.Target.AttackWeapon.Model;
                         }
                         break;
-                    case GameLiving.eAttackResult.Blocked:
+                    case eAttackResult.Blocked:
                         resultByte = 2;
                         if (ad.Target != null && ad.Target.Inventory != null)
                         {
@@ -428,18 +428,18 @@ namespace DOL.GS.Spells
 
 			switch (ad.AttackResult)
 			{
-				case GameLiving.eAttackResult.TargetNotVisible: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NotInView", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.OutOfRange: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.TooFarAway", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.TargetDead: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.AlreadyDead", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.Blocked: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Blocked", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.Parried: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Parried", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.Evaded: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Evaded", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.NoTarget: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.NoValidTarget: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.Missed: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Miss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.Fumbled: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
-                case GameLiving.eAttackResult.HitStyle:
-                case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.TargetNotVisible: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NotInView", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.OutOfRange: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.TooFarAway", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.TargetDead: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.AlreadyDead", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.Blocked: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Blocked", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.Parried: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Parried", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.Evaded: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Evaded", ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.NoTarget: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.NoValidTarget: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.Missed: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Miss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.Fumbled: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                case eAttackResult.HitStyle:
+                case eAttackResult.HitUnstyled:
 					string modmessage = "";
 					if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
 					if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
@@ -543,7 +543,7 @@ namespace DOL.GS.Spells
             ad.Damage = 0;
             ad.CriticalDamage = 0;
             ad.WeaponSpeed = player.AttackSpeed(weapon) / 100;
-            ad.DamageType = player.AttackDamageType(weapon);
+            ad.DamageType = player.attackComponent.AttackDamageType(weapon);
             ad.Weapon = weapon;
             ad.IsOffHand = weapon.Hand == 2;
             //we need to figure out which armor piece they are going to hit.
@@ -560,12 +560,12 @@ namespace DOL.GS.Spells
                     break;
             }
             //Throw Weapon is subject to all the conventional attack results, parry, evade, block, etc.
-            ad.AttackResult = ad.Target.CalculateEnemyAttackResult(ad, weapon);
+            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(ad, weapon);
 
-            if (ad.AttackResult == GameLiving.eAttackResult.HitUnstyled || ad.AttackResult == GameLiving.eAttackResult.HitStyle)
+            if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
             {
                 //we only need to calculate the damage if the attack was a success.
-                double damage = player.AttackDamage(weapon) * effectiveness;
+                double damage = player.attackComponent.AttackDamage(weapon) * effectiveness;
 
                 if (target is GamePlayer)
                     ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
@@ -603,10 +603,10 @@ namespace DOL.GS.Spells
                 ad.Modifier += resist;
                 ad.Damage = (int)damage;
                 ad.UncappedDamage = ad.Damage;
-                ad.Damage = Math.Min(ad.Damage, (int)(player.UnstyledDamageCap(weapon) * effectiveness));
+                ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.UnstyledDamageCap(weapon) * effectiveness));
                 ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
-                if (ad.Damage == 0) ad.AttackResult = DOL.GS.GameLiving.eAttackResult.Missed;
-                ad.CriticalDamage = player.GetMeleeCriticalDamage(ad, weapon);
+                if (ad.Damage == 0) ad.AttackResult = DOL.GS.eAttackResult.Missed;
+                ad.CriticalDamage = player.attackComponent.GetMeleeCriticalDamage(ad, weapon);
             }
             else
             {

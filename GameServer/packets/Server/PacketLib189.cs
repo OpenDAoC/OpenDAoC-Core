@@ -59,7 +59,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
 				pak.WriteByte((byte)living.CurrentSpeed); // new in 189b+, speed
 				pak.WriteByte((byte)((living.IsCloakInvisible ? 0x01 : 0x00) | (living.IsHelmInvisible ? 0x02 : 0x00))); // new in 189b+, cloack/helm visibility
-				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 	
 				if (items != null)
 				{
@@ -156,7 +156,7 @@ namespace DOL.GS.PacketHandler
 				if (windowType == eInventoryWindowType.HouseVault && houseVault != null)
 					pak.WriteByte((byte)(houseVault.Index + 1));	// Add the vault number to the window caption
 				else
-					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 				// ^ in 1.89b+, 0 bit - showing hooded cloack, if not hooded not show cloack at all ?
 				pak.WriteByte(m_gameClient.Player.VisibleActiveWeaponSlots);
 				pak.WriteByte((byte)windowType);
@@ -191,7 +191,7 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 				}
 	
 				pak.WriteByte((byte)m_gameClient.Player.VisibleActiveWeaponSlots);

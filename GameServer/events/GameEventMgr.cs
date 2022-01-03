@@ -484,8 +484,11 @@ namespace DOL.Events
 			if(e == null)
 				throw new ArgumentNullException("e", "No event type given!");
 
+			/// [Takii - Atlas] Start Record cost of event for profiling.
+			ECS.Debug.Diagnostics.BeginGameEventMgrNotify();
+
 			// notify handlers bounded specifically to the sender
-			if(sender != null)
+			if (sender != null)
 			{
 				DOLEventHandlerCollection col;
 
@@ -511,6 +514,10 @@ namespace DOL.Events
 
 			// notify globally-bound handler
 			GlobalHandlerCollection.Notify(e, sender, eArgs);
-		}
-	}
+
+
+            /// [Takii - Atlas] Stop Record cost of event for profiling.
+            ECS.Debug.Diagnostics.EndGameEventMgrNotify(e);
+        }
+    }
 }

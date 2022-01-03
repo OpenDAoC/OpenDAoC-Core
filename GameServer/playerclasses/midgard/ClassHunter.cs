@@ -38,10 +38,10 @@ namespace DOL.GS.PlayerClass
 			m_manaStat = eStat.DEX; 
 		}
 
-		public override IList<string> GetAutotrainableSkills()
-		{
-			return AutotrainableSkills;
-		}
+		// public override IList<string> GetAutotrainableSkills()
+		// {
+		// 	return AutotrainableSkills;
+		// }
 
 		public override eClassType ClassType
 		{
@@ -142,7 +142,7 @@ namespace DOL.GS.PlayerClass
 
 		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
 		{
-			 PlayerRace.Dwarf, PlayerRace.Frostalf, PlayerRace.Kobold, PlayerRace.Norseman, PlayerRace.Valkyn,
+			 PlayerRace.Dwarf, PlayerRace.Kobold, PlayerRace.Norseman, PlayerRace.Valkyn,
 		};
 	}
 }

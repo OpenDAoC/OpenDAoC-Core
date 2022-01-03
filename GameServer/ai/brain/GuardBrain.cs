@@ -17,6 +17,7 @@
  *
  */
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
@@ -38,14 +39,15 @@ namespace DOL.AI.Brain
 			get { return 750; }
 		}
 
-		protected override void CheckPlayerAggro()
+		public override void CheckPlayerAggro()
 		{
 			//Check if we are already attacking, return if yes
-			if (Body.AttackState)
+			if (Body.attackComponent.AttackState)
 				return;
 
 			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
 			{
+				player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
 				if (m_aggroTable.ContainsKey(player))
 					continue; // add only new players
 				if (!player.IsAlive || player.ObjectState != GameObject.eObjectState.Active || player.IsStealthed)
@@ -56,16 +58,18 @@ namespace DOL.AI.Brain
 					continue;
 				if (!Body.IsWithinRadius(player, AggroRange))
 					continue;
+				if (!AggroLOS)
+					continue;
 
 				AddToAggroList(player, player.EffectiveLevel << 1);
 				return;
 			}
 		}
 
-		protected override void CheckNPCAggro()
+		public override void CheckNPCAggro()
 		{
 			//Check if we are already attacking, return if yes
-			if (Body.AttackState)
+			if (Body.attackComponent.AttackState)
 				return;
 
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))

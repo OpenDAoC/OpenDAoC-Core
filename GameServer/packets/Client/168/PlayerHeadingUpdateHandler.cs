@@ -99,7 +99,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak190.WriteByte(flagcontent);
 			outpak190.WriteByte(steedSlot);
 			outpak190.WriteByte(ridingFlag);
-			outpak190.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak190.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak190.WriteByte(state);
 			outpak190.WriteByte(client.Player.ManaPercent);
 			outpak190.WriteByte(client.Player.EndurancePercent);
@@ -112,7 +112,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(flagcontent);
 			outpak1124.WriteByte(0);
 			outpak1124.WriteByte(ridingFlag);
-			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1124.WriteByte(client.Player.ManaPercent);
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WriteByte(0); // unknown
@@ -126,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1127.WriteByte(flagcontent);
 			outpak1127.WriteByte(0);
 			outpak1127.WriteByte(ridingFlag);
-			outpak1127.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1127.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1127.WriteByte(client.Player.ManaPercent);
 			outpak1127.WriteByte(client.Player.EndurancePercent);
 			outpak1127.WriteByte(0); // unknown
@@ -136,6 +136,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				if(player != null && player != client.Player)
 				{
+					if (client.Player.IsStealthed && !player.CanDetect(client.Player))
+						return;
 					if (player.Client.Version >= GameClient.eClientVersion.Version1127)
 						player.Out.SendUDP(outpak1127);
 					else if (player.Client.Version >= GameClient.eClientVersion.Version1124)

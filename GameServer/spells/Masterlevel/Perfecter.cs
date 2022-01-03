@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Realm";
             dbs.Radius = 0;
-            dbs.Type = "HealOverTime";
+            dbs.Type = eSpellType.HealOverTime.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Realm";
             dbs.Radius = 0;
-            dbs.Type = "PowerOverTime";
+            dbs.Type = eSpellType.PowerOverTime.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -176,7 +176,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Realm";
             dbs.Radius = 0;
-            dbs.Type = "MesmerizeDurationBuff";
+            dbs.Type = eSpellType.MesmerizeDurationBuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -245,7 +245,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "PowerRend";
+            dbs.Type = eSpellType.PowerRend.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;

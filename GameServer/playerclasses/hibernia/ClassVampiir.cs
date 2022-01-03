@@ -1,4 +1,4 @@
-﻿/*
+/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
  * 
  * This program is free software; you can redistribute it and/or
@@ -51,7 +51,7 @@ namespace DOL.GS.PlayerClass
 
         public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
         {
-             PlayerRace.Celt, PlayerRace.Lurikeen, PlayerRace.Shar,
+            // PlayerRace.Celt, PlayerRace.Lurikeen, PlayerRace.Shar,
         };
     }
 }

@@ -9,7 +9,7 @@ namespace DOL.AI.Brain
 	/// </summary>
     public class AlluvianGlobuleBrain : StandardMobBrain
 	{
-		private bool hasGrown = false;
+		internal bool hasGrown = false;
 
 		/// <summary>
 		/// Put on lower think cycle so mobs spawn a little slower.
@@ -86,7 +86,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Determine most wanted player.
 		/// </summary>
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive)
 			{

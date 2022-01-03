@@ -174,7 +174,7 @@ namespace DOL.GS.PacketHandler
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{
 				pak.WriteByte((byte)(slots == null ? 0 : slots.Count));
-				pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+				pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 				pak.WriteByte((byte)m_gameClient.Player.VisibleActiveWeaponSlots);
 				pak.WriteByte((byte)windowType); //preAction (0x00 - Do nothing)
 				if (slots != null)
@@ -301,7 +301,7 @@ namespace DOL.GS.PacketHandler
 					items = living.Inventory.VisibleItems;
 	
 				pak.WriteShort((ushort)living.ObjectID);
-				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
+				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 	
 				pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
 				if (items != null)

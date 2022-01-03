@@ -33,7 +33,7 @@ namespace DOL.GS
 	{
 		protected readonly string m_description = "";
 		protected readonly string m_target = "";
-		protected readonly string m_spelltype = "-";
+        protected readonly byte m_spelltype;// = "-";
 		protected readonly int m_range = 0;
 		protected readonly int m_radius = 0;
 		protected double m_value = 0;
@@ -65,8 +65,9 @@ namespace DOL.GS
 		protected readonly bool m_uninterruptible = false;
 		protected readonly bool m_isfocus = false;
         protected readonly bool m_minotaurspell = false;
-		// warlocks
-		protected readonly bool m_isprimary = false;
+        private bool scaledToPetLevel = false;
+        // warlocks
+        protected readonly bool m_isprimary = false;
 		protected readonly bool m_issecondary = false;
 		protected bool m_inchamber = false;
 		protected bool m_costpower = true;
@@ -77,6 +78,8 @@ namespace DOL.GS
 		protected ushort m_tooltipId = 0;
 		// params
 		protected Dictionary<string, List<string>> m_paramCache = null;
+
+		protected bool m_isSpec = false;
 
 		public Dictionary<string, List<string>> CustomParamsDictionary
 		{
@@ -184,9 +187,14 @@ namespace DOL.GS
 
 		}
 
-		public virtual string SpellType
+		public virtual byte SpellType
 		{
 			get { return m_spelltype; }
+		}
+
+		public bool IsSpec {
+			get { return m_isSpec; }
+			set { m_isSpec = value; }
 		}
 
 		public int Duration
@@ -314,10 +322,13 @@ namespace DOL.GS
             {
 				switch (Target.ToUpper())
 				{
-					case "ENEMY":
+					case "ENEMY":						
 					case "AREA":
 					case "CONE":
-						return true;
+						if (SpellType == (byte)eSpellType.Charm)
+							return false;
+						else
+							return true;
 					default:
 						return false;
 				}
@@ -350,19 +361,19 @@ namespace DOL.GS
 		{
 			get
 			{
-				switch (SpellType.ToUpper())
+				switch (SpellType)//.ToUpper())
 				{
-					case "CUREPOISON":
-					case "CUREDISEASE":
-					case "COMBATHEAL":
-					case "HEAL":
-					case "HEALOVERTIME":
-					case "HEALTHREGENBUFF":
-					case "MERCHEAL":
-					case "OMNIHEAL":
-					case "PBAEHEAL":
-					case "SPREADHEAL":
-					case "SUMMONHEALINGELEMENTAL":
+                    case (byte)eSpellType.CurePoison: 
+                    case (byte)eSpellType.CureDisease:
+                    case (byte)eSpellType.CombatHeal:
+                    case (byte)eSpellType.Heal:
+                    case (byte)eSpellType.HealOverTime:
+                    case (byte)eSpellType.HealthRegenBuff:
+                    case (byte)eSpellType.MercHeal:
+                    case (byte)eSpellType.OmniHeal:
+                    case (byte)eSpellType.PBAoEHeal:
+                    case (byte)eSpellType.SpreadHeal:
+                    case (byte)eSpellType.SummonHealingElemental: 
 						return true;
 					default:
 						return false;
@@ -395,7 +406,7 @@ namespace DOL.GS
 		{
 			m_description = dbspell.Description;
 			m_target = dbspell.Target;
-			m_spelltype = dbspell.Type;
+            m_spelltype = (byte)Enum.Parse(typeof (eSpellType), dbspell.Type);
 			m_range = dbspell.Range;
 			m_radius = dbspell.Radius;
 			m_value = dbspell.Value;
@@ -441,12 +452,12 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="spell"></param>
 		/// <param name="spellType"></param>
-		public Spell(Spell spell, string spellType) :
+		public Spell(Spell spell, eSpellType spellType) :
 			base(spell.Name, spell.ID, (ushort)spell.Icon, spell.Level, spell.InternalID)
 		{
 			m_description = spell.Description;
 			m_target = spell.Target;
-			m_spelltype = spellType; // replace SpellType
+			m_spelltype = (byte)spellType; // replace SpellType
 			m_range = spell.Range;
 			m_radius = spell.Radius;
 			m_value = spell.Value;
@@ -564,6 +575,30 @@ namespace DOL.GS
 		{
 			return Duration > 0 && StandardMobBrain.LivingHasEffect(target as GameLiving, this);
 		}
+
+		public bool IsPoison
+        {
+			get
+			{
+				switch (ID)
+				{
+					case 30000:
+					case 30004:
+					case 30009:
+					case 30014:
+					case 30019:
+					case 30024:
+					case 30029:
+					case 30034:
+					case 30039:
+					case 30044:
+					case 30049:
+						return true;
+					default:
+						return false;
+				}
+			}
+        }
 
         /// <summary>
         /// Whether or not the spell is instant cast.
@@ -696,6 +731,8 @@ namespace DOL.GS
         		return Frequency > 0 && !IsPulsing;
         	}
         }
+
+		
         #endregion
 		#region utils
 
@@ -723,7 +760,9 @@ namespace DOL.GS
 			}
 		}
 
-		#endregion
-	}
+        public bool ScaledToPetLevel { get => scaledToPetLevel; set => scaledToPetLevel = value; }
+
+        #endregion
+    }
 	
 }

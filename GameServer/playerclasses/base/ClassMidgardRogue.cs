@@ -28,7 +28,7 @@ namespace DOL.GS.PlayerClass
 			: base()
 		{
 			m_specializationMultiplier = 10;
-			m_wsbase = 360; //higher than alb/hib stealthers
+			m_wsbase = 360; 
 			m_baseHP = 720;
 		}
 

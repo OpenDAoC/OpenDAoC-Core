@@ -93,14 +93,14 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target, effectiveness);
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
-				target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-			}
+				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+            }
 			else
 			{
-				target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
-			}
+				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+            }
 			if(target is GameNPC) 
 			{
 				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
@@ -166,14 +166,14 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target, effectiveness);
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
-				target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-			}
+				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+            }
 			else
 			{
-				target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
-			}
+				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+            }
 			if(target is GameNPC) 
 			{
 				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
@@ -233,7 +233,7 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("ABSDamageShield")]
     public class ABSDamageShield : AblativeArmorSpellHandler
     {
-        protected override void OnDamageAbsorbed(AttackData ad, int DamageAmount)
+        public override void OnDamageAbsorbed(AttackData ad, int DamageAmount)
         {
             AttackData newad = new AttackData();
             newad.Attacker = ad.Target;
@@ -241,7 +241,7 @@ namespace DOL.GS.Spells
             newad.Damage = DamageAmount;
             newad.DamageType = Spell.DamageType;
             newad.AttackType = AttackData.eAttackType.Spell;
-            newad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+            newad.AttackResult = eAttackResult.HitUnstyled;
             newad.SpellHandler = this;
             newad.Target.OnAttackedByEnemy(newad);
             newad.Attacker.DealDamage(newad);

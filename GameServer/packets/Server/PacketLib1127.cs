@@ -18,6 +18,7 @@
  */
 
 using log4net;
+using System;
 using System.Reflection;
 
 namespace DOL.GS.PacketHandler
@@ -36,6 +37,11 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
+		long m_lastPacketSendTick = 0;
+		long m_packetInterval = 500; //.5s
+		int m_numPacketsSent = 0;
+		int m_packetCap = 10; // packets sent every packetInterval
+
 		public override void SendMessage(string msg, eChatType type, eChatLoc loc)
 		{
 			if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
@@ -52,8 +58,27 @@ namespace DOL.GS.PacketHandler
 			else
 				str = "";
 
-			pak.WriteString(str + msg);
-			SendTCP(pak);
+			if (m_lastPacketSendTick + m_packetInterval < GameLoop.GameLoopTime)
+			{
+				m_numPacketsSent = 0;
+			}
+
+			//rate limit spell and damage messages
+			if (type == eChatType.CT_Spell || type == eChatType.CT_Damaged)
+			{
+				if (m_numPacketsSent < m_packetCap)
+				{
+					pak.WriteString(str + msg);
+					SendTCP(pak);
+					m_numPacketsSent++;
+					m_lastPacketSendTick = GameLoop.GameLoopTime;
+				}				
+			} else
+            {
+				pak.WriteString(str + msg);
+				SendTCP(pak);
+			}
+			
 		}
 	}
 }

@@ -38,7 +38,7 @@ namespace DOL.AI.Brain
 		private GameLiving m_target;
 		private bool m_melee = false;
 		private bool m_active = true;
-
+		public bool Melee { get { return m_melee; } set { m_melee = value; } }
 		public TheurgistPetBrain(GameLiving owner)
 		{
 			if (owner != null)
@@ -93,9 +93,14 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			if (!IsActive || !m_active) return;
+			if (Body.attackComponent == null) { Body.attackComponent = new DOL.GS.AttackComponent(Body); }
+			EntityManager.AddComponent(typeof(AttackComponent), Body);
+			if (Body.castingComponent == null) { Body.castingComponent = new DOL.GS.CastingComponent(Body); }
+			EntityManager.AddComponent(typeof(CastingComponent), Body);
+
 			if (m_target == null) m_target = (GameLiving)Body.TempProperties.getProperty<object>("target", null);
 			
 			if (m_target == null || !m_target.IsAlive)
@@ -106,8 +111,11 @@ namespace DOL.AI.Brain
 			{
 				GameLiving target = m_target;
 				Body.TargetObject = target;
-
-				if (!CheckSpells(eCheckSpellType.Offensive))
+				if (Body.IsWithinRadius(target, Body.AttackRange) || m_melee)
+				{
+					Body.StartAttack(target);
+				}
+				else if (!CheckSpells(eCheckSpellType.Offensive))
 					Body.StartAttack(target);
 			}
 		}
@@ -136,6 +144,11 @@ namespace DOL.AI.Brain
 			{
 				foreach (Spell spell in Body.Spells)
 				{
+      //              if (Body.IsBeingInterrupted)
+      //              {
+						//m_melee = true;
+						//break;
+      //              }
 					if (Body.GetSkillDisabledDuration(spell) == 0)
 					{
 						if (spell.CastTime > 0)
@@ -153,7 +166,7 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (this is IControlledBrain && !Body.AttackState)
+			if (this is IControlledBrain && !Body.attackComponent.AttackState)
 				((IControlledBrain)this).Follow(((IControlledBrain)this).Owner);
 			return casted;
 		}

@@ -134,7 +134,8 @@ namespace DOL.GS.Keeps
 
 		public override int MaxHealth
 		{
-			get { return GetModified(eProperty.MaxHealth) + (base.Level * 4); }
+			// (base.Level * 4)
+			get { return GetModified(eProperty.MaxHealth) + (base.Level * 2); }
 		}
 
 		private bool m_changingPositions = false;
@@ -159,7 +160,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public override int AttackSpeed(params InventoryItem[] weapon)
+		public int AttackSpeed(params InventoryItem[] weapon)
 		{
 			//speed 1 second = 10
 			int speed = 0;
@@ -176,18 +177,18 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// When moving guards have difficulty attacking players, so we double there attack range)
 		/// </summary>
-		public override int AttackRange
+		public int AttackRange
 		{
 			get
 			{
-				int range = base.AttackRange;
+				int range = attackComponent.AttackRange;
 				if (IsMoving && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 					range *= 2;
 				return range;
 			}
 			set
 			{
-				base.AttackRange = value;
+				attackComponent.AttackRange = value;
 			}
 		}
 
@@ -213,7 +214,7 @@ namespace DOL.GS.Keeps
 			GameKeepGuard guard = sender as GameKeepGuard;
 			if (guard.TargetObject == null)
 				return;
-			if (!guard.AttackState)
+			if (!guard.attackComponent.AttackState)
 				return;
 			if (guard is GuardArcher == false && guard is GuardLord == false && guard is GuardCaster == false)
 				return;
@@ -225,10 +226,11 @@ namespace DOL.GS.Keeps
 				eAttackResult result = afargs.AttackData.AttackResult;
 				if (result == eAttackResult.OutOfRange)
 				{
-					guard.StopAttack();
-					lock (guard.Attackers)
+                    //guard.StopAttack();
+                    guard.attackComponent.NPCStopAttack();
+					lock (guard.attackComponent.Attackers)
 					{
-						foreach (GameLiving living in guard.Attackers)
+						foreach (GameLiving living in guard.attackComponent.Attackers)
 						{
 							if (guard.IsWithinRadius(living, guard.AttackRange))
 							{
@@ -251,13 +253,15 @@ namespace DOL.GS.Keeps
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(guard, guard.TargetObject as GameLiving, true) == false)
 				{
-					guard.StopAttack();
-					return;
+                    //guard.StopAttack();
+                    guard.attackComponent.NPCStopAttack();
+                    return;
 				}
 				if (!guard.IsWithinRadius(guard.TargetObject, guard.AttackRange))
 				{
-					guard.StopAttack();
-					return;
+                    //guard.StopAttack();
+                    guard.attackComponent.NPCStopAttack();
+                    return;
 				}
 			}
 
@@ -287,15 +291,16 @@ namespace DOL.GS.Keeps
 		/// Override for StartAttack which chooses Ranged or Melee attack
 		/// </summary>
 		/// <param name="attackTarget"></param>
-		public override void StartAttack(GameObject attackTarget)
+		public void StartAttack(GameObject attackTarget)
 		{
 			if (IsPortalKeepGuard)
 			{
-				base.StartAttack(attackTarget);
-				return;
+                //base.StartAttack(attackTarget);
+                attackComponent.StartAttack(attackTarget);
+                return;
 			}
 
-			if (AttackState || CurrentSpellHandler != null)
+			if (attackComponent.AttackState || CurrentSpellHandler != null)
 				return;
 
 			if (attackTarget is GameLiving == false)
@@ -315,7 +320,7 @@ namespace DOL.GS.Keeps
 
 			if (lastTarget != null && lastTarget == attackTarget)
 			{
-				if (lastTick != 0 && CurrentRegion.Time - lastTick < ServerProperties.Properties.KEEP_GUARD_LOS_CHECK_TIME * 1000)
+				if (lastTick != 0 && GameLoop.GameLoopTime - lastTick < ServerProperties.Properties.KEEP_GUARD_LOS_CHECK_TIME * 1000)
 					return;
 			}
 
@@ -352,7 +357,7 @@ namespace DOL.GS.Keeps
 					log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", Name);
 
 					// Now do a safety check.  If it's been a while since we sent any check we should clear count
-					if (lastTick == 0 || CurrentRegion.Time - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+					if (lastTick == 0 || GameLoop.GameLoopTime - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
 					{
 						log.Debug("LOS count reset!");
 						TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
@@ -365,7 +370,7 @@ namespace DOL.GS.Keeps
 				TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
 
 				TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, attackTarget);
-				TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, CurrentRegion.Time);
+				TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
 				TargetObject = attackTarget;
 			}
 
@@ -398,7 +403,7 @@ namespace DOL.GS.Keeps
 					}
 				}
 
-				base.StartAttack(TargetObject);
+				attackComponent.StartAttack(TargetObject);
 			}
 			else if (TargetObject != null && TargetObject is GameLiving)
 			{
@@ -416,7 +421,7 @@ namespace DOL.GS.Keeps
 		{
 			if ((response & 0x100) != 0x100)
 			{
-				StopAttack();
+				attackComponent.NPCStopAttack();
 
 				if (TargetObject != null && TargetPosition is GameLiving)
 				{
@@ -433,7 +438,7 @@ namespace DOL.GS.Keeps
 
 				if (healSpell != null && !IsStunned && !IsMezzed)
 				{
-					StopAttack();
+					attackComponent.NPCStopAttack();
 					TargetObject = HealTarget;
 					CastSpell(healSpell, GuardSpellLine);
 				}
@@ -563,8 +568,8 @@ namespace DOL.GS.Keeps
 					break;
 				}
 			}
-			if (AttackState)
-				StopAttack();
+			if (attackComponent.AttackState)
+				attackComponent.NPCStopAttack();
 			if (IsMoving)
 				StopFollowing();
 			TurnTo(TargetObject);
@@ -622,7 +627,7 @@ namespace DOL.GS.Keeps
 					if (TargetObject != null && !IsWithinRadius(TargetObject, AttackRange))
 					{
 						//stop the attack
-						StopAttack();
+						attackComponent.NPCStopAttack();
 						//if the distance to the attacker is less than the attack range
 						if (IsWithinRadius(ad.Attacker, AttackRange))
 						{
@@ -697,7 +702,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				return CurrentRegion.Time - LastAttackedByEnemyTick < 10 * 1000;
+				return GameLoop.GameLoopTime - LastAttackedByEnemyTick < 10 * 1000;
 			}
 		}
 		#endregion
@@ -859,36 +864,35 @@ namespace DOL.GS.Keeps
 			}
 			return s;
 		}
-
-		#region Database
-
+		
 		string m_dataObjectID = "";
 
-		/// <summary>
-		/// Load the guard from the database
-		/// </summary>
-		/// <param name="mobobject">The database mobobject</param>
-		public override void LoadFromDatabase(DataObject mobobject)
+        #region Database
+        /// <summary>
+        /// Load the guard from the database
+        /// </summary>
+        /// <param name="mobobject">The database mobobject</param>
+        public override void LoadFromDatabase(DataObject mobobject)
 		{
-			if (mobobject == null) return;
 			base.LoadFromDatabase(mobobject);
-			string sKey = mobobject.ObjectId;
 			foreach (AbstractArea area in this.CurrentAreas)
 			{
-				if (area is KeepArea keepArea)
+				if (area is KeepArea)
 				{
+					AbstractGameKeep keep = (area as KeepArea).Keep;
 					Component = new GameKeepComponent();
-					Component.Keep = keepArea.Keep;
+					Component.Keep = keep;
 					m_dataObjectID = mobobject.ObjectId;
 					// mob reload command might be reloading guard, so check to make sure it isn't already added
-					if (Component.Keep.Guards.ContainsKey(sKey) == false)
-						Component.Keep.Guards.Add(sKey, this);
-					// break; This is a bad idea.  If there are multiple KeepAreas, we should put a guard on each
+					if (Component.Keep.Guards.ContainsKey(m_dataObjectID) == false)
+					{
+						Component.Keep.Guards.Add(m_dataObjectID, this);
+					}
+					break;
 				}
 			}
-
-			RefreshTemplate();
-		}
+			RefreshTemplate();			
+		}		
 
 		public void DeleteObject()
 		{
@@ -1025,7 +1029,7 @@ namespace DOL.GS.Keeps
 		{
 			if (PatrolGroup != null)
 			{
-				StopAttack();
+				attackComponent.NPCStopAttack();
 				StopFollowing();
 
 				StandardMobBrain brain = Brain as StandardMobBrain;
@@ -1098,15 +1102,15 @@ namespace DOL.GS.Keeps
 			{
 				if (Realm == eRealm.None)
 				{
-					MaxSpeedBase = 200;
+					MaxSpeedBase = 250;
 				}
 				else if (Level < 50)
 				{
-					MaxSpeedBase = 210;
+					MaxSpeedBase = 270;
 				}
 				else
 				{
-					MaxSpeedBase = 250;
+					MaxSpeedBase = 350;
 				}
 			}
 			else
@@ -1257,7 +1261,7 @@ namespace DOL.GS.Keeps
 				spell.CastTime = 2;
 				spell.Name = "Guard Heal";
 				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-				spell.Type = "Heal";
+				spell.Type = eSpellType.Heal.ToString();
 				return spell;
 			}
         }

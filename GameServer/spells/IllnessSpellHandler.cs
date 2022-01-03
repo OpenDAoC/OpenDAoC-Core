@@ -29,6 +29,23 @@ namespace DOL.GS.Spells
 	[SpellHandler("PveResurrectionIllness")]
 	public class PveResurrectionIllness : AbstractIllnessSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			GamePlayer targetPlayer = m_spellTarget as GamePlayer;
+			if (targetPlayer != null)
+            {
+                // Higher level rez spells reduce duration of rez sick.
+                if (targetPlayer.TempProperties.getAllProperties().Contains(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS))
+                {
+					double rezSickEffectiveness = targetPlayer.TempProperties.getProperty<double>(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
+                    targetPlayer.TempProperties.removeProperty(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
+					initParams.Duration = (int)(initParams.Duration * rezSickEffectiveness);
+				}
+            }
+
+			new ResurrectionIllnessECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only
@@ -36,13 +53,13 @@ namespace DOL.GS.Spells
 		/// <param name="effect"></param>
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			GamePlayer player = effect.Owner as GamePlayer;
-			if (player != null)
-			{
-				player.Effectiveness -= Spell.Value * 0.01;
-				player.Out.SendUpdateWeaponAndArmorStats();
-				player.Out.SendStatusUpdate();
-			}
+			//GamePlayer player = effect.Owner as GamePlayer;
+			//if (player != null)
+			//{
+			//	player.Effectiveness -= Spell.Value * 0.01;
+			//	player.Out.SendUpdateWeaponAndArmorStats();
+			//	player.Out.SendStatusUpdate();
+			//}
 		}
 		
 		/// <summary>
@@ -54,13 +71,13 @@ namespace DOL.GS.Spells
 		/// <returns>immunity duration in milliseconds</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			GamePlayer player = effect.Owner as GamePlayer;
-			if (player != null)
-			{
-				player.Effectiveness += Spell.Value * 0.01;
-				player.Out.SendUpdateWeaponAndArmorStats();
-				player.Out.SendStatusUpdate();
-			}
+			//GamePlayer player = effect.Owner as GamePlayer;
+			//if (player != null)
+			//{
+			//	player.Effectiveness += Spell.Value * 0.01;
+			//	player.Out.SendUpdateWeaponAndArmorStats();
+			//	player.Out.SendStatusUpdate();
+			//}
 			return 0;
 		}
 

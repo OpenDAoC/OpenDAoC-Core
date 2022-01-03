@@ -1,7 +1,7 @@
 ﻿SpellHandler.CancelEffect:	You cancel your effect.
 SpellHandler.CancelPulsingSpell:	You stop playing your song.
 SpellHandler.CasterMove:	You move and interrupt your spellcast!
-GamePlayer.CastSpell.MustWaitBeforeCast:	You need to wait {0} mores secondes for cast a spell!
+GamePlayer.CastSpell.MustWaitBeforeCast:	You need to wait {0} more seconds before casting a spell!
 SpellHandler.DelveInfo.Sec:	sec
 
 # DelveInfo

@@ -47,7 +47,7 @@ namespace DOL.GS.Commands
 			{
 				if (player.Account.PrivLevel > 1)
 				{
-					player.Out.SendMessage("[StaffInformation-" + client.Player.Name + "]:\n " + msg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+					player.Out.SendMessage("[Atlas Team -- " + client.Player.Name + "]: " + msg, eChatType.CT_Officer, eChatLoc.CL_ChatWindow);
 				}
 			}
 		}

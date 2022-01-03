@@ -212,7 +212,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = 15;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "DirectDamage";
+            dbs.Type = eSpellType.DirectDamage.ToString();
             dbs.Damage = 80;
             dbs.Value = 0;
             dbs.Duration = 0;

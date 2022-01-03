@@ -35,16 +35,21 @@ namespace DOL.GS.Spells
 	{
 		public const string ABLATIVE_HP = "ablative hp";
 
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new AblativeArmorECSGameEffect(initParams);
+		}
+
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			base.OnEffectStart(effect);
-			effect.Owner.TempProperties.setProperty(ABLATIVE_HP, (int)Spell.Value);
-			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+			//base.OnEffectStart(effect);
+			//effect.Owner.TempProperties.setProperty(ABLATIVE_HP, (int)Spell.Value);
+			//GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 
-			eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
-			eChatType toOther = (Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
-			MessageToLiving(effect.Owner, Spell.Message1, toLiving);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
+			//eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
+			//eChatType toOther = (Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
+			//MessageToLiving(effect.Owner, Spell.Message1, toLiving);
+			//Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
 		}
 
 		/// <summary>
@@ -56,13 +61,13 @@ namespace DOL.GS.Spells
 		/// <returns>immunity duration in milliseconds</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			effect.Owner.TempProperties.removeProperty(ABLATIVE_HP);
-			if (!noMessages && Spell.Pulse == 0)
-			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
-			}
+			//GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+			//effect.Owner.TempProperties.removeProperty(ABLATIVE_HP);
+			//if (!noMessages && Spell.Pulse == 0)
+			//{
+			//	MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+			//	Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+			//}
 			return 0;
 		}
 
@@ -97,45 +102,45 @@ namespace DOL.GS.Spells
 //			Log.DebugFormat("sender:{0} res:{1} IsMelee:{2} Type:{3}", living.Name, ad.AttackResult, ad.IsMeleeAttack, ad.AttackType);
 			
 			// Melee or Magic or Both ?
-			if (!MatchingDamageType(ref ad)) return;
+			//if (!MatchingDamageType(ref ad)) return;
 			
-			int ablativehp = living.TempProperties.getProperty<int>(ABLATIVE_HP);
-			double absorbPercent = 25;
-			if (Spell.Damage > 0)
-				absorbPercent = Spell.Damage;
-			//because albatives can reach 100%
-			if (absorbPercent > 100)
-				absorbPercent = 100;
-			int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage+ad.CriticalDamage));
-			if (damageAbsorbed > ablativehp)
-				damageAbsorbed = ablativehp;
-			ablativehp -= damageAbsorbed;
-			ad.Damage -= damageAbsorbed;
-			OnDamageAbsorbed(ad, damageAbsorbed);
+			//int ablativehp = living.TempProperties.getProperty<int>(ABLATIVE_HP);
+			//double absorbPercent = 25;
+			//if (Spell.Damage > 0)
+			//	absorbPercent = Spell.Damage;
+			////because albatives can reach 100%
+			//if (absorbPercent > 100)
+			//	absorbPercent = 100;
+			//int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage+ad.CriticalDamage));
+			//if (damageAbsorbed > ablativehp)
+			//	damageAbsorbed = ablativehp;
+			//ablativehp -= damageAbsorbed;
+			//ad.Damage -= damageAbsorbed;
+			//OnDamageAbsorbed(ad, damageAbsorbed);
 
-            if (ad.Target is GamePlayer)
-                (ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+   //         if (ad.Target is GamePlayer)
+   //             (ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-            if (ad.Attacker is GamePlayer)
-                (ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+   //         if (ad.Attacker is GamePlayer)
+   //             (ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-			if(ablativehp <= 0)
-			{
-				GameSpellEffect effect = SpellHandler.FindEffectOnTarget(living, this);
-				if(effect != null)
-					effect.Cancel(false);
-			}
-			else
-			{
-				living.TempProperties.setProperty(ABLATIVE_HP,ablativehp);
-			}
+			//if(ablativehp <= 0)
+			//{
+			//	GameSpellEffect effect = SpellHandler.FindEffectOnTarget(living, this);
+			//	if(effect != null)
+			//		effect.Cancel(false);
+			//}
+			//else
+			//{
+			//	living.TempProperties.setProperty(ABLATIVE_HP,ablativehp);
+			//}
 		}
 
 		// Check if Melee
-		protected virtual bool MatchingDamageType(ref AttackData ad)
+		public virtual bool MatchingDamageType(ref AttackData ad)
 		{
 			
-			if (ad == null || (ad.AttackResult != GameLiving.eAttackResult.HitStyle && ad.AttackResult != GameLiving.eAttackResult.HitUnstyled))
+			if (ad == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 				return false;
 			if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
 				return false;
@@ -143,7 +148,7 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		protected virtual void OnDamageAbsorbed(AttackData ad, int DamageAmount)
+		public virtual void OnDamageAbsorbed(AttackData ad, int DamageAmount)
 		{
 		}
 		
@@ -252,9 +257,9 @@ namespace DOL.GS.Spells
 		public MagicAblativeArmorSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 		
 		// Check if Melee
-		protected override bool MatchingDamageType(ref AttackData ad)
+		public override bool MatchingDamageType(ref AttackData ad)
 		{
-			if (ad == null || (ad.AttackResult == GameLiving.eAttackResult.HitStyle && ad.AttackResult == GameLiving.eAttackResult.HitUnstyled))
+			if (ad == null || (ad.AttackResult == eAttackResult.HitStyle && ad.AttackResult == eAttackResult.HitUnstyled))
 				return false;
 			if (ad.IsMeleeAttack && ad.AttackType == AttackData.eAttackType.Ranged)
 				return false;
@@ -275,7 +280,7 @@ namespace DOL.GS.Spells
         public BothAblativeArmorSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         // Anything is absorbed with this method
-        protected override bool MatchingDamageType(ref AttackData ad)
+        public override bool MatchingDamageType(ref AttackData ad)
         {
             return true;
         }

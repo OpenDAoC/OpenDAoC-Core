@@ -32,7 +32,12 @@ namespace DOL.GS.Spells
 	public abstract class AbstractSavageBuff : PropertyChangingSpell
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-	
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new SavageBuffECSGameEffect(initParams);
+		}
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only
@@ -99,19 +104,19 @@ namespace DOL.GS.Spells
 		/// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			base.OnEffectExpires(effect, noMessages);
+			//base.OnEffectExpires(effect, noMessages);
 			
-			if (m_spell.Power != 0)
-			{
-				int cost = 0;
-				if (m_spell.Power < 0)
-					cost = (int)(m_caster.MaxHealth * Math.Abs(m_spell.Power) * 0.01);
-				else
-					cost = m_spell.Power;
-				if (effect.Owner.Health > cost)
-					effect.Owner.ChangeHealth(effect.Owner, GameLiving.eHealthChangeType.Spell, -cost);
-			}
-			SendUpdates(effect.Owner);
+			//if (m_spell.Power != 0)
+			//{
+			//	int cost = 0;
+			//	if (m_spell.Power < 0)
+			//		cost = (int)(m_caster.MaxHealth * Math.Abs(m_spell.Power) * 0.01);
+			//	else
+			//		cost = m_spell.Power;
+			//	if (effect.Owner.Health > cost)
+			//		effect.Owner.ChangeHealth(effect.Owner, eHealthChangeType.Spell, -cost);
+			//}
+			//SendUpdates(effect.Owner);
 			return 0;
 		}
 

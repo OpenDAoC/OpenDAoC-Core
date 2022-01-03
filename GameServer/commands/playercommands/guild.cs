@@ -135,7 +135,7 @@ namespace DOL.GS.Commands
 							ply.TempProperties.removeProperty("Guild_Consider");
 						}
 						player.Group.Leader.TempProperties.removeProperty("Guild_Name");
-						player.Group.Leader.RemoveMoney(10000);
+						player.Group.Leader.RemoveMoney(GuildFormCost);
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 					}
 				}
@@ -847,7 +847,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader) || !client.Player.Guild.HasRank(client.Player, Guild.eRank.Buff))
+							if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader) && !client.Player.Guild.HasRank(client.Player, Guild.eRank.Buff))
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
@@ -1038,16 +1038,32 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							foreach (DBRank rank in client.Player.Guild.Ranks)
+							List<DBRank> rankList = client.Player.Guild.Ranks.ToList();
+							foreach (DBRank rank in rankList.OrderBy(rank => rank.RankLevel))
 							{
-								client.Out.SendMessage("RANK: " + rank.RankLevel.ToString() + " NAME: " + rank.Title, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("AcHear: " + (rank.AcHear ? "y" : "n") + " AcSpeak: " + (rank.AcSpeak ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("OcHear: " + (rank.OcHear ? "y" : "n") + " OcSpeak: " + (rank.OcSpeak ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("GcHear: " + (rank.GcHear ? "y" : "n") + " GcSpeak: " + (rank.GcSpeak ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("Emblem: " + (rank.Emblem ? "y" : "n") + " Promote: " + (rank.Promote ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("Remove: " + (rank.Remove ? "y" : "n") + " View: " + (rank.View ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage("Dues: " + (rank.Dues ? "y" : "n") + " Withdraw: " + (rank.Withdraw ? "y" : "n"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+
+								client.Out.SendMessage("RANK: " + rank.RankLevel.ToString() + " NAME: " + rank.Title,
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									"AcHear: " + (rank.AcHear ? "y" : "n") + " AcSpeak: " + (rank.AcSpeak ? "y" : "n"),
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									"OcHear: " + (rank.OcHear ? "y" : "n") + " OcSpeak: " + (rank.OcSpeak ? "y" : "n"),
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									"GcHear: " + (rank.GcHear ? "y" : "n") + " GcSpeak: " + (rank.GcSpeak ? "y" : "n"),
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									"Emblem: " + (rank.Emblem ? "y" : "n") + " Promote: " + (rank.Promote ? "y" : "n"),
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									"Remove: " + (rank.Remove ? "y" : "n") + " View: " + (rank.View ? "y" : "n"),
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									"Dues: " + (rank.Dues ? "y" : "n") + " Withdraw: " + (rank.Withdraw ? "y" : "n"),
+									eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
+
 							client.Player.Guild.UpdateGuildWindow();
 							break;
 						}
@@ -1252,7 +1268,7 @@ namespace DOL.GS.Commands
 						#region Promote
 						// --------------------------------------------------------------------------------
 						// PROMOTE
-						// /gc promote <rank#> [name]' to promote player to a superior rank
+						// /gc promote [name] <rank#>' to promote player to a superior rank
 						// --------------------------------------------------------------------------------
 					case "promote":
 						{
@@ -1279,7 +1295,7 @@ namespace DOL.GS.Commands
 
 							if (args.Length >= 4)
 							{
-								playerName = args[3];
+								playerName = args[2];
 							}
 
 							if (playerName == string.Empty)
@@ -1354,7 +1370,7 @@ namespace DOL.GS.Commands
 							ushort newrank;
 							try
 							{
-								newrank = Convert.ToUInt16(args[2]);
+								newrank = Convert.ToUInt16(args[3]);
 
 								if (newrank > 9)
 								{

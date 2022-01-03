@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
 		}
-        public override bool CancelPulsingSpell(GameLiving living, string spellType)
+        public override bool CancelPulsingSpell(GameLiving living, byte spellType)
         {
             lock (living.ConcentrationEffects)
             {

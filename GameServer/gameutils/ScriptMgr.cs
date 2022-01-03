@@ -44,10 +44,10 @@ namespace DOL.GS
 		private static Dictionary<string, Assembly> m_compiledScripts = new Dictionary<string, Assembly>();
 		private static Dictionary<string, ConstructorInfo> m_spellhandlerConstructorCache = new Dictionary<string, ConstructorInfo>();
 
-		/// <summary>
-		/// This class will hold all info about a gamecommand
-		/// </summary>
-		public class GameCommand
+        /// <summary>
+        /// This class will hold all info about a gamecommand
+        /// </summary>
+        public class GameCommand
 		{
 			public String[] Usage { get; set; }
 			public string m_cmd;
@@ -886,12 +886,12 @@ namespace DOL.GS
 		/// <returns>spellhandler or null if not found</returns>
 		public static ISpellHandler CreateSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 		{
-			if (spell == null || spell.SpellType.Length == 0) return null;
+			if (spell == null || ((eSpellType)spell.SpellType).ToString().Length == 0) return null;
 
 			ConstructorInfo handlerConstructor = null;
 
-			if (m_spellhandlerConstructorCache.ContainsKey(spell.SpellType))
-				handlerConstructor = m_spellhandlerConstructorCache[spell.SpellType];
+			if (m_spellhandlerConstructorCache.ContainsKey(((eSpellType)spell.SpellType).ToString()))
+				handlerConstructor = m_spellhandlerConstructorCache[((eSpellType)spell.SpellType).ToString()];
 
 			// try to find it in assemblies when not in cache
 			if (handlerConstructor == null)
@@ -913,7 +913,7 @@ namespace DOL.GS
 
 							foreach (SpellHandlerAttribute attrib in objs)
 							{
-								if (attrib.SpellType == spell.SpellType)
+								if (attrib.SpellType == ((eSpellType)spell.SpellType).ToString())
 								{
 									handlerConstructor = type.GetConstructor(constructorParams);
 									if (log.IsDebugEnabled)
@@ -935,7 +935,7 @@ namespace DOL.GS
 
 				if (handlerConstructor != null)
 				{
-					m_spellhandlerConstructorCache.Add(spell.SpellType, handlerConstructor);
+					m_spellhandlerConstructorCache.TryAdd(((eSpellType)spell.SpellType).ToString(), handlerConstructor);
 				}
 			}
 
@@ -967,12 +967,12 @@ namespace DOL.GS
 			m_spellhandlerConstructorCache.Clear();
 		}
 
-		/// <summary>
-		/// Create server rules handler for specified server type
-		/// </summary>
-		/// <param name="serverType">server type used to look for rules handler</param>
-		/// <returns>server rules handler or normal server type handler if errors</returns>
-		public static IServerRules CreateServerRules(eGameServerType serverType)
+        /// <summary>
+        /// Create server rules handler for specified server type
+        /// </summary>
+        /// <param name="serverType">server type used to look for rules handler</param>
+        /// <returns>server rules handler or normal server type handler if errors</returns>
+        public static IServerRules CreateServerRules(eGameServerType serverType)
 		{
 			Type rules = null;
 

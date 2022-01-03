@@ -25,6 +25,7 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -206,8 +207,8 @@ namespace DOL.GS
 					}
 				case eProperty.MaxHealth:
 					{
-						int conBonus = (int)(3.1 * GetModified(eProperty.Constitution));
-						int hitsBonus = (int)(32.5 * Level + m_summonHitsBonus);
+						int conBonus = (int)(3.1 * m_summonConBonus /*GetModified(eProperty.Constitution)*/);
+						int hitsBonus = (int)(30 * Level + m_summonHitsBonus);
 						int debuff = DebuffCategory[(int)property];
 
 						// Apply debuffs. As only base constitution affects pet
@@ -378,50 +379,59 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (!HasEffect(typeof(FacilitatePainworkingEffect)) &&
+			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/ &&
 				ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
 			{
 				if (Brain is NecromancerPetBrain necroBrain)
-				{
-					StopCurrentSpellcast();
+				{					
                     if (Brain.Body.IsCasting)
 					    necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
-
-					if(necroBrain.SpellsQueued)
-						necroBrain.ClearSpellQueue();
-				}
-			}
-
-			base.OnAttackedByEnemy(ad);
-		}
-
-		/// <summary>
-		/// Called when the necro pet attacks, which interrupts current spells being cast
-		/// </summary>
-		protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
-		{
-			if (!HasEffect(typeof(FacilitatePainworkingEffect)))
-			{
-				StopCurrentSpellcast();
-
-				if (Brain is NecromancerPetBrain necroBrain)
-				{
-                    if (Brain.Body.IsCasting)
-					    necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
-
+					StopCurrentSpellcast();
 					if (necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
 				}
 			}
 
-            NecromancerPetBrain tBrain = Brain as NecromancerPetBrain;
+			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
+			{
+				GamePlayer player = Owner as GamePlayer;
+				string modmessage = "";
+				if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+				if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				if (ad.CriticalDamage > 0)
+				{
+					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				}
+			}
+			base.OnAttackedByEnemy(ad);
+		}
 
-            if (tBrain.AttackSpellsQueued)
-            {
-                tBrain.CheckAttackSpellQueue();
-            }
+        /// <summary>
+        /// Called when the necro pet attacks, which interrupts current spells being cast
+        /// </summary>
+        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+		{
+			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/)
+			{
+				if (Brain is NecromancerPetBrain necroBrain)
+				{
+                    if (Brain.Body.IsCasting)
+					    necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
+					StopCurrentSpellcast();
+					if (necroBrain.SpellsQueued)
+						necroBrain.ClearSpellQueue();
+				}
+			}
 
-			return base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
+			NecromancerPetBrain tBrain = Brain as NecromancerPetBrain;
+
+			if (tBrain.AttackSpellsQueued)
+			{
+				tBrain.CheckAttackSpellQueue();
+			}
+
+			return attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
 
 		/// <summary>
@@ -452,27 +462,43 @@ namespace DOL.GS
 				return false;
 			}
 
-			ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
-			if (spellhandler != null)
+			bool cast = castingComponent.StartCastSpell(spell, line);
+			//ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
+			ISpellHandler handler;
+			if (spell.IsInstantCast)
+				handler = castingComponent.instantSpellHandler;
+			else
 			{
-				int power = spellhandler.PowerCost(Owner);
+				handler = castingComponent.spellHandler;
+			}
+
+			if (handler != null)
+			{
+				int power = handler.PowerCost(Owner);
 
 				if (Owner.Mana < power)
 				{
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.NotEnoughPower));
 					return false;
 				}
-
-				m_runningSpellHandler = spellhandler;
-				spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-				return spellhandler.CastSpell();
+				
+				if (!handler.Spell.IsInstantCast)
+                {
+					m_runningSpellHandler = handler;
+					handler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+				}
 			}
-			else
-			{
-				if (log.IsWarnEnabled)
-					log.Warn(Name + " wants to cast but spell " + spell.Name + " not implemented yet");
-				return false;
-			}
+			
+			
+            	
+            //	return spellhandler.CastSpell();
+            //}
+            //else
+            //{
+            //	if (log.IsWarnEnabled)
+            //		log.Warn(Name + " wants to cast but spell " + spell.Name + " not implemented yet");
+            return cast;
+			//}
 		}
 
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
@@ -517,7 +543,7 @@ namespace DOL.GS
 		/// </summary>
 		private void Empower()
 		{
-			if (AttackState) return;
+			if (attackComponent.AttackState) return;
 
 			SpellLine buffLine = SkillBase.GetSpellLine(PetInstaSpellLine);
 			if (buffLine == null)
@@ -537,7 +563,7 @@ namespace DOL.GS
 				{
 					switch (spell.SpellType)
 					{
-						case "StrengthBuff":
+						case (byte)eSpellType.StrengthBuff:
 							{
 								if (strBuff == null)
 									strBuff = spell;
@@ -545,7 +571,7 @@ namespace DOL.GS
 									strBuff = (strBuff.Level < spell.Level) ? spell : strBuff;
 							}
 							break;
-						case "DexterityBuff":
+						case (byte)eSpellType.DexterityBuff:
 							{
 								if (dexBuff == null)
 									dexBuff = spell;
@@ -585,7 +611,7 @@ namespace DOL.GS
 
 			Spell tauntSpell = null;
 			foreach (Spell spell in chantsList)
-				if (spell.SpellType == "Taunt" && spell.Level <= Level)
+				if (spell.SpellType == (byte)eSpellType.Taunt && spell.Level <= Level)
 					tauntSpell = spell;
 
 			if (tauntSpell != null && GetSkillDisabledDuration(tauntSpell) == 0)
@@ -599,13 +625,24 @@ namespace DOL.GS
 			return WhisperReceive(source, str);
 		}
 
-		/// <summary>
-		/// Actions to be taken when the pet receives a whisper.
-		/// </summary>
-		/// <param name="source">Source of the whisper.</param>
-		/// <param name="text">"Text that was whispered</param>
-		/// <returns>True if whisper was handled, false otherwise.</returns>
-		public override bool WhisperReceive(GameLiving source, string text)
+		public override bool Interact(GamePlayer player)
+		{
+			return WhisperReceive(player, "arawn");
+		}
+
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+			criticalAmount /= 2;
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
+
+        /// <summary>
+        /// Actions to be taken when the pet receives a whisper.
+        /// </summary>
+        /// <param name="source">Source of the whisper.</param>
+        /// <param name="text">"Text that was whispered</param>
+        /// <returns>True if whisper was handled, false otherwise.</returns>
+        public override bool WhisperReceive(GameLiving source, string text)
 		{
 			GamePlayer owner = ((Brain as IControlledBrain).Owner) as GamePlayer;
 			if (source == null || source != owner) return false;
@@ -630,7 +667,7 @@ namespace DOL.GS
 								      + empower);
 								return true;
 							case "abomination":
-								SayTo(owner, "As one of the chosen warriors of Arawn, I have a mighty arsenal of [weapons] at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. "
+								SayTo(owner, "As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. "
 								      + empower);
 								return true;
 							default:
@@ -661,6 +698,7 @@ namespace DOL.GS
 				case "taunt":
 					ToggleTauntMode();
 					return true;
+					/*
 				case "weapons":
 					{
 						if (Name != "abomination")
@@ -684,6 +722,7 @@ namespace DOL.GS
 							SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
 						return true;
 					}
+					*/
 					default: return false;
 			}
 		}

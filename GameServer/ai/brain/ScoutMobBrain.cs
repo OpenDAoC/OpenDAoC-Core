@@ -66,7 +66,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Check if there are any players around.
 		/// </summary>
-		protected override void CheckPlayerAggro()
+		public override void CheckPlayerAggro()
 		{
 			// If mob is not scouting anymore, it is either still on its way to
 			// get help or it has finished doing that, in which case it will

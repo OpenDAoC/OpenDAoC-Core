@@ -297,7 +297,7 @@ namespace DOL.GS.Spells
             player.IsStunned = true;
             //player.IsSilenced = true;
             player.DebuffCategory[(int)eProperty.SpellFumbleChance]+=100;
-            player.StopAttack();
+            player.attackComponent.LivingStopAttack();
             player.StopCurrentSpellcast();
             player.MountSteed(npc, true);
             GameEventMgr.AddHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));

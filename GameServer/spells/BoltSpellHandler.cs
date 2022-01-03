@@ -32,14 +32,17 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Bolt")]
 	public class BoltSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// Fire bolt
-		/// </summary>
-		/// <param name="target"></param>
-		public override void FinishSpellCast(GameLiving target)
+        // constructor
+        public BoltSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+        /// <summary>
+        /// Fire bolt
+        /// </summary>
+        /// <param name="target"></param>
+        public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
-			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent) && Spell.SpellType != "SiegeArrow")
+			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent) && Spell.SpellType != (byte)eSpellType.SiegeArrow)
 			{
 				MessageToCaster(String.Format("Your spell has no effect on the {0}!", target.Name), eChatType.CT_SpellResisted);
 				return;
@@ -157,7 +160,7 @@ namespace DOL.GS.Spells
 				{
 					if (target.InCombat)
 					{
-						foreach (GameLiving attacker in target.Attackers)
+						foreach (GameLiving attacker in target.attackComponent.Attackers)
 						{
 							if (attacker != caster && target.GetDistanceTo(attacker) <= 200)
 							{
@@ -176,7 +179,7 @@ namespace DOL.GS.Spells
 				// add defence bonus from last executed style if any
 				AttackData targetAD = (AttackData)target.TempProperties.getProperty<object>(GameLiving.LAST_ATTACK_DATA, null);
 				if (targetAD != null
-					&& targetAD.AttackResult == GameLiving.eAttackResult.HitStyle
+					&& targetAD.AttackResult == eAttackResult.HitStyle
 					&& targetAD.Style != null)
 				{
 					missrate += targetAD.Style.BonusToDefense;
@@ -186,7 +189,7 @@ namespace DOL.GS.Spells
 
 				if (Util.Chance(missrate)) 
 				{
-					ad.AttackResult = GameLiving.eAttackResult.Missed;
+					ad.AttackResult = eAttackResult.Missed;
 					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
 					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
@@ -221,8 +224,8 @@ namespace DOL.GS.Spells
 
 							if (target.IsEngaging)
 							{
-								EngageEffect engage = target.EffectList.GetOfType<EngageEffect>();
-								if (engage != null && target.AttackState && engage.EngageTarget == caster)
+								EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(target, eEffect.Engage);
+								if (engage != null && target.attackComponent.AttackState && engage.EngageTarget == caster)
 								{
 									// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate							
 									// You cannot engage a mob that was attacked within the last X seconds...
@@ -255,6 +258,18 @@ namespace DOL.GS.Spells
 							}
 						}
 					}
+
+					// Nature's shield 60% block
+					if (target.IsObjectInFront(caster, 180) && target.styleComponent.NextCombatStyle != null && target.styleComponent.NextCombatStyle.ID == 394)
+                    {
+						if (Util.Chance(60))
+                        {
+							m_handler.MessageToLiving(player, "You block " + caster.GetName(0, false) + "'s spell!", eChatType.CT_Missed);
+							m_handler.MessageToCaster(player.GetName(0, true) + " blocks!", eChatType.CT_YouHit);
+							blocked = true;
+							ad.Damage = 0;
+						}
+                    }
 				}
 
 				double effectiveness = 1.0 + (caster.GetModified(eProperty.SpellDamage) * 0.01);
@@ -300,13 +315,17 @@ namespace DOL.GS.Spells
 					ad.CriticalDamage = Util.Random(critMax / 10, critMax);
 				}
 
-				m_handler.SendDamageMessages(ad);
+				//target.damageComponent.DamageToDeal += ad.Damage;
+
+				caster.OnAttackEnemy(ad);
+				if (ad.Damage > 0)
+				{
+					m_handler.SendDamageMessages(ad);
+				}
 				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
-				target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
+
+                target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
 			}
 		}
-
-		// constructor
-		public BoltSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+    }
 }

@@ -133,6 +133,7 @@ namespace DOL.GS
 
 				if (glimmer != null && glimmer.Brain is StandardMobBrain && this.Brain is DragonBrain)
 				{
+					glimmer.Faction = FactionMgr.GetFactionByID(83);
 					(Brain as DragonBrain).AddAggroListTo(glimmer.Brain as StandardMobBrain);
 				}
 			}
@@ -164,7 +165,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Spirit;
 					spell.SpellID = 6021;
 					spell.Target = "Enemy";
-					spell.Type = "DirectDamage";
+					spell.Type = eSpellType.DirectDamage.ToString();
 					m_glareSpell = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_glareSpell);
 				}
@@ -198,7 +199,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Spirit;
 					spell.SpellID = 6022;
 					spell.Target = "Enemy";
-					spell.Type = "DirectDamage";
+					spell.Type = eSpellType.DirectDamage.ToString();
 					m_breathSpell = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_breathSpell);
 				}
@@ -231,7 +232,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Spirit;
 					spell.SpellID = 6023;
 					spell.Target = "Enemy";
-					spell.Type = "SpiritResistDebuff";
+					spell.Type = eSpellType.SpiritResistDebuff.ToString();
 					spell.Message1 = "You feel more vulnerable to spirit magic!";
 					spell.Message2 = "{0} seems vulnerable to spirit magic!";
 					m_resistDebuffSpell = new Spell(spell, 70);
@@ -269,7 +270,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Spirit;
 					spell.SpellID = 6003;
 					spell.Target = "Enemy";
-					spell.Type = "FumbleChanceDebuff";
+					spell.Type = eSpellType.FumbleChanceDebuff.ToString();
 					m_meleeDebuffSpell = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_meleeDebuffSpell);
 				}
@@ -305,7 +306,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Spirit;
 					spell.SpellID = 6003;
 					spell.Target = "Enemy";
-					spell.Type = "Nearsight";
+					spell.Type = eSpellType.Nearsight.ToString();
 					spell.Message1 = "You are blinded!";
 					spell.Message2 = "{0} is blinded!";
 					m_rangedDebuffSpell = new Spell(spell, 70);

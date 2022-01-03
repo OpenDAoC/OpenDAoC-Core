@@ -394,9 +394,9 @@ namespace DOL.GS
 		/// Create a shade effect for this player.
 		/// </summary>
 		/// <returns></returns>
-		public virtual ShadeEffect CreateShadeEffect()
+		public virtual ShadeECSGameEffect CreateShadeEffect()
 		{
-			return new ShadeEffect();
+			return new ShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
 		}
 
 		/// <summary>
@@ -417,14 +417,13 @@ namespace DOL.GS
 				// Turn into a shade.
 				Player.Model = Player.ShadeModel;
 				Player.ShadeEffect = CreateShadeEffect();
-				Player.ShadeEffect.Start(Player);
 			}
 			else
 			{
 				if (Player.ShadeEffect != null)
 				{
 					// Drop shade form.
-					Player.ShadeEffect.Stop();
+					EffectService.RequestImmediateCancelEffect(Player.ShadeEffect);
 					Player.ShadeEffect = null;
 				}
 				// Drop shade form.

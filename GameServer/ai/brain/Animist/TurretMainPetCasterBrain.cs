@@ -140,7 +140,7 @@ namespace DOL.AI.Brain
             return null;
         }
 
-		protected override void CheckNPCAggro()
+		public override void CheckNPCAggro()
 		{
 		  if(AggressionState == eAggressionState.Aggressive)
 		  {
@@ -148,7 +148,7 @@ namespace DOL.AI.Brain
 		  }
 		}
 
-		protected override void CheckPlayerAggro()
+		public override void CheckPlayerAggro()
 		{
 		  if (AggressionState == eAggressionState.Aggressive)
 		  {
@@ -156,7 +156,7 @@ namespace DOL.AI.Brain
 		  }
 		}
 
-		protected override void OnAttackedByEnemy(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			if(AggressionState != eAggressionState.Passive)
 			{

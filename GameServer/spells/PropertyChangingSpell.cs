@@ -35,7 +35,12 @@ namespace DOL.GS.Spells
 	public abstract class PropertyChangingSpell : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
+
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new StatBuffECSEffect(initParams);
+		}
+
 		/// <summary>
 		/// Execute property changing spell
 		/// </summary>
@@ -79,48 +84,53 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-			// vampiir, they cannot be buffed except with resists/armor factor/ haste / power regen
+			
 			GamePlayer player = target as GamePlayer;
 			if (player != null)
 			{
-				if (HasPositiveEffect && player.CharacterClass.ID == (int)eCharacterClass.Vampiir && m_caster != player)
-				{
-					//restrictions
-					//if (this is PropertyChangingSpell
-					//    && this is ArmorFactorBuff == false
-					//    && this is CombatSpeedBuff == false
-					//    && this is AbstractResistBuff == false
-					//    && this is EnduranceRegenSpellHandler == false
-					//    && this is EvadeChanceBuff == false
-					//    && this is ParryChanceBuff == false)
-					//{
-					if (this is StrengthBuff || this is DexterityBuff || this is ConstitutionBuff || this is QuicknessBuff || this is StrengthConBuff || this is DexterityQuiBuff || this is AcuityBuff)
-					{
-						GamePlayer caster = m_caster as GamePlayer;
-						if (caster != null)
-						{
-							caster.Out.SendMessage("Your buff has no effect on the Vampiir!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						}
-						player.Out.SendMessage("This buff has no effect on you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
-					}
-					if (this is ArmorFactorBuff)
-					{
-						if (SpellHandler.FindEffectOnTarget(target, "ArmorFactorBuff") != null && m_spellLine.IsBaseLine != true)
-						{
-							MessageToLiving(target, "You already have this effect!", eChatType.CT_SpellResisted);
-							return;
-						}
-					}
-				}
+// 				//vampiir, they cannot be buffed except with resists/armor factor/ haste / power regen
+// 				if (HasPositiveEffect && player.CharacterClass.ID == (int)eCharacterClass.Vampiir && m_caster != player)
+// 				{
+// 					//restrictions
+// 					//if (this is PropertyChangingSpell
+// 					//    && this is ArmorFactorBuff == false
+// 					//    && this is CombatSpeedBuff == false
+// 					//    && this is AbstractResistBuff == false
+// 					//    && this is EnduranceRegenSpellHandler == false
+// 					//    && this is EvadeChanceBuff == false
+// 					//    && this is ParryChanceBuff == false)
+// 					//{
+// 					if (this is StrengthBuff || this is DexterityBuff || this is ConstitutionBuff || this is QuicknessBuff || this is StrengthConBuff || this is DexterityQuiBuff || this is AcuityBuff)
+// 					{
+// 						GamePlayer caster = m_caster as GamePlayer;
+// 						if (caster != null)
+// 						{
+// 							caster.Out.SendMessage("Your buff has no effect on the Vampiir!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+// 						}
+// 						player.Out.SendMessage("This buff has no effect on you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+// 						return;
+// 					}
+// 					if (this is ArmorFactorBuff)
+// 					{
+// 						if (/*SpellHandler.FindEffectOnTarget(target, "ArmorFactorBuff")*/
+// 							EffectListService.GetEffectOnTarget(target, eEffect.BaseAFBuff) != null && m_spellLine.IsBaseLine != true)
+// 						{
+// 							MessageToLiving(target, "You already have this effect!", eChatType.CT_SpellResisted);
+// 							return;
+// 						}
+// 					}
+// 				}
 				
 				if (this is HeatColdMatterBuff || this is AllMagicResistsBuff)
 				{
 					if (this.Spell.Frequency <= 0)
 					{
-						GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
-						GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
-						GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
+						//GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
+						//GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
+						//GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
+						ECSGameEffect Matter = EffectListService.GetEffectOnTarget(player, eEffect.MatterResistBuff);
+						ECSGameEffect Cold = EffectListService.GetEffectOnTarget(player, eEffect.ColdResistBuff);
+						ECSGameEffect Heat = EffectListService.GetEffectOnTarget(player, eEffect.HeatResistBuff);
 						if (Matter != null || Cold != null || Heat != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
@@ -133,9 +143,12 @@ namespace DOL.GS.Spells
 				{
 					if (this.Spell.Frequency <= 0)
 					{
-						GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
-						GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
-						GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
+						//GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
+						//GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
+						//GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
+						ECSGameEffect Body = EffectListService.GetEffectOnTarget(player, eEffect.BodyResistBuff);
+						ECSGameEffect Spirit = EffectListService.GetEffectOnTarget(player, eEffect.SpiritResistBuff);
+						ECSGameEffect Energy = EffectListService.GetEffectOnTarget(player, eEffect.EnergyResistBuff);
 						if (Body != null || Spirit != null || Energy != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
@@ -201,11 +214,6 @@ namespace DOL.GS.Spells
 			{
 				MessageToLiving(effect.Owner, Spell.Message1, toLiving);
 				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
-			}
-			if (ServerProperties.Properties.BUFF_RANGE > 0 && effect.Spell.Concentration > 0 && effect.SpellHandler.HasPositiveEffect && effect.Owner != effect.SpellHandler.Caster)
-			{
-				m_buffCheckAction = new BuffCheckAction(effect.SpellHandler.Caster, effect.Owner, effect);
-				m_buffCheckAction.Start(BuffCheckAction.BUFFCHECKINTERVAL);
 			}
 
 		}

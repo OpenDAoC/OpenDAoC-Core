@@ -18,12 +18,12 @@ namespace DOL.AI.Brain
 
         public void Attack(GameObject target)
         {
-            Body.StartAttack(target);
+            Body.attackComponent.StartAttack(target);
         }
 
         public void Retreat()
         {
-            Body.StopAttack();
+            Body.attackComponent.LivingStopAttack();
         }
 
         #endregion

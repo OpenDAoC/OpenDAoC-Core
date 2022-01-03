@@ -219,7 +219,7 @@ namespace DOL.GS.Spells
                 ad.Attacker = Caster;
                 ad.Target = target;
                 ad.AttackType = AttackData.eAttackType.Spell;
-                ad.AttackResult = GameLiving.eAttackResult.Missed;
+                ad.AttackResult = eAttackResult.Missed;
 				ad.SpellHandler = this;
                 target.OnAttackedByEnemy(ad);
                 target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
@@ -249,7 +249,7 @@ namespace DOL.GS.Spells
 
         public virtual void DamageTarget(AttackData ad)
         {
-            ad.AttackResult = GameLiving.eAttackResult.HitUnstyled;
+            ad.AttackResult = eAttackResult.HitUnstyled;
             ad.Target.OnAttackedByEnemy(ad);
             ad.Attacker.DealDamage(ad);
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

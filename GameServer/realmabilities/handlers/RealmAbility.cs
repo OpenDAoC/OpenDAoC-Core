@@ -30,6 +30,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class RealmAbility : Ability
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RealmAbility(DBAbility ability, int level) : base(ability, level) { }
 
 		public virtual int CostForUpgrade(int currentLevel)
@@ -118,6 +119,8 @@ namespace DOL.GS.RealmAbilities
 			{
 				return (level + 1) * 5;
 			}
+
+			
 		}
 
 		public override bool CheckRequirement(GamePlayer player)
@@ -448,4 +451,30 @@ namespace DOL.GS.RealmAbilities
 		}
 
 	}
+
+	/*
+	public class L1RealmAbility : TimedRealmAbility
+	{
+		public L1RealmAbility(DBAbility ability, int level) : base(ability, level) { }
+
+		public override int MaxLevel
+		{
+			get
+			{
+				return 1;
+			}
+		}
+
+		public override bool CheckRequirement(GamePlayer player)
+		{
+			return player.RealmLevel >= 40;
+		}
+
+		public override int CostForUpgrade(int level)
+		{
+			return 14;
+		}
+
+	}
+	*/
 }

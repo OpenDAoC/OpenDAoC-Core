@@ -41,7 +41,7 @@ namespace DOL.GS.PropertyCalc
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
 			// no berserk for ranged weapons
-			IGameEffect berserk = living.EffectList.GetOfType<BerserkEffect>();
+			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(living, eEffect.Berserk);
 			if (berserk != null)
 			{
 				return 100;
@@ -52,14 +52,16 @@ namespace DOL.GS.PropertyCalc
 
 			if (living is NecromancerPet necroPet)
 			{
+				chance += 10;
 				if (necroPet.Brain is IControlledBrain necroPetBrain && necroPetBrain.GetPlayerOwner() is GamePlayer necro
 					&& necro.GetAbility<RealmAbilities.MasteryOfPain>() is RealmAbilities.MasteryOfPain raMoP)
 					chance += raMoP.Amount;
 			}
-			else if (living is GamePet pet)
+			// Summoned or Charmed pet.
+			else if (living is GameNPC npc)
 			{
-				if (pet.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player
-					&& player.GetAbility<RealmAbilities.WildMinionAbility>() is RealmAbilities.WildMinionAbility raWM)
+				if (npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player
+					&& player.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>() is RealmAbilities.AtlasOF_WildMinionAbility raWM)
 					chance += raWM.Amount;
 			}
 			else // not a pet

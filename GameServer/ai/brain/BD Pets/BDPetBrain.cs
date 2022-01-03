@@ -74,7 +74,7 @@ namespace DOL.AI.Brain
 		/// notify objects if they have been attacked/hit by an attack
 		/// </summary>
 		/// <param name="ad">information about the attack</param>
-		protected override void OnAttackedByEnemy(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			base.OnAttackedByEnemy(ad);
 
@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
 		/// <returns></returns>
 		public override bool CheckFormation(ref int x, ref int y, ref int z)
 		{
-			if (!Body.AttackState && Body.Attackers.Count == 0)
+			if (!Body.attackComponent.AttackState && Body.attackComponent.Attackers.Count == 0)
 			{
 				GameNPC commander = (GameNPC)Owner;
 				double heading = ((double)commander.Heading) * Point2D.HEADING_TO_RADIAN;
@@ -204,7 +204,15 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
+			/*
 			GamePlayer playerowner = GetPlayerOwner();
+
+			long lastUpdate = 0;
+			if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out lastUpdate))
+			{
+				playerowner.Client.GameObjectUpdateArray.Add(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
+			}
+
 			if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
 			{
 				playerowner.Out.SendObjectUpdate(Body);
@@ -219,7 +227,7 @@ namespace DOL.AI.Brain
 					GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
 			}
 
-			if ((!Body.AttackState && !Body.IsCasting && !Body.InCombat && m_orderAttackTarget == null) || AggressionState == eAggressionState.Passive)
+			if ((!Body.attackComponent.AttackState && !Body.IsCasting && !Body.InCombat && m_orderAttackTarget == null) || AggressionState == eAggressionState.Passive)
 			{
 				FollowOwner();
 			}
@@ -235,6 +243,10 @@ namespace DOL.AI.Brain
 
 			if (AggressionState != eAggressionState.Passive)
 				AttackMostWanted();
+			*/
+			CheckAbilities();
+			CheckSpells(eCheckSpellType.Defensive);
+			base.Think();
 		}
 
 		public override void Attack(GameObject target)

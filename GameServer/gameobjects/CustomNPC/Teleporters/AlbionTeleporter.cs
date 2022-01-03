@@ -25,7 +25,7 @@ using System.Collections;
 using DOL.GS.Spells;
 using log4net;
 using System.Reflection;
-using DOL.GS.Quests.Catacombs.Obelisks;
+// using DOL.GS.Quests.Catacombs.Obelisks;
 using DOL.GS.Housing;
 
 namespace DOL.GS
@@ -52,7 +52,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166);
 			Inventory = template.CloseTemplate();
 
-			SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 			return base.AddToWorld();
 		}
 

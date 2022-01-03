@@ -81,7 +81,7 @@ namespace DOL.GS
                     spell.DamageType = (int)eDamageType.Heat;
                     spell.SpellID = 6001;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamage";
+                    spell.Type = eSpellType.DirectDamage.ToString();
                     m_glareSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_glareSpell);
                 }
@@ -115,7 +115,7 @@ namespace DOL.GS
                     spell.DamageType = (int)eDamageType.Heat;
                     spell.SpellID = 6002;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamage";
+                    spell.Type = eSpellType.DirectDamage.ToString();
                     m_breathSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_breathSpell);
                 }
@@ -148,7 +148,7 @@ namespace DOL.GS
                     spell.DamageType = (int)eDamageType.Heat;
                     spell.SpellID = 6003;
                     spell.Target = "Enemy";
-                    spell.Type = "HeatResistDebuff";
+                    spell.Type = eSpellType.HeatResistDebuff.ToString();
                     spell.Message1 = "You feel more vulnerable to heat!";
                     spell.Message2 = "{0} seems vulnerable to heat!";
 					m_resistDebuffSpell = new Spell(spell, 70);
@@ -187,7 +187,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Heat;
 					spell.SpellID = 6003;
 					spell.Target = "Enemy";
-					spell.Type = "FumbleChanceDebuff";
+					spell.Type = eSpellType.FumbleChanceDebuff.ToString();
 					m_meleeDebuffSpell = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_meleeDebuffSpell);
 				}
@@ -224,7 +224,7 @@ namespace DOL.GS
 					spell.DamageType = (int)eDamageType.Heat;
 					spell.SpellID = 6003;
 					spell.Target = "Enemy";
-					spell.Type = "Nearsight";
+					spell.Type = eSpellType.Nearsight.ToString();
 					spell.Message1 = "You are blinded!";
 					spell.Message2 = "{0} is blinded!";
 					m_rangedDebuffSpell = new Spell(spell, 70);

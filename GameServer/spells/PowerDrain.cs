@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
 				return;
 
 			int powerGain = (ad.Damage + ad.CriticalDamage) * m_spell.LifeDrainReturn / 100;
-			powerGain = owner.ChangeMana(m_caster, GameLiving.eManaChangeType.Spell, powerGain);
+			powerGain = owner.ChangeMana(m_caster, eManaChangeType.Spell, powerGain);
 
 			if (powerGain > 0)
 				MessageToOwner(String.Format("Your summon channels {0} power to you!", powerGain), eChatType.CT_Spell);

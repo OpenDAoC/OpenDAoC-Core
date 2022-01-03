@@ -44,7 +44,16 @@ namespace DOL.AI.Brain
 		public NecromancerPetBrain(GameLiving owner) 
 			: base(owner)
 		{
-		}
+            FSM.ClearStates();
+
+            FSM.Add(new NecromancerPetState_WAKING_UP(FSM, this));
+            FSM.Add(new NecromancerPetState_DEFENSIVE(FSM, this));
+            FSM.Add(new NecromancerPetState_AGGRO(FSM, this));
+            FSM.Add(new NecromancerPetState_PASSIVE(FSM, this));
+            FSM.Add(new StandardMobState_DEAD(FSM, this));
+
+            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+        }
 
 
 		public override int ThinkInterval
@@ -66,13 +75,21 @@ namespace DOL.AI.Brain
 		public override void Think()
 		{
             CheckTether();
-
+            FSM.Think();
+            /*
 			// Necro pets need there own think as they may need to cast a spell in any state
 			if (IsActive)
 			{
 				GamePlayer playerowner = GetPlayerOwner();
 
-				if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
+                long lastUpdate = 0;
+                if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out lastUpdate))
+                {
+                    playerowner.Client.GameObjectUpdateArray.Add(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
+                }
+
+
+                if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
 				{
 					playerowner.Out.SendObjectUpdate(Body);
 				}
@@ -100,7 +117,9 @@ namespace DOL.AI.Brain
 						}
 					}
 				}
-			}
+            }
+            */
+			
 		}
 
 		#region Events
@@ -118,7 +137,7 @@ namespace DOL.AI.Brain
 			if (e == GameNPCEvent.PetSpell)
 			{
 				PetSpellEventArgs petSpell = (PetSpellEventArgs)args;
-				bool hadQueuedSpells = false;
+				bool hadQueuedSpells = false;               
 
 				if (SpellsQueued)
 				{
@@ -126,9 +145,9 @@ namespace DOL.AI.Brain
 					hadQueuedSpells = true;
 				}
 
-                if (petSpell.ParentSpell != null)
+                if (Body.attackComponent.AttackState)
                 {
-                    if (petSpell.ParentSpell.IsInstantCast && petSpell.Spell.IsInstantCast)
+                    if (petSpell.Spell.IsInstantCast && !petSpell.Spell.IsHarmful)
                     {
                         CastSpell(petSpell.Spell, petSpell.SpellLine, petSpell.Target);
                     }
@@ -245,7 +264,7 @@ namespace DOL.AI.Brain
                 {
                     if (target != null)
                     {
-                        if (!Body.AttackState && AggressionState != eAggressionState.Passive)
+                        if (!Body.attackComponent.AttackState && AggressionState != eAggressionState.Passive)
                         {
                             (Body as NecromancerPet).DrawWeapon();
                             AddToAggroList(target, 1);
@@ -320,7 +339,7 @@ namespace DOL.AI.Brain
         /// See if there are any spells queued up and if so, get the first one
         /// and cast it.
         /// </summary>
-		private void CheckSpellQueue()
+		public void CheckSpellQueue()
 		{
 			SpellQueueEntry entry = GetSpellFromQueue();
 			if (entry != null)
@@ -329,6 +348,13 @@ namespace DOL.AI.Brain
 					RemoveSpellFromQueue();
 		}
 
+        public GameLiving GetSpellTarget()
+        {
+            SpellQueueEntry entry = GetSpellFromQueue();
+            if (entry != null)
+                return entry.Target;
+            else return null;
+        }
 
         /// <summary>
         /// See if there are any spells queued up and if so, get the first one
@@ -336,11 +362,15 @@ namespace DOL.AI.Brain
         /// </summary>
 		public void CheckAttackSpellQueue()
         {
-            SpellQueueEntry entry = GetSpellFromAttackQueue();
-            if (entry != null)
-                if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target))
-                    // If the spell can't be cast, remove it from the queue
-                    RemoveSpellFromAttackQueue();
+            int spellsQueued = m_attackSpellQueue.Count;
+            for (int i = 0; i < spellsQueued; i++)
+            {
+                SpellQueueEntry entry = GetSpellFromAttackQueue();
+                if (entry != null)
+                    if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target))
+                        // If the spell can't be cast, remove it from the queue
+                        RemoveSpellFromAttackQueue();
+            }
         }
 
         /// <summary>
@@ -357,7 +387,13 @@ namespace DOL.AI.Brain
 			// Target must be alive, or this is a self spell, or this is a pbaoe spell
 			if ((spellTarget != null && spellTarget.IsAlive) || spell.Target.ToLower() == "self" || spell.Range == 0)
 			{
-				GameObject previousTarget = Body.TargetObject;
+                if (spell.CastTime > 0)
+                {
+                    Body.StopFollowing();
+                    Body.attackComponent.NPCStopAttack();
+                }
+
+                GameObject previousTarget = Body.TargetObject;
 				Body.TargetObject = spellTarget;
 
 				if (spellTarget != null && spellTarget != Body)
@@ -365,10 +401,10 @@ namespace DOL.AI.Brain
 
 				Body.CastSpell(spell, line);
 
-				if (previousTarget != null)
-					Body.TargetObject = previousTarget;
+                //if (previousTarget != null)
+                //    Body.TargetObject = previousTarget;
 
-				return true;
+                return true;
 			}
 			else
 			{
@@ -496,7 +532,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Removes the spell that is first in the queue.
         /// </summary>
-        private void RemoveSpellFromQueue()
+        public void RemoveSpellFromQueue()
 		{
 			lock (m_spellQueue)
 			{
@@ -512,7 +548,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Removes the spell that is first in the queue.
         /// </summary>
-        private void RemoveSpellFromAttackQueue()
+        public void RemoveSpellFromAttackQueue()
         {
             lock (m_attackSpellQueue)
             {

@@ -17,7 +17,9 @@
  *
  */
 
-namespace DOL.GS.Commands
+ using DOL.Database;
+
+ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&release", new string[] { "&rel" },
@@ -28,24 +30,28 @@ namespace DOL.GS.Commands
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon)
+			if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon || ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
 			{
-				client.Player.Release(GamePlayer.eReleaseType.RvR, false);
+				client.Player.Release(eReleaseType.RvR, false);
 				return;
 			}
 
             if (args.Length > 1 && args[1].ToLower() == "city")
-			{
-					client.Player.Release(GamePlayer.eReleaseType.City, false);
+            {
+	            if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
+		            return;
+				client.Player.Release(eReleaseType.City, false);
 					return;
 			}
 
             if (args.Length > 1 && args[1].ToLower() == "house")
             {
-                client.Player.Release(GamePlayer.eReleaseType.House, false);
+	            if (ServerProperties.Properties.EVENT_THIDRANKI || ServerProperties.Properties.EVENT_TUTORIAL)
+		            return;
+                client.Player.Release(eReleaseType.House, false);
                 return;
             }
-			client.Player.Release(GamePlayer.eReleaseType.Normal, false);
+			client.Player.Release(eReleaseType.Normal, false);
 		}
 	}
 }

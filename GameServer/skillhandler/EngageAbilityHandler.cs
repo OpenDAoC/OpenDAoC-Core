@@ -21,6 +21,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using log4net;
 using DOL.Language;
+using System.Linq;
 
 namespace DOL.GS.SkillHandler
 {
@@ -82,7 +83,7 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 
-			if (player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Distance)
+			if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.CannotUseNoCaCWeapons"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 return;
@@ -96,7 +97,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// You cannot engage a mob that was attacked within the last 5 seconds...
-			if (target.LastAttackedByEnemyTick > target.CurrentRegion.Time - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
+			if (target.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.TargetAttackedRecently", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -108,17 +109,16 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 			//Cancel old engage effects on player
-			foreach (EngageEffect engage in player.EffectList.GetAllOfType<EngageEffect>())
-			{
 
+			foreach (EngageECSGameEffect engage in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Engage))
+			{ 
 				if (engage != null)
 				{
 					engage.Cancel(false);
-					engage.Stop();
 					return;
 				}
 			}
-			new EngageEffect().Start(player);
+			new EngageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null));
 		}
 	}
 }

@@ -179,7 +179,14 @@ namespace DOL.GS.Commands
 					info.Add(" + Damage type: " + target.MeleeDamageType);
 					if (target.LeftHandSwingChance > 0)
 						info.Add(" + Left Swing %: " + target.LeftHandSwingChance);
-						
+					if(target.ScalingFactor > 0)
+						info.Add(" + DamageTableScalingFactor: " + target.ScalingFactor);
+					if(target.GetModified(eProperty.MeleeDamage) > 0) 
+						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
+					if (target.GetWeaponSkill(new InventoryItem()) > 0)
+						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new InventoryItem()));
+
+
 					if (target.Abilities != null && target.Abilities.Count > 0)
 						info.Add(" + Abilities: " + target.Abilities.Count);
 						
@@ -248,12 +255,12 @@ namespace DOL.GS.Commands
 					}
 
 					info.Add("InCombat: " + target.InCombat);
-					info.Add("AttackState: " + target.AttackState);
+					info.Add("AttackState: " + target.attackComponent.AttackState);
 					info.Add("LastCombatPVE: " + target.LastAttackedByEnemyTickPvE);
 					info.Add("LastCombatPVP: " + target.LastAttackedByEnemyTickPvP);
 
-					if (target.InCombat || target.AttackState)
-						info.Add("RegionTick: " + target.CurrentRegion.Time);
+					if (target.InCombat || target.attackComponent.AttackState)
+						info.Add("RegionTick: " + GameLoop.GameLoopTime);
 
 					info.Add("");
 
@@ -277,12 +284,12 @@ namespace DOL.GS.Commands
 						}
 					}
 
-					if (target.Attackers != null && target.Attackers.Count > 0)
+					if (target.attackComponent.Attackers != null && target.attackComponent.Attackers.Count > 0)
 					{
 						info.Add("");
 						info.Add("Attacker List:");
 
-						foreach (GameLiving attacker in target.Attackers)
+						foreach (GameLiving attacker in target.attackComponent.Attackers)
 							info.Add(attacker.Name);
 					}
 
@@ -325,7 +332,21 @@ namespace DOL.GS.Commands
 				if (client.Player.TargetObject is GamePlayer)
 				{
 					var target = client.Player.TargetObject as GamePlayer;
-										
+
+					info.Add("ENDURANCE INFORMANTION");
+					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
+					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
+					info.Add("Last Regen amount: " + target.Regen);
+					info.Add("Last EndChant amount (FatigueConsumption): " + target.Endchant + "%");
+					info.Add("Last Regen at change: " + target.RegenRateAtChange);
+					info.Add(" ");
+					info.Add("REGEN INFORMATION");
+					info.Add("Last EnduDebuff:" + target.EnduDebuff);
+					info.Add("Last RegenBuff: " + target.RegenBuff);
+					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
+					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
+					info.Add("Last Combat Regen: " + target.CombatRegen);
+					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);
 					info.Add("  - Lastname : " + target.LastName);
@@ -348,6 +369,13 @@ namespace DOL.GS.Commands
 					info.Add("  - XPs : " + target.Experience);
 					info.Add("  - RPs : " + target.RealmPoints);
 					info.Add("  - BPs : " + target.BountyPoints);
+					info.Add(" ");
+					info.Add("--CUSTOM PARAMS-- ");
+					var customParams = target.Client.Account.CustomParams;
+					foreach (CustomParam param in customParams)
+					{
+						info.Add(param.KeyName + " " + param.Value);
+					}
 
 					String sCurrent = "";
 					String sTitle = "";
@@ -499,6 +527,50 @@ namespace DOL.GS.Commands
 					info.Add(" + Type : " + DoorRequestHandler.m_handlerDoorID / 100000000);
 					info.Add(" ");
 					info.Add(" + X : " + target.X);  
+					info.Add(" + Y : " + target.Y);
+					info.Add(" + Z : " + target.Z);
+					info.Add(" + Heading : " + target.Heading);
+				}
+
+				if(client.Player.TargetObject is GameKeepDoor)
+                {
+					var target = client.Player.TargetObject as GameKeepDoor;
+
+					string Realmname = "";
+					string statut = "";
+
+					name = target.Name;
+
+					if (target.Realm == eRealm.None)
+						Realmname = "None";
+
+					if (target.Realm == eRealm.Albion)
+						Realmname = "Albion";
+
+					if (target.Realm == eRealm.Midgard)
+						Realmname = "Midgard";
+
+					if (target.Realm == eRealm.Hibernia)
+						Realmname = "Hibernia";
+
+					if (target.Realm == eRealm.Door)
+						Realmname = "All";
+
+					info.Add("Component: " + target.Component);
+					info.Add("Keep: " + target.Component?.Keep);
+
+					info.Add("  ------- DOOR ------\n");
+					info.Add(" ");
+					info.Add(" + Name : " + target.Name);
+					info.Add(" + ID : " + target.DoorID);
+					info.Add(" + Realm : " + (int)target.Realm + " : " + Realmname);
+					info.Add(" + Level : " + target.Level);
+					info.Add(" + Guild : " + target.GuildName);
+					info.Add(" + Health : " + target.Health + " / " + target.MaxHealth);
+					info.Add(" + Statut : " + statut);
+					info.Add(" + Type : " + DoorRequestHandler.m_handlerDoorID / 100000000);
+					info.Add(" ");
+					info.Add(" + X : " + target.X);
 					info.Add(" + Y : " + target.Y);
 					info.Add(" + Z : " + target.Z);
 					info.Add(" + Heading : " + target.Heading);

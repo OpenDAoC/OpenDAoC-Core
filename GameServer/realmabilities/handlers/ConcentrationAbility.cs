@@ -15,25 +15,25 @@ namespace DOL.GS.RealmAbilities
 	{
 		public ConcentrationAbility(DBAbility dba, int level) : base(dba, level) { }
 
-		/// <summary>
-		/// Action
-		/// </summary>
-		/// <param name="living"></param>
-		public override void Execute(GameLiving living)
-		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+        /// <summary>
+        /// Action
+        /// </summary>
+        /// <param name="living"></param>
+        public override void Execute(GameLiving living)
+        {
+            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-			SendCasterSpellEffectAndCastMessage(living, 7006, true);
+            SendCasterSpellEffectAndCastMessage(living, 7006, true);
 
-			GamePlayer player = living as GamePlayer;
-			if (player != null)
-			{
-				player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
-			}
-			DisableSkill(living);
-		}
+            GamePlayer player = living as GamePlayer;
+            if (player != null)
+            {
+                player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
+            }
+            DisableSkill(living);
+        }
 
-		public override int GetReUseDelay(int level)
+        public override int GetReUseDelay(int level)
 		{
 			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
 			{

@@ -22,6 +22,7 @@ using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Events;
+using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS.ServerRules
 {
@@ -73,10 +74,10 @@ namespace DOL.GS.ServerRules
 		
 		private static void CheckDFOwner()
 		{
-			int albcount = GameServer.KeepManager.GetTowerCountByRealm(eRealm.Albion);
-			int midcount = GameServer.KeepManager.GetTowerCountByRealm(eRealm.Midgard);
-			int hibcount = GameServer.KeepManager.GetTowerCountByRealm(eRealm.Hibernia);
-
+			int albcount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Albion);
+			int midcount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Midgard);
+			int hibcount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Hibernia);
+			
 			if (albcount > midcount && albcount > hibcount)
 			{
 				DarknessFallOwner = eRealm.Albion;
@@ -103,11 +104,66 @@ namespace DOL.GS.ServerRules
 			eRealm realm = (eRealm) args.Keep.Realm ;
 			if (realm != DarknessFallOwner )
 			{
-				int currentDFOwnerTowerCount = GameServer.KeepManager.GetTowerCountByRealm(DarknessFallOwner);
-				int challengerOwnerTowerCount = GameServer.KeepManager.GetTowerCountByRealm(realm);
+				// TODO send message to chat and discord web hook
+				string oldDFOwner = GlobalConstants.RealmToName(DarknessFallOwner);
+				int currentDFOwnerTowerCount = GameServer.KeepManager.GetKeepCountByRealm(DarknessFallOwner);
+				int challengerOwnerTowerCount = GameServer.KeepManager.GetKeepCountByRealm(realm);
 				if (currentDFOwnerTowerCount < challengerOwnerTowerCount)
 					DarknessFallOwner = realm;
+				string realmName = "";
+
+				string messageDFGetControl = string.Format("The forces of {0} have gained access to Darkness Falls!", GlobalConstants.RealmToName(realm));
+				string messageDFLostControl = string.Format("{0} has lost control of Darkness Falls!", oldDFOwner);
+
+				if (oldDFOwner != GlobalConstants.RealmToName(DarknessFallOwner))
+				{ 
+					BroadcastMessage(messageDFLostControl, eRealm.None);
+					BroadcastMessage(messageDFGetControl, eRealm.None);
+				}
 			}
+		}
+		
+		/// <summary>
+		/// Method to broadcast messages, if eRealm.None all can see,
+		/// else only the right realm can see
+		/// </summary>
+		/// <param name="message">The message</param>
+		/// <param name="realm">The realm</param>
+		public static void BroadcastMessage(string message, eRealm realm)
+		{
+			foreach (GameClient client in WorldMgr.GetAllClients())
+			{
+				if (client.Player == null)
+					continue;
+				if ((client.Account.PrivLevel != 1 || realm == eRealm.None) || client.Player.Realm == realm)
+				{
+					client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+			}
+			
+			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
+			{
+				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+
+				// Create your DiscordMessage with all parameters of your message.
+				var discordMessage = new DiscordMessage(
+					"",
+					username: "Atlas RvR",
+					avatarUrl: "https://cdn.discordapp.com/avatars/924819559058378782/7b11edbd9ca764893d4863fcb17e58c6.webp",
+					tts: false,
+					embeds: new[]
+					{
+						new DiscordMessageEmbed(
+							author: new DiscordMessageEmbedAuthor("Darkness Falls"),
+							color: 0,
+							description: message
+						)
+					}
+				);
+				
+				client.SendToDiscord(discordMessage);
+			}
+			
 		}
 
 	}

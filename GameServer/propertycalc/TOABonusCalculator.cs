@@ -49,7 +49,7 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property)
         {
             //hardcap at 25%
-            return Math.Min(25, living.ItemBonus[(int)property]
+            return Math.Min(25, living.ItemBonus[(int)property] + living.AbilityBonus[(int)property]
                 - living.DebuffCategory[(int)property]);
         }
     }
@@ -102,9 +102,13 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
+            /// [Atlas - Takii] Re-introduce usage of CastingSpeed ability bonus instead of Item bonus since we have Mastery of the Art RA in OF.
+            /// Hard cap at 15% since that's what MotA goes up to.
+            return Math.Min(15, living.AbilityBonus[(int)property] - living.DebuffCategory[(int)property]);
+
             //hardcap at 10%
-            return Math.Min(10, living.ItemBonus[(int)property]
-                - living.DebuffCategory[(int)property]);
+            //return Math.Min(10, living.ItemBonus[(int)property]
+            //- living.DebuffCategory[(int)property]);
         }
     }
 

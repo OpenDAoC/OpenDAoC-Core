@@ -760,4 +760,10 @@ namespace DOL.GS
 	{
 		public override string MoneyKey { get { return "dragonscales"; } }
 	}
+
+	public class GameAtlasMerchant : GameItemCurrencyMerchant
+	{
+		//Atlas Orbs itemtemplate = token_many
+		public override string MoneyKey { get { return "token_many"; } }
+	}
 }

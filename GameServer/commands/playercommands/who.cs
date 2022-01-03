@@ -52,7 +52,7 @@ namespace DOL.GS.Commands
 		//help:
 		//"/who  Can be modified with [playername], [class], [#] level, [location], [##] [##] level range",
 		"/WHO ALL lists all players online",
-		"/WHO NF lists all players online in New Frontiers",
+		//"/WHO NF lists all players online in New Frontiers",
 		// "/WHO CSR lists all Customer Service Representatives currently online",
 		// "/WHO DEV lists all Development Team Members currently online",
 		// "/WHO QTA lists all Quest Team Assistants currently online",
@@ -62,13 +62,14 @@ namespace DOL.GS.Commands
 		"/WHO <location> lists players in the <location> area",
 		"/WHO <level> lists players of level <level>",
 		"/WHO <level> <level> lists players in level range",
-		"/WHO <language> lists players with a specific language"
+		"/WHO BG lists all players leading a public BattleGroup",
+		"/WHO SOLO lists all ungrouped players"
 	)]
 	public class WhoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public const int MAX_LIST_SIZE = 26;
+		public const int MAX_LIST_SIZE = 49;
 		public const string MESSAGE_LIST_TRUNCATED = "(Too many matches ({0}).  List truncated.)";
 		private const string MESSAGE_NO_MATCHES = "No Matches.";
 		private const string MESSAGE_NO_ARGS = "Type /WHO HELP for variations on the WHO command.";
@@ -113,8 +114,7 @@ namespace DOL.GS.Commands
 				DisplayMessage(client, MESSAGE_NO_ARGS);
 				return;
 			}
-
-
+			
 			// any params passed?
 			switch (args[1].ToLower())
 			{
@@ -153,12 +153,16 @@ namespace DOL.GS.Commands
 						filters.Add(new ChatGroupFilter());
 						break;
 					}
-				case "nf":
-					{
-						filters = new ArrayList(1);
-						filters.Add(new NewFrontiersFilter());
-						break;
-					}
+				case "bg":
+				{
+					filters = new ArrayList(1);
+					filters.Add(new BGFilter());
+					break;
+				}
+				case "solo":
+					filters = new ArrayList();
+					filters.Add(new SoloFilter());
+					break;
 				case "rp":
 					{
 						filters = new ArrayList(1);
@@ -172,7 +176,6 @@ namespace DOL.GS.Commands
 						break;
 					}
 			}
-
 
 			int resultCount = 0;
 			foreach (GameClient clients in clientsList)
@@ -473,6 +476,38 @@ namespace DOL.GS.Commands
 			public bool ApplyFilter(GamePlayer player)
 			{
 				return player.RPFlag;
+			}
+		}
+		
+		private class SoloFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				if (player.Group == null)
+				{
+					return true;
+				}
+				return false;
+			}
+		}
+		
+		private class BGFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				BattleGroup bg = (BattleGroup)player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				//no battlegroup found
+				if (bg == null)
+					return false;
+
+				//always show your own bg
+				//TODO
+
+				//player is a bg leader, and the bg is public
+				if ((bool)bg.Members[player] == true && bg.IsPublic)
+					return true;
+				
+				return false;
 			}
 		}
 

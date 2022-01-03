@@ -92,6 +92,23 @@ namespace DOL.GS.PacketHandler.Client.v168
 			ushort yOffsetInZone = packet.ReadShort();
 			ushort currentZoneID = packet.ReadShort();
 
+            try
+            {
+				Zone grabZone = WorldMgr.GetZone(currentZoneID);
+            } catch (Exception e)
+            {
+				//if we get a zone that doesn't exist, move player to their bindstone
+				client.Player.MoveTo(
+					(ushort)client.Player.BindRegion,
+					client.Player.BindXpos,
+					client.Player.BindYpos,
+					(ushort)client.Player.BindZpos,
+					(ushort)client.Player.BindHeading
+					);
+				return;
+			
+			}
+			
 
 			//Dinberg - Instance considerations.
 			//Now this gets complicated, so listen up! We have told the client a lie when it comes to the zoneID.
@@ -109,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//outside of the unvierse knows not to listen to whether you say which you are, and knows the truth to the
 			//answer. Then, he need only know what you are doing ;)
 
-			Zone newZone = WorldMgr.GetZone(currentZoneID);
+			Zone newZone = WorldMgr.GetZone(currentZoneID);			
 			if (newZone == null)
 			{
 				if(client.Player==null) return;
@@ -149,7 +166,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					client.Player.MaxLastZ = int.MinValue;
 
 				// Update water level and diving flag for the new zone
-				client.Out.SendPlayerPositionAndObjectID();
+				// commenting this out for now, creates a race condition when teleporting within same region, jumping player back and forth as player xyz isnt updated yet.
+				//client.Out.SendPlayerPositionAndObjectID();		
 				zoneChange = true;
 
 				/*
@@ -177,6 +195,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                 client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 
 				client.Player.LastPositionUpdateZone = newZone;
+
+				if (client.Player.GMStealthed)
+					client.Player.Stealth(true);
 			}
 
 			int coordsPerSec = 0;
@@ -563,8 +584,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					if (fallSpeed > fallMinSpeed)
 					{
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"),
-						eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+						// client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"),
+						// eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
 						fallDamage = client.Player.CalcFallDamage(fallPercent);
 					}
 
@@ -650,7 +671,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak.WriteByte(flagcontent);
 
 			// Write health + Attack
-			outpak.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 
 			// Write Remainings.
 			outpak.WriteByte(client.Player.ManaPercent);
@@ -696,7 +717,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(playerAction);
 			outpak1124.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1124.WriteByte(0);
-			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1124.WriteByte(client.Player.ManaPercent);
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WritePacketLength();
@@ -870,6 +891,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 
 				client.Player.LastPositionUpdateZone = newZone;
+
+				if (client.Player.GMStealthed)
+					client.Player.Stealth(true);
 			}
 
 			int coordsPerSec = 0;
@@ -1137,14 +1161,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						int fallDivide = 15;
 
-						var fallPercent = Math.Min(99, (fallSpeed - 501) / fallDivide);
+						var fallPercent = (int)Math.Min(99, (fallSpeed - 501) / fallDivide);
 
 						if (fallSpeed > 500)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.FallingDamage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-							client.Out.SendMessage(string.Format("You take {0}% of you max hits in damage.", fallPercent), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-							client.Out.SendMessage("You lose endurance", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-							client.Player.CalcFallDamage((int)fallPercent);
+							if (client.Player.CharacterClass.ID != (int)eCharacterClass.Necromancer || !client.Player.IsShade)
+							{
+								client.Player.CalcFallDamage(fallPercent);
+							}
 						}
 
 						client.Player.MaxLastZ = client.Player.Z;
@@ -1195,7 +1219,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(playerOutAction);
 			outpak1124.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1124.WriteByte(0);
-			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1124.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1124.WriteByte(client.Player.ManaPercent);
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WritePacketLength();
@@ -1210,7 +1234,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1127.WriteByte(playerOutAction);
 			outpak1127.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1127.WriteByte(0);
-			outpak1127.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak1127.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak1127.WriteByte(client.Player.ManaPercent);
 			outpak1127.WriteByte(client.Player.EndurancePercent);
 			outpak1127.WriteShort(0);
@@ -1228,7 +1252,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak190.WriteShort(newHeading);
 			outpak190.WriteShort(steedSeatPosition);
 			outpak190.WriteByte(playerAction);
-			outpak190.WriteByte((byte)(client.Player.HealthPercent + (client.Player.AttackState ? 0x80 : 0)));
+			outpak190.WriteByte((byte)(client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
 			outpak190.WriteByte(client.Player.ManaPercent);
 			outpak190.WriteByte(client.Player.EndurancePercent);
 

@@ -138,7 +138,7 @@ namespace DOL.GS.Commands
 				//	}
 				case "all":
 					{
-                        if (client.Player.Level >= 50 || TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
+                        if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
                         {
                             // Check for full respecs.
                             if ( client.Player.RespecAmountAllSkill < 1
@@ -170,7 +170,7 @@ namespace DOL.GS.Commands
 				//	}
 				case "realm":
 					{
-                        if (client.Player.Level >= 50 || TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
+                        if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
                         {
                             if (client.Player.RespecAmountRealmSkill < 1
                                 && !ServerProperties.Properties.FREE_RESPEC)
@@ -195,12 +195,15 @@ namespace DOL.GS.Commands
 				//	}
 				default:
 					{
-						// Check for single-line respecs.
-						if (client.Player.RespecAmountSingleSkill < 1
-							&& !ServerProperties.Properties.FREE_RESPEC)
+						if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
 						{
-							DisplayMessage(client, "You don't seem to have any single-line respecs available.");
-							return;
+							// Check for single-line respecs.
+							if (client.Player.RespecAmountSingleSkill < 1
+							&& !ServerProperties.Properties.FREE_RESPEC)
+							{
+								DisplayMessage(client, "You don't seem to have any single-line respecs available.");
+								return;
+							}
 						}
 
 						string lineName = string.Join(" ", args, 1, args.Length - 1);
@@ -273,7 +276,7 @@ namespace DOL.GS.Commands
 			// Assign full points returned
 			if (player.SkillSpecialtyPoints > specPoints)
 			{
-				player.RemoveAllStyles(); // Kill styles
+				player.styleComponent.RemoveAllStyles(); // Kill styles
 				DisplayMessage(player, "You regain " + (player.SkillSpecialtyPoints - specPoints) + " specialization points!");
 			}
 			if (player.RealmSpecialtyPoints > realmSpecPoints)
@@ -287,6 +290,19 @@ namespace DOL.GS.Commands
 			player.Out.SendUpdatePlayer();
 			player.SendTrainerWindow();
 			player.SaveIntoDatabase();
+
+			// Remove all self-cast buffs when respeccing to avoid exploits.
+            DisplayMessage(player, "All self-cast buffs have been removed due to a respec.");
+            if (player.effectListComponent != null)
+            {
+				foreach (ECSGameSpellEffect e in player.effectListComponent.GetAllEffects())
+                {
+					if (e.SpellHandler.Caster == player)
+                    {
+						EffectService.RequestCancelEffect(e);
+					}
+                }
+            }
 		}
 	}
 }

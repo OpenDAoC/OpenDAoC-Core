@@ -57,17 +57,17 @@ namespace DOL.GS.GameEvents
 		{
 			lock (typeof(StatPrint))
 			{
-				m_timerStatsByMgr = new Hashtable();
-				m_timer = new Timer(new TimerCallback(PrintStats), null, 10000, 0);
+				//m_timerStatsByMgr = new Hashtable();
+				//m_timer = new Timer(new TimerCallback(PrintStats), null, 10000, 0);
 
 				bool isLinux = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
 				if (isLinux) return;
 
 				// Create performance counters
-				if (m_systemCpuUsedCounter == null) m_systemCpuUsedCounter = CreatePerformanceCounter("Processor", "% processor time", "_total");
-				if (m_processCpuUsedCounter == null) m_processCpuUsedCounter = CreatePerformanceCounter("Process", "% processor time", GetProcessCounterName());
-				if (m_memoryPages == null) m_memoryPages = CreatePerformanceCounter("Memory", "Pages/sec", null);
-				if (m_physycalDisk == null) m_physycalDisk = CreatePerformanceCounter("PhysicalDisk", "Disk Transfers/sec", "_Total");
+				// if (m_systemCpuUsedCounter == null) m_systemCpuUsedCounter	= CreatePerformanceCounter("Processor",				"% processor time",		"_total");
+				// if (m_processCpuUsedCounter == null) m_processCpuUsedCounter = CreatePerformanceCounter("Process", "% processor time", GetProcessCounterName());
+				// if (m_memoryPages == null) m_memoryPages = CreatePerformanceCounter("Memory", "Pages/sec", null);
+				// if (m_physycalDisk == null) m_physycalDisk = CreatePerformanceCounter("PhysicalDisk", "Disk Transfers/sec", "_Total");
 			}
 		}
 

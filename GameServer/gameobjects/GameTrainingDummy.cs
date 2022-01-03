@@ -21,6 +21,7 @@ using System.Reflection;
 using DOL.AI.Brain;
 using log4net;
 using DOL.Events;
+using DOL.GS.PropertyCalc;
 
 namespace DOL.GS
 {
@@ -35,10 +36,16 @@ namespace DOL.GS
 			SetOwnBrain(new BlankBrain());
 		}
 
-		/// <summary>
-		/// Training Dummies never loose health
-		/// </summary>
-		public override int Health
+		
+        public override void StartAttack(GameObject target)
+        {
+            
+        }
+
+        /// <summary>
+        /// Training Dummies never loose health
+        /// </summary>
+        public override int Health
 		{
 			get{ return base.MaxHealth;}
 			set {}
@@ -62,13 +69,13 @@ namespace DOL.GS
 			{
 				if (ad.Attacker.Realm == 0 || this.Realm == 0)
 				{
-					LastAttackedByEnemyTickPvE = CurrentRegion.Time;
-					ad.Attacker.LastAttackTickPvE = CurrentRegion.Time;
+					LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
 				}
 				else
 				{
-					LastAttackedByEnemyTickPvP = CurrentRegion.Time;
-					ad.Attacker.LastAttackTickPvP = CurrentRegion.Time;
+					LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+					ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
 				}
 			}
 		}
@@ -83,6 +90,54 @@ namespace DOL.GS
 			Notify(GameObjectEvent.Interact, this, new InteractEventArgs(player));
 			player.Notify(GameObjectEvent.InteractWith, player, new InteractWithEventArgs(this));
 			return true;
+		}
+
+		protected static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
+		{
+			int effectiveValue = (int)(Value * Effectiveness);
+
+			IPropertyIndexer tblBonusCat;
+			if (Property != eProperty.Undefined)
+			{
+				tblBonusCat = GetBonusCategory(owner, BonusCat);
+				//Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
+				if (IsSubstracted)
+					tblBonusCat[(int)Property] -= effectiveValue;
+				else
+					tblBonusCat[(int)Property] += effectiveValue;
+				//Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
+			}
+		}
+
+		private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
+		{
+			IPropertyIndexer bonuscat = null;
+			switch (categoryid)
+			{
+				case eBuffBonusCategory.BaseBuff:
+					bonuscat = target.BaseBuffBonusCategory;
+					break;
+				case eBuffBonusCategory.SpecBuff:
+					bonuscat = target.SpecBuffBonusCategory;
+					break;
+				case eBuffBonusCategory.Debuff:
+					bonuscat = target.DebuffCategory;
+					break;
+				case eBuffBonusCategory.Other:
+					bonuscat = target.BuffBonusCategory4;
+					break;
+				case eBuffBonusCategory.SpecDebuff:
+					bonuscat = target.SpecDebuffCategory;
+					break;
+				case eBuffBonusCategory.AbilityBuff:
+					bonuscat = target.AbilityBonus;
+					break;
+				default:
+					//if (log.IsErrorEnabled)
+					//Console.WriteLine("BonusCategory not found " + categoryid + "!");
+					break;
+			}
+			return bonuscat;
 		}
 	}
 }

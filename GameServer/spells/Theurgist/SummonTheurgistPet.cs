@@ -24,6 +24,8 @@ using DOL.AI.Brain;
 using DOL.GS.Effects;
 using log4net;
 using System.Reflection;
+using DOL.Events;
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -83,8 +85,33 @@ namespace DOL.GS.Spells
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
-		protected override void AddHandlers()
+		//protected override void AddHandlers()
+		//{
+
+		//}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="e"></param>
+		/// <param name="sender"></param>
+		/// <param name="arguments"></param>
+		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
 		{
+			m_pet = sender as GamePet;
+			if (m_pet == null)
+				return;
+
+			if ((m_pet.Brain as TheurgistPetBrain) == null)
+				return;
+
+
+			GameEventMgr.RemoveHandler(m_pet, GameLivingEvent.PetReleased, OnNpcReleaseCommand);
+
+			//GameSpellEffect effect = FindEffectOnTarget(m_pet, this);
+			//if (effect != null)
+			//	effect.Cancel(false);
+			if (m_pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
+				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 
 		protected override GamePet GetGamePet(INpcTemplate template)

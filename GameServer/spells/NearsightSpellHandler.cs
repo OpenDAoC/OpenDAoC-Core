@@ -26,11 +26,35 @@ using DOL.Language;
 namespace DOL.GS.Spells
 {
 	/// <summary>
-	/// Reduce range needed to cast the sepll
+	/// Reduce range needed to cast the spell
 	/// </summary>
 	[SpellHandler("Nearsight")]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new NearsightECSGameEffect(initParams);
+        }
+
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			if (EffectListService.GetEffectOnTarget(target, eEffect.Nearsight) != null)
+            {
+				MessageToCaster(target.Name + " already has this effect!", eChatType.CT_SpellResisted);
+				SendEffectAnimation(target, 0, false, 0);
+				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+				return;
+			}
+			if (EffectListService.GetEffectOnTarget(target, eEffect.NearsightImmunity) != null)
+			{
+				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+				SendEffectAnimation(target, 0, false, 0);
+				
+				return;
+			}
+			base.ApplyEffectOnTarget(target, effectiveness);
+        }
         /// <summary>
         /// Calculates chance of spell getting resisted
         /// </summary>
@@ -53,14 +77,14 @@ namespace DOL.GS.Spells
 		/// <param name="effect"></param>
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
- 			if(mezz != null) mezz.Cancel(false);
-			// percent category
-			effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)Spell.Value;
-			effect.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)Spell.Value;
-			SendEffectAnimation(effect.Owner, 0, false, 1);
-			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
+			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
+ 		//	if(mezz != null) mezz.Cancel(false);
+			//// percent category
+			//effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)Spell.Value;
+			//effect.Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)Spell.Value;
+			//SendEffectAnimation(effect.Owner, 0, false, 1);
+			//MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
+			//Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
 		}
 
 		/// <summary>
@@ -72,13 +96,13 @@ namespace DOL.GS.Spells
 		/// <returns>immunity duration in milliseconds</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			// percent category
-			effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)Spell.Value;
-			effect.Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)Spell.Value;
-			if (!noMessages) {
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
-			}
+			//// percent category
+			//effect.Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)Spell.Value;
+			//effect.Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)Spell.Value;
+			//if (!noMessages) {
+			//	MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+			//	Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+			//}
 			return 60000;
 		}
 
@@ -108,7 +132,7 @@ namespace DOL.GS.Spells
 
 				var list = new List<string>();
 
-                list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "NearsightSpellHandler.DelveInfo.Function", (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType)));
+                list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "NearsightSpellHandler.DelveInfo.Function", (Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString())));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line

@@ -27,10 +27,10 @@ namespace DOL.GS.Effects
 	/// <summary>
 	/// The helper class for quckcast ability
 	/// </summary>
-	public class QuickCastEffect : TimedEffect, IGameEffect
+	public class XQuickCastEffect : TimedEffect, IGameEffect
 	{
         public const int DURATION = 3000;
-        public QuickCastEffect() : base(DURATION)
+        public XQuickCastEffect() : base(DURATION)
         {
         }
 

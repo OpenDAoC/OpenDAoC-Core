@@ -53,7 +53,7 @@ namespace DOL.GS.SkillHandler
                     if (effect is GameSpellEffect)
                     {
                         GameSpellEffect oEffect = (GameSpellEffect)effect;
-                        if (oEffect.Spell.SpellType.ToLower().IndexOf("speeddecrease") != -1 && oEffect.Spell.Value != 99)
+                        if (oEffect.Spell.SpellType.ToString().ToLower().IndexOf("speeddecrease") != -1 && oEffect.Spell.Value != 99)
                         {            
                         	GamePlayer player = living as GamePlayer;
                             if (player != null)

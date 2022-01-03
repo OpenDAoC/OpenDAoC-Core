@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
 			if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
 
 			int end = (int)(Spell.Damage);
- 			target.ChangeEndurance(target,GameLiving.eEnduranceChangeType.Spell, (-end));
+ 			target.ChangeEndurance(target,eEnduranceChangeType.Spell, (-end));
 
 			if (target is GamePlayer)
 			{
@@ -38,7 +38,7 @@ namespace DOL.GS.Spells
 		public virtual void StealEndurance(GameLiving target,int end)
 		{
 			if(!m_caster.IsAlive) return;
-			m_caster.ChangeEndurance(target, GameLiving.eEnduranceChangeType.Spell, end);
+			m_caster.ChangeEndurance(target, eEnduranceChangeType.Spell, end);
 			SendCasterMessage(target,end);
 			
 		}

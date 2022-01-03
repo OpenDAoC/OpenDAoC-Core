@@ -17,8 +17,10 @@
  *
  */
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -93,6 +95,46 @@ namespace DOL.GS.Commands
 						break;
 					}
 				#endregion Create
+				case "info":
+                    {
+						string name = "(Area Info)";
+						var info = new List<string>();
+						//info.Add("        Current Areas : " + client.Player.CurrentAreas);
+						//info.Add(" ");
+						var areas = client.Player.CurrentAreas;
+                        foreach (var area in areas)
+                        {
+							info.Add("Area ClassType: " + area.GetType());
+							info.Add(" ");
+							info.Add("Area ToString: " + area.ToString());
+							info.Add(" ");
+
+							if(area is KeepArea ka)
+                            {
+								info.Add("Area Keep: " + ka.Keep.Name);
+								info.Add(" ");
+
+                                foreach (var guard in ka.Keep.Guards.Values)
+                                {
+									info.Add("Area Guard: " + guard);
+									info.Add(" ");
+								}
+
+                                foreach (var component in ka.Keep.KeepComponents)
+                                {
+									info.Add("Area Component: " + component);
+									info.Add(" ");
+								}
+								
+							}
+
+							
+						}
+
+						client.Out.SendCustomTextWindow("[ " + name + " ]", info);
+						break;
+                    }
+
 				#region Default
 				default:
 					{

@@ -22,6 +22,7 @@ using System.Text;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Database;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -41,7 +42,7 @@ namespace DOL.GS
 		private eDamageType m_damageType = 0;
 		private Style m_style = null;
 		private eAttackType m_attackType = eAttackType.Unknown;
-		private GameLiving.eAttackResult m_attackResult = GameLiving.eAttackResult.Any;
+		private eAttackResult m_attackResult = eAttackResult.Any;
 		private ISpellHandler m_spellHandler;
 		private List<ISpellHandler> m_styleEffects;
 		private int m_animationId;
@@ -50,6 +51,10 @@ namespace DOL.GS
 		private InventoryItem m_weapon;
 		private bool m_isSpellResisted = false;
 		private bool m_causesCombat = true;
+		private double m_missRate = 0;
+		private double m_parryChance = 0;
+		private double m_evadeChance = 0;
+		private double m_blockChance = 0;
 
 		/// <summary>
 		/// Constructs new AttackData
@@ -58,7 +63,26 @@ namespace DOL.GS
 		{
 			m_styleEffects = new List<ISpellHandler>();
 		}
-
+		public double MissRate
+        {
+			get { return m_missRate; }
+			set { m_missRate = value; }
+        }
+		public double ParryChance
+		{
+			get { return m_parryChance; }
+			set { m_parryChance = value * 100; }
+		}
+		public double EvadeChance
+		{
+			get { return m_evadeChance; }
+			set { m_evadeChance = value * 100; }
+		}
+		public double BlockChance
+		{
+			get { return m_blockChance; }
+			set { m_blockChance = value * 100; }
+		}
 		/// <summary>
 		/// Sets or gets the modifier (resisted damage)
 		/// </summary>
@@ -166,7 +190,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the attack result
 		/// </summary>
-		public GameLiving.eAttackResult AttackResult
+		public eAttackResult AttackResult
 		{
 			get { return m_attackResult; }
 			set { m_attackResult = value; }
@@ -282,13 +306,13 @@ namespace DOL.GS
 			{
 				switch (m_attackResult)
 				{
-					case GameLiving.eAttackResult.HitUnstyled:
-					case GameLiving.eAttackResult.HitStyle:
-					case GameLiving.eAttackResult.Missed:
-					case GameLiving.eAttackResult.Blocked:
-					case GameLiving.eAttackResult.Evaded:
-					case GameLiving.eAttackResult.Fumbled:
-					case GameLiving.eAttackResult.Parried: return true;
+					case eAttackResult.HitUnstyled:
+					case eAttackResult.HitStyle:
+					case eAttackResult.Missed:
+					case eAttackResult.Blocked:
+					case eAttackResult.Evaded:
+					case eAttackResult.Fumbled:
+					case eAttackResult.Parried: return true;
 					default: return false;
 				}
 			}
@@ -298,8 +322,16 @@ namespace DOL.GS
         {
             get
             {
-                return (IsMeleeAttack) 
-                    ? Util.ChanceDouble(Attacker.ChanceToFumble) 
+				double randNum = Util.CryptoNextDouble();
+				double fumbleChance = Attacker.ChanceToFumble;
+
+				if (Attacker is GamePlayer p && p.UseDetailedCombatLog)
+				{
+					p.Out.SendMessage($"Your chance to fumble: {(100 * fumbleChance).ToString("0.##")}% rand: {(100 * randNum).ToString("0.##")} Fumble? {fumbleChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				return (IsMeleeAttack) 
+                    ? fumbleChance > randNum 
                     : false;
             }
         }

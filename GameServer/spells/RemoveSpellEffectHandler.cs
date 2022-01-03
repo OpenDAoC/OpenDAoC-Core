@@ -71,9 +71,14 @@ namespace DOL.GS.Spells
 			// RR4: we remove all the effects
 			foreach (string toRemove in SpellTypesToRemove)
 			{
-				GameSpellEffect effect = target.FindEffectOnTarget(toRemove);
+				//GameSpellEffect effect = target.FindEffectOnTarget(toRemove);
+				eEffect.TryParse(toRemove, out eEffect effectType);
+				ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, effectType);
+				if (toRemove == "Mesmerize")
+					effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
 				if (effect != null)
-					effect.Cancel(false);
+					EffectService.RequestCancelEffect(effect);
+					//effect.Cancel(false);
 			}
 			SendEffectAnimation(target, 0, false, 1);
 		}

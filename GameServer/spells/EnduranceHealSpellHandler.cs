@@ -46,9 +46,9 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving healTarget in targets)
 			{
-				if (Spell.Value < 0)
+				if (Spell.Value < 0 && healTarget != null)
 					// Restore a percentage of the target's endurance
-					spellValue = (int)Math.Round(Spell.Value * -0.01) * target.MaxEndurance;
+					spellValue = (int)Math.Round(Spell.Value * -0.01) * healTarget.MaxEndurance;
 
 				healed |= HealTarget(healTarget, spellValue);
 			}
@@ -106,7 +106,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			int heal = target.ChangeEndurance(Caster, GameLiving.eEnduranceChangeType.Spell, amount);
+			int heal = target.ChangeEndurance(Caster, eEnduranceChangeType.Spell, amount);
 
 			if (heal == 0)
 			{

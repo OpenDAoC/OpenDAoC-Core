@@ -445,7 +445,7 @@ namespace DOL.GS
 				// if active weapon was destroyed
 				if (m_player.AttackWeapon == null)
 				{
-					m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+					m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 				}
 				else
 				{
@@ -454,7 +454,7 @@ namespace DOL.GS
 			}
 			else if (oldSlot >= eInventorySlot.FirstQuiver && oldSlot <= eInventorySlot.FourthQuiver)
 			{
-				m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.None, true);
+				m_player.SwitchQuiver(eActiveQuiverSlot.None, true);
 			}
 			else if (IsEquippedSlot(oldSlot))
 			{
@@ -607,13 +607,13 @@ namespace DOL.GS
 					{
 						case eInventorySlot.RightHandWeapon:
 						case eInventorySlot.LeftHandWeapon:
-							m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+							m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 							return false;
 						case eInventorySlot.TwoHandWeapon:
-							m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+							m_player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 							return false;
 						case eInventorySlot.DistanceWeapon:
-							m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+							m_player.SwitchWeapon(eActiveWeaponSlot.Distance);
 							return false;
 					}
 				}
@@ -811,7 +811,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.LeftHandWeapon:
 							if (fromItem.Item_Type != (int) toSlot ||
-							    (fromItem.Object_Type != (int) eObjectType.Shield && !m_player.CanUseLefthandedWeapon))
+							    (fromItem.Object_Type != (int) eObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
 								//shield can be used only in left hand slot
 							{
 								valid = false;
@@ -1003,7 +1003,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.LeftHandWeapon:
 							if (toItem.Item_Type != (int) fromSlot ||
-							    (toItem.Object_Type != (int) eObjectType.Shield && !m_player.CanUseLefthandedWeapon))
+							    (toItem.Object_Type != (int) eObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
 								//shield can be used only in left hand slot
 							{
 								valid = false;
@@ -1109,7 +1109,7 @@ namespace DOL.GS
 					if ((updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.DistanceWeapon)
 					    || (updatedSlot >= eInventorySlot.FirstQuiver && updatedSlot <= eInventorySlot.FourthQuiver))
 					{
-						m_player.StopAttack();
+						m_player.attackComponent.LivingStopAttack();
 						break;
 					}
 				}
@@ -1127,60 +1127,60 @@ namespace DOL.GS
 				switch (toSlot)
 				{
 					case eInventorySlot.RightHandWeapon:
-						m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+						m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 						break;
 					case eInventorySlot.TwoHandWeapon:
-						m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+						m_player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 						break;
 					case eInventorySlot.DistanceWeapon:
-						m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Distance);
+						m_player.SwitchWeapon(eActiveWeaponSlot.Distance);
 						break;
 					case eInventorySlot.LeftHandWeapon:
-						if (m_player.ActiveWeaponSlot != GameLiving.eActiveWeaponSlot.Distance)
+						if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 							m_player.SwitchWeapon(m_player.ActiveWeaponSlot);
-						else m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+						else m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 						break;
 					case eInventorySlot.FirstQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.First, true);
+						m_player.SwitchQuiver(eActiveQuiverSlot.First, true);
 						break;
 					case eInventorySlot.SecondQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.Second, true);
+						m_player.SwitchQuiver(eActiveQuiverSlot.Second, true);
 						break;
 					case eInventorySlot.ThirdQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.Third, true);
+						m_player.SwitchQuiver(eActiveQuiverSlot.Third, true);
 						break;
 					case eInventorySlot.FourthQuiver:
-						m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.Fourth, true);
+						m_player.SwitchQuiver(eActiveQuiverSlot.Fourth, true);
 						break;
 
 
 					default:
 						// change active weapon if moved from active slot
 						if (fromSlot == eInventorySlot.RightHandWeapon &&
-						    m_player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Standard)
+						    m_player.ActiveWeaponSlot == eActiveWeaponSlot.Standard)
 						{
-							m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.TwoHanded);
+							m_player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 						}
 						else if (fromSlot == eInventorySlot.TwoHandWeapon &&
-						         m_player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.TwoHanded)
+						         m_player.ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
 						{
-							m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+							m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 						}
 						else if (fromSlot == eInventorySlot.DistanceWeapon &&
-						         m_player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Distance)
+						         m_player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 						{
-							m_player.SwitchWeapon(GameLiving.eActiveWeaponSlot.Standard);
+							m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 						}
 						else if (fromSlot == eInventorySlot.LeftHandWeapon &&
-						         (m_player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.TwoHanded ||
-						          m_player.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Standard))
+						         (m_player.ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded ||
+						          m_player.ActiveWeaponSlot == eActiveWeaponSlot.Standard))
 						{
 							m_player.SwitchWeapon(m_player.ActiveWeaponSlot);
 						}
 
 						if (fromSlot >= eInventorySlot.FirstQuiver && fromSlot <= eInventorySlot.FourthQuiver)
 						{
-							m_player.SwitchQuiver(GameLiving.eActiveQuiverSlot.None, true);
+							m_player.SwitchQuiver(eActiveQuiverSlot.None, true);
 						}
 
 						break;

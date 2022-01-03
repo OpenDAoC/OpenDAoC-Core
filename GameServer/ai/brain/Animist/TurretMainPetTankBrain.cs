@@ -62,17 +62,17 @@ namespace DOL.AI.Brain
 		}
 	}
 
-  	protected override void AttackMostWanted()
+  	public override void AttackMostWanted()
 	{
 		// Force to wait body attack before casting.
-		if(Body.AttackState)
+		if(Body.attackComponent.AttackState)
 		{
 			return;
 		}
 		CheckSpells(eCheckSpellType.Offensive);
 	}
 
-  	protected override void OnAttackedByEnemy(AttackData ad)
+  	public override void OnAttackedByEnemy(AttackData ad)
 	{
 	  if (AggressionState != eAggressionState.Passive)
 	  {

@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Realm";
             dbs.Radius = 0;
-            dbs.Type = "StormMissHit";
+            dbs.Type = eSpellType.StormMissHit.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 4
             dbs.Frequency = spell.ResurrectMana;
@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormEnduDrain";
+            dbs.Type = eSpellType.StormEnduDrain.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; //should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -228,7 +228,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             //spell damage should 25;
             int end = (int)(Spell.Damage);
-            target.ChangeEndurance(target, GameLiving.eEnduranceChangeType.Spell, (-end));
+            target.ChangeEndurance(target, eEnduranceChangeType.Spell, (-end));
 
             if (target is GamePlayer)
                 ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
@@ -278,7 +278,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.Damage;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormDexQuickDebuff";
+            dbs.Type = eSpellType.StormDexQuickDebuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -361,7 +361,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "PowerDrainStorm";
+            dbs.Type = eSpellType.PowerDrainStorm.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -395,7 +395,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
             int mana = (int)(Spell.Damage);
-            target.ChangeMana(target, GameLiving.eManaChangeType.Spell, (-mana));
+            target.ChangeMana(target, eManaChangeType.Spell, (-mana));
 
             if (target is GamePlayer)
             {
@@ -410,7 +410,7 @@ namespace DOL.GS.Spells
         public virtual void StealMana(GameLiving target, int mana)
         {
             if (!m_caster.IsAlive) return;
-            m_caster.ChangeMana(target, GameLiving.eManaChangeType.Spell, mana);
+            m_caster.ChangeMana(target, eManaChangeType.Spell, mana);
             SendCasterMessage(target, mana);
 
         }
@@ -515,7 +515,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormStrConstDebuff";
+            dbs.Type = eSpellType.StormStrConstDebuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -598,7 +598,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormAcuityDebuff";
+            dbs.Type = eSpellType.StormAcuityDebuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -692,7 +692,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = "StormEnergyTempest";
+            dbs.Type = eSpellType.StormEnergyTempest.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -758,8 +758,8 @@ namespace DOL.GS.Spells
 
             // calc damage
             AttackData ad = CalculateDamageToTarget(target, effectiveness);
-            DamageTarget(ad, true);
             SendDamageMessages(ad);
+            DamageTarget(ad, true);            
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
         }
 

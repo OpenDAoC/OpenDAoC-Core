@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.DamageType = (int)eDamageType.Heat;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = "DirectDamageNoVariance";
+			dbs.Type = eSpellType.DirectDamageNoVariance.ToString();
 			dbs.Value = 0;
 			dbs.Duration = 0;
 			dbs.Pulse = 0;

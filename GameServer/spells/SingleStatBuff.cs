@@ -36,7 +36,12 @@ namespace DOL.GS.Spells
         {
             target.UpdateHealthManaEndu();
         }
-		
+
+        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        {
+            new StatBuffECSEffect(initParams);
+        }
+
         /// <summary>
         /// Apply effect on target or do spell action if non duration spell
         /// </summary>
@@ -45,16 +50,22 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
             int specLevel = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
-			
-			if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ClassType != eClassType.ListCaster && Spell.Level > 0 && ((GamePlayer)Caster).CharacterClass.ID != (int)eCharacterClass.Savage)
+			if (Caster is GamePlayer && Spell.Level > 0 && ((GamePlayer)Caster).CharacterClass.ID != (int)eCharacterClass.Savage)
             {
-                effectiveness = 0.75; // This section is for self bulfs, cleric buffs etc.
                 if (Spell.Level > 0)
                 {
-                    effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
-                    effectiveness = Math.Max(0.75, effectiveness);
-                    effectiveness = Math.Min(1.25, effectiveness);
+                    if (((GamePlayer)Caster).CharacterClass.ClassType != eClassType.ListCaster)
+                    {
+                        effectiveness = 0.75; // This section is for self bulfs, cleric buffs etc.
+                        effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                        effectiveness = Math.Max(0.75, effectiveness);
+                        effectiveness = Math.Min(1.25, effectiveness);
+                    }
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
+                    if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+                    {
+                        spellCaster.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(eProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
                 }
             }
             else if (Caster is GamePlayer && Spell.Level > 0 && Spell.Target == "Enemy")
@@ -66,18 +77,42 @@ namespace DOL.GS.Spells
                     effectiveness = Math.Max(0.75, effectiveness);
                     effectiveness = Math.Min(1.25, effectiveness);
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+                    if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+                    {
+                        spellCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
                 }
 				else
-					{
-						effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
-						effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
-					}
+				{
+					effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
+					effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+				}
 			}
-			else
+            else if (Caster is NecromancerPet nPet && Spell.Level > 0 && Spell.Target == "Enemy")
+            {
+                var caster = nPet.Owner as GamePlayer;
+                specLevel = caster.GetModifiedSpecLevel(m_spellLine.Spec);
+                effectiveness = 0.75; // This section is for list casters stat debuffs.
+                effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                effectiveness = Math.Max(0.75, effectiveness);
+                effectiveness = Math.Min(1.25, effectiveness);
+                effectiveness *= (1.0 + caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+
+                if (Spell.SpellType == (byte)eSpellType.ArmorFactorDebuff)
+                {
+                    effectiveness *= (1 + target.GetArmorAbsorb(eArmorSlot.TORSO));
+                }
+
+                if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+                {
+                    spellCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+            }
+            else
             {
                 effectiveness = 1.0;
             }
-
+            target.StartHealthRegeneration();
             base.ApplyEffectOnTarget(target, effectiveness);
         }
 

@@ -13,6 +13,8 @@ namespace DOL.GS.Effects
 	/// </summary> 
 	public class SpeedOfSoundEffect : TimedEffect, IGameEffect
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		public SpeedOfSoundEffect(int duration)
 			: base(duration)
 		{ }
@@ -26,6 +28,8 @@ namespace DOL.GS.Effects
 		/// <param name="living">The living to start the effect for</param>
 		public override void Start(GameLiving living)
 		{
+			// log.InfoFormat("Starting SpeedOfSoundEffect for player {0} giving speed of {1}", living.Name, PropertyCalc.MaxSpeedCalculator.SPEED4);
+
 			base.Start(living);
 			living.TempProperties.setProperty("Charging", true);
 			GameEventMgr.AddHandler(living, GameLivingEvent.AttackFinished, m_attackFinished);
@@ -70,13 +74,13 @@ namespace DOL.GS.Effects
 
 				switch (afargs.AttackData.AttackResult)
 				{
-					case GameLiving.eAttackResult.HitStyle:
-					case GameLiving.eAttackResult.HitUnstyled:
-					case GameLiving.eAttackResult.Blocked:
-					case GameLiving.eAttackResult.Evaded:
-					case GameLiving.eAttackResult.Fumbled:
-					case GameLiving.eAttackResult.Missed:
-					case GameLiving.eAttackResult.Parried:
+					case eAttackResult.HitStyle:
+					case eAttackResult.HitUnstyled:
+					case eAttackResult.Blocked:
+					case eAttackResult.Evaded:
+					case eAttackResult.Fumbled:
+					case eAttackResult.Missed:
+					case eAttackResult.Parried:
 						SpeedOfSoundEffect effect = player.EffectList.GetOfType<SpeedOfSoundEffect>();
 						if (effect != null)
 							effect.Cancel(false);
@@ -87,11 +91,16 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
+			
 			base.Stop();
 			m_owner.TempProperties.removeProperty("Charging");
 			m_owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 			if (m_owner is GamePlayer)
+            {
+				//log.InfoFormat("Stop SpeedOfSoundEffect for player {0}", m_owner.Name);
 				(m_owner as GamePlayer).Out.SendUpdateMaxSpeed();
+			}
+				
 			GameEventMgr.RemoveHandler(m_owner, GameLivingEvent.AttackFinished, m_attackFinished);
 			GameEventMgr.RemoveHandler(m_owner, GameLivingEvent.CastFinished, m_attackFinished);
 		}

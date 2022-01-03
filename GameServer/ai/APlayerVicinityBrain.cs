@@ -84,6 +84,7 @@ namespace DOL.AI
 			return base.Start();
 		}
 
+		/*
 		/// <summary>
 		/// Called whenever the brain should do some thinking.
 		/// We check if there is at least one player around and nothing
@@ -99,6 +100,6 @@ namespace DOL.AI
 				return 0;
 			}
 			return base.BrainTimerCallback(callingTimer);
-		}
+		}*/
 	}
 }

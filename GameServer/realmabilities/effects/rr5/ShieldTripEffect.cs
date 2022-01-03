@@ -28,7 +28,7 @@ namespace DOL.GS.Effects
 			owner = target;
 			//target.IsDisarmed = true;
             target.DisarmedTime = target.CurrentRegion.Time + m_duration;
-			target.StopAttack();
+			target.attackComponent.LivingStopAttack();
 
 		}
 
@@ -108,8 +108,8 @@ namespace DOL.GS.Effects
 			if (attackArgs == null) return;
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
 					Stop();
 					break;
 			}

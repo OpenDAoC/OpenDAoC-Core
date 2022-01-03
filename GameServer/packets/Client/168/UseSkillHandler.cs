@@ -47,7 +47,138 @@ namespace DOL.GS.PacketHandler.Client.v168
 			int index = packet.ReadByte();
 			int type = packet.ReadByte();
 
-			new UseSkillAction(client.Player, flagSpeedData, index, type).Start(1);
+			// new UseSkillAction(client.Player, flagSpeedData, index, type).Start(1);
+
+			ProcessPacket(client.Player, flagSpeedData, index, type);
+		}
+
+
+		public void ProcessPacket(GamePlayer player, int flagSpeedData, int index, int type)
+		{
+			
+			if (player == null)
+					return;
+
+				if ((flagSpeedData & 0x200) != 0)
+				{
+					player.CurrentSpeed = (short)(-(flagSpeedData & 0x1ff)); // backward movement
+				}
+				else
+				{
+					player.CurrentSpeed = (short)(flagSpeedData & 0x1ff); // forwardmovement
+				}
+
+				player.IsStrafing = (flagSpeedData & 0x4000) != 0;
+				player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
+				player.GroundTargetInView = ((flagSpeedData & 0x1000) != 0);
+
+				List<Tuple<Skill, Skill>> snap = player.GetAllUsableSkills();
+				
+				Skill sk = null;
+				Skill sksib = null;
+				
+				// we're not using a spec !
+				if (type > 0)
+				{
+					
+					// find the first non-specialization index.
+					int begin = Math.Max(0, snap.FindIndex(it => (it.Item1 is Specialization) == false));
+					
+					// are we in list ?
+					if (index + begin < snap.Count)
+					{
+						sk = snap[index + begin].Item1;
+						sksib = snap[index + begin].Item2;
+					}
+					
+				}
+				else
+				{
+					// mostly a spec !
+					if (index < snap.Count)
+					{
+						sk = snap[index].Item1;
+						sksib = snap[index].Item2;
+					}
+				}
+
+				// we really got a skill !
+				if (sk != null)
+				{
+					// Test if we can use it !
+					int reuseTime = player.GetSkillDisabledDuration(sk);
+					if (reuseTime > 60000)
+					{
+						player.Out.SendMessage(
+							string.Format("You must wait {0} minutes {1} seconds to use this ability!", reuseTime/60000, reuseTime%60000/1000),
+							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						
+						if (player.Client.Account.PrivLevel < 2)
+							return;
+					}
+					else if (reuseTime > 0)
+					{
+						// Allow Pulse Spells to be canceled while they are on reusetimer
+						if (sk is Spell && (sk as Spell).IsPulsing && player.LastPulseCast == (sk as Spell))
+						{
+							ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player);
+							EffectService.RequestImmediateCancelConcEffect(effect);
+
+							if ((sk as Spell).InstrumentRequirement == 0)
+								player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+							else
+								player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					}
+						else
+						{
+							player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime / 1000 + 1),
+												   eChatType.CT_System, eChatLoc.CL_SystemWindow);							
+						}
+
+						if (player.Client.Account.PrivLevel < 2)
+							return;
+				}
+
+					// See what we should do depending on skill type !
+
+					
+					if (sk is Specialization)
+					{
+						Specialization spec = (Specialization)sk;
+						ISpecActionHandler handler = SkillBase.GetSpecActionHandler(spec.KeyName);
+						if (handler != null)
+						{
+							handler.Execute(spec, player);
+						}
+					}
+					else if (sk is Ability)
+					{
+						Ability ab = (Ability)sk;
+						IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ab.KeyName);
+						if (handler != null)
+						{
+							handler.Execute(ab, player);
+							return;
+						}
+						
+						ab.Execute(player);
+					}
+					else if (sk is Spell)
+					{
+						if(sksib != null && sksib is SpellLine)
+							player.castingComponent.StartCastSpell((Spell)sk, (SpellLine)sksib);
+					}
+					else if (sk is Style)
+					{
+						player.styleComponent.ExecuteWeaponStyle((Style)sk);
+					}
+						
+				}
+
+				if (sk == null)
+				{
+					player.Out.SendMessage("Skill is not implemented.", eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+				}
 		}
 
 		/// <summary>
@@ -191,7 +322,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else if (sk is Style)
 					{
-						player.ExecuteWeaponStyle((Style)sk);
+						player.styleComponent.ExecuteWeaponStyle((Style)sk);
 					}
 						
 				}

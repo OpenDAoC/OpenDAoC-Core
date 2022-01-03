@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
 				}
 			}
 
-			target.StopAttack();
+			target.attackComponent.LivingStopAttack();
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
 			if (player != null)
@@ -57,7 +57,7 @@ namespace DOL.GS.Effects
 				return;
 			if (living.TargetObject == null)
 				return;
-			if (living.ActiveWeaponSlot == GameLiving.eActiveWeaponSlot.Distance)
+			if (living.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				return;
 			if (living.AttackWeapon.Hand == 1)
 				return;
@@ -90,13 +90,13 @@ namespace DOL.GS.Effects
 			if (ag.AttackData == null) return;
 			switch (ag.AttackData.AttackResult)
 			{
-				case GameLiving.eAttackResult.Blocked:
-				case GameLiving.eAttackResult.Evaded:
-				case GameLiving.eAttackResult.Fumbled:
-				case GameLiving.eAttackResult.HitStyle:
-				case GameLiving.eAttackResult.HitUnstyled:
-				case GameLiving.eAttackResult.Missed:
-				case GameLiving.eAttackResult.Parried:
+				case eAttackResult.Blocked:
+				case eAttackResult.Evaded:
+				case eAttackResult.Fumbled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+				case eAttackResult.Missed:
+				case eAttackResult.Parried:
 					Stop(); break;
 			}
 

@@ -66,9 +66,9 @@ namespace DOL.AI.Brain
 			switch (spell.SpellType)
 			{
 				#region Buffs
-				case "CombatSpeedBuff":
-				case "DamageShield":
-				case "Bladeturn":
+				case (byte)eSpellType.CombatSpeedBuff:
+				case (byte)eSpellType.DamageShield:
+				case (byte)eSpellType.Bladeturn:
 					{
 						if (!Body.IsAttacking)
 						{
@@ -130,7 +130,8 @@ namespace DOL.AI.Brain
 					Body.StopFollowing();
 				Body.TurnTo(Body.TargetObject);
 				Body.CastSpell(spell, m_mobSpellLine);
-				Body.TargetObject = lastTarget;
+				//if (lastTarget != null)
+				//	Body.TargetObject = lastTarget;
 				return true;
 			}
 			Body.TargetObject = lastTarget;

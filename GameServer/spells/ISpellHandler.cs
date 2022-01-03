@@ -28,6 +28,9 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public interface ISpellHandler
 	{
+		GameLiving GetTarget();
+		
+		void CreateECSEffect(ECSGameEffectInitParams initParams);
 		/// <summary>
 		/// Called when a spell is casted
 		/// </summary>
@@ -41,7 +44,7 @@ namespace DOL.GS.Spells
 		/// Should be used for StyleEffects, ...
 		/// </summary>
 		bool StartSpell(GameLiving target);
-
+		
 		/// <summary>
 		/// Starts the spell, without displaying cast message etc.
 		/// Should be used with spells attached to items (procs, /use, etc)
@@ -128,7 +131,7 @@ namespace DOL.GS.Spells
 		/// <param name="compare"></param>
 		/// <returns></returns>
 		bool IsOverwritable(GameSpellEffect compare);
-
+		bool IsOverwritable(ECSGameSpellEffect compare);
 		/// <summary>
 		/// Determines wether new spell is better than old spell and should disable it
 		/// </summary>
@@ -155,7 +158,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		bool IgnoreDamageCap { get; set; }
 
-
+	    long CastStartTick { get; }
 		/// <summary>
 		/// Should this spell use the minimum variance for the type?
 		/// Followup style effects, for example, always use the minimum variance
@@ -206,6 +209,9 @@ namespace DOL.GS.Spells
 		/// The Spell Caster
 		/// </summary>
 		GameLiving Caster { get; }
+
+		
+		void Tick(long currentTick);
 
 		/// <summary>
 		/// The power cost for this spell.

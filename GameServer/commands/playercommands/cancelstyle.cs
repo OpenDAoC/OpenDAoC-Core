@@ -31,9 +31,9 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "cancelstyle"))
 				return;
 
-			client.Player.CancelStyle = !client.Player.CancelStyle;
+			client.Player.styleComponent.CancelStyle = !client.Player.styleComponent.CancelStyle;
 			DisplayMessage(client, string.Format(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cancelstyle.Set",
-				(client.Player.CancelStyle ? LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cancelstyle.On") : LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cancelstyle.Off")))));
+				(client.Player.styleComponent.CancelStyle ? LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cancelstyle.On") : LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cancelstyle.Off")))));
 		}
 	}
 }
