@@ -609,7 +609,7 @@ namespace DOL.GS {
                     tmpMulti = 1;
                 if (!this.BonusExists(property))
                 {
-                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property) * tmpMulti);
+                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property));
                     this.WriteBonus(property, amount);
                     fAddedBonus = true;
                     if (!fMagicScaled)
@@ -887,6 +887,9 @@ namespace DOL.GS {
 
         private eProperty GetWeightedStatForClass(eCharacterClass charClass)
         {
+            if (Util.Chance(20))
+                return eProperty.MaxHealth;
+
             int rand = Util.Random(100);
             switch (charClass)
             {
@@ -922,6 +925,8 @@ namespace DOL.GS {
                 case eCharacterClass.Enchanter:
                 case eCharacterClass.Mentalist:
                 case eCharacterClass.Animist:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -937,6 +942,8 @@ namespace DOL.GS {
                 case eCharacterClass.Runemaster:
                 case eCharacterClass.Spiritmaster:
                 case eCharacterClass.Bonedancer:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -964,6 +971,8 @@ namespace DOL.GS {
                 case eCharacterClass.Cleric:
                 case eCharacterClass.Thane:
                 case eCharacterClass.Shaman:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -975,6 +984,8 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Friar:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     if (rand <= 25)
                         return eProperty.Piety;
                     else if (rand <= 50)
@@ -985,6 +996,8 @@ namespace DOL.GS {
 
                 
                 case eCharacterClass.Druid:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     if (rand <= 10)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -996,6 +1009,8 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Warden:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -1008,6 +1023,8 @@ namespace DOL.GS {
 
                 case eCharacterClass.Champion:
                 case eCharacterClass.Valewalker:
+                    if (Util.Chance(10))
+                        return eProperty.PowerPool;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -1021,6 +1038,8 @@ namespace DOL.GS {
                 case eCharacterClass.Bard:
                 case eCharacterClass.Skald:
                 case eCharacterClass.Minstrel:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -1032,6 +1051,8 @@ namespace DOL.GS {
                     else return eProperty.Charisma;
 
                 case eCharacterClass.Healer:
+                    if (Util.Chance(20))
+                        return eProperty.PowerPool;
                     if (rand <= 30)
                         return eProperty.Dexterity;
                     else if (rand <= 60)
