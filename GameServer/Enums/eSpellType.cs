@@ -200,6 +200,7 @@ namespace DOL.GS
         ComfortingFlames = 194,
         AllRegenBuff = 195,
         SummonMerchant = 196,
+        BeadRegen = 197,
         Null = 200
 
 
