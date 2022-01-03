@@ -598,13 +598,18 @@ namespace DOL.GS {
                 multiplier += 0.15;
             }
 
+            
+
             for (int i = 0; i < number; i++)
             {
                 eBonusType type = this.GetPropertyType(toa);
                 eProperty property = this.GetProperty(type);
+                double tmpMulti = multiplier;
+                if (type == eBonusType.Stat)
+                    tmpMulti = 1;
                 if (!this.BonusExists(property))
                 {
-                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property) * multiplier);
+                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property) * tmpMulti);
                     this.WriteBonus(property, amount);
                     fAddedBonus = true;
                     if (!fMagicScaled)
@@ -4443,7 +4448,7 @@ namespace DOL.GS {
                         }
                         else
                         {
-                            int max = (int)Math.Ceiling(((double)this.Level * 1.5) / 3);
+                            int max = (int)Math.Ceiling(((double)this.Level * 1) / 3);
                             return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
                         }
                     }
