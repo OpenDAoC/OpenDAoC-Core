@@ -94,12 +94,12 @@ namespace DOL.AI.Brain
 
 		protected override bool CheckDefensiveSpells(Spell spell)
 		{
-			switch(spell.SpellType)
+			switch((eSpellType)spell.SpellType)
 			{
-				case "HeatColdMatterBuff":
-				case "BodySpiritEnergyBuff":
-				case "ArmorAbsorptionBuff":
-				case "AblativeArmor":
+				case eSpellType.HeatColdMatterBuff:
+				case eSpellType.BodySpiritEnergyBuff:
+				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.AblativeArmor:
 				  TrustCast(spell, eCheckSpellType.Defensive);
 					return true;
 			}
@@ -108,20 +108,20 @@ namespace DOL.AI.Brain
 
 		protected override bool CheckOffensiveSpells(Spell spell)
 		{
-			switch(spell.SpellType)
+			switch((eSpellType)spell.SpellType)
 			{
-				case "DirectDamage":
-				case "DamageSpeedDecrease":
-				case "SpeedDecrease":
-				case "Taunt":
-				case "MeleeDamageDebuff":
+				case eSpellType.DirectDamage:
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.SpeedDecrease:
+				case eSpellType.Taunt:
+				case eSpellType.MeleeDamageDebuff:
 					TrustCast(spell, eCheckSpellType.Offensive);
 					return true;
 			}
 			return false;
 		}
 
-		protected override void AttackMostWanted()
+		public override void AttackMostWanted()
 		{
 			CheckSpells(eCheckSpellType.Offensive);
 		}
