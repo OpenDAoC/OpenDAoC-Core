@@ -926,7 +926,7 @@ namespace DOL.GS {
                 case eCharacterClass.Mentalist:
                 case eCharacterClass.Animist:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -943,7 +943,7 @@ namespace DOL.GS {
                 case eCharacterClass.Spiritmaster:
                 case eCharacterClass.Bonedancer:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -972,7 +972,7 @@ namespace DOL.GS {
                 case eCharacterClass.Thane:
                 case eCharacterClass.Shaman:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -985,7 +985,7 @@ namespace DOL.GS {
 
                 case eCharacterClass.Friar:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 25)
                         return eProperty.Piety;
                     else if (rand <= 50)
@@ -997,7 +997,7 @@ namespace DOL.GS {
                 
                 case eCharacterClass.Druid:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 10)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -1010,7 +1010,7 @@ namespace DOL.GS {
 
                 case eCharacterClass.Warden:
                     if (Util.Chance(10))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -1024,7 +1024,7 @@ namespace DOL.GS {
                 case eCharacterClass.Champion:
                 case eCharacterClass.Valewalker:
                     if (Util.Chance(10))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -1039,7 +1039,7 @@ namespace DOL.GS {
                 case eCharacterClass.Skald:
                 case eCharacterClass.Minstrel:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -1052,7 +1052,7 @@ namespace DOL.GS {
 
                 case eCharacterClass.Healer:
                     if (Util.Chance(20))
-                        return eProperty.PowerPool;
+                        return eProperty.MaxMana;
                     if (rand <= 30)
                         return eProperty.Dexterity;
                     else if (rand <= 60)
