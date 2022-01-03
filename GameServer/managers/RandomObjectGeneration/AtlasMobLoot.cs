@@ -91,7 +91,7 @@ namespace DOL.GS {
                 }
                 else if (mob.Level < 20)
                     loot.AddRandom(chance + (100 * (10 - (mob.Level - 10) / 10)), item, 1);
-                //135% chance at level 10, 85% chance at level 15, 35% chance at level 20
+                //120% chance at level 10, 70% chance at level 15, 20% chance at level 20
                 else
                     loot.AddRandom(chance, item, 1);
 

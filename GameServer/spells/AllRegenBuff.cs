@@ -61,7 +61,7 @@ namespace DOL.GS.Spells
 
 		public override bool StartSpell(GameLiving target)
 		{
-			if (Caster.Level > 30)
+			if (Caster.Level > 30 || Caster.CurrentZone.IsRvR)
 				return false;
 			target = Caster;
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
