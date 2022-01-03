@@ -353,7 +353,7 @@ namespace DOL.GS {
 
             this.ProcChance = 10;
 
-            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type <= (int)eObjectType.Shield) && Util.Chance(25))
+            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield) && Util.Chance(25))
             {
                 if (Util.Chance(50))
                 {
@@ -546,10 +546,10 @@ namespace DOL.GS {
 
             // WHRIA
             //if (this.Level>60) number++;
-            if (this.Level > 60 && Util.Chance(3)) number++;
-            if (this.Level > 70 && Util.Chance(5)) number++;
-            if (this.Level > 70 && Util.Chance(5)) number++;
-            if (this.Level > 80 && Util.Chance(10)) number++;
+            if (this.Level > 60 && Util.Chance(10)) number++;
+            if (this.Level > 70 && Util.Chance(25)) number++;
+            if (this.Level > 70 && Util.Chance(25)) number++;
+            if (this.Level > 80 && Util.Chance(80)) number++;
             // END
 
             if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
