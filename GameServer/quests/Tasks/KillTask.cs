@@ -460,6 +460,11 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
+			if (name.StartsWith("Bork "))
+			{
+				return true;
+			}
+			
 			return false;
 		}
 
