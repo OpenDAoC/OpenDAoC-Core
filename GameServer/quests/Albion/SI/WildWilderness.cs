@@ -173,7 +173,7 @@ namespace DOL.GS.Quests.Hibernia
                         case "formula":
                             _miach.SayTo(player, "Aye. It will calm down the maddened animals, I think. I can't truly be sure, but I'm hoping so! Some of the animals have even been mutated, since the Fomorian's arrival, you know. I blame the foulness of that maleficent race! I would like to aid the Sylvan, I would like to see this ravaged land restored, and the peaceful balance that has taken generations upon generations to develop, once again restored. Aye, and I'll not lie, but I'm willing to bet I'd have a name, if I were to aid the process in some way! Maybe some prestige! Ah, but to work, yes, to work now. Here, I shall pay you for this tail! Good day, friend!");
                             RemoveItem(_miach, player, _lungerTail);
-                            player.GainExperience(GameLiving.eXPSource.Quest, 20, true);
+                            player.GainExperience(eXPSource.Quest, 20, true);
                             player.GainBountyPoints(2);
                             player.AddMoney(Money.GetMoney(0, 0, 0, 20, 0), "You are rewarded 6 silver, 20 experience, & 2 bounty points! You have Finished Wild Wilderness Quest");
                             quest.FinishQuest();
