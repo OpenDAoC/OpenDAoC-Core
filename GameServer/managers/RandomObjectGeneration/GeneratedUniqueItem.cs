@@ -5485,6 +5485,8 @@ namespace DOL.GS {
                 case eCharacterClass.Savage:
                     weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.HandToHand);
+                    weaponTypes.Add(eObjectType.HandToHand);
+                    weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
@@ -5492,12 +5494,16 @@ namespace DOL.GS {
                 case eCharacterClass.Shadowblade:
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
+                    weaponTypes.Add(eObjectType.Sword);
+                    weaponTypes.Add(eObjectType.Axe);
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Berserker:
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Sword);
@@ -5517,6 +5523,8 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
+                    weaponTypes.Add(eObjectType.Shield);
+                    weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Staff);
                     break;
@@ -10235,6 +10243,45 @@ namespace DOL.GS {
                     return "Troll Splitter";
                 case 2208:
                     return "Katana";
+                case 959:
+                case 960:
+                case 963:
+                case 964:
+                case 965:
+                case 966:
+                case 969:
+                case 970:
+                case 973:
+                case 974:
+                case 977:
+                case 978:
+                case 3684:
+                case 3685:
+                case 3725:
+                case 3726:
+                    return "Greave";
+                case 961:
+                case 967:
+                case 971:
+                case 975:
+                case 979:
+                case 981:
+                case 3682:
+                case 3683:
+                case 3727:
+                case 3728:
+                    return "Claw";
+                case 962:
+                case 968:
+                case 972:
+                case 976:
+                case 980:
+                case 982:
+                case 3686:
+                case 3687:
+                case 3729:
+                case 3730:
+                    return "Fang";
                 case 9:
                 case 72:
                 case 73:
@@ -10376,6 +10423,50 @@ namespace DOL.GS {
                 case 3688:
                 case 3731:
                     return "Harp";
+                case 328:
+                case 329:
+                case 331:
+                case 332:
+                case 469:
+                case 470:
+                case 475:
+                case 476:
+                case 477:
+                case 556:
+                case 642:
+                case 657:
+                case 933:
+                case 934:
+                case 935:
+                case 936:
+                case 938:
+                case 939:
+                case 958:
+                case 1029:
+                case 1036:
+                case 1661:
+                case 3659:
+                case 3660:
+                case 3671:
+                case 3672:
+                case 3673:
+                case 3702:
+                case 3703:
+                case 3714:
+                case 3715:
+                case 3716:
+                case 3819:
+                case 3820:
+                case 3831:
+                case 3832:
+                case 3833:
+                    return "Spear";
+                case 937:
+                    return "Harpoon";
+                case 330:
+                case 458:
+                case 1004:
+                    return "Trident";
                 default:
                     return "Staff";
             }
