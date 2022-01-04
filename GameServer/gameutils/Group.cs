@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using DOL.GS.PacketHandler;
 using DOL.Events;
+using DOL.Database;
 
 namespace DOL.GS
 {
@@ -204,6 +205,22 @@ namespace DOL.GS
 
 			SendMessageToGroupMembers(string.Format("{0} has joined the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			GameEventMgr.Notify(GroupEvent.MemberJoined, this, new MemberJoinedEventArgs(living));
+
+
+			//use this to track completely solo characters
+			const string customKey = "grouped_char";
+			var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+			if(hasGrouped == null)
+            {
+				DOLCharactersXCustomParam groupedChar = new DOLCharactersXCustomParam();
+				groupedChar.DOLCharactersObjectId = player.ObjectId;
+				groupedChar.KeyName = customKey;
+				groupedChar.Value = "1";
+				GameServer.Database.AddObject(groupedChar);
+			}
+
+
 			return true;
 		}
 		
