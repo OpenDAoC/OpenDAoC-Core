@@ -299,7 +299,7 @@ namespace DOL.GS.Quests
 				return false;
 
 			GameNPC Mob = GetRandomMob(player);
-			if(Mob == null)
+			if(Mob == null || !Mob.IsAttackable)
 			{
 				player.Out.SendMessage("I have no task for you, come back later",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
