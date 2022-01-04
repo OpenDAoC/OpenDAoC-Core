@@ -399,14 +399,19 @@ namespace DOL.GS.Scripts
             temp.Add("SI Zone: " + hibDBZoneSI.Name + " (XP +" + hibDBZoneSI.Experience + "%)");
 
             temp.Add("");
-            temp.Add("");
-
             var rvr = _lastRvRChangeTick + RvRTimer - GameLoop.GameLoopTime;
             temp.Add("RvR Time Remaining: " + TimeSpan.FromMilliseconds(rvr).Hours + "h " + TimeSpan.FromMilliseconds(rvr).Minutes + "m " + TimeSpan.FromMilliseconds(rvr).Seconds + "s");
             
             var pve = _lastPvEChangeTick + PvETimer - GameLoop.GameLoopTime;
             temp.Add("PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
 
+            temp.Add("");
+            temp.Add("");
+
+            temp.Add("Permanent Bonuses:");
+            temp.Add("All Dungeons: 25%");
+            temp.Add("RvR Dungeons: 50%");
+            temp.Add("Darkness Falls: 75%");
 
 
             return temp;
