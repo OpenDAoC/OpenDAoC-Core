@@ -85,6 +85,7 @@ namespace DOL.GS {
                 tmp.GenerateItemQuality(killedcon);
                 tmp.CapUtility(mob.Level + 1);
                 item = tmp;
+                item.MaxCount = 1;
                 if (mob.Level < 10)
                 {
                     loot.AddRandom(100, item, 1);
