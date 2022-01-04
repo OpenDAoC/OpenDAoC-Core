@@ -73,6 +73,13 @@ namespace DOL.GS.PropertyCalc
 				double epicScaleFactor = 10;
 				int petCap = 16;
 				int petCount = 0;
+
+				if(epic is GameEpicBoss)
+                {
+					epicScaleFactor = 15;
+					petCap = 24;
+                }
+
                 foreach (var attacker in epic.attackComponent.Attackers)
                 {
 					if(attacker is GamePlayer)
