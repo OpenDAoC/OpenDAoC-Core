@@ -343,8 +343,10 @@ namespace DOL.GS.Commands
 					info.Add("REGEN INFORMATION");
 					info.Add("Last EnduDebuff:" + target.EnduDebuff);
 					info.Add("Last RegenBuff: " + target.RegenBuff);
+					info.Add("Player has Tireless: " + target.HasAbility(Abilities.Tireless));
 					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
 					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
+					info.Add("Combat flag: " + target.InCombat);
 					info.Add("Last Combat Regen: " + target.CombatRegen);
 					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
