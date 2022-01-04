@@ -61,8 +61,19 @@ namespace DOL.GS.Spells
 
 		public override bool StartSpell(GameLiving target)
 		{
-			if (Caster.Level > 30 || Caster.CurrentZone.IsRvR)
+            if (Caster.CurrentZone.IsRvR)
+            {
+				if (Caster is GamePlayer p)
+					p.Out.SendMessage("You cannot use this item in an RvR zone.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return false;
+            }
+			if (Caster.Level > 30)
+            {
+				if (Caster is GamePlayer p)
+					p.Out.SendMessage("You are too powerful for this item's effects.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+				
 			target = Caster;
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
 
