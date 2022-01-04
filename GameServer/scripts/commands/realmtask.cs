@@ -1,10 +1,5 @@
-﻿using DOL.GS;
-using DOL.GS.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DOL.GS.Commands;
+
 
 namespace DOL.GS.Scripts
 {

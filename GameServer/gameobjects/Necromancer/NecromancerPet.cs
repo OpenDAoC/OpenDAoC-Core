@@ -133,6 +133,7 @@ namespace DOL.GS
 				case eProperty.Strength:
 				case eProperty.Dexterity:
 				case eProperty.Quickness:
+				case eProperty.Intelligence:
 				case eProperty.Resist_Crush:
 				case eProperty.Resist_Body:
 				case eProperty.Resist_Cold:
@@ -164,6 +165,9 @@ namespace DOL.GS
 								break;
 							case eProperty.Quickness:
 								baseBonus = Quickness;
+								break;
+							case eProperty.Intelligence:
+								baseBonus = Intelligence;
 								break;
 						}
 

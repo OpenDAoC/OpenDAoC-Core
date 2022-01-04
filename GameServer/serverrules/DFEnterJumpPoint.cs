@@ -49,10 +49,16 @@ namespace DOL.GS.ServerRules
 				return true;
 			if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
 				return true;
+			if (player.Realm == PreviousOwner && LastRealmSwapTick + GracePeriod >= GameLoop.GameLoopTime)
+				return true;
 			return (player.Realm == DarknessFallOwner);
 		}
 
 		public static eRealm DarknessFallOwner = eRealm.None;
+		public static eRealm PreviousOwner = eRealm.None;
+
+		public static long GracePeriod = 900 * 1000; //15 mins
+		public static long LastRealmSwapTick = 0;
 		
 		/// <summary>
 		/// initialize the darkness fall entrance system
@@ -92,6 +98,8 @@ namespace DOL.GS.ServerRules
 			}
 		}
 
+
+
 		/// <summary>
 		/// when  keep is taken it check if the realm which take gain the control of DF
 		/// </summary>
@@ -109,7 +117,12 @@ namespace DOL.GS.ServerRules
 				int currentDFOwnerTowerCount = GameServer.KeepManager.GetKeepCountByRealm(DarknessFallOwner);
 				int challengerOwnerTowerCount = GameServer.KeepManager.GetKeepCountByRealm(realm);
 				if (currentDFOwnerTowerCount < challengerOwnerTowerCount)
+                {
+					PreviousOwner = DarknessFallOwner;
+					LastRealmSwapTick = GameLoop.GameLoopTime;
 					DarknessFallOwner = realm;
+				}
+					
 				string realmName = "";
 
 				string messageDFGetControl = string.Format("The forces of {0} have gained access to Darkness Falls!", GlobalConstants.RealmToName(realm));
