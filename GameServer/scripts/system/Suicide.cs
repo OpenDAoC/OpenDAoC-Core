@@ -32,7 +32,7 @@ namespace DOL.GS.Commands
     /// </summary>
     [CmdAttribute(
         "&suicide",
-        ePrivLevel.Player,
+        ePrivLevel.Admin,
         "Kill yourself. You can't suicide while in combat!")]
     public class KillselfCommandHandler : AbstractCommandHandler, ICommandHandler
     {
