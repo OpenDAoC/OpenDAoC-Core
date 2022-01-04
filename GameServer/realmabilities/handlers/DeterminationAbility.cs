@@ -46,7 +46,7 @@ namespace DOL.GS.RealmAbilities
 			if (level < 1) return 0;
 
 			int amount = 0;
-			if (level >= 1)
+			if (level == 1)
 				amount += 15;
 			if (level >= 2)
 				amount += 15;

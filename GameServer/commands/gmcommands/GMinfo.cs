@@ -333,7 +333,7 @@ namespace DOL.GS.Commands
 				{
 					var target = client.Player.TargetObject as GamePlayer;
 
-					info.Add("ENDURANCE INFORMANTION");
+					info.Add("ENDURANCE INFORMATION");
 					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
 					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
 					info.Add("Last Regen amount: " + target.Regen);
@@ -348,6 +348,9 @@ namespace DOL.GS.Commands
 					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
 					info.Add("Combat flag: " + target.InCombat);
 					info.Add("Last Combat Regen: " + target.CombatRegen);
+					info.Add(" ");
+					info.Add("DETERMINATION INFORMATION");
+					info.Add("CC reduction: " + target.AbilityBonus[(int)eProperty.MesmerizeDurationReduction]);
 					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);
