@@ -5196,9 +5196,9 @@ namespace DOL.GS {
             //weighted so that early levels get many more weapons/armor
             if (level < 10)
             {
-                if (Util.Chance(20))
+                if (Util.Chance(40))
                     return eGenerateType.Weapon;
-                else if (Util.Chance(20))
+                else if (Util.Chance(15))
                     return eGenerateType.Magical;
                 else return eGenerateType.Armor;
             }
