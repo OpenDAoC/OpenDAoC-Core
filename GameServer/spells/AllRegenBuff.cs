@@ -73,6 +73,13 @@ namespace DOL.GS.Spells
 					p.Out.SendMessage("You are too powerful for this item's effects.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return false;
 			}
+
+			if(Caster.ControlledBrain != null && Caster.ControlledBrain is AI.Brain.NecromancerPetBrain necroPet && necroPet.Body.InCombatInLast(15000))
+            {
+				if (Caster is GamePlayer p)
+					p.Out.SendMessage("Your pet must be out of combat for 15 seconds to use this.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				return false;
+			}
 				
 			target = Caster;
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
@@ -89,6 +96,12 @@ namespace DOL.GS.Spells
 			pomSpellHandler.StartSpell(target);
 			endSpellHandler.StartSpell(target);
 			healthConSpellHandler.StartSpell(target);
+
+			if(Caster.ControlledBrain != null && Caster.ControlledBrain is AI.Brain.NecromancerPetBrain necrop)
+            {
+				SpellHandler petHealHandler = ScriptMgr.CreateSpellHandler(necrop.Body, healSpell, potionEffectLine) as SpellHandler;
+				petHealHandler.StartSpell(necrop.Body);
+			}
 
 			return true;
 		}
