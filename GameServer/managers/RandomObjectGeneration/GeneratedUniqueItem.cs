@@ -228,7 +228,7 @@ namespace DOL.GS {
             this.Price = Money.SetAutoPrice(this.Level, this.Quality);
             this.Price /= 10;
             if (this.Price <= 0)
-                this.Price = 1;
+                this.Price = 2; // 2c as sell price is 50%
         }
 
         private void GenerateItemStats()
