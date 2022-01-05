@@ -1416,33 +1416,53 @@ namespace DOL.GS.Commands
 						}
 						break;
 					#endregion
-					#region Demote
-					// --------------------------------------------------------------------------------
-					// DEMOTE
-					// --------------------------------------------------------------------------------
-					case "demote":
+						#region Demote
+						// --------------------------------------------------------------------------------
+						// DEMOTE
+						// --------------------------------------------------------------------------------
+						case "demote":
 						{
 							if (client.Player.Guild == null)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(client.Account.Language,
+										"Scripts.Player.Guild.NotMember"), eChatType.CT_System,
+									eChatLoc.CL_SystemWindow);
 								return;
 							}
+
 							if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Demote))
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(client.Account.Language,
+										"Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System,
+									eChatLoc.CL_SystemWindow);
 								return;
 							}
+
 							if (args.Length < 3)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.Help.GuildDemote"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(client.Account.Language,
+										"Scripts.Player.Guild.Help.GuildDemote"), eChatType.CT_System,
+									eChatLoc.CL_SystemWindow);
 								return;
 							}
 
 
 							object obj = null;
-							string playername = args[3];
-							if (playername == "")
+							string playername = string.Empty;
+							bool useDB = false;
+							
+							if (args.Length >= 4)
+							{
+								playername = args[2];
+							}
+
+							if (playername == string.Empty)
+							{
 								obj = client.Player.TargetObject as GamePlayer;
+							}
 							else
 							{
 								GameClient myclient = WorldMgr.GetClientByPlayerName(playername, true, false);
@@ -1450,13 +1470,31 @@ namespace DOL.GS.Commands
 								{
 									// Patch 1.84: look for offline players
 									obj = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playername));
+									useDB = true;
 								}
 								else
+								{
 									obj = myclient.Player;
+								}
 							}
 							if (obj == null)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPlayerSelected"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								if (useDB)
+								{
+									client.Out.SendMessage("No player with that name can be found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+								else if (playername == string.Empty)
+								{
+									client.Out.SendMessage(
+									LanguageMgr.GetTranslation(client.Account.Language,
+										"Scripts.Player.Guild.NoPlayerSelected"), eChatType.CT_System,
+									eChatLoc.CL_SystemWindow);
+								}
+								else
+								{
+									client.Out.SendMessage("You need to target a player or provide a player name!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.Help.GuildDemote"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
 								return;
 							}
 
@@ -1478,39 +1516,69 @@ namespace DOL.GS.Commands
 								guildId = ch.GuildID;
 								guildRank = ch.GuildRank;
 							}
+
 							if (guildId != client.Player.GuildID)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotInYourGuild"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(client.Account.Language,
+										"Scripts.Player.Guild.NotInYourGuild"), eChatType.CT_System,
+									eChatLoc.CL_SystemWindow);
 								return;
 							}
 
 							try
 							{
-								ushort newrank = Convert.ToUInt16(args[2]);
+								ushort newrank = Convert.ToUInt16(args[3]);
 								if (newrank < guildRank || newrank > 10)
 								{
-									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DemotedHigherThanPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(
+										LanguageMgr.GetTranslation(client.Account.Language,
+											"Scripts.Player.Guild.DemotedHigherThanPlayer"), eChatType.CT_System,
+										eChatLoc.CL_SystemWindow);
 									return;
 								}
+
 								if (obj is GamePlayer)
 								{
 									ply.GuildRank = client.Player.Guild.GetRankByID(newrank);
 									ply.SaveIntoDatabase();
-									ply.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DemotedSelf", newrank.ToString()), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									guildRank = ply.GuildRank.RankLevel;
+									client.Out.SendMessage(
+										LanguageMgr.GetTranslation(client.Account.Language,
+											"Scripts.Player.Guild.DemotedSelf", plyName, newrank.ToString(),
+											guildRank.ToString()), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+									client.Player.Guild.SendMessageToGuildMembers(
+										LanguageMgr.GetTranslation(client.Account.Language,
+											"Scripts.Player.Guild.DemotedOther", client.Player.Name, plyName,
+											newrank.ToString(), guildRank.ToString()), eChatType.CT_Important,
+										eChatLoc.CL_SystemWindow);
 								}
 								else
 								{
 									ch.GuildRank = newrank;
 									GameServer.Database.SaveObject(ch);
-									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DemotedOther", plyName, newrank.ToString()), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+									guildRank = ch.GuildRank;
+									client.Out.SendMessage(
+										LanguageMgr.GetTranslation(client.Account.Language,
+											"Scripts.Player.Guild.DemotedSelf", plyName, newrank.ToString(),
+											guildRank.ToString()), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+									client.Player.Guild.SendMessageToGuildMembers(
+										LanguageMgr.GetTranslation(client.Account.Language,
+											"Scripts.Player.Guild.DemotedOther", client.Player.Name, plyName,
+											newrank.ToString(), guildRank.ToString()), eChatType.CT_Important,
+										eChatLoc.CL_SystemWindow);
 								}
 							}
 							catch
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InvalidRank"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(client.Account.Language,
+										"Scripts.Player.Guild.InvalidRank"), eChatType.CT_System,
+									eChatLoc.CL_SystemWindow);
 							}
+
 							client.Player.Guild.UpdateGuildWindow();
-						}
+				}
 						break;
 						#endregion
 						#region Who
