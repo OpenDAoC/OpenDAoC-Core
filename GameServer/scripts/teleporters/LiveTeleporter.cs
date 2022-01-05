@@ -20,23 +20,23 @@ namespace DOL.GS.Scripts
 {
     public class LiveTeleporter : GameNPC
     {
-	    
-	    /// <summary>
-	    /// The type of teleporter; this is used in order to be able to handle
-	    /// identical TeleportIDs differently, depending on the actual teleporter.
-	    /// </summary>
-	    protected virtual String Type
-	    {
-		    get { return ""; }
-	    }
+        /// <summary>
+        /// The type of teleporter; this is used in order to be able to handle
+        /// identical TeleportIDs differently, depending on the actual teleporter.
+        /// </summary>
+        protected virtual String Type
+        {
+            get { return ""; }
+        }
 
-	    /// <summary>
-	    /// The destination realm. 
-	    /// </summary>
-	    protected virtual eRealm DestinationRealm
-	    {
-		    get { return Realm; }
-	    }
+        /// <summary>
+        /// The destination realm. 
+        /// </summary>
+        protected virtual eRealm DestinationRealm
+        {
+            get { return Realm; }
+        }
+
         public override bool AddToWorld()
         {
             switch (Realm)
@@ -104,7 +104,7 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player) || GameRelic.IsPlayerCarryingRelic(player)) return false;
 
             if (player.Realm != this.Realm && player.Client.Account.PrivLevel == 1) return false;
-            
+
             TurnTo(player, 10000);
 
             switch (Realm)
@@ -132,15 +132,14 @@ namespace DOL.GS.Scripts
                     break;
 
                 case eRealm.Hibernia:
-                    SayTo(player,
-                        "Greetings, " + player.Name +
-                        " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                        "[Druim Ligen] in Connacht or \n[Druim Cain] in Bri Leith\n" +
-                        "[Shannon Estuary] watchtower\n" +
-                        "[Domnann] Grove in the [Shrouded Isles]\n" +
-                        "[Tir na Nog] our glorious capital\n" +
-                        "[Entrance] to the areas of [Housing]\n\n" +
-                        "Or one of the many [towns] throughout Hibernia");
+                    SayTo(player, "Greetings, " + player.Name +
+                                  " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                                  "[Druim Ligen] in Connacht or \n[Druim Cain] in Bri Leith\n" +
+                                  "[Shannon Estuary] watchtower\n" +
+                                  "[Domnann] Grove in the [Shrouded Isles]\n" +
+                                  "[Tir na Nog] our glorious capital\n" +
+                                  "[Entrance] to the areas of [Housing]\n\n" +
+                                  "Or one of the many [towns] throughout Hibernia");
                     break;
 
                 default:
@@ -164,37 +163,33 @@ namespace DOL.GS.Scripts
 
             return GetTeleportLocation(player, str);
 
-            
-            
-            // return true;
         }
-        
+
         protected virtual bool GetTeleportLocation(GamePlayer player, string text)
-		{
-			
-		    switch (Realm) // Only offer locations based on what realm i am set at.
+        {
+            switch (Realm) // Only offer locations based on what realm i am set at.
             {
                 case eRealm.Albion:
-	                
-	                if (text.ToLower() == "entrance")
-	                {
-		                Teleport teleport = new Teleport();
-		                teleport.TeleportID = "housing entrance";
-		                teleport.Realm = (int)DestinationRealm;
-		                teleport.RegionID = 2;
-		                teleport.X = 585071;
-		                teleport.Y = 561548;
-		                teleport.Z = 3576;
-		                teleport.Heading = 1090;
-		                OnDestinationPicked(player, teleport);
-		                return true;
-	                }
-                    
+
+                    if (text.ToLower() == "entrance")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "housing entrance";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 2;
+                        teleport.X = 585071;
+                        teleport.Y = 561548;
+                        teleport.Z = 3576;
+                        teleport.Heading = 1090;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+
                     if (text.ToLower() == "castle sauvage")
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "castle sauvage";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 1;
                         teleport.X = 584151;
                         teleport.Y = 477177;
@@ -203,12 +198,12 @@ namespace DOL.GS.Scripts
                         OnDestinationPicked(player, teleport);
                         return true;
                     }
-                    
+
                     if (text.ToLower() == "snowdonia fortress")
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "snowdonia fortress";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 1;
                         teleport.X = 527543;
                         teleport.Y = 358900;
@@ -218,60 +213,21 @@ namespace DOL.GS.Scripts
                         return true;
                     }
 
-                    // if (text.ToLower() == "avalon marsh")
-                    // {
-                    //     Teleport teleport = new Teleport();
-                    //     teleport.TeleportID = "avalon marsh";
-                    //     teleport.Realm = (int)DestinationRealm;
-                    //     teleport.RegionID = 1;
-                    //     teleport.X = 470613;
-                    //     teleport.Y = 630585;
-                    //     teleport.Z = 1712;
-                    //     teleport.Heading = 2500;
-                    //     OnDestinationPicked(player, teleport);
-                    //     return true;
-                    // }
-                    //
-                    // if (text.ToLower() == "gothwaite harbour")
-                    // {
-                    //     Teleport teleport = new Teleport();
-                    //     teleport.TeleportID = "gothwaite harbour";
-                    //     teleport.Realm = (int)DestinationRealm;
-                    //     teleport.RegionID = 51;
-                    //     teleport.X = 526580;
-                    //     teleport.Y = 542058;
-                    //     teleport.Z = 3168;
-                    //     teleport.Heading = 406;
-                    //     OnDestinationPicked(player, teleport);
-                    //     return true;
-                    // }
-
-	                if (text.ToLower() == "shrouded isles")
+                    if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(player, "The isles of Avalon are  an excellent choice. Would you prefer the harbor of [Gothwaite] or perhaps one of the outlying towns like [Wearyall] Village, Fort [Gwyntell], or Cear [Diogel]?");
+                        SayTo(player,
+                            "The isles of Avalon are  an excellent choice. Would you prefer the harbor of [Gothwaite] or perhaps one of the outlying towns like [Wearyall] Village, Fort [Gwyntell], or Cear [Diogel]?");
                         return false;
                     }
-                    
-                    // if (text.ToLower() == "camelot")
-                    // {
-                    //     Teleport teleport = new Teleport();
-                    //     teleport.TeleportID = "camelot";
-                    //     teleport.Realm = (int)DestinationRealm;
-                    //     teleport.RegionID = 10;
-                    //     teleport.X = 36209;
-                    //     teleport.Y = 29843;
-                    //     teleport.Z = 7971;
-                    //     teleport.Heading = 18;
-                    //     OnDestinationPicked(player, teleport);
-                    //     return true;
-                    // }
-                    
+
+
                     if (text.ToLower() == "housing")
                     {
-                        SayTo(player, "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
+                        SayTo(player,
+                            "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
                         return false;
                     }
-                    
+
                     if (text.ToLower() == "towns")
                     {
                         SayTo(player, "I can send you to:\n" +
@@ -288,7 +244,7 @@ namespace DOL.GS.Scripts
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "cear ulfwych";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 1;
                         teleport.X = 522479;
                         teleport.Y = 615826;
@@ -302,7 +258,7 @@ namespace DOL.GS.Scripts
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "yarley's farm";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 1;
                         teleport.X = 369874;
                         teleport.Y = 679659;
@@ -311,28 +267,29 @@ namespace DOL.GS.Scripts
                         OnDestinationPicked(player, teleport);
                         return true;
                     }
-	                break;
+
+                    break;
                 case eRealm.Midgard:
-	                
-	                if (text.ToLower() == "entrance")
-	                {
-		                Teleport teleport = new Teleport();
-		                teleport.TeleportID = "housing entrance";
-		                teleport.Realm = (int)DestinationRealm;
-		                teleport.RegionID = 102;
-		                teleport.X = 526733;
-		                teleport.Y = 561563;
-		                teleport.Z = 3632;
-		                teleport.Heading = 3901;
-		                OnDestinationPicked(player, teleport);
-		                return true;
-	                }
-                    
+
+                    if (text.ToLower() == "entrance")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "housing entrance";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 102;
+                        teleport.X = 526733;
+                        teleport.Y = 561563;
+                        teleport.Z = 3632;
+                        teleport.Heading = 3901;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+
                     if (text.ToLower() == "svasud faste")
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "svasud faste";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 100;
                         teleport.X = 767242;
                         teleport.Y = 669591;
@@ -341,12 +298,12 @@ namespace DOL.GS.Scripts
                         OnDestinationPicked(player, teleport);
                         return true;
                     }
-                    
+
                     if (text.ToLower() == "vindsaul faste")
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "vindsaul faste";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 100;
                         teleport.X = 703389;
                         teleport.Y = 738621;
@@ -356,82 +313,84 @@ namespace DOL.GS.Scripts
                         return true;
                     }
 
-	                if (text.ToLower() == "shrouded isles")
+                    if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(player, "The isles of Aegir are an excellent choice.\nWould you prefer the city of [Aegirhamn] or perhaps one of the outlying towns like [Bjarken], [Hagall], or [Knarr]?");
+                        SayTo(player,
+                            "The isles of Aegir are an excellent choice.\nWould you prefer the city of [Aegirhamn] or perhaps one of the outlying towns like [Bjarken], [Hagall], or [Knarr]?");
                         return false;
                     }
-	                
-                    
+
+
                     if (text.ToLower() == "housing")
                     {
-                        SayTo(player, "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
+                        SayTo(player,
+                            "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
                         return false;
                     }
-                    
+
                     if (text.ToLower() == "towns")
                     {
-                        SayTo(player, 
-	                        "I can send you to:\n" +
-			                        "[Mularn]\n" +
-			                        "[Fort Veldon]\n" +
-			                        "[Audliten]\n" +
-			                        "[Huginfel]\n" +
-			                        "[Fort Atla]\n" +
-			                        "[West Skona]");
+                        SayTo(player,
+                            "I can send you to:\n" +
+                            "[Mularn]\n" +
+                            "[Fort Veldon]\n" +
+                            "[Audliten]\n" +
+                            "[Huginfel]\n" +
+                            "[Fort Atla]\n" +
+                            "[West Skona]");
                         return false;
                     }
-	                
-	                if (text.ToLower() == "huginfel")
-	                {
-		                Teleport teleport = new Teleport();
-		                teleport.TeleportID = "huginfel";
-		                teleport.Realm = (int)DestinationRealm;
-		                teleport.RegionID = 100;
-		                teleport.X = 712221;
-		                teleport.Y = 783928;
-		                teleport.Z = 4672;
-		                teleport.Heading = 270;
-		                OnDestinationPicked(player, teleport);
-		                return true;
-	                }
-	                
-	                if (text.ToLower() == "west skona")
-	                {
-		                Teleport teleport = new Teleport();
-		                teleport.TeleportID = "west skona";
-		                teleport.Realm = (int)DestinationRealm;
-		                teleport.RegionID = 100;
-		                teleport.X = 712345;
-		                teleport.Y = 923847;
-		                teleport.Z = 5043;
-		                teleport.Heading = 3898;
-		                OnDestinationPicked(player, teleport);
-		                return true;
-	                }
-	                
-	                break;
-	            case eRealm.Hibernia:
-	                
-	                if (text.ToLower() == "entrance")
-	                {
-		                Teleport teleport = new Teleport();
-		                teleport.TeleportID = "housing entrance";
-		                teleport.Realm = (int)DestinationRealm;
-		                teleport.RegionID = 202;
-		                teleport.X = 555538;
-		                teleport.Y = 526481;
-		                teleport.Z = 3008;
-		                teleport.Heading = 857;
-		                OnDestinationPicked(player, teleport);
-		                return true;
-	                }
-                    
+
+                    if (text.ToLower() == "huginfel")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "huginfel";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 100;
+                        teleport.X = 712221;
+                        teleport.Y = 783928;
+                        teleport.Z = 4672;
+                        teleport.Heading = 270;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+
+                    if (text.ToLower() == "west skona")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "west skona";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 100;
+                        teleport.X = 712345;
+                        teleport.Y = 923847;
+                        teleport.Z = 5043;
+                        teleport.Heading = 3898;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+
+                    break;
+                case eRealm.Hibernia:
+
+                    if (text.ToLower() == "entrance")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "housing entrance";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 202;
+                        teleport.X = 555538;
+                        teleport.Y = 526481;
+                        teleport.Z = 3008;
+                        teleport.Heading = 857;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+
                     if (text.ToLower() == "svasud faste")
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "svasud faste";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 100;
                         teleport.X = 767242;
                         teleport.Y = 669591;
@@ -440,12 +399,12 @@ namespace DOL.GS.Scripts
                         OnDestinationPicked(player, teleport);
                         return true;
                     }
-                    
+
                     if (text.ToLower() == "vindsaul faste")
                     {
                         Teleport teleport = new Teleport();
                         teleport.TeleportID = "vindsaul faste";
-                        teleport.Realm = (int)DestinationRealm;
+                        teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 100;
                         teleport.X = 703389;
                         teleport.Y = 738621;
@@ -455,244 +414,251 @@ namespace DOL.GS.Scripts
                         return true;
                     }
 
-	                if (text.ToLower() == "shrouded isles")
+                    if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(player, "The isles of Hy Brasil are an excellent choice. Would you prefer the grove of [Domnann] or perhaps one of the outlying towns like [Droighaid], [Aalid Feie], or [Necht]?");
+                        SayTo(player,
+                            "The isles of Hy Brasil are an excellent choice. Would you prefer the grove of [Domnann] or perhaps one of the outlying towns like [Droighaid], [Aalid Feie], or [Necht]?");
                         return false;
                     }
-	                
-                    
+
+
                     if (text.ToLower() == "housing")
                     {
-                        SayTo(player, "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
+                        SayTo(player,
+                            "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
                         return false;
                     }
-                    
+
                     if (text.ToLower() == "towns")
                     {
-                        SayTo(player, 
-	                        "I can send you to:\n" +
-	                        "[Mag Mell]\n" +
-							"[Tir na mBeo]\n" +
-							"[Ardagh]\n" +
-							"[Howth]\n" +
-							"[Connla]\n" +
-							"[Innis Carthaig]");
+                        SayTo(player,
+                            "I can send you to:\n" +
+                            "[Mag Mell]\n" +
+                            "[Tir na mBeo]\n" +
+                            "[Ardagh]\n" +
+                            "[Howth]\n" +
+                            "[Connla]\n" +
+                            "[Innis Carthaig]");
                         return false;
                     }
-	                break;
 
+                    break;
+            }
+
+            // Another special case is personal house, as there is no location
+            // that will work for every player.
+            if (text.ToLower() == "personal")
+            {
+                House house = HouseMgr.GetHouseByPlayer(player);
+
+                if (house == null)
+                {
+                    text = "entrance"; // Fall through, port to housing entrance.
+                }
+                else
+                {
+                    IGameLocation location = house.OutdoorJumpPoint;
+                    Teleport teleport = new Teleport();
+                    teleport.TeleportID = "your house";
+                    teleport.Realm = (int) DestinationRealm;
+                    teleport.RegionID = location.RegionID;
+                    teleport.X = location.X;
+                    teleport.Y = location.Y;
+                    teleport.Z = location.Z;
+                    teleport.Heading = location.Heading;
+                    OnDestinationPicked(player, teleport);
+                    return true;
+                }
+            }
+
+            // Yet another special case the port to the 'hearth' what means
+            // that the player will be ported to the defined house bindstone
+            if (text.ToLower() == "hearth")
+            {
+                // Check if player has set a house bind
+                if (!(player.BindHouseRegion > 0))
+                {
+                    SayTo(player, "Sorry, you haven't set any house bind point yet.");
+                    return false;
                 }
 
-		    // Another special case is personal house, as there is no location
-			// that will work for every player.
-			if (text.ToLower() == "personal")
-			{
-				House house = HouseMgr.GetHouseByPlayer(player);
+                // Check if the house at the player's house bind location still exists
+                ArrayList houses = (ArrayList) HouseMgr.GetHousesCloseToSpot((ushort) player.BindHouseRegion,
+                    player.BindHouseXpos, player.BindHouseYpos, 700);
+                if (houses.Count == 0)
+                {
+                    SayTo(player, "I'm afraid I can't teleport you to your hearth since the house at your " +
+                                  "house bind location has been torn down.");
+                    return false;
+                }
 
-				if(house == null)
-				{
-					text = "entrance";	// Fall through, port to housing entrance.
-				}
-				else
-				{
-					IGameLocation location = house.OutdoorJumpPoint;
-					Teleport teleport = new Teleport();
-					teleport.TeleportID = "your house";
-					teleport.Realm = (int)DestinationRealm;
-					teleport.RegionID = location.RegionID;
-					teleport.X = location.X;
-					teleport.Y = location.Y;
-					teleport.Z = location.Z;
-					teleport.Heading = location.Heading;
-					OnDestinationPicked(player, teleport);
-					return true;
-				}
-			}
+                // Check if the house at the player's house bind location contains a bind stone
+                House targetHouse = (House) houses[0];
+                IDictionary<uint, DBHouseHookpointItem> hookpointItems = targetHouse.HousepointItems;
+                Boolean hasBindstone = false;
 
-			// Yet another special case the port to the 'hearth' what means
-			// that the player will be ported to the defined house bindstone
-			if (text.ToLower() == "hearth")
-			{
-				// Check if player has set a house bind
-				if (!(player.BindHouseRegion > 0))
-				{
-					SayTo(player, "Sorry, you haven't set any house bind point yet.");
-					return false;
-				}
+                foreach (KeyValuePair<uint, DBHouseHookpointItem> targetHouseItem in hookpointItems)
+                {
+                    if (((GameObject) targetHouseItem.Value.GameObject).GetName(0, false).ToLower()
+                        .EndsWith("bindstone"))
+                    {
+                        hasBindstone = true;
+                        break;
+                    }
+                }
 
-				// Check if the house at the player's house bind location still exists
-				ArrayList houses = (ArrayList)HouseMgr.GetHousesCloseToSpot((ushort)player.
-					BindHouseRegion, player.BindHouseXpos, player.
-					BindHouseYpos, 700);
-				if (houses.Count == 0)
-				{
-					SayTo(player, "I'm afraid I can't teleport you to your hearth since the house at your " + 
-						"house bind location has been torn down.");
-					return false;
-				}
+                if (!hasBindstone)
+                {
+                    SayTo(player, "I'm sorry to tell that the bindstone of your current house bind location " +
+                                  "has been removed, so I'm not able to teleport you there.");
+                    return false;
+                }
 
-				// Check if the house at the player's house bind location contains a bind stone
-				House targetHouse = (House)houses[0];
-				IDictionary<uint, DBHouseHookpointItem> hookpointItems = targetHouse.HousepointItems;
-				Boolean hasBindstone = false;
+                // Check if the player has the permission to bind at the house bind stone
+                if (!targetHouse.CanBindInHouse(player))
+                {
+                    SayTo(player, "You're no longer allowed to bind at the house bindstone you've previously " +
+                                  "chosen, hence I'm not allowed to teleport you there.");
+                    return false;
+                }
 
-				foreach (KeyValuePair<uint, DBHouseHookpointItem> targetHouseItem in hookpointItems)
-				{
-					if (((GameObject)targetHouseItem.Value.GameObject).GetName(0, false).ToLower().EndsWith("bindstone"))
-					{
-						hasBindstone = true;
-						break;
-					}
-				}
+                Teleport teleport = new Teleport();
+                teleport.TeleportID = "hearth";
+                teleport.Realm = (int) DestinationRealm;
+                teleport.RegionID = player.BindHouseRegion;
+                teleport.X = player.BindHouseXpos;
+                teleport.Y = player.BindHouseYpos;
+                teleport.Z = player.BindHouseZpos;
+                teleport.Heading = player.BindHouseHeading;
+                OnDestinationPicked(player, teleport);
+                return true;
+            }
 
-				if (!hasBindstone)
-				{
-					SayTo(player, "I'm sorry to tell that the bindstone of your current house bind location " + 
-						"has been removed, so I'm not able to teleport you there.");
-					return false;
-				}
+            if (text.ToLower() == "guild")
+            {
+                House house = HouseMgr.GetGuildHouseByPlayer(player);
 
-				// Check if the player has the permission to bind at the house bind stone
-				if (!targetHouse.CanBindInHouse(player))
-				{
-					SayTo(player, "You're no longer allowed to bind at the house bindstone you've previously " + 
-						"chosen, hence I'm not allowed to teleport you there.");
-					return false;
-				}
+                if (house == null)
+                {
+                    SayTo(player, $"I'm sorry but {player.Guild.Name} doesn't own a Guild House.");
+                    return false;
+                    return false; // no teleport when guild house not found
+                }
+                else
+                {
+                    IGameLocation location = house.OutdoorJumpPoint;
+                    Teleport teleport = new Teleport();
+                    teleport.TeleportID = "guild house";
+                    teleport.Realm = (int) DestinationRealm;
+                    teleport.RegionID = location.RegionID;
+                    teleport.X = location.X;
+                    teleport.Y = location.Y;
+                    teleport.Z = location.Z;
+                    teleport.Heading = location.Heading;
+                    OnDestinationPicked(player, teleport);
+                    return true;
+                }
+            }
 
-				Teleport teleport = new Teleport();
-				teleport.TeleportID = "hearth";
-				teleport.Realm = (int)DestinationRealm;
-				teleport.RegionID = player.BindHouseRegion;
-				teleport.X = player.BindHouseXpos;
-				teleport.Y = player.BindHouseYpos;
-				teleport.Z = player.BindHouseZpos;
-				teleport.Heading = player.BindHouseHeading;
-				OnDestinationPicked(player, teleport);
-				return true;
-			}
+            // Find the teleport location in the database.
+            Teleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
+            if (port != null)
+            {
+                if (port.RegionID == 0 && port.X == 0 && port.Y == 0 && port.Z == 0)
+                {
+                    OnSubSelectionPicked(player, port);
+                }
+                else
+                {
+                    OnDestinationPicked(player, port);
+                }
 
-			if (text.ToLower() == "guild")
-			{
-				House house = HouseMgr.GetGuildHouseByPlayer(player);
+                return false;
+            }
 
-				if (house == null)
-				{
-					SayTo(player, $"I'm sorry but {player.Guild.Name} doesn't own a Guild House.");
-					return false;
-					return false;  // no teleport when guild house not found
-				}
-				else
-				{
-					IGameLocation location = house.OutdoorJumpPoint;
-					Teleport teleport = new Teleport();
-					teleport.TeleportID = "guild house";
-					teleport.Realm = (int)DestinationRealm;
-					teleport.RegionID = location.RegionID;
-					teleport.X = location.X;
-					teleport.Y = location.Y;
-					teleport.Z = location.Z;
-					teleport.Heading = location.Heading;
-					OnDestinationPicked(player, teleport);
-					return true;
-				}
-			}
+            return true; // Needs further processing.
+        }
 
-			// Find the teleport location in the database.
-			Teleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
-			if (port != null)
-			{
-				if (port.RegionID == 0 && port.X == 0 && port.Y == 0 && port.Z == 0)
-				{
-					OnSubSelectionPicked(player, port);
-				}
-				else
-				{
-					OnDestinationPicked(player, port);
-				}
-				return false;
-			}
-
-			return true;	// Needs further processing.
-		}
-        
         /// <summary>
-		/// Player has picked a destination.
-		/// Override if you need the teleporter to say something to the player
-		/// before porting him.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected virtual void OnDestinationPicked(GamePlayer player, Teleport destination)
-		{
-			Region region = WorldMgr.GetRegion((ushort)destination.RegionID);
+        /// Player has picked a destination.
+        /// Override if you need the teleporter to say something to the player
+        /// before porting him.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="destination"></param>
+        protected virtual void OnDestinationPicked(GamePlayer player, Teleport destination)
+        {
+            Region region = WorldMgr.GetRegion((ushort) destination.RegionID);
 
-			if (region == null || region.IsDisabled)
-			{
-				player.Out.SendMessage("This destination is not available.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-			TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
-			Say("I'm now teleporting you to " + ti.ToTitleCase(destination.TeleportID) + ".");
-			OnTeleportSpell(player, destination);
-		}
+            if (region == null || region.IsDisabled)
+            {
+                player.Out.SendMessage("This destination is not available.", eChatType.CT_System,
+                    eChatLoc.CL_SystemWindow);
+                return;
+            }
 
-		/// <summary>
-		/// Player has picked a subselection.
-		/// Override to pass teleport options on to the player.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="subSelection"></param>
-		protected virtual void OnSubSelectionPicked(GamePlayer player, Teleport subSelection)
-		{
-		}
+            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+            Say("I'm now teleporting you to " + ti.ToTitleCase(destination.TeleportID) + ".");
+            OnTeleportSpell(player, destination);
+        }
 
-		/// <summary>
-		/// Teleport the player to the designated coordinates using the
-		/// portal spell.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected virtual void OnTeleportSpell(GamePlayer player, Teleport destination)
-		{
-			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
-			List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
-			Spell spell = SkillBase.GetSpellByID(5999);	// UniPortal spell.
+        /// <summary>
+        /// Player has picked a subselection.
+        /// Override to pass teleport options on to the player.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="subSelection"></param>
+        protected virtual void OnSubSelectionPicked(GamePlayer player, Teleport subSelection)
+        {
+        }
 
-			if (spell != null)
-			{
-				TargetObject = player;
-				UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
-				m_runningSpellHandler = portalHandler;
-				portalHandler.CastSpell();
-				return;
-			}
+        /// <summary>
+        /// Teleport the player to the designated coordinates using the
+        /// portal spell.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="destination"></param>
+        protected virtual void OnTeleportSpell(GamePlayer player, Teleport destination)
+        {
+            SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
+            List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
+            Spell spell = SkillBase.GetSpellByID(5999); // UniPortal spell.
 
-			// Spell not found in the database, fall back on default procedure.
+            if (spell != null)
+            {
+                TargetObject = player;
+                UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+                m_runningSpellHandler = portalHandler;
+                portalHandler.CastSpell();
+                return;
+            }
 
-			if (player.Client.Account.PrivLevel > 1)
-				player.Out.SendMessage("Uni-Portal spell not found.",
-					eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-			
-			
-			this.OnTeleport(player, destination);
-		}
+            // Spell not found in the database, fall back on default procedure.
 
-		/// <summary>
-		/// Teleport the player to the designated coordinates. 
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected virtual void OnTeleport(GamePlayer player, Teleport destination)
-		{
-			if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
-			{
-				player.LeaveHouse();
-				GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
-				player.MoveTo((ushort)destination.RegionID, destination.X, destination.Y, destination.Z, (ushort)destination.Heading);
-				GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
-			}
-		}
+            if (player.Client.Account.PrivLevel > 1)
+                player.Out.SendMessage("Uni-Portal spell not found.",
+                    eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+
+
+            this.OnTeleport(player, destination);
+        }
+
+        /// <summary>
+        /// Teleport the player to the designated coordinates. 
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="destination"></param>
+        protected virtual void OnTeleport(GamePlayer player, Teleport destination)
+        {
+            if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
+            {
+                player.LeaveHouse();
+                GameLocation currentLocation =
+                    new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
+                player.MoveTo((ushort) destination.RegionID, destination.X, destination.Y, destination.Z,
+                    (ushort) destination.Heading);
+                GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
+            }
+        }
     }
 }
