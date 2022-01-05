@@ -145,6 +145,10 @@ namespace DOL.GS.Commands
 			if (DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
             {
 				var pve = DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
+				if (DFEnterJumpPoint.PreviousOwner = eRealm._LastPlayerRealm)
+					DFEnterJumpPoint.PreviousOwner = eRealm.Hibernia;
+				if (DFEnterJumpPoint.PreviousOwner = eRealm._FirstPlayerRealm)
+					DFEnterJumpPoint.PreviousOwner = eRealm.Albion;
 				realmInfo.Add(DFEnterJumpPoint.PreviousOwner.ToString() + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
 			}			
 
