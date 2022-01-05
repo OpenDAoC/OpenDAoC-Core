@@ -770,7 +770,7 @@ namespace DOL.GS {
                                 {
                                     foreach (eProperty property in AlbSkillBonus)
                                     {
-                                        if (!BonusExists(property) && SkillIsValidForClass(property))
+                                        if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
                                             if (SkillIsValidForObjectType(property))
                                                 validSkills.Add(property);
@@ -783,7 +783,7 @@ namespace DOL.GS {
                                 {
                                     foreach (eProperty property in HibSkillBonus)
                                     {
-                                        if (!BonusExists(property) && SkillIsValidForClass(property))
+                                        if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
                                             if (SkillIsValidForObjectType(property))
                                                 validSkills.Add(property);
@@ -796,7 +796,7 @@ namespace DOL.GS {
                                 {
                                     foreach (eProperty property in MidSkillBonus)
                                     {
-                                        if (!BonusExists(property) && SkillIsValidForClass(property))
+                                        if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
                                             if (SkillIsValidForObjectType(property))
                                                 validSkills.Add(property);
@@ -886,6 +886,101 @@ namespace DOL.GS {
                     }
             }
             return eProperty.MaxHealth;
+        }
+
+        private bool IsCompetingSkillLine(eProperty prop)
+        {
+            List<eProperty> skillsToCheck = new List<eProperty>();
+            if(prop == eProperty.Skill_Slashing || prop == eProperty.Skill_Thrusting || prop == eProperty.Skill_Crushing)
+            {
+                skillsToCheck.Add(eProperty.Skill_Slashing);
+                skillsToCheck.Add(eProperty.Skill_Thrusting);
+                skillsToCheck.Add(eProperty.Skill_Crushing);
+            }
+            if (prop == eProperty.Skill_Blades || prop == eProperty.Skill_Piercing || prop == eProperty.Skill_Blunt)
+            {
+                skillsToCheck.Add(eProperty.Skill_Blades);
+                skillsToCheck.Add(eProperty.Skill_Piercing);
+                skillsToCheck.Add(eProperty.Skill_Blunt);
+            }
+            if (prop == eProperty.Skill_Axe || prop == eProperty.Skill_Sword || prop == eProperty.Skill_Hammer)
+            {
+                skillsToCheck.Add(eProperty.Skill_Blades);
+                skillsToCheck.Add(eProperty.Skill_Piercing);
+                skillsToCheck.Add(eProperty.Skill_Blunt);
+            }
+
+            if (prop == eProperty.Skill_Matter || prop == eProperty.Skill_Body || prop == eProperty.Skill_Spirit || prop == eProperty.Skill_Mind)
+            {
+                skillsToCheck.Add(eProperty.Skill_Matter);
+                skillsToCheck.Add(eProperty.Skill_Body);
+                skillsToCheck.Add(eProperty.Skill_Spirit);
+                skillsToCheck.Add(eProperty.Skill_Mind);
+            }
+            if (prop == eProperty.Skill_Earth || prop == eProperty.Skill_Cold || prop == eProperty.Skill_Fire || prop == eProperty.Skill_Wind)
+            {
+                skillsToCheck.Add(eProperty.Skill_Earth);
+                skillsToCheck.Add(eProperty.Skill_Cold);
+                skillsToCheck.Add(eProperty.Skill_Fire);
+                skillsToCheck.Add(eProperty.Skill_Wind);
+            }
+            if (prop == eProperty.Skill_DeathSight || prop == eProperty.Skill_Death_Servant || prop == eProperty.Skill_Pain_working)
+            {
+                skillsToCheck.Add(eProperty.Skill_DeathSight);
+                skillsToCheck.Add(eProperty.Skill_Death_Servant);
+                skillsToCheck.Add(eProperty.Skill_Pain_working);
+            }
+            if (prop == eProperty.Skill_Light || prop == eProperty.Skill_Mana || prop == eProperty.Skill_Void || prop == eProperty.Skill_Enchantments || prop == eProperty.Skill_Mentalism)
+            {
+                skillsToCheck.Add(eProperty.Skill_Light);
+                skillsToCheck.Add(eProperty.Skill_Mana);
+                skillsToCheck.Add(eProperty.Skill_Void);
+                skillsToCheck.Add(eProperty.Skill_Enchantments);
+                skillsToCheck.Add(eProperty.Skill_Mentalism);
+            }
+            if (prop == eProperty.Skill_Arboreal || prop == eProperty.Skill_Creeping || prop == eProperty.Skill_Verdant)
+            {
+                skillsToCheck.Add(eProperty.Skill_Arboreal);
+                skillsToCheck.Add(eProperty.Skill_Creeping);
+                skillsToCheck.Add(eProperty.Skill_Verdant);
+            }
+            if (prop == eProperty.Skill_Darkness || prop == eProperty.Skill_Suppression || prop == eProperty.Skill_Runecarving || prop == eProperty.Skill_Summoning || prop == eProperty.Skill_BoneArmy)
+            {
+                skillsToCheck.Add(eProperty.Skill_Darkness);
+                skillsToCheck.Add(eProperty.Skill_Suppression);
+                skillsToCheck.Add(eProperty.Skill_Runecarving);
+                skillsToCheck.Add(eProperty.Skill_Summoning);
+                skillsToCheck.Add(eProperty.Skill_BoneArmy);
+            }
+
+
+            foreach (var propCheck in skillsToCheck)
+            {
+                if (Bonus1Type == (int)propCheck)
+                    return true;
+                if (Bonus2Type == (int)propCheck)
+                    return true;
+                if (Bonus3Type == (int)propCheck)
+                    return true;
+                if (Bonus4Type == (int)propCheck)
+                    return true;
+                if (Bonus5Type == (int)propCheck)
+                    return true;
+                if (Bonus6Type == (int)propCheck)
+                    return true;
+                if (Bonus7Type == (int)propCheck)
+                    return true;
+                if (Bonus8Type == (int)propCheck)
+                    return true;
+                if (Bonus9Type == (int)propCheck)
+                    return true;
+                if (Bonus10Type == (int)propCheck)
+                    return true;
+                if (ExtraBonusType == (int)propCheck)
+                    return true;
+            }
+
+            return false;
         }
 
         private eProperty GetWeightedStatForClass(eCharacterClass charClass)
