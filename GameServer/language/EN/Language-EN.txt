@@ -766,8 +766,8 @@ Scripts.Player.Guild.NotInYourGuild:			That player is not in your guild.
 Scripts.Player.Guild.NotMember:				You must be in a guild before you can use any guild commands.	
 Scripts.Player.Guild.OMotdSet:				You have set the officer motd for the guild.	
 Scripts.Player.Guild.PlayerNotFound:			That player could not be found in the game.	
-Scripts.Player.Guild.PromotedOther:			{0} has been promoted to {1}.	
-Scripts.Player.Guild.PromotedSelf:			You have been promoted to {0}.	
+Scripts.Player.Guild.PromotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
+Scripts.Player.Guild.PromotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
 Scripts.Player.Guild.PromoteHigherThanPlayer:		You can only promote to ranks below your own.	
 Scripts.Player.Guild.PromoteHaveToUseDemote:	You can't demote the GuildRank of this players with promote commands. Use /demote <ranklevel> players.
 Scripts.Player.Guild.Purged:				{0} has been purged.	
