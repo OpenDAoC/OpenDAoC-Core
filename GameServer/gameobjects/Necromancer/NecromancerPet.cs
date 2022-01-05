@@ -653,55 +653,55 @@ namespace DOL.GS
 
 			switch (text.ToLower())
 			{
-				case "arawn":
-					{
-						String taunt = "As one of the many cadaverous servants of Arawn, I am able to [taunt] your enemies so that they will focus on me instead of you.";
-						String empower = "You may also [empower] me with just a word.";
-						switch (Name.ToLower())
-						{
-							case "minor zombie servant":
-							case "lesser zombie servant":
-							case "zombie servant":
-							case "reanimated servant":
-							case "necroservant":
-								SayTo(owner, taunt);
-								return true;
-							case "greater necroservant":
-								SayTo(owner, taunt + " I can also inflict [poison] or [disease] on your enemies. "
-								      + empower);
-								return true;
-							case "abomination":
-								SayTo(owner, "As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. "
-								      + empower);
-								return true;
-							default:
-								return false;
-						}
-					}
-				case "disease":
-					InventoryItem item;
-					if (Inventory != null &&
-					    (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
-					{
-						item.ProcSpellID = (int)Procs.Disease;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-					}
-					return true;
-				case "empower":
-					SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-					Empower();
-					return true;
-				case "poison":
-					if (Inventory != null &&
-					    (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
-					{
-						item.ProcSpellID = (int)Procs.Poison;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-					}
-					return true;
-				case "taunt":
-					ToggleTauntMode();
-					return true;
+				// case "arawn":
+				// 	{
+				// 		String taunt = "As one of the many cadaverous servants of Arawn, I am able to [taunt] your enemies so that they will focus on me instead of you.";
+				// 		String empower = "You may also [empower] me with just a word.";
+				// 		switch (Name.ToLower())
+				// 		{
+				// 			case "minor zombie servant":
+				// 			case "lesser zombie servant":
+				// 			case "zombie servant":
+				// 			case "reanimated servant":
+				// 			case "necroservant":
+				// 				SayTo(owner, taunt);
+				// 				return true;
+				// 			case "greater necroservant":
+				// 				SayTo(owner, taunt + " I can also inflict [poison] or [disease] on your enemies. "
+				// 				      + empower);
+				// 				return true;
+				// 			case "abomination":
+				// 				SayTo(owner, "As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. "
+				// 				      + empower);
+				// 				return true;
+				// 			default:
+				// 				return false;
+				// 		}
+				// 	}
+				// case "disease":
+				// 	InventoryItem item;
+				// 	if (Inventory != null &&
+				// 	    (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+				// 	{
+				// 		item.ProcSpellID = (int)Procs.Disease;
+				// 		SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+				// 	}
+				// 	return true;
+				// case "empower":
+				// 	SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+				// 	Empower();
+				// 	return true;
+				// case "poison":
+				// 	if (Inventory != null &&
+				// 	    (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+				// 	{
+				// 		item.ProcSpellID = (int)Procs.Poison;
+				// 		SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+				// 	}
+				// 	return true;
+				// case "taunt":
+				// 	ToggleTauntMode();
+				// 	return true;
 					/*
 				case "weapons":
 					{
