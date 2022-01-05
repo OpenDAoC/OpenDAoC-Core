@@ -126,7 +126,7 @@ namespace DOL.GS.ServerRules
 				string realmName = "";
 
 				string messageDFGetControl = string.Format("The forces of {0} have gained access to Darkness Falls!", GlobalConstants.RealmToName(realm));
-				string messageDFLostControl = string.Format("{0} has lost control of Darkness Falls!", oldDFOwner);
+				string messageDFLostControl = string.Format("{0} will lose access to Darkness Falls in 15 minutes!", oldDFOwner);
 
 				if (oldDFOwner != GlobalConstants.RealmToName(DarknessFallOwner))
 				{ 
