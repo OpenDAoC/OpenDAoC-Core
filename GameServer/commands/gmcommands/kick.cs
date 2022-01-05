@@ -39,7 +39,18 @@ namespace DOL.GS.Commands
 					DisplayMessage(client, "Invalid client ID");
 				}
 			}
-			else
+			else if (args[1].StartsWith("$"))
+			{
+				try
+				{
+					var account = args[1].Substring(1);
+					client = WorldMgr.GetClientByAccountName(account, true);
+				}
+				catch
+				{
+					DisplayMessage(client, "Invalid account name");
+				}
+			}
 			{
 				clientc = WorldMgr.GetClientByPlayerName(args[1], false, false);
 			}
