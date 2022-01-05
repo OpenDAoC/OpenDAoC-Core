@@ -1,7 +1,14 @@
 ﻿// I don't know the original author but this
 // file has been modified by clait for Atlas Freeshard
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using DOL.Database;
+using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
 
 /* Need to fix
  * EquipTemplate for Hib and Mid
@@ -13,6 +20,23 @@ namespace DOL.GS.Scripts
 {
     public class LiveTeleporter : GameNPC
     {
+	    
+	    /// <summary>
+	    /// The type of teleporter; this is used in order to be able to handle
+	    /// identical TeleportIDs differently, depending on the actual teleporter.
+	    /// </summary>
+	    protected virtual String Type
+	    {
+		    get { return ""; }
+	    }
+
+	    /// <summary>
+	    /// The destination realm. 
+	    /// </summary>
+	    protected virtual eRealm DestinationRealm
+	    {
+		    get { return Realm; }
+	    }
         public override bool AddToWorld()
         {
             switch (Realm)
@@ -77,9 +101,11 @@ namespace DOL.GS.Scripts
 
         public override bool Interact(GamePlayer player) // What to do when a player clicks on me
         {
-            if (!base.Interact(player)) return false;
+            if (!base.Interact(player) || GameRelic.IsPlayerCarryingRelic(player)) return false;
 
             if (player.Realm != this.Realm && player.Client.Account.PrivLevel == 1) return false;
+            
+            TurnTo(player, 10000);
 
             switch (Realm)
             {
@@ -88,7 +114,7 @@ namespace DOL.GS.Scripts
                                   " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
                                   "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North\n" +
                                   "[Avalon Marsh] wharf\n" +
-                                  "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
+                                  "[Gothwaite] Harbor in the [Shrouded Isles]\n" +
                                   "[Camelot] our glorious capital\n" +
                                   "[Entrance] to the areas of [Housing]\n\n" +
                                   "Or one of the many [towns] throughout Albion");
@@ -128,802 +154,545 @@ namespace DOL.GS.Scripts
         public override bool WhisperReceive(GameLiving source, string str) // What to do when a player whispers me
         {
             if (!base.WhisperReceive(source, str)) return false;
-            if (!(source is GamePlayer)) return false;
-            GamePlayer t = (GamePlayer) source;
-            TurnTo(t.X, t.Y); // Turn to face the player
 
-            switch (Realm) // Only offer locations based on what realm i am set at.
+            GamePlayer player = source as GamePlayer;
+            if (player == null)
+                return false;
+
+            if (GameRelic.IsPlayerCarryingRelic(player))
+                return false;
+
+            return GetTeleportLocation(player, str);
+
+            
+            
+            // return true;
+        }
+        
+        protected virtual bool GetTeleportLocation(GamePlayer player, string text)
+		{
+			
+		    switch (Realm) // Only offer locations based on what realm i am set at.
             {
                 case eRealm.Albion:
-                    switch (str.ToLower())
+	                
+	                if (text.ToLower() == "entrance")
+	                {
+		                Teleport teleport = new Teleport();
+		                teleport.TeleportID = "housing entrance";
+		                teleport.Realm = (int)DestinationRealm;
+		                teleport.RegionID = 2;
+		                teleport.X = 585071;
+		                teleport.Y = 561548;
+		                teleport.Z = 3576;
+		                teleport.Heading = 1090;
+		                OnDestinationPicked(player, teleport);
+		                return true;
+	                }
+                    
+                    if (text.ToLower() == "castle sauvage")
                     {
-                        case "castle sauvage":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Castle Sauvage");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 584151, 477177, 2600, 3058);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "snowdonia fortress":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Snowdonia Fortress");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 527543, 358900, 8320, 3074);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "avalon marsh":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Avalon Marsh");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 470613, 630585, 1712, 2500);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "gothwaite harbor":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Gothwaite Harbor.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(51, 526580, 542058, 3168, 406);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "shrouded isles":
-                            SayTo(t,
-                                "The isles of Avalon are  an excellent choice. Would you prefer the harbor of [Gothwaite] or perhaps one of the outlying towns like [Wearyall] Village, Fort [Gwyntell], or Cear [Diogel]?");
-                            break;
-                        case "camelot":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Camelot");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(10, 36209, 29843, 7971, 18);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "housing":
-                            SayTo(t,
-                                "I can send you to your [personal] house. If you do not have a personal house or wish to be sent to the housing [entrance] then you will arrive just inside the housing area.");
-                            break;
-                        case "towns":
-                            SayTo(t, "I can send you to:\n" +
-                                     "[Cotswold]\n" +
-                                     "[Prydwen Keep]\n" +
-                                     "[Cear Ulfwych]\n" +
-                                     "[Campacorentin Station]\n" +
-                                     "[Adribard's Retreat]\n" +
-                                     "[Yarley's Farm]");
-                            break;
-                        //End Main
-                        //Begin SI
-                        case "gothwaite":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Gothwaite");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(51, 535512, 547448, 4800, 82);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "wearyall":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Wearyall Village");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(51, 435140, 493260, 3088, 921);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "gwyntell":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Fort Gwyntell");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(51, 427322, 416538, 5712, 689);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "diogel":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Cear Diogel.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(51, 403525, 502582, 4680, 561);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "entrance":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Housing.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(2, 584461, 561355, 3576, 2256);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-
-                        case "cotswold":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Cottswold.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 559613, 511843, 2289, 3200);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "prydwen keep":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Prydwen Keep");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 573994, 529009, 2870, 2206);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "cear ulfwych":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Cear Ulfwych.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 522479, 615826, 1818, 4);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "campacorentin station":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Campacorentin Station.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 493010, 591806, 1806, 3881);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "adribard's retreat":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Adribard's Retreat.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 473036, 628049, 2048, 3142);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "yarley's farm":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Yarley's Farm.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 6);
-                                t.MoveTo(1, 369874, 679659, 5538, 3893);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "castle sauvage";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 1;
+                        teleport.X = 584151;
+                        teleport.Y = 477177;
+                        teleport.Z = 2600;
+                        teleport.Heading = 3058;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+                    
+                    if (text.ToLower() == "snowdonia fortress")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "snowdonia fortress";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 1;
+                        teleport.X = 527543;
+                        teleport.Y = 358900;
+                        teleport.Z = 8320;
+                        teleport.Heading = 3074;
+                        OnDestinationPicked(player, teleport);
+                        return true;
                     }
 
-                    break;
+                    // if (text.ToLower() == "avalon marsh")
+                    // {
+                    //     Teleport teleport = new Teleport();
+                    //     teleport.TeleportID = "avalon marsh";
+                    //     teleport.Realm = (int)DestinationRealm;
+                    //     teleport.RegionID = 1;
+                    //     teleport.X = 470613;
+                    //     teleport.Y = 630585;
+                    //     teleport.Z = 1712;
+                    //     teleport.Heading = 2500;
+                    //     OnDestinationPicked(player, teleport);
+                    //     return true;
+                    // }
+                    //
+                    // if (text.ToLower() == "gothwaite harbour")
+                    // {
+                    //     Teleport teleport = new Teleport();
+                    //     teleport.TeleportID = "gothwaite harbour";
+                    //     teleport.Realm = (int)DestinationRealm;
+                    //     teleport.RegionID = 51;
+                    //     teleport.X = 526580;
+                    //     teleport.Y = 542058;
+                    //     teleport.Z = 3168;
+                    //     teleport.Heading = 406;
+                    //     OnDestinationPicked(player, teleport);
+                    //     return true;
+                    // }
+
+	                if (text.ToLower() == "shrouded isles")
+                    {
+                        SayTo(player, "The isles of Avalon are  an excellent choice. Would you prefer the harbor of [Gothwaite] or perhaps one of the outlying towns like [Wearyall] Village, Fort [Gwyntell], or Cear [Diogel]?");
+                        return false;
+                    }
+                    
+                    // if (text.ToLower() == "camelot")
+                    // {
+                    //     Teleport teleport = new Teleport();
+                    //     teleport.TeleportID = "camelot";
+                    //     teleport.Realm = (int)DestinationRealm;
+                    //     teleport.RegionID = 10;
+                    //     teleport.X = 36209;
+                    //     teleport.Y = 29843;
+                    //     teleport.Z = 7971;
+                    //     teleport.Heading = 18;
+                    //     OnDestinationPicked(player, teleport);
+                    //     return true;
+                    // }
+                    
+                    if (text.ToLower() == "housing")
+                    {
+                        SayTo(player, "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
+                        return false;
+                    }
+                    
+                    if (text.ToLower() == "towns")
+                    {
+                        SayTo(player, "I can send you to:\n" +
+                                      "[Cotswold]\n" +
+                                      "[Prydwen Keep]\n" +
+                                      "[Cear Ulfwych]\n" +
+                                      "[Campacorentin Station]\n" +
+                                      "[Adribard's Retreat]\n" +
+                                      "[Yarley's Farm]");
+                        return false;
+                    }
+
+                    if (text.ToLower() == "cear ulfwych")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "cear ulfwych";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 1;
+                        teleport.X = 522479;
+                        teleport.Y = 615826;
+                        teleport.Z = 1818;
+                        teleport.Heading = 4;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+
+                    if (text.ToLower() == "yarley's farm")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "yarley's farm";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 1;
+                        teleport.X = 369874;
+                        teleport.Y = 679659;
+                        teleport.Z = 5538;
+                        teleport.Heading = 3893;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+	                break;
                 case eRealm.Midgard:
-                    switch (str.ToLower())
+	                
+	                if (text.ToLower() == "entrance")
+	                {
+		                Teleport teleport = new Teleport();
+		                teleport.TeleportID = "housing entrance";
+		                teleport.Realm = (int)DestinationRealm;
+		                teleport.RegionID = 102;
+		                teleport.X = 526733;
+		                teleport.Y = 561563;
+		                teleport.Z = 3632;
+		                teleport.Heading = 3901;
+		                OnDestinationPicked(player, teleport);
+		                return true;
+	                }
+                    
+                    if (text.ToLower() == "svasud faste")
                     {
-                        case "svasud faste":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Svasud Faste");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 767242, 669591, 5736, 1198);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "vindsaul faste":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Vindsaul Faste");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 703389, 738621, 5704, 3097);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "gotar":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Gotar");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 771081, 836721, 4624, 167);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "shrouded isles":
-                            SayTo(t,
-                                "The isles of Aegir are an excellent choice. Would you prefer the city of [Aegirhamn] or perhaps one of the outlying towns like [Bjarken], [Hagall], or [Knarr]?");
-                            break;
-                        case "jordheim":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Jordheim");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(101, 31619, 28768, 8800, 2201);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "housing":
-                            SayTo(t,
-                                "I can send you to your [personal] house. If you do not have a personal house or wish to be sent to the housing [entrance] then you will arrive just inside the housing area.");
-                            break;
-                        case "towns":
-                            SayTo(t, "I can send you to:\n" +
-                                     "[Mularn]\n" +
-                                     "[Fort Veldon]\n" +
-                                     "[Audliten]\n" +
-                                     "[Huginfel]\n" +
-                                     "[Fort Atla]\n" +
-                                     "[West Skona]");
-                            break;
-                        // Begin Towns
-                        case "mularn":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Mularn");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 804292, 726509, 4696, 842);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "audliten":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Audliten");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 725682, 760401, 4528, 1150);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "fort veldon":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Fort Veldon.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 800200, 678003, 5304, 204);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "huginfel":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Huginfel.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 711788, 784084, 4672, 2579);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "fort atla":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Fort Atla.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 749237, 816443, 4408, 2033);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "west skona":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to West Skona.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(100, 712345, 923847, 5043, 3898);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "entrance":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Housing.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(102, 527051, 561559, 3638, 102);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "aegirhamn":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Aegirhamn.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(151, 294213, 355955, 3570, 4070);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "bjarken":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Bjarken.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(151, 289626, 301652, 4160, 2804);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "hagall":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Hagall.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(151, 379055, 386013, 7752, 2187);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "knarr":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Knarr.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(151, 302660, 433690, 3214, 2103);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "svasud faste";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 100;
+                        teleport.X = 767242;
+                        teleport.Y = 669591;
+                        teleport.Z = 5736;
+                        teleport.Heading = 1198;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+                    
+                    if (text.ToLower() == "vindsaul faste")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "vindsaul faste";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 100;
+                        teleport.X = 703389;
+                        teleport.Y = 738621;
+                        teleport.Z = 5704;
+                        teleport.Heading = 3097;
+                        OnDestinationPicked(player, teleport);
+                        return true;
                     }
 
-                    break;
-                case eRealm.Hibernia:
-                    switch (str.ToLower())
+	                if (text.ToLower() == "shrouded isles")
                     {
-                        case "druim ligen":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Druim Ligen");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 334600, 419997, 5184, 479);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "shannon estuary":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Shannon Estuary");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 310320, 645327, 4855, 1441);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "domnann":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Domann Grove.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(181, 423157, 442474, 5952, 2046);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "shrouded isles":
-                            SayTo(t,
-                                "The isles of Hy Brasil are an excellent choice. Would you prefer the grove of [Domnann] or perhaps one of the outlying towns like [Droighaid], [Aalid Feie], or [Necht]?");
-                            break;
-                        case "tir na nog":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Tir na Nog");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(201, 30011, 33138, 7916, 3079);
-                                //MoveTo(regionid, x , y, z, heading)
-                            }
-
-                            break;
-                        case "housing":
-                            SayTo(t,
-                                "I can send you to your [personal] house. If you do not have a personal house or wish to be sent to the housing [entrance] then you will arrive just inside the housing area.");
-                            break;
-                        case "towns":
-                            SayTo(t, "I can send you to:\n" +
-                                     "[Mag Mell]\n" +
-                                     "[Tir na mBeo]\n" +
-                                     "[Ardagh]\n" +
-                                     "[Howth]\n" +
-                                     "[Connla]\n" +
-                                     "[Innis Carthaig]");
-                            break;
-                        //Begin Towns
-                        case "mag mell":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Mag Mell");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 348073, 489646, 5200, 643);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "tir na mbeo":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Tir na mBeo.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 344519, 527771, 4061, 1178);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "ardagh":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Ardagh.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 351533, 553440, 5102, 3054);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "howth":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Howth.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 342575, 591967, 5456, 1014);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "connla":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Connla");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 297173, 642141, 4848, 3814);
-                            }
-
-                            break;
-                        case "innis carthaig":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Innis Carthaig");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 333939, 719890, 4296, 3142);
-                            }
-
-                            break;
-                        case "druim cain":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Druim Cain");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(200, 421838, 486293, 1824, 1109);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        // End Towns
-                        //Begin SI
-                        case "droighaid":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Droighaid.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(181, 379767, 421216, 5528, 1720);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "aalid feie":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Aalid Feie");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(181, 313648, 352530, 3592, 942);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "necht":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Necht.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(181, 429507, 318578, 3458, 716);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
-                        case "entrance":
-                            if (!t.InCombat)
-                            {
-                                Say("I'm now teleporting you to Housing.");
-                                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                    player.Out.SendSpellCastAnimation(this, 4953, 3);
-                                t.MoveTo(202, 555396, 526607, 3008, 1309);
-                            }
-                            else
-                            {
-                                t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                                    eChatLoc.CL_PopupWindow);
-                            }
-
-                            break;
+                        SayTo(player, "The isles of Aegir are an excellent choice.\nWould you prefer the city of [Aegirhamn] or perhaps one of the outlying towns like [Bjarken], [Hagall], or [Knarr]?");
+                        return false;
+                    }
+	                
+                    
+                    if (text.ToLower() == "housing")
+                    {
+                        SayTo(player, "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
+                        return false;
+                    }
+                    
+                    if (text.ToLower() == "towns")
+                    {
+                        SayTo(player, 
+	                        "I can send you to:\n" +
+			                        "[Mularn]\n" +
+			                        "[Fort Veldon]\n" +
+			                        "[Audliten]\n" +
+			                        "[Huginfel]\n" +
+			                        "[Fort Atla]\n" +
+			                        "[West Skona]");
+                        return false;
+                    }
+	                
+	                if (text.ToLower() == "huginfel")
+	                {
+		                Teleport teleport = new Teleport();
+		                teleport.TeleportID = "huginfel";
+		                teleport.Realm = (int)DestinationRealm;
+		                teleport.RegionID = 100;
+		                teleport.X = 712221;
+		                teleport.Y = 783928;
+		                teleport.Z = 4672;
+		                teleport.Heading = 270;
+		                OnDestinationPicked(player, teleport);
+		                return true;
+	                }
+	                
+	                if (text.ToLower() == "west skona")
+	                {
+		                Teleport teleport = new Teleport();
+		                teleport.TeleportID = "west skona";
+		                teleport.Realm = (int)DestinationRealm;
+		                teleport.RegionID = 100;
+		                teleport.X = 712345;
+		                teleport.Y = 923847;
+		                teleport.Z = 5043;
+		                teleport.Heading = 3898;
+		                OnDestinationPicked(player, teleport);
+		                return true;
+	                }
+	                
+	                break;
+	            case eRealm.Hibernia:
+	                
+	                if (text.ToLower() == "entrance")
+	                {
+		                Teleport teleport = new Teleport();
+		                teleport.TeleportID = "housing entrance";
+		                teleport.Realm = (int)DestinationRealm;
+		                teleport.RegionID = 202;
+		                teleport.X = 555538;
+		                teleport.Y = 526481;
+		                teleport.Z = 3008;
+		                teleport.Heading = 857;
+		                OnDestinationPicked(player, teleport);
+		                return true;
+	                }
+                    
+                    if (text.ToLower() == "svasud faste")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "svasud faste";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 100;
+                        teleport.X = 767242;
+                        teleport.Y = 669591;
+                        teleport.Z = 5736;
+                        teleport.Heading = 1198;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+                    
+                    if (text.ToLower() == "vindsaul faste")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "vindsaul faste";
+                        teleport.Realm = (int)DestinationRealm;
+                        teleport.RegionID = 100;
+                        teleport.X = 703389;
+                        teleport.Y = 738621;
+                        teleport.Z = 5704;
+                        teleport.Heading = 3097;
+                        OnDestinationPicked(player, teleport);
+                        return true;
                     }
 
-                    break;
-            }
-
-            //trying a fall through
-            switch (str.ToLower())
-            {
-                case "personal":
-                    if (t.BindHouseRegion == 0)
+	                if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(t, "You don't own a house!");
-                        break;
+                        SayTo(player, "The isles of Hy Brasil are an excellent choice. Would you prefer the grove of [Domnann] or perhaps one of the outlying towns like [Droighaid], [Aalid Feie], or [Necht]?");
+                        return false;
                     }
-
-                    if (!t.InCombat)
+	                
+                    
+                    if (text.ToLower() == "housing")
                     {
-                        SayTo(t, "I'm now teleporting you to your personal house.");
-                        foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                            player.Out.SendSpellCastAnimation(this, 4953, 3);
-                        t.MoveTo((ushort) t.BindHouseRegion, t.BindHouseXpos, t.BindHouseYpos, t.BindHouseZpos,
-                            (ushort) t.BindHouseHeading);
+                        SayTo(player, "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
+                        return false;
                     }
-                    else
+                    
+                    if (text.ToLower() == "towns")
                     {
-                        t.Client.Out.SendMessage("You can't port while in combat.", eChatType.CT_Say,
-                            eChatLoc.CL_PopupWindow);
+                        SayTo(player, 
+	                        "I can send you to:\n" +
+	                        "[Mag Mell]\n" +
+							"[Tir na mBeo]\n" +
+							"[Ardagh]\n" +
+							"[Howth]\n" +
+							"[Connla]\n" +
+							"[Innis Carthaig]");
+                        return false;
                     }
+	                break;
 
-                    break;
-                // case "guild":
-                //     SayTo(t, "Guild House recall not yet implemented..");
-                //     break;
-                // case "hearth":
-                //     SayTo(t, "I shall return you to your Hearthstone.");
-                //     t.MoveToBind();
-                //     break;
-            }
+                }
 
+		    // Another special case is personal house, as there is no location
+			// that will work for every player.
+			if (text.ToLower() == "personal")
+			{
+				House house = HouseMgr.GetHouseByPlayer(player);
 
-            return true;
-        }
+				if(house == null)
+				{
+					text = "entrance";	// Fall through, port to housing entrance.
+				}
+				else
+				{
+					IGameLocation location = house.OutdoorJumpPoint;
+					Teleport teleport = new Teleport();
+					teleport.TeleportID = "your house";
+					teleport.Realm = (int)DestinationRealm;
+					teleport.RegionID = location.RegionID;
+					teleport.X = location.X;
+					teleport.Y = location.Y;
+					teleport.Z = location.Z;
+					teleport.Heading = location.Heading;
+					OnDestinationPicked(player, teleport);
+					return true;
+				}
+			}
+
+			// Yet another special case the port to the 'hearth' what means
+			// that the player will be ported to the defined house bindstone
+			if (text.ToLower() == "hearth")
+			{
+				// Check if player has set a house bind
+				if (!(player.BindHouseRegion > 0))
+				{
+					SayTo(player, "Sorry, you haven't set any house bind point yet.");
+					return false;
+				}
+
+				// Check if the house at the player's house bind location still exists
+				ArrayList houses = (ArrayList)HouseMgr.GetHousesCloseToSpot((ushort)player.
+					BindHouseRegion, player.BindHouseXpos, player.
+					BindHouseYpos, 700);
+				if (houses.Count == 0)
+				{
+					SayTo(player, "I'm afraid I can't teleport you to your hearth since the house at your " + 
+						"house bind location has been torn down.");
+					return false;
+				}
+
+				// Check if the house at the player's house bind location contains a bind stone
+				House targetHouse = (House)houses[0];
+				IDictionary<uint, DBHouseHookpointItem> hookpointItems = targetHouse.HousepointItems;
+				Boolean hasBindstone = false;
+
+				foreach (KeyValuePair<uint, DBHouseHookpointItem> targetHouseItem in hookpointItems)
+				{
+					if (((GameObject)targetHouseItem.Value.GameObject).GetName(0, false).ToLower().EndsWith("bindstone"))
+					{
+						hasBindstone = true;
+						break;
+					}
+				}
+
+				if (!hasBindstone)
+				{
+					SayTo(player, "I'm sorry to tell that the bindstone of your current house bind location " + 
+						"has been removed, so I'm not able to teleport you there.");
+					return false;
+				}
+
+				// Check if the player has the permission to bind at the house bind stone
+				if (!targetHouse.CanBindInHouse(player))
+				{
+					SayTo(player, "You're no longer allowed to bind at the house bindstone you've previously " + 
+						"chosen, hence I'm not allowed to teleport you there.");
+					return false;
+				}
+
+				Teleport teleport = new Teleport();
+				teleport.TeleportID = "hearth";
+				teleport.Realm = (int)DestinationRealm;
+				teleport.RegionID = player.BindHouseRegion;
+				teleport.X = player.BindHouseXpos;
+				teleport.Y = player.BindHouseYpos;
+				teleport.Z = player.BindHouseZpos;
+				teleport.Heading = player.BindHouseHeading;
+				OnDestinationPicked(player, teleport);
+				return true;
+			}
+
+			if (text.ToLower() == "guild")
+			{
+				House house = HouseMgr.GetGuildHouseByPlayer(player);
+
+				if (house == null)
+				{
+					SayTo(player, $"I'm sorry but {player.Guild.Name} doesn't own a Guild House.");
+					return false;
+					return false;  // no teleport when guild house not found
+				}
+				else
+				{
+					IGameLocation location = house.OutdoorJumpPoint;
+					Teleport teleport = new Teleport();
+					teleport.TeleportID = "guild house";
+					teleport.Realm = (int)DestinationRealm;
+					teleport.RegionID = location.RegionID;
+					teleport.X = location.X;
+					teleport.Y = location.Y;
+					teleport.Z = location.Z;
+					teleport.Heading = location.Heading;
+					OnDestinationPicked(player, teleport);
+					return true;
+				}
+			}
+
+			// Find the teleport location in the database.
+			Teleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
+			if (port != null)
+			{
+				if (port.RegionID == 0 && port.X == 0 && port.Y == 0 && port.Z == 0)
+				{
+					OnSubSelectionPicked(player, port);
+				}
+				else
+				{
+					OnDestinationPicked(player, port);
+				}
+				return false;
+			}
+
+			return true;	// Needs further processing.
+		}
+        
+        /// <summary>
+		/// Player has picked a destination.
+		/// Override if you need the teleporter to say something to the player
+		/// before porting him.
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="destination"></param>
+		protected virtual void OnDestinationPicked(GamePlayer player, Teleport destination)
+		{
+			Region region = WorldMgr.GetRegion((ushort)destination.RegionID);
+
+			if (region == null || region.IsDisabled)
+			{
+				player.Out.SendMessage("This destination is not available.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+			Say("I'm now teleporting you to " + ti.ToTitleCase(destination.TeleportID) + ".");
+			OnTeleportSpell(player, destination);
+		}
+
+		/// <summary>
+		/// Player has picked a subselection.
+		/// Override to pass teleport options on to the player.
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="subSelection"></param>
+		protected virtual void OnSubSelectionPicked(GamePlayer player, Teleport subSelection)
+		{
+		}
+
+		/// <summary>
+		/// Teleport the player to the designated coordinates using the
+		/// portal spell.
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="destination"></param>
+		protected virtual void OnTeleportSpell(GamePlayer player, Teleport destination)
+		{
+			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
+			List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
+			Spell spell = SkillBase.GetSpellByID(5999);	// UniPortal spell.
+
+			if (spell != null)
+			{
+				TargetObject = player;
+				UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+				m_runningSpellHandler = portalHandler;
+				portalHandler.CastSpell();
+				return;
+			}
+
+			// Spell not found in the database, fall back on default procedure.
+
+			if (player.Client.Account.PrivLevel > 1)
+				player.Out.SendMessage("Uni-Portal spell not found.",
+					eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+			
+			
+			this.OnTeleport(player, destination);
+		}
+
+		/// <summary>
+		/// Teleport the player to the designated coordinates. 
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="destination"></param>
+		protected virtual void OnTeleport(GamePlayer player, Teleport destination)
+		{
+			if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
+			{
+				player.LeaveHouse();
+				GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
+				player.MoveTo((ushort)destination.RegionID, destination.X, destination.Y, destination.Z, (ushort)destination.Heading);
+				GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
+			}
+		}
     }
 }
