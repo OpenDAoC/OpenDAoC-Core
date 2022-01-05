@@ -5835,10 +5835,11 @@ namespace DOL.GS {
                 case eCharacterClass.Bard:
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Blunt);
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.Instrument);
-                    weaponTypes.Add(eObjectType.Staff);
                     break;
                 default:
                     return eObjectType.Staff;
