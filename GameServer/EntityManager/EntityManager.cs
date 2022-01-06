@@ -24,7 +24,7 @@ namespace DOL.GS
         private static List<Type> _services = new List<Type>(100);
         private static object _servicesLock = new object();
 
-        private static Dictionary<Type, List<GameLiving>> _components = new Dictionary<Type, List<GameLiving>>(5000);
+        private static Dictionary<Type, HashSet<GameLiving>> _components = new Dictionary<Type, HashSet<GameLiving>>(5000);
         private static object _componentLock = new object();
 
         private static bool npcsIsDirty;
@@ -54,7 +54,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    _components.Add(t, new List<GameLiving> { n });
+                    _components.Add(t, new HashSet<GameLiving> { n });
                 }
             }
         }
