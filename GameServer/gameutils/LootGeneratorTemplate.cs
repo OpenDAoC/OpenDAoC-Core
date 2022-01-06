@@ -191,7 +191,7 @@ namespace DOL.GS
 
 			// First see if there are any MobXLootTemplates associated with this mob
 
-			var mxlts = DOLDB<MobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
+			var mxlts = DOLDB<MobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name.ToLower()));
 
 			if (mxlts != null)
 			{
@@ -232,7 +232,7 @@ namespace DOL.GS
 				}
 			}
 
-			var lootTemplates = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName));
+			var lootTemplates = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName.ToLower()));
 
 			if (lootTemplates != null)
 			{
@@ -286,9 +286,9 @@ namespace DOL.GS
 					List<MobXLootTemplate> killedMobXLootTemplates = null;
 					
 					// Graveen: we first privilegiate the loottemplate named 'templateid' if it exists	
-					if (mob.NPCTemplate != null && m_mobXLootTemplates.ContainsKey(mob.NPCTemplate.TemplateId.ToString()))
+					if (mob.NPCTemplate != null && m_mobXLootTemplates.ContainsKey(mob.NPCTemplate.TemplateId.ToString().ToLower()))
 					{
-						killedMobXLootTemplates = m_mobXLootTemplates[mob.NPCTemplate.TemplateId.ToString()];
+						killedMobXLootTemplates = m_mobXLootTemplates[mob.NPCTemplate.TemplateId.ToString().ToLower()];
 					}
 					// else we are choosing the loottemplate named 'mob name'
 					// this is easily allowing us to affect different level choosen loots to different level choosen mobs

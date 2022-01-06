@@ -11,7 +11,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 30;
+        public static ushort BASE_ROG_CHANCE = 20;
 
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace DOL.GS {
                 }
 
                 // chance to get a RoG Item
-                int chance = BASE_ROG_CHANCE + ((int)killedcon) * 5;
+                int chance = BASE_ROG_CHANCE + ((int)killedcon * 3);
 
                 int lvl = mob.Level + 1;
                 if (lvl < 1)
@@ -77,19 +77,35 @@ namespace DOL.GS {
                     }
                 }
 
-                GeneratedUniqueItem item = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
-                item.GenerateItemQuality(killedcon);
-                item.CapUtility(mob.Level + 1);
+                //chance = 100;
+
+                Database.ItemTemplate item = null;
+                
+                GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
+                tmp.GenerateItemQuality(killedcon);
+                tmp.CapUtility(mob.Level + 1);
+                item = tmp;
+                item.MaxCount = 1;
                 if (mob.Level < 10)
-                {                
+                {
                     loot.AddRandom(100, item, 1);
                 }
                 else if (mob.Level < 20)
-                    loot.AddRandom(chance + (100 * (10-(mob.Level-10)/10)), item, 1);
-                //135% chance at level 10, 85% chance at level 15, 35% chance at level 20
+                    loot.AddRandom(chance + (100 * (10 - (mob.Level - 10) / 10)), item, 1);
+                //120% chance at level 10, 70% chance at level 15, 20% chance at level 20
                 else
                     loot.AddRandom(chance, item, 1);
 
+                if(player.Level < 31 || mob.Level < 31)
+                {
+                    item = AtlasROGManager.GenerateBeadOfRegeneration();
+                    loot.AddRandom(3, item, 1);
+                }
+                
+                
+                
+                
+                
             }
             catch
             {

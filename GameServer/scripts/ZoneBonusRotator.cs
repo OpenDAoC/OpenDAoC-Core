@@ -399,14 +399,19 @@ namespace DOL.GS.Scripts
             temp.Add("SI Zone: " + hibDBZoneSI.Name + " (XP +" + hibDBZoneSI.Experience + "%)");
 
             temp.Add("");
-            temp.Add("");
-
             var rvr = _lastRvRChangeTick + RvRTimer - GameLoop.GameLoopTime;
             temp.Add("RvR Time Remaining: " + TimeSpan.FromMilliseconds(rvr).Hours + "h " + TimeSpan.FromMilliseconds(rvr).Minutes + "m " + TimeSpan.FromMilliseconds(rvr).Seconds + "s");
             
             var pve = _lastPvEChangeTick + PvETimer - GameLoop.GameLoopTime;
             temp.Add("PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
 
+            temp.Add("");
+            temp.Add("");
+
+            temp.Add("Permanent Bonuses:");
+            temp.Add("All Dungeons: 25%");
+            temp.Add("RvR Dungeons: 50%");
+            temp.Add("Darkness Falls: 75%");
 
 
             return temp;
@@ -486,10 +491,25 @@ namespace DOL.GS.Scripts
             GameServer.Database.SaveObject(hibDBZone);
             GameServer.Database.SaveObject(midDBZoneSI);
 
-            foreach (var zone in WorldMgr.Zones.Values)
-            {
-                zone.BonusExperience = 0;
-            }
+            
+            foreach (var zone in albionClassicZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in albionSIZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in midgardClassicZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in midgardSIZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in hiberniaClassicZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
+            foreach (var zone in hiberniaSIZones)
+                WorldMgr.Zones[(ushort)zone].BonusExperience = 0;
+
             /*
             WorldMgr.Zones[(ushort)albionClassicZones[currentAlbionZone]].BonusExperience = 0;
             WorldMgr.Zones[(ushort)albionSIZones[currentAlbionZoneSI]].BonusExperience = 0;

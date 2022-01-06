@@ -1202,7 +1202,9 @@ namespace DOL.GS.ServerRules
 					if (player != null && player.Group != null && player.Group.MemberCount > 1)
 					{
 						int scalingFactor = (int)Math.Ceiling((decimal)player.Group.MemberCount);
-						xpReward /= scalingFactor;
+						long tmpxp = (long)(xpReward * (1 + 0.125 * GetUniqueClassCount(player.Group)));
+						xpReward = tmpxp / scalingFactor;
+						//xpReward /= scalingFactor;
 					}
 
 					// exp cap
@@ -1258,11 +1260,12 @@ namespace DOL.GS.ServerRules
 					if (xpReward > expCap)
 						xpReward = expCap;
 
-					if(player != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
-                    {
-						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					if(player != null && player.Group != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
+					{
+						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | Group XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						double expPercent = ((double)(xpReward) / (double)(expCap)) * 100;
 						player.Out.SendMessage($"% of Cap: {expPercent.ToString(".##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage($"---------------------------------------------------", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 
 					#region Camp Bonus
@@ -1369,7 +1372,7 @@ namespace DOL.GS.ServerRules
 						if (player != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
 						{
 							double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
-							int scaleFactor = 1;
+							/*int scaleFactor = 1;
 							if (player.Group?.MemberCount > 1)
 								scaleFactor = player.Group.MemberCount;
 							double softXPCap = (long)((GameServer.ServerRules.GetExperienceForLiving(highestPlayer.Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100) / scaleFactor);
@@ -1377,11 +1380,11 @@ namespace DOL.GS.ServerRules
 								softXPCap = (long)(softXPCap * ServerProperties.Properties.RvR_XP_RATE);
 							else
 								softXPCap = (long)(softXPCap * ServerProperties.Properties.XP_RATE);
-
+							*/
 							//Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
-
-							//player.Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | XP Cap: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							//player.Out.SendMessage($"% of Cap: {((double)((baseXP) / (softXPCap)) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							long softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(living.Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
+							player.Out.SendMessage($"Mob Base XP: {baseXP.ToString("N0", format)} | Solo Cap for Level: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage($"% of Cap: {((double)((baseXP) / (softXPCap)) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 							if (player.XPLogState == eXPLogState.Verbose)
 							{
@@ -1401,7 +1404,7 @@ namespace DOL.GS.ServerRules
 									player.Out.SendMessage($"Group: {groupExp.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 								if (outpostXP > 0)
-									player.Out.SendMessage($"Output: {outpostXP.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage($"Outpost: {outpostXP.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 								//player.Out.SendMessage($"Total Bonus: {((double)((atlasBonus + campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								player.Out.SendMessage($"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);

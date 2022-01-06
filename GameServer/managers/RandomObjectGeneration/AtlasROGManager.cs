@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 namespace DOL.GS {
     public static class AtlasROGManager {
 
+        private static ItemTemplate beadTemplate = null;
+
         public static void GenerateROG(GameLiving living)
         {
             GenerateROG(living, false);
@@ -83,6 +85,16 @@ namespace DOL.GS {
             item.CapUtility(level);
             return item;
             
+        }
+
+        public static ItemUnique GenerateBeadOfRegeneration()
+        {
+            if(beadTemplate == null)
+                beadTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>("Bead_Of_Regeneration");
+            
+            ItemUnique item = new ItemUnique(beadTemplate);
+            
+            return item;
         }
 
     }

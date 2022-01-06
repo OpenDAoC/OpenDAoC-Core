@@ -82,9 +82,9 @@ namespace DOL.GS {
         // base Chance to get a magical RoG item, Level*2 is added to get final value
         public const ushort ROG_100_MAGICAL_OFFSET = 60;
 
-        private bool hasSkill;
-
         private eCharacterClass charClass = eCharacterClass.Unknown;
+
+        private static Dictionary<int,Spell> ProcSpells = new Dictionary<int,Spell>();
 
         protected static Dictionary<eProperty, string> hPropertyToMagicPrefix = new Dictionary<eProperty, string>();
 
@@ -159,7 +159,6 @@ namespace DOL.GS {
             this.Item_Type = (int)slot;
             this.Type_Damage = (int)dmg;
             this.charClass = charClass;
-            this.hasSkill = false;
 
             // shouldn't need more Randomized public set values
 
@@ -184,6 +183,8 @@ namespace DOL.GS {
             {
                 this.Level = 51;
             }
+
+            this.GenerateProc();
 
             //item bonus
             int temp = this.Level - 15;
@@ -225,6 +226,9 @@ namespace DOL.GS {
             this.Quality = Util.Random(minQuality, maxQuality);
 
             this.Price = Money.SetAutoPrice(this.Level, this.Quality);
+            this.Price /= 10;
+            if (this.Price <= 0)
+                this.Price = 2; // 2c as sell price is 50%
         }
 
         private void GenerateItemStats()
@@ -345,6 +349,198 @@ namespace DOL.GS {
                 this.Level = templevel;
         }
 
+        private void GenerateProc()
+        {
+            if (this.Object_Type == (int)eObjectType.Magical)
+                return;
+
+            this.ProcChance = 10;
+
+            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield) && Util.Chance(25))
+            {
+                if (Util.Chance(50))
+                {
+                    //LT procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8010;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8011;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8012;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8013;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8014;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8015;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8016;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8017;
+                        this.LevelRequirement = 40;
+                    }
+                }
+                else
+                {
+                    //DD procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8020;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8021;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8022;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8023;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8024;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8025;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8026;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8027;
+                        this.LevelRequirement = 40;
+                    }
+                }
+            }
+            else if(this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO && Util.Chance(25))
+            {
+                if (Util.Chance(50))
+                {
+                    //Heal procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8030;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8031;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8032;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8033;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8034;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8035;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8036;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8037;
+                        this.LevelRequirement = 40;
+                    }
+                }
+                else
+                {
+                    //ABS procs
+                    if (Level < 10)
+                    {
+                        this.ProcSpellID = 8040;
+                        this.LevelRequirement = 1;
+                    }
+                    else if (Level < 15)
+                    {
+                        this.ProcSpellID = 8041;
+                        this.LevelRequirement = 10;
+                    }
+                    else if (Level < 20)
+                    {
+                        this.ProcSpellID = 8042;
+                        this.LevelRequirement = 15;
+                    }
+                    else if (Level < 25)
+                    {
+                        this.ProcSpellID = 8043;
+                        this.LevelRequirement = 20;
+                    }
+                    else if (Level < 30)
+                    {
+                        this.ProcSpellID = 8044;
+                        this.LevelRequirement = 25;
+                    }
+                    else if (Level < 35)
+                    {
+                        this.ProcSpellID = 8045;
+                        this.LevelRequirement = 30;
+                    }
+                    else if (Level < 40)
+                    {
+                        this.ProcSpellID = 8046;
+                        this.LevelRequirement = 35;
+                    }
+                    else if (Level < 43)
+                    {
+                        this.ProcSpellID = 8047;
+                        this.LevelRequirement = 40;
+                    }
+                }
+                
+            }
+        }
+
         private void GenerateMagicalBonuses(bool toa)
         {
             // unique objects have more bonuses as level rises
@@ -353,10 +549,10 @@ namespace DOL.GS {
 
             // WHRIA
             //if (this.Level>60) number++;
-            if (this.Level > 60 && Util.Chance(3)) number++;
-            if (this.Level > 70 && Util.Chance(5)) number++;
-            if (this.Level > 70 && Util.Chance(5)) number++;
-            if (this.Level > 80 && Util.Chance(10)) number++;
+            if (this.Level > 60 && Util.Chance(10)) number++;
+            if (this.Level > 70 && Util.Chance(25)) number++;
+            if (this.Level > 70 && Util.Chance(25)) number++;
+            if (this.Level > 80 && Util.Chance(80)) number++;
             // END
 
             if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
@@ -405,16 +601,19 @@ namespace DOL.GS {
                 multiplier += 0.15;
             }
 
+            
+
             for (int i = 0; i < number; i++)
             {
                 eBonusType type = this.GetPropertyType(toa);
                 eProperty property = this.GetProperty(type);
+                double tmpMulti = multiplier;
+                if (type == eBonusType.Stat)
+                    tmpMulti = 1;
                 if (!this.BonusExists(property))
                 {
-                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property) * multiplier);
+                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property));
                     this.WriteBonus(property, amount);
-                    if (type == eBonusType.Skill)
-                        hasSkill = true;
                     fAddedBonus = true;
                     if (!fMagicScaled)
                     {
@@ -571,7 +770,7 @@ namespace DOL.GS {
                                 {
                                     foreach (eProperty property in AlbSkillBonus)
                                     {
-                                        if (!BonusExists(property) && SkillIsValidForClass(property))
+                                        if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
                                             if (SkillIsValidForObjectType(property))
                                                 validSkills.Add(property);
@@ -584,7 +783,7 @@ namespace DOL.GS {
                                 {
                                     foreach (eProperty property in HibSkillBonus)
                                     {
-                                        if (!BonusExists(property) && SkillIsValidForClass(property))
+                                        if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
                                             if (SkillIsValidForObjectType(property))
                                                 validSkills.Add(property);
@@ -597,7 +796,7 @@ namespace DOL.GS {
                                 {
                                     foreach (eProperty property in MidSkillBonus)
                                     {
-                                        if (!BonusExists(property) && SkillIsValidForClass(property))
+                                        if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
                                             if (SkillIsValidForObjectType(property))
                                                 validSkills.Add(property);
@@ -689,8 +888,106 @@ namespace DOL.GS {
             return eProperty.MaxHealth;
         }
 
+        private bool IsCompetingSkillLine(eProperty prop)
+        {
+            List<eProperty> skillsToCheck = new List<eProperty>();
+            if(prop == eProperty.Skill_Slashing || prop == eProperty.Skill_Thrusting || prop == eProperty.Skill_Crushing)
+            {
+                skillsToCheck.Add(eProperty.Skill_Slashing);
+                skillsToCheck.Add(eProperty.Skill_Thrusting);
+                skillsToCheck.Add(eProperty.Skill_Crushing);
+            }
+            if (prop == eProperty.Skill_Blades || prop == eProperty.Skill_Piercing || prop == eProperty.Skill_Blunt)
+            {
+                skillsToCheck.Add(eProperty.Skill_Blades);
+                skillsToCheck.Add(eProperty.Skill_Piercing);
+                skillsToCheck.Add(eProperty.Skill_Blunt);
+            }
+            if (prop == eProperty.Skill_Axe || prop == eProperty.Skill_Sword || prop == eProperty.Skill_Hammer)
+            {
+                skillsToCheck.Add(eProperty.Skill_Blades);
+                skillsToCheck.Add(eProperty.Skill_Piercing);
+                skillsToCheck.Add(eProperty.Skill_Blunt);
+            }
+
+            if (prop == eProperty.Skill_Matter || prop == eProperty.Skill_Body || prop == eProperty.Skill_Spirit || prop == eProperty.Skill_Mind)
+            {
+                skillsToCheck.Add(eProperty.Skill_Matter);
+                skillsToCheck.Add(eProperty.Skill_Body);
+                skillsToCheck.Add(eProperty.Skill_Spirit);
+                skillsToCheck.Add(eProperty.Skill_Mind);
+            }
+            if (prop == eProperty.Skill_Earth || prop == eProperty.Skill_Cold || prop == eProperty.Skill_Fire || prop == eProperty.Skill_Wind)
+            {
+                skillsToCheck.Add(eProperty.Skill_Earth);
+                skillsToCheck.Add(eProperty.Skill_Cold);
+                skillsToCheck.Add(eProperty.Skill_Fire);
+                skillsToCheck.Add(eProperty.Skill_Wind);
+            }
+            if (prop == eProperty.Skill_DeathSight || prop == eProperty.Skill_Death_Servant || prop == eProperty.Skill_Pain_working)
+            {
+                skillsToCheck.Add(eProperty.Skill_DeathSight);
+                skillsToCheck.Add(eProperty.Skill_Death_Servant);
+                skillsToCheck.Add(eProperty.Skill_Pain_working);
+            }
+            if (prop == eProperty.Skill_Light || prop == eProperty.Skill_Mana || prop == eProperty.Skill_Void || prop == eProperty.Skill_Enchantments || prop == eProperty.Skill_Mentalism)
+            {
+                skillsToCheck.Add(eProperty.Skill_Light);
+                skillsToCheck.Add(eProperty.Skill_Mana);
+                skillsToCheck.Add(eProperty.Skill_Void);
+                skillsToCheck.Add(eProperty.Skill_Enchantments);
+                skillsToCheck.Add(eProperty.Skill_Mentalism);
+            }
+            if (prop == eProperty.Skill_Arboreal || prop == eProperty.Skill_Creeping || prop == eProperty.Skill_Verdant)
+            {
+                skillsToCheck.Add(eProperty.Skill_Arboreal);
+                skillsToCheck.Add(eProperty.Skill_Creeping);
+                skillsToCheck.Add(eProperty.Skill_Verdant);
+            }
+            if (prop == eProperty.Skill_Darkness || prop == eProperty.Skill_Suppression || prop == eProperty.Skill_Runecarving || prop == eProperty.Skill_Summoning || prop == eProperty.Skill_BoneArmy)
+            {
+                skillsToCheck.Add(eProperty.Skill_Darkness);
+                skillsToCheck.Add(eProperty.Skill_Suppression);
+                skillsToCheck.Add(eProperty.Skill_Runecarving);
+                skillsToCheck.Add(eProperty.Skill_Summoning);
+                skillsToCheck.Add(eProperty.Skill_BoneArmy);
+            }
+
+
+            foreach (var propCheck in skillsToCheck)
+            {
+                if (Bonus1Type == (int)propCheck)
+                    return true;
+                if (Bonus2Type == (int)propCheck)
+                    return true;
+                if (Bonus3Type == (int)propCheck)
+                    return true;
+                if (Bonus4Type == (int)propCheck)
+                    return true;
+                if (Bonus5Type == (int)propCheck)
+                    return true;
+                if (Bonus6Type == (int)propCheck)
+                    return true;
+                if (Bonus7Type == (int)propCheck)
+                    return true;
+                if (Bonus8Type == (int)propCheck)
+                    return true;
+                if (Bonus9Type == (int)propCheck)
+                    return true;
+                if (Bonus10Type == (int)propCheck)
+                    return true;
+                if (ExtraBonusType == (int)propCheck)
+                    return true;
+            }
+
+            return false;
+        }
+
         private eProperty GetWeightedStatForClass(eCharacterClass charClass)
         {
+            if (Util.Chance(20))
+                return eProperty.MaxHealth;
+
             int rand = Util.Random(100);
             switch (charClass)
             {
@@ -726,6 +1023,9 @@ namespace DOL.GS {
                 case eCharacterClass.Enchanter:
                 case eCharacterClass.Mentalist:
                 case eCharacterClass.Animist:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
+                    
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -741,6 +1041,8 @@ namespace DOL.GS {
                 case eCharacterClass.Runemaster:
                 case eCharacterClass.Spiritmaster:
                 case eCharacterClass.Bonedancer:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -768,6 +1070,8 @@ namespace DOL.GS {
                 case eCharacterClass.Cleric:
                 case eCharacterClass.Thane:
                 case eCharacterClass.Shaman:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -779,6 +1083,8 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Friar:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
                     if (rand <= 25)
                         return eProperty.Piety;
                     else if (rand <= 50)
@@ -789,6 +1095,8 @@ namespace DOL.GS {
 
                 
                 case eCharacterClass.Druid:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
                     if (rand <= 10)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -800,6 +1108,8 @@ namespace DOL.GS {
                     else return eProperty.Constitution;
 
                 case eCharacterClass.Warden:
+                    if (Util.Chance(10))
+                        return eProperty.MaxMana;
                     if (rand <= 20)
                         return eProperty.Strength;
                     else if (rand <= 40)
@@ -812,6 +1122,8 @@ namespace DOL.GS {
 
                 case eCharacterClass.Champion:
                 case eCharacterClass.Valewalker:
+                    if (Util.Chance(10))
+                        return eProperty.MaxMana;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -825,6 +1137,8 @@ namespace DOL.GS {
                 case eCharacterClass.Bard:
                 case eCharacterClass.Skald:
                 case eCharacterClass.Minstrel:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
                     if (rand <= 22)
                         return eProperty.Strength;
                     else if (rand <= 44)
@@ -836,6 +1150,8 @@ namespace DOL.GS {
                     else return eProperty.Charisma;
 
                 case eCharacterClass.Healer:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
                     if (rand <= 30)
                         return eProperty.Dexterity;
                     else if (rand <= 60)
@@ -1266,7 +1582,7 @@ namespace DOL.GS {
                     if (property == eProperty.Skill_BeastCraft ||
                         property == eProperty.Skill_Stealth ||
                         property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_ShortBow ||
+                        property == eProperty.Skill_Composite ||
                         property == eProperty.Skill_Spear ||
                         property == eProperty.AllMeleeWeaponSkills ||
                         property == eProperty.AllSkills
@@ -4252,7 +4568,7 @@ namespace DOL.GS {
                         }
                         else
                         {
-                            int max = (int)Math.Ceiling(((double)this.Level * 1.5) / 3);
+                            int max = (int)Math.Ceiling(((double)this.Level * 1) / 3);
                             return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
                         }
                     }
@@ -4278,7 +4594,6 @@ namespace DOL.GS {
             else 
                 cap = mobLevel - 10;
 
-
             //randomize cap to be 90-105% of normal value
             double random = (90 + Util.Random(15)) / 100.0;
             cap = (int)Math.Floor(cap * random);
@@ -4286,6 +4601,8 @@ namespace DOL.GS {
             if (cap < 15)
                 cap = 15; //all items can gen with up to 15 uti
 
+            if (this.ProcSpellID != 0 || this.ProcSpellID1 != 0)
+                cap = (int)Math.Floor(cap * .7); //proc items generate with lower utility
 
             //Console.WriteLine($"Cap: {cap} TotalUti: {GetTotalUtility()}");
             int bestLine = 1;
@@ -4977,9 +5294,9 @@ namespace DOL.GS {
             //weighted so that early levels get many more weapons/armor
             if (level < 10)
             {
-                if (Util.Chance(20))
+                if (Util.Chance(40))
                     return eGenerateType.Weapon;
-                else if (Util.Chance(20))
+                else if (Util.Chance(15))
                     return eGenerateType.Magical;
                 else return eGenerateType.Armor;
             }
@@ -5037,6 +5354,7 @@ namespace DOL.GS {
                 case eCharacterClass.Friar:
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -5047,8 +5365,13 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
+                    weaponTypes.Add(eObjectType.SlashingWeapon);
+                    weaponTypes.Add(eObjectType.ThrustWeapon);
+                    weaponTypes.Add(eObjectType.CrushingWeapon);
+                    weaponTypes.Add(eObjectType.TwoHandedWeapon);
                     weaponTypes.Add(eObjectType.TwoHandedWeapon);
                     weaponTypes.Add(eObjectType.Crossbow);
+                    weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Paladin:
@@ -5058,13 +5381,14 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.TwoHandedWeapon);
                     weaponTypes.Add(eObjectType.TwoHandedWeapon);
                     weaponTypes.Add(eObjectType.Shield);
+                    weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Reaver:
                     weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.Flexible);
+                    weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Minstrel:
@@ -5261,9 +5585,10 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Spear);
                     weaponTypes.Add(eObjectType.CompositeBow);
                     weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Savage:
+                    weaponTypes.Add(eObjectType.HandToHand);
+                    weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.Sword);
@@ -5273,21 +5598,23 @@ namespace DOL.GS {
                 case eCharacterClass.Shadowblade:
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
+                    weaponTypes.Add(eObjectType.Sword);
+                    weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Berserker:
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Thane:
@@ -5299,7 +5626,8 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
                     weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.Shield);
+                    weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Skald:
                     //hi Catkain <3
@@ -5309,7 +5637,6 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 default:
@@ -5438,23 +5765,23 @@ namespace DOL.GS {
                     break;
                 case eCharacterClass.Valewalker:
                     weaponTypes.Add(eObjectType.Scythe);
-                    weaponTypes.Add(eObjectType.Scythe);
-                    weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Nightshade:
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Ranger:
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.RecurvedBow);
                     weaponTypes.Add(eObjectType.RecurvedBow);
-                    weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.RecurvedBow);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Champion:
@@ -5463,10 +5790,13 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.LargeWeapons);
                     weaponTypes.Add(eObjectType.LargeWeapons);
-                    weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.LargeWeapons);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Hero:
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Piercing);
+                    weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Piercing);
                     weaponTypes.Add(eObjectType.Blunt);
@@ -5474,7 +5804,8 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.CelticSpear);
                     weaponTypes.Add(eObjectType.LargeWeapons);
                     weaponTypes.Add(eObjectType.CelticSpear);
-                    weaponTypes.Add(eObjectType.Staff);
+                    weaponTypes.Add(eObjectType.Shield);
+                    weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Fired); //shortbow
                     break;
@@ -5487,7 +5818,6 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Fired); //shortbow
                     weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Staff);
                     break;
                 case eCharacterClass.Warden:
                     weaponTypes.Add(eObjectType.Blades);
@@ -5495,7 +5825,6 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Fired); //shortbow
                     break;
                 case eCharacterClass.Druid:
@@ -5507,10 +5836,11 @@ namespace DOL.GS {
                 case eCharacterClass.Bard:
                     weaponTypes.Add(eObjectType.Blades);
                     weaponTypes.Add(eObjectType.Blunt);
+                    weaponTypes.Add(eObjectType.Blades);
+                    weaponTypes.Add(eObjectType.Blunt);
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.Instrument);
-                    weaponTypes.Add(eObjectType.Staff);
                     break;
                 default:
                     return eObjectType.Staff;
@@ -7225,7 +7555,7 @@ namespace DOL.GS {
                     if (Level >= 30)
                         validModels.Add(433);
                     if (Level >= 40)
-                        validModels.Add(1256);
+                        validModels.Add(2988);
                     if (Level > 50)
                         validModels.Add(2828);
                     break;
@@ -8927,7 +9257,6 @@ namespace DOL.GS {
                     if (Level > 20)
                     {
                         validModels.Add(889);
-                        validModels.Add(24);
                         validModels.Add(25);
                     }
                     if (Level > 30)
@@ -10017,6 +10346,45 @@ namespace DOL.GS {
                     return "Troll Splitter";
                 case 2208:
                     return "Katana";
+                case 959:
+                case 960:
+                case 963:
+                case 964:
+                case 965:
+                case 966:
+                case 969:
+                case 970:
+                case 973:
+                case 974:
+                case 977:
+                case 978:
+                case 3684:
+                case 3685:
+                case 3725:
+                case 3726:
+                    return "Greave";
+                case 961:
+                case 967:
+                case 971:
+                case 975:
+                case 979:
+                case 981:
+                case 3682:
+                case 3683:
+                case 3727:
+                case 3728:
+                    return "Claw";
+                case 962:
+                case 968:
+                case 972:
+                case 976:
+                case 980:
+                case 982:
+                case 3686:
+                case 3687:
+                case 3729:
+                case 3730:
+                    return "Fang";
                 case 9:
                 case 72:
                 case 73:
@@ -10158,6 +10526,50 @@ namespace DOL.GS {
                 case 3688:
                 case 3731:
                     return "Harp";
+                case 328:
+                case 329:
+                case 331:
+                case 332:
+                case 469:
+                case 470:
+                case 475:
+                case 476:
+                case 477:
+                case 556:
+                case 642:
+                case 657:
+                case 933:
+                case 934:
+                case 935:
+                case 936:
+                case 938:
+                case 939:
+                case 958:
+                case 1029:
+                case 1036:
+                case 1661:
+                case 3659:
+                case 3660:
+                case 3671:
+                case 3672:
+                case 3673:
+                case 3702:
+                case 3703:
+                case 3714:
+                case 3715:
+                case 3716:
+                case 3819:
+                case 3820:
+                case 3831:
+                case 3832:
+                case 3833:
+                    return "Spear";
+                case 937:
+                    return "Harpoon";
+                case 330:
+                case 458:
+                case 1004:
+                    return "Trident";
                 default:
                     return "Staff";
             }
@@ -10251,6 +10663,62 @@ namespace DOL.GS {
 
                 default: return GlobalConstants.SlotToName((int)slot);
             }
+        }
+
+        private int GetProcFromLevel(byte level)
+        {
+            int procID = 0;
+            //if (Util.Chance(50))
+                procID = GetLifetapProcFromLevel(Level);
+            //else
+                //procID = GetDDProcFromLevel(Level);
+
+            return procID;
+        }
+
+        private int GetDDProcFromLevel(int level)
+        {
+            if (Level <= 10)
+                return 8020;
+            if (Level <= 15)
+                return 8021;
+            if (Level <= 20)
+                return 8022;
+            if (Level <= 25)
+                return 8023;
+            if (Level <= 30)
+                return 8024;
+            if (Level <= 35)
+                return 8025;
+            if (Level <= 40)
+                return 8026;
+            if (Level <= 43)
+                return 8027;
+
+            return 0;
+        }
+
+        private int GetLifetapProcFromLevel(int level)
+        {
+            if (Level <= 10)
+                return 8010;
+            if (Level <= 15)
+                return 8011;
+            if (Level <= 20)
+                return 8012;
+            if (Level <= 25)
+                return 8013;
+            if (Level <= 30)
+                return 8014;
+            if (Level <= 35)
+                return 8015;
+            if (Level <= 40)
+                return 8016;
+            if (Level <= 43)
+                return 8017;
+
+            return 0;
+
         }
 
         #endregion
@@ -10700,6 +11168,17 @@ namespace DOL.GS {
             hPropertyToMagicPrefix.Add(eProperty.Skill_Power_Strikes, string.Empty);
         }
 
+        private static void CacheProcSpells()
+        {
+            //LT spells
+            DBSpell Level5Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
+            DBSpell Level10Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
+            DBSpell Level15Lifetap = DOLDB<DBSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
 
+            ProcSpells.Add(8010, new Spell(Level5Lifetap, 0));
+            ProcSpells.Add(8011, new Spell(Level10Lifetap, 0));
+            ProcSpells.Add(8012, new Spell(Level15Lifetap, 0));
+
+        }
     }
 }

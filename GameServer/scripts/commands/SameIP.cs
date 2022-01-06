@@ -39,9 +39,9 @@ namespace DOL.GS.Commands
 					
 					output.Add("Same IP violation #" + i + " - IP: " + accip);
 					output.Add("Acc 1: " + cl.Account.Name + " ("+name1 +" L" + cl.Player?.Level + " " + cl.Player?.CharacterClass.Name + " in " + cl.Player?.CurrentZone.Description + ")");
-					output.Add("X: " + cl.Player?.X + " Y: " + cl.Player?.Y + " Z: " + cl.Player?.Z + " Region: " + cl.Player?.CurrentRegionID);
+					// output.Add("X: " + cl.Player?.X + " Y: " + cl.Player?.Y + " Z: " + cl.Player?.Z + " Region: " + cl.Player?.CurrentRegionID);
 					output.Add("Acc 2: " + cls.Account.Name + " ("+name2 +" L" + cls.Player?.Level + " " + cls.Player?.CharacterClass.Name + " in " + cls.Player?.CurrentZone.Description + ")");
-					output.Add("X: " + cls.Player?.X + " Y: " + cls.Player?.Y + " Z: " + cls.Player?.Z + " Region: " + cls.Player?.CurrentRegionID);
+					// output.Add("X: " + cls.Player?.X + " Y: " + cls.Player?.Y + " Z: " + cls.Player?.Z + " Region: " + cls.Player?.CurrentRegionID);
 					output.Add("\n");
 					i++;
 				}

@@ -99,10 +99,10 @@ namespace DOL.GS.Keeps
 			
 			BroadcastMessage(claimMessage, (eRealm)keep.Realm);
 			
-			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
-			{
-				BroadcastDiscordRvR(claimMessage, keep.Realm, keep.Name);
-			}
+			// if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+			// {
+			// 	BroadcastDiscordRvR(claimMessage, keep.Realm, keep.Name);
+			// }
 		}
 
 		/// <summary>
@@ -117,10 +117,10 @@ namespace DOL.GS.Keeps
 			
 			BroadcastMessage(lostClaimMessage, (eRealm)keep.Realm);
 			
-			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
-			{
-				BroadcastDiscordRvR(lostClaimMessage, keep.Guild.Realm, keep.Name);
-			}
+			// if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+			// {
+			// 	BroadcastDiscordRvR(lostClaimMessage, keep.Guild.Realm, keep.Name);
+			// }
 			
 		}
 

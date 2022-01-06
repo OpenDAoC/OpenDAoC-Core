@@ -49,28 +49,24 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
-			/*
-			GamePlayer playerowner = GetPlayerOwner();
+            GamePlayer playerowner = GetPlayerOwner();
 
-			long lastUpdate = 0;
-			if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out lastUpdate))
-			{
-				playerowner.Client.GameObjectUpdateArray.Add(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
-			}
+            long lastUpdate = 0;
+            if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out lastUpdate))
+            {
+                playerowner.Client.GameObjectUpdateArray.Add(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
+            }
 
+            if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
+            {
+                playerowner.Out.SendObjectUpdate(Body);
+            }
 
-			if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
-			{
-				playerowner.Out.SendObjectUpdate(Body);
-			}
-			*/
-			GetPlayerOwner().Out.SendObjectUpdate(Body); 
-
-			if (!CheckSpells(eCheckSpellType.Defensive))
-			{
-		  		AttackMostWanted();
-			}
-		}
+            if (!CheckSpells(eCheckSpellType.Defensive))
+            {
+                AttackMostWanted();
+            }
+        }
 
 
 		public override bool CheckSpells(eCheckSpellType type)
@@ -98,12 +94,12 @@ namespace DOL.AI.Brain
 
 		protected override bool CheckDefensiveSpells(Spell spell)
 		{
-			switch(spell.SpellType)
+			switch((eSpellType)spell.SpellType)
 			{
-				case (byte)eSpellType.HeatColdMatterBuff:
-				case (byte)eSpellType.BodySpiritEnergyBuff:
-				case (byte)eSpellType.ArmorAbsorptionBuff:
-				case (byte)eSpellType.AblativeArmor:
+				case eSpellType.HeatColdMatterBuff:
+				case eSpellType.BodySpiritEnergyBuff:
+				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.AblativeArmor:
 				  TrustCast(spell, eCheckSpellType.Defensive);
 					return true;
 			}
@@ -112,13 +108,13 @@ namespace DOL.AI.Brain
 
 		protected override bool CheckOffensiveSpells(Spell spell)
 		{
-			switch(spell.SpellType)
+			switch((eSpellType)spell.SpellType)
 			{
-				case (byte)eSpellType.DirectDamage:
-				case (byte)eSpellType.DamageSpeedDecrease:
-				case (byte)eSpellType.SpeedDecrease:
-				case (byte)eSpellType.Taunt:
-				case (byte)eSpellType.MeleeDamageDebuff:
+				case eSpellType.DirectDamage:
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.SpeedDecrease:
+				case eSpellType.Taunt:
+				case eSpellType.MeleeDamageDebuff:
 					TrustCast(spell, eCheckSpellType.Offensive);
 					return true;
 			}
@@ -148,7 +144,7 @@ namespace DOL.AI.Brain
 				}
 				else
 				{
-					CheckPlayerAggro(true);
+					CheckPlayerAggro();
 					CheckNPCAggro();
 					target = CalculateNextAttackTarget();
 				}

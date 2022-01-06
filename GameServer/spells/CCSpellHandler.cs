@@ -433,7 +433,7 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = base.CalculateEffectDuration(target, effectiveness);
-			//duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
+			duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
 			NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 			if (npcImmune != null)
 				duration *= npcImmune.CalclulateStunDuration((long)duration);

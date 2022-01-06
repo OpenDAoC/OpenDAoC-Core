@@ -31,8 +31,6 @@
 /*.user
 /nuget.exe
 /Debug.zip
-.idea/
-/Net5
-/ConnectTest - Copy.bat - Shortcut.lnk
-/ConnectTest.bat - Shortcut.lnk
-/ConnectTestBoth.bat - Shortcut.lnk
+mono_crash.*
+.idea
+.vscode

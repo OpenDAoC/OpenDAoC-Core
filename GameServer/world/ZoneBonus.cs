@@ -61,14 +61,17 @@ namespace DOL.GS
         #region Get Bonus Message
         public static string GetBonusMessage(GamePlayer player, int bonusAmount, eZoneBonusType type)
         {
+            System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
+            string bonusXP = bonusAmount.ToString("N0", format);
+            
             switch (type)
             {
                 case eZoneBonusType.XP:
-                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalXP", bonusAmount);
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalXP", bonusXP);
                 case eZoneBonusType.RP:
-                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalRP", bonusAmount);
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalRP", bonusXP);
                 case eZoneBonusType.BP:
-                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalBP", bonusAmount);
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalBP", bonusXP);
                 case eZoneBonusType.COIN:
                     return LanguageMgr.GetTranslation(player.Client.Account.Language, "ZoneBonus.AdditionalCoin");
                 default: return "No Bonus Type Found";
