@@ -243,7 +243,7 @@ namespace DOL.GS.Scripts
                     if (text.ToLower() == "cotswold")
                     {
                         Teleport teleport = new Teleport();
-                        teleport.TeleportID = "cear ulfwych";
+                        teleport.TeleportID = "cotswold";
                         teleport.Realm = (int) DestinationRealm;
                         teleport.RegionID = 1;
                         teleport.X = 561044;
