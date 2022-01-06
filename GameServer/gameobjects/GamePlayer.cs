@@ -7833,10 +7833,13 @@ namespace DOL.GS
                     }
                 }
             }
-            
+
             if (HCFlag)
+            {
                 playerMessage += " [HARDCORE]";
                 publicMessage += " [HARDCORE]";
+            }
+                
 
             DuelStop();
 
