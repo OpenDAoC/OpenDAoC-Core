@@ -8906,6 +8906,7 @@ namespace DOL.GS {
                     }
                     break;
                 case eRealm.Albion:
+                    validModels.Add(1);
                     validModels.Add(3);
                     if (Level > 10)
                     {
@@ -9245,8 +9246,8 @@ namespace DOL.GS {
                     }
                     break;
                 case eRealm.Albion:
-                    validModels.Add(1);
                     validModels.Add(21);
+                    validModels.Add(71);
                     if (Level > 10)
                     {
                         validModels.Add(876);
@@ -10186,7 +10187,6 @@ namespace DOL.GS {
             switch (modelId)
             {
                 case 1:
-                case 21:
                 case 23:
                 case 25:
                 case 28:
@@ -10194,10 +10194,8 @@ namespace DOL.GS {
                 case 457:
                 case 472:
                 case 571:
-                case 876:
                 case 885:
                 case 887:
-                case 889:
                 case 895:
                 case 898:
                 case 902:
@@ -10213,6 +10211,10 @@ namespace DOL.GS {
                 case 3838:
                 case 3839:
                     return "Dagger";
+                case 21:
+                case 876:
+                case 889:
+                    return "Dirk";
                 case 30:
                     return "Gladius";
                 case 456:
@@ -10404,6 +10406,7 @@ namespace DOL.GS {
                 case 3923:
                 case 3959:
                     return "Greataxe";
+                case 16:
                 case 17:
                 case 462:
                 case 463:
@@ -10413,6 +10416,7 @@ namespace DOL.GS {
                 case 640:
                 case 644:
                 case 659:
+                case 842:
                 case 844:
                 case 904:
                 case 905:
@@ -10438,6 +10442,7 @@ namespace DOL.GS {
                 case 912:
                     return "Shillelagh";
                 case 846:
+                case 2661:
                     return "War Mattock";
                 case 11:
                 case 13:
