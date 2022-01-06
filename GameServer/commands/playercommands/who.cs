@@ -169,6 +169,13 @@ namespace DOL.GS.Commands
 						filters.Add(new RPFilter());
 						break;
 					}
+				case "hc":
+				case "hardcore":
+				{
+					filters = new ArrayList(1);
+					filters.Add(new HCFilter());
+					break;
+				}
 				case "frontiers":
 				{
 					filters = new ArrayList();
@@ -307,6 +314,10 @@ namespace DOL.GS.Commands
 			if (player.Advisor)
 			{
 				result.Append(" <ADV>");
+			}
+			if (player.HCFlag)
+			{
+				result.Append(" <HC>");
 			}
 			if(player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 			{
@@ -503,6 +514,14 @@ namespace DOL.GS.Commands
 			}
 		}
 		
+		private class HCFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				return player.HCFlag;
+			}
+		}
+
 		private class SoloFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)
