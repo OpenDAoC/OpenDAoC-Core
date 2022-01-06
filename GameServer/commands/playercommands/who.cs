@@ -315,6 +315,10 @@ namespace DOL.GS.Commands
 			{
 				result.Append(" <ADV>");
 			}
+			if (player.HCFlag)
+			{
+				result.Append(" <HC>");
+			}
 			if(player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 			{
 				result.Append(" <GM>");
