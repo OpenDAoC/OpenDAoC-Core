@@ -25,16 +25,11 @@ namespace DOL.GS
         {
             if (!base.Interact(player))
                 return false;
-
-            // string message = "Welcome!  This vault is accessible by all characters on your account.";
-            // player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-
-            //change bool on top if you want to disable X-Realm possibility
-            if (oldAcc == true)
+            
+            if (player.HCFlag)
             {
-                player.Out.SendMessage("We give you the chance to collect your items from X-Realm Vault till Sunday.\n" +
-                    "At Monday the Account Vaultkeeper will be a Realm Account Vaultkeeper.\n[X-Realm Account Vault]", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-
+                SayTo(player,$"I'm sorry {player.Name}, my vault is not Hardcore enough for you.");
+                return false;
             }
 
             ItemTemplate vaultItem = GetDummyVaultItem(player);
@@ -53,17 +48,14 @@ namespace DOL.GS
 
             GamePlayer player = source as GamePlayer;
 
-            //change bool on top if you want to disable X-Realm possibility
-            if (text == "X-Realm Account Vault" && oldAcc == true)
-            {
-                ItemTemplate vaultItem = GetDummyVaultItem(player);
-                XRealmVault xVault = new XRealmVault(player, this, player.Client.Account.Name, 0, vaultItem);
-                player.ActiveInventoryObject = xVault;
-                player.Out.SendInventoryItemsUpdate(xVault.GetClientInventory(player), eInventoryWindowType.HouseVault);
-            }
-
             if (player == null)
                 return false;
+            
+            if (player.HCFlag)
+            {
+                SayTo(player,$"I'm sorry {player.Name}, my vault is not Hardcore enough for you.");
+                return false;
+            }
 
             return true;
         }
@@ -176,7 +168,8 @@ namespace DOL.GS
         /// <param name="vaultOwner">ID of vault owner (can be anything unique, if it's the account name then all toons on account can access the items)</param>
         /// <param name="vaultNumber">Valid vault IDs are 0-3</param>
         /// <param name="dummyTemplate">An ItemTemplate to satisfy the base class's constructor</param>
-        public AccountVault(GamePlayer player, GameNPC vaultNPC, string vaultOwner, int vaultNumber, ItemTemplate dummyTemplate)
+        public AccountVault(GamePlayer player, GameNPC vaultNPC, string vaultOwner, int vaultNumber,
+            ItemTemplate dummyTemplate)
             : base(dummyTemplate, vaultNumber)
         {
             m_player = player;
@@ -219,97 +212,13 @@ namespace DOL.GS
         {
             return player.Client.Account.Name + player.Realm.ToString();
         }
-        protected override void NotifyObservers(GamePlayer player, IDictionary<int, InventoryItem> updateItems)
-        {
-            if (!player.IsWithinRadius(m_vaultNPC, WorldMgr.INTERACT_DISTANCE))
-            {
-                player.Out.SendMessage("You are out of range of the vault keeper.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.ActiveInventoryObject = null;
-            }
-
-            player.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
-        }
-
-        public string VaultOwner
-        {
-            get { return m_vaultOwner; }
-            set { m_vaultOwner = value; }
-        }
-    }
-       public class XRealmVault : GameHouseVault
-    {
-        public const int SIZE = 100;
-        public const int FIRST_SLOT = 1600;
-
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private GamePlayer m_player;
-        private GameNPC m_vaultNPC;
-        private string m_vaultOwner;
-        private int m_vaultNumber = 0;
-
-        private object m_vaultSync = new object();
-
-
-        /// <summary>
-        /// An account vault that masquerades as a house vault to the game client
-        /// </summary>
-        /// <param name="player">Player who owns the vault</param>
-        /// <param name="vaultNPC">NPC controlling the interaction between player and vault</param>
-        /// <param name="vaultOwner">ID of vault owner (can be anything unique, if it's the account name then all toons on account can access the items)</param>
-        /// <param name="vaultNumber">Valid vault IDs are 0-3</param>
-        /// <param name="dummyTemplate">An ItemTemplate to satisfy the base class's constructor</param>
-        /// <param name="realm">An ItemTemplate to satisfy the base class's constructor</param>
-        public XRealmVault(GamePlayer player, GameNPC vaultNPC, string vaultOwner, int vaultNumber, ItemTemplate dummyTemplate)
-            : base(dummyTemplate, vaultNumber)
-        {
-            m_player = player;
-            m_vaultNPC = vaultNPC;
-            m_vaultOwner = vaultOwner;
-            m_vaultNumber = vaultNumber;
-
-            DBHouse dbh = new DBHouse();
-            //was allowsave = false but uhh i replaced with allowadd = false
-            dbh.AllowAdd = false;
-            dbh.GuildHouse = false;
-            dbh.HouseNumber = player.ObjectID;
-            dbh.Name = player.Name + "'s House";
-            dbh.OwnerID = player.ObjectId;
-            dbh.RegionID = player.CurrentRegionID;
-
-            CurrentHouse = new House(dbh);
-        }
-
-        public override bool CanAddItems(GamePlayer player)
-        {
-            return CurrentHouse.Name == player.Name + "'s House";
-        }
-
-        public override bool CanRemoveItems(GamePlayer player)
-        {
-            return CurrentHouse.Name == player.Name + "'s House";
-        }
-
-        private IList<InventoryItem> GetItems()
-        {
-            string sqlQuery = "OwnerID = '" + m_vaultOwner + "' AND ";
-            sqlQuery += "SlotPosition >= " + FirstDBSlot + " AND ";
-            sqlQuery += "SlotPosition <= " + LastDBSlot;
-
-            return (GameServer.Database.SelectObjects<InventoryItem>(sqlQuery));
-        }
-
-        public override string GetOwner(GamePlayer player)
-        {
-
-            return player.Client.Account.Name;
-        }
 
         protected override void NotifyObservers(GamePlayer player, IDictionary<int, InventoryItem> updateItems)
         {
             if (!player.IsWithinRadius(m_vaultNPC, WorldMgr.INTERACT_DISTANCE))
             {
-                player.Out.SendMessage("You are out of range of the vault keeper.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You are out of range of the vault keeper.", eChatType.CT_System,
+                    eChatLoc.CL_SystemWindow);
                 player.ActiveInventoryObject = null;
             }
 
