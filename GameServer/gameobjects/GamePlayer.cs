@@ -5213,6 +5213,24 @@ namespace DOL.GS
                 {
                     Level++;
                 }
+
+                if(Level >= 50)
+                {
+                    //use this to track completely solo characters
+                    const string customKey = "grouped_char";
+                    const string customKey2 = "solo_to_50";
+                    var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                    var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
+
+                    if (hasGrouped == null)
+                    {
+                        DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
+                        soloBeetle.DOLCharactersObjectId = this.ObjectId;
+                        soloBeetle.KeyName = customKey2;
+                        soloBeetle.Value = "1";
+                        GameServer.Database.AddObject(soloBeetle);
+                    }
+                }
             }
             Out.SendUpdatePoints();
         }
@@ -5307,22 +5325,6 @@ namespace DOL.GS
             
             if (Level == 50)
             {
-                
-                //use this to track completely solo characters
-                const string customKey = "grouped_char";
-                const string customKey2 = "solo_to_50";
-                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
-
-                if (hasGrouped == null)
-                {
-                    DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
-                    soloBeetle.DOLCharactersObjectId = this.ObjectId;
-                    soloBeetle.KeyName = customKey2;
-                    soloBeetle.Value = "1";
-                    GameServer.Database.AddObject(soloBeetle);
-                }
-                
 
                 if (HCFlag)
                 {
