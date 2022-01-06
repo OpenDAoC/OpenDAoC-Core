@@ -5096,7 +5096,7 @@ namespace DOL.GS
                         expTotal = 0;
                 }
                 if(expTotal == 0)
-                    this.Out.SendMessage(("This kill was not hardcore enough to gain experience."));
+                    this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
             //xp rate modifier
