@@ -240,6 +240,20 @@ namespace DOL.GS.Scripts
                         return false;
                     }
 
+                    if (text.ToLower() == "cotswold")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "cear ulfwych";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 1;
+                        teleport.X = 561044;
+                        teleport.Y = 511134;
+                        teleport.Z = 2280;
+                        teleport.Heading = 533;
+                        OnDestinationPicked(player, teleport);
+                        return true;
+                    }
+                    
                     if (text.ToLower() == "cear ulfwych")
                     {
                         Teleport teleport = new Teleport();
