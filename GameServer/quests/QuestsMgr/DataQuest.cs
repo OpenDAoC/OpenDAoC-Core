@@ -2260,6 +2260,54 @@ namespace DOL.GS.Quests
 							ChatUtil.SendDebugMessage(player, "Source Text missing on Collection Quest receive item.");
 						}
 					}
+					else if (item.Count > 1)
+					{
+						int RemainingTurnIns = MaxQuestCount - charQuest.Count;
+						long rewardXP = 0;
+						//if we're turning in more items than are required
+						if (RemainingTurnIns < item.Count)
+						{
+							if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
+							{
+								player.GainExperience(eXPSource.Quest, rewardXP * RemainingTurnIns);
+							}
+							//remove only the remaining turn-ins
+							item.Count -= RemainingTurnIns;
+							GameServer.Database.SaveObject(item);
+							
+							for (int i = 0; i < RemainingTurnIns; i++)
+							{
+								charQuest.Count++;
+							}
+						}
+						else
+						{
+							//turn in the whole stack
+							if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
+							{
+								player.GainExperience(eXPSource.Quest, rewardXP * item.Count);
+							}
+							
+							RemoveItem(obj, player, item, false);
+							
+							for (int i = 0; i < item.Count; i++)
+							{
+								charQuest.Count++;
+							}
+						}
+						
+						if (m_sourceTexts.Count > 0)
+						{
+							SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+						}
+						else
+						{
+							ChatUtil.SendDebugMessage(player, "Source Text missing on Collection Quest receive item.");
+						}
+						
+						charQuest.Step = 0;
+						GameServer.Database.SaveObject(charQuest);
+					}
 					else
 					{
 						SendMessage(player, "You need to unstack these first.", 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
