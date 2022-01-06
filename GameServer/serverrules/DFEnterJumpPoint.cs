@@ -154,7 +154,7 @@ namespace DOL.GS.ServerRules
 				}
 			}
 			
-			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
+			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID))
 			{
 				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
 
@@ -162,7 +162,7 @@ namespace DOL.GS.ServerRules
 				var discordMessage = new DiscordMessage(
 					"",
 					username: "Atlas RvR",
-					avatarUrl: "https://cdn.discordapp.com/avatars/924819559058378782/7b11edbd9ca764893d4863fcb17e58c6.webp",
+					avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928728399449571388/keep.png",
 					tts: false,
 					embeds: new[]
 					{
