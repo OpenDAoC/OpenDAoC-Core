@@ -5088,7 +5088,16 @@ namespace DOL.GS
             if (!GainXP && expTotal > 0)
                 return;
 
-            
+            if (HCFlag && this.Group != null)
+            {
+                foreach (var player in this.Group.GetPlayersInTheGroup())
+                {
+                    if (player.Level > this.Level + 5)
+                        expTotal = 0;
+                }
+                if(expTotal == 0)
+                    this.Out.SendMessage(("This kill was not hardcore enough to gain experience."));
+            }
 
             //xp rate modifier
             if (allowMultiply)
