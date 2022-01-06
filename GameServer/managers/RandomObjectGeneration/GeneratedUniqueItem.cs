@@ -905,9 +905,9 @@ namespace DOL.GS {
             }
             if (prop == eProperty.Skill_Axe || prop == eProperty.Skill_Sword || prop == eProperty.Skill_Hammer)
             {
-                skillsToCheck.Add(eProperty.Skill_Blades);
-                skillsToCheck.Add(eProperty.Skill_Piercing);
-                skillsToCheck.Add(eProperty.Skill_Blunt);
+                skillsToCheck.Add(eProperty.Skill_Axe);
+                skillsToCheck.Add(eProperty.Skill_Sword);
+                skillsToCheck.Add(eProperty.Skill_Hammer);
             }
 
             if (prop == eProperty.Skill_Matter || prop == eProperty.Skill_Body || prop == eProperty.Skill_Spirit || prop == eProperty.Skill_Mind)
