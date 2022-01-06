@@ -5296,6 +5296,9 @@ namespace DOL.GS
             if (Level == 50)
             {
                 const string customKey = "PvEBeta50";
+                const string customKey2 = "PlayedTimeAt50InSeconds";
+                //client.Player.PlayedTime
+                var playedAt50 = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey2)));
                 var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
                 if (hasPvEBeta50Title == null)
@@ -5306,6 +5309,16 @@ namespace DOL.GS
                     PvEBeta50Title.Value = "1";
                     GameServer.Database.AddObject(PvEBeta50Title);
                     Client.Player.Out.SendPlayerTitleUpdate(this);
+                }
+
+                if (playedAt50 == null)
+                {
+                    DOLCharactersXCustomParam PlaytimeAt50 = new DOLCharactersXCustomParam();
+                    PlaytimeAt50.DOLCharactersObjectId = this.ObjectId;
+                    PlaytimeAt50.KeyName = customKey2;
+                    PlaytimeAt50.Value = this.m_client.Player.PlayedTime.ToString();
+                    GameServer.Database.AddObject(PlaytimeAt50);
+                    //Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
             }
 
