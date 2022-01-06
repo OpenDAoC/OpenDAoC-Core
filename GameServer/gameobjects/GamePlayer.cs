@@ -44,6 +44,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
+using JNogueira.Discord.Webhook.Client;
 using log4net;
 
 namespace DOL.GS
@@ -7761,6 +7762,40 @@ namespace DOL.GS
             get { return m_lastDeathRealmPoints; }
             set { m_lastDeathRealmPoints = value; }
         }
+        
+        /// <summary>
+        /// Method to broadcast Player to Discord
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="realm">The realm</param>
+        public static void BroadcastDeathOnDiscord(string message, string name, string playerClass, int level)
+        {
+            int color = 0;
+            var client = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+
+            // Create your DiscordMessage with all parameters of your message.
+            var discordMessage = new DiscordMessage(
+                "",
+                username: "Atlas Obituary",
+                avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928726197645496382/skull2.png",
+                tts: false,
+                embeds: new[]
+                {
+                    new DiscordMessageEmbed(
+                        author: new DiscordMessageEmbedAuthor(name),
+                        color: color,
+                        description: message,
+                        fields: new[]
+                        {
+                            new DiscordMessageEmbedField("Level", level.ToString()),
+                            new DiscordMessageEmbedField("Class", playerClass)
+                        }
+                    )
+                }
+            );
+            client.SendToDiscord(discordMessage);
+        }
+        
 
         /// <summary>
         /// Called when the player dies
@@ -7838,6 +7873,12 @@ namespace DOL.GS
             {
                 playerMessage += " [HARDCORE]";
                 publicMessage += " [HARDCORE]";
+                
+                if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))
+                {
+                    BroadcastDeathOnDiscord(publicMessage, Name, CharacterClass.Name, Level);
+                }
+                
             }
                 
 
