@@ -70,8 +70,23 @@ namespace DOL.GS {
 
                 int maxcount = Util.Random(10, 20);
                 player.Inventory.AddTemplate(item, maxcount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            }
+        }
+        
+        public static void GenerateOrbAmount(GameLiving living, int amount)
+        {
+            if (living != null && living is GamePlayer)
+            {
+                GamePlayer player = living as GamePlayer;
 
-                //player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+                ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+
+                InventoryItem item = GameInventoryItem.Create(orbs);
+                
+                player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }

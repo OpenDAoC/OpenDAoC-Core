@@ -399,7 +399,27 @@ namespace DOL.GS
             get { return (DBCharacter != null ? DBCharacter.RPFlag : true); }
             set { if (DBCharacter != null) DBCharacter.RPFlag = value; }
         }
-
+        
+        /// <summary>
+        /// Gets or sets the hardcore flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool HCFlag
+        {
+            get { return (DBCharacter != null ? DBCharacter.HCFlag : true); }
+            set { if (DBCharacter != null) DBCharacter.HCFlag = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets the hardcore flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool HCCompleted
+        {
+            get { return (DBCharacter != null ? DBCharacter.HCCompleted : true); }
+            set { if (DBCharacter != null) DBCharacter.HCCompleted = value; }
+        }
+        
         /// <summary>
         /// gets or sets the guildnote for this player
         /// (delegate to property in DBCharacter)
@@ -1389,7 +1409,8 @@ namespace DOL.GS
         protected const int RELEASE_TIME = 900;
 
         /// <summary>
-        /// The property name that is set when releasing to another region
+        /// The property name that is set when relea
+        /// sing to another region
         /// </summary>
         public const string RELEASING_PROPERTY = "releasing";
 
@@ -5295,6 +5316,15 @@ namespace DOL.GS
             
             if (Level == 50)
             {
+
+                if (HCFlag)
+                {
+                    HCFlag = false;
+                    HCCompleted = true;
+                    Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 50000);
+                }
+                
                 const string customKey = "PvEBeta50";
                 const string customKey2 = "PlayedTimeAt50InSeconds";
                 //client.Player.PlayedTime
@@ -7794,6 +7824,10 @@ namespace DOL.GS
                     }
                 }
             }
+            
+            if (HCFlag)
+                playerMessage += " [HARDCORE]";
+                publicMessage += " [HARDCORE]";
 
             DuelStop();
 
@@ -7997,6 +8031,39 @@ namespace DOL.GS
 			//effectListComponent.CancelAll();
 
             IsSwimming = false;
+
+            if (HCFlag)
+            {
+                string realm = "";
+                    if (Realm == eRealm._FirstPlayerRealm)
+                        realm = "Albion";
+                    else if (Realm == eRealm._LastPlayerRealm)
+                        realm = "Hibernia";
+                    else
+                        realm = "Midgard";
+                    
+                Out.SendCustomDialog($"Today is a bad day for {realm}.\n This character will be automatically deleted.", new CustomDialogResponse(HCDeathResponse));
+            }
+            
+            
+        }
+        
+        protected virtual void HCDeathResponse(GamePlayer player, byte response)
+        {
+            DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
+
+            // If no character exists that matches the exact name entered
+            if (cha == null)
+            {
+                return;
+            }
+            // If the character is logged in, remove them from the game
+            // player.Release(eReleaseType.Normal, true);
+            // player.Quit(true);
+            GameServer.Database.DeleteObject(cha);
+            player.Client.Out.SendPlayerQuit(true);
+            
+            
         }
 
         public override void EnemyKilled(GameLiving enemy)
