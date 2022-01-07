@@ -7776,7 +7776,9 @@ namespace DOL.GS
         public static void BroadcastDeathOnDiscord(string message, string name, string playerClass, int level)
         {
             int color = 0;
-            var client = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+            var DiscordObituaryHook =
+                "https://discord.com/api/webhooks/929154632389910558/kfJbtzDC9JzyOXvZ0rYUwaPM31LRUebGzDZKSczUKDk_4YyHmB-WJVsh7pJoa4M9-D1U"; // Make it a property later
+            var client = new DiscordWebhookClient(DiscordObituaryHook);
 
             // Create your DiscordMessage with all parameters of your message.
             var discordMessage = new DiscordMessage(
