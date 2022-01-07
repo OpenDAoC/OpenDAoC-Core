@@ -39,7 +39,7 @@ namespace DOL.GS.Commands
 
 
         //set this to true or false to display additional info about connecting, disconnecting, playing clients. 
-        private static bool showAddOnlineInfo = true;
+        private static bool showAddOnlineInfo = false;
 
         //set this to true or false to show the realms population (eG: Albion: 13 34% 12Tanks | 1 Caster ... )
         private static bool showRealms = true;
@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
             IList<GameClient> clients = WorldMgr.GetAllClients();
 
             int gms = 0, connecting = 0, charscreen = 0, enterworld = 0,
-                playing = 0, linkdeath = 0, disconnecting = 0;
+                playing = 0, linkdeath = 0, disconnecting = 0, frontiers = 0;
             int midTanks = 0, hibTanks = 0, albTanks = 0, midCasters = 0,
                 hibCasters = 0, albCasters = 0, midSupport = 0,
                 hibSupport = 0, albSupport = 0, hibStealthers = 0,
@@ -179,6 +179,9 @@ namespace DOL.GS.Commands
                     ++gms;
                     continue;
                 }
+                
+                if (c.Player.CurrentZone.IsOF && c.Account.PrivLevel == (uint)ePrivLevel.Player)
+                    frontiers++;
 
                 #endregion
 
@@ -350,13 +353,16 @@ namespace DOL.GS.Commands
             int midTotal = midTanks + midCasters + midSupport + midStealthers;
             int hibTotal = hibTanks + hibCasters + hibSupport + hibStealthers;
             int total = entering + playing + leaving;
-            output.Add(string.Format("Currently online:  {0}\n Playing:  {1} | Entering:  {2} | Leaving:  {3}",
-                total, playing, entering, leaving));
+            
+            output.Add(string.Format("Currently online:  {0} \n\n Playing:  {1} | Frontiers:  {2} | Entering:  {3} | Leaving:  {4} | GMs:  {5}",
+                total, frontiers, playing, entering, leaving, gms));
+            
             if (showAddOnlineInfo == true)
             {
                 output.Add(string.Format("\n (Connecting:  {0} | CharScreen:  {1} | EnterWorld:  {2} | Playing:  {3} | GMs:  {4})",
                     connecting, enterworld, charscreen, playing, gms));
             }
+            
             if (showRealms == true)
             {
                 output.Add(string.Format("\nAlbion:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
@@ -366,6 +372,7 @@ namespace DOL.GS.Commands
                 output.Add(string.Format("\nHibernia:  {4} ({5}%)\n  Melee:  {0} | Caster:  {1} \n  Support:  {2} | Stealther:  {3}",
                     hibTanks, hibCasters, hibSupport, hibStealthers, hibTotal, (int)(hibTotal * 100 / total)));
             }
+            
             Zone zone = null;
             IList<GameClient> cls = new List<GameClient>();
             int albsinregion = 0;
