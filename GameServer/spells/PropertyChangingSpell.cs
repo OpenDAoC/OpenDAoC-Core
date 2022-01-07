@@ -120,7 +120,20 @@ namespace DOL.GS.Spells
 // 						}
 // 					}
 // 				}
-				
+				if (target is GamePlayer && (target as GamePlayer).NoHelp && Caster is GamePlayer && target != Caster)
+				{
+					//player not grouped, anyone else
+					//player grouped, different group
+					if ((target as GamePlayer).Group == null ||
+					    (Caster as GamePlayer).Group == null ||
+					    (Caster as GamePlayer).Group != (target as GamePlayer).Group)
+					{
+						MessageToCaster("That player does not want assistance", eChatType.CT_SpellResisted);
+						return;
+					}
+				}
+
+
 				if (this is HeatColdMatterBuff || this is AllMagicResistsBuff)
 				{
 					if (this.Spell.Frequency <= 0)
