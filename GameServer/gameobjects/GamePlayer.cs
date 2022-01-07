@@ -5333,7 +5333,7 @@ namespace DOL.GS
                     NoHelp = false;
                     DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
                     soloBeetle.DOLCharactersObjectId = this.ObjectId;
-                    soloBeetle.KeyName = customKey2;
+                    soloBeetle.KeyName = customKey3;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
                     
