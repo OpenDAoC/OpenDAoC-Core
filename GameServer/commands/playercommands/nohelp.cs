@@ -29,7 +29,7 @@ namespace DOL.GS.Commands
 				
 				DateTime d1 = new DateTime(2022, 1, 4);
 				
-				if (client.Player.Level == 1 || hasGrouped == null && client.Player.CreationDate <= d1)
+				if (client.Player.Level == 1 || hasGrouped == null && client.Player.CreationDate >= d1)
 				{
 					client.Out.SendCustomDialog("Do you want to follow the path of Solitude?", new CustomDialogResponse(NoHelpInitiate));
 				}
