@@ -1760,7 +1760,7 @@ namespace DOL.GS
 
             if (Realm != eRealm.None)
             {
-                if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL)
+                if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL && !HCFlag)
                 {
                     // actual lost exp, needed for 2nd stage deaths
                     long lostExp = Experience;
