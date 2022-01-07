@@ -169,13 +169,9 @@ namespace DOL.GS.Commands
 							continue;
 
 						string className = ((eCharacterClass) c.Class).ToString();
+						
 
-						bool isHC = c.HCFlag;
-
-						soloCharacters.Add(new SoloCharacter()
-						{
-							CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className, isHC = isHC
-						});
+						soloCharacters.Add(new SoloCharacter() {CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className, isHC = c.HCFlag});
 
 					}
 

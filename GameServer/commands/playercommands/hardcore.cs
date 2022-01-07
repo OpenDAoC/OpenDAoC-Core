@@ -58,9 +58,13 @@ namespace DOL.GS.Commands
                     player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
                     if (player.NoHelp)
+                    {
                         player.CurrentTitle = new HardCoreSoloTitle();
+                    }
                     else
+                    {
                         player.CurrentTitle = new HardCoreTitle();
+                    }
                 }
             }
             else
@@ -135,7 +139,7 @@ namespace DOL.GS.Commands
                 const string customKey = "grouped_char";
                 var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
-                if (hasGrouped == null)
+                if (hasGrouped == null || c.NoHelp)
                 {
                     isSolo = true;
                 }
