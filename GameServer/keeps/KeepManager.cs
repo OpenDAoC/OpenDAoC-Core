@@ -571,6 +571,7 @@ namespace DOL.GS.Keeps
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
 					if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
+					if (GetBattleground(keep.CurrentRegion.ID) != null) continue;
 					if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfotha") || keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner") || keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur") || keep.Name.ToLower().Contains("portal"))
 						continue;
 
