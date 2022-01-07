@@ -355,7 +355,7 @@ namespace DOL.GS.Commands
             int total = entering + playing + leaving;
             
             output.Add(string.Format("Currently online:  {0} \n\n Playing:  {1} | Frontiers:  {2} | Entering:  {3} | Leaving:  {4} | GMs:  {5}",
-                total, frontiers, playing, entering, leaving, gms));
+                total, playing, frontiers, entering, leaving, gms));
             
             if (showAddOnlineInfo == true)
             {
