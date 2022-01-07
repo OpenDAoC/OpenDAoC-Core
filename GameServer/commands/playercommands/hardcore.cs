@@ -90,7 +90,7 @@ namespace DOL.GS.Commands
             public override string ToString()
             {
                 if (isSolo)
-                    return string.Format("{0} the level {1} {2} [solo]", CharacterName, CharacterLevel, CharacterClass);
+                    return string.Format("{0} the level {1} {2} <solo>", CharacterName, CharacterLevel, CharacterClass);
                 
                 return string.Format("{0} the level {1} {2}", CharacterName, CharacterLevel, CharacterClass);
                 
@@ -123,8 +123,7 @@ namespace DOL.GS.Commands
             IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>("HCFlag = '1'").OrderByDescending(x => x.Level).Take(50).ToList();
             
             output.Add("Top 50 Hardcore characters:\n");
-
-            // Number of Alb, Mid and Hib tanks:
+            
             foreach (DOLCharacters c in characters)
             {
                 if (c == null)
