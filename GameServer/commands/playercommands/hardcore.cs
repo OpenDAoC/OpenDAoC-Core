@@ -56,7 +56,15 @@ namespace DOL.GS.Commands
                     player.Emote(eEmote.StagFrenzy);
                     player.HCFlag = true;
                     player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player.CurrentTitle = new HardCoreTitle();
+
+                    if (player.NoHelp)
+                    {
+                        player.CurrentTitle = new HardCoreSoloTitle();
+                    }
+                    else
+                    {
+                        player.CurrentTitle = new HardCoreTitle();
+                    }
                 }
             }
             else
@@ -86,7 +94,7 @@ namespace DOL.GS.Commands
             public override string ToString()
             {
                 if (isSolo)
-                    return string.Format("{0} the level {1} {2} [solo]", CharacterName, CharacterLevel, CharacterClass);
+                    return string.Format("{0} the level {1} {2} <solo>", CharacterName, CharacterLevel, CharacterClass);
                 
                 return string.Format("{0} the level {1} {2}", CharacterName, CharacterLevel, CharacterClass);
                 
@@ -119,8 +127,7 @@ namespace DOL.GS.Commands
             IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>("HCFlag = '1'").OrderByDescending(x => x.Level).Take(50).ToList();
             
             output.Add("Top 50 Hardcore characters:\n");
-
-            // Number of Alb, Mid and Hib tanks:
+            
             foreach (DOLCharacters c in characters)
             {
                 if (c == null)
@@ -132,7 +139,7 @@ namespace DOL.GS.Commands
                 const string customKey = "grouped_char";
                 var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
-                if (hasGrouped == null)
+                if (hasGrouped == null || c.NoHelp)
                 {
                     isSolo = true;
                 }
@@ -182,6 +189,33 @@ namespace DOL.GS.PlayerTitles
         public override bool IsSuitable(GamePlayer player)
         {
             return player.HCFlag || player.HCCompleted;
+        }
+    }
+    
+    public class HardCoreSoloTitle : SimplePlayerTitle
+    {
+
+        public override string GetDescription(GamePlayer player)
+        {
+            return "Hardcore Solo Beetle";
+        }
+        
+        public override string GetValue(GamePlayer source, GamePlayer player)
+        {
+            return "Hardcore Solo Beetle";
+        }
+        
+        public override void OnTitleGained(GamePlayer player)
+        {
+            player.Out.SendMessage("You have gained the Hardcore Solo Beetle title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        }
+
+        public override bool IsSuitable(GamePlayer player)
+        {
+            const string customKey2 = "solo_to_50";
+            var solo_to_50 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
+            
+            return (player.HCFlag || player.HCCompleted) && (player.NoHelp || solo_to_50 != null);
         }
     }
 }
