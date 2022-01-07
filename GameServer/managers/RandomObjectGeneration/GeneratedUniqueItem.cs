@@ -5291,7 +5291,7 @@ namespace DOL.GS {
             List<eGenerateType> genTypes = new List<eGenerateType>();
 
             //weighted so that early levels get many more weapons/armor
-            if (level < 10)
+            if (level < 5)
             {
                 if (Util.Chance(40))
                     return eGenerateType.Weapon;
@@ -5299,7 +5299,7 @@ namespace DOL.GS {
                     return eGenerateType.Magical;
                 else return eGenerateType.Armor;
             }
-            else if (level < 20)
+            else if (level < 10)
             {
                 if (Util.Chance(ROG_ARMOR_CHANCE * 2)) { genTypes.Add(eGenerateType.Armor); }
                 if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
