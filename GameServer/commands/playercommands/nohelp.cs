@@ -31,7 +31,7 @@ namespace DOL.GS.Commands
 					.IsEqualTo(client.Player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
 				DateTime d1 = new DateTime(2022, 1, 4);
-				DateTime d2 = new DateTime(2022, 1, 8);
+				DateTime d2 = new DateTime(2022, 1, 7, 21,0,0);
 
 				if (client.Player.Level == 1 || hasGrouped == null && client.Player.CreationDate >= d1 && client.Player.CreationDate <= d2)
 				{
