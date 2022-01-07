@@ -4593,8 +4593,8 @@ namespace DOL.GS {
             else 
                 cap = mobLevel - 10;
 
-            //randomize cap to be 90-105% of normal value
-            double random = (90 + Util.Random(15)) / 100.0;
+            //randomize cap to be 80-105% of normal value
+            double random = (75 + Util.Random(30)) / 100.0;
             cap = (int)Math.Floor(cap * random);
 
             if (cap < 15)
