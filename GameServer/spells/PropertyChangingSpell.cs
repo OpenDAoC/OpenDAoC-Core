@@ -120,7 +120,7 @@ namespace DOL.GS.Spells
 // 						}
 // 					}
 // 				}
-				if (target is GamePlayer && (target as GamePlayer).NoHelp && Caster is GamePlayer && target != Caster)
+				if (target is GamePlayer && (target as GamePlayer).NoHelp && Caster is GamePlayer && target != Caster && target.Realm == Caster.Realm)
 				{
 					//player not grouped, anyone else
 					//player grouped, different group
