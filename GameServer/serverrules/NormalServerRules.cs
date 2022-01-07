@@ -199,7 +199,22 @@ namespace DOL.GS.ServerRules
 
 		public override bool IsAllowedToTrade(GameLiving source, GameLiving target, bool quiet)
 		{
+
 			if(source == null || target == null) return false;
+			
+			if((source as GamePlayer).NoHelp)
+			{
+				if(quiet == false) MessageToLiving(source, "You have renounced to any kind of help!");
+				if(quiet == false) MessageToLiving(target, "This player has chosen to receive no help!");
+				return false;
+			}
+			
+			if((target as GamePlayer).NoHelp)
+			{
+				if(quiet == false) MessageToLiving(target, "You have renounced to any kind of help!");
+				if(quiet == false) MessageToLiving(source, "This player has chosen to receive no help!");
+				return false;
+			}
 
 			// clients with priv level > 1 are allowed to trade with anyone
 			if(source is GamePlayer && target is GamePlayer)

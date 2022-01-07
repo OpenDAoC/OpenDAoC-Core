@@ -56,6 +56,12 @@ namespace DOL.GS
                 SayTo(player,$"I'm sorry {player.Name}, my vault is not Hardcore enough for you.");
                 return false;
             }
+            
+            if (player.NoHelp)
+            {
+                SayTo(player,$"I'm sorry {player.Name}, you have chosen the path of solitude.");
+                return false;
+            }
 
             return true;
         }
