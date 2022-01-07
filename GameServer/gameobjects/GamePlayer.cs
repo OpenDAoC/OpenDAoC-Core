@@ -5323,17 +5323,17 @@ namespace DOL.GS
                 }
                 
                 //use this to track completely solo characters
-                const string customKey2 = "grouped_char";
-                const string customKey3 = "solo_to_50";
-                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
-                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey3)));
+                const string customKey3 = "grouped_char";
+                const string customKey4 = "solo_to_50";
+                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey3)));
+                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey4)));
                 
                 if (NoHelp && hasGrouped == null || hasGrouped == null)
                 {
                     NoHelp = false;
                     DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
                     soloBeetle.DOLCharactersObjectId = this.ObjectId;
-                    soloBeetle.KeyName = customKey3;
+                    soloBeetle.KeyName = customKey4;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
                     
