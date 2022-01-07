@@ -209,7 +209,10 @@ namespace DOL.GS.PlayerTitles
 
         public override bool IsSuitable(GamePlayer player)
         {
-            return player.HCFlag || player.HCCompleted;
+            const string customKey2 = "solo_to_50";
+            var solo_to_50 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
+            
+            return (player.HCFlag || player.HCCompleted) && (player.NoHelp || solo_to_50 != null);
         }
     }
 }
