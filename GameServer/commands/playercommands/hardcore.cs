@@ -81,9 +81,15 @@ namespace DOL.GS.Commands
         
             public string CharacterClass { get; set; }
             
+            public bool isSolo { get; set; }
+            
             public override string ToString()
             {
-                return CharacterName + " the level " + CharacterLevel + " " + CharacterClass;
+                if (isSolo)
+                    return string.Format("{0} the level {1} {2} [solo]", CharacterName, CharacterLevel, CharacterClass);
+                
+                return string.Format("{0} the level {1} {2}", CharacterName, CharacterLevel, CharacterClass);
+                
             }
 
             public int CompareTo(HCCharacter compareLevel)
@@ -121,8 +127,17 @@ namespace DOL.GS.Commands
                     continue;
 
                 string className = ((eCharacterClass)c.Class).ToString();
+                bool isSolo = false;
                 
-                hcCharacters.Add(new HCCharacter() {CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className});
+                const string customKey = "grouped_char";
+                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+                if (hasGrouped == null)
+                {
+                    isSolo = true;
+                }
+                
+                hcCharacters.Add(new HCCharacter() {CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className, isSolo = isSolo});
 
             }
 
