@@ -175,6 +175,8 @@ namespace DOL.GS {
             //if staff and magic..... focus
             this.GenerateMagicalBonuses(toa);
 
+            this.Color = GetRandomColorForRealm(realm);
+
             this.IsDropable = true;
             this.IsPickable = true;
             this.IsTradable = true;
@@ -539,6 +541,149 @@ namespace DOL.GS {
                 }
                 
             }
+        }
+
+        private int GetRandomColorForRealm(eRealm realm)
+        {
+            List<int> validColors = new List<int>();
+            validColors.Add(0); //white
+
+            if (Level > 10)
+            {
+                validColors.Add(6); //grey
+                validColors.Add(4); //old yellow
+            }
+            
+            if (Level > 20)
+            {
+                validColors.Add(17); //iron
+                validColors.Add(16); //bronze
+            }
+            
+            if (Level > 30)
+            {
+                validColors.Add(18); //steel
+                validColors.Add(19); //alloy
+                validColors.Add(72); //grey1
+            }
+            
+            if (Level > 40)
+            {
+                validColors.Add(22); //asterite
+                validColors.Add(20); //fine alloy
+                validColors.Add(73); //gray2
+            }
+            
+            if (Level > 50)
+            {
+                validColors.Add(21); //mithril
+                validColors.Add(25); //vaanum
+                validColors.Add(26); //adamantium
+                validColors.Add(43); //black cloth
+                validColors.Add(74); //grey3
+                validColors.Add(118); //charcoal
+            }
+            
+            switch(realm){
+                case eRealm.Hibernia:
+                    if (Level > 10)
+                    {
+                        validColors.Add(2); //old green
+                    }
+            
+                    if (Level > 20)
+                    {
+                        validColors.Add(10); //leather green
+                        
+                    }
+            
+                    if (Level > 30)
+                    {
+                        validColors.Add(31); //yellow green
+                        validColors.Add(32); //green
+                    }
+            
+                    if (Level > 40)
+                    {
+                        validColors.Add(33); //blue green
+                        validColors.Add(68); //green1
+                    }
+            
+                    if (Level > 50)
+                    {
+                        validColors.Add(70); //green3
+                        validColors.Add(71); //green4
+                        validColors.Add(137); //lime green
+                        validColors.Add(142); //forest green
+                    }
+                    break;
+                case eRealm.Albion:
+                    if (Level > 10)
+                    {
+                        validColors.Add(1); //old red
+                    }
+            
+                    if (Level > 20)
+                    {
+                        validColors.Add(9); //leather red
+                        
+                    }
+            
+                    if (Level > 30)
+                    {
+                        validColors.Add(24); //yellow red
+                        validColors.Add(27); //red
+                    }
+            
+                    if (Level > 40)
+                    {
+                        validColors.Add(64); //red1
+                        validColors.Add(65); //red2
+                    }
+            
+                    if (Level > 50)
+                    {
+                        validColors.Add(66); //red3
+                        validColors.Add(67); //red4
+                        validColors.Add(120); //red crafter
+                        validColors.Add(143); //burgundy
+                    }
+                    break;
+                case eRealm.Midgard:
+                    if (Level > 10)
+                    {
+                        validColors.Add(3); //old red
+                    }
+            
+                    if (Level > 20)
+                    {
+                        validColors.Add(14); //leather red
+                        
+                    }
+            
+                    if (Level > 30)
+                    {
+                        validColors.Add(34); //turqoise cloth
+                        validColors.Add(35); //light blue
+                    }
+            
+                    if (Level > 40)
+                    {
+                        validColors.Add(36); //blue
+                        validColors.Add(51); //blue1
+                    }
+            
+                    if (Level > 50)
+                    {
+                        validColors.Add(52); //blue2
+                        validColors.Add(54); //blue4
+                        validColors.Add(86); //blue4 again?
+                        validColors.Add(141); //navy blue
+                    }
+                    break;
+            }
+
+            return validColors[Util.Random(validColors.Count - 1)];
         }
 
         private void GenerateMagicalBonuses(bool toa)
@@ -10672,10 +10817,10 @@ namespace DOL.GS {
         private int GetProcFromLevel(byte level)
         {
             int procID = 0;
-            //if (Util.Chance(50))
+            if (Util.Chance(50))
                 procID = GetLifetapProcFromLevel(Level);
-            //else
-                //procID = GetDDProcFromLevel(Level);
+            else
+                procID = GetDDProcFromLevel(Level);
 
             return procID;
         }
