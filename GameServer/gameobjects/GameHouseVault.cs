@@ -262,7 +262,7 @@ namespace DOL.GS
 		public override bool CanView(GamePlayer player)
 		{
 
-			if (player.HCFlag)
+			if (player.HCFlag || player.NoHelp)
 			{
 				return false;
 			}
@@ -277,7 +277,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool CanAddItems(GamePlayer player)
 		{
-			if (player.HCFlag)
+			if (player.HCFlag || player.NoHelp)
 			{
 				return false;
 			}

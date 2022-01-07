@@ -56,7 +56,11 @@ namespace DOL.GS.Commands
                     player.Emote(eEmote.StagFrenzy);
                     player.HCFlag = true;
                     player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player.CurrentTitle = new HardCoreTitle();
+
+                    if (player.NoHelp)
+                        player.CurrentTitle = new HardCoreSoloTitle();
+                    else
+                        player.CurrentTitle = new HardCoreTitle();
                 }
             }
             else
@@ -177,6 +181,30 @@ namespace DOL.GS.PlayerTitles
         public override void OnTitleGained(GamePlayer player)
         {
             player.Out.SendMessage("You have gained the Hardcore title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        }
+
+        public override bool IsSuitable(GamePlayer player)
+        {
+            return player.HCFlag || player.HCCompleted;
+        }
+    }
+    
+    public class HardCoreSoloTitle : SimplePlayerTitle
+    {
+
+        public override string GetDescription(GamePlayer player)
+        {
+            return "Hardcore Solo Beetle";
+        }
+        
+        public override string GetValue(GamePlayer source, GamePlayer player)
+        {
+            return "Hardcore Solo Beetle";
+        }
+        
+        public override void OnTitleGained(GamePlayer player)
+        {
+            player.Out.SendMessage("You have gained the Hardcore Solo Beetle title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
 
         public override bool IsSuitable(GamePlayer player)
