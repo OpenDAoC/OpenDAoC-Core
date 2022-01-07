@@ -4,6 +4,10 @@
  *
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
@@ -61,6 +65,83 @@ namespace DOL.GS.Commands
             }
         }
     }
+    
+    [CmdAttribute(
+        "&hcladder",
+        ePrivLevel.Player,
+        "Displays the Hardcore Ladder.",
+        "/hcladder")]
+    public class HardcoreLadderCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
+        public class HCCharacter : IComparable<HCCharacter>
+        {
+            public string CharacterName { get; set; }
+        
+            public int CharacterLevel { get; set; }
+        
+            public string CharacterClass { get; set; }
+            
+            public override string ToString()
+            {
+                return CharacterName + " the level " + CharacterLevel + " " + CharacterClass;
+            }
+
+            public int CompareTo(HCCharacter compareLevel)
+            {
+                // A null value means that this object is greater.
+                if (compareLevel == null)
+                    return 1;
+                
+                return CharacterLevel.CompareTo(compareLevel.CharacterLevel);
+            }
+        }
+        
+        public void OnCommand(GameClient client, string[] args)
+        {
+            if (IsSpammingCommand(client.Player, "hardcoreladder"))
+                return;
+            
+            IList<string> textList = GetHardcoreLadder();
+            client.Out.SendCustomTextWindow("Hardcore Ladder", textList);
+            return;
+
+            IList<string> GetHardcoreLadder()
+            
+        {
+            IList<string> output = new List<string>();
+            IList<HCCharacter> hcCharacters = new List<HCCharacter>();
+            IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>("HCFlag = '1'").OrderByDescending(x => x.Level).Take(50).ToList();
+            
+            output.Add("Top 50 Hardcore characters:\n");
+
+            // Number of Alb, Mid and Hib tanks:
+            foreach (DOLCharacters c in characters)
+            {
+                if (c == null)
+                    continue;
+
+                string className = ((eCharacterClass)c.Class).ToString();
+                
+                hcCharacters.Add(new HCCharacter() {CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className});
+
+            }
+
+            int position = 0;
+            
+            foreach (HCCharacter hcCharacter in hcCharacters)
+            {
+                position++;
+                output.Add(position + ". " + hcCharacter);
+            }
+
+            return output;
+        }
+
+        }
+        
+    }
+    
+    
 }
 #region title
 namespace DOL.GS.PlayerTitles
