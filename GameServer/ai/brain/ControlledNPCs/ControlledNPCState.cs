@@ -227,5 +227,8 @@ public class ControlledNPCState_PASSIVE : StandardMobState
         {
             brain.Goto(brain.Body.TargetObject);
         }
+        
+        //cast defensive spells if applicable
+        brain.CheckSpells(eCheckSpellType.Defensive);
     }
 }
