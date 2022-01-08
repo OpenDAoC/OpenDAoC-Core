@@ -39,6 +39,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 		
 		private static GameNPC NPC_Name = null; // Start NPC
+		private static GameNPC Freeya = null; // Finish NPC
 		
 		
 
@@ -68,7 +69,40 @@ namespace DOL.GS.Quests.Midgard
 			
 
 			#region defineNPCs
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Freeya", eRealm.Midgard);
+
+			if (npcs.Length > 0)
+				foreach (GameNPC npc in npcs)
+					if (npc.CurrentRegionID == 100 && npc.X == 763734 && npc.Y == 646142)
+					{
+						Freeya = npc;
+						break;
+					}
 			
+			// Freeya is near Svasud Faste, North West on the Hill between trees
+			if (Freeya == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Freeya , creating it ...");
+				Freeya = new GameNPC();
+				Freeya.Model = 165;
+				Freeya.Name = "Freeya";
+				Freeya.GuildName = "Thor Boyaux";
+				Freeya.Realm = eRealm.Midgard;
+				Freeya.CurrentRegionID = 100;
+				Freeya.Flags += (ushort) GameNPC.eFlags.GHOST + (ushort) GameNPC.eFlags.PEACE;
+				Freeya.Size = 50;
+				Freeya.Level = 65;
+				Freeya.X = 763734;
+				Freeya.Y = 646142;
+				Freeya.Z = 8687;
+				Freeya.Heading = 60;
+				Freeya.AddToWorld();
+				if (SAVE_INTO_DATABASE)
+				{
+					Freeya.SaveIntoDatabase();
+				}
+			}
 			#endregion
 
 			#region defineItems
