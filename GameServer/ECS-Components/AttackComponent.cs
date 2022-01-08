@@ -1875,11 +1875,11 @@ namespace DOL.GS
                     // we can only intercept attacks on livings, and can only intercept when active
                     // you cannot intercept while you are sitting
                     // if you are stuned or mesmeried you cannot intercept...
-
+                    int rand = Util.Random(100);
                     InterceptECSGameEffect inter = effect as InterceptECSGameEffect;
                     if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
                         && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
+                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && inter.InterceptChance > rand)
                     {
                         intercept = inter;
                         continue;

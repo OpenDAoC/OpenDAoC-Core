@@ -244,6 +244,8 @@ namespace DOL.GS.Spells
             IControlledBrain brain = pet.Brain as IControlledBrain;
             GameLiving living = brain.Owner;
             living.SetControlledBrain(null);
+            
+            living.effectListComponent.CancelAll();
 
             GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 
