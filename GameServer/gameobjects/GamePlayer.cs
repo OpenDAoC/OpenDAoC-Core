@@ -12469,7 +12469,7 @@ namespace DOL.GS
                     if (mybattlegroup != null && mybattlegroup.GetBGLootType() == true && mybattlegroup.GetBGTreasurer() != null)
                     {
                         GamePlayer theTreasurer = mybattlegroup.GetBGTreasurer();
-                        if (theTreasurer.CanSeeObject(floorObject))
+                        if (theTreasurer.CanSeeObject(floorObject) || this.CanSeeObject((floorObject)))
                         {
                             bool good = false;
                             if (floorItem.Item.IsStackable)
