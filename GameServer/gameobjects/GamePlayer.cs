@@ -5285,6 +5285,31 @@ namespace DOL.GS
         public virtual void OnLevelUp(int previouslevel)
         {
             IsLevelSecondStage = false;
+            int isSolo = 0;
+            int isHardcore = 0;
+            int realm = 0;
+            
+            if (HCFlag)
+                isHardcore = 1;
+            
+            if (NoHelp)
+                isSolo = 1;
+            
+            switch (Realm)
+            {
+                case eRealm._FirstPlayerRealm:
+                    realm = 1;
+                    break;
+                case eRealm.Midgard:
+                    realm = 2;
+                    break;
+                case eRealm._LastPlayerRealm:
+                    realm = 3;
+                    break;
+                default:
+                    realm = 0;
+                    break;
+            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouRaise", Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouAchieved", Level), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -5293,8 +5318,44 @@ namespace DOL.GS
             {
                 Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.FreeLevelEligible"));
             }
-            // PvE Beta Custom Params
             
+            if (Level == 20)
+            {
+                // Creates a TimeXLevel to track the levelling time to 20
+                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                
+                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                MaxLevelTime.Character_ID = this.ObjectId;
+                MaxLevelTime.Character_Name = this.Name;
+                MaxLevelTime.Character_Realm = realm;
+                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                MaxLevelTime.Character_Level = this.Level;
+                MaxLevelTime.Solo = isSolo;
+                MaxLevelTime.Hardcore = isHardcore;
+                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                MaxLevelTime.SecondsToLevel = PlayedTime;
+                GameServer.Database.AddObject(MaxLevelTime);
+            }
+
+            if (Level == 30)
+            {
+                // Creates a TimeXLevel to track the levelling time to 30
+                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                
+                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                MaxLevelTime.Character_ID = this.ObjectId;
+                MaxLevelTime.Character_Name = this.Name;
+                MaxLevelTime.Character_Realm = realm;
+                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                MaxLevelTime.Character_Level = this.Level;
+                MaxLevelTime.Solo = isSolo;
+                MaxLevelTime.Hardcore = isHardcore;
+                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                MaxLevelTime.SecondsToLevel = PlayedTime;
+                GameServer.Database.AddObject(MaxLevelTime);
+            }
+            
+            // PVE Beta Lv35 Title Reward
             if (Level == 35)
             {
                 const string customKey = "PvEBeta35";
@@ -5310,10 +5371,46 @@ namespace DOL.GS
                     Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
             }
-            
+
+            if (Level == 40)
+            {
+                // Creates a TimeXLevel to track the levelling time to 40
+                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                
+                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                MaxLevelTime.Character_ID = this.ObjectId;
+                MaxLevelTime.Character_Name = this.Name;
+                MaxLevelTime.Character_Realm = realm;
+                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                MaxLevelTime.Character_Level = this.Level;
+                MaxLevelTime.Solo = isSolo;
+                MaxLevelTime.Hardcore = isHardcore;
+                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                MaxLevelTime.SecondsToLevel = PlayedTime;
+                GameServer.Database.AddObject(MaxLevelTime);
+            }
+
+            if (Level == 45)
+            {
+                // Creates a TimeXLevel to track the levelling time to 45
+                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                
+                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                MaxLevelTime.Character_ID = this.ObjectId;
+                MaxLevelTime.Character_Name = this.Name;
+                MaxLevelTime.Character_Realm = realm;
+                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                MaxLevelTime.Character_Level = this.Level;
+                MaxLevelTime.Solo = isSolo;
+                MaxLevelTime.Hardcore = isHardcore;
+                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                MaxLevelTime.SecondsToLevel = PlayedTime;
+                GameServer.Database.AddObject(MaxLevelTime);
+            }
+
             if (Level == 50)
             {
-
+                // Check if player has completed the Hardcore Challenge
                 if (HCFlag)
                 {
                     HCFlag = false;
@@ -5322,49 +5419,52 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(this, 50000);
                 }
                 
-                //use this to track completely solo characters
-                const string customKey3 = "grouped_char";
-                const string customKey4 = "solo_to_50";
-                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey3)));
-                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey4)));
+                // Check if player has completed the Solo Challenge
+                const string groupedKey = "grouped_char";
+                const string soloKey = "solo_to_50";
+                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(groupedKey)));
+                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
                 
                 if (NoHelp && hasGrouped == null || hasGrouped == null)
                 {
                     NoHelp = false;
                     DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
                     soloBeetle.DOLCharactersObjectId = this.ObjectId;
-                    soloBeetle.KeyName = customKey4;
+                    soloBeetle.KeyName = soloKey;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
-                    
                     Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
                 
-                const string customKey = "PvEBeta50";
-                const string customKey2 = "PlayedTimeAt50InSeconds";
-                //client.Player.PlayedTime
-                var playedAt50 = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey2)));
-                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                // PVE Beta Lv50 Title Reward
+                const string pve50key = "PvEBeta50";
+                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(pve50key)));
 
                 if (hasPvEBeta50Title == null)
                 {
                     AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
                     PvEBeta50Title.Name = Client.Account.Name;
-                    PvEBeta50Title.KeyName = customKey;
+                    PvEBeta50Title.KeyName = pve50key;
                     PvEBeta50Title.Value = "1";
                     GameServer.Database.AddObject(PvEBeta50Title);
                     Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
-
-                if (playedAt50 == null)
-                {
-                    DOLCharactersXCustomParam PlaytimeAt50 = new DOLCharactersXCustomParam();
-                    PlaytimeAt50.DOLCharactersObjectId = this.ObjectId;
-                    PlaytimeAt50.KeyName = customKey2;
-                    PlaytimeAt50.Value = this.m_client.Player.PlayedTime.ToString();
-                    GameServer.Database.AddObject(PlaytimeAt50);
-                    //Client.Player.Out.SendPlayerTitleUpdate(this);
-                }
+                
+                // Creates a TimeXLevel to track the levelling time to 50
+                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                
+                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                MaxLevelTime.Character_ID = this.ObjectId;
+                MaxLevelTime.Character_Name = this.Name;
+                MaxLevelTime.Character_Realm = realm;
+                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                MaxLevelTime.Character_Level = this.Level;
+                MaxLevelTime.Solo = isSolo;
+                MaxLevelTime.Hardcore = isHardcore;
+                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                MaxLevelTime.SecondsToLevel = PlayedTime;
+                GameServer.Database.AddObject(MaxLevelTime);
+                
             }
 
             if (Level == MaxLevel)
@@ -7773,9 +7873,19 @@ namespace DOL.GS
         /// </summary>
         /// <param name="message">The message</param>
         /// <param name="realm">The realm</param>
-        public static void BroadcastDeathOnDiscord(string message, string name, string playerClass, int level)
+        public static void BroadcastDeathOnDiscord(string message, string name, string lastname, string playerClass, int level, long playedTime)
         {
             int color = 0;
+            TimeSpan timeLived = TimeSpan.FromSeconds(playedTime);
+            string timeLivedString = timeLived.Days + "d " + timeLived.Hours + "h " + timeLived.Minutes + "m ";
+
+            string playerName = "";
+                if (lastname != "")
+                    playerName = name + " " + lastname;
+                else
+                    playerName = name;
+            
+
             var DiscordObituaryHook =
                 "https://discord.com/api/webhooks/929154632389910558/kfJbtzDC9JzyOXvZ0rYUwaPM31LRUebGzDZKSczUKDk_4YyHmB-WJVsh7pJoa4M9-D1U"; // Make it a property later
             var client = new DiscordWebhookClient(DiscordObituaryHook);
@@ -7789,13 +7899,14 @@ namespace DOL.GS
                 embeds: new[]
                 {
                     new DiscordMessageEmbed(
-                        author: new DiscordMessageEmbedAuthor(name),
+                        author: new DiscordMessageEmbedAuthor(playerName),
                         color: color,
                         description: message,
                         fields: new[]
                         {
                             new DiscordMessageEmbedField("Level", level.ToString()),
-                            new DiscordMessageEmbedField("Class", playerClass)
+                            new DiscordMessageEmbedField("Class", playerClass),
+                            new DiscordMessageEmbedField("Time alive", timeLivedString)
                         }
                     )
                 }
@@ -7883,7 +7994,7 @@ namespace DOL.GS
                 
                 if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))
                 {
-                    BroadcastDeathOnDiscord(publicMessage, Name, CharacterClass.Name, Level);
+                    BroadcastDeathOnDiscord(publicMessage, Name, LastName, CharacterClass.Name, Level, PlayedTime);
                 }
                 
             }
