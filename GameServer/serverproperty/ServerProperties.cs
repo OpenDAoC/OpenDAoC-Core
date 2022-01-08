@@ -434,6 +434,24 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "Discord_RVR_Webhook_ID", "The id of the webhook for RvR updates", "")]
 		public static string DISCORD_RVR_WEBHOOK_ID;
+		
+		/// <summary>
+		/// RvRWebhook ID
+		/// </summary>
+		[ServerProperty("atlas", "Discord_AlbChat_Webhook_ID", "The id of the webhook for all Albion chat", "https://discord.com/api/webhooks/929377242147074068/8Hk6aM1M3u0K6Nord6r2iQlOjpu53Ye9xfKc0AhdBqgMsqmMEf0lw82ms_we95UiCOuN")]
+		public static string DISCORD_ALBCHAT_WEBHOOK_ID;
+		
+		/// <summary>
+		/// RvRWebhook ID
+		/// </summary>
+		[ServerProperty("atlas", "Discord_HibChat_Webhook_ID", "The id of the webhook for Hibernia chat", "")]
+		public static string DISCORD_HIBCHAT_WEBHOOK_ID;
+		
+		/// <summary>
+		/// RvRWebhook ID
+		/// </summary>
+		[ServerProperty("atlas", "Discord_MidChat_Webhook_ID", "The id of the webhook for Midgard chat", "")]
+		public static string DISCORD_MIDCHAT_WEBHOOK_ID;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?
