@@ -18,6 +18,8 @@
  */
 
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts.discord;
+using DOL.GS.ServerProperties;
 using DOL.Language;
 
 
@@ -73,6 +75,7 @@ namespace DOL.GS.Commands
                 }
             }
 
+            if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(player, eChatType.CT_LFG, message);
         }
 
     }
