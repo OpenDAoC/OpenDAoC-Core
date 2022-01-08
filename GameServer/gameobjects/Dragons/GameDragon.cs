@@ -137,7 +137,16 @@ namespace DOL.GS
 				case eDamageType.Slash : 
 				case eDamageType.Crush :
 				case eDamageType.Thrust: return 65 * DragonDifficulty / 100;
-				default: return 99 * DragonDifficulty / 100;
+				default:
+					int resistPercent = 99;
+					if (this.attackComponent.Attackers.Count > 1)
+					{
+						resistPercent -= this.attackComponent.Attackers.Count;
+					}
+
+					if (resistPercent <= 60)
+						resistPercent = 60;
+					return resistPercent * DragonDifficulty / 100;
 			}
 		}
 
