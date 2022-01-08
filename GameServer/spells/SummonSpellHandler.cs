@@ -244,8 +244,12 @@ namespace DOL.GS.Spells
             IControlledBrain brain = pet.Brain as IControlledBrain;
             GameLiving living = brain.Owner;
             living.SetControlledBrain(null);
-            
-            living.effectListComponent.CancelAll();
+
+            foreach (var ability in pet.effectListComponent.GetAbilityEffects())
+            {
+	            if(ability is InterceptECSGameEffect iecs && iecs.InterceptSource == pet && iecs.InterceptTarget == living)
+		            iecs.Cancel(false);
+            }
 
             GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 
