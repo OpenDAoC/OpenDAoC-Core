@@ -69,16 +69,14 @@ namespace DOL.GS.Commands
 
 		private void Broadcast(GamePlayer player, string message)
 		{
-			foreach (GameClient c in WorldMgr.GetClientsOfRegion(player.CurrentRegionID))
+			foreach (GameClient c in WorldMgr.GetAllClients())
 			{
-				if (GameServer.ServerRules.IsAllowedToUnderstand(c.Player, player))
+				if (c.Player.Realm == player.Realm || player.Client.Account.PrivLevel > 1)
 				{
 					c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Trade.Message", player.Name, message), eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
 				}
 			}
-
 		}
-
 	}
 }
 
