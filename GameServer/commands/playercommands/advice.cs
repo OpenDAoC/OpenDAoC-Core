@@ -71,6 +71,7 @@ namespace DOL.GS.Commands
 			}
 			foreach (GameClient playerClient in WorldMgr.GetAllClients())
 			{
+				if (playerClient.Player.IsIgnoring(client.Player)) continue;
 				if (playerClient.Player == null) continue;
 				if ((playerClient.Player.Realm == client.Player.Realm) ||
 					playerClient.Account.PrivLevel > 1)
