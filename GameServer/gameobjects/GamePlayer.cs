@@ -7873,9 +7873,19 @@ namespace DOL.GS
         /// </summary>
         /// <param name="message">The message</param>
         /// <param name="realm">The realm</param>
-        public static void BroadcastDeathOnDiscord(string message, string name, string playerClass, int level)
+        public static void BroadcastDeathOnDiscord(string message, string name, string lastname, string playerClass, int level, long playedTime)
         {
             int color = 0;
+            TimeSpan timeLived = TimeSpan.FromSeconds(playedTime);
+            string timeLivedString = timeLived.Days + "d " + timeLived.Hours + "h " + timeLived.Minutes + "m ";
+
+            string playerName = "";
+                if (lastname != "")
+                    playerName = name + " " + lastname;
+                else
+                    playerName = name;
+            
+
             var DiscordObituaryHook =
                 "https://discord.com/api/webhooks/929154632389910558/kfJbtzDC9JzyOXvZ0rYUwaPM31LRUebGzDZKSczUKDk_4YyHmB-WJVsh7pJoa4M9-D1U"; // Make it a property later
             var client = new DiscordWebhookClient(DiscordObituaryHook);
@@ -7889,13 +7899,14 @@ namespace DOL.GS
                 embeds: new[]
                 {
                     new DiscordMessageEmbed(
-                        author: new DiscordMessageEmbedAuthor(name),
+                        author: new DiscordMessageEmbedAuthor(playerName),
                         color: color,
                         description: message,
                         fields: new[]
                         {
                             new DiscordMessageEmbedField("Level", level.ToString()),
-                            new DiscordMessageEmbedField("Class", playerClass)
+                            new DiscordMessageEmbedField("Class", playerClass),
+                            new DiscordMessageEmbedField("Time alive", timeLivedString)
                         }
                     )
                 }
@@ -7983,7 +7994,7 @@ namespace DOL.GS
                 
                 if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))
                 {
-                    BroadcastDeathOnDiscord(publicMessage, Name, CharacterClass.Name, Level);
+                    BroadcastDeathOnDiscord(publicMessage, Name, LastName, CharacterClass.Name, Level, PlayedTime);
                 }
                 
             }
