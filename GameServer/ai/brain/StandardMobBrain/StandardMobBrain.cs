@@ -1530,7 +1530,7 @@ namespace DOL.AI.Brain
 
             bool casted = false;
 
-            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == (byte)eSpellType.DirectDamageWithDebuff)))
+            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == (byte)eSpellType.DirectDamageWithDebuff || spell.SpellType == (byte)eSpellType.DamageSpeedDecrease)))
             {
                 // Offensive spells require the caster to be facing the target
                 if (Body.TargetObject != Body)
