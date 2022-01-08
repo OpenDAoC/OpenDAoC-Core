@@ -438,7 +438,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// RvRWebhook ID
 		/// </summary>
-		[ServerProperty("atlas", "Discord_AlbChat_Webhook_ID", "The id of the webhook for all Albion chat", "https://discord.com/api/webhooks/929377242147074068/8Hk6aM1M3u0K6Nord6r2iQlOjpu53Ye9xfKc0AhdBqgMsqmMEf0lw82ms_we95UiCOuN")]
+		[ServerProperty("atlas", "Discord_AlbChat_Webhook_ID", "The id of the webhook for all Albion chat", "")]
 		public static string DISCORD_ALBCHAT_WEBHOOK_ID;
 		
 		/// <summary>
