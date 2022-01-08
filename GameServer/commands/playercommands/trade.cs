@@ -23,6 +23,7 @@ using DOL.Language;
 using DOL.GS;
 using DOL.GS.ServerProperties;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts.discord;
 
 
 namespace DOL.GS.Commands
@@ -76,6 +77,8 @@ namespace DOL.GS.Commands
 					c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Trade.Message", player.Name, message), eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
 				}
 			}
+			
+			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(player, eChatType.CT_Trade, message);
 		}
 	}
 }
