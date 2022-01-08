@@ -154,7 +154,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return 30000 * DragonDifficulty / 100;
+				return 40000 * DragonDifficulty / 100;
 			}
 		}
 
