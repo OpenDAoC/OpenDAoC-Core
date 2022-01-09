@@ -1209,10 +1209,8 @@ namespace DOL.GS {
                     else if (rand <= 75)
                         return eProperty.Piety;
                     else return eProperty.Constitution;
-
-                case eCharacterClass.Reaver:
+                
                 case eCharacterClass.Cleric:
-                case eCharacterClass.Thane:
                 case eCharacterClass.Shaman:
                     if (Util.Chance(20))
                         return eProperty.MaxMana;
@@ -1220,7 +1218,21 @@ namespace DOL.GS {
                         return eProperty.Strength;
                     else if (rand <= 40)
                         return eProperty.Dexterity;
-                    else if (rand <= 60)
+                    else if (rand <= 50)
+                        return eProperty.Quickness;
+                    else if (rand <= 80)
+                        return eProperty.Piety;
+                    else return eProperty.Constitution;
+                
+                case eCharacterClass.Thane:
+                case eCharacterClass.Reaver:
+                    if (Util.Chance(20))
+                        return eProperty.MaxMana;
+                    if (rand <= 20)
+                        return eProperty.Strength;
+                    else if (rand <= 40)
+                        return eProperty.Dexterity;
+                    else if (rand <= 65)
                         return eProperty.Quickness;
                     else if (rand <= 80)
                         return eProperty.Piety;
