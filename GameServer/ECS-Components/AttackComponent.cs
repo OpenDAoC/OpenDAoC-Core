@@ -1448,7 +1448,7 @@ namespace DOL.GS
                 
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
-                    //weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     weaponskiller.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
@@ -1553,7 +1553,7 @@ namespace DOL.GS
                 {
                     GamePlayer player = owner as GamePlayer;
 
-                    string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ")" : "";
+                    string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")" : "";
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
                 else if (owner is GameNPC)
@@ -1565,7 +1565,7 @@ namespace DOL.GS
                         GamePlayer owner = brain.GetPlayerOwner();
                         if (owner != null)
                         {
-                            string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ")" : "";
+                            string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")" : "";
                             owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name, damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         }
                     }
