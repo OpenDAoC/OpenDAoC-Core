@@ -326,7 +326,8 @@ namespace DOL.GS
 				case eSpellType.Lifedrain:
 				case eSpellType.DamageSpeedDecrease:
 				case eSpellType.StyleBleeding: // Style bleed effect
-					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					double scaleFactor = (casterLevel + 1.0) / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.Damage *= scaleFactor;
 					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Value
