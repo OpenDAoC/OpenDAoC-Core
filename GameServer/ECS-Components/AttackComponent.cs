@@ -1443,8 +1443,17 @@ namespace DOL.GS
                     upperboundary = 125;
                 }
 
+                double specModifier = (100 + spec) / 100.0;
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
-
+                
+                if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                {
+                    //weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+                if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                    attackee.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                
                 // Badge Of Valor Calculation 1+ absorb or 1- absorb
                 if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
                 {
