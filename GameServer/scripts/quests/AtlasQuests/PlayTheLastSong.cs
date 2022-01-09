@@ -98,6 +98,18 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.Y = 646142;
 				Freeya.Z = 8687;
 				Freeya.Heading = 60;
+								
+				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+				template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 3341);
+				template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 3342);
+				template.AddNPCEquipment(eInventorySlot.Cloak, 326, 43);
+				template.AddNPCEquipment(eInventorySlot.TorsoArmor, 771, 50);
+				template.AddNPCEquipment(eInventorySlot.LegsArmor, 772);
+				template.AddNPCEquipment(eInventorySlot.HandsArmor, 774, 50);
+				template.AddNPCEquipment(eInventorySlot.ArmsArmor, 773);
+				template.AddNPCEquipment(eInventorySlot.FeetArmor, 775, 50);
+				template.AddNPCEquipment(eInventorySlot.HeadArmor, 1227);
+				Freeya.Inventory = template.CloseTemplate();
 				Freeya.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
@@ -144,6 +156,7 @@ namespace DOL.GS.Quests.Midgard
 				template.AddNPCEquipment(eInventorySlot.HandsArmor, 701, 50);
 				template.AddNPCEquipment(eInventorySlot.ArmsArmor, 700);
 				template.AddNPCEquipment(eInventorySlot.FeetArmor, 702, 50);
+				template.AddNPCEquipment(eInventorySlot.HeadArmor, 1227);
 				VikingDextz.Inventory = template.CloseTemplate();
 				VikingDextz.AddToWorld();
 				if (SAVE_INTO_DATABASE)
