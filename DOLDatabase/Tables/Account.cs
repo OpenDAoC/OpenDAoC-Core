@@ -40,6 +40,8 @@ namespace DOL.Database
 		private string m_language;
 		private string m_lastClientVersion;
 		private bool m_isMuted;
+		private String m_notes;
+		private bool m_isWarned;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -212,6 +214,25 @@ namespace DOL.Database
 		{
 			get { return m_isMuted; }
 			set { Dirty = true; m_isMuted = value; }
+		}
+		
+		/// <summary>
+		/// Is this account warned
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool IsWarned
+		{
+			get { return m_isWarned; }
+			set { Dirty = true; m_isWarned = value; }
+		}
+		
+		/// <summary>
+		/// Account notes
+		/// </summary>
+		[DataElement(AllowDbNull = true)]
+		public string Notes {
+			get { return m_notes; }
+			set { Dirty = true; m_notes = value; }
 		}
 
 		/// <summary>
