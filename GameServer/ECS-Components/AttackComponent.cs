@@ -1444,7 +1444,7 @@ namespace DOL.GS
                 }
 
                 double specModifier = (100 + spec) / 100.0;
-                damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
+                damage *= (owner.GetWeaponSkill(weapon) + 90.68) * specModifier/ (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
                 
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
