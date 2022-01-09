@@ -465,6 +465,12 @@ namespace DOL.GS.Quests
 				return true;
 			}
 			
+			if (name.Contains("Flayer"))
+			{
+				if (name.EndsWith("Kegnar"))
+					return true;
+			}
+			
 			return false;
 		}
 
