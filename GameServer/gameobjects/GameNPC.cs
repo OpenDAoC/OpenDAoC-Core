@@ -4857,7 +4857,7 @@ namespace DOL.GS
 						if (gainer is GamePlayer)
 						{
 							GamePlayer player = gainer as GamePlayer;
-							if (player.Autoloot && loot.IsWithinRadius(player, 1500)) // should be large enough for most casters to autoloot
+							if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
 							{
 								if (player.Group == null || (player.Group != null && player == player.Group.Leader))
 									aplayer.Add(player);
