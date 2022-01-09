@@ -134,6 +134,17 @@ namespace DOL.GS.Quests.Midgard
 				VikingDextz.Y = 32310;
 				VikingDextz.Z = 8305;
 				VikingDextz.Heading = 3346;
+				
+				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+				template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 3335);
+				template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 2218);
+				template.AddNPCEquipment(eInventorySlot.Cloak, 677);
+				template.AddNPCEquipment(eInventorySlot.TorsoArmor, 698, 50);
+				template.AddNPCEquipment(eInventorySlot.LegsArmor, 699);
+				template.AddNPCEquipment(eInventorySlot.HandsArmor, 701, 50);
+				template.AddNPCEquipment(eInventorySlot.ArmsArmor, 700);
+				template.AddNPCEquipment(eInventorySlot.FeetArmor, 702, 50);
+				VikingDextz.Inventory = template.CloseTemplate();
 				VikingDextz.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
