@@ -38,7 +38,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 		
-		private static GameNPC NPC_Name = null; // Start NPC
+		private static GameNPC VikingDextz = null; // Start NPC
 		private static GameNPC Freeya = null; // Finish NPC
 		
 		
@@ -69,6 +69,7 @@ namespace DOL.GS.Quests.Midgard
 			
 
 			#region defineNPCs
+			//Freeya
 			GameNPC[] npcs = WorldMgr.GetNPCsByName("Freeya", eRealm.Midgard);
 
 			if (npcs.Length > 0)
@@ -103,6 +104,42 @@ namespace DOL.GS.Quests.Midgard
 					Freeya.SaveIntoDatabase();
 				}
 			}
+			
+			//Viking Dextz
+			npcs = WorldMgr.GetNPCsByName("Viking Dextz", eRealm.Midgard);
+
+			if (npcs.Length > 0)
+				foreach (GameNPC npc in npcs)
+					if (npc.CurrentRegionID == 101 && npc.X == 30621 && npc.Y == 32310)
+					{
+						VikingDextz = npc;
+						break;
+					}
+			
+			// Viking Dextz is near Healer Trainers in Jordheim
+			if (VikingDextz == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find VikingDextzMid , creating it ...");
+				VikingDextz = new GameNPC();
+				VikingDextz.Model = 187;
+				VikingDextz.Name = "Viking Dextz";
+				VikingDextz.GuildName = "Thor Boyaux";
+				VikingDextz.Realm = eRealm.Midgard;
+				VikingDextz.CurrentRegionID = 101;
+				VikingDextz.Flags += (ushort) GameNPC.eFlags.PEACE;
+				VikingDextz.Size = 52;
+				VikingDextz.Level = 63;
+				VikingDextz.X = 30621;
+				VikingDextz.Y = 32310;
+				VikingDextz.Z = 8305;
+				VikingDextz.Heading = 3346;
+				VikingDextz.AddToWorld();
+				if (SAVE_INTO_DATABASE)
+				{
+					VikingDextz.SaveIntoDatabase();
+				}
+			}
 			#endregion
 
 			#region defineItems
@@ -117,7 +154,7 @@ namespace DOL.GS.Quests.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
 			/* Now we bring to NPC_Name the possibility to give this quest to players */
-			//PlayTheLastSong.AddQuestToGive(typeof (PlayTheLastSong));
+			VikingDextz.AddQuestToGive(typeof (PlayTheLastSong));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -127,24 +164,24 @@ namespace DOL.GS.Quests.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (NPC_Name == null)
+			if (VikingDextz == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
-
+			
 			/* Now we remove to NPC_Name the possibility to give this quest to players */
-			//PlayTheLastSong.RemoveQuestToGive(typeof (PlayTheLastSong));
+			VikingDextz.RemoveQuestToGive(typeof (PlayTheLastSong));
 		}
 
-		protected static void TalkToNPC_Name(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToVikingDextz(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(NPC_Name.CanGiveQuest(typeof (PlayTheLastSong), player)  <= 0)
+			if(VikingDextz.CanGiveQuest(typeof (PlayTheLastSong), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -249,7 +286,7 @@ namespace DOL.GS.Quests.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(NPC_Name.CanGiveQuest(typeof (PlayTheLastSong), player)  <= 0)
+			if(VikingDextz.CanGiveQuest(typeof (PlayTheLastSong), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (PlayTheLastSong)) != null)
@@ -262,7 +299,7 @@ namespace DOL.GS.Quests.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!NPC_Name.GiveQuest(typeof (PlayTheLastSong), player, 1))
+				if (!VikingDextz.GiveQuest(typeof (PlayTheLastSong), player, 1))
 					return;
 			}
 		}
