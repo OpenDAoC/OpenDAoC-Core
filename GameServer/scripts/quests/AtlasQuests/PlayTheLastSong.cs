@@ -224,18 +224,19 @@ namespace DOL.GS.Quests.Midgard
 					switch (quest.Step)
 					{
 						case 1:
+							VikingDextz.SayTo(player, "You will find Freeya's Grave on the hill north west from Svasud Faste. Please check if everything is fine there!");
 							break;
 						case 2:
 							break;
 						case 3:
 							break;
-						case 4:
-							break;
 					}
 				}
 				else
 				{
-					
+					VikingDextz.SayTo(player, "Hello "+ player.Name +", I am Dextz. "+ 
+					                          "I am expecting you could help me, which is a very dangerous task. However I cannot leave Jordheim, because I need to help new budding healers.\n" +
+					                       "\nCan you [support Thor Boyaux] and check Freeya\'s Grave in Uppland?");
 				}
 			}
 				// The player whispered to the NPC
@@ -246,7 +247,9 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
-
+						case "support Thor Boyaux":
+							player.Out.SendQuestSubscribeCommand(VikingDextz, QuestMgr.GetIDForQuestType(typeof(PlayTheLastSong)), "Will you help Viking Dextz ([Memorial] Play the last Song)?");
+							break;
 					}
 				}
 				else
@@ -350,7 +353,7 @@ namespace DOL.GS.Quests.Midgard
 					case 1:
 						return "Speak with Viking Dextz to get more information.";
 					case 2:
-						return "Find Freeya in Uppland North West from Svasud Faste on the hill.";
+						return "Find Freeya's Grave in Uppland North West from Svasud Faste on the hill.";
 					case 3:
 						return "Help Freeya to play the last Songs.";
 				}
