@@ -177,6 +177,9 @@ namespace DOL.GS.Quests.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
+			GameEventMgr.AddHandler(VikingDextz, GameObjectEvent.Interact, new DOLEventHandler(TalkToVikingDextz));
+			GameEventMgr.AddHandler(VikingDextz, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToVikingDextz));
+			
 			/* Now we bring to NPC_Name the possibility to give this quest to players */
 			VikingDextz.AddQuestToGive(typeof (PlayTheLastSong));
 
@@ -194,6 +197,9 @@ namespace DOL.GS.Quests.Midgard
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 			
+			GameEventMgr.RemoveHandler(VikingDextz, GameObjectEvent.Interact, new DOLEventHandler(TalkToVikingDextz));
+			GameEventMgr.RemoveHandler(VikingDextz, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToVikingDextz));
+
 			/* Now we remove to NPC_Name the possibility to give this quest to players */
 			VikingDextz.RemoveQuestToGive(typeof (PlayTheLastSong));
 		}
