@@ -84,7 +84,7 @@ namespace DOL.GS.Quests.Midgard
 			if (Freeya == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Freeya , creating it ...");
+					log.Warn("Could not find FreeyaMid , creating it ...");
 				Freeya = new GameNPC();
 				Freeya.Model = 165;
 				Freeya.Name = "Freeya";
@@ -348,13 +348,11 @@ namespace DOL.GS.Quests.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "";
+						return "Speak with Viking Dextz to get more information.";
 					case 2:
-						return "";
+						return "Find Freeya in Uppland North West from Svasud Faste on the hill.";
 					case 3:
-						return "";
-					case 4:
-						return "";
+						return "Help Freeya to play the last Songs.";
 				}
 				return base.Description;
 			}
