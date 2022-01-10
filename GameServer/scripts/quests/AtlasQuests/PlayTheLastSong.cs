@@ -322,6 +322,67 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
+		protected static void TalkToFreya(DOLEvent e, object sender, EventArgs args)
+		{
+			//We get the player from the event arguments and check if he qualifies		
+			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+			if (player == null)
+				return;
+			
+			//We also check if the player is already doing the quest
+			PlayTheLastSong quest = player.IsDoingQuest(typeof (PlayTheLastSong)) as PlayTheLastSong;
+
+			if (e == GameObjectEvent.Interact)
+			{
+				if (quest != null)
+				{
+					switch (quest.Step)
+					{
+						case 1:
+
+							break;
+						case 2:
+
+							break;
+						case 3:
+
+							break;
+					}
+				}
+				else
+				{
+
+				}
+			}
+				// The player whispered to the NPC
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				if (quest == null)
+				{
+					switch (wArgs.Text)
+					{
+
+					}
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+
+					}
+				}
+			}
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+				{
+					
+				}
+			}
+		}
+		
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
