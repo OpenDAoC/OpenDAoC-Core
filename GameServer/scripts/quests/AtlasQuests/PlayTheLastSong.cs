@@ -209,6 +209,9 @@ namespace DOL.GS.Quests.Midgard
 			GameEventMgr.AddHandler(VikingDextz, GameObjectEvent.Interact, new DOLEventHandler(TalkToVikingDextz));
 			GameEventMgr.AddHandler(VikingDextz, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToVikingDextz));
 			
+			GameEventMgr.AddHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
+			GameEventMgr.AddHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+			
 			/* Now we bring to NPC_Name the possibility to give this quest to players */
 			VikingDextz.AddQuestToGive(typeof (PlayTheLastSong));
 
@@ -228,6 +231,9 @@ namespace DOL.GS.Quests.Midgard
 			
 			GameEventMgr.RemoveHandler(VikingDextz, GameObjectEvent.Interact, new DOLEventHandler(TalkToVikingDextz));
 			GameEventMgr.RemoveHandler(VikingDextz, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToVikingDextz));
+			
+			GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
+			GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
 
 			/* Now we remove to NPC_Name the possibility to give this quest to players */
 			VikingDextz.RemoveQuestToGive(typeof (PlayTheLastSong));
@@ -322,7 +328,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
-		protected static void TalkToFreya(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToFreeya(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
