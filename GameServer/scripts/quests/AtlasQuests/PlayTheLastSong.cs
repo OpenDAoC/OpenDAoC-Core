@@ -41,7 +41,14 @@ namespace DOL.GS.Quests.Midgard
 		private static GameNPC VikingDextz = null; // Start NPC
 		private static GameNPC Freeya = null; // Finish NPC
 		
-		
+		private static WorldObject FreeyasGrave = null; // Object
+
+		private static IList<WorldObject> GetItems()
+		{
+			string FreeyasGrave = "Name = \"Freeya\'s Grave\"";
+			
+			return (GameServer.Database.SelectObjects<WorldObject>(FreeyasGrave));
+		}
 
 		// Constructors
 		public PlayTheLastSong() : base()
@@ -172,6 +179,28 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineObject
 
+			var graveCheck = GetItems();
+			if (graveCheck.Count == 0)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Freeyas Grave, creating it ...");
+				var FreeyasGrave = new WorldObject();
+				FreeyasGrave.Name = "Freeya\'s Grave";
+				FreeyasGrave.X = 763740;
+				FreeyasGrave.Y = 646102;
+				FreeyasGrave.Z = 8682;
+				FreeyasGrave.Heading = 118;
+				FreeyasGrave.Region = 100;
+				FreeyasGrave.Model = 145;
+				FreeyasGrave.ObjectId = "freeya_grave_questitem";
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(FreeyasGrave);
+					PlayTheLastSong.FreeyasGrave = FreeyasGrave;
+				}
+
+			}
+			
 			#endregion
 
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -225,7 +254,7 @@ namespace DOL.GS.Quests.Midgard
 					{
 						case 1:
 							VikingDextz.SayTo(player, "God dag " +player.Name+ ", the mission is not that easy! Last year we lost a wonderful and helpful Skald. " +
-							                          "He tried to help whole Midgard beating monsters, to become stronger to fight the enemy realms." +
+							                          "He tried to help whole Midgard beating monsters, to become stronger to fight the enemy realms. " +
 							                          "[Freeya] even helped enemies to beat monsters in Cruachan Gorge, he had a good soul.");
 							break;
 						case 2:
