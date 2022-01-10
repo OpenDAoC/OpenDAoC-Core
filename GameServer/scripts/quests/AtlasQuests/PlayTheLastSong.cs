@@ -261,6 +261,8 @@ namespace DOL.GS.Quests.Midgard
 							VikingDextz.SayTo(player, player.Name +", you will find Freeya's Grave on the hill north west from Svasud Faste. Please check if everything is fine there!");
 							break;
 						case 3:
+							VikingDextz.SayTo(player, "You are probably forsaken by all good spirits! You saw Freeya? " +
+							                          "Please tell him, Thor Boyaux and Exiled Vaettir pay great respect for a legend of Midgard!\nRest in Peace my friend.");
 							break;
 					}
 				}
