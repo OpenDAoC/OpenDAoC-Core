@@ -858,7 +858,7 @@ namespace DOL.GS {
 
             if (rand < 25)
                 return eBonusType.Skill;
-            if (rand < 60)
+            if (rand < 55)
                 return eBonusType.Resist;
             return eBonusType.Stat;
 
@@ -1130,7 +1130,7 @@ namespace DOL.GS {
 
         private eProperty GetWeightedStatForClass(eCharacterClass charClass)
         {
-            if (Util.Chance(20))
+            if (Util.Chance(10))
                 return eProperty.MaxHealth;
 
             int rand = Util.Random(100);
