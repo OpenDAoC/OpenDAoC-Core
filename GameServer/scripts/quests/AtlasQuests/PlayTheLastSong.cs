@@ -224,9 +224,12 @@ namespace DOL.GS.Quests.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							VikingDextz.SayTo(player, "You will find Freeya's Grave on the hill north west from Svasud Faste. Please check if everything is fine there!");
+							VikingDextz.SayTo(player, "God dag " +player.Name+ ", the mission is not that easy! Last year we lost a wonderful and helpful Skald. " +
+							                          "He tried to help whole Midgard beating monsters, to become stronger to fight the enemy realms." +
+							                          "[Freeya] even helped enemies to beat monsters in Cruachan Gorge, he had a good soul.");
 							break;
 						case 2:
+							VikingDextz.SayTo(player, player.Name +", you will find Freeya's Grave on the hill north west from Svasud Faste. Please check if everything is fine there!");
 							break;
 						case 3:
 							break;
@@ -256,6 +259,22 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
+						case "Freeya":
+							VikingDextz.SayTo(player, "Freeya a Master Enforcer and a good friend, i miss him a lot.");
+							if (quest.Step == 1)
+							{
+								VikingDextz.Emote(eEmote.Cry);
+								VikingDextz.SayTo(player, "We buried him in Uppland on the hill, north west of Svasud Faste. Please [help me] and check if Freeya\'s Grave is fine and not broken." +
+								                          "I currently can not leave my post, because i need to help new budding healers. \nYou would be a honorary " + player.Gender.ToString() + "!");
+							}
+							break;
+						case "help me":
+							if (quest.Step == 1)
+							{
+								VikingDextz.SayTo(player, "Thank you " + player.Name + ", thats very kind of you!");
+								quest.Step = 2;
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
