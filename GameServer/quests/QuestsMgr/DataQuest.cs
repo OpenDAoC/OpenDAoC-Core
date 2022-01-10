@@ -2239,7 +2239,7 @@ namespace DOL.GS.Quests
 				if (charQuest.Count < MaxQuestCount && player.Level <= MaxLevel && player.Level >= Level)
 				{
 					TryTurnTo(obj, player);
-
+					long lvlXP  = player.GetExperienceNeededForLevel(player.Level) / player.Level;
 					if (item.Count == 1)
 					{
 						RemoveItem(obj, player, item, false);
@@ -2249,6 +2249,10 @@ namespace DOL.GS.Quests
 						long rewardXP = 0;
 						if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
 						{
+							if(rewardXP == 0)
+								rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+							else if (lvlXP > rewardXP)
+								rewardXP = lvlXP;
 							player.GainExperience(eXPSource.Quest, rewardXP);
 						}
 						if (m_sourceTexts.Count > 0)
@@ -2269,6 +2273,10 @@ namespace DOL.GS.Quests
 						{
 							if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
 							{
+								if(rewardXP == 0)
+									rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+								else if (lvlXP > rewardXP)
+									rewardXP = lvlXP;
 								player.GainExperience(eXPSource.Quest, rewardXP * RemainingTurnIns);
 							}
 							//remove only the remaining turn-ins
@@ -2285,6 +2293,10 @@ namespace DOL.GS.Quests
 							//turn in the whole stack
 							if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
 							{
+								if(rewardXP == 0)
+									rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+								else if (lvlXP > rewardXP)
+									rewardXP = lvlXP;
 								player.GainExperience(eXPSource.Quest, rewardXP * item.Count);
 							}
 							
