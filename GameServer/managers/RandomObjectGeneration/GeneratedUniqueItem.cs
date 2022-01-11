@@ -858,7 +858,7 @@ namespace DOL.GS {
 
             if (rand < 25)
                 return eBonusType.Skill;
-            if (rand < 55)
+            if (rand < 50)
                 return eBonusType.Resist;
             return eBonusType.Stat;
 
@@ -1306,13 +1306,13 @@ namespace DOL.GS {
                     else return eProperty.Charisma;
 
                 case eCharacterClass.Healer:
-                    if (Util.Chance(20))
+                    if (Util.Chance(15))
                         return eProperty.MaxMana;
                     if (rand <= 30)
                         return eProperty.Dexterity;
                     else if (rand <= 60)
                         return eProperty.Piety;
-                    else if (rand <= 85)
+                    else if (rand <= 80)
                         return eProperty.Constitution;
                     else return eProperty.Strength;
             }
@@ -3909,7 +3909,7 @@ namespace DOL.GS {
                     }
                 case eProperty.Skill_Crushing:
                     {
-                        if (realm != eRealm.Albion) { return false; }
+                        if (realm != eRealm.Albion || type == eObjectType.Flexible) { return false; }
                         if (type == eObjectType.CrushingWeapon ||
                             ((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Crush))
                             return true;
@@ -4138,6 +4138,9 @@ namespace DOL.GS {
                         {
                             return false;
                         }
+
+                        if (type == eObjectType.Flexible)
+                            return false;
                         if (type == eObjectType.SlashingWeapon ||
                             ((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Slash))
                             return true;
@@ -4208,6 +4211,8 @@ namespace DOL.GS {
                         {
                             return false;
                         }
+                        if (type == eObjectType.Flexible)
+                            return false;
                         if (type == eObjectType.ThrustWeapon ||
                             ((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Thrust))
                             return true;
