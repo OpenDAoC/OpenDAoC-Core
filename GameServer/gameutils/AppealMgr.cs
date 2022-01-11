@@ -180,7 +180,7 @@ namespace DOL.GS.Appeal
 			{
 				staffplayer.Out.SendMessage("[Appeals]: " + msg, chattype, chatloc);
 				// If GM has '/alert appeal on' set, receive audible alert when an appeal is submitted or requires assistance
-				if (staffplayer.Client.Player.TempProperties.getProperty<bool>("AppealAlert") == false)
+				if (staffplayer?.Client?.Player?.TempProperties?.getProperty<bool>("AppealAlert") == false)
 				{
 					staffplayer.Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
 				}
