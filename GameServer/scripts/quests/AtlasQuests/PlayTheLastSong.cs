@@ -410,20 +410,22 @@ namespace DOL.GS.Quests.Midgard
 							//cast Health Song
 							Freeya.Say("Dextz my friend, i will use my last power and play the very last songs for you!\n" +
 							           "I will protect you wherever you are!");
-							
+							Freeya.Emote(eEmote.Military);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 3000);
+
+
 							//cast Speed Song
 							Freeya.Say("Thor Boyaux, you were my family and you will be forever!\n" +
 							           "I will protect you wherever you are!");
+							Freeya.Emote(eEmote.Military);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 3000);
 							
 							//cast Damage Add Song
 							Freeya.Say("Exiled Vaettir, you accepted and supported me, I am very grateful to you!\n" +
 							           "I will protect you wherever you are!");
+							Freeya.Emote(eEmote.Military);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 3000);
 							
-							//cast Resistance Song
-							Freeya.SayTo(player, "And this song is for you " + player.Name + "! You are very brave to come here to serve Midgard. " +
-							           "I'll play a resistance song for you and all of Midgard so we can continue to be a strong realm. " +
-							           "Valhalla is calling me, it's time to go. \nHa det, my friend.");
-							//Freeya.Die(Freeya);
 							quest.Step = 4;
 							break;
 					}
@@ -439,6 +441,198 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
+		#region HealthRegen
+		/// <summary>
+		/// Cast Health Regen Song.
+		/// </summary>
+		/// <param name="timer">The timer that started this cast.</param>
+		/// <returns></returns>
+		private static int CastHealthRegen(RegionTimer timer)
+		{
+			Freeya.CastSpell(HealthRegen, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			return 0;
+		}
+		
+		
+		private static Spell m_HealthRegen;
+		/// <summary>
+		/// The Health Regen Song.
+		/// </summary>
+		protected static Spell HealthRegen
+		{
+			get
+			{
+				if (m_HealthRegen == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.Icon = 3618;
+					spell.ClientEffect = 3618;
+					spell.Damage = 0;
+					spell.Duration = 5;
+					spell.Name = "Freeya's Heavenly Song of Rest";
+					spell.Range = 500;
+					spell.Radius = 500;
+					spell.SpellID = 3618;
+					spell.Target = "Group";
+					spell.Type = "HealthRegenBuff";
+					spell.Uninterruptible = true;
+					spell.MoveCast = true;
+					spell.DamageType = 0;
+					spell.Message1 = "Dextz looks calmer.";
+					m_HealthRegen = new Spell(spell, 50);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HealthRegen);
+				}
+				return m_HealthRegen;
+			}
+		}
+
+		#endregion HealthRegen
+		#region SpeedSong
+		/// <summary>
+		/// Cast Speed Song.
+		/// </summary>
+		/// <param name="timer">The timer that started this cast.</param>
+		/// <returns></returns>
+		private static int CastSpeed(RegionTimer timer)
+		{
+			Freeya.CastSpell(SpeedSong, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			return 0;
+		}
+		
+		
+		private static Spell m_SpeedSong;
+		/// <summary>
+		/// The Speed Song.
+		/// </summary>
+		protected static Spell SpeedSong
+		{
+			get
+			{
+				if (m_SpeedSong == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.Icon = 3612;
+					spell.ClientEffect = 3612;
+					spell.Damage = 0;
+					spell.Duration = 5;
+					spell.Name = "Freeya's Heavenly Song of Travel";
+					spell.Range = 500;
+					spell.Radius = 500;
+					spell.SpellID = 3612;
+					spell.Target = "Group";
+					spell.Type = "SpeedEnhancement";
+					spell.Uninterruptible = true;
+					spell.MoveCast = true;
+					spell.DamageType = 0;
+					spell.Message1 = "Thor Boyaux will be protected with Enhancement.";
+					m_SpeedSong = new Spell(spell, 50);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpeedSong);
+				}
+				return m_SpeedSong;
+			}
+		}
+
+		#endregion SpeedSong
+		#region DamageAdd
+		/// <summary>
+		/// Cast Damage Add Song.
+		/// </summary>
+		/// <param name="timer">The timer that started this cast.</param>
+		/// <returns></returns>
+		private static int CastDamageAdd(RegionTimer timer)
+		{
+			Freeya.CastSpell(DamageAdd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			return 0;
+		}
+		
+		
+		private static Spell m_DamageAdd;
+		/// <summary>
+		/// The Damage Add Song.
+		/// </summary>
+		protected static Spell DamageAdd
+		{
+			get
+			{
+				if (m_DamageAdd == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.Icon = 3607;
+					spell.ClientEffect = 3607;
+					spell.Damage = 0;
+					spell.Duration = 5;
+					spell.Name = "Freeya's Chant of Blood";
+					spell.Range = 500;
+					spell.Radius = 500;
+					spell.SpellID = 3607;
+					spell.Target = "Group";
+					spell.Type = "DamageAdd";
+					spell.Uninterruptible = true;
+					spell.MoveCast = true;
+					spell.DamageType = 0;
+					spell.Message1 = "Exiled Vaettir will swing their weapons with zeal.";
+					m_DamageAdd = new Spell(spell, 50);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageAdd);
+				}
+				return m_DamageAdd;
+			}
+		}
+
+		#endregion DamageAdd
+		#region ResistanceSong
+		/// <summary>
+		/// Cast Resistance Song.
+		/// </summary>
+		/// <param name="timer">The timer that started this cast.</param>
+		/// <returns></returns>
+		private static int CastResistance(RegionTimer timer)
+		{
+			Freeya.CastSpell(Resistance, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			return 0;
+		}
+		
+		
+		private static Spell m_Resistance;
+		/// <summary>
+		/// The Resistance Song.
+		/// </summary>
+		protected static Spell Resistance
+		{
+			get
+			{
+				if (m_Resistance == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.Icon = 3656;
+					spell.ClientEffect = 3656;
+					spell.Damage = 0;
+					spell.Duration = 5;
+					spell.Name = "Freeya's Energy Diminishing Song";
+					spell.Range = 500;
+					spell.Radius = 500;
+					spell.SpellID = 3656;
+					spell.Target = "Group";
+					spell.Type = "EnergyResistBuff";
+					spell.Uninterruptible = true;
+					spell.MoveCast = true;
+					spell.DamageType = 0;
+					spell.Message1 = "You are protected from energy!";
+					m_Resistance = new Spell(spell, 50);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Resistance);
+				}
+				return m_Resistance;
+			}
+		}
+
+		#endregion DamageAdd
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
@@ -541,6 +735,14 @@ namespace DOL.GS.Quests.Midgard
 			if (Step == 4)
 			{
 				FinishQuest();
+				//cast Resistance Song
+				Freeya.Say("And this song is for you " + player.Name + "! You are very brave to come here to serve Midgard. " +
+				           "I'll play a resistance song for you and all of Midgard so we can continue to be a strong realm. " +
+				           "Valhalla is calling me, it's time to go. \nHa det, my friend.");
+				Freeya.TurnTo(player, 500);
+				Freeya.Emote(eEmote.Military);
+				new RegionTimer(Freeya, new RegionTimerCallback(CastResistance), 3000);
+				
 				Freeya.Die(Freeya);
 			}
 		}
