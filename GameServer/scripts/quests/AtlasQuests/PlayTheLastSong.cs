@@ -23,6 +23,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
+using DOL.GS.Quests.Actions;
 using log4net;
 
 namespace DOL.GS.Quests.Midgard
@@ -98,8 +99,9 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.GuildName = "Thor Boyaux";
 				Freeya.Realm = eRealm.Midgard;
 				Freeya.CurrentRegionID = 100;
-				Freeya.Flags += (ushort) GameNPC.eFlags.GHOST + (ushort) GameNPC.eFlags.PEACE;
+				Freeya.Flags += (ushort) GameNPC.eFlags.GHOST + (ushort) GameNPC.eFlags.PEACE + (ushort) GameNPC.eFlags.TORCH;
 				Freeya.Size = 50;
+				Freeya.RespawnInterval = 120000; //2min
 				Freeya.Level = 65;
 				Freeya.X = 763734;
 				Freeya.Y = 646142;
@@ -146,7 +148,7 @@ namespace DOL.GS.Quests.Midgard
 				VikingDextz.GuildName = "Thor Boyaux";
 				VikingDextz.Realm = eRealm.Midgard;
 				VikingDextz.CurrentRegionID = 101;
-				VikingDextz.Flags += (ushort) GameNPC.eFlags.PEACE;
+				VikingDextz.Flags += (ushort) GameNPC.eFlags.PEACE + (ushort) GameNPC.eFlags.TORCH;
 				VikingDextz.Size = 52;
 				VikingDextz.Level = 63;
 				VikingDextz.X = 30621;
@@ -225,6 +227,7 @@ namespace DOL.GS.Quests.Midgard
 			//if not loaded, don't worry
 			if (VikingDextz == null)
 				return;
+			
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
@@ -345,13 +348,22 @@ namespace DOL.GS.Quests.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-
+							Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? He is a good friend, please visit him!");
 							break;
 						case 2:
-
+							if (quest.Step == 2)
+							{
+								player.Emote(eEmote.Shiver);
+								Freeya.TurnTo(player, 500);
+								Freeya.Emote(eEmote.Hug);
+							}
+							Freeya.SayTo(player, "God dag " + player.CharacterClass.Name + ", I knew that you are coming. Please dont be scared, I am friendly! " +
+							                     "My friend Dextz came here very often, it has to be something special that he chose you to check my grave! " +
+							                     "I really wished to see him once again, but maybe you can help me to play my [last songs for Midgard]?");
+							
 							break;
 						case 3:
-
+							Freeya.SayTo(player, "Alright " + player.Name + ", all you have to do is say \"song\" to me and I will begin the ceremony!");
 							break;
 					}
 				}
@@ -368,14 +380,43 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
-
+						
 					}
 				}
 				else
 				{
 					switch (wArgs.Text)
 					{
-
+						case "last songs for Midgard":
+							if (quest.Step == 2)
+							{
+								Freeya.Emote(eEmote.Induct);
+								Freeya.SayTo(player, player.Name + ", please say the word, so i can begin the ceremony!");
+								quest.Step = 3;
+							}
+							break;
+						case "song":
+							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
+							
+							//cast Health Song
+							Freeya.Say("Dextz my friend, i will use my last power and play the very last songs for you!\n" +
+							           "I will protect you wherever you are!");
+							
+							//cast Speed Song
+							Freeya.Say("Thor Boyaux, you were my family and you will be forever!\n" +
+							           "I will protect you wherever you are!");
+							
+							//cast Damage Add Song
+							Freeya.Say("Exiled Vaettir, you accepted and supported me, I am very grateful to you!\n" +
+							           "I will protect you wherever you are!");
+							
+							//cast Resistance Song
+							Freeya.SayTo(player, "And this song is for you " + player.Name + "! You are very brave to come here to serve Midgard. " +
+							           "I'll play a resistance song for you and all of Midgard so we can continue to be a strong realm. " +
+							           "Valhalla is calling me, it's time to go. \nHa det, my friend.");
+							quest.Step = 4;
+							Freeya.Die(Freeya);
+							break;
 					}
 				}
 			}
@@ -474,6 +515,8 @@ namespace DOL.GS.Quests.Midgard
 						       "(Loc: X:763717 Y:656265 Z:8679)";
 					case 3:
 						return "Help Freeya to play the last Songs. (/whisper \"last song\")";
+					case 4:
+						return "Rest in Peace Freeya!";
 				}
 				return base.Description;
 			}
@@ -485,6 +528,11 @@ namespace DOL.GS.Quests.Midgard
 
 			if (player==null || player.IsDoingQuest(typeof (PlayTheLastSong)) == null)
 				return;
+
+			if (Step == 4)
+			{
+				FinishQuest();
+			}
 		}
 		
 		public class PlayTheLastSongTitle : EventPlayerTitle 
