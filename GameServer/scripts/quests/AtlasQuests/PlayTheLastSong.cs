@@ -715,7 +715,7 @@ namespace DOL.GS.Quests.Midgard
 						return "Speak with Viking Dextz to get more information.";
 					case 2:
 						return "Find Freeya's Grave in Uppland North West from Svasud Faste on the hill.\n" +
-						       "(Loc: X:763717 Y:656265 Z:8679)";
+						       "(Loc: X:42850 Y:39926 Z:8691)";
 					case 3:
 						return "Help Freeya to play the last Songs. (/whisper \"last song\")";
 					case 4:
