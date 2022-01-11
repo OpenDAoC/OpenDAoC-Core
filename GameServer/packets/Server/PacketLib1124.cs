@@ -2405,7 +2405,7 @@ namespace DOL.GS.PacketHandler
 					//		pak.WriteShort(icon);
 					//	}
 					//}
-                    lock (pet.EffectList)
+                    lock (pet.effectListComponent._effectsLock)
                     {
                         ArrayList icons = new ArrayList();
                         foreach (var effects in pet.effectListComponent.Effects.Values)
