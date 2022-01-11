@@ -81,6 +81,7 @@ namespace DOL.GS {
 
                 Database.ItemTemplate item = null;
                 
+                
                 GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
                 tmp.GenerateItemQuality(killedcon);
                 tmp.CapUtility(mob.Level + 1);
