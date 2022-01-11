@@ -5322,37 +5322,41 @@ namespace DOL.GS
             if (Level == 20)
             {
                 // Creates a TimeXLevel to track the levelling time to 20
-                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                
-                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
-                MaxLevelTime.Character_ID = this.ObjectId;
-                MaxLevelTime.Character_Name = this.Name;
-                MaxLevelTime.Character_Realm = realm;
-                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
-                MaxLevelTime.Character_Level = this.Level;
-                MaxLevelTime.Solo = isSolo;
-                MaxLevelTime.Hardcore = isHardcore;
-                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
-                MaxLevelTime.SecondsToLevel = PlayedTime;
-                GameServer.Database.AddObject(MaxLevelTime);
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
             }
 
             if (Level == 30)
             {
                 // Creates a TimeXLevel to track the levelling time to 30
-                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                
-                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
-                MaxLevelTime.Character_ID = this.ObjectId;
-                MaxLevelTime.Character_Name = this.Name;
-                MaxLevelTime.Character_Realm = realm;
-                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
-                MaxLevelTime.Character_Level = this.Level;
-                MaxLevelTime.Solo = isSolo;
-                MaxLevelTime.Hardcore = isHardcore;
-                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
-                MaxLevelTime.SecondsToLevel = PlayedTime;
-                GameServer.Database.AddObject(MaxLevelTime);
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
             }
             
             // PVE Beta Lv35 Title Reward
@@ -5375,37 +5379,41 @@ namespace DOL.GS
             if (Level == 40)
             {
                 // Creates a TimeXLevel to track the levelling time to 40
-                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                
-                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
-                MaxLevelTime.Character_ID = this.ObjectId;
-                MaxLevelTime.Character_Name = this.Name;
-                MaxLevelTime.Character_Realm = realm;
-                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
-                MaxLevelTime.Character_Level = this.Level;
-                MaxLevelTime.Solo = isSolo;
-                MaxLevelTime.Hardcore = isHardcore;
-                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
-                MaxLevelTime.SecondsToLevel = PlayedTime;
-                GameServer.Database.AddObject(MaxLevelTime);
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
             }
 
             if (Level == 45)
             {
                 // Creates a TimeXLevel to track the levelling time to 45
-                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                
-                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
-                MaxLevelTime.Character_ID = this.ObjectId;
-                MaxLevelTime.Character_Name = this.Name;
-                MaxLevelTime.Character_Realm = realm;
-                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
-                MaxLevelTime.Character_Level = this.Level;
-                MaxLevelTime.Solo = isSolo;
-                MaxLevelTime.Hardcore = isHardcore;
-                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
-                MaxLevelTime.SecondsToLevel = PlayedTime;
-                GameServer.Database.AddObject(MaxLevelTime);
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
             }
 
             if (Level == 50)
@@ -5451,20 +5459,23 @@ namespace DOL.GS
                 }
                 
                 // Creates a TimeXLevel to track the levelling time to 50
-                TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                
-                DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
-                MaxLevelTime.Character_ID = this.ObjectId;
-                MaxLevelTime.Character_Name = this.Name;
-                MaxLevelTime.Character_Realm = realm;
-                MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
-                MaxLevelTime.Character_Level = this.Level;
-                MaxLevelTime.Solo = isSolo;
-                MaxLevelTime.Hardcore = isHardcore;
-                MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
-                MaxLevelTime.SecondsToLevel = PlayedTime;
-                GameServer.Database.AddObject(MaxLevelTime);
-                
+
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
+
             }
 
             if (Level == MaxLevel)
