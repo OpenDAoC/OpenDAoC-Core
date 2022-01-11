@@ -414,8 +414,8 @@ namespace DOL.GS.Quests.Midgard
 							Freeya.SayTo(player, "And this song is for you " + player.Name + "! You are very brave to come here to serve Midgard. " +
 							           "I'll play a resistance song for you and all of Midgard so we can continue to be a strong realm. " +
 							           "Valhalla is calling me, it's time to go. \nHa det, my friend.");
+							//Freeya.Die(Freeya);
 							quest.Step = 4;
-							Freeya.Die(Freeya);
 							break;
 					}
 				}
@@ -532,6 +532,7 @@ namespace DOL.GS.Quests.Midgard
 			if (Step == 4)
 			{
 				FinishQuest();
+				Freeya.Die(Freeya);
 			}
 		}
 		
@@ -601,7 +602,7 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
 				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
