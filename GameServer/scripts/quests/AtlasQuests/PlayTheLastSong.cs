@@ -305,7 +305,7 @@ namespace DOL.GS.Quests.Midgard
 							{
 								VikingDextz.Emote(eEmote.Cry);
 								VikingDextz.SayTo(player, "We buried him in Uppland on the hill, north west of Svasud Faste. Please [help me] and check if Freeya\'s Grave is fine and not broken." +
-								                          "I currently can not leave my post, because i need to help new budding healers. \nYou would be a honorary " + player.Gender.ToString() + "!");
+								                          "I currently can not leave my post, because i need to help new budding healers. \nYou would be a honorary " + player.Gender.ToString().ToLower() + "!");
 							}
 							break;
 						case "help me":
@@ -369,7 +369,16 @@ namespace DOL.GS.Quests.Midgard
 				}
 				else
 				{
-
+					if (player.Realm != eRealm.Midgard)
+					{
+						Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? I had a wonderful time with him! " +
+						                     "I hope you will meet him one day, but be careful, he is an amazing Healer!");
+					}
+					else
+					{
+						Freeya.SayTo(player, "Hello " + player.CharacterClass.Name + ", dont forget, nobody is useless in this world who makes someone else\'s burden easier.");
+					}
+					
 				}
 			}
 				// The player whispered to the NPC
