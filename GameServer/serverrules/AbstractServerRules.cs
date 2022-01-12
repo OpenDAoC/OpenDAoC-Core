@@ -178,6 +178,19 @@ namespace DOL.GS.ServerRules
 					return false;
 				}
 			}
+			
+			if (Properties.TESTER_LOGIN)
+			{
+				if (account == null || !account.IsTester && account.PrivLevel == 1)
+				{
+					// Admins and Testers are still allowed to enter server
+					// Normal Players will not be allowed to Log in
+					client.IsConnected = false;
+					client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
+					log.Debug("IsAllowedToConnect deny access; tester and staff only login");
+					return false;
+				}
+			}
 
 			if (!Properties.ALLOW_DUAL_LOGINS)
 			{
