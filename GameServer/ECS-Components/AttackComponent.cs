@@ -1443,12 +1443,19 @@ namespace DOL.GS
                     upperboundary = 125;
                 }
 
-                double specModifier = (100 + spec) / 100.0;
+                int styleSpec = 0;
+                if (ad.Style != null)
+                {
+                    styleSpec = owner.GetModifiedSpecLevel(ad.Style.Spec);
+                }
+
+                double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
+                //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) * specModifier/ (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
                 
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
-                    weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)* specModifier} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     weaponskiller.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
@@ -2054,7 +2061,7 @@ namespace DOL.GS
                 randomEvadeNum = Math.Floor(randomEvadeNum);
                 randomEvadeNum /= 100;
                 evadeChance *= 100;
-                if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
+                if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog && evadeChance > 0)
                 {
                     evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
