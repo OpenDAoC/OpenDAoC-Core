@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DOL.GS.PropertyCalc;
 using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
@@ -2066,7 +2067,7 @@ namespace DOL.GS
                     evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
+                if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog  && evadeChance > 0)
                 {
                     evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
@@ -2083,12 +2084,12 @@ namespace DOL.GS
                     ranParryNum /= 100;
                     parryChance *= 100;
 
-                    if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
+                    if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog  && parryChance > 0)
                     {
                         parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
-                    if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
+                    if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog  && parryChance > 0)
                     {
                         parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
@@ -2104,12 +2105,12 @@ namespace DOL.GS
                 ranBlockNum /= 100;
                 blockChance *= 100;
 
-                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog  && blockChance > 0)
                 {
                     blockAttk.Out.SendMessage($"target block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog  && blockChance > 0)
                 {
                     blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
@@ -2360,7 +2361,15 @@ namespace DOL.GS
                 missrate >>= 1; //halved
             }
             ad.MissRate = missrate;
-            if (Util.Chance(missrate))
+            int rando = Util.CryptoNextInt(100);
+            
+            if(ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog && missrate > 0)
+                misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+            if(ad.Target is GamePlayer missee && missee.UseDetailedCombatLog&& missrate > 0)
+                missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+            
+            if (missrate > rando)
             {
                 return eAttackResult.Missed;
             }

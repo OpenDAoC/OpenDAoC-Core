@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
                         effectiveness = Math.Min(1.25, effectiveness);
                     }
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
-                    if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+                    if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.BuffEffectiveness) > 0 )
                     {
                         spellCaster.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(eProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
                     effectiveness = Math.Max(0.75, effectiveness);
                     effectiveness = Math.Min(1.25, effectiveness);
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
-                    if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+                    if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)
                     {
                         spellCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
@@ -103,7 +103,7 @@ namespace DOL.GS.Spells
                     effectiveness *= (1 + target.GetArmorAbsorb(eArmorSlot.TORSO));
                 }
 
-                if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+                if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)
                 {
                     spellCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }

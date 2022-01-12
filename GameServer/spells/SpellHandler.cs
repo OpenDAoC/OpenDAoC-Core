@@ -2889,14 +2889,14 @@ namespace DOL.GS.Spells
 				int spellResistChance = CalculateSpellResistChance(t);
 				int randNum = Util.CryptoNextInt(100);
 
-				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && spellResistChance > 0)
 				{
-					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
 
-				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog  && spellResistChance > 0)
 				{
-					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
 
 				if (spellResistChance > randNum)
@@ -4385,7 +4385,7 @@ namespace DOL.GS.Spells
 			int randNum = Util.CryptoNextInt(1, 100); //grab our random number
 			int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
 
-			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
 			{
 				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}
