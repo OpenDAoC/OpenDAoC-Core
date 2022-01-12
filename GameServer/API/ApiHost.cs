@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using DOL.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +30,7 @@ namespace DOL.GS.API
             var _player = new Player();
             var _guild = new Guild();
             var _stats = new Stats();
+            var _realm = new Realm();
 
             // API DOCS
             app.UseStaticFiles();
@@ -107,6 +109,43 @@ namespace DOL.GS.API
                 }
                 return Results.Ok(guildMembers);
                 
+            });
+
+            // REALM
+            app.MapGet("/realm", () => "Usage /realm/{realmName}");
+            app.MapGet("/realm/df", async c =>
+                await c.Response.WriteAsJsonAsync(_realm.GetDFOwner()));
+            app.MapGet("/realm/{realmName}", (string realmName) =>
+            {
+                if (realmName == null)
+                {
+                    return Results.NotFound();
+                }
+                
+                eRealm realm = eRealm.None;
+                switch (realmName.ToLower())
+                {
+                    case "alb":
+                    case "albion":
+                        realm = eRealm.Albion;
+                        break;
+                    case "mid":
+                    case "midgard":
+                        realm = eRealm.Midgard;
+                        break;
+                    case "hib":
+                    case "hibernia":
+                        realm = eRealm.Hibernia;
+                        break;
+                }
+                
+                List<Realm.KeepInfo> realmInfo = _realm.GetKeepsByRealm(realm);
+                
+                if (realmInfo == null)
+                {
+                    return Results.NotFound($"Realm {realmName} not found");
+                }
+                return Results.Ok(realmInfo);
             });
             
             app.MapGet("/bread", () => Properties.BREAD);
