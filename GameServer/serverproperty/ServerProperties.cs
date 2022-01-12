@@ -452,6 +452,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "Discord_MidChat_Webhook_ID", "The id of the webhook for Midgard chat", "")]
 		public static string DISCORD_MIDCHAT_WEBHOOK_ID;
+		
+		/// <summary>
+		/// Tester Role
+		/// </summary>
+		[ServerProperty("atlas", "tester_login", "Allow only testers and staff to login", false)]
+		public static bool TESTER_LOGIN;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?

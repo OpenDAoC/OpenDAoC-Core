@@ -42,6 +42,7 @@ namespace DOL.Database
 		private bool m_isMuted;
 		private String m_notes;
 		private bool m_isWarned;
+		private bool m_isTester;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -54,6 +55,7 @@ namespace DOL.Database
 			m_plvl = 1;
 			m_realm = 0;
 			m_isMuted = false;
+			m_isTester = false;
 		}
 
 		/// <summary>
@@ -233,6 +235,16 @@ namespace DOL.Database
 		public string Notes {
 			get { return m_notes; }
 			set { Dirty = true; m_notes = value; }
+		}
+		
+		/// <summary>
+		/// Is this account allowed to connect to PTR
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool IsTester
+		{
+			get { return m_isTester; }
+			set { Dirty = true; m_isTester = value; }
 		}
 
 		/// <summary>
