@@ -134,7 +134,8 @@ namespace DOL.GS.GameEvents
 				newguild.Omotd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Omotd");
 				newguild.BonusType = Guild.eBonusType.Experience;
 				newguild.BonusStartTime = DateTime.Now;
-					newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
+				newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
+				newguild.Ranks[8].Invite = true;
 				newguild.IsStartingGuild = true;
 			}
 		}
