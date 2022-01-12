@@ -26,6 +26,7 @@ using DOL.GS.Keeps;
 using log4net;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -472,6 +473,19 @@ namespace DOL.GS
 			{
 				this.m_DBguild.BountyPoints = value;
 				this.SaveIntoDatabase();
+			}
+		}
+
+		public bool IsStartingGuild
+		{
+			get 
+			{ 
+				return m_DBguild.IsStartingGuild; 
+			}
+			set
+			{
+				m_DBguild.IsStartingGuild = value;
+				SaveIntoDatabase();
 			}
 		}
 

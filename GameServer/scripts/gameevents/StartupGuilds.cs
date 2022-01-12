@@ -132,7 +132,10 @@ namespace DOL.GS.GameEvents
 				newguild.Ranks[8].OcHear = true;
 				newguild.Motd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Motd");
 				newguild.Omotd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Omotd");
-				newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
+				newguild.BonusType = Guild.eBonusType.Experience;
+				newguild.BonusStartTime = DateTime.Now;
+					newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
+				newguild.IsStartingGuild = true;
 			}
 		}
 	}
