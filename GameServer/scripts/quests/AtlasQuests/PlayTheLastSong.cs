@@ -420,14 +420,14 @@ namespace DOL.GS.Quests.Midgard
 							Freeya.Say("Thor Boyaux, you were my family and you will be forever!\n" +
 							           "I will protect you wherever you are!");
 							Freeya.Emote(eEmote.Military);
-							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 3000);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 6000);
 							 //cast = Freeya.CastSpell(SpeedSong, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 							
 							//cast Damage Add Song
 							Freeya.Say("Exiled Vaettir, you accepted and supported me, I am very grateful to you!\n" +
 							           "I will protect you wherever you are!");
 							Freeya.Emote(eEmote.Military);
-							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 3000);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 9000);
 							
 							quest.Step = 4;
 							break;
