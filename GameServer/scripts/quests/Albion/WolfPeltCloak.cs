@@ -14,7 +14,6 @@ namespace DOL.GS.Quests.Albion
         protected const string questTitle = "Wolf Pelt Cloak";
         protected const string stewardWillieNpcName = "Steward Willie";
         protected const string streamstressLynnetNpcName = "Seamstress Lynnet";
-        protected const string brothDonNpcName = "Brother Don";
         protected const string wolfPeltCloak = "wolf_pelt_cloak";
         protected const string wolfFur = "wolf_fur";
         protected const string wolfHeadToken = "wolf_head_token";
@@ -24,7 +23,6 @@ namespace DOL.GS.Quests.Albion
 
         private static GameNPC _stewardWillie = null;
         private static GameNPC _lynett = null;
-        private static GameNPC _don = null;
 
         private static ItemTemplate _wolfPeltCloak = null;
         private static ItemTemplate _wolfFur = null;
@@ -63,16 +61,6 @@ namespace DOL.GS.Quests.Albion
             {
                 _lynett = gameNpcQuery[0];
             }
-            gameNpcQuery = WorldMgr.GetNPCsByName(brothDonNpcName, eRealm.Albion);
-            if (gameNpcQuery.Length == 0)
-            {
-                _logReasonQuestCantBeImplemented(brothDonNpcName);
-                return;
-            }
-            else
-            {
-                _don = gameNpcQuery[0];
-            }
 
             _wolfPeltCloak = GameServer.Database.FindObjectByKey<ItemTemplate>(wolfPeltCloak);
             if (_wolfPeltCloak == null)
@@ -97,8 +85,6 @@ namespace DOL.GS.Quests.Albion
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(_stewardWillie, GameLivingEvent.Interact, new DOLEventHandler(TalkToStewardWillie));
             GameEventMgr.AddHandler(_stewardWillie, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToStewardWillie));
-            GameEventMgr.AddHandler(_don, GameLivingEvent.Interact, new DOLEventHandler(TalkToBrotherDon));
-            GameEventMgr.AddHandler(_don, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToBrotherDon));
             GameEventMgr.AddHandler(_lynett, GameLivingEvent.Interact, new DOLEventHandler(TalkToSeamstressLynnet));
 
             _stewardWillie.AddQuestToGive(typeof(WolfPeltCloak));
@@ -117,8 +103,6 @@ namespace DOL.GS.Quests.Albion
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(_stewardWillie, GameObjectEvent.Interact, new DOLEventHandler(TalkToStewardWillie));
             GameEventMgr.RemoveHandler(_stewardWillie, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToStewardWillie));
-            GameEventMgr.RemoveHandler(_don, GameLivingEvent.Interact, new DOLEventHandler(TalkToBrotherDon));
-            GameEventMgr.RemoveHandler(_don, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToBrotherDon));
             GameEventMgr.RemoveHandler(_lynett, GameObjectEvent.Interact, new DOLEventHandler(TalkToSeamstressLynnet));
             _stewardWillie.RemoveQuestToGive(typeof(WolfPeltCloak));
         }
@@ -223,33 +207,6 @@ namespace DOL.GS.Quests.Albion
                 }
             }
         }
-        
-        protected static void TalkToBrotherDon(DOLEvent e, object sender, EventArgs args)
-        {
-            GamePlayer player = ((SourceEventArgs)args).Source as GamePlayer;
-            if (player == null)
-                return;
-
-            if (e == GameObjectEvent.Interact)
-            {
-                if (player.Inventory.GetFirstItemByID(_wolfPeltCloak.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != null)
-                    _don.SayTo(player, "Hail! You don't perhaps have one of those fine wolf pelt cloaks? If you no longer have need of it, we could greatly use it at the [orphanage].");
-                return;
-            }
-            else if (e == GameLivingEvent.WhisperReceive)
-            {
-                WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs)args;
-                switch (wArgs.Text)
-                {
-                    case "orphanage":
-                        _don.SayTo(player, "Why yes, the little ones can get an awful chill during the long cold nights, so the orphanage could use a good [donation] of wolf cloaks. I would take any that you have.");
-                        break;
-                    case "donation":
-                        _don.SayTo(player, "Do you want to donate your cloak?");
-                        break;
-                }
-            }
-        }
 
         public override bool CheckQuestQualification(GamePlayer player)
         {            
@@ -329,22 +286,6 @@ namespace DOL.GS.Quests.Albion
             if (player == null)
                 return;
 
-            // brother don
-            if (e == GamePlayerEvent.GiveItem)
-            {
-                GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
-                if (gArgs.Target.Name == _don.Name && gArgs.Item.Id_nb == _wolfPeltCloak.Id_nb)
-                {
-                    _don.SayTo(player, "Thank you! Your service to the church will been noted!");
-                    RemoveItem(_don, m_questPlayer, _wolfPeltCloak);
-                    _don.SayTo(player, "Well done! You've helped the children get over the harsh winter.");
-
-                    player.GainExperience(eXPSource.Quest, 200, true);
-
-                    return;
-                }
-            }
-
             if (player.IsDoingQuest(typeof(WolfPeltCloak)) == null)
                 return;
 
@@ -400,10 +341,9 @@ namespace DOL.GS.Quests.Albion
             GiveItem(_lynett, m_questPlayer, _wolfPeltCloak);
 
             m_questPlayer.GainExperience(eXPSource.Quest, 50, true);
-            long money = Money.GetMoney(0, 0, 0, 0, 30 + Util.Random(50));
+            long money = Money.GetMoney(0, 0, 0, 0, 50);
             m_questPlayer.AddMoney(money, "You recieve {0} for your service.");
             InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
-
         }
 
         public static void _logReasonQuestCantBeImplemented(string entity)
@@ -413,6 +353,5 @@ namespace DOL.GS.Quests.Albion
                 log.Warn($"Could not find {entity}, cannot load quest: Wolf Pelt Quest");
             }
         }
-
     }
 }
