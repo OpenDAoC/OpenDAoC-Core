@@ -4594,7 +4594,7 @@ namespace DOL.GS
 			if (IsAlive) return 0;
 			if (ObjectState == eObjectState.Active) return 0;
 			
-			if (m_level >= 5)
+			if (m_level >= 5 && m_databaseLevel < 60)
 			{
 				int minBound = (int) Math.Round(m_databaseLevel * .9);
 				int maxBound = (int) Math.Round(m_databaseLevel * 1.1);
