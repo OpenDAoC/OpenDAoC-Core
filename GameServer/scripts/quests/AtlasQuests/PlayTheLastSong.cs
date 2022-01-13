@@ -40,7 +40,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 		
 		private static GameNPC VikingDextz = null; // Start NPC
-		private static GameNPC Freeya = null; // Finish NPC
+		private static Freeya Freeya = null; // Finish NPC
 		
 		private static WorldObject FreeyasGrave = null; // Object
 
@@ -412,6 +412,8 @@ namespace DOL.GS.Quests.Midgard
 							           "I will protect you wherever you are!");
 							Freeya.Emote(eEmote.Military);
 							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 3000);
+							//bool cast = Freeya.CastSpell(HealthRegen, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+							
 
 
 							//cast Speed Song
@@ -419,6 +421,7 @@ namespace DOL.GS.Quests.Midgard
 							           "I will protect you wherever you are!");
 							Freeya.Emote(eEmote.Military);
 							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 3000);
+							 //cast = Freeya.CastSpell(SpeedSong, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 							
 							//cast Damage Add Song
 							Freeya.Say("Exiled Vaettir, you accepted and supported me, I am very grateful to you!\n" +
@@ -466,7 +469,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 0;
+					spell.CastTime = 3000;
 					spell.Icon = 3618;
 					spell.ClientEffect = 3618;
 					spell.Damage = 0;
@@ -514,7 +517,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 0;
+					spell.CastTime = 3000;
 					spell.Icon = 3612;
 					spell.ClientEffect = 3612;
 					spell.Damage = 0;
@@ -562,7 +565,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 0;
+					spell.CastTime = 3000;
 					spell.Icon = 3607;
 					spell.ClientEffect = 3607;
 					spell.Damage = 0;
@@ -744,6 +747,7 @@ namespace DOL.GS.Quests.Midgard
 				new RegionTimer(Freeya, new RegionTimerCallback(CastResistance), 3000);
 				
 				Freeya.Die(Freeya);
+				Step = 5;
 			}
 		}
 		
@@ -813,17 +817,14 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-			{
-				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
-				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
 
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			}
-			else
-			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
+	}
+	
+	public class Freeya : GameNPC{
+		
 	}
 }
