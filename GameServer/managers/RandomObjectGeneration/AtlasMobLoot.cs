@@ -53,7 +53,7 @@ namespace DOL.GS {
                 }
 
                 // chance to get a RoG Item
-                int chance = BASE_ROG_CHANCE + ((int)killedcon * 3);
+                int chance = BASE_ROG_CHANCE + ((killedcon + 1) * 3);
 
                 int lvl = mob.Level + 1;
                 if (lvl < 1)
