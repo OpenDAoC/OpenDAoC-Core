@@ -408,25 +408,12 @@ namespace DOL.GS.Quests.Midgard
 							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
 							
 							//cast Health Song
-							Freeya.Say("Dextz my friend, i will use my last power and play the very last songs for you!\n" +
-							           "I will protect you wherever you are!");
-							Freeya.Emote(eEmote.Military);
 							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 3000);
-							//bool cast = Freeya.CastSpell(HealthRegen, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-							
-
 
 							//cast Speed Song
-							Freeya.Say("Thor Boyaux, you were my family and you will be forever!\n" +
-							           "I will protect you wherever you are!");
-							Freeya.Emote(eEmote.Military);
 							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 6000);
-							 //cast = Freeya.CastSpell(SpeedSong, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 							
 							//cast Damage Add Song
-							Freeya.Say("Exiled Vaettir, you accepted and supported me, I am very grateful to you!\n" +
-							           "I will protect you wherever you are!");
-							Freeya.Emote(eEmote.Military);
 							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 9000);
 							
 							quest.Step = 4;
@@ -452,6 +439,9 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastHealthRegen(RegionTimer timer)
 		{
+			Freeya.Say("Dextz, my friend, I will use the last of my power and play my final songs for you!\n" +
+			           " I will protect you wherever you are!");
+			Freeya.Emote(eEmote.Military);
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
 				Freeya.TargetObject = player;
@@ -505,6 +495,9 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastSpeed(RegionTimer timer)
 		{
+			Freeya.Say("Thor Boyaux, you were my family and forever shall be! \n" +
+			           "I will protect you wherever you are!");
+			Freeya.Emote(eEmote.Military);
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
 				Freeya.TargetObject = player;
@@ -558,6 +551,9 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastDamageAdd(RegionTimer timer)
 		{
+			Freeya.Say("Exiled Vaettir, you accepted and supported me. For that, I am very grateful to you! \n" +
+			           "I will protect you wherever you are!");
+			Freeya.Emote(eEmote.Military);
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
 				Freeya.TargetObject = player;
@@ -609,7 +605,7 @@ namespace DOL.GS.Quests.Midgard
 		/// </summary>
 		/// <param name="timer">The timer that started this cast.</param>
 		/// <returns></returns>
-		private static int CastResistance(RegionTimer timer)
+		private static int CastResistance()
 		{
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
@@ -724,7 +720,7 @@ namespace DOL.GS.Quests.Midgard
 		//Set quest name
 		public override string Name
 		{
-			get { return "[Memorial] Play the last Song"; }
+			get { return "[Memorial] Play the Last Song"; }
 		}
 
 		// Define Steps
@@ -757,17 +753,15 @@ namespace DOL.GS.Quests.Midgard
 
 			if (Step == 4)
 			{
-				
+				Step = 5;
 				//cast Resistance Song
-				Freeya.Say("And this song is for you " + player.Name + "! You are very brave to come here to serve Midgard. " +
-				           "I'll play a resistance song for you and all of Midgard so we can continue to be a strong realm. " +
-				           "Valhalla is calling me, it's time to go. \nHa det, my friend.");
+				Freeya.Say("And this song is for you, " + player.Name + ". You are very brave to come here to serve Midgard. " +
+				           "I'll play a resistance song for you, and all of Midgard, so we can continue to prosper. " +
+				           "And with that, the horns have sounded. Valhalla is calling me and it's time I must go. \nHa det, my friend.");
 				Freeya.TurnTo(player, 500);
 				Freeya.Emote(eEmote.Military);
-				new RegionTimer(Freeya, new RegionTimerCallback(CastResistance), 3000);
-				
+				CastResistance();
 				Freeya.Die(Freeya);
-				Step = 5;
 				FinishQuest();
 				player.Out.SendObjectUpdate(Freeya);
 			}
