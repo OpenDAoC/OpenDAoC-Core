@@ -421,16 +421,16 @@ namespace DOL.GS.Quests.Midgard
 							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
 							Freeya.IsSinging = true;
 							//cast Health Song
-							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 3000);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 0);
 
 							//cast Speed Song
-							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 6000);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 3000);
 							
 							//cast Damage Add Song
-							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 9000);
+							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 6000);
 							
 							quest.Step = 4;
-							new RegionTimer(Freeya, new RegionTimerCallback(FinishSinging), 12000);
+							new RegionTimer(Freeya, new RegionTimerCallback(FinishSinging), 9000);
 							break;
 					}
 				}
@@ -787,7 +787,7 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.Emote(eEmote.Military);
 				CastResistance();
 				
-				new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 3000);
+				new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 6000);
 				FinishQuest();
 				player.Out.SendObjectUpdate(Freeya);
 			}
