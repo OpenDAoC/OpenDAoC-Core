@@ -35,10 +35,10 @@ namespace DOL.GS.Quests.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Memorial] Play the last Song";
+		protected const string questTitle = "[Memorial] Play the Last Song";
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
-		
+
 		private static GameNPC VikingDextz = null; // Start NPC
 		private static Freeya Freeya = null; // Finish NPC
 		
@@ -262,12 +262,12 @@ namespace DOL.GS.Quests.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							VikingDextz.SayTo(player, "God dag " +player.Name+ ", the mission is not that easy! Last year we lost a wonderful and helpful Skald. " +
-							                          "He tried to help whole Midgard beating monsters, to become stronger to fight the enemy realms. " +
-							                          "[Freeya] even helped enemies to beat monsters in Cruachan Gorge, he had a good soul.");
+							VikingDextz.SayTo(player, "God dag " +player.Name+ ", my mission is a difficult one! Last year we lost a wonderful and helpful Skald. " +
+							                          "He defended Midgard from hordes of monsters, and was a valiant soldier in our frontiers. Through his efforts, Midgard prospered. " +
+							                          "[Freeya] even helped protect the Horn of Valhalla on multiple occasions... he had a good soul.");
 							break;
 						case 2:
-							VikingDextz.SayTo(player, player.Name +", you will find Freeya's Grave on the hill north west from Svasud Faste. Please check if everything is fine there!");
+							VikingDextz.SayTo(player, player.Name +", you will find Freeya's grave on the hill northwest from Svasud Faste. Please check if everything is fine there.");
 							break;
 						case 3:
 							VikingDextz.SayTo(player, "You are probably forsaken by all good spirits! You saw Freeya? " +
@@ -300,19 +300,23 @@ namespace DOL.GS.Quests.Midgard
 					switch (wArgs.Text)
 					{
 						case "Freeya":
-							VikingDextz.SayTo(player, "Freeya a Master Enforcer and a good friend, i miss him a lot.");
+							VikingDextz.SayTo(player, "Freeya - a Master Enforcer and a good friend. I miss him every day. We could use his help now. " +
+							                          "Our borders need constant reinforcements, and we have heard of a growing threat in the north. ");
 							if (quest.Step == 1)
 							{
 								VikingDextz.Emote(eEmote.Cry);
-								VikingDextz.SayTo(player, "We buried him in Uppland on the hill, north west of Svasud Faste. Please [help me] and check if Freeya\'s Grave is fine and not broken." +
-								                          "I currently can not leave my post, because i need to help new budding healers. \nYou would be a honorary " + player.Gender.ToString().ToLower() + "!");
+								VikingDextz.SayTo(player, "We buried him in Uppland on the hill, north west of Svasud Faste. " +
+								                          "It has been a month or two since I visited his resting place. Could you please [help me] and check on Freeya\'s grave? " +
+								                          "\n\nIt would bring me peace of mind to know it is fine and not broken. " +
+								                          "Sadly, I currently can not leave my post as I need to train new healers for the ongoing battles.");
 							}
 							break;
 						case "help me":
 							if (quest.Step == 1)
 							{
-								VikingDextz.SayTo(player, "Thank you " + player.Name + ", thats very kind of you!");
+								VikingDextz.SayTo(player, "Thank you " + player.Name + ", that's very kind of you! You do me a great service.");
 								quest.Step = 2;
+								VikingDextz.Interact((player));
 							}
 							break;
 						case "abort":
@@ -343,7 +347,7 @@ namespace DOL.GS.Quests.Midgard
 
 			if (e == GameObjectEvent.Interact)
 			{
-				if (quest != null)
+				if (quest != null || Freeya.IsSinging)
 				{
 					switch (quest.Step)
 					{
@@ -351,15 +355,23 @@ namespace DOL.GS.Quests.Midgard
 							Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? He is a good friend, please visit him!");
 							break;
 						case 2:
-							if (quest.Step == 2)
+							player.Emote(eEmote.Shiver);
+							Freeya.TurnTo(player, 500);
+							if (player.Name.Contains("Dextz") || (player.Guild != null && player.Guild.Name.Contains("Thor Boyaux")))
 							{
-								player.Emote(eEmote.Shiver);
-								Freeya.TurnTo(player, 500);
 								Freeya.Emote(eEmote.Hug);
+								Freeya.SayTo(player, player.CharacterClass.Name + "... It is good to see you here again, my friend. " +
+								                     "I know you are protecting the realm in my stead. Fight with confidence knowing that I am watching from Odin's halls and lending you my strength! " +
+								                     "Would you join me in singing my [last songs for Midgard]?");
 							}
-							Freeya.SayTo(player, "God dag " + player.CharacterClass.Name + ", I knew that you are coming. Please dont be scared, I am friendly! " +
-							                     "My friend Dextz came here very often, it has to be something special that he chose you to check my grave! " +
-							                     "I really wished to see him once again, but maybe you can help me to play my [last songs for Midgard]?");
+							else
+							{
+								Freeya.Emote(eEmote.Hug);
+								Freeya.SayTo(player, "God dag " + player.CharacterClass.Name + ". I could sense you were coming. Please don't be scared, I promise I am friendly! " +
+								                     "My friend Dextz use to visit me very often, it must be something special that he has chosen you to check on me! " +
+								                     "I really wished to see him once again, but maybe you can help me to play my [last songs for Midgard]?");	
+							}
+							
 							
 							break;
 						case 3:
@@ -371,12 +383,12 @@ namespace DOL.GS.Quests.Midgard
 				{
 					if (player.Realm != eRealm.Midgard)
 					{
-						Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? I had a wonderful time with him! " +
-						                     "I hope you will meet him one day, but be careful, he is an amazing Healer!");
+						Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? I had a wonderful time with him, once! " +
+						                     "He was the most amazing Healer, I hope you meet him one day.");
 					}
 					else
 					{
-						Freeya.SayTo(player, "Hello " + player.CharacterClass.Name + ", dont forget, nobody is useless in this world who makes someone else\'s burden easier.");
+						Freeya.SayTo(player, "Hello " + player.CharacterClass.Name + ". Do not forget, nobody is useless in this world who makes someone else\'s burden easier.");
 					}
 					
 				}
@@ -385,7 +397,7 @@ namespace DOL.GS.Quests.Midgard
 			else if (e == GameLivingEvent.WhisperReceive)
 			{
 				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
+				if (quest == null || Freeya.IsSinging)
 				{
 					switch (wArgs.Text)
 					{
@@ -400,13 +412,13 @@ namespace DOL.GS.Quests.Midgard
 							if (quest.Step == 2)
 							{
 								Freeya.Emote(eEmote.Induct);
-								Freeya.SayTo(player, player.Name + ", please say the word, so i can begin the ceremony!");
+								Freeya.SayTo(player, player.Name + ", I will begin the ceremony at your word.");
 								quest.Step = 3;
 							}
 							break;
 						case "song":
 							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
-							
+							Freeya.IsSinging = true;
 							//cast Health Song
 							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 3000);
 
@@ -429,6 +441,15 @@ namespace DOL.GS.Quests.Midgard
 					
 				}
 			}
+		}
+		
+		private static int FinishSinging(RegionTimer timer)
+		{
+			Freeya.Say("It feels good to hear these songs once again!");
+			
+			
+			
+			return 0;
 		}
 		
 		#region HealthRegen
@@ -751,16 +772,17 @@ namespace DOL.GS.Quests.Midgard
 			if (player==null || player.IsDoingQuest(typeof (PlayTheLastSong)) == null)
 				return;
 
-			if (Step == 4)
+			if (Step == 4 && !Freeya.IsSinging)
 			{
 				Step = 5;
 				//cast Resistance Song
-				Freeya.Say("And this song is for you, " + player.Name + ". You are very brave to come here to serve Midgard. " +
-				           "I'll play a resistance song for you, and all of Midgard, so we can continue to prosper. " +
-				           "And with that, the horns have sounded. Valhalla is calling me and it's time I must go. \nHa det, my friend.");
+				Freeya.Say("And this song is for you, " + player.Name + ". You are very brave to come here in service of Midgard. " +
+				           "I'll play a resistance song for you, and all of Midgard, so the realm can continue to prosper.");
 				Freeya.TurnTo(player, 500);
 				Freeya.Emote(eEmote.Military);
 				CastResistance();
+				Freeya.Say(
+					"And with that... the horns have sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
 				Freeya.Die(Freeya);
 				FinishQuest();
 				player.Out.SendObjectUpdate(Freeya);
@@ -841,6 +863,6 @@ namespace DOL.GS.Quests.Midgard
 	}
 	
 	public class Freeya : GameNPC{
-		
+		public bool IsSinging = false;
 	}
 }
