@@ -106,6 +106,9 @@ namespace DOL.AI.Brain
                 if (living.IsMezzed || living.IsStealthed)
                     continue;
 
+                if (Body.GetConLevel(living) <= -3)
+	                continue;
+
 				//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
 				if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null && living.CurrentSpeed <= (living.MaxSpeed / 10)) //turrets will only not attack enemies that are snared, only rooted
 					continue;
