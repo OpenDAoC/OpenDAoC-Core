@@ -84,7 +84,7 @@ namespace DOL.GS.Quests.Midgard
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 763734 && npc.Y == 646142)
 					{
-						Freeya = npc;
+						Freeya = npc as Freeya;
 						break;
 					}
 			
@@ -93,7 +93,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find FreeyaMid , creating it ...");
-				Freeya = new GameNPC();
+				Freeya = new Freeya();
 				Freeya.Model = 165;
 				Freeya.Name = "Freeya";
 				Freeya.GuildName = "Thor Boyaux";
