@@ -59,6 +59,8 @@ namespace DOL.GS
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
 
+		private int m_databaseLevel;
+
 		
 		#region Formations/Spacing
 
@@ -2083,6 +2085,7 @@ namespace DOL.GS
 
 			// Skip Level.set calling AutoSetStats() so it doesn't load the DB entry we already have
 			m_level = dbMob.Level;
+			m_databaseLevel = dbMob.Level;
 			AutoSetStats(dbMob);
 			Level = dbMob.Level;
 
@@ -4543,6 +4546,9 @@ namespace DOL.GS
 				return;
 
 			int respawnInt = RespawnInterval;
+			int minBound = (int) Math.Floor(respawnInt * .95);
+			int maxBound = (int) Math.Floor(respawnInt * 1.05);
+			respawnInt = Util.Random(minBound, maxBound);
 			if (respawnInt > 0)
 			{
 				lock (m_respawnTimerLock)
@@ -4587,6 +4593,13 @@ namespace DOL.GS
 			//TODO some real respawn handling
 			if (IsAlive) return 0;
 			if (ObjectState == eObjectState.Active) return 0;
+			
+			if (m_level >= 5)
+			{
+				int minBound = (int) Math.Round(m_databaseLevel * .9);
+				int maxBound = (int) Math.Round(m_databaseLevel * 1.1);
+				this.Level = (byte)  Util.Random(minBound, maxBound);
+			}
 
 			//Heal this mob, move it to the spawnlocation
 			Health = MaxHealth;
