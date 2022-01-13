@@ -78,7 +78,7 @@ namespace DOL.GS.Commands
 
 		protected virtual void NoHelpAbandon(GamePlayer player, byte response)
 		{
-			if (response == 1)
+			if (response == 1 && player.Level < 50)
 			{
 				{
 					player.Emote(eEmote.Surrender);
