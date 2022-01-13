@@ -5738,6 +5738,8 @@ namespace DOL.GS {
                 case eCharacterClass.Shaman:
                     weaponTypes.Add(eObjectType.Staff);
                     weaponTypes.Add(eObjectType.Hammer);
+                    weaponTypes.Add(eObjectType.Hammer);
+                    weaponTypes.Add(eObjectType.Hammer);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Hunter:
