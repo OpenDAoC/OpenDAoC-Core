@@ -452,7 +452,12 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastHealthRegen(RegionTimer timer)
 		{
-			Freeya.CastSpell(HealthRegen, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
+			{
+				Freeya.TargetObject = player;
+				Freeya.CastSpell(HealthRegen, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));				
+			}
+			
 			return 0;
 		}
 		
@@ -469,7 +474,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 3000;
+					spell.CastTime = 0;
 					spell.Icon = 3618;
 					spell.ClientEffect = 3618;
 					spell.Damage = 0;
@@ -478,7 +483,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3618;
-					spell.Target = "Group";
+					spell.Target = "Realm";
 					spell.Type = "HealthRegenBuff";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -500,7 +505,12 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastSpeed(RegionTimer timer)
 		{
-			Freeya.CastSpell(SpeedSong, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
+			{
+				Freeya.TargetObject = player;
+				Freeya.CastSpell(SpeedSong, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));			
+			}
+			
 			return 0;
 		}
 		
@@ -517,7 +527,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 3000;
+					spell.CastTime = 0;
 					spell.Icon = 3612;
 					spell.ClientEffect = 3612;
 					spell.Damage = 0;
@@ -526,7 +536,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3612;
-					spell.Target = "Group";
+					spell.Target = "Realm";
 					spell.Type = "SpeedEnhancement";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -548,7 +558,12 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastDamageAdd(RegionTimer timer)
 		{
-			Freeya.CastSpell(DamageAdd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
+			{
+				Freeya.TargetObject = player;
+				Freeya.CastSpell(DamageAdd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			}
+			
 			return 0;
 		}
 		
@@ -565,7 +580,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 3000;
+					spell.CastTime = 0;
 					spell.Icon = 3607;
 					spell.ClientEffect = 3607;
 					spell.Damage = 0;
@@ -574,7 +589,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3607;
-					spell.Target = "Group";
+					spell.Target = "Realm";
 					spell.Type = "DamageAdd";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -596,7 +611,12 @@ namespace DOL.GS.Quests.Midgard
 		/// <returns></returns>
 		private static int CastResistance(RegionTimer timer)
 		{
-			Freeya.CastSpell(Resistance, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
+			{
+				Freeya.TargetObject = player;
+				Freeya.CastSpell(Resistance, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			}
+			
 			return 0;
 		}
 		
@@ -622,7 +642,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3656;
-					spell.Target = "Group";
+					spell.Target = "Realm";
 					spell.Type = "EnergyResistBuff";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -737,7 +757,7 @@ namespace DOL.GS.Quests.Midgard
 
 			if (Step == 4)
 			{
-				FinishQuest();
+				
 				//cast Resistance Song
 				Freeya.Say("And this song is for you " + player.Name + "! You are very brave to come here to serve Midgard. " +
 				           "I'll play a resistance song for you and all of Midgard so we can continue to be a strong realm. " +
@@ -748,6 +768,8 @@ namespace DOL.GS.Quests.Midgard
 				
 				Freeya.Die(Freeya);
 				Step = 5;
+				FinishQuest();
+				player.Out.SendObjectUpdate(Freeya);
 			}
 		}
 		
