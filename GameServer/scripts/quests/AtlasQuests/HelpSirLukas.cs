@@ -81,7 +81,7 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lukas", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -97,7 +97,7 @@ namespace DOL.GS.Quests.Albion
 					log.Warn("Could not find Lukas , creating it ...");
 				Lukas = new GameNPC();
 				Lukas.Model = 33;
-				Lukas.Name = "Lukas";
+				Lukas.Name = "Sir Lukas";
 				Lukas.GuildName = "Emissary of the King";
 				Lukas.Realm = eRealm.Albion;
 				Lukas.CurrentRegionID = 1;
