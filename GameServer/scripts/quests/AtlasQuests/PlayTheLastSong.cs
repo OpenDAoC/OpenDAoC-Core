@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
@@ -446,7 +447,7 @@ namespace DOL.GS.Quests.Midgard
 		
 		private static int FinishSinging(RegionTimer timer)
 		{
-			Freeya.Say("It feels good to hear these songs once again!");
+			Freeya.Say("It feels good to sing these songs once again!");
 
 			Freeya.IsSinging = false;
 			
@@ -737,6 +738,7 @@ namespace DOL.GS.Quests.Midgard
 				if (!VikingDextz.GiveQuest(typeof (PlayTheLastSong), player, 1))
 					return;
 			}
+			VikingDextz.Interact(player);
 		}
 
 		//Set quest name
@@ -793,6 +795,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 			Freeya.Say(
 				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
+			//Thread.Sleep(1000);
 			Freeya.Die(Freeya);
 			return 0;
 		}
