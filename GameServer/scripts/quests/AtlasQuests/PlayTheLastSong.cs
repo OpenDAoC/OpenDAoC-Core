@@ -339,7 +339,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
+			if (player == null || Freeya.IsSinging)
 				return;
 			
 			//We also check if the player is already doing the quest
@@ -347,7 +347,7 @@ namespace DOL.GS.Quests.Midgard
 
 			if (e == GameObjectEvent.Interact)
 			{
-				if (quest != null || Freeya.IsSinging)
+				if (quest != null)
 				{
 					switch (quest.Step)
 					{
@@ -429,6 +429,7 @@ namespace DOL.GS.Quests.Midgard
 							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 9000);
 							
 							quest.Step = 4;
+							new RegionTimer(Freeya, new RegionTimerCallback(FinishSinging), 12000);
 							break;
 					}
 				}
@@ -446,8 +447,8 @@ namespace DOL.GS.Quests.Midgard
 		private static int FinishSinging(RegionTimer timer)
 		{
 			Freeya.Say("It feels good to hear these songs once again!");
-			
-			
+
+			Freeya.IsSinging = false;
 			
 			return 0;
 		}
@@ -781,12 +782,19 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.TurnTo(player, 500);
 				Freeya.Emote(eEmote.Military);
 				CastResistance();
-				Freeya.Say(
-					"And with that... the horns have sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
-				Freeya.Die(Freeya);
+				
+				new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 3000);
 				FinishQuest();
 				player.Out.SendObjectUpdate(Freeya);
 			}
+		}
+		
+		private static int DelayedDeath(RegionTimer timer)
+		{
+			Freeya.Say(
+				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
+			Freeya.Die(Freeya);
+			return 0;
 		}
 		
 		public class PlayTheLastSongTitle : EventPlayerTitle 
