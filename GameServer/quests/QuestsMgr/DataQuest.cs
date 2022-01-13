@@ -2239,7 +2239,7 @@ namespace DOL.GS.Quests
 				if (charQuest.Count < MaxQuestCount && player.Level <= MaxLevel && player.Level >= Level)
 				{
 					TryTurnTo(obj, player);
-					long lvlXP  = player.GetExperienceNeededForLevel(player.Level) / player.Level;
+					long lvlXP  = (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) / player.Level;
 					if (item.Count == 1)
 					{
 						RemoveItem(obj, player, item, false);
