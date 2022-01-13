@@ -742,7 +742,9 @@ namespace DOL.GS.Quests.Midgard
 					case 3:
 						return "Help Freeya to play the last Songs. (/whisper \"last song\")";
 					case 4:
-						return "Rest in Peace Freeya!";
+						return "Listen to Freeya\'s ceremony!";
+					case 5:
+						return "Rest in Peace Freeya! (quest completed)";
 				}
 				return base.Description;
 			}
