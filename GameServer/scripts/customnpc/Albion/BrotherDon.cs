@@ -15,15 +15,15 @@ namespace DOL.GS.Scripts
 
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
-            GamePlayer player = sender as GamePlayer;
+            if (e == GamePlayerEvent.ReceiveItem)
+            {
+                ReceiveItemEventArgs gArgs = (ReceiveItemEventArgs)args;
+                GamePlayer player = gArgs.Source as GamePlayer;
+                if(player == null)
+                {
+                    return;
+                }
 
-            if (player == null)
-            {
-                return;
-            }
-            if (e == GamePlayerEvent.GiveItem)
-            {
-                GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
                 if (gArgs.Target.Name == this.Name && gArgs.Item.Id_nb == _wolfPeltCloak.Id_nb)
                 {
                     InventoryItem item = player.Inventory.GetFirstItemByID(wolfPeltCloak, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
