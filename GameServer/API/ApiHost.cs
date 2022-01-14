@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using DOL.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -17,6 +18,8 @@ namespace DOL.GS.API
 
             var contentRoot = Directory.GetCurrentDirectory();
             DateTime startupTime = DateTime.Now;
+
+            // builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(9874));
             
             var webRoot = Path.Combine(contentRoot,"wwwroot", "docs");
             
@@ -25,7 +28,7 @@ namespace DOL.GS.API
                 configuration.RootPath = webRoot;
             });
             
-            var app = builder.Build();
+            var api = builder.Build();
             
             var _player = new Player();
             var _guild = new Guild();
@@ -33,15 +36,15 @@ namespace DOL.GS.API
             var _realm = new Realm();
 
             // API DOCS
-            app.UseStaticFiles();
+            api.UseStaticFiles();
 
-            app.UseStaticFiles(new StaticFileOptions()
+            api.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
                     webRoot),
                 RequestPath = new PathString("/docs")
             });
-            app.Map("/docs", spaApp=>
+            api.Map("/docs", spaApp=>
             {
                 spaApp.UseSpa(spa =>
                 {
@@ -49,15 +52,15 @@ namespace DOL.GS.API
                 });
             });
 
-            app.Map("/", async c =>
+            api.Map("/", async c =>
             {
                 c.Response.Redirect("/docs");
             });
 
             // STATS
-            app.MapGet("/stats", async c =>
+            api.MapGet("/stats", async c =>
                 await c.Response.WriteAsync(_stats.GetPlayerCount()));
-            app.MapGet("/stats/rp", (string guildName) =>
+            api.MapGet("/stats/rp", (string guildName) =>
             {
                 var TopRpPlayers = _stats.GetTopRP();
                 
@@ -68,12 +71,12 @@ namespace DOL.GS.API
                 return Results.Ok(TopRpPlayers);
                 
             });
-            app.MapGet("/stats/uptime", async c =>
+            api.MapGet("/stats/uptime", async c =>
                 await c.Response.WriteAsJsonAsync(_stats.GetUptime(startupTime)));
             
             // PLAYER
-            app.MapGet("/player", () => "Usage /player/{playerName}");
-            app.MapGet("/player/{playerName}", (string playerName) =>
+            api.MapGet("/player", () => "Usage /player/{playerName}");
+            api.MapGet("/player/{playerName}", (string playerName) =>
             {
                 var playerInfo = _player.GetPlayerInfo(playerName);
                 
@@ -84,11 +87,11 @@ namespace DOL.GS.API
                 return Results.Ok(playerInfo);
                 
             });
-            app.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
+            api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
             
             // GUILD
-            app.MapGet("/guild", () => "Usage /guild/{guildName}");
-            app.MapGet("/guild/{guildName}", (string guildName) =>
+            api.MapGet("/guild", () => "Usage /guild/{guildName}");
+            api.MapGet("/guild/{guildName}", (string guildName) =>
             {
                 var guildInfo = _guild.GetGuildInfo(guildName);
                 
@@ -99,7 +102,7 @@ namespace DOL.GS.API
                 return Results.Ok(guildInfo);
                 
             });
-            app.MapGet("/guild/{guildName}/members", (string guildName) =>
+            api.MapGet("/guild/{guildName}/members", (string guildName) =>
             {
                 var guildMembers = _player.GetPlayersByGuild(guildName);
                 
@@ -112,10 +115,10 @@ namespace DOL.GS.API
             });
 
             // REALM
-            app.MapGet("/realm", () => "Usage /realm/{realmName}");
-            app.MapGet("/realm/df", async c =>
+            api.MapGet("/realm", () => "Usage /realm/{realmName}");
+            api.MapGet("/realm/df", async c =>
                 await c.Response.WriteAsJsonAsync(_realm.GetDFOwner()));
-            app.MapGet("/realm/{realmName}", (string realmName) =>
+            api.MapGet("/realm/{realmName}", (string realmName) =>
             {
                 if (realmName == null)
                 {
@@ -148,9 +151,9 @@ namespace DOL.GS.API
                 return Results.Ok(realmInfo);
             });
             
-            app.MapGet("/bread", () => Properties.BREAD);
+            api.MapGet("/bread", () => Properties.BREAD);
 
-            app.Run();
+            api.Run();
         }
         
     }
