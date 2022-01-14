@@ -5378,6 +5378,14 @@ namespace DOL.GS
 
             if (Level == 40)
             {
+                const string customKey = "usedi30";
+                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                if (usedi30 != null)
+                {
+                    Out.SendMessage("You have reached Level 40! You have been awarded a bonus of 1000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 1000);
+                }
+                
                 // Creates a TimeXLevel to track the levelling time to 40
                 if (Client.Account.PrivLevel == 1)
                 {
@@ -5418,6 +5426,24 @@ namespace DOL.GS
 
             if (Level == 50)
             {
+                const string customKey = "usedi30";
+                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                
+                const string customKey2 = "usedi40";
+                var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+
+                if (usedi30 != null)
+                {
+                    Out.SendMessage("You have reached Level 50! You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 5000);
+                }
+                else if (usedi40 != null)
+                {
+                    Out.SendMessage("You have reached Level 50! You have been awarded a bonus of 2000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 2000);
+                }
+                    
+                
                 // Check if player has completed the Hardcore Challenge
                 if (HCFlag)
                 {
