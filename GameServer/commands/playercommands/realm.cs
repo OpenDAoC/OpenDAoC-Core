@@ -141,22 +141,30 @@ namespace DOL.GS.Commands
 			realmInfo.Add(midKeeps);
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.HibKeeps") + ":");
 			realmInfo.Add(hibKeeps);
-			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": " + GlobalConstants.RealmToName(DFEnterJumpPoint.DarknessFallOwner));
-			if (DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
-            {
-				var pve = DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
-				string realmName = "";
-				if (DFEnterJumpPoint.PreviousOwner == eRealm._LastPlayerRealm || 
-				    DFEnterJumpPoint.PreviousOwner == eRealm.Hibernia)
-					realmName = "Hibernia";
-				if (DFEnterJumpPoint.PreviousOwner == eRealm._FirstPlayerRealm ||
-				    DFEnterJumpPoint.PreviousOwner == eRealm.Albion)
-					realmName = "Albion";
-				if (DFEnterJumpPoint.PreviousOwner == eRealm.Midgard)
-					realmName = "Midgard";
-				realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
-			}			
 
+			if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
+			{
+				realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": All Realms");
+			}
+			else
+			{
+				realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": " + GlobalConstants.RealmToName(DFEnterJumpPoint.DarknessFallOwner));
+				if (DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
+				{
+					var pve = DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
+					string realmName = "";
+					if (DFEnterJumpPoint.PreviousOwner == eRealm._LastPlayerRealm || 
+					    DFEnterJumpPoint.PreviousOwner == eRealm.Hibernia)
+						realmName = "Hibernia";
+					if (DFEnterJumpPoint.PreviousOwner == eRealm._FirstPlayerRealm ||
+					    DFEnterJumpPoint.PreviousOwner == eRealm.Albion)
+						realmName = "Albion";
+					if (DFEnterJumpPoint.PreviousOwner == eRealm.Midgard)
+						realmName = "Midgard";
+					realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+				}	
+			}
+			
 			realmInfo.Add(" ");
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.UseRelicCommand"));
 			client.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.Title"), realmInfo);
