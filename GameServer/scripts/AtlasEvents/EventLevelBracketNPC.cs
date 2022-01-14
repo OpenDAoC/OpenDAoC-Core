@@ -58,7 +58,7 @@ namespace DOL.GS.Scripts
             const string customKey2 = "usedi40";
             var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
-            if (usedi30 != null || usedi40 != null) return false;
+            if (usedi30 != null || usedi40 != null || player.HCFlag|| player.NoHelp) return false;
 
             player.Out.SendMessage("Hello " + player.Name + ", good to see you again.\n\nI can grant you [level 30] for this testing event.\n\n",
                 eChatType.CT_Say, eChatLoc.CL_PopupWindow);
@@ -81,6 +81,8 @@ namespace DOL.GS.Scripts
             const string customKey2 = "usedi40";
             var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
+            if (usedi30 != null || usedi40 != null || player.HCFlag || player.NoHelp) return false;
+            
             switch(str)
             {
                 case "level 30":
