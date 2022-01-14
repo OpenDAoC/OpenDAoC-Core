@@ -322,7 +322,20 @@ namespace DOL.GS
 									
 									if (drop != null && (drop.Realm == (int)player.Realm || drop.Realm == 0 || player.CanUseCrossRealmItems))
 									{
-										if (lootTemplate.Chance == 100)
+										if (lootTemplate.Chance < 0)
+										{
+											int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
+											long tempProp = player.TempProperties.getProperty<long>(lootTemplate.ItemTemplateID, 0); //check if our loot has dropped for player
+
+											//if we've never dropped an item, or our cooldown is up, drop an item
+											if (tempProp == 0 ||
+											    tempProp + dropCooldown < GameLoop.GameLoopTime)
+											{
+												loot.AddFixed(drop, lootTemplate.Count);
+												player.TempProperties.setProperty(lootTemplate.ItemTemplateID, GameLoop.GameLoopTime);
+											}
+										}
+										else if (lootTemplate.Chance == 100)
 										{
 											loot.AddFixed(drop, lootTemplate.Count);
 										}
