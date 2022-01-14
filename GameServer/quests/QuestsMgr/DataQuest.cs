@@ -2229,13 +2229,13 @@ namespace DOL.GS.Quests
 		{
 			// checking the quests we can offer to see if this is a collection quest or if the item starts a quest
 			//log.DebugFormat("Checking collection quests: '{0}' of type '{1}', wants item '{2}'", Name, (eStartType)DBDataQuest.StartType, DBDataQuest.CollectItemTemplate == null ? "" : DBDataQuest.CollectItemTemplate);
-
 			// check to see if this object has a collection quest and if so accept the item and generate the reward
 			// collection quests do not go into the GamePlayer quest lists
-			if (StartType == eStartType.Collection && item.Id_nb == DBDataQuest.CollectItemTemplate)
+			if (StartType == eStartType.Collection && item.Id_nb.Equals(DBDataQuest.CollectItemTemplate))
 			{
 				CharacterXDataQuest charQuest = GetCharacterQuest(player, ID, true);
 
+				//Console.WriteLine($"count {charQuest.Count} maxCount {MaxQuestCount} Minlvl {Level} Maxlvl {MaxLevel} playerlvl {player.Level}");
 				if (charQuest.Count < MaxQuestCount && player.Level <= MaxLevel && player.Level >= Level)
 				{
 					TryTurnTo(obj, player);
@@ -2341,6 +2341,8 @@ namespace DOL.GS.Quests
 						SendMessage(player, m_stepTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 				}
+				
+				player.Out.SendQuestUpdate(this);
 			}
 		}
 

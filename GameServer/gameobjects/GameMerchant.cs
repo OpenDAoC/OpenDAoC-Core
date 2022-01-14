@@ -23,9 +23,11 @@ using System.Reflection;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Events;
 using DOL.Language;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
 
 namespace DOL.GS
 {
@@ -449,6 +451,13 @@ namespace DOL.GS
 				player.GainBountyPoints(item.Count * value);
 				player.Inventory.RemoveItem(item);
 				return true;
+			}
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
 			}
 
 			return base.ReceiveItem(source, item);

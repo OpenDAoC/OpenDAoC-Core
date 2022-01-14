@@ -20,7 +20,9 @@
 using System;
 using System.Collections;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
 using DOL.Language;
 
 namespace DOL.GS
@@ -81,57 +83,66 @@ namespace DOL.GS
 			GamePlayer player = source as GamePlayer;
 			if (player == null || item == null)
 				return false;
-
-			if (item.Count != 1)
+			
+			if (this.DataQuestList.Count > 0)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
-				                                                  "Scripts.Blacksmith.StackedObjets", GetName(0, false)),
-				                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-				return false;
-			}
-
-			switch (item.Object_Type)
-			{
-				case (int)eObjectType.GenericItem:
-				case (int)eObjectType.Magical:
-				case (int)eObjectType.Instrument:
-				case (int)eObjectType.Poison:
-					SayTo(player, LanguageMgr.GetTranslation(player.Client.Account.Language,
-					                                         "Scripts.Blacksmith.CantRepairThat"));
-
-					return false;
-			}
-
-			if (item.Condition < item.MaxCondition)
-			{
-				if (item.Durability <= 0)
+				foreach (DataQuest quest in DataQuestList)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
-					                                                  "Scripts.Blacksmith.ObjectCantRepaired"), eChatType.CT_System,
-					                       eChatLoc.CL_SystemWindow);
-
-					return false;
-				}
-				else
-				{
-					player.TempProperties.setProperty(REPAIR_ITEM_WEAK, new WeakRef(item));
-					player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language,
-					                                                              "Scripts.Blacksmith.RepairCostAccept",
-					                                                              Money.GetString(item.RepairCost), item.Name),
-					                                   new CustomDialogResponse(BlacksmithDialogResponse));
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
 				}
 			}
 			else
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
-				                                                  "Scripts.Blacksmith.NoNeedRepair"), eChatType.CT_System,
-				                       eChatLoc.CL_SystemWindow);
+				if (item.Count != 1)
+				{
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
+							"Scripts.Blacksmith.StackedObjets", GetName(0, false)),
+						eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					return false;
+				}
+
+				switch (item.Object_Type)
+				{
+					case (int) eObjectType.GenericItem:
+					case (int) eObjectType.Magical:
+					case (int) eObjectType.Instrument:
+					case (int) eObjectType.Poison:
+						SayTo(player, LanguageMgr.GetTranslation(player.Client.Account.Language,
+							"Scripts.Blacksmith.CantRepairThat"));
+
+						return false;
+				}
+
+				if (item.Condition < item.MaxCondition)
+				{
+					if (item.Durability <= 0)
+					{
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
+								"Scripts.Blacksmith.ObjectCantRepaired"), eChatType.CT_System,
+							eChatLoc.CL_SystemWindow);
+
+						return false;
+					}
+					else
+					{
+						player.TempProperties.setProperty(REPAIR_ITEM_WEAK, new WeakRef(item));
+						player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language,
+								"Scripts.Blacksmith.RepairCostAccept",
+								Money.GetString(item.RepairCost), item.Name),
+							new CustomDialogResponse(BlacksmithDialogResponse));
+					}
+				}
+				else
+				{
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
+							"Scripts.Blacksmith.NoNeedRepair"), eChatType.CT_System,
+						eChatLoc.CL_SystemWindow);
+				}
 			}
 
 			return false;
-
-		}
+			}
 
 		protected void BlacksmithDialogResponse(GamePlayer player, byte response)
 		{
