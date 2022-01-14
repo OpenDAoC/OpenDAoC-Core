@@ -25,6 +25,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests.Actions;
+using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Midgard
@@ -418,19 +419,36 @@ namespace DOL.GS.Quests.Midgard
 							}
 							break;
 						case "song":
-							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
-							Freeya.IsSinging = true;
-							//cast Health Song
-							new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 0);
+							if (Freeya.IsSinging == true)
+								break;
 
-							//cast Speed Song
-							new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 3000);
+							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
+							if (quest.Step == 3)
+							{
+									
+								quest.Step = 4;
+								Freeya.IsSinging = true;
+
+								//cast Health Song
+								new RegionTimer(Freeya, new RegionTimerCallback(CastHealthRegen), 3000);
+
+								//cast Speed Song
+								new RegionTimer(Freeya, new RegionTimerCallback(CastSpeed), 8000);
+								
+								//cast Damage Add Song
+								new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 13000);
+								
+								
+								new RegionTimer(Freeya, new RegionTimerCallback(timer => FinishSinging(timer, player)), 18000);
+								
+								if (quest.Step == 4 && !Freeya.IsSinging)
+								{
+									quest.Step = 5;
+								}
+								
+								new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 23000);
+							}
 							
-							//cast Damage Add Song
-							new RegionTimer(Freeya, new RegionTimerCallback(CastDamageAdd), 6000);
-							
-							quest.Step = 4;
-							new RegionTimer(Freeya, new RegionTimerCallback(FinishSinging), 9000);
 							break;
 					}
 				}
@@ -445,10 +463,20 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
-		private static int FinishSinging(RegionTimer timer)
+		private static int FinishSinging(RegionTimer timer, GamePlayer player)
 		{
-			Freeya.Say("It feels good to sing these songs once again!");
-
+			PlayTheLastSong quest = player.IsDoingQuest(typeof(PlayTheLastSong)) as PlayTheLastSong;
+			if (quest == null)
+				return 0;
+			
+			//cast Resistance Song
+			Freeya.Say("And this song is for you, " + player.Name + ". You are very brave to come here in service of Midgard. " +
+			           "I'll play a resistance song for you, and all of Midgard, so the realm can continue to prosper.");
+			Freeya.TurnTo(player, 500);
+			Freeya.Emote(eEmote.Military);
+			CastResistance();
+			quest.FinishQuest();
+			player.Out.SendObjectUpdate(Freeya);
 			Freeya.IsSinging = false;
 			
 			return 0;
@@ -760,7 +788,7 @@ namespace DOL.GS.Quests.Midgard
 						return "Find Freeya's Grave in Uppland North West from Svasud Faste on the hill.\n" +
 						       "(Loc: X:42850 Y:39926 Z:8691)";
 					case 3:
-						return "Help Freeya to play the last Songs. (/whisper \"last song\")";
+						return "Help Freeya to play the last Songs. (/whisper \"song\")";
 					case 4:
 						return "Listen to Freeya\'s ceremony!";
 					case 5:
@@ -777,19 +805,21 @@ namespace DOL.GS.Quests.Midgard
 			if (player==null || player.IsDoingQuest(typeof (PlayTheLastSong)) == null)
 				return;
 
-			if (Step == 4 && !Freeya.IsSinging)
+			if (e == GameLivingEvent.Interact && (Step == 4 && !Freeya.IsSinging))
 			{
-				Step = 5;
-				//cast Resistance Song
-				Freeya.Say("And this song is for you, " + player.Name + ". You are very brave to come here in service of Midgard. " +
-				           "I'll play a resistance song for you, and all of Midgard, so the realm can continue to prosper.");
-				Freeya.TurnTo(player, 500);
-				Freeya.Emote(eEmote.Military);
-				CastResistance();
-				
-				new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 6000);
-				FinishQuest();
-				player.Out.SendObjectUpdate(Freeya);
+				InteractEventArgs gArgs = (InteractEventArgs) args;
+				if (gArgs.Source.Name == Freeya.Name)
+				{
+					new RegionTimer(Freeya, new RegionTimerCallback(timer => FinishSinging(timer, player)), 3000);
+								
+					if (Step == 4 && !Freeya.IsSinging)
+					{
+						Step = 5;
+					}
+								
+					new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 8000);
+					FinishQuest();
+				}
 			}
 		}
 		
@@ -872,6 +902,7 @@ namespace DOL.GS.Quests.Midgard
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			
 		}
 	}
 	
