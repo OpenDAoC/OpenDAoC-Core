@@ -5382,7 +5382,7 @@ namespace DOL.GS
                 var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                 if (usedi30 != null)
                 {
-                    Out.SendMessage("You have reached Level 40! You have been awarded a bonus of 1000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage("You have been awarded a bonus of 1000 Atlas Orbs for hitting level 40 with a test character.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 1000);
                 }
                 
@@ -5434,12 +5434,12 @@ namespace DOL.GS
 
                 if (usedi30 != null)
                 {
-                    Out.SendMessage("You have reached Level 50! You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 5000);
                 }
                 else if (usedi40 != null)
                 {
-                    Out.SendMessage("You have reached Level 50! You have been awarded a bonus of 2000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 2000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 2000);
                 }
                     
