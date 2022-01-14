@@ -57,9 +57,9 @@ namespace DOL.GS.Spells
  			//	return;
 
 			//have to do it here because OnAttackedByEnemy is not called to not get aggro
-			if (target.Realm == 0 || Caster.Realm == 0)
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-			else target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+			//if (target.Realm == 0 || Caster.Realm == 0)
+				//target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+			//else target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
 			SendEffectAnimation(target, 0, false, 1);
 
 			if (target is GamePlayer)
@@ -72,12 +72,18 @@ namespace DOL.GS.Spells
             if (target is GamePlayer)
                 MessageToLiving(target, LanguageMgr.GetTranslation((target as GamePlayer).Client, "Amnesia.MessageToTarget"), eChatType.CT_Spell);
 
+            /*
             GameSpellEffect effect;
             effect = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             if (effect != null)
             {
                 effect.Cancel(false);
                 return;
+            }*/
+
+            if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
+            {
+	            EffectListService.TryCancelFirstEffectOfTypeOnTarget(target, eEffect.Pulse);
             }
 
 			if (target is GameNPC)

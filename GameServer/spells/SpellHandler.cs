@@ -3084,6 +3084,7 @@ namespace DOL.GS.Spells
 			if (!HasPositiveEffect)
 			{
 				SendEffectAnimation(target, 0, false, 1);
+				if(Spell.SpellType == (byte)eSpellType.Amnesia) return;
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;
