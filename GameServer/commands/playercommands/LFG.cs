@@ -67,9 +67,9 @@ namespace DOL.GS.Commands
 
         private void Broadcast(GamePlayer player, string message)
         {
-            foreach (GameClient c in WorldMgr.GetClientsOfRealm(player.Realm))
+            foreach (GameClient c in WorldMgr.GetAllPlayingClients())
             {
-                if (GameServer.ServerRules.IsAllowedToUnderstand(c.Player, player))
+                if (player.Realm == c.Player.Realm || c.Account.PrivLevel > 1)
                 {
                     c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", player.Name + " (" + player.Level + ", " + player.CharacterClass.Name + ")", message), eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
                 }
