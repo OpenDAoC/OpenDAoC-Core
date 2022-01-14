@@ -13559,6 +13559,12 @@ namespace DOL.GS
                 Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
+            
+            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse) )
+            {
+                Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
 
             if (IsOnHorse || IsSummoningMount)
                 IsOnHorse = false;
