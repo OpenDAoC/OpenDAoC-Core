@@ -2267,6 +2267,7 @@ namespace DOL.GS.Quests
 					else if (item.Count > 1)
 					{
 						int RemainingTurnIns = MaxQuestCount - charQuest.Count;
+						int TotalInputCount = item.Count;
 						long rewardXP = 0;
 						//if we're turning in more items than are required
 						if (RemainingTurnIns < item.Count)
@@ -2290,7 +2291,7 @@ namespace DOL.GS.Quests
 						else
 						{
 							//turn in the whole stack
-							for (int i = 0; i < item.Count; i++)
+							for (int i = 0; i < TotalInputCount; i++)
 							{
 								if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
 								{
