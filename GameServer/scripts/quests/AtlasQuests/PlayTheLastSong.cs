@@ -195,7 +195,8 @@ namespace DOL.GS.Quests.Midgard
 				FreeyasGrave.Z = 8682;
 				FreeyasGrave.Heading = 118;
 				FreeyasGrave.Region = 100;
-				FreeyasGrave.Model = 145;
+				FreeyasGrave.Model = 636;
+				FreeyasGrave.Realm = 2;
 				FreeyasGrave.ObjectId = "freeya_grave_questitem";
 				if (SAVE_INTO_DATABASE)
 				{
