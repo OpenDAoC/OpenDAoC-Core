@@ -2271,41 +2271,40 @@ namespace DOL.GS.Quests
 						//if we're turning in more items than are required
 						if (RemainingTurnIns < item.Count)
 						{
-							if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
-							{
-								if(rewardXP == 0)
-									rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
-								else if (lvlXP > rewardXP)
-									rewardXP = lvlXP;
-								player.GainExperience(eXPSource.Quest, rewardXP * RemainingTurnIns);
-							}
-							//remove only the remaining turn-ins
-							item.Count -= RemainingTurnIns;
-							GameServer.Database.SaveObject(item);
-							
 							for (int i = 0; i < RemainingTurnIns; i++)
 							{
+								if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
+								{
+									if(rewardXP == 0)
+										rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+									else if (lvlXP > rewardXP)
+										rewardXP = lvlXP;
+									player.GainExperience(eXPSource.Quest, rewardXP);
+								}
+								//remove only the remaining turn-ins
+								item.Count -= 1;
 								charQuest.Count++;
 							}
+							GameServer.Database.SaveObject(item);
 						}
 						else
 						{
 							//turn in the whole stack
-							if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
-							{
-								if(rewardXP == 0)
-									rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
-								else if (lvlXP > rewardXP)
-									rewardXP = lvlXP;
-								player.GainExperience(eXPSource.Quest, rewardXP * item.Count);
-							}
-							
-							RemoveItem(obj, player, item, false);
-							
 							for (int i = 0; i < item.Count; i++)
 							{
+								if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
+								{
+									if(rewardXP == 0)
+										rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+									else if (lvlXP > rewardXP)
+										rewardXP = lvlXP;
+									player.GainExperience(eXPSource.Quest, rewardXP);
+								}
+								//remove only the remaining turn-ins
+								item.Count -= 1;
 								charQuest.Count++;
 							}
+							RemoveItem(obj, player, item, false);
 						}
 						
 						if (m_sourceTexts.Count > 0)
