@@ -24,6 +24,7 @@ using DOL.Language;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using System.Collections;
+using DOL.GS.Quests;
 using log4net;
 
 namespace DOL.GS
@@ -117,6 +118,14 @@ namespace DOL.GS
 		public override bool ReceiveItem(GameLiving source, InventoryItem item)
 		{
 			if (source == null || item == null) return false;
+			
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
+			}
 
 			if (source is GamePlayer)
 			{
