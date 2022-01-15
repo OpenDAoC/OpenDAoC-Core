@@ -204,8 +204,9 @@ namespace DOL.GS
 
             if (!e.IsDisabled && e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
             {
-                if (e.Owner.effectListComponent.GetSpellEffects(e.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
-                    RequestEnableEffect(e.Owner.effectListComponent.GetSpellEffects(e.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault());
+                var enableEffect = e.Owner.effectListComponent.GetSpellEffects(e.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
+                if (enableEffect != null && enableEffect.IsDisabled)
+                    RequestEnableEffect(enableEffect);
             }
 
             if (e.Owner is GamePlayer player)
