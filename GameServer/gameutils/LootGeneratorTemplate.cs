@@ -305,7 +305,7 @@ namespace DOL.GS
 					// TemplateName usually equals Mob name, so if you want to know what drops for a mob:
 					// select * from LootTemplate where templatename = 'mob name';
 					// It is possible to have TemplateName != MobName but this works only if there is an entry in MobXLootTemplate for the MobName.
-
+					
 					if (killedMobXLootTemplates == null)
 					{
 						// If there is no MobXLootTemplate entry then every item in this mobs LootTemplate can drop.
@@ -314,6 +314,7 @@ namespace DOL.GS
 						{
 							Dictionary<string, LootTemplate> lootTemplatesToDrop = m_lootTemplates[mob.Name.ToLower()];
 
+							
 							if (lootTemplatesToDrop != null)
 							{
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop.Values)
@@ -324,9 +325,10 @@ namespace DOL.GS
 									{
 										if (lootTemplate.Chance < 0)
 										{
+											
 											int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
 											long tempProp = player.TempProperties.getProperty<long>(lootTemplate.ItemTemplateID, 0); //check if our loot has dropped for player
-
+											
 											//if we've never dropped an item, or our cooldown is up, drop an item
 											if (tempProp == 0 ||
 											    tempProp + dropCooldown < GameLoop.GameLoopTime)
@@ -356,20 +358,23 @@ namespace DOL.GS
 						// due to the fact that 100% items always drop regardless of the drop limit
 
 						List<LootTemplate> lootTemplatesToDrop = new List<LootTemplate>();
+						
 						foreach (MobXLootTemplate mobXLootTemplate in killedMobXLootTemplates)
 						{
 							loot = GenerateLootFromMobXLootTemplates(mobXLootTemplate, lootTemplatesToDrop, loot, player);
-
+							
 							if (lootTemplatesToDrop != null)
 							{
+								
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop)
 								{
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
+									
 									if (lootTemplate.Chance < 0)
 									{
 										int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
 										long tempProp = player.TempProperties.getProperty<long>(lootTemplate.ItemTemplateID, 0); //check if our loot has dropped for player
-
+										//Console.WriteLine($"time left to drop: {TimeSpan.FromMilliseconds(GameLoop.GameLoopTime - tempProp + dropCooldown).TotalSeconds} rdyToDrop? {tempProp + dropCooldown < GameLoop.GameLoopTime}");
 										//if we've never dropped an item, or our cooldown is up, drop an item
 										if (tempProp == 0 ||
 										    tempProp + dropCooldown < GameLoop.GameLoopTime)
@@ -413,10 +418,10 @@ namespace DOL.GS
 			// Using Name + Realm (if ALLOW_CROSS_REALM_ITEMS) for the key to try and prevent duplicate drops
 
 			Dictionary<string, LootTemplate> templateList = null;
-
-			if (m_lootTemplates.ContainsKey(mobXLootTemplates.LootTemplateName.ToLower()))
+			
+			if (m_lootTemplates.ContainsKey(mobXLootTemplates.MobName.ToLower()))
 			{
-				templateList = m_lootTemplates[mobXLootTemplates.LootTemplateName.ToLower()];
+				templateList = m_lootTemplates[mobXLootTemplates.MobName.ToLower()];
 			}
 
 			if (templateList != null)
