@@ -256,6 +256,7 @@ namespace DOL.GS.Quests.Albion
                             break;
                     }
                 }
+
             }
         }
 
@@ -282,6 +283,7 @@ namespace DOL.GS.Quests.Albion
             else if (e == GameLivingEvent.WhisperReceive)
             {
                 WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs)args;
+
                 if (quest == null)
                 {
                     switch (wArgs.Text)
@@ -300,6 +302,7 @@ namespace DOL.GS.Quests.Albion
                             break;
                     }
                 }
+
             }
         }
 
