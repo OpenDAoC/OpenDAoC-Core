@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -15,15 +16,27 @@ namespace DOL.GS.Quests.Albion
         protected const string masterTorNpc = "Master Torr";
         protected const string waxSealedNoteInDb = "wax_sealed_note";
         protected const string waxSealedNoteName = "Wax Sealed Note";
+
         protected const int MIN_LEVEL = 1;
         protected const int MAX_LEVEL = 5;
+
+        protected const int _cluster1BaseX = 519203;
+        protected const int _cluster1BaseY = 451090;
+        protected const int _cluster1BaseZ = 2370;
+
+        protected const int _cluster2BaseX = 523755;
+        protected const int _cluster2BaseY = 451229;
+        protected const int _cluster2BaseZ = 2379;
+
+        protected const int _xDelta = 75;
+        protected const int _yDelta = 20;
 
         private static ItemTemplate waxSealedNote = null;
 
         private static GameNPC _masterTor = null;
         private static GameNPC _stewardWillie = null;
 
-        private static GameNPC _gaurdsman1 = null;
+        private static GameGuard _gaurdsman1 = null;
         private static GameGuard _gaurdsman2 = null;
         private static GameGuard _gaurdsman3 = null;
         private static GameGuard _gaurdsman4 = null;
@@ -33,6 +46,93 @@ namespace DOL.GS.Quests.Albion
         public ImmediateResolutionVB(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
         public ImmediateResolutionVB(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
+
+        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        {
+            GamePlayer player = sender as GamePlayer;
+
+            if(player == null)
+            {
+                return;
+            }
+            if(player.IsDoingQuest(typeof(ImmediateResolutionVB)) == null)
+            {
+                return;
+            }
+
+            if(Step == 2 && e == GamePlayerEvent.GiveItem)
+            {
+                GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
+                if(gArgs.Target == _gaurdsman1 || gArgs.Target == _gaurdsman2 || gArgs.Target == _gaurdsman3 || gArgs.Target == _gaurdsman4)
+                {
+                    if(gArgs.Item.Id_nb == waxSealedNoteInDb)
+                    {
+                        GameNPC selectedGuard = gArgs.Target as GameNPC;
+                        INpcTemplate template = NpcTemplateMgr.GetTemplate(12211);
+                        RemoveItem(selectedGuard, player, waxSealedNote);
+                        selectedGuard.SayTo(player, "If you wish to assist us in our defense we would welcome it.");
+                        selectedGuard.SayTo(player, "Prepare yourselves!");
+                        FinishQuest();
+                        if (gArgs.Target == _gaurdsman1 || gArgs.Target == _gaurdsman2)
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                GameNPC mob = new GameNPC(template)
+                                {
+                                    X = _cluster1BaseX - (i * _xDelta),
+                                    Y = _cluster1BaseY + (i * _yDelta),
+                                    Z = _cluster1BaseZ,
+                                    CurrentRegionID = 1,
+                                    SaveInDB = false
+                                };
+                                mob.AddBrain(new StandardMobBrain());
+                                mob.TargetObject = gArgs.Target;
+                                mob.AddToWorld();
+                                if (i <= 5)
+                                {                                    
+                                    mob.WalkTo(_gaurdsman2.X, _gaurdsman2.Y, _gaurdsman2.Z, 180);
+                                    (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman2, 1000);
+                                }
+                                else
+                                {
+                                    mob.WalkTo(_gaurdsman1.X, _gaurdsman1.Y, _gaurdsman1.Z, 180);
+                                    (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman1, 1000);
+                                }
+                            }
+                        }
+
+                        if (gArgs.Target == _gaurdsman3 || gArgs.Target == _gaurdsman4)
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                GameNPC mob = new GameNPC(template)
+                                {
+                                    X = _cluster2BaseX - (i * _xDelta),
+                                    Y = _cluster2BaseY + (i * _yDelta),
+                                    Z = _cluster2BaseZ,
+                                    CurrentRegionID = 1,
+                                    SaveInDB = false
+                                };
+                                mob.AddBrain(new StandardMobBrain());
+                                mob.TargetObject = gArgs.Target;
+                                mob.AddToWorld();
+                                if (i <= 5)
+                                {
+                                    mob.WalkTo(_gaurdsman4.X, _gaurdsman4.Y, _gaurdsman4.Z, 180);
+                                    (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman4, 1000);
+                                }
+                                else
+                                {
+                                    mob.WalkTo(_gaurdsman3.X, _gaurdsman3.Y, _gaurdsman3.Z, 180);
+                                    (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman3, 1000);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            base.Notify(e, sender, args);
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -156,7 +256,6 @@ namespace DOL.GS.Quests.Albion
                             break;
                     }
                 }
-
             }
         }
 
@@ -183,7 +282,6 @@ namespace DOL.GS.Quests.Albion
             else if (e == GameLivingEvent.WhisperReceive)
             {
                 WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs)args;
-
                 if (quest == null)
                 {
                     switch (wArgs.Text)
@@ -202,7 +300,6 @@ namespace DOL.GS.Quests.Albion
                             break;
                     }
                 }
-
             }
         }
 
@@ -291,6 +388,16 @@ namespace DOL.GS.Quests.Albion
             return true;
         }
 
+        public override void FinishQuest()
+        {
+            base.FinishQuest();
+            m_questPlayer.GainExperience(eXPSource.Quest, 50);
+            long money = Money.GetMoney(0, 0, 0, 0, 30 + Util.Random(50));
+            m_questPlayer.AddMoney(money, "You recieve {0} for your service.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+
+        }
+
         public static void _logReasonQuestCantBeImplemented(string entity)
         {
             if (log.IsWarnEnabled)
@@ -303,7 +410,7 @@ namespace DOL.GS.Quests.Albion
         {
             NpcTemplateMgr.Reload();
             INpcTemplate template = NpcTemplateMgr.GetTemplate(12964);
-            _gaurdsman1 = new GameNPC(template)
+            _gaurdsman1 = new GameGuard(template)
             {
                 X = 519273,
                 Y = 452388,
