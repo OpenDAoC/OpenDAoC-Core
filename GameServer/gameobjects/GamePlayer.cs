@@ -9416,7 +9416,7 @@ namespace DOL.GS
 
                 if (useItem.SpellID != 0 || useItem.SpellID1 != 0 || useItem.PoisonSpellID != 0) // don't return without firing events
                 {
-                    if (IsSitting)
+                    if (IsSitting && useItem.Object_Type != (int)eObjectType.Poison)
                     {
                         Out.SendMessage("You can't use an item while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
