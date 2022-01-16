@@ -209,7 +209,7 @@ public class StandardMobState_AGGRO : StandardMobState
 
 public class StandardMobState_ROAMING : StandardMobState
 {
-    private int _roamCooldown = 20 * 1000;
+    private int _roamCooldown = 45 * 1000;
     private long _lastRoamTick = 0;
 
     public StandardMobState_ROAMING(FSM fsm, StandardMobBrain brain) : base(fsm, brain)
