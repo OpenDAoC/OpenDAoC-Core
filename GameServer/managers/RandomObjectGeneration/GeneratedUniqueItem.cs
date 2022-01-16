@@ -9346,7 +9346,7 @@ namespace DOL.GS {
                     }
                     break;
                 default:
-                    validModels.Add(449);
+                    validModels.Add(846);
                     break;
             }
 
@@ -10607,6 +10607,7 @@ namespace DOL.GS {
                     return "Shillelagh";
                 case 846:
                 case 2661:
+                case 646:
                     return "War Mattock";
                 case 11:
                 case 13:
