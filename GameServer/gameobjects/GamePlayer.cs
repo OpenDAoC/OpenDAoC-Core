@@ -4926,6 +4926,18 @@ namespace DOL.GS
                 return 0;
             }
         }
+        
+        public static long GetScaledExperienceAmountForLevel(int level)
+        {
+            try
+            {
+                return ScaledXPForLevel[level];
+            }
+            catch
+            {
+                return 0;
+            }
+        }
 
         /// <summary>
         /// A table that holds the required XP/Level
@@ -4974,6 +4986,65 @@ namespace DOL.GS
             6899999950, // xp to level 39
             8599999950, // xp to level 40
             12899999950, // xp to level 41
+            20699999950, // xp to level 42
+            29999999950, // xp to level 43
+            40799999950, // xp to level 44
+            53999999950, // xp to level 45
+            69599999950, // xp to level 46
+            88499999950, // xp to level 47
+            110999999950, // xp to level 48
+            137999999950, // xp to level 49
+            169999999950, // xp to level 50
+            999999999950, // xp to level 51
+        };
+        
+        /// <summary>
+        /// A table that holds the required XP/Level
+        /// This must include a final entry for MaxLevel + 1
+        /// </summary>
+        private static readonly long[] ScaledXPForLevel =
+        {
+            0, // xp to level 1
+            50, // xp to level 2
+            250, // xp to level 3
+            850, // xp to level 4
+            2300, // xp to level 5
+            6350, // xp to level 6
+            15950, // xp to level 7
+            37950, // xp to level 8
+            88950, // xp to level 9
+            203950, // xp to level 10
+            459950, // xp to level 11
+            839950, // xp to level 12
+            1399950, // xp to level 13
+            2199950, // xp to level 14
+            3399950, // xp to level 15
+            5979943, // xp to level 16
+            9163942, // xp to level 17
+            13805942, // xp to level 18
+            20649941, // xp to level 19
+            30820941, // xp to level 20
+            45839940, // xp to level 21
+            66186940, // xp to level 22
+            93939939, // xp to level 23
+            131609939, // xp to level 24
+            182279938, // xp to level 25
+            249999938, // xp to level 26
+            340199937, // xp to level 27
+            457199937, // xp to level 28
+            614399936, // xp to level 29
+            825599936, // xp to level 30
+            1104999935, // xp to level 31
+            1467199935, // xp to level 32
+            1940399934, // xp to level 33
+            2566899934, // xp to level 34
+            3390199933, // xp to level 35
+            4481999933, // xp to level 36
+            5847999932, // xp to level 37
+            7534999932, // xp to level 38
+            9521999931, // xp to level 39
+            11953999931, // xp to level 40
+            15479999940, // xp to level 41
             20699999950, // xp to level 42
             29999999950, // xp to level 43
             40799999950, // xp to level 44
@@ -9351,8 +9422,9 @@ namespace DOL.GS
                         if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                         {
                             SwitchWeapon(eActiveWeaponSlot.Distance);
+                            if(useItem.Object_Type == (int)eObjectType.Instrument) return;
                         }
-                        else if (!attackComponent.AttackState)
+                        else if (!attackComponent.AttackState && useItem.Object_Type != (int)eObjectType.Instrument)
                         {
                             StopCurrentSpellcast();
                             attackComponent.StartAttack(TargetObject);
