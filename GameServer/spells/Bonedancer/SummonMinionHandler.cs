@@ -129,7 +129,10 @@ namespace DOL.GS.Spells
 						subPet.MinionGetWeapon(CommanderPet.eWeaponType.Staff);
 						break;
 					case BDMeleeBrain melee:
-						subPet.MinionGetWeapon((CommanderPet.eWeaponType)Util.Random((int)CommanderPet.eWeaponType.TwoHandAxe, (int)CommanderPet.eWeaponType.TwoHandSword));
+						if(Util.Chance(60))
+							subPet.MinionGetWeapon(CommanderPet.eWeaponType.TwoHandAxe);
+						else
+							subPet.MinionGetWeapon(CommanderPet.eWeaponType.OneHandAxe);
 						break;
 				}
 		}
