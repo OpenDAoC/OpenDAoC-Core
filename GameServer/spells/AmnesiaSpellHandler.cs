@@ -68,6 +68,8 @@ namespace DOL.GS.Spells
 				((GamePlayer)target).styleComponent.NextCombatBackupStyle = null;
 			}
 			target.StopCurrentSpellcast(); //stop even if MoC or QC
+			target.rangeAttackComponent.RangeAttackTarget = null;
+			target.TargetObject = null;
 
             if (target is GamePlayer)
                 MessageToLiving(target, LanguageMgr.GetTranslation((target as GamePlayer).Client, "Amnesia.MessageToTarget"), eChatType.CT_Spell);
