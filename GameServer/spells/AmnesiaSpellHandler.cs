@@ -94,8 +94,12 @@ namespace DOL.GS.Spells
 				IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 				{
-					if (Util.Chance(Spell.AmnesiaChance))
+					if (Util.Chance(Spell.AmnesiaChance) && npc.TargetObject is GameLiving living)
+					{
 						aggroBrain.ClearAggroList();
+						aggroBrain.AddToAggroList(living, 1);
+					}
+						
 				}
 			}
 		}
