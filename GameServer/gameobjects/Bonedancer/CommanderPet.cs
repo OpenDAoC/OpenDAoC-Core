@@ -193,6 +193,7 @@ namespace DOL.GS
 		/// <returns>True, if string needs further processing.</returns>
 		public override bool WhisperReceive(GameLiving source, string str)
 		{
+			return false; // everything below this comment is added in 1.83, and should not exist in a strict 1.65 level. feel free to add it back in if desired
 			if (!(source is GamePlayer player) || player != Owner)
 				return false;
 
