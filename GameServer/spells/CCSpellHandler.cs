@@ -379,7 +379,7 @@ namespace DOL.GS.Spells
 
 //
 
-			if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity))//target.HasAbility(Abilities.MezzImmunity))
+			if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
