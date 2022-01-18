@@ -204,8 +204,8 @@ namespace DOL.GS
                 spell.ID != 9606)
                 return;
 
-            player.StopCurrentSpellcast();
-            player.StartInterruptTimer(player.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
+            player?.StopCurrentSpellcast();
+            player?.StartInterruptTimer(player.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
         }
     }
 }
