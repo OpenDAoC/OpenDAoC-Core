@@ -1731,9 +1731,11 @@ namespace DOL.GS
 				newX = followTarget.X;
 				newY = followTarget.Y;
 				newZ = followTarget.Z;
-				if (brain.CheckFormation(ref newX, ref newY, ref newZ))
+				if (brain.CheckFormation(ref newX, ref newY, ref newZ) )
 				{
-					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
+					if(TargetObject == null)
+						WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
+					
 					return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
 				}
 			}

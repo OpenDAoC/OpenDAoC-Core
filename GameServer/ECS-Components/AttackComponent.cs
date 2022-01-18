@@ -2398,8 +2398,9 @@ namespace DOL.GS
             {
                 bool penetrate = false;
 
+                
                 if (stealthStyle)
-                    penetrate = true;
+                    return eAttackResult.HitUnstyled; //exit early for stealth to prevent breaking bubble but still register a hit
 
                 if (ad.Attacker.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long // stealth styles pierce bladeturn
                     || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != ecsbladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn

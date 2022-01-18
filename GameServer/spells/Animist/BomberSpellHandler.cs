@@ -72,6 +72,7 @@ namespace DOL.GS.Spells
             m_pet.TempProperties.setProperty(BOMBERTARGET, target);
             m_pet.Name = Spell.Name;
 			m_pet.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
+            m_pet.Flags ^= GameNPC.eFlags.PEACE;
 			m_pet.FixedSpeed = true;
             m_pet.MaxSpeedBase = 285;
             m_pet.Follow(target, 5, Spell.Range * 5); // with Toa bonus, if the bomber was fired > Spell.Range base, it didnt move..

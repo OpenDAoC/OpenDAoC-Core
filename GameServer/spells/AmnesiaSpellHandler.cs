@@ -68,6 +68,9 @@ namespace DOL.GS.Spells
 				((GamePlayer)target).styleComponent.NextCombatBackupStyle = null;
 			}
 			target.StopCurrentSpellcast(); //stop even if MoC or QC
+			target.rangeAttackComponent.RangeAttackTarget = null;
+			if(target is GamePlayer)
+				target.TargetObject = null;
 
             if (target is GamePlayer)
                 MessageToLiving(target, LanguageMgr.GetTranslation((target as GamePlayer).Client, "Amnesia.MessageToTarget"), eChatType.CT_Spell);
@@ -92,8 +95,12 @@ namespace DOL.GS.Spells
 				IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 				{
-					if (Util.Chance(Spell.AmnesiaChance))
+					if (Util.Chance(Spell.AmnesiaChance) && npc.TargetObject != null && npc.TargetObject is GameLiving living)
+					{
 						aggroBrain.ClearAggroList();
+						aggroBrain.AddToAggroList(living, 1);
+					}
+						
 				}
 			}
 		}

@@ -114,6 +114,7 @@ namespace DOL.AI.Brain
 				if (Body.IsWithinRadius(target, Body.AttackRange) || m_melee)
 				{
 					Body.StartAttack(target);
+					if (Body.Name.Contains("air")) CheckSpells(eCheckSpellType.Offensive);
 				}
 				else if (!CheckSpells(eCheckSpellType.Offensive))
 					Body.StartAttack(target);
@@ -157,6 +158,13 @@ namespace DOL.AI.Brain
 							{
 								casted = true;
 								break;
+							}
+						}
+						else if (Body.Name.Contains("air"))
+						{
+							if (Util.Chance(25))
+							{
+								CheckInstantSpells(spell);
 							}
 						}
 						else
