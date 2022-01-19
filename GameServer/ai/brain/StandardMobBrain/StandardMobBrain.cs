@@ -383,8 +383,8 @@ namespace DOL.AI.Brain
                 if (Body.Faction != null)
                 {
                     aggrolevel = Body.Faction.GetAggroToFaction(player);
-                    if (aggrolevel < 0)
-                        aggrolevel = 0;
+                    if (aggrolevel < 75)
+                        return;
                 }
 
                 if (aggrolevel <= 0 && AggroLevel <= 0)
