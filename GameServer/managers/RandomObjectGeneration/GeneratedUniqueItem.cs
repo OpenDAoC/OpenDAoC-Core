@@ -1214,7 +1214,7 @@ namespace DOL.GS {
                 case eCharacterClass.Shaman:
                     if (Util.Chance(20))
                         return eProperty.MaxMana;
-                    if (rand <= 20)
+                    if (rand <= 10)
                         return eProperty.Strength;
                     else if (rand <= 40)
                         return eProperty.Dexterity;
