@@ -2376,6 +2376,7 @@ namespace DOL.GS
 			this.GuildName = template.GuildName;
 			this.ExamineArticle = template.ExamineArticle;
 			this.MessageArticle = template.MessageArticle;
+			this.Faction = FactionMgr.GetFactionByID(template.FactionId);
 
 			#region Models, Sizes, Levels, Gender
 			// Grav: this.Model/Size/Level accessors are triggering SendUpdate()

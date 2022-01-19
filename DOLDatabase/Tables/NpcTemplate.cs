@@ -77,6 +77,7 @@ namespace DOL.Database
 		private byte m_visibleWeaponSlots = 0;
 		private bool m_replaceMobValues =  false;
 		private string m_packageID = string.Empty;
+		private int m_factionid = 0;
         #endregion Variables
 
         /// <summary>
@@ -222,6 +223,20 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_model = value;
+			}
+		}
+		
+		/// <summary>
+		/// Model
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public int FactionID
+		{
+			get { return m_factionid; }
+			set
+			{
+				Dirty = true;
+				m_factionid = value;
 			}
 		}
 
