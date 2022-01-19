@@ -105,6 +105,7 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.Size = 50;
 				Freeya.RespawnInterval = 120000; //2min
 				Freeya.Level = 65;
+				Freeya.Gender = eGender.Female;
 				Freeya.X = 763734;
 				Freeya.Y = 646142;
 				Freeya.Z = 8687;
@@ -266,15 +267,15 @@ namespace DOL.GS.Quests.Midgard
 					{
 						case 1:
 							VikingDextz.SayTo(player, "God dag " +player.Name+ ", my mission is a difficult one! Last year we lost a wonderful and helpful Skald. " +
-							                          "He defended Midgard from hordes of monsters, and was a valiant soldier in our frontiers. Through his efforts, Midgard prospered. " +
-							                          "[Freeya] even helped protect the Horn of Valhalla on multiple occasions... he had a good soul.");
+							                          "She defended Midgard from hordes of monsters, and was a valiant soldier in our frontiers. Through her efforts, Midgard prospered. " +
+							                          "[Freeya] even helped protect the Horn of Valhalla on multiple occasions... she had a good soul.");
 							break;
 						case 2:
 							VikingDextz.SayTo(player, player.Name +", you will find Freeya's grave on the hill northwest from Svasud Faste. Please check if everything is fine there.");
 							break;
 						case 3:
 							VikingDextz.SayTo(player, "You are probably forsaken by all good spirits! You saw Freeya? " +
-							                          "Please tell him, Thor Boyaux and Exiled Vaettir pay great respect for a legend of Midgard!\nRest in Peace my friend.");
+							                          "Please tell her, Thor Boyaux and Exiled Vaettir pay great respect for a legend of Midgard!\nRest in Peace my friend.");
 							break;
 					}
 				}
@@ -303,13 +304,13 @@ namespace DOL.GS.Quests.Midgard
 					switch (wArgs.Text)
 					{
 						case "Freeya":
-							VikingDextz.SayTo(player, "Freeya - a Master Enforcer and a good friend. I miss him every day. We could use his help now. " +
+							VikingDextz.SayTo(player, "Freeya - a Master Enforcer and a good friend. I miss her every day. We could use her help now. " +
 							                          "Our borders need constant reinforcements, and we have heard of a growing threat in the north. ");
 							if (quest.Step == 1)
 							{
 								VikingDextz.Emote(eEmote.Cry);
-								VikingDextz.SayTo(player, "We buried him in Uppland on the hill, north west of Svasud Faste. " +
-								                          "It has been a month or two since I visited his resting place. Could you please [help me] and check on Freeya\'s grave? " +
+								VikingDextz.SayTo(player, "We buried her in Uppland on the hill, north west of Svasud Faste. " +
+								                          "It has been a month or two since I visited her resting place. Could you please [help me] and check on Freeya\'s grave? " +
 								                          "\n\nIt would bring me peace of mind to know it is fine and not broken. " +
 								                          "Sadly, I currently can not leave my post as I need to train new healers for the ongoing battles.");
 							}
@@ -387,7 +388,8 @@ namespace DOL.GS.Quests.Midgard
 					if (player.Realm != eRealm.Midgard)
 					{
 						Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? I had a wonderful time with him, once! " +
-						                     "He was the most amazing Healer, I hope you meet him one day.");
+						                     "He was the most amazing Healer, I hope you meet him one day.\n" +
+						                     "Do not forget, nobody is useless in this world who makes someone else\'s burden easier.");
 					}
 					else
 					{
@@ -476,10 +478,10 @@ namespace DOL.GS.Quests.Midgard
 			Freeya.TurnTo(player, 500);
 			Freeya.Emote(eEmote.Military);
 			CastResistance();
+			Freeya.IsSinging = false;
 			quest.FinishQuest();
 			player.Out.SendObjectUpdate(Freeya);
-			Freeya.IsSinging = false;
-			
+
 			return 0;
 		}
 		
@@ -829,6 +831,7 @@ namespace DOL.GS.Quests.Midgard
 			Freeya.Say(
 				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
 			//Thread.Sleep(1000);
+			Freeya.IsSinging = false;
 			Freeya.Die(Freeya);
 			return 0;
 		}
