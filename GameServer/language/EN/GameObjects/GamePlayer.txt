@@ -129,9 +129,9 @@ GamePlayer.GetExamineMessages.YouExamine:			You examine {0}.
 GamePlayer.GetExamineMessages.YourGuildMember:		You examine {0}. {1} is a member of the {2} class in your guild.
 GamePlayer.IsCloakHoodUp.NoLongerWear:				You will no longer wear your hood up.		
 GamePlayer.IsCloakHoodUp.NowWear:					You will now wear your hood up.		
-GamePlayer.IsCloakInvisible.Invisible:				You will now don't see your cloak.		
+GamePlayer.IsCloakInvisible.Invisible:				You will no longer see your cloak.		
 GamePlayer.IsCloakInvisible.Visible:				You will now see your cloak.		
-GamePlayer.IsHelmInvisible.Invisible:				You will now don't see your helm.		
+GamePlayer.IsHelmInvisible.Invisible:				You will no longer see your helm.		
 GamePlayer.IsHelmInvisible.Visible:					You will now see your helm.		
 GamePlayer.IsOnHorse.DismountSteed:			You dismount your steed.
 GamePlayer.IsOnHorse.MountSteed:			You mount your steed.
