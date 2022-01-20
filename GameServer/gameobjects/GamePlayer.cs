@@ -8097,14 +8097,13 @@ namespace DOL.GS
 
             if (HCFlag)
             {
-                playerMessage += " [HARDCORE]";
-                publicMessage += " [HARDCORE]";
-                
+                playerMessage = "[HC Lv" + Level + "] " + playerMessage;
+                publicMessage = "[HC Lv" + Level + "] " + publicMessage;
+
                 if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))
                 {
                     BroadcastDeathOnDiscord(publicMessage, Name, LastName, CharacterClass.Name, Level, PlayedTime);
                 }
-                
             }
                 
 
