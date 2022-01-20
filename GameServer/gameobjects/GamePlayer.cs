@@ -422,6 +422,16 @@ namespace DOL.GS
         }
         
         /// <summary>
+        /// Gets or sets the boosted flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool Boosted
+        {
+            get { return (DBCharacter != null ? DBCharacter.isBoosted : true); }
+            set { if (DBCharacter != null) DBCharacter.isBoosted = value; }
+        }
+        
+        /// <summary>
         /// gets or sets the guildnote for this player
         /// (delegate to property in DBCharacter)
         /// </summary>
