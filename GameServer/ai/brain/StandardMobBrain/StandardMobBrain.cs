@@ -1635,12 +1635,12 @@ namespace DOL.AI.Brain
                 }
             }*/
 
-            lock (target.effectListComponent)
+            spell.IsSpec = true;
+            if (EffectListService.GetEffectOnTarget(target, EffectService.GetEffectFromSpell(spell)) != null)
+            //if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell)))
             {
-                spell.IsSpec = true;
-                if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell))){
-                    return true;
-                }
+                return true;
+            }
                 /*
                 //Check through each effect in the target's effect list
                 foreach (IGameEffect effect in target.EffectList)
@@ -1655,7 +1655,7 @@ namespace DOL.AI.Brain
                     if (speffect.Spell.EffectGroup == spell.EffectGroup)
                         return true;
                 }*/
-            }
+
 
             //the answer is no, the effect has not been found
             return false;

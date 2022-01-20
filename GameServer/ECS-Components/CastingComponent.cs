@@ -67,6 +67,15 @@ namespace DOL.GS
             // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
             m_newSpellHandler.Ability = spellCastingAbilityHandler;
 
+            if (spellHandler != null && !spellHandler.SpellLine.IsBaseLine)
+            {
+                spellHandler.Spell.IsSpec = true;
+            }
+            if (instantSpellHandler != null && !instantSpellHandler.SpellLine.IsBaseLine)
+            {
+                instantSpellHandler.Spell.IsSpec = true;
+            }
+
             if (spellHandler != null)
             {
                 if (spellHandler.Spell.IsFocus)
@@ -77,12 +86,13 @@ namespace DOL.GS
                         instantSpellHandler = m_newSpellHandler;
                     else
                         spellHandler = m_newSpellHandler;
+
+                    m_newSpellHandler.Tick(GameLoop.GameLoopTime);
                 }
                 else if (m_newSpellHandler.Spell.IsInstantCast)
                 {
-                    //queuedSpellHandler = spellHandler;
-                    //spellHandler = m_newSpellHandler;
                     instantSpellHandler = m_newSpellHandler;
+                    m_newSpellHandler.Tick(GameLoop.GameLoopTime);
                 }
                 else 
                 {
@@ -126,6 +136,8 @@ namespace DOL.GS
                 else
                     spellHandler = m_newSpellHandler;
 
+                m_newSpellHandler.Tick(GameLoop.GameLoopTime);
+
                 //Special CastSpell rules
                 if (spellHandler is SummonNecromancerPet necroPetHandler)
                 {
@@ -138,14 +150,12 @@ namespace DOL.GS
                 }
             }
 
-            if (spellHandler != null && !spellHandler.SpellLine.IsBaseLine)
-            {
-                spellHandler.Spell.IsSpec = true;
-            }
-            if (instantSpellHandler != null && !instantSpellHandler.SpellLine.IsBaseLine)
-            {
-                instantSpellHandler.Spell.IsSpec = true;
-            }
+            if (instantSpellHandler != null)
+                instantSpellHandler.Tick(GameLoop.GameLoopTime);
+            else if (spellHandler != null)
+                spellHandler.Tick(GameLoop.GameLoopTime);
+
+
 
             return true;
         }
