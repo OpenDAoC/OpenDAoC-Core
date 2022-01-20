@@ -2229,17 +2229,17 @@ namespace DOL.GS.Quests
 		{
 			// checking the quests we can offer to see if this is a collection quest or if the item starts a quest
 			//log.DebugFormat("Checking collection quests: '{0}' of type '{1}', wants item '{2}'", Name, (eStartType)DBDataQuest.StartType, DBDataQuest.CollectItemTemplate == null ? "" : DBDataQuest.CollectItemTemplate);
-
 			// check to see if this object has a collection quest and if so accept the item and generate the reward
 			// collection quests do not go into the GamePlayer quest lists
-			if (StartType == eStartType.Collection && item.Id_nb == DBDataQuest.CollectItemTemplate)
+			if (StartType == eStartType.Collection && item.Id_nb.Equals(DBDataQuest.CollectItemTemplate))
 			{
 				CharacterXDataQuest charQuest = GetCharacterQuest(player, ID, true);
 
+				//Console.WriteLine($"count {charQuest.Count} maxCount {MaxQuestCount} Minlvl {Level} Maxlvl {MaxLevel} playerlvl {player.Level}");
 				if (charQuest.Count < MaxQuestCount && player.Level <= MaxLevel && player.Level >= Level)
 				{
 					TryTurnTo(obj, player);
-
+					long lvlXP  = (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) / player.Level;
 					if (item.Count == 1)
 					{
 						RemoveItem(obj, player, item, false);
@@ -2249,6 +2249,10 @@ namespace DOL.GS.Quests
 						long rewardXP = 0;
 						if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
 						{
+							if(rewardXP == 0)
+								rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+							else if (lvlXP > rewardXP)
+								rewardXP = lvlXP;
 							player.GainExperience(eXPSource.Quest, rewardXP);
 						}
 						if (m_sourceTexts.Count > 0)
@@ -2259,6 +2263,62 @@ namespace DOL.GS.Quests
 						{
 							ChatUtil.SendDebugMessage(player, "Source Text missing on Collection Quest receive item.");
 						}
+					}
+					else if (item.Count > 1)
+					{
+						int RemainingTurnIns = MaxQuestCount - charQuest.Count;
+						int TotalInputCount = item.Count;
+						long rewardXP = 0;
+						//if we're turning in more items than are required
+						if (RemainingTurnIns < item.Count)
+						{
+							for (int i = 0; i < RemainingTurnIns; i++)
+							{
+								if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
+								{
+									if(rewardXP == 0)
+										rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+									else if (lvlXP > rewardXP)
+										rewardXP = lvlXP;
+									player.GainExperience(eXPSource.Quest, rewardXP);
+								}
+								//remove only the remaining turn-ins
+								item.Count -= 1;
+								charQuest.Count++;
+							}
+							GameServer.Database.SaveObject(item);
+						}
+						else
+						{
+							//turn in the whole stack
+							for (int i = 0; i < TotalInputCount; i++)
+							{
+								if (long.TryParse(DBDataQuest.RewardXP, out rewardXP))
+								{
+									if(rewardXP == 0)
+										rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
+									else if (lvlXP > rewardXP)
+										rewardXP = lvlXP;
+									player.GainExperience(eXPSource.Quest, rewardXP);
+								}
+								//remove only the remaining turn-ins
+								item.Count -= 1;
+								charQuest.Count++;
+							}
+							RemoveItem(obj, player, item, false);
+						}
+						
+						if (m_sourceTexts.Count > 0)
+						{
+							SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+						}
+						else
+						{
+							ChatUtil.SendDebugMessage(player, "Source Text missing on Collection Quest receive item.");
+						}
+						
+						charQuest.Step = 0;
+						GameServer.Database.SaveObject(charQuest);
 					}
 					else
 					{
@@ -2281,6 +2341,8 @@ namespace DOL.GS.Quests
 						SendMessage(player, m_stepTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 				}
+				
+				player.Out.SendQuestUpdate(this);
 			}
 		}
 

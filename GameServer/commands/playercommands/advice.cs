@@ -18,6 +18,8 @@
  */
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts.discord;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Commands
 {
@@ -72,11 +74,13 @@ namespace DOL.GS.Commands
 			foreach (GameClient playerClient in WorldMgr.GetAllClients())
 			{
 				if (playerClient.Player == null) continue;
-				if ((playerClient.Player.Realm == client.Player.Realm) ||
-					playerClient.Account.PrivLevel > 1)
+				if ((playerClient.Player.Realm == client.Player.Realm ||
+					playerClient.Account.PrivLevel > 1) && !playerClient.Player.IsIgnoring(client.Player))
 					playerClient.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Advice.Advice", getRealmString(client.Player.Realm), client.Player.Name, msg), eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
 
 			}
+			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
+
 		}
 
 		public string getRealmString(eRealm Realm)

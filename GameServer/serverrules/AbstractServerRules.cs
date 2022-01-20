@@ -178,6 +178,19 @@ namespace DOL.GS.ServerRules
 					return false;
 				}
 			}
+			
+			if (Properties.TESTER_LOGIN)
+			{
+				if (account == null || !account.IsTester && account.PrivLevel == 1)
+				{
+					// Admins and Testers are still allowed to enter server
+					// Normal Players will not be allowed to Log in
+					client.IsConnected = false;
+					client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
+					log.Debug("IsAllowedToConnect deny access; tester and staff only login");
+					return false;
+				}
+			}
 
 			if (!Properties.ALLOW_DUAL_LOGINS)
 			{
@@ -1383,9 +1396,8 @@ namespace DOL.GS.ServerRules
 							*/
 							//Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
 							long softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(living.Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
-							player.Out.SendMessage($"Mob Base XP: {baseXP.ToString("N0", format)} | Solo Cap for Level: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							player.Out.SendMessage($"% of Cap: {((double)((baseXP) / (softXPCap)) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
+							player.Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | Solo Cap : {softXPCap.ToString("N0", format)} | %Cap: {((double)((baseXP) / (softXPCap)) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							
 							if (player.XPLogState == eXPLogState.Verbose)
 							{
 								double soloPercent = ((double)atlasBonus / (baseXP)) * 100.0;

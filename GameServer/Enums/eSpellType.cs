@@ -201,6 +201,7 @@ namespace DOL.GS
         AllRegenBuff = 195,
         SummonMerchant = 196,
         BeadRegen = 197,
+        SummonVaultkeeper = 198,
         Null = 200
 
 

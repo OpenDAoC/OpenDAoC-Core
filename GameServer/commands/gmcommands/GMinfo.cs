@@ -79,6 +79,14 @@ namespace DOL.GS.Commands
 							info.Add(" + Sell List:  Not Present !\n");
 						info.Add(" ");
 					}
+
+					if (target.Faction != null)
+					{
+						info.Add("Faction: " + target.Faction.Name);
+						info.Add("ID:   " + target.Faction.ID);
+						info.Add("Enemies: " + target.Faction.EnemyFactions.Count);
+						info.Add("Friends: " + target.Faction.FriendFactions.Count);
+					}
 					if (client.Player.TargetObject is GamePet)
 					{
 						var targetP = client.Player.TargetObject as GamePet;
@@ -108,6 +116,7 @@ namespace DOL.GS.Commands
 					
 					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);
 					info.Add(" + Health: " + target.Health + "/" + target.MaxHealth);
+					info.Add("Attacker Count: " + target.attackComponent.Attackers.Count);
 					
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)

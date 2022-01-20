@@ -406,6 +406,12 @@ namespace DOL.GS {
                 delve.Add(" ");
             }
 
+            if (Charges > 0 && Name.Equals("Bead of Regeneration"))
+            {
+                delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
+                delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
+            }
+
             if ((Object_Type >= (int)eObjectType.GenericWeapon) && (Object_Type <= (int)eObjectType._LastWeapon) ||
                 Object_Type == (int)eObjectType.Instrument)
             {

@@ -7,6 +7,9 @@ info:
     Use this documentation to navigate the available Atlas APIs
     <br><br>
     <h2>Changes</h2>
+    <h3>0.1.6</h3>
+    Added `/realm/realmName` to return the Realm keep statuses<br>
+    Added `/realm/df` to return the name of the Realm currently owning Darkness Fall<br>
     <h3>0.1.5.1</h3>
     Added `/stats/uptime`<br>
     <h3>0.1.5</h3>
@@ -22,7 +25,7 @@ info:
     Added `/player/getAll` endpoint<br>
     <h3>0.1.1</h3>
     Initial release<br><br>
-  version: 0.1.5.1
+  version: 0.1.6
   title: AtlasAPI
   termsOfService: https://www.atlasfreeshard.com
   license:
@@ -35,6 +38,8 @@ tags:
     description: Everything about Guilds
   - name: player
     description: Everything about Players
+  - name: realm
+    description: Everything about RvR
 paths:
   /stats:
     get:
@@ -166,6 +171,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/allPlayers'
+  /realm/{realmName}:
+    get:
+      tags:
+        - realm
+      summary: /realm/{realmName}
+      description: Returns the Keep's status for a given Realm <br><br>[cache 1 min]
+      operationId: getRealmStatus
+      parameters:
+        - name: realmName
+          in: path
+          description: Name of the Realm to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/realm'
+        '404':
+          description: Realm $realmName not found
+  /realm/df:
+    get:
+      tags:
+        - realm
+      summary: /realm/df
+      description: Returns the name of the Realm currently owning Darkness Falls access <br><br>[cache 1 min]
+      operationId: getRealmStatus
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/df'
+        '404':
+          description: Not found
 servers:
   - url: http://api.atlasfreeshard.com/
 components:
@@ -278,6 +323,29 @@ components:
         pvpDeaths:
           example: 549
           type: integer
+    keep:
+      type: object
+      properties:
+        Name:
+          type: string
+          example: Arvakr Faste
+        originalRealm:
+          type: string
+          example: Midgard
+        currentRealm:
+          type: string
+          example: Albion
+        claimingGuild:
+          type: string
+          example: Cotswold Clan
+    df:
+      type: string
+      enum: [Albion, Midgard, Hibernia]
+      example: Midgard
+    realm:
+      type: array
+      items:
+        $ref: '#/components/schemas/keep'
     serverUptime:
       type: object
       properties:

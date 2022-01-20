@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DOL.GS.PropertyCalc;
 using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
@@ -1443,8 +1444,24 @@ namespace DOL.GS
                     upperboundary = 125;
                 }
 
-                damage *= (owner.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
+                int styleSpec = 0;
+                if (ad.Style != null)
+                {
+                    styleSpec = owner.GetModifiedSpecLevel(ad.Style.Spec);
+                }
 
+                double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
+                //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
+                damage *= (owner.GetWeaponSkill(weapon) + 90.68) * specModifier/ (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
+                
+                if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                {
+                    weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)* specModifier} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+                if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                    attackee.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                
                 // Badge Of Valor Calculation 1+ absorb or 1- absorb
                 if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
                 {
@@ -1544,7 +1561,7 @@ namespace DOL.GS
                 {
                     GamePlayer player = owner as GamePlayer;
 
-                    string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ")" : "";
+                    string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")" : "";
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
                 else if (owner is GameNPC)
@@ -1556,7 +1573,7 @@ namespace DOL.GS
                         GamePlayer owner = brain.GetPlayerOwner();
                         if (owner != null)
                         {
-                            string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ")" : "";
+                            string damageAmount = (ad.StyleDamage > 0) ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")" : "";
                             owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name, damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         }
                     }
@@ -1875,11 +1892,11 @@ namespace DOL.GS
                     // we can only intercept attacks on livings, and can only intercept when active
                     // you cannot intercept while you are sitting
                     // if you are stuned or mesmeried you cannot intercept...
-
+                    int rand = Util.Random(100);
                     InterceptECSGameEffect inter = effect as InterceptECSGameEffect;
                     if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
                         && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && Util.Chance(inter.InterceptChance))
+                        && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) && inter.InterceptChance > rand)
                     {
                         intercept = inter;
                         continue;
@@ -2045,12 +2062,12 @@ namespace DOL.GS
                 randomEvadeNum = Math.Floor(randomEvadeNum);
                 randomEvadeNum /= 100;
                 evadeChance *= 100;
-                if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
+                if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog && evadeChance > 0)
                 {
                     evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
+                if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog  && evadeChance > 0)
                 {
                     evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
@@ -2067,12 +2084,12 @@ namespace DOL.GS
                     ranParryNum /= 100;
                     parryChance *= 100;
 
-                    if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
+                    if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog  && parryChance > 0)
                     {
                         parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
-                    if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
+                    if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog  && parryChance > 0)
                     {
                         parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
@@ -2088,12 +2105,12 @@ namespace DOL.GS
                 ranBlockNum /= 100;
                 blockChance *= 100;
 
-                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog  && blockChance > 0)
                 {
                     blockAttk.Out.SendMessage($"target block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog  && blockChance > 0)
                 {
                     blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
@@ -2344,7 +2361,15 @@ namespace DOL.GS
                 missrate >>= 1; //halved
             }
             ad.MissRate = missrate;
-            if (Util.Chance(missrate))
+            int rando = Util.CryptoNextInt(100);
+            
+            if(ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog && missrate > 0)
+                misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+            if(ad.Target is GamePlayer missee && missee.UseDetailedCombatLog&& missrate > 0)
+                missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+            
+            if (missrate > rando)
             {
                 return eAttackResult.Missed;
             }
@@ -2373,8 +2398,9 @@ namespace DOL.GS
             {
                 bool penetrate = false;
 
+                
                 if (stealthStyle)
-                    penetrate = true;
+                    return eAttackResult.HitUnstyled; //exit early for stealth to prevent breaking bubble but still register a hit
 
                 if (ad.Attacker.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long // stealth styles pierce bladeturn
                     || (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != ecsbladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer && ((GamePlayer)ad.Attacker).HasAbility(Abilities.PenetratingArrow)))  // penetrating arrow attack pierce bladeturn

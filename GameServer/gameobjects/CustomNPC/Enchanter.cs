@@ -24,8 +24,10 @@
 using System;
 using System.Collections;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using DOL.GS.Quests;
 
 namespace DOL.GS
 {
@@ -74,6 +76,14 @@ namespace DOL.GS
 			if (t == null || item == null)
 				return false;
 
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(t, this, item));
+				}
+			}
+			
 			if (item.Level >= 10 && item.IsCrafted)
 			{
 				if (item.Object_Type != (int) eObjectType.Magical && item.Object_Type != (int) eObjectType.Bolt && item.Object_Type != (int) eObjectType.Poison)

@@ -167,6 +167,8 @@ namespace DOL.Database
 		private bool m_gainXP;
 		private bool m_gainRP;
 		private bool m_roleplay;
+		private bool m_hardcore;
+		private bool m_hardcoreCompleted;
 		private bool m_autoloot;
 		private int m_lastfreeLevel;
 		private DateTime m_lastfreeleveled;
@@ -2214,6 +2216,34 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_roleplay = value;
+			}
+		}
+		
+		/// <summary>
+		/// is the player flagged hardcore
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool HCFlag
+		{
+			get { return m_hardcore; }
+			set
+			{
+				Dirty = true;
+				m_hardcore = value;
+			}
+		}
+		
+		/// <summary>
+		/// has the player reached 50 in hardcore mode
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool HCCompleted
+		{
+			get { return m_hardcoreCompleted; }
+			set
+			{
+				Dirty = true;
+				m_hardcoreCompleted = value;
 			}
 		}
 

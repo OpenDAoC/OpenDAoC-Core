@@ -51,19 +51,21 @@ namespace DOL.GS.Commands
 		"Shows who is online",
 		//help:
 		//"/who  Can be modified with [playername], [class], [#] level, [location], [##] [##] level range",
-		"/WHO ALL lists all players online",
+		"/WHO ALL - lists all players online",
 		//"/WHO NF lists all players online in New Frontiers",
 		// "/WHO CSR lists all Customer Service Representatives currently online",
 		// "/WHO DEV lists all Development Team Members currently online",
 		// "/WHO QTA lists all Quest Team Assistants currently online",
-		"/WHO <name> lists players with names that start with <name>",
-		"/WHO <guild name> lists players with names that start with <guild name>",
-		"/WHO <class> lists players with of class <class>",
-		"/WHO <location> lists players in the <location> area",
-		"/WHO <level> lists players of level <level>",
-		"/WHO <level> <level> lists players in level range",
-		"/WHO BG lists all players leading a public BattleGroup",
-		"/WHO SOLO lists all ungrouped players"
+		"/WHO <name> lists - players with names that start with <name>",
+		"/WHO <guild name> - lists players with names that start with <guild name>",
+		"/WHO <class> - lists players with of class <class>",
+		"/WHO <location> - lists players in the <location> area",
+		"/WHO <level> - lists players of level <level>",
+		"/WHO <level> <level> - lists players in level range",
+		"/WHO BG - lists all players leading a public BattleGroup",
+		"/WHO nogroup - lists all ungrouped players",
+		"/WHO hc - lists all Hardcore players",
+		"/WHO solo - lists all SOLO players"
 	)]
 	public class WhoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
@@ -159,7 +161,7 @@ namespace DOL.GS.Commands
 					filters.Add(new BGFilter());
 					break;
 				}
-				case "solo":
+				case "nogroup":
 					filters = new ArrayList();
 					filters.Add(new SoloFilter());
 					break;
@@ -169,6 +171,20 @@ namespace DOL.GS.Commands
 						filters.Add(new RPFilter());
 						break;
 					}
+				case "hc":
+				case "hardcore":
+				{
+					filters = new ArrayList(1);
+					filters.Add(new HCFilter());
+					break;
+				}
+				case "solo":
+				case "nohelp":
+				{
+					filters = new ArrayList(1);
+					filters.Add(new NoHelpFilter());
+					break;
+				}
 				case "frontiers":
 				{
 					filters = new ArrayList();
@@ -307,6 +323,14 @@ namespace DOL.GS.Commands
 			if (player.Advisor)
 			{
 				result.Append(" <ADV>");
+			}
+			if (player.HCFlag)
+			{
+				result.Append(" <HC>");
+			}
+			if (player.NoHelp)
+			{
+				result.Append(" <SOLO>");
 			}
 			if(player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 			{
@@ -503,6 +527,22 @@ namespace DOL.GS.Commands
 			}
 		}
 		
+		private class HCFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				return player.HCFlag;
+			}
+		}
+		
+		private class NoHelpFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				return player.NoHelp;
+			}
+		}
+
 		private class SoloFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)

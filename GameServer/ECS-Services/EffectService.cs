@@ -101,6 +101,9 @@ namespace DOL.GS
                     if (!spellEffect.RenewEffect && !(spellEffect is ECSImmunityEffect))
                         SendSpellAnimation((ECSGameSpellEffect)e);
 
+                    if (e is StatDebuffECSEffect && spellEffect.SpellHandler.Spell.CastTime == 0)
+                        StatDebuffECSEffect.TryDebuffInterrupt(spellEffect.SpellHandler.Spell, e.OwnerPlayer, spellEffect.SpellHandler.Caster);
+
                     if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
                         || spellEffect is SavageBuffECSGameEffect)
                     {

@@ -379,7 +379,7 @@ namespace DOL.GS.Spells
 
 //
 
-			if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity))//target.HasAbility(Abilities.MezzImmunity))
+			if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
@@ -436,7 +436,7 @@ namespace DOL.GS.Spells
 			duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
 			NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 			if (npcImmune != null)
-				duration *= npcImmune.CalclulateStunDuration((long)duration);
+				duration = npcImmune.CalclulateStunDuration((long)duration);
 
 			if (duration < 1)
 				duration = 1;
@@ -600,7 +600,7 @@ namespace DOL.GS.Spells
 			double duration = base.CalculateEffectDuration(target, effectiveness);
 			NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 			if (npcImmune != null)
-				duration *= npcImmune.CalclulateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
+				duration = npcImmune.CalclulateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
 
 			if (duration < 1)
 				duration = 1;

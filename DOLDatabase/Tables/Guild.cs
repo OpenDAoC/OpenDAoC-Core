@@ -55,6 +55,8 @@ namespace DOL.Database
 		private DateTime m_bonusStartTime;
 		private long m_meritPoints;
 
+		private bool m_startingGuild;
+
 		public DBGuild()
 		{
 			m_guildname = "default guild name";
@@ -73,6 +75,7 @@ namespace DOL.Database
 			m_bonusType = 0;
 			m_bonusStartTime = new DateTime(2000, 1, 1);
 			m_guildBannerLostTime = new DateTime(2000, 1, 1);
+			m_startingGuild = false;
 		}
 
 
@@ -366,6 +369,20 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_meritPoints = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull = false)]
+		public bool IsStartingGuild
+		{
+			get
+			{
+				return m_startingGuild;
+			}
+			set
+			{
+				Dirty = true;
+				m_startingGuild = value;
 			}
 		}
 

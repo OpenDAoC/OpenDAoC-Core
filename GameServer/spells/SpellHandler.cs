@@ -2810,6 +2810,12 @@ namespace DOL.GS.Spells
 			if (Caster.IsMezzed || Caster.IsStunned)
 				return false;
 
+			if (this.HasPositiveEffect && target is GamePlayer p && Caster is GamePlayer c && target != Caster && p.NoHelp)
+			{
+				c.Out.SendMessage(target.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
             // For PBAOE spells always set the target to the caster
 			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
 			{
@@ -2883,14 +2889,14 @@ namespace DOL.GS.Spells
 				int spellResistChance = CalculateSpellResistChance(t);
 				int randNum = Util.CryptoNextInt(100);
 
-				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && spellResistChance > 0)
 				{
-					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
 
-				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog  && spellResistChance > 0)
 				{
-					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum} Resist? {spellResistChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
 
 				if (spellResistChance > randNum)
@@ -3078,6 +3084,7 @@ namespace DOL.GS.Spells
 			if (!HasPositiveEffect)
 			{
 				SendEffectAnimation(target, 0, false, 1);
+				if(Spell.SpellType == (byte)eSpellType.Amnesia) return;
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;
@@ -4379,7 +4386,7 @@ namespace DOL.GS.Spells
 			int randNum = Util.CryptoNextInt(1, 100); //grab our random number
 			int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
 
-			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
 			{
 				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}

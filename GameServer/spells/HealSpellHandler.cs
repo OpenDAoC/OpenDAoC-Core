@@ -134,7 +134,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            if (target is GamePlayer && (target as GamePlayer).NoHelp && Caster is GamePlayer)
+            if (target is GamePlayer && (target as GamePlayer).NoHelp && Caster is GamePlayer && target != Caster)
             {
                 //player not grouped, anyone else
                 //player grouped, different group

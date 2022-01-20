@@ -151,16 +151,20 @@ namespace DOL.GS.Keeps
 		public static void BroadcastDiscordRvR(string message, eRealm realm, string keepName)
 		{
 			int color = 0;
+			string avatarUrl = "";
 			switch (realm)
 			{
 				case eRealm._FirstPlayerRealm:
 					color = 16711680;
+					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728399822860369/keep_alb.png";
 					break;
 				case eRealm._LastPlayerRealm:
 					color = 32768;
+					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728400116478073/keep_hib.png";
 					break;
 				default:
 					color = 255;
+					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728400523296768/keep_mid.png";
 					break;
 			}
 			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
@@ -169,7 +173,7 @@ namespace DOL.GS.Keeps
 			var discordMessage = new DiscordMessage(
 				"",
 				username: "Atlas RvR",
-				avatarUrl: "https://cdn.discordapp.com/avatars/924819559058378782/7b11edbd9ca764893d4863fcb17e58c6.webp",
+				avatarUrl: avatarUrl,
 				tts: false,
 				embeds: new[]
 				{

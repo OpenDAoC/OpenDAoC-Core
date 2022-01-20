@@ -79,12 +79,24 @@ namespace DOL.GS.PropertyCalc
 			else if (living is TheurgistPet theu)
 			{
 				int hp = 1;
-				if (theu.Level < 10)
+				if (theu.Level < 2)
 				{
-					hp += theu.Constitution + theu.Level * 2;
+					hp += theu.Constitution * (theu.Level + 1);
 				} else
 				{
 					hp = theu.Constitution * theu.Level * 10 / 44;
+				}
+
+				if (theu.Name.Contains("air"))
+				{
+					//normal HP
+				}
+				else if (theu.Name.Contains("ice"))
+				{
+					hp = (int) Math.Ceiling(hp * 1.25);
+				} else if (theu.Name.Contains("earth"))
+				{
+					hp = (int) Math.Ceiling(hp * 1.5);
 				}
 				return hp;
 

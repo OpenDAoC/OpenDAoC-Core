@@ -79,6 +79,7 @@ namespace DOL.GS
 		protected int m_tetherRange;
 		protected bool m_replaceMobValues;
 		protected byte m_visibleActiveWeaponSlot;
+		protected int m_factionid;
 
 		/// <summary>
 		/// Constructs a new NpcTemplate
@@ -107,6 +108,7 @@ namespace DOL.GS
 				m_level = "0";
 			m_equipmentTemplateID = data.EquipmentTemplateID;
 			m_itemsListTemplateID = data.ItemsListTemplateID;
+			m_factionid = data.FactionID;
 			m_maxSpeed = data.MaxSpeed;
 			m_parryChance = data.ParryChance;
 			m_evadeChance = data.EvadeChance;
@@ -377,6 +379,12 @@ namespace DOL.GS
 		{
 			get { return m_classType; }
 			set { m_classType = value; }
+		}
+
+		public int FactionId
+		{
+			get { return m_factionid; }
+			set { m_factionid = value; }
 		}
 
 		/// <summary>

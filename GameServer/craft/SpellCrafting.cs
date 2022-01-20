@@ -544,11 +544,26 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected int GetItemMaxImbuePoints(InventoryItem item)
 		{
-			if (item.Level > 51) return 32;
+			//if (item.Level > 51) return 32;
 			if (item.Level < 1) return 0;
             // Luhz Crafting Update:
             // All items have MP level imbue points
-            return itemMaxBonusLevel[item.Level - 1, 100 - 94];
+            //return itemMaxBonusLevel[item.Level - 1, 100 - 94];
+            if (item.Quality == 100)
+	            return 32;
+            if (item.Quality == 99)
+	            return 28;
+            if (item.Quality == 98)
+	            return 24;
+            if (item.Quality == 97)
+	            return 21;
+            if (item.Quality == 96)
+	            return 18;
+            if (item.Quality == 95)
+	            return 15;
+            
+			return 10;
+            
 		}
 
 		/// <summary>

@@ -114,7 +114,15 @@ namespace DOL.GS
 
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 1000 * DragonDifficulty / 100;
+			int AF = 1000;
+			if (this.attackComponent.Attackers.Count > 1)
+			{
+				AF -= 5 * this.attackComponent.Attackers.Count;
+			}
+
+			if (AF <= 800)
+				AF = 800;
+			return AF * DragonDifficulty / 100;
 		}
 
 		public override double GetArmorAbsorb(eArmorSlot slot)
@@ -137,7 +145,16 @@ namespace DOL.GS
 				case eDamageType.Slash : 
 				case eDamageType.Crush :
 				case eDamageType.Thrust: return 65 * DragonDifficulty / 100;
-				default: return 99 * DragonDifficulty / 100;
+				default:
+					int resistPercent = 99;
+					if (this.attackComponent.Attackers.Count > 1)
+					{
+						resistPercent -= this.attackComponent.Attackers.Count;
+					}
+
+					if (resistPercent <= 60)
+						resistPercent = 60;
+					return resistPercent * DragonDifficulty / 100;
 			}
 		}
 
@@ -145,7 +162,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return 30000 * DragonDifficulty / 100;
+				return 40000 * DragonDifficulty / 100;
 			}
 		}
 

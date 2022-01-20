@@ -261,6 +261,12 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool CanView(GamePlayer player)
 		{
+
+			if (player.HCFlag || player.NoHelp)
+			{
+				return false;
+			}
+			
 			return CurrentHouse.CanUseVault(player, this, VaultPermissions.View);
 		}
 
@@ -271,6 +277,11 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool CanAddItems(GamePlayer player)
 		{
+			if (player.HCFlag || player.NoHelp)
+			{
+				return false;
+			}
+			
 			return CurrentHouse.CanUseVault(player, this, VaultPermissions.Add);
 		}
 
@@ -281,6 +292,11 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool CanRemoveItems(GamePlayer player)
 		{
+			if (player.HCFlag)
+			{
+				return false;
+			}
+			
 			return CurrentHouse.CanUseVault(player, this, VaultPermissions.Remove);
 		}
 	}

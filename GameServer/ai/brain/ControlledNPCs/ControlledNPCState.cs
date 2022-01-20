@@ -124,6 +124,8 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             return;
         }
+        
+        brain.CheckSpells(eCheckSpellType.Offensive);
 
         //handle pet movement
         if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
@@ -132,9 +134,6 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         {
             brain.Goto(brain.Body.TargetObject);
         }
-
-        brain.CheckSpells(eCheckSpellType.Offensive);
-        
 
         //See if the pet is too far away, if so release it!
         if (brain.Owner is GamePlayer && brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
@@ -228,5 +227,8 @@ public class ControlledNPCState_PASSIVE : StandardMobState
         {
             brain.Goto(brain.Body.TargetObject);
         }
+        
+        //cast defensive spells if applicable
+        brain.CheckSpells(eCheckSpellType.Defensive);
     }
 }

@@ -245,6 +245,12 @@ namespace DOL.GS.Spells
             GameLiving living = brain.Owner;
             living.SetControlledBrain(null);
 
+            foreach (var ability in pet.effectListComponent.GetAbilityEffects())
+            {
+	            if(ability is InterceptECSGameEffect iecs && iecs.InterceptSource == pet && iecs.InterceptTarget == living)
+		            iecs.Cancel(false);
+            }
+
             GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 
             //GameSpellEffect effect = FindEffectOnTarget(pet, this);
