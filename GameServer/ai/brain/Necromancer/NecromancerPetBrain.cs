@@ -609,8 +609,8 @@ namespace DOL.AI.Brain
 
         #region Tether
 
-        private const int m_softTether = 2000;    // TODO: Check on Pendragon
-        private const int m_hardTether = 2500;
+        private const int m_softTether = 750;    // TODO: Check on Pendragon
+        private const int m_hardTether = 1500;
         private TetherTimer m_tetherTimer = null;
 
         private void CheckTether()
