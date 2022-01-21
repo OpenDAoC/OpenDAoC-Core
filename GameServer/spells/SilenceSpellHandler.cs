@@ -35,13 +35,14 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
+	        /*
             GameSpellEffect effect;
             effect = SpellHandler.FindEffectOnTarget(target, "Silence");
 			if(effect!=null)
             {
 				MessageToCaster("Your target already have an effect of that type!", eChatType.CT_SpellResisted);
 				return;
-            }
+            }*/
             base.ApplyEffectOnTarget(target, effectiveness);
         }
 		

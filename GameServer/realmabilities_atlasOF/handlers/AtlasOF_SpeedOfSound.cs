@@ -61,11 +61,11 @@ namespace DOL.GS.RealmAbilities
 					visPlayer.Out.SendSpellEffectAnimation(player, target, 7021, 0, false, CastSuccess(success));
 				if (success)
 				{
-					GameSpellEffect speed = Spells.SpellHandler.FindEffectOnTarget(target, "SpeedEnhancement");
-					if (speed != null)
-                    {
-						speed.Cancel(false);
-					}
+					//GameSpellEffect speed = Spells.SpellHandler.FindEffectOnTarget(target, "SpeedEnhancement");
+					//if (speed != null)
+                    //{
+					//	speed.Cancel(false);
+					//}
 					//log.InfoFormat("Starting speed for player {0} with duration {1}", target, m_duration);
 					new SpeedOfSoundEffect(m_duration).Start(target);
 				}

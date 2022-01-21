@@ -160,11 +160,12 @@ namespace DOL.GS.Spells
 		{
 			int resistvalue = 0;
 			int resist = 0;
+			/*
 			GameSpellEffect fury = SpellHandler.FindEffectOnTarget(target, "Fury");
 			if (fury != null)
 			{
 				resist += (int)fury.Spell.Value;
-			}
+			}*/
 
             //bonedancer rr5
             if (target.EffectList.GetOfType<AllureofDeathEffect>() != null)
@@ -409,6 +410,7 @@ namespace DOL.GS.Spells
 //				SendEffectAnimation(target, 0, false, 0);
 				return;
 			}
+            /*
 			GameSpellEffect mezblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerMezz");
 			if (mezblock != null)
 			{
@@ -420,7 +422,7 @@ namespace DOL.GS.Spells
 				SendEffectAnimation(target, 0, false, 0);
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
-			}
+			}*/
 
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}
@@ -576,6 +578,7 @@ namespace DOL.GS.Spells
 			//Ceremonial bracer dont intercept physical stun
 			if(Spell.SpellType != (byte)eSpellType.StyleStun)
 			{
+				/*
 				GameSpellEffect stunblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerStun");
 				if (stunblock != null)
 				{
@@ -584,7 +587,7 @@ namespace DOL.GS.Spells
 						(target as GamePlayer).Out.SendMessage("Your item effect intercepts the stun spell and fades!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 					base.OnSpellResisted(target);
 					return;
-				}
+				}*/
 			}
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}

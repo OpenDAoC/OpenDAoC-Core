@@ -124,11 +124,12 @@ namespace DOL.GS.Spells
 		public override int CalculateSpellResistChance(GameLiving target)
 		{
 			int basechance = base.CalculateSpellResistChance(target);
+			/*
 			GameSpellEffect rampage = SpellHandler.FindEffectOnTarget(target, "Rampage");
 			if (rampage != null)
 			{
 				basechance += (int)rampage.Spell.Value;
-			}
+			}*/
 			return Math.Min(100, basechance);
 		}
 		/// <summary>

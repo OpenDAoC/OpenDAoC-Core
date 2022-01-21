@@ -714,6 +714,7 @@ namespace DOL.GS
                     }
                 }
 
+                /*
                 if (p.CharacterClass is PlayerClass.ClassVampiir)
                 {
                     GameSpellEffect removeEffect = SpellHandler.FindEffectOnTarget(p, "VampiirSpeedEnhancement");
@@ -726,7 +727,7 @@ namespace DOL.GS
                     IGameEffect DreamweaverRR5 = p.EffectList.GetOfType<DreamweaverEffect>();
                     if (DreamweaverRR5 != null)
                         DreamweaverRR5.Cancel(false);
-                }
+                }*/
                 LivingStartAttack(attackTarget);
 
                 if (p.IsCasting && !p.castingComponent.spellHandler.Spell.Uninterruptible)
@@ -1327,12 +1328,13 @@ namespace DOL.GS
                 return ad;
             }
 
+            /*
             if (SpellHandler.FindEffectOnTarget(owner, "Phaseshift") != null)
             {
                 ad.AttackResult = eAttackResult.Phaseshift;
                 SendAttackingCombatMessages(ad);
                 return ad;
-            }
+            }*/
 
             if (ad.Target.IsSitting)
                 effectiveness *= 2;

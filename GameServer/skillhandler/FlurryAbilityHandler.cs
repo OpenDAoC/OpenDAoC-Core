@@ -103,11 +103,12 @@ namespace DOL.GS.SkillHandler
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsWithinRadius"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
 			}
+			/*
 			if (player.TargetObject is GamePlayer && SpellHandler.FindEffectOnTarget((GamePlayer)player.TargetObject, "Phaseshift") != null)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsPhaseshifted", player.TargetObject.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                 return;
-			}
+			}*/
 			if(player.TargetObject is GamePlayer)
 			{
 				SputinsLegacyEffect SputinLegacy = (player.TargetObject as GamePlayer).EffectList.GetOfType<SputinsLegacyEffect>();
@@ -150,11 +151,11 @@ namespace DOL.GS.SkillHandler
 
 			//flurry is slash damage
 			target.TakeDamage(player, eDamageType.Slash, damage, 0);
-			
+			/*
 			GameSpellEffect mez = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             if (mez != null)
                 mez.Cancel(false);
-
+			*/
 			//sending spell effect
 			foreach (GamePlayer effPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				effPlayer.Out.SendSpellEffectAnimation(player, target, 7103, 0, false, 0x01);
