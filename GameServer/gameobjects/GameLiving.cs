@@ -4161,8 +4161,8 @@ namespace DOL.GS
 
 				GamePlayer owner = brain?.GetPlayerOwner();
 
-                if (owner != null)
-                    owner.Stealth(false);
+                //if (owner != null)
+                   // owner.Stealth(false);
 
                 if (ad.Target is GamePlayer)
 				{
