@@ -45,21 +45,21 @@ namespace DOL.GS
 		protected virtual double RandomDoubleImpl()
 		{
 			double rand = RandomGen.NextDouble();
-
-			if (lastRandomDouble == 0)
-			{
-				lastRandomDouble = rand;
-				return rand;
-			}
-			else
-			{
-				while (lastRandomDouble == rand)
-				{
-					rand = RandomGen.NextDouble();
-				}
-				lastRandomDouble = rand;
-				return rand;
-			}
+			return rand;
+			//if (lastRandomDouble == 0)
+			//{
+			//	lastRandomDouble = rand;
+			//	return rand;
+			//}
+			//else
+			//{
+			//	while (lastRandomDouble == rand)
+			//	{
+			//		rand = RandomGen.NextDouble();
+			//	}
+			//	lastRandomDouble = rand;
+			//	return rand;
+			//}
 			//return RandomGen.NextDouble();
 		}
 
