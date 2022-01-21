@@ -1731,10 +1731,13 @@ namespace DOL.GS
 				newX = followTarget.X;
 				newY = followTarget.Y;
 				newZ = followTarget.Z;
-				if (brain.CheckFormation(ref newX, ref newY, ref newZ) )
+				if (TargetObject != null && TargetObject.Realm != this.Realm)
 				{
-					if(TargetObject == null)
-						WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
+					//do nothing 
+				}
+				else if (brain.CheckFormation(ref newX, ref newY, ref newZ) || TargetObject?.Realm == this.Realm)
+				{
+					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
 					
 					return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
 				}
