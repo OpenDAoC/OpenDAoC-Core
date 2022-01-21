@@ -4068,6 +4068,7 @@ namespace DOL.GS
 
 			bool wasAlive = IsAlive;
 
+			/*
 			//[Freya] Nidel: Use2's Flask
 			if(this is GamePlayer)
 			{
@@ -4086,7 +4087,7 @@ namespace DOL.GS
 						}
 					}
 				}
-			}
+			}*/
 
 			Health -= damageAmount + criticalAmount;
 

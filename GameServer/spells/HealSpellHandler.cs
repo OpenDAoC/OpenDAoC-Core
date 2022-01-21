@@ -191,6 +191,7 @@ namespace DOL.GS.Spells
             amount += criticalvalue;
 
             GamePlayer playerTarget = target as GamePlayer;
+            /*
 			if (playerTarget != null)
 			{
 				GameSpellEffect HealEffect = SpellHandler.FindEffectOnTarget(playerTarget, "EfficientHealing");
@@ -208,13 +209,14 @@ namespace DOL.GS.Spells
 					playerTarget.Endurance += (int)EndBonus;
 					playerTarget.Out.SendMessage("Your Efficient Endurance buff grants you " + EndBonus + " Endurance from the Heal!", eChatType.CT_Spell, eChatLoc.CL_ChatWindow);
 				}
-			}
+			}*/
 
+            /*
             GameSpellEffect flaskHeal = FindEffectOnTarget(target, "HealFlask");
             if(flaskHeal != null)
             {
                 amount += (int) ((amount*flaskHeal.Spell.Value)*0.01);
-            }
+            }*/
 
             amount = Math.Round(amount);
 

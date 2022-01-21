@@ -94,9 +94,9 @@ namespace DOL.GS.Spells
 				}
             }
             			
-			GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
-			if (iWarLordEffect != null)
-				ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
+			//GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
+			//if (iWarLordEffect != null)
+			//	ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
                        
             //ad.CriticalDamage = 0; - DoTs can crit.
 			return ad;
