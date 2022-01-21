@@ -66,21 +66,21 @@ namespace DOL.GS
 		protected virtual int RandomImpl(int min, int max)
 		{
 			int rand = RandomGen.Next(min, max + 1);
-
-			if (lastRandomInt == 0)
-			{				
-				lastRandomInt = rand;
-				return rand;
-			}
-			else
-			{				
-				while (lastRandomInt == rand)
-                {
-					rand = RandomGen.Next(min, max + 1);
-				}
-				lastRandomInt = rand;
-				return rand;
-			}
+			return rand;
+			//if (lastRandomInt == 0)
+			//{				
+			//	lastRandomInt = rand;
+			//	return rand;
+			//}
+			//else
+			//{				
+			//	while (lastRandomInt == rand)
+   //             {
+			//		rand = RandomGen.Next(min, max + 1);
+			//	}
+			//	lastRandomInt = rand;
+			//	return rand;
+			//}
 		}
 
 		#region Random
