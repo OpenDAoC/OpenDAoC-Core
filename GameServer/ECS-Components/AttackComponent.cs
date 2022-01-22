@@ -2063,7 +2063,7 @@ namespace DOL.GS
                 randomEvadeNum /= 100;
                 evadeChance *= 100;
 
-                double? deckDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
+                double? evadeDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
                 if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog && evadeChance > 0)
                 {
                     evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2074,15 +2074,15 @@ namespace DOL.GS
                     evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (deckDouble == null)
+                if (evadeDouble == null)
                 {
                     if(evadeChance > randomEvadeNum)
                         return eAttackResult.Evaded;    
                 }
                 else
                 {
-                    deckDouble *= 100;
-                    if(evadeChance > deckDouble)
+                    evadeDouble *= 100;
+                    if(evadeChance > evadeDouble)
                         return eAttackResult.Evaded;
                 }
 
@@ -2095,6 +2095,7 @@ namespace DOL.GS
                     ranParryNum /= 100;
                     parryChance *= 100;
 
+                    double? parryDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
                     if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog  && parryChance > 0)
                     {
                         parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2104,9 +2105,19 @@ namespace DOL.GS
                     {
                         parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance,2)} rand: {ranParryNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
+                    
+                    if (parryDouble == null)
+                    {
+                        if(evadeChance > randomEvadeNum)
+                            return eAttackResult.Parried;    
+                    }
+                    else
+                    {
+                        parryDouble *= 100;
+                        if(evadeChance > parryDouble)
+                            return eAttackResult.Parried;
+                    }
 
-                    if (parryChance > ranParryNum)
-                        return eAttackResult.Parried;
                 }
 
                 double blockChance = owner.TryBlock(ad, lastAD, attackerConLevel, attackerCount, engage);
