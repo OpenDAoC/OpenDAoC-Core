@@ -50,12 +50,32 @@ public class PlayerDeck
         }
     }
 
-    public int GetCard()
+    public int GetInt()
     {
         if (_cards.Count == 0)
             ResetDeck();
 
         return _cards.Pop();
+    }
+
+    public double GetPseudoDouble()
+    {
+        if (_cards.Count < 1)
+            ResetDeck();
+
+        //we append two ints together to simulate more accuracy on the double
+        //subtract 1 to only generate values 0-99
+        //useful to get outputs of 0-9999 instead of 11-100100
+        int first = _cards.Pop() - 1;
+        int second = _cards.Pop() - 1;
+
+        //append our ints together
+        int append = int.Parse(first.ToString() + second.ToString()); 
+        
+        Console.WriteLine($"append {append}");
+        //divide by max possible value to simulate 0-1 output of doubles
+        double pseudoDouble = append / (double)9999;
+        return pseudoDouble;
     }
 
     public string SaveDeckToJSON()
