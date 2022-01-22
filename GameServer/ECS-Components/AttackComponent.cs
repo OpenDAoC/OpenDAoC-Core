@@ -2127,6 +2127,7 @@ namespace DOL.GS
                 ranBlockNum /= 100;
                 blockChance *= 100;
 
+                double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
                 if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog  && blockChance > 0)
                 {
                     blockAttk.Out.SendMessage($"target block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2136,12 +2137,20 @@ namespace DOL.GS
                 {
                     blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {ranBlockNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
-
-                if (blockChance > ranBlockNum)
+                
+                if (blockDouble == null)
                 {
-                    // reactive effects on block moved to GamePlayer
-                    return eAttackResult.Blocked;
+                    if(evadeChance > randomEvadeNum)
+                        return eAttackResult.Blocked;    
                 }
+                else
+                {
+                    blockDouble *= 100;
+                    if(evadeChance > blockDouble)
+                        return eAttackResult.Blocked;
+                }
+                
+                // reactive effects on block moved to GamePlayer
             }
 
             if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
