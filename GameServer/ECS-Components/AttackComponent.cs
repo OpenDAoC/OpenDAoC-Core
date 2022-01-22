@@ -2392,7 +2392,16 @@ namespace DOL.GS
                 missrate >>= 1; //halved
             }
             ad.MissRate = missrate;
-            int rando = Util.CryptoNextInt(100);
+            int rando = 0;
+            if (ad.Attacker is GamePlayer atkkr)
+            {
+                rando = atkkr.RandomNumberDeck.GetInt();
+            }
+            else
+            {
+                rando = Util.CryptoNextInt(100);
+            }
+            
             
             if(ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog && missrate > 0)
                 misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
