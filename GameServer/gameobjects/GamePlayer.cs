@@ -2858,7 +2858,7 @@ namespace DOL.GS
         /// </summary>
         public override int Concentration
         {
-            get { return MaxConcentration - ConcentrationEffects.UsedConcentration; }
+            get { return MaxConcentration - UsedConcentration; }
         }
 
         /// <summary>

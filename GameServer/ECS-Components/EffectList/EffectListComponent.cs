@@ -205,6 +205,20 @@ namespace DOL.GS
             return temp.OrderBy(e => e.StartTick).ToList();
         }
 
+        public List<ECSPulseEffect> GetAllPulseEffects()
+        {
+            var temp = new List<ECSPulseEffect>();
+            foreach (var effects in Effects.Values.ToList())
+            {
+                for (int j = 0; j < effects.Count; j++)
+                {
+                    if (effects[j].EffectType == eEffect.Pulse)
+                        temp.Add((ECSPulseEffect)effects[j]);
+                }
+            }
+            return temp;
+        }
+
         public List<IConcentrationEffect> GetConcentrationEffects()
         {
             var temp = new List<IConcentrationEffect>();
@@ -212,7 +226,7 @@ namespace DOL.GS
             {
                 for (int j = 0; j < effects.Count; j++)
                 {
-                    if (effects[j] is IConcentrationEffect)
+                    if (effects[j] is ECSPulseEffect || effects[j].IsConcentrationEffect())
                         temp.Add(effects[j] as IConcentrationEffect);
                 }
             }

@@ -51,6 +51,8 @@ namespace DOL.GS
         public RangeAttackComponent rangeAttackComponent;
         public StyleComponent styleComponent;
         public Spell LastPulseCast;
+		public int UsedConcentration;
+		public int ConcentrationEffectsCount;
         #region Combat
         /// <summary>
         /// Holds the AttackData object of last attack
@@ -4784,7 +4786,7 @@ namespace DOL.GS
             attackComponent.Attackers.Clear();
 
 			// cancel all concentration effects
-			ConcentrationEffects.CancelAll();
+			//ConcentrationEffects.CancelAll();
 
             // clear all of our targets
             rangeAttackComponent.RangeAttackTarget = null;

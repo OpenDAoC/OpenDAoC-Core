@@ -83,9 +83,12 @@ namespace DOL.GS
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect)
             {
-                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
+                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.GetConcentrationEffects() != null)
                 {
-                    spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
+                    //spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
+
+                    spellEffect.SpellHandler.Caster.ConcentrationEffectsCount++;
+                    spellEffect.SpellHandler.Caster.UsedConcentration += spellEffect.SpellHandler.Spell.Concentration;
                 }
             }
 
@@ -148,6 +151,7 @@ namespace DOL.GS
 
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                 SendPlayerUpdates(player);
+                player.Out.SendConcentrationList();
             }
             else if (e.Owner is GameNPC)
             {
@@ -194,9 +198,11 @@ namespace DOL.GS
                 // Update the Concentration List if Conc Buff/Song/Chant.
                 if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
                 {
-                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
+                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.GetConcentrationEffects() != null)
                     {
-                        spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
+                        //spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
+                        spellEffect.SpellHandler.Caster.ConcentrationEffectsCount--;
+                        spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
                     }
                 }
             }
@@ -221,6 +227,7 @@ namespace DOL.GS
                 ecsList.AddRange(playerEffects.Skip(playerEffects.IndexOf(e)));
 
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendConcentrationList();
             }
             else if (e.Owner is GameNPC)
             {

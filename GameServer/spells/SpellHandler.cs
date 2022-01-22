@@ -309,23 +309,50 @@ namespace DOL.GS.Spells
 		/// <returns>true if any spells were canceled</returns>
 		public virtual bool CancelPulsingSpell(GameLiving living, byte spellType)
 		{
-			lock (living.ConcentrationEffects)
-			{
-				for (int i = 0; i < living.ConcentrationEffects.Count; i++)
-				{
-					PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+			//lock (living.ConcentrationEffects)
+			//{
+			//	for (int i = 0; i < living.ConcentrationEffects.Count; i++)
+			//	{
+			//		PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+			//		if (effect == null)
+			//			continue;
+			//		if (effect.SpellHandler.Spell.SpellType == spellType)
+			//		{
+			//			effect.Cancel(false);
+			//			return true;
+			//		}
+			//	}
+			//}
+
+			lock (living.effectListComponent._effectsLock)
+            {
+				var effects = living.effectListComponent.GetAllPulseEffects();
+
+				for (int i = 0; i < effects.Count; i++)
+                {
+                    ECSPulseEffect effect = effects[i];
+                    if (effect == null)
+                        continue;
+
 					if (effect == null)
 						continue;
 					if (effect.SpellHandler.Spell.SpellType == spellType)
 					{
-						effect.Cancel(false);
+						EffectService.RequestCancelConcEffect(effect);
 						return true;
 					}
-				}
-			}
-			return false;
+                }
+            }
+            return false;
 		}
-
+		public static void CancelAllPulsingSpells(GameLiving living)
+        {
+			var effects = living.effectListComponent.GetAllPulseEffects();
+			for (int i = 0; i < effects.Count(); i++)
+            {
+				EffectService.RequestImmediateCancelConcEffect(effects[i]);
+            }
+        }
 		/// <summary>
 		/// Cancels all pulsing spells
 		/// </summary>
@@ -949,7 +976,7 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+				if (m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 				{
 					if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 					return false;
@@ -1210,7 +1237,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 			{
 				MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1415,7 +1442,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 			{
 				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1597,7 +1624,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 			{
 				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -2177,7 +2204,8 @@ namespace DOL.GS.Spells
 
             if (Spell.IsPulsing)
             {
-				EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
+				CancelAllPulsingSpells(Caster);
+				//EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
