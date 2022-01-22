@@ -54,9 +54,9 @@ namespace DOL.Database
 		}
 
 		/// <summary>
-		/// DOLCharacters Table ObjectId Reference
+		/// DOLCharacters Table Deck Reference
 		/// </summary>
-		[DataElement(AllowDbNull = false, Index = true)]
+		[DataElement(AllowDbNull = false, Index = false, Varchar = 0)]
 		public string Deck
 		{
 			get { return m_deck; }
