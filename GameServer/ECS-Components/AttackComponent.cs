@@ -2062,6 +2062,8 @@ namespace DOL.GS
                 randomEvadeNum = Math.Floor(randomEvadeNum);
                 randomEvadeNum /= 100;
                 evadeChance *= 100;
+
+                double? deckDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
                 if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog && evadeChance > 0)
                 {
                     evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2072,8 +2074,17 @@ namespace DOL.GS
                     evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {randomEvadeNum} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (evadeChance > randomEvadeNum)
-                    return eAttackResult.Evaded;
+                if (deckDouble == null)
+                {
+                    if(evadeChance > randomEvadeNum)
+                        return eAttackResult.Evaded;    
+                }
+                else
+                {
+                    deckDouble *= 100;
+                    if(evadeChance > deckDouble)
+                        return eAttackResult.Evaded;
+                }
 
                 if (ad.IsMeleeAttack)
                 {
