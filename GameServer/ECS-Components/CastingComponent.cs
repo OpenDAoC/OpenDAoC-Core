@@ -47,8 +47,7 @@ namespace DOL.GS
         
         public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
-            if (!EntityManager.GetLivingByComponent(typeof(CastingComponent)).Contains(owner))
-                EntityManager.AddComponent(typeof(CastingComponent), owner);
+            EntityManager.AddComponent(typeof(CastingComponent), owner);
             //Check for Conditions to Cast
             if (owner is GamePlayer p)
             {
