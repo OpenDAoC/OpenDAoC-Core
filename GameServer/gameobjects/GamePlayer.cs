@@ -10640,7 +10640,7 @@ namespace DOL.GS
             if (playerDeck != null)
             {
                 this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
-                Console.WriteLine($"loaded deck. first card: {this.RandomNumberDeck.GetCard()}");
+                //Console.WriteLine($"loaded deck. first card: {this.RandomNumberDeck.GetInt()}");
             }
             else
             {

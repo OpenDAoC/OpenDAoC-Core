@@ -70,9 +70,8 @@ public class PlayerDeck
         int second = _cards.Pop() - 1;
 
         //append our ints together
-        int append = int.Parse(first.ToString() + second.ToString()); 
+        int append = int.Parse(first.ToString() + second.ToString());
         
-        Console.WriteLine($"append {append}");
         //divide by max possible value to simulate 0-1 output of doubles
         double pseudoDouble = append / (double)9999;
         return pseudoDouble;

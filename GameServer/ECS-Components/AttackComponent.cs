@@ -2064,7 +2064,7 @@ namespace DOL.GS
                 evadeChance *= 100;
 
                 double? evadeDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                double? evadeOutput = (evadeDouble != null) ? evadeDouble : randomEvadeNum;
+                double? evadeOutput = (evadeDouble != null) ? evadeDouble * 100 : randomEvadeNum;
                 if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog && evadeChance > 0)
                 {
                     evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {evadeOutput} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2097,7 +2097,7 @@ namespace DOL.GS
                     parryChance *= 100;
 
                     double? parryDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                    double? parryOutput = (parryDouble != null) ? parryDouble : ranParryNum;
+                    double? parryOutput = (parryDouble != null) ? parryDouble * 100 : ranParryNum;
                     if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog  && parryChance > 0)
                     {
                         parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance,2)} rand: {parryOutput} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2110,13 +2110,13 @@ namespace DOL.GS
                     
                     if (parryDouble == null)
                     {
-                        if(evadeChance > randomEvadeNum)
+                        if(parryChance > ranParryNum)
                             return eAttackResult.Parried;    
                     }
                     else
                     {
                         parryDouble *= 100;
-                        if(evadeChance > parryDouble)
+                        if(parryChance > parryDouble)
                             return eAttackResult.Parried;
                     }
 
@@ -2130,7 +2130,7 @@ namespace DOL.GS
                 blockChance *= 100;
 
                 double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                double? blockOutput = (blockDouble != null) ? blockDouble : ranBlockNum;
+                double? blockOutput = (blockDouble != null) ? blockDouble * 100: ranBlockNum;
                 if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog  && blockChance > 0)
                 {
                     
@@ -2144,13 +2144,13 @@ namespace DOL.GS
                 
                 if (blockDouble == null)
                 {
-                    if(evadeChance > randomEvadeNum)
+                    if(blockChance > ranBlockNum)
                         return eAttackResult.Blocked;    
                 }
                 else
                 {
                     blockDouble *= 100;
-                    if(evadeChance > blockDouble)
+                    if(blockChance > blockDouble)
                         return eAttackResult.Blocked;
                 }
                 
