@@ -2054,6 +2054,8 @@ namespace DOL.GS
                 if (lastAD != null &&lastAD.AttackResult != eAttackResult.HitStyle)
                     lastAD = null;
 
+                bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+
                 double defensePenetration = Math.Round(ad.Attacker.GetAttackerDefensePenetration(ad.Attacker, ad.Weapon), 2);
 
                 double evadeChance = owner.TryEvade(ad, lastAD, attackerConLevel, attackerCount);
@@ -2075,7 +2077,7 @@ namespace DOL.GS
                     evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {evadeOutput} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (evadeDouble == null)
+                if (evadeDouble == null || UseRNGOverride)
                 {
                     if(evadeChance > randomEvadeNum)
                         return eAttackResult.Evaded;    
@@ -2108,7 +2110,7 @@ namespace DOL.GS
                         parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance,2)} rand: {parryOutput} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
                     
-                    if (parryDouble == null)
+                    if (parryDouble == null || UseRNGOverride)
                     {
                         if(parryChance > ranParryNum)
                             return eAttackResult.Parried;    
@@ -2142,7 +2144,7 @@ namespace DOL.GS
                     blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {blockOutput} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 
-                if (blockDouble == null)
+                if (blockDouble == null || UseRNGOverride)
                 {
                     if(blockChance > ranBlockNum)
                         return eAttackResult.Blocked;    
@@ -2224,20 +2226,29 @@ namespace DOL.GS
                         ranBlockNum /= 100;
                         guardchance *= 100;
 
+                        double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
+                        double? blockOutput = (blockDouble != null) ? blockDouble * 100: ranBlockNum;
                         if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         {
-                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
                         if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                         {
-                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} RandomNumber: {ranBlockNum} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
-                        if (guardchance > ranBlockNum)
+                        bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+                        if (blockDouble == null || UseRNGOverride)
                         {
-                            ad.Target = guard.GuardSource;
-                            return eAttackResult.Blocked;
+                            if(guardchance > ranBlockNum)
+                                return eAttackResult.Blocked;    
+                        }
+                        else
+                        {
+                            blockDouble *= 100;
+                            if(guardchance > blockDouble)
+                                return eAttackResult.Blocked;
                         }
                     }
                 }
@@ -2397,7 +2408,8 @@ namespace DOL.GS
             }
             ad.MissRate = missrate;
             int rando = 0;
-            if (ad.Attacker is GamePlayer atkkr)
+            bool skipDeckUsage = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+            if (ad.Attacker is GamePlayer atkkr && !skipDeckUsage )
             {
                 rando = atkkr.RandomNumberDeck.GetInt();
             }

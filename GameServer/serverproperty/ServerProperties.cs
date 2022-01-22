@@ -90,6 +90,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("system", "ignore_too_long_outcoming_packet", "Shall we ignore too long outcoming packet ?", false)]
 		public static bool IGNORE_TOO_LONG_OUTCOMING_PACKET;
+		
+		/// <summary>
+		/// Use raw RNG instead of Deck of Cards
+		/// </summary>
+		[ServerProperty("system", "override_deck_rng", "Should we use raw RNG instead of Deck-Of-Cards normalization?", false)]
+		public static bool OVERRIDE_DECK_RNG;
 
 		/// <summary>
 		/// Maximum length for reward quest description text to prevent client crashes

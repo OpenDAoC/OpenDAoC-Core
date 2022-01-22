@@ -2888,7 +2888,8 @@ namespace DOL.GS.Spells
 
 				int spellResistChance = CalculateSpellResistChance(t);
 				int randNum = 0;
-				if (Caster is GamePlayer caster)
+				bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+				if (Caster is GamePlayer caster && !UseRNGOverride)
 				{
 					randNum = caster.RandomNumberDeck.GetInt();
 				}
