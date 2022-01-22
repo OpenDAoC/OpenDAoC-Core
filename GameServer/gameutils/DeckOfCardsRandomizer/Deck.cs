@@ -26,6 +26,8 @@ public class PlayerDeck
 
         for (int i = 0; i < PLAYER_DECK_SIZE; i++)
         {
+            //mod by 100 to only generate numbers 0-99
+            //then offset by 1 to only generate 'cards' with values 1-100
             _cards.Push((i % 100) + 1);
         }
     }
@@ -37,6 +39,7 @@ public class PlayerDeck
         Shuffle();
         Shuffle();
         Shuffle();
+        //Console.WriteLine($"deck reset");
     }
     
     private void Shuffle()
@@ -60,8 +63,12 @@ public class PlayerDeck
 
     public double GetPseudoDouble()
     {
-        if (_cards.Count < 1)
+        if (_cards.Count < 2)
+        {
             ResetDeck();
+            Shuffle(); //shuffle it for fun
+        }
+            
 
         //we append two ints together to simulate more accuracy on the double
         //subtract 1 to only generate values 0-99
