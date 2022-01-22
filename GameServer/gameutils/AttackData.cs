@@ -325,9 +325,15 @@ namespace DOL.GS
 				double randNum = Util.CryptoNextDouble();
 				double fumbleChance = Attacker.ChanceToFumble;
 
-				if (Attacker is GamePlayer p && p.UseDetailedCombatLog)
+				bool overrideRNG = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+
+				if (Attacker is GamePlayer p)
 				{
-					p.Out.SendMessage($"Your chance to fumble: {(100 * fumbleChance).ToString("0.##")}% rand: {(100 * randNum).ToString("0.##")} Fumble? {fumbleChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					if(!overrideRNG)
+						randNum = p.RandomNumberDeck.GetPseudoDouble();
+					
+					if(p.UseDetailedCombatLog)
+						p.Out.SendMessage($"Your chance to fumble: {(100 * fumbleChance).ToString("0.##")}% rand: {(100 * randNum).ToString("0.##")} Fumble? {fumbleChance > randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
 
 				return (IsMeleeAttack) 
