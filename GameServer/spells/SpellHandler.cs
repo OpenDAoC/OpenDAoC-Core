@@ -2887,7 +2887,15 @@ namespace DOL.GS.Spells
 					((Caster as GameNPC).Brain as IOldAggressiveBrain).AddToAggroList(t, 1);
 
 				int spellResistChance = CalculateSpellResistChance(t);
-				int randNum = Util.CryptoNextInt(100);
+				int randNum = 0;
+				if (Caster is GamePlayer caster)
+				{
+					randNum = caster.RandomNumberDeck.GetInt();
+				}
+				else
+				{
+					randNum = Util.CryptoNextInt(100);
+				}
 
 				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && spellResistChance > 0)
 				{
