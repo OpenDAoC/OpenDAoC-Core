@@ -51,7 +51,7 @@ namespace DOL.GS
         [CmdAttribute(
             "&genuniques",
             ePrivLevel.GM,
-            "/genuniques ([TOA] || [L51] || [self] || [deck] || [suit] || [objecttype]) [itemtype] : generate 8 unique items")]
+            "/genuniques ([TOA] || [L51] || [self] || [suit] || [objecttype]) [itemtype] : generate 8 unique items")]
         public class LootGeneratorUniqueObjectCommandHandler : DOL.GS.Commands.AbstractCommandHandler,
             DOL.GS.Commands.ICommandHandler
         {
@@ -65,11 +65,7 @@ namespace DOL.GS
                         return;
                     }
 
-                    if (args.Length > 1 && Convert.ToString(args[1]).ToUpper() == "DECK")
-                    {
-	                    PlayerDeck deck = new PlayerDeck();
-                    }
-                    else if (args.Length > 1 && Convert.ToString(args[1]).ToUpper() == "SUIT")
+                    if (args.Length > 1 && Convert.ToString(args[1]).ToUpper() == "SUIT")
                     {
                         GamePlayer player = client.Player;
                         List<eInventorySlot> bodySlots = new List<eInventorySlot>();
