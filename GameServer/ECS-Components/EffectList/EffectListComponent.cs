@@ -208,8 +208,6 @@ namespace DOL.GS
         public List<ECSPulseEffect> GetAllPulseEffects()
         {
             var temp = new List<ECSPulseEffect>();
-            if (Effects == null) return null;
-            
             foreach (var effects in Effects.Values.ToList())
             {
                 for (int j = 0; j < effects.Count; j++)
@@ -248,9 +246,6 @@ namespace DOL.GS
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType = eEffect.Unknown)
         {
             var temp = new List<ECSGameSpellEffect>();
-            
-            if(Effects == null) return null;
-            
             foreach (var effects in Effects.Values.ToList())
             {
                 for (int j = 0; j < effects?.Count; j++)
