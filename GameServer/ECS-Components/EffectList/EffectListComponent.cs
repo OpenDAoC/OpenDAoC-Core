@@ -248,7 +248,7 @@ namespace DOL.GS
             var temp = new List<ECSGameSpellEffect>();
             foreach (var effects in Effects.Values.ToList())
             {
-                for (int j = 0; j < effects.Count; j++)
+                for (int j = 0; j < effects?.Count; j++)
                 {
                     if (effects[j] is ECSGameSpellEffect)
                     {
