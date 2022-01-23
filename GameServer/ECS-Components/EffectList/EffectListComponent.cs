@@ -224,9 +224,6 @@ namespace DOL.GS
         public List<IConcentrationEffect> GetConcentrationEffects()
         {
             var temp = new List<IConcentrationEffect>();
-            
-            if (Effects == null) return null;
-            
             var allEffects = Effects.Values.ToList();
 
             if (allEffects != null)
