@@ -61,7 +61,7 @@ namespace DOL.GS
 
         public static GameLiving[] GetLivingByComponent(Type t)
         {
-            lock (_components)
+            lock (_componentLock)
             {
                 if (_components.TryGetValue(t, out var p))
                 {
