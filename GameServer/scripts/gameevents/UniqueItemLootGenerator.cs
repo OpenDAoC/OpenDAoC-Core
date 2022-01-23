@@ -40,6 +40,7 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.GS.Scripts;
+using DOL.GS.Utils;
 using log4net;
 
 
@@ -86,7 +87,7 @@ namespace DOL.GS
                             item.AllowAdd = true;
                             item.IsTradable = false;
                             item.Price = 1;
-                            item.CapUtility(81);
+                            //item.CapUtility(81);
                             GameServer.Database.AddObject(item);
                             InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
                             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
@@ -120,7 +121,7 @@ namespace DOL.GS
                                 {
                                     item = new GeneratedUniqueItem(client.Player.Realm,
                                         (eCharacterClass) client.Player.CharacterClass.ID, client.Player.Level);
-                                    item.CapUtility(client.Player.Level);
+                                    //item.CapUtility(client.Player.Level);
                                     //item.GenerateItemQuality(GameObject.GetConLevel(client.Player.Level, 50));
                                 }
                                 else
@@ -146,8 +147,10 @@ namespace DOL.GS
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+	                Console.WriteLine(e);
+	                Console.WriteLine(e.StackTrace);
                     DisplaySyntax(client);
                 }
             }
@@ -543,7 +546,7 @@ namespace DOL.GS
 					item.AllowAdd = true;
 					item.IsTradable = false;
 					item.Price = 1;
-					item.CapUtility(81);
+					//item.CapUtility(81);
 					GameServer.Database.AddObject(item);
 					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
@@ -557,7 +560,7 @@ namespace DOL.GS
 				dmgTypeItem.AllowAdd = true;
 				dmgTypeItem.IsTradable = false;
 				dmgTypeItem.Price = 1;
-				dmgTypeItem.CapUtility(81);
+				//dmgTypeItem.CapUtility(81);
 				GameServer.Database.AddObject(dmgTypeItem);
 				InventoryItem tempItem = GameInventoryItem.Create<ItemUnique>(dmgTypeItem);
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem);
@@ -567,7 +570,7 @@ namespace DOL.GS
 				dmgTypeItem2.AllowAdd = true;
 				dmgTypeItem2.IsTradable = false;
 				dmgTypeItem2.Price = 1;
-				dmgTypeItem2.CapUtility(81);
+				//dmgTypeItem2.CapUtility(81);
 				GameServer.Database.AddObject(dmgTypeItem2);
 				InventoryItem tempItem2 = GameInventoryItem.Create<ItemUnique>(dmgTypeItem2);
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem2);
@@ -587,7 +590,7 @@ namespace DOL.GS
 					dmgTypeItem.AllowAdd = true;
 					dmgTypeItem.IsTradable = false;
 					dmgTypeItem.Price = 1;
-					dmgTypeItem.CapUtility(81);
+					//dmgTypeItem.CapUtility(81);
 					GameServer.Database.AddObject(dmgTypeItem);
 					InventoryItem tempItem = GameInventoryItem.Create<ItemUnique>(dmgTypeItem);
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem);
@@ -599,7 +602,7 @@ namespace DOL.GS
 				item.AllowAdd = true;
 				item.IsTradable = false;
 				item.Price = 1;
-				item.CapUtility(81);
+				//item.CapUtility(81);
 				GameServer.Database.AddObject(item);
 				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
 				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);

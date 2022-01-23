@@ -19,16 +19,16 @@ using log4net;
 
 namespace DOL.GS.Scripts
 {
-    public class EventLevelNPC : GameNPC
+    public class BoostNPC : GameNPC
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static int EventLVCap = Properties.EVENT_LVCAP;
         public static int realmPoints = Properties.EVENT_START_RP;
-        
-		public override bool AddToWorld()
+
+        public override bool AddToWorld()
 		{
-			Name = "Event Booster";
-            GuildName = "Atlas Event";
+			Name = "Booster";
+            GuildName = "Atlas";
             Model = 1198;
             Level = 50;
             Model = 2026;
@@ -41,7 +41,7 @@ namespace DOL.GS.Scripts
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             if (log.IsInfoEnabled)
-                log.Info("EventLevelNPC is loading...");
+                log.Info("Boost NPC is loading...");
         }
         public void SendReply(GamePlayer player, string msg)
         {
@@ -53,8 +53,22 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player))
                 return false;
 
-            player.Out.SendMessage("Hello " + player.Name + ",\n\n I can give you enough [experience] to defend your Realm in the battleground.\n\n Additionally, you might be interested in a small [realm level] boost.",
+            if (EventLVCap != 0)
+            { player.Out.SendMessage("Hello " + player.Name + ",\n\n I have been told to give you enough [experience] to reach level " + EventLVCap + ".",
                 eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            }
+            
+            if (realmPoints != 0)
+            {
+                player.Out.SendMessage("\nAdditionally, you might be interested in a small [realm level] boost.",
+                        eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            }
+            
+            if (EventLVCap == 0 && realmPoints == 0)
+            {
+                player.Out.SendMessage("I'm sorry, I can't help you at this time.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            }
+            
             return true;
         }
 
@@ -74,9 +88,23 @@ namespace DOL.GS.Scripts
                 case "experience":
                     if (player.Level < EventLVCap)
                     {
+                        string customKey = "BoostedLevel-" + EventLVCap;
+                        var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                        
                         player.Out.SendMessage("I have given you enough experience to fight, now make Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
+                        player.Boosted = true;
+                        
+                        if (boosterKey == null)
+                        {
+                            DOLCharactersXCustomParam boostedLevel = new DOLCharactersXCustomParam();
+                            boostedLevel.DOLCharactersObjectId = player.ObjectId;
+                            boostedLevel.KeyName = customKey;
+                            boostedLevel.Value = "1";
+                            GameServer.Database.AddObject(boostedLevel);
+                        }
+
                         return true;
                     }
                     player.Out.SendMessage("You are a veteran already, go fight for your Realm!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
@@ -86,15 +114,28 @@ namespace DOL.GS.Scripts
                     
                     if (player.RealmPoints < realmPoints)
                     {
+                        string customKey = "BoostedRP-" + realmPoints;
+                        var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                        
                         long realmPointsToGive = realmPoints - player.RealmPoints;
                         player.GainRealmPoints(realmPointsToGive/(long)Properties.RP_RATE);
                         player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        player.Boosted = true;
+                        
+                        if (boosterKey == null)
+                        {
+                            DOLCharactersXCustomParam boostedRR = new DOLCharactersXCustomParam();
+                            boostedRR.DOLCharactersObjectId = player.ObjectId;
+                            boostedRR.KeyName = customKey;
+                            boostedRR.Value = "1";
+                            GameServer.Database.AddObject(boostedRR);
+                        }
+                        
                         return true;
                     }
                     player.Out.SendMessage("You have killed enough enemies already, go kill more!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                     return false;
-
-
+                
                 default:
                     return false;
             }

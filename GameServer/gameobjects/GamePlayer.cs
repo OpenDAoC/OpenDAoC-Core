@@ -46,6 +46,7 @@ using DOL.GS.Utils;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
+using Newtonsoft.Json;
 
 namespace DOL.GS
 {
@@ -68,6 +69,8 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+
+        private PlayerDeck _randomNumberDeck;
 
         #region Client/Character/VariousFlags
 
@@ -150,6 +153,18 @@ namespace DOL.GS
         {
             get { return m_targetInView; }
             set { m_targetInView = value; }
+        }
+
+        public PlayerDeck RandomNumberDeck
+        {
+            get
+            {
+                if (_randomNumberDeck == null)
+                    _randomNumberDeck = new PlayerDeck();
+                
+                return _randomNumberDeck;
+            }
+            set { _randomNumberDeck = value; }
         }
 
         /// <summary>
@@ -420,6 +435,16 @@ namespace DOL.GS
         {
             get { return (DBCharacter != null ? DBCharacter.HCCompleted : true); }
             set { if (DBCharacter != null) DBCharacter.HCCompleted = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets the boosted flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool Boosted
+        {
+            get { return (DBCharacter != null ? DBCharacter.isBoosted : true); }
+            set { if (DBCharacter != null) DBCharacter.isBoosted = value; }
         }
         
         /// <summary>
@@ -4903,12 +4928,12 @@ namespace DOL.GS
         public virtual long GetExperienceNeededForLevel(int level)
         {
             if (level > MaxLevel)
-                return GetExperienceAmountForLevel(MaxLevel);
+                return GetScaledExperienceAmountForLevel(MaxLevel);
 
             if (level <= 0)
-                return GetExperienceAmountForLevel(0);
+                return GetScaledExperienceAmountForLevel(0);
 
-            return GetExperienceAmountForLevel(level - 1);
+            return GetScaledExperienceAmountForLevel(level - 1);
         }
 		
         /// <summary>
@@ -5020,32 +5045,32 @@ namespace DOL.GS
             1399950, // xp to level 13
             2199950, // xp to level 14
             3399950, // xp to level 15
-            5979943, // xp to level 16
-            9163942, // xp to level 17
-            13805942, // xp to level 18
-            20649941, // xp to level 19
-            30820941, // xp to level 20
-            45839940, // xp to level 21
-            66186940, // xp to level 22
-            93939939, // xp to level 23
-            131609939, // xp to level 24
-            182279938, // xp to level 25
-            249999938, // xp to level 26
-            340199937, // xp to level 27
-            457199937, // xp to level 28
-            614399936, // xp to level 29
-            825599936, // xp to level 30
-            1104999935, // xp to level 31
-            1467199935, // xp to level 32
-            1940399934, // xp to level 33
-            2566899934, // xp to level 34
-            3390199933, // xp to level 35
-            4481999933, // xp to level 36
-            5847999932, // xp to level 37
-            7534999932, // xp to level 38
-            9521999931, // xp to level 39
-            11953999931, // xp to level 40
-            15479999940, // xp to level 41
+            6499938, // xp to level 16
+            9953937, // xp to level 17
+            14985937, // xp to level 18
+            22399936, // xp to level 19
+            33410936, // xp to level 20
+            49659935, // xp to level 21
+            71656935, // xp to level 22
+            101639934, // xp to level 23
+            142309934, // xp to level 24
+            196979933, // xp to level 25
+            269999933, // xp to level 26
+            367199932, // xp to level 27
+            493199932, // xp to level 28
+            662399931, // xp to level 29
+            889599931, // xp to level 30
+            1189999930, // xp to level 31
+            1579199930, // xp to level 32
+            2087399929, // xp to level 33
+            2759899929, // xp to level 34
+            3643199928, // xp to level 35
+            4813999928, // xp to level 36
+            6277999927, // xp to level 37
+            8084999927, // xp to level 38
+            10211999926, // xp to level 39
+            12813999926, // xp to level 40
+            16382999937, // xp to level 41
             20699999950, // xp to level 42
             29999999950, // xp to level 43
             40799999950, // xp to level 44
@@ -10611,6 +10636,17 @@ namespace DOL.GS
                 ((BaseInstance)CurrentRegion).OnPlayerEnterInstance(this);
 
             RefreshItemBonuses();
+            
+            var playerDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+            if (playerDeck != null)
+            {
+                this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
+                //Console.WriteLine($"loaded deck. first card: {this.RandomNumberDeck.GetInt()}");
+            }
+            else
+            {
+                this.RandomNumberDeck = new PlayerDeck();
+            }
 
             return true;
         }
@@ -13292,9 +13328,7 @@ namespace DOL.GS
                 Mana = DBCharacter.Mana;
                 Endurance = DBCharacter.Endurance; // has to be set after max, same applies to other values with max properties
             }
-
             
-
             if (Health <= 0)
             {
                 Health = 1;
@@ -13372,6 +13406,21 @@ namespace DOL.GS
         {
             try
             {
+                var existingDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+                if (existingDeck != null)
+                {
+                    existingDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
+                    GameServer.Database.SaveObject(existingDeck);
+                }
+                else
+                {
+                    DOLCharactersXDeck playerDeck = new DOLCharactersXDeck();
+                    playerDeck.DOLCharactersObjectId = this.ObjectId;
+                    playerDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
+                    GameServer.Database.AddObject(playerDeck);
+                }
+               
+
                 // Ff this player is a GM always check and set the IgnoreStatistics flag
                 if (Client.Account.PrivLevel > (uint)ePrivLevel.Player && DBCharacter.IgnoreStatistics == false)
                 {

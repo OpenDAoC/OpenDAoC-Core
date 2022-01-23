@@ -15,7 +15,7 @@ namespace ECS.Debug
     public static class Diagnostics
     {
         private static readonly ILog log = LogManager.GetLogger("Performance");
-        
+
         //Create FileStream and append to it as needed
         private static StreamWriter _perfStreamWriter;
         private static bool _streamWriterInitialized = false;
@@ -43,7 +43,7 @@ namespace ECS.Debug
                 _streamWriterInitialized = false;
             }
             PerfCountersEnabled = enabled;
-            
+
         }
 
         public static void ToggleStateMachineDebug(bool enabled)
@@ -72,11 +72,11 @@ namespace ECS.Debug
 
         private static void InitializeStreamWriter()
         {
-            if(_streamWriterInitialized)
+            if (_streamWriterInitialized)
                 return;
             else
             {
-                var _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PerfLog"+DateTime.Now.ToFileTime());
+                var _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PerfLog" + DateTime.Now.ToFileTime());
                 _perfStreamWriter = new StreamWriter(_filePath, false);
                 _streamWriterInitialized = true;
             }
@@ -86,7 +86,7 @@ namespace ECS.Debug
         {
             if (!PerfCountersEnabled)
                 return;
-            
+
             InitializeStreamWriter();
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
             PerfCounters.Add(uniqueID, stopwatch);
@@ -108,7 +108,7 @@ namespace ECS.Debug
         {
             if (!PerfCountersEnabled)
                 return;
-            
+
             // Report perf counters that were active this frame and then flush them.
             if (PerfCounters.Count > 0)
             {

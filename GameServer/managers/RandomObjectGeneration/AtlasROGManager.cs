@@ -97,7 +97,7 @@ namespace DOL.GS {
             item = new GeneratedUniqueItem(realm, charClass, level);
             item.AllowAdd = true;
             item.IsTradable = true;
-            item.CapUtility(level);
+            //item.CapUtility(level);
             return item;
             
         }

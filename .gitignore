@@ -34,7 +34,8 @@
 mono_crash.*
 .idea
 .vscode
-/GameServer
 /ConnectTestBoth.bat - Shortcut.lnk
 /ConnectTest.bat - Shortcut.lnk
 /ConnectTest - Copy.bat - Shortcut.lnk
+/GameServer/Properties/PublishProfiles
+/GameServer/GameServer.csproj.user

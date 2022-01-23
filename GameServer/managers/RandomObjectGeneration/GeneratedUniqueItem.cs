@@ -180,6 +180,8 @@ namespace DOL.GS {
             this.IsDropable = true;
             this.IsPickable = true;
             this.IsTradable = true;
+            
+            this.CapUtility(this.Level);
 
             if (this.Level > 51)
             {
@@ -4748,7 +4750,7 @@ namespace DOL.GS {
         }
         #endregion
 
-        public void CapUtility(int mobLevel)
+        private void CapUtility(int mobLevel)
         {
             int cap = 0;
             if (mobLevel > 80)
