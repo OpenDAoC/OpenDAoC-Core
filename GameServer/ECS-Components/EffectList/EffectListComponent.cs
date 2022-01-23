@@ -222,12 +222,17 @@ namespace DOL.GS
         public List<IConcentrationEffect> GetConcentrationEffects()
         {
             var temp = new List<IConcentrationEffect>();
-            foreach (var effects in Effects.Values.ToList())
+            var allEffects = Effects.Values.ToList();
+
+            if (allEffects != null)
             {
-                for (int j = 0; j < effects.Count; j++)
+                foreach (var effects in allEffects)
                 {
-                    if (effects[j] is ECSPulseEffect || effects[j].IsConcentrationEffect())
-                        temp.Add(effects[j] as IConcentrationEffect);
+                    for (int j = 0; j < effects?.Count; j++)
+                    {
+                        if (effects[j] is ECSPulseEffect || effects[j].IsConcentrationEffect())
+                            temp.Add(effects[j] as IConcentrationEffect);
+                    }
                 }
             }
             return temp;
