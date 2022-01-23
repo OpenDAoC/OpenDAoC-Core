@@ -673,7 +673,7 @@ namespace DOL.GS
         {
         	get
         	{
-        		return Concentration > 0;
+        		return Concentration > 0 || IsFocus;
         	}
         }
 

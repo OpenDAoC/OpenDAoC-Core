@@ -1274,7 +1274,7 @@ namespace DOL.GS.ServerRules
 						xpReward = expCap;
 
 					if(player != null && player.Group != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
-                    {
+					{
 						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | Group XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						double expPercent = ((double)(xpReward) / (double)(expCap)) * 100;
 						player.Out.SendMessage($"% of Cap: {expPercent.ToString(".##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -322,27 +322,13 @@ namespace DOL.GS
                         if (!(owner is GamePlayer) || (owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
                         {
                             owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-                            lock (owner.effectListComponent.Effects)
-                            {
-                                foreach (ECSGameAbilityEffect effect in owner.effectListComponent.GetAbilityEffects()) // switch to the correct range attack type
-                                {
-                                    if (effect is SureShotECSGameEffect)
-                                    {
-                                        owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                                        break;
-                                    }
-                                    else if (effect is RapidFireECSGameEffect)
-                                    {
-                                        owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                                        break;
-                                    }
-                                    else if (effect is TrueShotECSGameEffect)
-                                    {
-                                        owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-                                        break;
-                                    }
-                                }
-                            }
+
+                            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.SureShot) != null)
+                                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.RapidFire) != null)
+                                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+                            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.TrueShot) != null)
+                                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;                            
                         }
 
                         owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;

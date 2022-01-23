@@ -35,52 +35,21 @@ namespace DOL.GS
 
             ECSGameEffect[] arr = EntityManager.GetAllEffects();
 
-            lock (arr)
+            Parallel.ForEach(arr, effect =>
             {
-                for (int ctr = 1; ctr <= Math.Ceiling(((double)arr.Count()) / _segmentsize); ctr++)
+                if (effect == null)
+                    return;
+
+                if (effect.CancelEffect || effect.IsDisabled)
                 {
-                    int elements = _segmentsize;
-                    int offset = (ctr - 1) * _segmentsize;
-                    int upper = offset + elements;
-                    if ((upper) > arr.Count())
-                        elements = arr.Count() - offset;
-
-                    ArraySegment<ECSGameEffect> segment = new ArraySegment<ECSGameEffect>(arr, offset, elements);
-
-                    _tasks.Add(Task.Factory.StartNew((Object obj) =>
-                    {
-                        TaskStats data = obj as TaskStats;
-                        if (data == null)
-                            return;
-
-                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
-                        IList<ECSGameEffect> effects = (IList<ECSGameEffect>)segment;
-
-                        for (int index = 0; index < effects.Count; index++)
-                        {
-                            if (effects[index] == null)
-                                continue;
-
-                            if (effects[index].CancelEffect || effects[index].IsDisabled)
-                            {
-                                HandleCancelEffect(effects[index]);
-                            }
-                            else
-                            {
-                                HandlePropertyModification(effects[index]);
-                            }
-                        }
-                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
-                    },
-                    new TaskStats() { Name = ctr, CreationTime = DateTime.Now.Ticks }));
+                    HandleCancelEffect(effect);
                 }
-                Task.WaitAll(_tasks.ToArray());
-            }
-
-
-            _tasks.Clear();
-
-
+                else
+                {
+                    HandlePropertyModification(effect);
+                }
+            });
+            
             Diagnostics.StopPerfCounter(ServiceName);
         }
     
@@ -114,9 +83,12 @@ namespace DOL.GS
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect)
             {
-                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
+                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.GetConcentrationEffects() != null)
                 {
-                    spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
+                    //spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
+
+                    spellEffect.SpellHandler.Caster.ConcentrationEffectsCount++;
+                    spellEffect.SpellHandler.Caster.UsedConcentration += spellEffect.SpellHandler.Spell.Concentration;
                 }
             }
 
@@ -179,6 +151,7 @@ namespace DOL.GS
 
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
                 SendPlayerUpdates(player);
+                player.Out.SendConcentrationList();
             }
             else if (e.Owner is GameNPC)
             {
@@ -225,9 +198,11 @@ namespace DOL.GS
                 // Update the Concentration List if Conc Buff/Song/Chant.
                 if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
                 {
-                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
+                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.GetConcentrationEffects() != null)
                     {
-                        spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
+                        //spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
+                        spellEffect.SpellHandler.Caster.ConcentrationEffectsCount--;
+                        spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
                     }
                 }
             }
@@ -238,8 +213,9 @@ namespace DOL.GS
 
             if (!e.IsDisabled && e.Owner.effectListComponent.Effects.ContainsKey(e.EffectType))
             {
-                if (e.Owner.effectListComponent.GetSpellEffects(e.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault().IsDisabled)
-                    RequestEnableEffect(e.Owner.effectListComponent.GetSpellEffects(e.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault());
+                var enableEffect = e.Owner.effectListComponent.GetSpellEffects(e.EffectType).OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
+                if (enableEffect != null && enableEffect.IsDisabled)
+                    RequestEnableEffect(enableEffect);
             }
 
             if (e.Owner is GamePlayer player)
@@ -251,6 +227,7 @@ namespace DOL.GS
                 ecsList.AddRange(playerEffects.Skip(playerEffects.IndexOf(e)));
 
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendConcentrationList();
             }
             else if (e.Owner is GameNPC)
             {

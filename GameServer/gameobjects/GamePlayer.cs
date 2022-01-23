@@ -198,6 +198,7 @@ namespace DOL.GS
             get { return m_usedetailedcombatlog; }
             set { m_usedetailedcombatlog = value;}
         }
+        
         public eXPLogState XPLogState
         {
             get { return m_xplogstate; }
@@ -2882,7 +2883,7 @@ namespace DOL.GS
         /// </summary>
         public override int Concentration
         {
-            get { return MaxConcentration - ConcentrationEffects.UsedConcentration; }
+            get { return MaxConcentration - UsedConcentration; }
         }
 
         /// <summary>

@@ -90,12 +90,13 @@ namespace DOL.GS.Spells
 		/// <returns>chance that spell will be resisted for specific target</returns>		
         public override int CalculateSpellResistChance(GameLiving target)
         {
-        	int basechance =  base.CalculateSpellResistChance(target);       	
+        	int basechance =  base.CalculateSpellResistChance(target);      
+            /*
  			GameSpellEffect rampage = SpellHandler.FindEffectOnTarget(target, "Rampage");
             if (rampage != null)
             {
             	basechance += (int)rampage.Spell.Value;
-            }
+            }*/
             return Math.Min(100, basechance);
         }
 		// constructor

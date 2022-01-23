@@ -309,23 +309,50 @@ namespace DOL.GS.Spells
 		/// <returns>true if any spells were canceled</returns>
 		public virtual bool CancelPulsingSpell(GameLiving living, byte spellType)
 		{
-			lock (living.ConcentrationEffects)
-			{
-				for (int i = 0; i < living.ConcentrationEffects.Count; i++)
-				{
-					PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+			//lock (living.ConcentrationEffects)
+			//{
+			//	for (int i = 0; i < living.ConcentrationEffects.Count; i++)
+			//	{
+			//		PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+			//		if (effect == null)
+			//			continue;
+			//		if (effect.SpellHandler.Spell.SpellType == spellType)
+			//		{
+			//			effect.Cancel(false);
+			//			return true;
+			//		}
+			//	}
+			//}
+
+			lock (living.effectListComponent._effectsLock)
+            {
+				var effects = living.effectListComponent.GetAllPulseEffects();
+
+				for (int i = 0; i < effects.Count; i++)
+                {
+                    ECSPulseEffect effect = effects[i];
+                    if (effect == null)
+                        continue;
+
 					if (effect == null)
 						continue;
 					if (effect.SpellHandler.Spell.SpellType == spellType)
 					{
-						effect.Cancel(false);
+						EffectService.RequestCancelConcEffect(effect);
 						return true;
 					}
-				}
-			}
-			return false;
+                }
+            }
+            return false;
 		}
-
+		public static void CancelAllPulsingSpells(GameLiving living)
+        {
+			var effects = living.effectListComponent.GetAllPulseEffects();
+			for (int i = 0; i < effects.Count(); i++)
+            {
+				EffectService.RequestImmediateCancelConcEffect(effects[i]);
+            }
+        }
 		/// <summary>
 		/// Cancels all pulsing spells
 		/// </summary>
@@ -720,22 +747,16 @@ namespace DOL.GS.Spells
 					if (!quiet) MessageToCaster("You can't cast in a siegeram!.", eChatType.CT_System);
 					return false;
 				}
-				GameSpellEffect naturesWomb = FindEffectOnTarget(Caster, typeof(NaturesWombEffect));
-				if (naturesWomb != null)
-				{
-					//[StephenxPimentel]
-					//Get Correct Message for 1.108 update.
-					MessageToCaster("You are silenced and cannot cast a spell right now.", eChatType.CT_SpellResisted);
-					return false;
-				}
+				
 			}
 
+            /*
 			GameSpellEffect Phaseshift = FindEffectOnTarget(Caster, "Phaseshift");
 			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == (byte)eSpellType.Mesmerize))
 			{
 				if (!quiet) MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
 				return false;
-			}
+			}*/
 
 			// Apply Mentalist RA5L
 			if (Spell.Range>0)
@@ -955,7 +976,7 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+				if (m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 				{
 					if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 					return false;
@@ -1216,7 +1237,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 			{
 				MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1421,7 +1442,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 			{
 				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1603,7 +1624,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.ConcSpellsCount >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffectsCount >= MAX_CONC_SPELLS)
 			{
 				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1795,10 +1816,11 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual int PowerCost(GameLiving target)
 		{
+			/*
 			// warlock
 			GameSpellEffect effect = SpellHandler.FindEffectOnTarget(m_caster, "Powerless");
 			if (effect != null && !m_spell.IsPrimary)
-				return 0;
+				return 0;*/
 
 			//1.108 - Valhallas Blessing now has a 75% chance to not use power.
 			ValhallasBlessingEffect ValhallasBlessing = m_caster.EffectList.GetOfType<ValhallasBlessingEffect>();
@@ -2182,7 +2204,8 @@ namespace DOL.GS.Spells
 
             if (Spell.IsPulsing)
             {
-				EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
+				CancelAllPulsingSpells(Caster);
+				//EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
@@ -2196,6 +2219,7 @@ namespace DOL.GS.Spells
             //CreateSpellEffects();
             StartSpell(target); // and action
 
+            /*
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.
 			if (m_spell.SpellType != (byte)eSpellType.Powerless && m_spell.SpellType != (byte)eSpellType.Range && m_spell.SpellType != (byte)eSpellType.Uninterruptable)
@@ -2209,7 +2233,7 @@ namespace DOL.GS.Spells
 				//if we found an effect, cancel it!
 				if (effect != null)
 					effect.Cancel(false);
-			}
+			}*/
 
 			//the quick cast is unallowed whenever you miss the spell
 			//set the time when casting to can not quickcast during a minimum time
@@ -2276,6 +2300,7 @@ namespace DOL.GS.Spells
 			ushort modifiedRadius = (ushort)Spell.Radius;
 			int newtarget = 0;
 
+			/*
 			GameSpellEffect TargetMod = SpellHandler.FindEffectOnTarget(m_caster, "TargetModifier");
 			if (TargetMod != null)
 			{
@@ -2326,7 +2351,7 @@ namespace DOL.GS.Spells
 					if (TargetMod.Duration < 65535)
 						TargetMod.Cancel(false);
 				}
-			}
+			}*/
 
 			if (modifiedTarget == "pet" && !HasPositiveEffect)
 			{
@@ -3014,6 +3039,7 @@ namespace DOL.GS.Spells
 		{
             
 
+			/*
             if (target is GamePlayer)
 			{
 				GameSpellEffect effect1;
@@ -3023,7 +3049,7 @@ namespace DOL.GS.Spells
 					MessageToCaster(target.Name + " is Phaseshifted and can't be effected by this Spell!", eChatType.CT_SpellResisted);
 					return;
 				}
-			}
+			}*/
 
 			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent))
 			{
@@ -4173,12 +4199,6 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			GameSpellEffect effect = FindEffectOnTarget(m_caster, "HereticPiercingMagic");
-			if (effect != null)
-			{
-				spellLevel += (int)effect.Spell.Value;
-			}
-
 			if (playerCaster != null && (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith)))
 			{
 				spellLevel = Math.Min(playerCaster.MaxLevel, target.Level);
@@ -4187,10 +4207,10 @@ namespace DOL.GS.Spells
 			int bonustohit = m_caster.GetModified(eProperty.ToHitBonus);
 
 			//Piercing Magic affects to-hit bonus too
-			GameSpellEffect resPierce = SpellHandler.FindEffectOnTarget(m_caster, "PenetrateResists");
+			/*GameSpellEffect resPierce = SpellHandler.FindEffectOnTarget(m_caster, "PenetrateResists");
 			if (resPierce != null)
 				bonustohit += (int)resPierce.Spell.Value;
-
+			*/
 			/*
 			http://www.camelotherald.com/news/news_article.php?storyid=704
 
@@ -4215,16 +4235,6 @@ namespace DOL.GS.Spells
 			{
 				hitchance -= (int)(m_caster.GetConLevel(target) * ServerProperties.Properties.PVE_SPELL_CONHITPERCENT);
 				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
-			}
-
-			// [Freya] Nidel: Harpy Cloak : They have less chance of landing melee attacks, and spells have a greater chance of affecting them.
-			if((target is GamePlayer))
-			{
-				GameSpellEffect harpyCloak = FindEffectOnTarget(target, "HarpyFeatherCloak");
-				if(harpyCloak != null)
-				{
-					hitchance += (int) ((hitchance*harpyCloak.Spell.Value)*0.01);
-				}
 			}
 
 			if (Caster is GameNPC)
@@ -4320,13 +4330,6 @@ namespace DOL.GS.Spells
 					finalDamage = (int)((double)finalDamage * ServerProperties.Properties.PVP_SPELL_DAMAGE);
 				else if (target is GameNPC)
 					finalDamage = (int)((double)finalDamage * ServerProperties.Properties.PVE_SPELL_DAMAGE);
-			}
-
-			// Well the PenetrateResistBuff is NOT ResistPierce
-			GameSpellEffect penPierce = SpellHandler.FindEffectOnTarget(m_caster, "PenetrateResists");
-			if (penPierce != null)
-			{
-				finalDamage = (int)(finalDamage * (1.0 + penPierce.Spell.Value / 100.0));
 			}
 
 			int cdamage = 0;

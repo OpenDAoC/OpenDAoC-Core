@@ -1172,6 +1172,7 @@ namespace DOL.GS {
                 case eCharacterClass.Animist:
                     if (Util.Chance(20))
                         return eProperty.MaxMana;
+                    
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
