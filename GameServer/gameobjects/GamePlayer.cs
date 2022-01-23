@@ -46,6 +46,7 @@ using DOL.GS.Utils;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
+using Newtonsoft.Json;
 
 namespace DOL.GS
 {
@@ -68,6 +69,8 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+
+        private PlayerDeck _randomNumberDeck;
 
         #region Client/Character/VariousFlags
 
@@ -150,6 +153,18 @@ namespace DOL.GS
         {
             get { return m_targetInView; }
             set { m_targetInView = value; }
+        }
+
+        public PlayerDeck RandomNumberDeck
+        {
+            get
+            {
+                if (_randomNumberDeck == null)
+                    _randomNumberDeck = new PlayerDeck();
+                
+                return _randomNumberDeck;
+            }
+            set { _randomNumberDeck = value; }
         }
 
         /// <summary>
@@ -10620,6 +10635,17 @@ namespace DOL.GS
                 ((BaseInstance)CurrentRegion).OnPlayerEnterInstance(this);
 
             RefreshItemBonuses();
+            
+            var playerDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+            if (playerDeck != null)
+            {
+                this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
+                //Console.WriteLine($"loaded deck. first card: {this.RandomNumberDeck.GetInt()}");
+            }
+            else
+            {
+                this.RandomNumberDeck = new PlayerDeck();
+            }
 
             return true;
         }
@@ -13301,9 +13327,7 @@ namespace DOL.GS
                 Mana = DBCharacter.Mana;
                 Endurance = DBCharacter.Endurance; // has to be set after max, same applies to other values with max properties
             }
-
             
-
             if (Health <= 0)
             {
                 Health = 1;
@@ -13381,6 +13405,21 @@ namespace DOL.GS
         {
             try
             {
+                var existingDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+                if (existingDeck != null)
+                {
+                    existingDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
+                    GameServer.Database.SaveObject(existingDeck);
+                }
+                else
+                {
+                    DOLCharactersXDeck playerDeck = new DOLCharactersXDeck();
+                    playerDeck.DOLCharactersObjectId = this.ObjectId;
+                    playerDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
+                    GameServer.Database.AddObject(playerDeck);
+                }
+               
+
                 // Ff this player is a GM always check and set the IgnoreStatistics flag
                 if (Client.Account.PrivLevel > (uint)ePrivLevel.Player && DBCharacter.IgnoreStatistics == false)
                 {

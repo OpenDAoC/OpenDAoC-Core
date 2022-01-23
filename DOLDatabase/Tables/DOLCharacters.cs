@@ -2355,6 +2355,12 @@ namespace DOL.Database
         /// </summary>
         [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
 		public DOLCharactersXCustomParam[] CustomParams;
+        
+        /// <summary>
+        /// List of Random Number Decks for this Character
+        /// </summary>
+        [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
+        public DOLCharactersXDeck[] RandomNumberDecks;
 	}
 	
 	/// <summary>

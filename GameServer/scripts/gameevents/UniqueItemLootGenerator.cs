@@ -40,6 +40,7 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.GS.Scripts;
+using DOL.GS.Utils;
 using log4net;
 
 
@@ -146,8 +147,10 @@ namespace DOL.GS
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+	                Console.WriteLine(e);
+	                Console.WriteLine(e.StackTrace);
                     DisplaySyntax(client);
                 }
             }
