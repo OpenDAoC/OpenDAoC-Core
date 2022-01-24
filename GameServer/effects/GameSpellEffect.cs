@@ -368,7 +368,7 @@ namespace DOL.GS.Effects
 				
 				// Remove concentration Effect from Caster List.
 				if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null) 
-					SpellHandler.Caster.ConcentrationEffects.Remove(this);
+					//SpellHandler.Caster.ConcentrationEffects.Remove(this);
 				
 				// Remove effect from Owner list
 				if(Owner != null && Owner.EffectList != null) 
@@ -432,7 +432,7 @@ namespace DOL.GS.Effects
 					
 					// Add concentration Effect To Caster List.
 					if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null)
-						SpellHandler.Caster.ConcentrationEffects.Add(this);
+						//SpellHandler.Caster.ConcentrationEffects.Add(this);
 					
 					StartTimers();
 				}
@@ -587,7 +587,7 @@ namespace DOL.GS.Effects
 
 				// Add concentration Effect To Caster List.
 				if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null)
-					SpellHandler.Caster.ConcentrationEffects.Add(this);
+					//SpellHandler.Caster.ConcentrationEffects.Add(this);
 
 				// Restart Effect
 				IsExpired = false;

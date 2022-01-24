@@ -52,7 +52,7 @@ namespace DOL.GS
         public StyleComponent styleComponent;
         public Spell LastPulseCast;
 		public int UsedConcentration;
-		public int ConcentrationEffectsCount;
+
         #region Combat
         /// <summary>
         /// Holds the AttackData object of last attack
@@ -5894,11 +5894,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the concentration effects list
 		/// </summary>
-		private readonly ConcentrationList m_concEffects;
+		private List<ECSGameSpellEffect> m_concEffects;
 		/// <summary>
 		/// Gets the concentration effects list
 		/// </summary>
-		public ConcentrationList ConcentrationEffects { get { return m_concEffects; } }
+		public List<ECSGameSpellEffect> ConcentrationEffects { get { return m_concEffects; } }
 
 		/// <summary>
 		/// Cancels all concentration effects by this living and on this living
@@ -5914,7 +5914,10 @@ namespace DOL.GS
 		public void CancelAllConcentrationEffects(bool leaveSelf, bool updateplayer)
 		{
 			// cancel conc spells
-			ConcentrationEffects.CancelAll(leaveSelf, updateplayer);
+			for (int i = 0; i < ConcentrationEffects.Count; i++)
+            {
+				EffectService.RequestCancelConcEffect(ConcentrationEffects[i]);
+            }
 
 			//cancel all active conc spell effects from other casters
 			if (effectListComponent != null)
@@ -7330,7 +7333,7 @@ namespace DOL.GS
             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 			m_xpGainers = new HybridDictionary();
 			m_effects = CreateEffectsList();
-			m_concEffects = new ConcentrationList(this);
+			m_concEffects = new List<ECSGameSpellEffect>();
 			//m_attackers = new List<GameObject>();
 
 			m_health = 1;

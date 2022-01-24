@@ -83,12 +83,13 @@ namespace DOL.GS
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect)
             {
-                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.GetConcentrationEffects() != null)
+                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
                 {
-                    //spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
-
-                    spellEffect.SpellHandler.Caster.ConcentrationEffectsCount++;
                     spellEffect.SpellHandler.Caster.UsedConcentration += spellEffect.SpellHandler.Spell.Concentration;
+                    spellEffect.SpellHandler.Caster.ConcentrationEffects.Add(spellEffect);
+
+                    if (spellEffect.SpellHandler.Caster is GamePlayer p)
+                        p.Out.SendConcentrationList();
                 }
             }
 
@@ -198,11 +199,13 @@ namespace DOL.GS
                 // Update the Concentration List if Conc Buff/Song/Chant.
                 if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
                 {
-                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.GetConcentrationEffects() != null)
+                    if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
                     {
-                        //spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove((ECSGameSpellEffect)e);
-                        spellEffect.SpellHandler.Caster.ConcentrationEffectsCount--;
                         spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
+                        spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove(spellEffect);
+
+                        if (spellEffect.SpellHandler.Caster is GamePlayer p)
+                            p.Out.SendConcentrationList();
                     }
                 }
             }

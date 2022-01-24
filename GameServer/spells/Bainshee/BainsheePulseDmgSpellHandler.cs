@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
             {
                 for (int i = 0; i < living.ConcentrationEffects.Count; i++)
                 {
-                    PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+					PulsingSpellEffect effect = null; //living.ConcentrationEffects[i] as PulsingSpellEffect;
                     if (effect == null)
                         continue;
                     if (effect.SpellHandler.Spell.SpellType == spellType)

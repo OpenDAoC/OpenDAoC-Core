@@ -753,12 +753,12 @@ namespace DOL.GS.PacketHandler
 			{
 				lock (m_gameClient.Player.effectListComponent._effectsLock)
 				{
-					pak.WriteByte((byte)(m_gameClient.Player.ConcentrationEffectsCount));
+					pak.WriteByte((byte)(m_gameClient.Player.ConcentrationEffects.Count));
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-					var effects = m_gameClient.Player.effectListComponent.GetConcentrationEffects();
+					var effects = m_gameClient.Player.ConcentrationEffects;
                     for (int i = 0; i < effects.Count; i++)
                     {
                         IConcentrationEffect effect = effects[i];
