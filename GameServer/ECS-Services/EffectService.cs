@@ -205,10 +205,12 @@ namespace DOL.GS
                             {
                                 spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
                                 spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove(spellEffect);
+                                
+                                if (spellEffect.SpellHandler.Caster is GamePlayer p)
+                                    p.Out.SendConcentrationList();
                             }
 
-                            if (spellEffect.SpellHandler.Caster is GamePlayer p)
-                                p.Out.SendConcentrationList();
+                            
                         }
                 }
             }
