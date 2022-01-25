@@ -704,34 +704,49 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool ReceiveItem(GameLiving source, InventoryItem item)
 		{
-			if (source is GamePlayer player && item != null && m_currencyValues != null
-				&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
-				&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
+			
+			GamePlayer t = source as GamePlayer;
+			if (t == null || item == null)
+				return false;
+			
+			if (DataQuestList.Count > 0)
 			{
-				int giveCount = item.Count * receiveCost / giveCost;
-
-				if (giveCount > 0)
+				foreach (DataQuest quest in DataQuestList)
 				{
-					// Create and give new item to player
-					InventoryItem newItem = GameInventoryItem.Create(m_itemTemplate);
-					newItem.OwnerID = player.InternalID;
-					newItem.Count = giveCount;
-
-					if (!player.Inventory.AddTemplate(newItem, newItem.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-						player.CreateItemOnTheGround(newItem);
-
-					// Remove received items
-					InventoryItem playerItem = player.Inventory.GetItem((eInventorySlot)item.SlotPosition);
-					playerItem.Count -= giveCount * giveCost;
-
-					if (playerItem.Count < 1)
-						player.Inventory.RemoveItem(item);
-
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(t, this, item));
 					return true;
 				}
 			}
-
-			return base.ReceiveItem(source, item);
+			return false;
+			
+			// if (source is GamePlayer player && item != null && m_currencyValues != null
+			// 	&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
+			// 	&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
+			// {
+			// 	int giveCount = item.Count * receiveCost / giveCost;
+			//
+			// 	if (giveCount > 0)
+			// 	{
+			// 		// Create and give new item to player
+			// 		InventoryItem newItem = GameInventoryItem.Create(m_itemTemplate);
+			// 		newItem.OwnerID = player.InternalID;
+			// 		newItem.Count = giveCount;
+			//
+			// 		if (!player.Inventory.AddTemplate(newItem, newItem.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			// 			player.CreateItemOnTheGround(newItem);
+			//
+			// 		// Remove received items
+			// 		InventoryItem playerItem = player.Inventory.GetItem((eInventorySlot)item.SlotPosition);
+			// 		playerItem.Count -= giveCount * giveCost;
+			//
+			// 		if (playerItem.Count < 1)
+			// 			player.Inventory.RemoveItem(item);
+			//
+			// 		return true;
+			// 	}
+			// }
+			//
+			// return base.ReceiveItem(source, item);
 		}
 	}
 
