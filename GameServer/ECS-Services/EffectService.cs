@@ -200,13 +200,16 @@ namespace DOL.GS
                 if (e.CancelEffect && e.ShouldBeRemovedFromConcentrationList())
                 {
                     if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.ConcentrationEffects != null)
-                    {
-                        spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
-                        spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove(spellEffect);
+                        {
+                            lock (spellEffect.SpellHandler.Caster.ConcentrationEffects)
+                            {
+                                spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
+                                spellEffect.SpellHandler.Caster.ConcentrationEffects.Remove(spellEffect);
+                            }
 
-                        if (spellEffect.SpellHandler.Caster is GamePlayer p)
-                            p.Out.SendConcentrationList();
-                    }
+                            if (spellEffect.SpellHandler.Caster is GamePlayer p)
+                                p.Out.SendConcentrationList();
+                        }
                 }
             }
             else
