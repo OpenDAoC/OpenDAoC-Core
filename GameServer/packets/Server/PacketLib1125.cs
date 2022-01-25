@@ -492,7 +492,7 @@ namespace DOL.GS.PacketHandler
 				//		}
 				//	}
 				//}
-				lock (living.effectListComponent.Effects.Values)
+				lock (living.effectListComponent._effectsLock)
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();

@@ -63,9 +63,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				IConcentrationEffect effect = null;
                 lock (player.effectListComponent._effectsLock)
                 {
-                    if (m_index < player.ConcentrationEffects.Count)
+                    if (m_index < player.effectListComponent.ConcentrationEffects.Count)
 					{
-						effect = player.ConcentrationEffects[m_index];
+						effect = player.effectListComponent.ConcentrationEffects[m_index];
 					}
 				}
 

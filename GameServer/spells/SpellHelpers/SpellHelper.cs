@@ -284,7 +284,7 @@ namespace DOL.GS.Spells
 		public static PulsingSpellEffect FindPulsingSpellOnTarget(this GameLiving target, Spell spell)
 		{
 			PulsingSpellEffect pulsingSpell = null;
-			lock (target.ConcentrationEffects)
+			lock (target.effectListComponent._concentrationEffectsLock)
 			{
 				pulsingSpell = target.PulsingSpellsOnTarget(spell).FirstOrDefault();
 			}
@@ -317,7 +317,7 @@ namespace DOL.GS.Spells
 		/// <returns>All PulsingSpellEffect build from spell in target's concentration list or null</returns>
 		private static IEnumerable<PulsingSpellEffect> PulsingSpellsOnTarget(this GameLiving target, Spell spell)
 		{
-			return target.ConcentrationEffects.OfType<PulsingSpellEffect>().Where(pfx => pfx.SpellHandler != null && pfx.SpellHandler.Spell != null
+			return target.effectListComponent.ConcentrationEffects.OfType<PulsingSpellEffect>().Where(pfx => pfx.SpellHandler != null && pfx.SpellHandler.Spell != null
 			                                                                      && pfx.SpellHandler.Spell.ID == spell.ID);
 		}
 		
@@ -333,7 +333,7 @@ namespace DOL.GS.Spells
 		public static PulsingSpellEffect FindPulsingSpellOnTarget(this GameLiving target, ISpellHandler handler)
 		{
 			PulsingSpellEffect effect = null;
-			lock (target.ConcentrationEffects)
+			lock (target.effectListComponent._concentrationEffectsLock)
 			{
 				effect = target.PulsingSpellsOnTarget(handler).FirstOrDefault();
 			}
@@ -349,7 +349,7 @@ namespace DOL.GS.Spells
 		public static List<PulsingSpellEffect> FindPulsingSpellsOnTarget(this GameLiving target, ISpellHandler handler)
 		{
 			List<PulsingSpellEffect> effects = null;
-			lock (target.ConcentrationEffects)
+			lock (target.effectListComponent._concentrationEffectsLock)
 			{
 				effects = target.PulsingSpellsOnTarget(handler).ToList();
 			}
@@ -365,7 +365,7 @@ namespace DOL.GS.Spells
 		/// <returns>All PulsingSpellEffect Matching SpellHandler in targets' concentration list</returns>
 		private static IEnumerable<PulsingSpellEffect> PulsingSpellsOnTarget(this GameLiving target, ISpellHandler handler)
 		{
-			return target.ConcentrationEffects.OfType<PulsingSpellEffect>().Where(pfx => pfx.SpellHandler == handler);
+			return target.effectListComponent.ConcentrationEffects.OfType<PulsingSpellEffect>().Where(pfx => pfx.SpellHandler == handler);
 		}
 		#endregion
 		

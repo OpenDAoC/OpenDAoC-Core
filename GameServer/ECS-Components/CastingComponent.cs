@@ -6,6 +6,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DOL.GS
@@ -27,7 +28,6 @@ namespace DOL.GS
         {
             get { return spellHandler != null && spellHandler.IsCasting; }
         }
-
 
         //data for the spell that they are casting
         public ISpellHandler spellHandler;
