@@ -5556,7 +5556,7 @@ namespace DOL.GS
                 var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(groupedKey)));
                 var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
                 
-                if (NoHelp && hasGrouped == null || hasGrouped == null)
+                if ((NoHelp && hasGrouped == null || hasGrouped == null) && !usedi30 && !usedi40)
                 {
                     NoHelp = false;
                     DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
@@ -5571,7 +5571,7 @@ namespace DOL.GS
                 const string pve50key = "PvEBeta50";
                 var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(pve50key)));
 
-                if (hasPvEBeta50Title == null)
+                if (hasPvEBeta50Title == null && !usedi30 && !usedi40)
                 {
                     AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
                     PvEBeta50Title.Name = Client.Account.Name;
