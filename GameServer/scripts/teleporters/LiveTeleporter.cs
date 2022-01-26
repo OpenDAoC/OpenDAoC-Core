@@ -114,7 +114,7 @@ namespace DOL.GS.Scripts
                                   " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
                                   "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North\n" +
                                   "[Avalon Marsh] wharf\n" +
-                                  "[Gothwaite] Harbor in the [Shrouded Isles]\n" +
+                                  "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
                                   "[Camelot] our glorious capital\n" +
                                   "[Entrance] to the areas of [Housing]\n\n" +
                                   "Or one of the many [towns] throughout Albion");
@@ -238,6 +238,20 @@ namespace DOL.GS.Scripts
                                       "[Adribard's Retreat]\n" +
                                       "[Yarley's Farm]");
                         return false;
+                    }
+                    
+                    if (text.ToLower() == "gothwaite harbor")
+                    {
+                        Teleport teleport = new Teleport();
+                        teleport.TeleportID = "gothwaite harbor";
+                        teleport.Realm = (int) DestinationRealm;
+                        teleport.RegionID = 51;
+                        teleport.X = 527070;
+                        teleport.Y = 542677;
+                        teleport.Z = 3168;
+                        teleport.Heading = 1147;
+                        OnDestinationPicked(player, teleport);
+                        return true;
                     }
 
                     if (text.ToLower() == "cotswold")
