@@ -205,8 +205,11 @@ namespace DOL.GS.Scripts
                     
                     if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(player,
-                            "The isles of Aegir are an excellent choice.\nWould you prefer the city of [Aegirhamn] or perhaps one of the outlying towns like [Bjarken], [Hagall], or [Knarr]?");
+                        String reply = String.Format("The isles of Aegir are an excellent choice. {0} {1}",
+                            "Would you prefer the city of [Aegirhamn] or perhaps one of the outlying towns",
+                            "like [Bjarken], [Hagall], or [Knarr]?");
+                        SayTo(player, reply);
+                        
                         return false;
                     }
 
@@ -415,8 +418,7 @@ namespace DOL.GS.Scripts
                     eChatLoc.CL_SystemWindow);
                 return;
             }
-
-            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+            
             Say("I'm now teleporting you to " + destination.TeleportID + ".");
             OnTeleportSpell(player, destination);
         }
