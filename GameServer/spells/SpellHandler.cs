@@ -345,13 +345,14 @@ namespace DOL.GS.Spells
             }
             return false;
 		}
+
 		public static void CancelAllPulsingSpells(GameLiving living)
-        {
-			var effects = living.ConcentrationEffects.Where(e => e is ECSPulseEffect).ToArray();
+		{ 		
+			var effects = living.effectListComponent.GetAllPulseEffects();//.ConcentrationEffects.Where(e => e is ECSPulseEffect).ToArray();
 			for (int i = 0; i < effects.Count(); i++)
-            {
+			{
 				EffectService.RequestImmediateCancelConcEffect(effects[i]);
-            }
+			}
         }
 		/// <summary>
 		/// Cancels all pulsing spells
@@ -976,7 +977,7 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_caster.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
+				if (m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
 				{
 					if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 					return false;
@@ -1237,7 +1238,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
 			{
 				MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1442,7 +1443,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
 			{
 				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -1624,7 +1625,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
 			{
 				if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 				return false;
@@ -3945,9 +3946,9 @@ namespace DOL.GS.Spells
 		/// <returns>first occurance of spellhandler in targets' conc list or null</returns>
 		public static PulsingSpellEffect FindPulsingSpellOnTarget(GameLiving living, ISpellHandler handler)
 		{
-			lock (living.ConcentrationEffects)
+			lock (living.effectListComponent._concentrationEffectsLock)
 			{
-				foreach (IConcentrationEffect concEffect in living.ConcentrationEffects)
+				foreach (IConcentrationEffect concEffect in living.effectListComponent.ConcentrationEffects)
 				{
 					PulsingSpellEffect pulsingSpell = concEffect as PulsingSpellEffect;
 					if (pulsingSpell == null) continue;

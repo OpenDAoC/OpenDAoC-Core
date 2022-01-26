@@ -4236,60 +4236,57 @@ namespace DOL.GS
 
 				// Melee Attack that actually caused damage.
 				if (ad.IsMeleeAttack && ad.Damage > 0)
-				{
+				{					
 					// Handle Ablatives
-					if (effectListComponent.Effects.ContainsKey(eEffect.AblativeArmor))
+					var effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+					for (int i = 0; i < effects.Count; i++)
 					{
-						var effects = effectListComponent.Effects[eEffect.AblativeArmor];
-						for (int i = 0; i < effects.Count; i++)
+						var effect = effects[i] as ECSGameSpellEffect;
+						if (effect is null)
+							continue;
+
+						if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
+
+						int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
+						double absorbPercent = 25;
+						if (effect.SpellHandler.Spell.Damage > 0)
+							absorbPercent = effect.SpellHandler.Spell.Damage;
+						//because albatives can reach 100%
+						if (absorbPercent > 100)
+							absorbPercent = 100;
+						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
+						if (damageAbsorbed > ablativehp)
+							damageAbsorbed = ablativehp;
+						ablativehp -= damageAbsorbed;
+						ad.Damage -= damageAbsorbed;
+						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+
+						if (ad.Target is GamePlayer)
+							(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+						if (ad.Attacker is GamePlayer)
+							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+						if (ablativehp <= 0)
 						{
-							var effect = effects[i] as ECSGameSpellEffect;
-							if (effect is null)
-								continue;
-
-							if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
-
-							int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
-							double absorbPercent = 25;
-							if (effect.SpellHandler.Spell.Damage > 0)
-								absorbPercent = effect.SpellHandler.Spell.Damage;
-							//because albatives can reach 100%
-							if (absorbPercent > 100)
-								absorbPercent = 100;
-							int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
-							if (damageAbsorbed > ablativehp)
-								damageAbsorbed = ablativehp;
-							ablativehp -= damageAbsorbed;
-							ad.Damage -= damageAbsorbed;
-							(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
-
-							if (ad.Target is GamePlayer)
-								(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-							if (ad.Attacker is GamePlayer)
-								(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-							if (ablativehp <= 0)
-							{
-								EffectService.RequestImmediateCancelEffect(effect);
-							}
-							else
-							{
-								effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
-							}
+							EffectService.RequestImmediateCancelEffect(effect);
+						}
+						else
+						{
+							effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
 						}
 					}
+				}
 
-					var dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
-                    // Handle DefensiveProcs
-                    if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+				var dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
+                // Handle DefensiveProcs
+                if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+                {
+                    for (int i = 0; i < dProcEffects.Count; i++)
                     {
-                        for (int i = 0; i < dProcEffects.Count; i++)
-                        {
-                            var dProcEffect = dProcEffects[i];
+                        var dProcEffect = dProcEffects[i];
 
-                            (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
-                        }
+                        (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
                     }
                 }
             }
@@ -4372,22 +4369,27 @@ namespace DOL.GS
             // Remove Mez
             if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
-				var effect = effectListComponent.Effects[eEffect.Mez].FirstOrDefault();
-				EffectService.RequestImmediateCancelEffect(effect);
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
+
+				if (effect != null)
+					EffectService.RequestImmediateCancelEffect(effect);
 			}
 
 			// Remove Snare/Root
 			if (removeSnare && effectListComponent.Effects.ContainsKey(eEffect.Snare))
 			{
-				var effect = effectListComponent.Effects[eEffect.Snare].FirstOrDefault();
-				EffectService.RequestImmediateCancelEffect(effect);
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
+
+				if (effect != null)
+					EffectService.RequestImmediateCancelEffect(effect);
 			}
 
             // Remove MovementSpeedDebuff
-            if (removeMovementSpeedDebuff && effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff))
+            if (removeMovementSpeedDebuff)
             {
-                var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault();
-				if (effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
+
+				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
 					EffectService.RequestImmediateCancelEffect(effect);
             }
 
@@ -4416,9 +4418,8 @@ namespace DOL.GS
 
 			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
-				var effects = effectListComponent.Effects[eEffect.MovementSpeedBuff];/*.Where(e => e.IsDisabled == false).FirstOrDefault();*/
+				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
-				//foreach (var effect in effects)
 				for (int i = 0; i < effects.Count; i++)
 				{
 					if (effects[i] is null)
@@ -4429,37 +4430,24 @@ namespace DOL.GS
 					{
 						effectRemoved = false;
 					}
-					/*
-					else if (!isAttacker && spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
-					{
-						effectRemoved = false;
-					}*/
-					else
-					{
-						EffectService.RequestImmediateCancelEffect(effects[i]);
-						effectRemoved = true;
-					}
+
+					EffectService.RequestImmediateCancelEffect(effects[i]);
+					effectRemoved = true;
 				}
             }
 
             if (this is GameNPC npc && npc.Brain is ControlledNpcBrain pBrain || this is GamePet pet)
             {
-				var ownerEffects = new List<ECSGameEffect>(1);
+				var ownerEffects = new List<ECSGameSpellEffect>(1);
 				pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
 				pet = this as GamePet;
 				if (pBrain != null)
 				{
-					if (pBrain.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-					{
-						ownerEffects = pBrain.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff];
-					}
+					ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 				}
 				else
                 {
-					if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-					{
-						ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff];
-					}
+					ownerEffects = pet.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 				}
 
 				for (int i = 0; i < ownerEffects.Count; i++)
@@ -5891,14 +5879,7 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Holds the concentration effects list
-		/// </summary>
-		private List<ECSGameSpellEffect> m_concEffects;
-		/// <summary>
-		/// Gets the concentration effects list
-		/// </summary>
-		public List<ECSGameSpellEffect> ConcentrationEffects { get { return m_concEffects; } }
+		
 
 		/// <summary>
 		/// Cancels all concentration effects by this living and on this living
@@ -5914,9 +5895,9 @@ namespace DOL.GS
 		public void CancelAllConcentrationEffects(bool leaveSelf, bool updateplayer)
 		{
 			// cancel conc spells
-			for (int i = 0; i < ConcentrationEffects.Count; i++)
+			for (int i = 0; i < effectListComponent.ConcentrationEffects.Count; i++)
             {
-				EffectService.RequestCancelConcEffect(ConcentrationEffects[i]);
+				EffectService.RequestCancelConcEffect(effectListComponent.ConcentrationEffects[i]);
             }
 
 			//cancel all active conc spell effects from other casters
@@ -7333,7 +7314,7 @@ namespace DOL.GS
             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 			m_xpGainers = new HybridDictionary();
 			m_effects = CreateEffectsList();
-			m_concEffects = new List<ECSGameSpellEffect>();
+			
 			//m_attackers = new List<GameObject>();
 
 			m_health = 1;

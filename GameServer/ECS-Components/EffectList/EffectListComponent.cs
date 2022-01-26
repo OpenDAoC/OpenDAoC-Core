@@ -18,9 +18,22 @@ namespace DOL.GS
         public Dictionary<eEffect, List<ECSGameEffect>> Effects = new Dictionary<eEffect, List<ECSGameEffect>>();
         public Dictionary<int, ECSGameEffect> EffectIdToEffect = new Dictionary<int, ECSGameEffect>();
 
+        /// <summary>
+        /// Holds the concentration effects list
+        /// </summary>
+        private List<ECSGameSpellEffect> m_concEffects;
+
+        public object _concentrationEffectsLock = new object();
+
+        /// <summary>
+        /// Gets the concentration effects list
+        /// </summary>
+        public List<ECSGameSpellEffect> ConcentrationEffects { get { return m_concEffects; } }
+
         public EffectListComponent(GameLiving p)
         {
             Owner = p;
+            m_concEffects = new List<ECSGameSpellEffect>(20);
         }
 
         public bool AddEffect(ECSGameEffect effect)

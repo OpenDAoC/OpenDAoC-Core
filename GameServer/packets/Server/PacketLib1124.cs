@@ -751,14 +751,14 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ConcentrationList)))
 			{
-				lock (m_gameClient.Player.effectListComponent._effectsLock)
+				lock (m_gameClient.Player.effectListComponent._concentrationEffectsLock)
 				{
-					pak.WriteByte((byte)(m_gameClient.Player.ConcentrationEffects.Count));
+					pak.WriteByte((byte)(m_gameClient.Player.effectListComponent.ConcentrationEffects.Count));
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-					var effects = m_gameClient.Player.ConcentrationEffects;
+					var effects = m_gameClient.Player.effectListComponent.ConcentrationEffects;
                     for (int i = 0; i < effects.Count; i++)
                     {
                         IConcentrationEffect effect = effects[i];
@@ -4855,7 +4855,7 @@ namespace DOL.GS.PacketHandler
 				//			pak.WriteShort(effect.Icon);
 				//		}
 				//}
-                lock (living.effectListComponent.Effects.Values)
+                lock (living.effectListComponent._effectsLock)
                 {
                     byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();

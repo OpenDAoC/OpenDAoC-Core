@@ -2289,10 +2289,10 @@ namespace DOL.GS
                     switch ((ammo.SPD_ABS >> 4) & 0x3)
                     {
                         // http://rothwellhome.org/guides/archery.htm
-                        case 0: missrate += 15; break; // Rough
+                        case 0: missrate += (int)Math.Round(missrate * .15); break; // Rough
                                                        //						case 1: missrate -= 0; break;
-                        case 2: missrate -= 15; break; // doesn't exist (?)
-                        case 3: missrate -= 25; break; // Footed
+                        case 2: missrate -= (int)Math.Round(missrate * .15); break; // doesn't exist (?)
+                        case 3: missrate -= (int)Math.Round(missrate * .25); break; // Footed
                     }
             }
             if (owner is GamePlayer && ((GamePlayer)owner).IsSitting)

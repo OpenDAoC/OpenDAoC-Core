@@ -5475,7 +5475,7 @@ namespace DOL.GS
 
             if (Level == 40)
             {
-                const string customKey = "usedi30";
+                const string customKey = "BoostedLevel-30";
                 var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                 if (usedi30 != null)
                 {
@@ -5523,10 +5523,10 @@ namespace DOL.GS
 
             if (Level == 50)
             {
-                const string customKey = "usedi30";
+                const string customKey = "BoostedLevel-30";
                 var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                 
-                const string customKey2 = "usedi40";
+                const string customKey2 = "BoostedLevel-40";
                 var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
                 if (usedi30 != null)
@@ -5556,7 +5556,7 @@ namespace DOL.GS
                 var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(groupedKey)));
                 var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
                 
-                if (NoHelp && hasGrouped == null || hasGrouped == null)
+                if ((NoHelp && hasGrouped == null || hasGrouped == null) && !Boosted)
                 {
                     NoHelp = false;
                     DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
@@ -5571,7 +5571,7 @@ namespace DOL.GS
                 const string pve50key = "PvEBeta50";
                 var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(pve50key)));
 
-                if (hasPvEBeta50Title == null)
+                if (hasPvEBeta50Title == null && !Boosted)
                 {
                     AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
                     PvEBeta50Title.Name = Client.Account.Name;
