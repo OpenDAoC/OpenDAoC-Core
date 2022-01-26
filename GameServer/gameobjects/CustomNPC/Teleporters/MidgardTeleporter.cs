@@ -18,14 +18,9 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
-using DOL.GS;
 using DOL.Database;
-using System.Collections;
 using DOL.GS.Spells;
-using log4net;
-using System.Reflection;
-// using DOL.GS.Quests.Catacombs.Obelisks;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -42,18 +37,19 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool Interact(GamePlayer player)
 		{
-			if (!base.Interact(player))
-				return false;
+			if (!base.Interact(player) || GameRelic.IsPlayerCarryingRelic(player)) return false;
+
+			TurnTo(player, 10000);
 			
-			String intro = String.Format("Greetings. I can channel the energies of this place to send you {0} {1} {2} {3} {4} {5} {6}",
-			                             "to far away lands. If you wish to fight in the Frontiers I can send you to [Uppland] or to the",
-			                             "border keeps [Svasud Faste] and [Vindsaul Faste]. Maybe you wish to undertake the Trials of",
-			                             "Atlantis in [Oceanus] haven or wish to visit the [City of Aegirhamn] and the [Shrouded Isles]?",
-			                             "You could explore the [Gotar] or perhaps you would prefer the comforts of the [housing] regions.",
-			                             "Perhaps the fierce [Battlegrounds] are more to your liking or do you wish to meet the citizens inside",
-			                             "the great city of [Jordheim] or the [Kobold Undercity]?",
-			                             "Or perhaps you are interested in porting to our training camp [Hafheim]?");
-			SayTo(player, intro);
+			SayTo(player, "Greetings, " + player.Name +
+			              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+			              "[Svasud Faste] in Mularn or \n[Vindsaul Faste] in West Svealand\n" +
+			              "Beaches of [Gotar] near Nailiten\n" +
+			              "[Aegirhamn] in the [Shrouded Isles]\n" +
+			              "Our glorious city of [Jordheim]\n" +
+			              "[Entrance] to the areas of [housing]\n\n" +
+			              "Or one of the many [towns] throughout Midgard");
+			
 			return true;
 		}
 
@@ -76,14 +72,23 @@ namespace DOL.GS
 					}
 				case "housing":
 					{
-						String reply = String.Format("I can send you to your [personal] house. If you do {0} {1} {2} {3}",
-						                             "not have a personal house or wish to be sent to the housing [entrance] then you will",
-						                             "arrive just inside the housing area. I can also send you to your [guild] house. If your",
-						                             "guild does not own a house then you will not be transported. You may go to your [Hearth] bind",
-						                             "as well if you are bound inside a house.");
-						SayTo(player, reply);
+						SayTo(player,
+							"I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
 						return;
 					}
+				
+				case "towns":
+				{
+					SayTo(player,
+						"I can send you to:\n" +
+						"[Mularn]\n" +
+						"[Fort Veldon]\n" +
+						"[Audliten]\n" +
+						"[Huginfell]\n" +
+						"[Fort Atla]\n" +
+						"[West Skona]");
+					return;
+				}
 			}
 			base.OnSubSelectionPicked(player, subSelection);
 		}
@@ -95,90 +100,67 @@ namespace DOL.GS
 		/// <param name="destination"></param>
 		protected override void OnDestinationPicked(GamePlayer player, Teleport destination)
 		{
-			switch (destination.TeleportID.ToLower())
-			{
-				case "battlegrounds":
-					if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
-					{
-						SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
-						return;
-					}
-					SayTo(player, "I will teleport you to the appropriate battleground for your level and Realm Rank. If you exceed the Realm Rank for a battleground, you will not teleport. Please gain more experience to go to the next battleground.");
-					break;
-				case "bjarken":
-					break;	// No text?
-				case "city of aegirhamn":
-					SayTo(player, "The Shrouded Isles await you.");
-					break;
-				case "entrance":
-					break;	// No text?
-				case "gotar":
-					SayTo(player, "You shall soon arrive in the Gotar.");
-					break;
-				case "hagall":
-					break;	// No text?
-				case "jordheim":
-					SayTo(player, "The great city awaits!");
-					break;
-				case "knarr":
-					break;	// No text?
-				case "kobold undercity":
-					//if (player.HasFinishedQuest(typeof(KoboldUndercity)) <= 0)
-					//{
-					//	SayTo(player, String.Format("I may only send those who know the way to this {0} {1}",
-					//	                            "city. Seek out the path to the city and in future times I will aid you in",
-					//	                            "this journey."));
-					//	return;
-					//}
-					break;
-				case "oceanus":
-					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
-					{
-						SayTo(player, "I'm sorry, but you are not authorized to enter Atlantis at this time.");
-						return;
-					}
-					SayTo(player, "You will soon arrive in the Haven of Oceanus.");
-					break;
-				case "personal":
-					break;
-				case "hearth":
-					break;
-				case "svasud faste":
-					SayTo(player, "Svasud Faste is what you seek, and Svasud Faste is what you shall find.");
-					break;
-				case "uppland":
-					SayTo(player, "Now to the Frontiers for the glory of the realm!");
-					break;
-				case "vindsaul faste":
-					SayTo(player, "Vindsaul Faste is what you seek, and Vindsaul Faste is what you shall find.");
-					break;
-				case "hafheim":
-					if (ServerProperties.Properties.DISABLE_TUTORIAL)
-					{
-						SayTo(player,"Sorry, this place is not available for now !");
-						return;
-					}
-					if (player.Level > 15)
-					{
-						SayTo(player,"Sorry, you are far too experienced to enjoy this place !");
-						return;
-					}
-					break;
-				default:
-					SayTo(player, "This destination is not yet supported.");
-					return;
-			}
-			base.OnDestinationPicked(player, destination);
-		}
+			
+			Region region = WorldMgr.GetRegion((ushort) destination.RegionID);
 
-		/// <summary>
-		/// Teleport the player to the designated coordinates.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected override void OnTeleport(GamePlayer player, Teleport destination)
-		{
+			if (region == null || region.IsDisabled)
+			{
+				player.Out.SendMessage("This destination is not available.", eChatType.CT_System,
+					eChatLoc.CL_SystemWindow);
+				return;
+			}
+			
+			Say("I'm now teleporting you to " + destination.TeleportID + ".");
 			OnTeleportSpell(player, destination);
 		}
+
+        /// <summary>
+        /// Teleport the player to the designated coordinates using the
+        /// portal spell.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="destination"></param>
+        protected virtual void OnTeleportSpell(GamePlayer player, Teleport destination)
+        {
+            SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
+            List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
+            Spell spell = SkillBase.GetSpellByID(5999); // UniPortal spell.
+
+            if (spell != null)
+            {
+                TargetObject = player;
+                UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+                m_runningSpellHandler = portalHandler;
+                portalHandler.CastSpell();
+                return;
+            }
+
+            // Spell not found in the database, fall back on default procedure.
+
+            if (player.Client.Account.PrivLevel > 1)
+                player.Out.SendMessage("Uni-Portal spell not found.",
+                    eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+
+
+            this.OnTeleport(player, destination);
+        }
+
+        /// <summary>
+        /// Teleport the player to the designated coordinates. 
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="destination"></param>
+        protected virtual void OnTeleport(GamePlayer player, Teleport destination)
+        {
+            if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
+            {
+                player.LeaveHouse();
+                GameLocation currentLocation =
+                    new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
+                player.MoveTo((ushort) destination.RegionID, destination.X, destination.Y, destination.Z,
+                    (ushort) destination.Heading);
+                GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
+            }
+        }
 	}
 }

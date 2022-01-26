@@ -114,7 +114,7 @@ namespace DOL.GS.Scripts
                                   " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
                                   "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North\n" +
                                   "[Avalon Marsh] wharf\n" +
-                                  "[Gothwaite] Harbor in the [Shrouded Isles]\n" +
+                                  "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
                                   "[Camelot] our glorious capital\n" +
                                   "[Entrance] to the areas of [Housing]\n\n" +
                                   "Or one of the many [towns] throughout Albion");
@@ -170,170 +170,48 @@ namespace DOL.GS.Scripts
             switch (Realm) // Only offer locations based on what realm i am set at.
             {
                 case eRealm.Albion:
-
-                    if (text.ToLower() == "entrance")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "housing entrance";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 2;
-                        teleport.X = 585071;
-                        teleport.Y = 561548;
-                        teleport.Z = 3576;
-                        teleport.Heading = 1090;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "castle sauvage")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "castle sauvage";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 1;
-                        teleport.X = 584151;
-                        teleport.Y = 477177;
-                        teleport.Z = 2600;
-                        teleport.Heading = 3058;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "snowdonia fortress")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "snowdonia fortress";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 1;
-                        teleport.X = 527543;
-                        teleport.Y = 358900;
-                        teleport.Z = 8320;
-                        teleport.Heading = 3074;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
+                    
                     if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(player,
-                            "The isles of Avalon are  an excellent choice. Would you prefer the harbor of [Gothwaite] or perhaps one of the outlying towns like [Wearyall] Village, Fort [Gwyntell], or Cear [Diogel]?");
+                        String reply = String.Format("The isles of Avalon are an excellent choice. {0} {1}",
+                            "Would you prefer [Gothwaite] or perhaps one of the outlying towns",
+                            "like [Wearyall Village], Fort [Gwyntell], or [Caer Diogel]?");
+                        SayTo(player, reply);
                         return false;
                     }
-
-
+                    
                     if (text.ToLower() == "housing")
                     {
                         SayTo(player,
                             "I can send you to your [personal] or [guild] house. If you do not have a personal house, I can teleport you to the housing [entrance] or your housing [hearth] bindstone.");
                         return false;
                     }
-
+                    
                     if (text.ToLower() == "towns")
                     {
                         SayTo(player, "I can send you to:\n" +
-                                      "[Cotswold]\n" +
+                                      "[Cotswold Village]\n" +
                                       "[Prydwen Keep]\n" +
-                                      "[Cear Ulfwych]\n" +
+                                      "[Caer Ulfwych]\n" +
                                       "[Campacorentin Station]\n" +
                                       "[Adribard's Retreat]\n" +
                                       "[Yarley's Farm]");
                         return false;
-                    }
-
-                    if (text.ToLower() == "cotswold")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "cotswold";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 1;
-                        teleport.X = 561044;
-                        teleport.Y = 511134;
-                        teleport.Z = 2280;
-                        teleport.Heading = 533;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
+                    } 
                     
-                    if (text.ToLower() == "cear ulfwych")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "cear ulfwych";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 1;
-                        teleport.X = 522479;
-                        teleport.Y = 615826;
-                        teleport.Z = 1818;
-                        teleport.Heading = 4;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "yarley's farm")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "yarley's farm";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 1;
-                        teleport.X = 369874;
-                        teleport.Y = 679659;
-                        teleport.Z = 5538;
-                        teleport.Heading = 3893;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
                     break;
+                
                 case eRealm.Midgard:
-
-                    if (text.ToLower() == "entrance")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "housing entrance";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 102;
-                        teleport.X = 526733;
-                        teleport.Y = 561563;
-                        teleport.Z = 3632;
-                        teleport.Heading = 3901;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "svasud faste")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "svasud faste";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 100;
-                        teleport.X = 767242;
-                        teleport.Y = 669591;
-                        teleport.Z = 5736;
-                        teleport.Heading = 1198;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "vindsaul faste")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "vindsaul faste";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 100;
-                        teleport.X = 703389;
-                        teleport.Y = 738621;
-                        teleport.Z = 5704;
-                        teleport.Heading = 3097;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
+                    
                     if (text.ToLower() == "shrouded isles")
                     {
-                        SayTo(player,
-                            "The isles of Aegir are an excellent choice.\nWould you prefer the city of [Aegirhamn] or perhaps one of the outlying towns like [Bjarken], [Hagall], or [Knarr]?");
+                        String reply = String.Format("The isles of Aegir are an excellent choice. {0} {1}",
+                            "Would you prefer the city of [Aegirhamn] or perhaps one of the outlying towns",
+                            "like [Bjarken], [Hagall], or [Knarr]?");
+                        SayTo(player, reply);
+                        
                         return false;
                     }
-
 
                     if (text.ToLower() == "housing")
                     {
@@ -349,92 +227,22 @@ namespace DOL.GS.Scripts
                             "[Mularn]\n" +
                             "[Fort Veldon]\n" +
                             "[Audliten]\n" +
-                            "[Huginfel]\n" +
+                            "[Huginfell]\n" +
                             "[Fort Atla]\n" +
                             "[West Skona]");
                         return false;
                     }
-
-                    if (text.ToLower() == "huginfel")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "huginfel";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 100;
-                        teleport.X = 712221;
-                        teleport.Y = 783928;
-                        teleport.Z = 4672;
-                        teleport.Heading = 270;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "west skona")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "west skona";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 100;
-                        teleport.X = 712345;
-                        teleport.Y = 923847;
-                        teleport.Z = 5043;
-                        teleport.Heading = 3898;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
+                    
                     break;
+                
                 case eRealm.Hibernia:
-
-                    if (text.ToLower() == "entrance")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "housing entrance";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 202;
-                        teleport.X = 555538;
-                        teleport.Y = 526481;
-                        teleport.Z = 3008;
-                        teleport.Heading = 857;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "svasud faste")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "svasud faste";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 100;
-                        teleport.X = 767242;
-                        teleport.Y = 669591;
-                        teleport.Z = 5736;
-                        teleport.Heading = 1198;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
-                    if (text.ToLower() == "vindsaul faste")
-                    {
-                        Teleport teleport = new Teleport();
-                        teleport.TeleportID = "vindsaul faste";
-                        teleport.Realm = (int) DestinationRealm;
-                        teleport.RegionID = 100;
-                        teleport.X = 703389;
-                        teleport.Y = 738621;
-                        teleport.Z = 5704;
-                        teleport.Heading = 3097;
-                        OnDestinationPicked(player, teleport);
-                        return true;
-                    }
-
+                    
                     if (text.ToLower() == "shrouded isles")
                     {
                         SayTo(player,
                             "The isles of Hy Brasil are an excellent choice. Would you prefer the grove of [Domnann] or perhaps one of the outlying towns like [Droighaid], [Aalid Feie], or [Necht]?");
                         return false;
                     }
-
 
                     if (text.ToLower() == "housing")
                     {
@@ -610,9 +418,8 @@ namespace DOL.GS.Scripts
                     eChatLoc.CL_SystemWindow);
                 return;
             }
-
-            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
-            Say("I'm now teleporting you to " + ti.ToTitleCase(destination.TeleportID) + ".");
+            
+            Say("I'm now teleporting you to " + destination.TeleportID + ".");
             OnTeleportSpell(player, destination);
         }
 
