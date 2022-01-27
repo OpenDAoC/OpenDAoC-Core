@@ -52,9 +52,14 @@ namespace DOL.GS.Scripts
 
             if (!base.Interact(player))
                 return false;
+            
+            if(player.HCFlag || player.NoHelp){
+                player.Out.SendMessage($"I'm sorry {player.Name}, you have chosen a different path and are not allowed to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                return false;
+            }
 
             if (EventLVCap != 0)
-            { player.Out.SendMessage("Hello " + player.Name + ",\n\n I have been told to give you enough [experience] to reach level " + EventLVCap + ".",
+            { player.Out.SendMessage($"Hello {player.Name},\n\n I have been told to give you enough [experience] to reach level " + EventLVCap + ".",
                 eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             }
             
@@ -82,6 +87,11 @@ namespace DOL.GS.Scripts
 
             if (player == null)
                 return false;
+
+            if (player.HCFlag || player.NoHelp)
+            {
+                return false;
+            }
 
             switch(str)
             {
