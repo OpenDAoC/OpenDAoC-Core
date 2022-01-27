@@ -17,7 +17,6 @@
  *
  ***************Made by Scrubtasticx*******************************************
  */
-using System;
 using DOL.AI.Brain;
 using DOL.Database;
 
@@ -64,11 +63,7 @@ namespace DOL.GS
                 }
 
                 int lvl = mob.Level + 1;
-                if (lvl < 1)
-                {
-                    lvl = 1;
-                }
-                
+
                 int maxcount = Util.Random(player.Level, lvl);
                 loot.AddFixed(m_token_many, maxcount);
 
