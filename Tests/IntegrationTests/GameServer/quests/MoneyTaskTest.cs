@@ -63,7 +63,7 @@ namespace DOL.Tests.Integration.Server
 					item.Name = task.ItemName;
 
 					GameNPC npc = new GameNPC();
-					npc.Name = task.RecieverName;
+					npc.Name = task.ReceiverName;
 					task.Notify(GamePlayerEvent.GiveItem, player, new GiveItemEventArgs(player, npc, item));
 
 					if (player.Task.TaskActive || player.Task == null)
