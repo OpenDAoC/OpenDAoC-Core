@@ -306,7 +306,7 @@ namespace DOL.GS.Quests
 				return false;
 			}
 			
-			if (!Mob.IsAttackable || string.IsNullOrEmpty(Mob.Name))
+			if (!GameServer.ServerRules.IsAllowedToAttack(player,Mob,true) || string.IsNullOrEmpty(Mob.Name))
 			{
 				player.Out.SendMessage("I have no task for you, come back later",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
