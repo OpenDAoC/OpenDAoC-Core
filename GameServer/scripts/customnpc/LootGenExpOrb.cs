@@ -55,9 +55,7 @@ namespace DOL.GS
                 {
                     return loot;
                 }
-
-                ItemTemplate token_many = new ItemTemplate(m_token_many);
-
+                
                 int killedcon = (int)player.GetConLevel(mob) + 3;
 
                 if (killedcon <= 0)
@@ -70,11 +68,9 @@ namespace DOL.GS
                 {
                     lvl = 1;
                 }
-
-                if (player.Level < 50){
-                    int maxcount = Util.Random(1, 10);
-                    loot.AddFixed(m_token_many, maxcount);
-                }
+                
+                int maxcount = Util.Random(player.Level, lvl);
+                loot.AddFixed(m_token_many, maxcount);
 
             }
             catch
