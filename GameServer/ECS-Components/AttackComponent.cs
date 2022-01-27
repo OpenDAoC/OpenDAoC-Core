@@ -1958,28 +1958,35 @@ namespace DOL.GS
                 randomEvadeNum /= 100;
                 evadeChance *= 100;
 
-                double? evadeDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                double? evadeOutput = (evadeDouble != null) ? evadeDouble * 100 : randomEvadeNum;
-                if(ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog && evadeChance > 0)
+                if (evadeChance > 0)
                 {
-                    evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance,2)} rand: {evadeOutput} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
+                    double? evadeDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
+                    double? evadeOutput = (evadeDouble != null) ? evadeDouble * 100 : randomEvadeNum;
+                    if (ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
+                    {
+                        evadeAtk.Out.SendMessage(
+                            $"target evade%: {Math.Round(evadeChance, 2)} rand: {evadeOutput} defense pen: {defensePenetration}",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
 
-                if(ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog  && evadeChance > 0)
-                {
-                    evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance,2)} rand: {evadeOutput} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
+                    if (ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
+                    {
+                        evadeTarg.Out.SendMessage(
+                            $"your evade%: {Math.Round(evadeChance, 2)} rand: {evadeOutput} \nattkr def pen reduced % by {defensePenetration}%",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
 
-                if (evadeDouble == null || UseRNGOverride)
-                {
-                    if(evadeChance > randomEvadeNum)
-                        return eAttackResult.Evaded;    
-                }
-                else
-                {
-                    evadeDouble *= 100;
-                    if(evadeChance > evadeDouble)
-                        return eAttackResult.Evaded;
+                    if (evadeDouble == null || UseRNGOverride)
+                    {
+                        if (evadeChance > randomEvadeNum)
+                            return eAttackResult.Evaded;
+                    }
+                    else
+                    {
+                        evadeDouble *= 100;
+                        if (evadeChance > evadeDouble)
+                            return eAttackResult.Evaded;
+                    }
                 }
 
                 if (ad.IsMeleeAttack)
@@ -1991,30 +1998,36 @@ namespace DOL.GS
                     ranParryNum /= 100;
                     parryChance *= 100;
 
-                    double? parryDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                    double? parryOutput = (parryDouble != null) ? parryDouble * 100 : ranParryNum;
-                    if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog  && parryChance > 0)
+                    if (parryChance > 0)
                     {
-                        parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance,2)} rand: {parryOutput} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    }
+                        double? parryDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
+                        double? parryOutput = (parryDouble != null) ? parryDouble * 100 : ranParryNum;
+                        if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
+                        {
+                            parryAtk.Out.SendMessage(
+                                $"target parry%: {Math.Round(parryChance, 2)} rand: {parryOutput} defense pen: {defensePenetration}",
+                                eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        }
 
-                    if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog  && parryChance > 0)
-                    {
-                        parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance,2)} rand: {parryOutput} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    }
-                    
-                    if (parryDouble == null || UseRNGOverride)
-                    {
-                        if(parryChance > ranParryNum)
-                            return eAttackResult.Parried;    
-                    }
-                    else
-                    {
-                        parryDouble *= 100;
-                        if(parryChance > parryDouble)
-                            return eAttackResult.Parried;
-                    }
+                        if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
+                        {
+                            parryTarg.Out.SendMessage(
+                                $"your parry%: {Math.Round(parryChance, 2)} rand: {parryOutput} \nattkr def pen reduced % by {defensePenetration}%",
+                                eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        }
 
+                        if (parryDouble == null || UseRNGOverride)
+                        {
+                            if (parryChance > ranParryNum)
+                                return eAttackResult.Parried;
+                        }
+                        else
+                        {
+                            parryDouble *= 100;
+                            if (parryChance > parryDouble)
+                                return eAttackResult.Parried;
+                        }
+                    }
                 }
 
                 double blockChance = owner.TryBlock(ad, lastAD, attackerConLevel, attackerCount, engage);
@@ -2024,31 +2037,37 @@ namespace DOL.GS
                 ranBlockNum /= 100;
                 blockChance *= 100;
 
-                double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                double? blockOutput = (blockDouble != null) ? blockDouble * 100: ranBlockNum;
-                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog  && blockChance > 0)
+                if (blockChance > 0)
                 {
-                    
-                    blockAttk.Out.SendMessage($"target block%: {Math.Round(blockChance, 2)} rand: {blockOutput} defense pen: {defensePenetration}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
+                    double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
+                    double? blockOutput = (blockDouble != null) ? blockDouble * 100 : ranBlockNum;
+                    if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                    {
 
-                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog  && blockChance > 0)
-                {
-                    blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {blockOutput} \nattkr def pen reduced % by {defensePenetration}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        blockAttk.Out.SendMessage(
+                            $"target block%: {Math.Round(blockChance, 2)} rand: {blockOutput} defense pen: {defensePenetration}",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+
+                    if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                    {
+                        blockTarg.Out.SendMessage(
+                            $"your block%: {Math.Round(blockChance, 2)} rand: {blockOutput} \nattkr def pen reduced % by {defensePenetration}%",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+
+                    if (blockDouble == null || UseRNGOverride)
+                    {
+                        if (blockChance > ranBlockNum)
+                            return eAttackResult.Blocked;
+                    }
+                    else
+                    {
+                        blockDouble *= 100;
+                        if (blockChance > blockDouble)
+                            return eAttackResult.Blocked;
+                    }
                 }
-                
-                if (blockDouble == null || UseRNGOverride)
-                {
-                    if(blockChance > ranBlockNum)
-                        return eAttackResult.Blocked;    
-                }
-                else
-                {
-                    blockDouble *= 100;
-                    if(blockChance > blockDouble)
-                        return eAttackResult.Blocked;
-                }
-                
                 // reactive effects on block moved to GamePlayer
             }
 
@@ -2302,25 +2321,30 @@ namespace DOL.GS
             ad.MissRate = missrate;
             int rando = 0;
             bool skipDeckUsage = ServerProperties.Properties.OVERRIDE_DECK_RNG;
-            if (ad.Attacker is GamePlayer atkkr && !skipDeckUsage )
+            if (missrate > 0)
             {
-                rando = atkkr.RandomNumberDeck.GetInt();
-            }
-            else
-            {
-                rando = Util.CryptoNextInt(100);
-            }
-            
-            
-            if(ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog && missrate > 0)
-                misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-            if(ad.Target is GamePlayer missee && missee.UseDetailedCombatLog&& missrate > 0)
-                missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                if (ad.Attacker is GamePlayer atkkr && !skipDeckUsage)
+                {
+                    rando = atkkr.RandomNumberDeck.GetInt();
+                }
+                else
+                {
+                    rando = Util.CryptoNextInt(100);
+                }
 
-            
-            if (missrate > rando)
-            {
-                return eAttackResult.Missed;
+
+                if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
+                    misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rando}", eChatType.CT_DamageAdd,
+                        eChatLoc.CL_SystemWindow);
+                if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
+                    missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rando}", eChatType.CT_DamageAdd,
+                        eChatLoc.CL_SystemWindow);
+
+
+                if (missrate > rando)
+                {
+                    return eAttackResult.Missed;
+                }
             }
 
             if (ad.IsRandomFumble)

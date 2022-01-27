@@ -2915,31 +2915,36 @@ namespace DOL.GS.Spells
 				int spellResistChance = CalculateSpellResistChance(t);
 				int randNum = 0;
 				bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
-				if (Caster is GamePlayer caster && !UseRNGOverride)
+				if (spellResistChance > 0)
 				{
-					randNum = caster.RandomNumberDeck.GetInt();
-				}
-				else
-				{
-					randNum = Util.CryptoNextInt(100);
-				}
+					if (Caster is GamePlayer caster && !UseRNGOverride)
+					{
+						randNum = caster.RandomNumberDeck.GetInt();
+					}
+					else
+					{
+						randNum = Util.CryptoNextInt(100);
+					}
 
-				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && spellResistChance > 0)
-				{
-					spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-				}
+					if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+					{
+						spellCaster.Out.SendMessage(
+							$"Target chance to resist: {spellResistChance} RandomNumber: {randNum}",
+							eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					}
 
-				if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog  && spellResistChance > 0)
-				{
-					spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-				}
+					if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+					{
+						spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}",
+							eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					}
 
-				if (spellResistChance > randNum)
-				{
-					OnSpellResisted(t);
-					continue;
+					if (spellResistChance > randNum)
+					{
+						OnSpellResisted(t);
+						continue;
+					}
 				}
-
                 if (Spell.Radius == 0 || HasPositiveEffect)
 				{
 					ApplyEffectOnTarget(t, effectiveness);
