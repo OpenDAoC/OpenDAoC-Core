@@ -57,6 +57,13 @@ namespace DOL.GS.Scripts
                 player.Out.SendMessage($"I'm sorry {player.Name}, you have chosen a different path and are not allowed to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                 return false;
             }
+            
+            if (player.Level > 1)
+            {
+                player.Out.SendMessage($"I'm sorry {player.Name}, you are too high level to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+
+                return false;
+            }
 
             if (EventLVCap != 0)
             { player.Out.SendMessage($"Hello {player.Name},\n\n I have been told to give you enough [experience] to reach level " + EventLVCap + ".",
@@ -93,6 +100,9 @@ namespace DOL.GS.Scripts
                 return false;
             }
 
+            if (player.Level > 1)
+                return false;
+
             switch(str)
             {
                 case "experience":
@@ -101,7 +111,7 @@ namespace DOL.GS.Scripts
                         string customKey = "BoostedLevel-" + EventLVCap;
                         var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                         
-                        player.Out.SendMessage("I have given you enough experience to fight, now make Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        player.Out.SendMessage("I have given you enough experience to fight, now speak with the quartermaster and go make your Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
                         player.Boosted = true;
