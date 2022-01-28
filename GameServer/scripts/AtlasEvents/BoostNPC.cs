@@ -57,6 +57,13 @@ namespace DOL.GS.Scripts
                 player.Out.SendMessage($"I'm sorry {player.Name}, you have chosen a different path and are not allowed to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                 return false;
             }
+            
+            if (player.Level > 1)
+            {
+                player.Out.SendMessage($"I'm sorry {player.Name}, you are too high level to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+
+                return false;
+            }
 
             if (EventLVCap != 0)
             { player.Out.SendMessage($"Hello {player.Name},\n\n I have been told to give you enough [experience] to reach level " + EventLVCap + ".",
