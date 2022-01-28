@@ -100,6 +100,9 @@ namespace DOL.GS.Scripts
                 return false;
             }
 
+            if (player.Level > 1)
+                return false;
+
             switch(str)
             {
                 case "experience":
