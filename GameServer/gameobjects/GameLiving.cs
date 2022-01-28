@@ -2885,7 +2885,7 @@ namespace DOL.GS
 		/// <param name="weapon"></param>
 		public virtual void CheckWeaponMagicalEffect(AttackData ad, InventoryItem weapon)
 		{
-			if (weapon == null)
+			if (weapon == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 				return;
 
 			// Proc chance is 2.5% per SPD, i.e. 10% for a 3.5 SPD weapon. - Tolakram, changed average speed to 3.5
@@ -4128,7 +4128,7 @@ namespace DOL.GS
 
 			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
