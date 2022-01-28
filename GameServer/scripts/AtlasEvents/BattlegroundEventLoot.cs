@@ -38,7 +38,7 @@ namespace DOL.GS.Scripts
 
 			if (!player.Boosted)
 			{
-				player.Out.SendMessage("I'm sorry " + player.Name + ", you don't have enough experience yet to use my services.", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("I'm sorry " + player.Name + ", my services are not available to you.", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
 			}
 			
