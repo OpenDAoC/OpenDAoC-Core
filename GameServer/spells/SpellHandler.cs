@@ -3505,6 +3505,13 @@ namespace DOL.GS.Spells
 			SendSpellResistNotification(target);
 			StartSpellResistInterruptTimer(target);
 			StartSpellResistLastAttackTimer(target);
+			// Treat resists as attacks to trigger an immediate response and BAF
+			if (target is GameNPC)
+			{
+				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
+				if (aggroBrain != null)
+					aggroBrain.AddToAggroList(Caster, 1);
+			}
 		}
 
 		/// <summary>
