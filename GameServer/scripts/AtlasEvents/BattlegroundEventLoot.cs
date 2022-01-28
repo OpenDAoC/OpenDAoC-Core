@@ -167,6 +167,7 @@ namespace DOL.GS.Scripts
 				charFreeEventEquip.Value = "1";
 				GameServer.Database.AddObject(charFreeEventEquip);
 			}
+			/*
 			else if (str.Equals("Atlas Orbs"))
 			{
 
@@ -192,7 +193,7 @@ namespace DOL.GS.Scripts
 				player.Inventory.AddTemplate(item, 10000, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
 				//GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot);
-			}
+			}*/
 			return true;
 		}
 
