@@ -13232,13 +13232,32 @@ namespace DOL.GS
 
             if (MoneyForRealm == null)
             {
+
+                long maxMoney = 0; // this we'll check against to find out the highest roller
+                long characterMoney = 0;
+                
                 AccountXMoney newMoney = new AccountXMoney();
                 newMoney.AccountId = this.Client.Account.ObjectId;
                 newMoney.Realm = (int)this.Realm;
-                newMoney.Copper = DBCharacter.Copper;
-                newMoney.Silver = DBCharacter.Silver;
-                newMoney.Gold = DBCharacter.Gold;
-                newMoney.Platinum = DBCharacter.Platinum;
+                
+                foreach (DOLCharacters character in this.Client.Account.Characters) // cycling through their toons
+                {
+                    if ((eRealm) character.Realm == this.Realm) // account money is realm bound
+                    {
+                        characterMoney = Money.GetMoney(character.Mithril, character.Platinum, character.Gold,
+                            character.Silver, character.Copper);
+                        Console.WriteLine("Character Money: " + characterMoney);
+                        if (characterMoney > maxMoney)
+                        {
+                            maxMoney = characterMoney;
+                            newMoney.Copper = character.Copper;
+                            newMoney.Silver = character.Silver;
+                            newMoney.Gold = character.Gold;
+                            newMoney.Platinum = character.Platinum;
+                            newMoney.Mithril = character.Mithril;
+                        }
+                    }
+                }
                 GameServer.Database.AddObject(newMoney);
                 MoneyForRealm = newMoney;
             }
