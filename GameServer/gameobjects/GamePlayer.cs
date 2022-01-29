@@ -13232,31 +13232,34 @@ namespace DOL.GS
 
             if (MoneyForRealm == null)
             {
+                int realmMithril = 0;
+                int realmPlatinum = 0;
+                int realmGold = 0;
+                int realmSilver = 0;
+                int realmCopper = 0;
 
-                long maxMoney = 0; // this we'll check against to find out the highest roller
-                long characterMoney = 0;
-                
                 AccountXMoney newMoney = new AccountXMoney();
                 newMoney.AccountId = this.Client.Account.ObjectId;
                 newMoney.Realm = (int)this.Realm;
                 
                 foreach (DOLCharacters character in this.Client.Account.Characters) // cycling through their toons
                 {
-                    if ((eRealm) character.Realm == this.Realm) // account money is realm bound
+                    if ((eRealm)character.Realm == this.Realm) // account money is realm bound
                     {
-                        characterMoney = Money.GetMoney(character.Mithril, character.Platinum, character.Gold,
-                            character.Silver, character.Copper);
-                        if (characterMoney > maxMoney)
-                        {
-                            maxMoney = characterMoney;
-                            newMoney.Copper = character.Copper;
-                            newMoney.Silver = character.Silver;
-                            newMoney.Gold = character.Gold;
-                            newMoney.Platinum = character.Platinum;
-                            newMoney.Mithril = character.Mithril;
-                        }
+                        realmCopper += character.Copper;
+                        realmSilver += character.Silver;
+                        realmGold += character.Gold;
+                        realmPlatinum += character.Platinum;
+                        realmMithril += character.Mithril;
                     }
                 }
+                
+                newMoney.Copper = realmCopper;
+                newMoney.Silver = realmSilver;
+                newMoney.Gold = realmGold;
+                newMoney.Platinum = realmPlatinum;
+                newMoney.Mithril = realmMithril;
+                
                 GameServer.Database.AddObject(newMoney);
                 MoneyForRealm = newMoney;
             }
