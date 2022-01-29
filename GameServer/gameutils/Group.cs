@@ -31,6 +31,8 @@ namespace DOL.GS
 	/// </summary>
 	public class Group
 	{
+		public object _groupLock = new object();
+
 		#region constructor and members
 		/// <summary>
 		/// Default Constructor with GamePlayer Leader.
