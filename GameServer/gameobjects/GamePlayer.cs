@@ -13246,7 +13246,6 @@ namespace DOL.GS
                     {
                         characterMoney = Money.GetMoney(character.Mithril, character.Platinum, character.Gold,
                             character.Silver, character.Copper);
-                        Console.WriteLine("Character Money: " + characterMoney);
                         if (characterMoney > maxMoney)
                         {
                             maxMoney = characterMoney;
