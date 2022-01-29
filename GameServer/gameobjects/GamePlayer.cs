@@ -13227,13 +13227,28 @@ namespace DOL.GS
             if (!(obj is DOLCharacters))
                 return;
             m_dbCharacter = (DOLCharacters)obj;
+            
+            AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+            if (MoneyForRealm == null)
+            {
+                AccountXMoney newMoney = new AccountXMoney();
+                newMoney.AccountId = this.Client.Account.ObjectId;
+                newMoney.Realm = (int)this.Realm;
+                newMoney.Copper = DBCharacter.Copper;
+                newMoney.Silver = DBCharacter.Silver;
+                newMoney.Gold = DBCharacter.Gold;
+                newMoney.Platinum = DBCharacter.Platinum;
+                GameServer.Database.AddObject(newMoney);
+                MoneyForRealm = newMoney;
+            }
 
             // Money
-            m_Copper = DBCharacter.Copper;
-            m_Silver = DBCharacter.Silver;
-            m_Gold = DBCharacter.Gold;
-            m_Platinum = DBCharacter.Platinum;
-            m_Mithril = DBCharacter.Mithril;
+            m_Copper = MoneyForRealm.Copper;
+            m_Silver = MoneyForRealm.Silver;
+            m_Gold = MoneyForRealm.Gold;
+            m_Platinum = MoneyForRealm.Platinum;
+            m_Mithril = MoneyForRealm.Mithril;
 			
             Model = (ushort)DBCharacter.CurrentModel;
 
@@ -13419,7 +13434,30 @@ namespace DOL.GS
                     playerDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
                     GameServer.Database.AddObject(playerDeck);
                 }
-               
+                
+                AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+                if (MoneyForRealm == null)
+                {
+                    AccountXMoney newMoney = new AccountXMoney();
+                    newMoney.AccountId = this.Client.Account.ObjectId;
+                    newMoney.Realm = (int)this.Realm;
+                    newMoney.Copper = DBCharacter.Copper;
+                    newMoney.Silver = DBCharacter.Silver;
+                    newMoney.Gold = DBCharacter.Gold;
+                    newMoney.Platinum = DBCharacter.Platinum;
+                    GameServer.Database.AddObject(newMoney);
+                    MoneyForRealm = newMoney;
+                }
+                else
+                {
+                    MoneyForRealm.Copper = Copper;
+                    MoneyForRealm.Silver = Silver;
+                    MoneyForRealm.Gold = Gold;
+                    MoneyForRealm.Platinum = Platinum;
+                    MoneyForRealm.Mithril = Mithril;
+                    GameServer.Database.SaveObject(MoneyForRealm);
+                }
 
                 // Ff this player is a GM always check and set the IgnoreStatistics flag
                 if (Client.Account.PrivLevel > (uint)ePrivLevel.Player && DBCharacter.IgnoreStatistics == false)
