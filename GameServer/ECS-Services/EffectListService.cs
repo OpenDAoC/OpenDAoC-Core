@@ -72,7 +72,7 @@ namespace DOL.GS
                         }
                         else if (e is ECSGameSpellEffect effect)
                         {
-                            if (tick > effect.ExpireTick && !effect.IsConcentrationEffect())
+                            if (tick > effect.ExpireTick && (!effect.IsConcentrationEffect() || effect.SpellHandler.Spell.IsFocus))
                             {
                                 if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                                 {
