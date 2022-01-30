@@ -13251,6 +13251,23 @@ namespace DOL.GS
                         realmGold += character.Gold;
                         realmPlatinum += character.Platinum;
                         realmMithril += character.Mithril;
+
+                        if (realmCopper > 100)
+                        {
+                            realmCopper -= 100;
+                            realmSilver += 1;
+                        }
+                        if (realmSilver > 100)
+                        {
+                            realmSilver -= 100;
+                            realmGold += 1;
+                        }
+                        if (realmGold > 1000)
+                        {
+                            realmGold -= 1000;
+                            realmPlatinum += 1;
+                        }
+
                     }
                 }
                 
