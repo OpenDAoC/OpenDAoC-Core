@@ -3753,6 +3753,18 @@ namespace DOL.GS
 			return true;
 		}
 
+		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		{
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
+			}
+			return base.ReceiveItem(source, item);
+		}
+
 		/// <summary>
 		/// Format "say" message and send it to target in popup window
 		/// </summary>

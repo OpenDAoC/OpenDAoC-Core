@@ -20,8 +20,10 @@
 using System;
 using System.Collections;
 using DOL.Database;
+using DOL.Events;
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
 
 namespace DOL.GS
 {
@@ -67,6 +69,14 @@ namespace DOL.GS
 			GamePlayer player = source as GamePlayer;
 			if (player == null || item == null)
 				return false;
+			
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
+			}
 
 			if (item.Count != 1)
 			{
