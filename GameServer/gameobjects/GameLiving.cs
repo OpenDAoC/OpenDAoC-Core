@@ -4387,7 +4387,7 @@ namespace DOL.GS
             // Remove MovementSpeedDebuff
             if (removeMovementSpeedDebuff)
             {
-				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
 				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
 					EffectService.RequestImmediateCancelEffect(effect);
