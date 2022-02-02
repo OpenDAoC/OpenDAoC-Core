@@ -5,14 +5,7 @@
  * Script is for interacting with players.
  */
 using System;
-using DOL.Database;
-using DOL.Database.Attributes;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using log4net;
 using DOL.Events;
