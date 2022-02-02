@@ -36,29 +36,27 @@ namespace DOL.AI.Brain
             {
                 case 0:
                     Body.Model = 69; // small goblin whelp
-                    Body.Size = 35;
                     break;
                 case 1:
                     Body.Model = 124; // mud creature
-                    Body.Size = 35;
                     break;
                 case 2:
                     Body.Model = 391; // vendo
-                    Body.Size = 35;
                     break;
                 case 3:
                     Body.Model = 47; // small grey wolf
-                    Body.Size = 30;
                     break;
                 case 4:
                     Body.Model = 123; // worm
-                    Body.Size = 35;
                     break;
                 case 5:
                     Body.Model = 112; // brownie
-                    Body.Size = 35;
                     break;
             }
+
+            var size = (byte)Util.Random(25, 55);
+            Body.Size = size;
+
         }
 
         public override void Think()
