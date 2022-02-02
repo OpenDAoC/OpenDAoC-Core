@@ -74,7 +74,7 @@ namespace DOL.GS {
         public const ushort ROG_ITEM_RESIST_CHANCE = 48;
 
         //item chance to get skills
-        public const ushort ROG_ITEM_SKILL_CHANCE = 35;
+        public const ushort ROG_ITEM_SKILL_CHANCE = 25;
 
         // Item chance to get All skills stat
         public const ushort ROG_STAT_ALLSKILL_CHANCE = 0;
@@ -858,9 +858,9 @@ namespace DOL.GS {
             return bonTypes[Util.Random(bonTypes.Count - 1)];
             */
 
-            if (rand < 25)
+            if (rand < 15)
                 return eBonusType.Skill;
-            if (rand < 50)
+            if (rand < 45)
                 return eBonusType.Resist;
             return eBonusType.Stat;
 
