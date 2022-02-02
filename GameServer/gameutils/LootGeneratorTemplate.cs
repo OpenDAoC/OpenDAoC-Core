@@ -341,7 +341,7 @@ namespace DOL.GS
 									}
 								}
 
-								if (timedDrops.Count > 0)
+								if (timedDrops.Count > 0 && player.GainXP)
 								{
 									LootTemplate lootTemplate = timedDrops[Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
 									
@@ -402,7 +402,7 @@ namespace DOL.GS
 									}
 								}
 								
-								if (timedDrops.Count > 0)
+								if (timedDrops.Count > 0 && player.GainXP)
 								{
 									LootTemplate lootTemplate = timedDrops[Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
 									
