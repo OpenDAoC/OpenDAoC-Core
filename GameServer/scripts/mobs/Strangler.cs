@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
         {
             base.Think();
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                player.Out.SendSpellEffectAnimation(Body, Body, 5201, 0, false, 1);
+                player.Out.SendSpellEffectAnimation(Body, Body, 5206, 0, false, 1);
         }
     }
 }
