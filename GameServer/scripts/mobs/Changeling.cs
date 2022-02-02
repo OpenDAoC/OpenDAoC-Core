@@ -62,7 +62,10 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             base.Think();
-            SetModel();
+            if (Util.Chance(10))
+            {
+                SetModel();
+            }
         }
 
     }
