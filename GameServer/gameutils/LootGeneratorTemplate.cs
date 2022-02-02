@@ -263,6 +263,7 @@ namespace DOL.GS
 			LootList loot = base.GenerateLoot(mob, killer);
 
 			string XPItemKey = "XP_Item";
+			string XPItemDroppersKey = "XP_Item_Droppers";
 
 			try
 			{
@@ -347,6 +348,7 @@ namespace DOL.GS
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
 									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
 									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
+									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
 											
 									//if we've never dropped an item, or our cooldown is up, drop an item
 									if (tempProp == 0 ||
@@ -354,6 +356,17 @@ namespace DOL.GS
 									{
 										loot.AddFixed(drop, lootTemplate.Count);
 										player.TempProperties.setProperty(XPItemKey, GameLoop.GameLoopTime);
+										
+										itemsDropped.Clear();
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										
+									} //else if this drop cycle has not seen this item, reduce global cooldown
+									else if (!itemsDropped.Contains(drop.Name))
+									{
+										itemsDropped.Add(drop.Name);
+										tempProp -= 20 * 1000; //take 20 seconds off cooldown
+										player.TempProperties.setProperty(XPItemKey, tempProp);
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
 									}
 								}
 							}
@@ -396,6 +409,8 @@ namespace DOL.GS
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
 									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
 									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
+									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
+									if (itemsDropped == null) itemsDropped = new List<string>();
 											
 									//if we've never dropped an item, or our cooldown is up, drop an item
 									if (tempProp == 0 ||
@@ -403,6 +418,17 @@ namespace DOL.GS
 									{
 										loot.AddFixed(drop, lootTemplate.Count);
 										player.TempProperties.setProperty(XPItemKey, GameLoop.GameLoopTime);
+										
+										itemsDropped.Clear();
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										
+									} //else if this drop cycle has not seen this item, reduce global cooldown
+									else if (!itemsDropped.Contains(drop.Name))
+									{
+										itemsDropped.Add(drop.Name);
+										tempProp -= 20 * 1000; //take 20 seconds off cooldown
+										player.TempProperties.setProperty(XPItemKey, tempProp);
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
 									}
 								}
 							}
