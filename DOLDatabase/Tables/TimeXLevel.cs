@@ -25,6 +25,8 @@ namespace DOL.Database
 		protected int		m_hardcore;
 		protected string	m_timetolevel = string.Empty;
 		protected long 	    m_secondstolevel;
+		protected long 	    m_hourstolevel;
+		protected int 	    m_boosted;
 
 		public DBTimeXLevel()
 		{
@@ -114,6 +116,17 @@ namespace DOL.Database
 		}
 		
 		[DataElement(AllowDbNull= false, Unique=false)]
+		public int Boosted
+		{
+			get {return m_boosted;}
+			set
+			{
+				Dirty = true;
+				m_boosted = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull= false, Unique=false)]
 		public string TimeToLevel
 		{
 			get {return m_timetolevel;}
@@ -132,6 +145,17 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_secondstolevel = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull= false, Unique=false)]
+		public long HoursToLevel
+		{
+			get {return m_hourstolevel;}
+			set
+			{
+				Dirty = true;
+				m_hourstolevel = value;
 			}
 		}
 	}
