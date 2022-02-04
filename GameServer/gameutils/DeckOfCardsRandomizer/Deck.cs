@@ -12,6 +12,7 @@ namespace DOL.GS.Utils;
 public class PlayerDeck
 {
     private const int PLAYER_DECK_SIZE = 500;
+    private const int NUM_BONUS_DECKS = 1;
 
     private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
 
@@ -29,6 +30,15 @@ public class PlayerDeck
             //mod by 100 to only generate numbers 0-99
             //then offset by 1 to only generate 'cards' with values 1-100
             _cards.Push((i % 100) + 1);
+        }
+
+        for (int i = 0; i < NUM_BONUS_DECKS; i++)
+        {
+            for (int j = 50; j < 100; j++)
+            {
+                //add a "bonus deck" of numbers 50-100
+                _cards.Push(j);
+            }
         }
     }
 
@@ -68,13 +78,12 @@ public class PlayerDeck
             ResetDeck();
             Shuffle(); //shuffle it for fun
         }
-            
-
+        
         //we append two ints together to simulate more accuracy on the double
         //subtract 1 to only generate values 0-99
         //useful to get outputs of 0-9999 instead of 11-100100
         int first = _cards.Pop() - 1;
-        int second = _cards.Pop() - 1;
+        int second = Util.CryptoNextInt(99); //just use a simple random for the .XX values
 
         //append our ints together
         //if we are unable to parse numbers for any reason, use a 0

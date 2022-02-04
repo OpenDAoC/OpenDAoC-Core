@@ -1,45 +1,54 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-
 using DOL.AI;
 using DOL.AI.Brain;
-using DOL.Events;
-using DOL.Database;
 using DOL.GS.PacketHandler;
 
-using log4net;
 namespace DOL.GS.Scripts
 {
-	public class ElroTheAncient : GameNPC
+	public class Archilus : GameNPC
 	{
-		public ElroTheAncient()
+		protected String m_SpawnAnnounce;
+
+		public Archilus()
 		{
+			m_SpawnAnnounce = "{0} will start to \'shake violently\' and spawns out some {1}!";
 			TetherRange = 4500;
-			ScalingFactor = 55;
+			ScalingFactor = 25;
 		}
 
 		public override bool AddToWorld()
 		{
-			this.Name = "Elro the Ancient";
+			this.Name = "Archilus";
 			this.GuildName = "";
-			this.Model = 767;
-			this.Size = 150;
-			this.Level = 65;
+			this.Model = 817;
+			this.Size = 100;
+			this.Level = 58;
 			this.Realm = eRealm.None;
 			base.AddToWorld();
 			return true;
 		}
-
+		
+		/// <summary>
+		/// Broadcast relevant messages.
+		/// </summary>
+		/// <param name="message">The message to be broadcast.</param>
+		public void BroadcastMessage(String message)
+		{
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+			{
+				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+			}
+		}
+		
 		public void Spawn(GamePlayer player)
 		{
 			GameNPC mob = new GameNPC();
 			SetVariables(mob);
-			//Level Range of 50-55
-			int level = Util.Random(50, 55);
+			//Level Range of 40-45
+			int level = Util.Random(40, 45);
 			mob.Level = (byte) level;
-			mob.Size = 50;
+			BroadcastMessage(String.Format(m_SpawnAnnounce, this.Name, mob.Name));
 			mob.AddToWorld();
 
 			mob.StartAttack(player);
@@ -54,7 +63,7 @@ namespace DOL.GS.Scripts
 			mob.Heading = this.Heading;
 			//mob.Level = this.Level;
 			mob.Realm = this.Realm;
-			mob.Name = "ancient treant";
+			mob.Name = "young death shroud";
 			mob.Model = this.Model;
 			mob.Size = 50;
 			mob.Flags = this.Flags;
@@ -109,10 +118,12 @@ namespace DOL.GS.Scripts
 
 		public override void Die(GameObject killer)
 		{
+			this.Level = 60;
+			this.Size = 100;
 			base.Die(killer);
 			foreach (GameNPC npc in this.GetNPCsInRadius(5000))
 			{
-				if (npc.Name.Contains("ancient treant"))
+				if (npc.Name.Contains("young death shroud"))
 				{
 					npc.Die(killer);
 				}
@@ -124,21 +135,9 @@ namespace DOL.GS.Scripts
 			GamePlayer player = source as GamePlayer;
 			if (player != null)
 			{
-				if (this.HealthPercent < 95 && this.HealthPercent > 90)
+				if (this.HealthPercent < 90)
 				{
-					new RegionTimer(this, new RegionTimerCallback(timer => CastTreant(timer, player)), 1000);
-					
-				}
-				
-				else if (this.HealthPercent < 60 && this.HealthPercent > 55)
-				{
-					new RegionTimer(this, new RegionTimerCallback(timer => CastTreant(timer, player)), 1000);
-					
-				}
-				
-				else if (this.HealthPercent < 25 && this.HealthPercent > 30)
-				{
-					new RegionTimer(this, new RegionTimerCallback(timer => CastTreant(timer, player)), 1000);
+					new RegionTimer(this, new RegionTimerCallback(timer => CastShroud(timer, player)), 1000);
 					
 				}
 			}
@@ -146,16 +145,12 @@ namespace DOL.GS.Scripts
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 		}
 
-		private int CastTreant(RegionTimer timer, GamePlayer player)
+		private int CastShroud(RegionTimer timer, GamePlayer player)
 		{
-			foreach (GamePlayer enemy in this.GetPlayersInRadius(2500))
-			{
-				Spawn(enemy);
-			}
-			
+			Spawn(player);
 			return 0;
 		}
-
+		
 		public void SendReply(GamePlayer player, string msg)
 		{
 			player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);

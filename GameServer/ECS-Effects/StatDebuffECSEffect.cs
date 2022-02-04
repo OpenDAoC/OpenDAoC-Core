@@ -59,10 +59,6 @@ namespace DOL.GS
                         1.0 - SpellHandler.Spell.Value * 0.01);
                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
 
-                    (SpellHandler as SpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1,
-                        eChatType.CT_Spell);
-                    Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, true)),
-                        eChatType.CT_Spell, Owner);
                 }
                 else
                 {
@@ -78,6 +74,11 @@ namespace DOL.GS
                                 true);
                     }
                 }
+                
+                (SpellHandler as SpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1,
+                    eChatType.CT_Spell);
+                Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, true)),
+                    eChatType.CT_Spell, Owner);
             }
 
             //IsBuffActive = true;

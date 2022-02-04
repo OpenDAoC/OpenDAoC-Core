@@ -5384,6 +5384,7 @@ namespace DOL.GS
             IsLevelSecondStage = false;
             int isSolo = 0;
             int isHardcore = 0;
+            int isBoosted = 0;
             int realm = 0;
             
             if (HCFlag)
@@ -5391,8 +5392,11 @@ namespace DOL.GS
             
             if (NoHelp)
                 isSolo = 1;
-            
-            switch (Realm)
+
+            if (Boosted)
+                isBoosted = 1;
+
+                switch (Realm)
             {
                 case eRealm._FirstPlayerRealm:
                     realm = 1;
@@ -5432,6 +5436,8 @@ namespace DOL.GS
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
                     GameServer.Database.AddObject(MaxLevelTime);
                 }
             }
@@ -5452,6 +5458,8 @@ namespace DOL.GS
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
                     GameServer.Database.AddObject(MaxLevelTime);
                 }
             }
@@ -5497,6 +5505,8 @@ namespace DOL.GS
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
                     GameServer.Database.AddObject(MaxLevelTime);
                 }
             }
@@ -5517,6 +5527,8 @@ namespace DOL.GS
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
                     GameServer.Database.AddObject(MaxLevelTime);
                 }
             }
@@ -5596,6 +5608,8 @@ namespace DOL.GS
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
                     GameServer.Database.AddObject(MaxLevelTime);
                 }
 
@@ -13251,6 +13265,23 @@ namespace DOL.GS
                         realmGold += character.Gold;
                         realmPlatinum += character.Platinum;
                         realmMithril += character.Mithril;
+
+                        if (realmCopper > 100)
+                        {
+                            realmCopper -= 100;
+                            realmSilver += 1;
+                        }
+                        if (realmSilver > 100)
+                        {
+                            realmSilver -= 100;
+                            realmGold += 1;
+                        }
+                        if (realmGold > 1000)
+                        {
+                            realmGold -= 1000;
+                            realmPlatinum += 1;
+                        }
+
                     }
                 }
                 

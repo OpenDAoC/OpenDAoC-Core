@@ -261,7 +261,10 @@ namespace DOL.GS
 		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
-			
+
+			string XPItemKey = "XP_Item";
+			string XPItemDroppersKey = "XP_Item_Droppers";
+
 			try
 			{
 				GamePlayer player = null;
@@ -313,7 +316,7 @@ namespace DOL.GS
 						if (m_lootTemplates.ContainsKey(mob.Name.ToLower()))
 						{
 							Dictionary<string, LootTemplate> lootTemplatesToDrop = m_lootTemplates[mob.Name.ToLower()];
-
+							List<LootTemplate> timedDrops = new List<LootTemplate>();
 							
 							if (lootTemplatesToDrop != null)
 							{
@@ -325,17 +328,7 @@ namespace DOL.GS
 									{
 										if (lootTemplate.Chance < 0)
 										{
-											
-											int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
-											long tempProp = player.TempProperties.getProperty<long>(lootTemplate.ItemTemplateID, 0); //check if our loot has dropped for player
-											
-											//if we've never dropped an item, or our cooldown is up, drop an item
-											if (tempProp == 0 ||
-											    tempProp + dropCooldown < GameLoop.GameLoopTime)
-											{
-												loot.AddFixed(drop, lootTemplate.Count);
-												player.TempProperties.setProperty(lootTemplate.ItemTemplateID, GameLoop.GameLoopTime);
-											}
+											timedDrops.Add(lootTemplate);
 										}
 										else if (lootTemplate.Chance == 100)
 										{
@@ -345,6 +338,35 @@ namespace DOL.GS
 										{
 											loot.AddRandom(lootTemplate.Chance, drop, 1);
 										}
+									}
+								}
+
+								if (timedDrops.Count > 0)
+								{
+									LootTemplate lootTemplate = timedDrops[Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
+									
+									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
+									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
+									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
+									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
+											
+									//if we've never dropped an item, or our cooldown is up, drop an item
+									if (tempProp == 0 ||
+									    tempProp + dropCooldown < GameLoop.GameLoopTime)
+									{
+										loot.AddFixed(drop, lootTemplate.Count);
+										player.TempProperties.setProperty(XPItemKey, GameLoop.GameLoopTime);
+										
+										itemsDropped.Clear();
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										
+									} //else if this drop cycle has not seen this item, reduce global cooldown
+									else if (!itemsDropped.Contains(drop.Name))
+									{
+										itemsDropped.Add(drop.Name);
+										tempProp -= 20 * 1000; //take 20 seconds off cooldown
+										player.TempProperties.setProperty(XPItemKey, tempProp);
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
 									}
 								}
 							}
@@ -365,27 +387,48 @@ namespace DOL.GS
 							
 							if (lootTemplatesToDrop != null)
 							{
-								
+								List<LootTemplate> timedDrops = new List<LootTemplate>();
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop)
 								{
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
 									
 									if (lootTemplate.Chance < 0)
 									{
-										int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
-										long tempProp = player.TempProperties.getProperty<long>(lootTemplate.ItemTemplateID, 0); //check if our loot has dropped for player
-										//Console.WriteLine($"time left to drop: {TimeSpan.FromMilliseconds(GameLoop.GameLoopTime - tempProp + dropCooldown).TotalSeconds} rdyToDrop? {tempProp + dropCooldown < GameLoop.GameLoopTime}");
-										//if we've never dropped an item, or our cooldown is up, drop an item
-										if (tempProp == 0 ||
-										    tempProp + dropCooldown < GameLoop.GameLoopTime)
-										{
-											loot.AddFixed(drop, lootTemplate.Count);
-											player.TempProperties.setProperty(lootTemplate.ItemTemplateID, GameLoop.GameLoopTime);
-										}
+										timedDrops.Add(lootTemplate);
 									}
 									else if (drop != null && (drop.Realm == (int)player.Realm || drop.Realm == 0 || player.CanUseCrossRealmItems))
 									{
 										loot.AddRandom(lootTemplate.Chance, drop, 1);
+									}
+								}
+								
+								if (timedDrops.Count > 0)
+								{
+									LootTemplate lootTemplate = timedDrops[Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
+									
+									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
+									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
+									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
+									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
+									if (itemsDropped == null) itemsDropped = new List<string>();
+											
+									//if we've never dropped an item, or our cooldown is up, drop an item
+									if (tempProp == 0 ||
+									    tempProp + dropCooldown < GameLoop.GameLoopTime)
+									{
+										loot.AddFixed(drop, lootTemplate.Count);
+										player.TempProperties.setProperty(XPItemKey, GameLoop.GameLoopTime);
+										
+										itemsDropped.Clear();
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										
+									} //else if this drop cycle has not seen this item, reduce global cooldown
+									else if (!itemsDropped.Contains(drop.Name))
+									{
+										itemsDropped.Add(drop.Name);
+										tempProp -= 20 * 1000; //take 20 seconds off cooldown
+										player.TempProperties.setProperty(XPItemKey, tempProp);
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
 									}
 								}
 							}
