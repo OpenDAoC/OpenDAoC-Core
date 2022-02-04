@@ -7,7 +7,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
 
-namespace DOL.GS
+namespace DOL.GS.Scripts
 {
     public class Gnat : GameNPC
     {
