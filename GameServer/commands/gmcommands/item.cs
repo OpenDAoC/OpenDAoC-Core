@@ -1913,6 +1913,26 @@ namespace DOL.GS.Commands
 							}
 							break;
 						}
+					case "reloadall":
+						{
+							var allItems = DOLDB<ItemTemplate>.SelectAllObjects();
+							
+							if (allItems != null)
+							{
+								int count = 0;
+
+								foreach (ItemTemplate item in allItems)
+								{
+									if (GameServer.Database.UpdateInCache<ItemTemplate>(item.Id_nb))
+									{
+										count++;
+									}
+								}
+								Log.DebugFormat("{0} items updated or added to the ItemTemplate cache.", count);
+								DisplayMessage(client, "{0} items updated or added to the ItemTemplate cache.", count);
+							}
+							break;
+						}
 						#endregion Load
 						#region LoadPackage
 					case "loadpackage":
