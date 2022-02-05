@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace DOL.GS {
     public class ItemModel : GameNPC {
         public string TempProperty = "ItemModel";
+        public string DisplayedItem = "ItemDisplay";
         public string currencyName = "Orbs";
         private int Chance;
         private Random rnd = new Random();
@@ -24,15 +25,15 @@ namespace DOL.GS {
         //20k champion
         private int lowbie = 450;
         private int festive = 1000;
-        private int toageneric = 1800;
+        private int toageneric = 2000;
         private int armorpads = 2500;
-        private int artifact = 4800;
-        private int epic = 4000;
-        private int dragon = 9000;
-        private int champion = 18000;
-        private int cloakcheap = 9000;
+        private int artifact = 5000;
+        private int epic = 5000;
+        private int dragon = 10000;
+        private int champion = 20000;
+        private int cloakcheap = 10000;
         private int cloakmedium = 18000;
-        private int cloakexpensive = 61749;
+        private int cloakexpensive = 35000;
 
         public override bool AddToWorld()
         {
@@ -6746,6 +6747,40 @@ namespace DOL.GS {
 
             SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
+        }
+        
+        private GameNPC CreateDisplayNPC(GamePlayer player, InventoryItem item)
+        {
+            var mob = new DisplayModel(player, item); 
+                
+            //player model contains 5 bits of extra data that causes issues if used
+            //for an NPC model. we do this to drop the first 5 bits and fill w/ 0s
+            ushort tmpModel =  (ushort) (player.Model << 5);
+            tmpModel = (ushort) (tmpModel >> 5);
+
+            //Fill the object variables
+            mob.X = this.X + 50;
+            mob.Y = this.Y;
+            mob.Z = this.Z;
+            mob.CurrentRegion = this.CurrentRegion;
+
+            return mob;
+
+            /*
+            mob.Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+            //Console.WriteLine($"item: {item} slot: {item.Item_Type}");
+            //mob.Inventory.AddItem((eInventorySlot) item.Item_Type, item);
+            //Console.WriteLine($"mob inventory: {mob.Inventory.ToString()}");
+            player.Out.SendNPCCreate(mob);
+            //mob.AddToWorld();*/
+
+
+        }
+        
+        private void DisplayReskinPreviewTo(GamePlayer player, InventoryItem item)
+        {
+            GameNPC display = CreateDisplayNPC(player, item);
+            display.AddToWorld();
         }
     }
 }
