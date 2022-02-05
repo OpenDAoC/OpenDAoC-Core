@@ -128,8 +128,8 @@ namespace DOL.GS
         /// </summary>
         public static readonly string LAST_USED_ITEM_SPELL = "last_used_item_spell";
         
-        private static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
-        private static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
+        public static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
+        public static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
 
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
@@ -13339,6 +13339,7 @@ namespace DOL.GS
             
             List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
+            int loyaltyDays = 0;
             
             if (realmLoyaltyList == null)
             {
@@ -13351,11 +13352,15 @@ namespace DOL.GS
                 {
                     if (rloy.LastTimeRowUpdated > lastRealmLoyaltyUpdateTime)
                         lastRealmLoyaltyUpdateTime = rloy.LastTimeRowUpdated;
+
+                    if (rloy.Realm == this.Realm)
+                        loyaltyDays = rloy.LoyalDays;
                 }
             }
             
             //set that date as our temp property for reference on kill
             this.TempProperties.setProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
+            this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
             
             AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
