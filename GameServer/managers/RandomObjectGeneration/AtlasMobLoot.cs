@@ -70,8 +70,8 @@ namespace DOL.GS {
                 }
                 else
                 {
-                    //level 50 players have a base 10% chance to recieve ROGs from a random class other than their own
-                    if (player.Level == 50 && Util.Chance(10))
+                    int tmpChance = player.OutOfClassROGPercent > 0 ? player.OutOfClassROGPercent : 0;
+                    if (player.Level == 50 && Util.Chance(tmpChance))
                     {
                         classForLoot = GetRandomClassFromRealm(player.Realm);
                     }
@@ -102,11 +102,7 @@ namespace DOL.GS {
                     item = AtlasROGManager.GenerateBeadOfRegeneration();
                     loot.AddRandom(3, item, 1);
                 }
-                
-                
-                
-                
-                
+
             }
             catch
             {
