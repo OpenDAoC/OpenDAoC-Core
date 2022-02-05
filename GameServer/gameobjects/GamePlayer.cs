@@ -5240,7 +5240,7 @@ namespace DOL.GS
                     }
                     else
                     {
-                        if (rl.LoyalDays < 2)
+                        /*if (rl.LoyalDays < 2)
                         {
                             rl.LoyalDays = 0;
                         }
@@ -5251,6 +5251,7 @@ namespace DOL.GS
 
                         if (rl.LoyalDays < rl.MinimumLoyalDays)
                             rl.LoyalDays = rl.MinimumLoyalDays;
+                            */
                     }
                     rl.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.SaveObject(rl);
