@@ -127,6 +127,8 @@ namespace DOL.GS
         /// Last spell cast from a used item
         /// </summary>
         public static readonly string LAST_USED_ITEM_SPELL = "last_used_item_spell";
+        
+        private static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
 
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
@@ -5195,6 +5197,48 @@ namespace DOL.GS
                 }
                 if(expTotal == 0)
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
+            
+            //check for realm loyalty
+            var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+            if (loyaltyCheck == null || loyaltyCheck < DateTime.Now.AddDays(-1))
+            {
+                List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
+
+                bool realmFound = false;
+                foreach (var rl in realmLoyalty)
+                {
+                    if (rl.Realm == (int)this.Realm)
+                    {
+                        rl.LoyalDays++;
+                        realmFound = true;
+                    }
+                    else
+                    {
+                        if (rl.LoyalDays < 2)
+                        {
+                            rl.LoyalDays = 0;
+                        }
+                        else {
+                            rl.LoyalDays--;
+                            rl.LoyalDays--;    
+                        }
+                    }
+                    rl.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.SaveObject(rl);
+                }
+                
+                if (realmFound == false)
+                {
+                    AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                    newLoyalty.AccountId = this.Client.Account.ObjectId;
+                    newLoyalty.Realm = (int)this.Realm;
+                    newLoyalty.LoyalDays = 1;
+                    newLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.AddObject(newLoyalty);
+                }
+                
+                this.TempProperties.setProperty(REALM_LOYALTY_KEY, DateTime.Now);
             }
 
             //xp rate modifier
@@ -13242,6 +13286,27 @@ namespace DOL.GS
                 return;
             m_dbCharacter = (DOLCharacters)obj;
             
+            
+            List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
+            DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
+            
+            if (realmLoyaltyList == null)
+            {
+               
+            }
+            else
+            {
+                //get the most recent loyalty update
+                foreach (var rloy in realmLoyaltyList)
+                {
+                    if (rloy.LastTimeRowUpdated > lastRealmLoyaltyUpdateTime)
+                        lastRealmLoyaltyUpdateTime = rloy.LastTimeRowUpdated;
+                }
+            }
+            
+            //set that date as our temp property for reference on kill
+            this.TempProperties.setProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
+            
             AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (MoneyForRealm == null)
@@ -13487,6 +13552,23 @@ namespace DOL.GS
                     GameServer.Database.AddObject(playerDeck);
                 }
                 
+                AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+                if (realmLoyalty == null)
+                {
+                    realmLoyalty = new AccountXRealmLoyalty();
+                    realmLoyalty.AccountId = this.Client.Account.ObjectId;
+                    realmLoyalty.Realm = (int)this.Realm;
+                    realmLoyalty.LoyalDays = 1;
+                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+                    GameServer.Database.AddObject(realmLoyalty);
+                }
+                else
+                {
+                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+                    GameServer.Database.SaveObject(realmLoyalty);
+                }
+
                 AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (MoneyForRealm == null)
