@@ -5973,6 +5973,27 @@ namespace DOL.GS
         }
         #endregion
 
+        public void RaiseRealmLoyaltyFloor(int amount)
+        {
+            AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+            if (realmLoyalty != null)
+            {
+                realmLoyalty.MinimumLoyalDays += amount;
+                GameServer.Database.SaveObject(realmLoyalty);
+            }
+            else
+            {
+                AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                newLoyalty.AccountId = this.Client.Account.ObjectId;
+                newLoyalty.Realm = (int)this.Realm;
+                newLoyalty.MinimumLoyalDays = amount;
+                newLoyalty.LoyalDays = newLoyalty.MinimumLoyalDays;
+                newLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                GameServer.Database.AddObject(newLoyalty);
+            }
+        }
+
         #region Combat
         ///// <summary>
         ///// The time someone can hold a ranged attack before tiring
