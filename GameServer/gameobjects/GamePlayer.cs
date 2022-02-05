@@ -5248,6 +5248,9 @@ namespace DOL.GS
                             rl.LoyalDays--;
                             rl.LoyalDays--;    
                         }
+
+                        if (rl.LoyalDays < rl.MinimumLoyalDays)
+                            rl.LoyalDays = rl.MinimumLoyalDays;
                     }
                     rl.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.SaveObject(rl);
