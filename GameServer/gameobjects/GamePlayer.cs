@@ -13648,7 +13648,7 @@ namespace DOL.GS
                     realmLoyalty.AccountId = this.Client.Account.ObjectId;
                     realmLoyalty.Realm = (int)this.Realm;
                     realmLoyalty.LoyalDays = 1;
-                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+                    realmLoyalty.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.AddObject(realmLoyalty);
                 }
                 else
