@@ -286,6 +286,9 @@ namespace DOL.GS.Keeps
 						if (lord.Component.Keep != null && lord.Component.Keep is GameKeep)
 							player.CapturedKeeps++;
 						else player.CapturedTowers++;
+						
+						if(player.CapturedKeeps % 25 == 0)
+							player.RaiseRealmLoyaltyFloor(1);
 					}
 				}
 			}
