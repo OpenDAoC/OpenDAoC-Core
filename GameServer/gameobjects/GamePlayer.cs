@@ -5225,7 +5225,7 @@ namespace DOL.GS
             
             //check for realm loyalty
             var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
-            if (loyaltyCheck == null || loyaltyCheck < DateTime.Now.AddSeconds(-30))
+            if (loyaltyCheck == null || loyaltyCheck < DateTime.Now.AddDays(-1))
             {
                 List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
