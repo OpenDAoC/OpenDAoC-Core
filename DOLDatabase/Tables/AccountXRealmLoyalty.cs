@@ -32,6 +32,7 @@ namespace DOL.Database
 		private int m_realmLoyaltyID;
 		private int m_Realm;
 		private int m_LoyalDays;
+		private int m_MinimumLoyalDays;
 		private string m_account_id;
 		private DateTime m_lastLoyaltyUpdate;
 		
@@ -73,6 +74,17 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_LoyalDays = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull = false, Index = false)]
+		public int MinimumLoyalDays
+		{
+			get { return m_MinimumLoyalDays; }
+			set
+			{
+				Dirty = true;
+				m_MinimumLoyalDays = value;
 			}
 		}
 		
