@@ -349,13 +349,23 @@ namespace DOL.GS
 									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
 									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
 									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
-											
+
 									//if we've never dropped an item, or our cooldown is up, drop an item
 									if (tempProp == 0 ||
 									    tempProp + dropCooldown < GameLoop.GameLoopTime)
 									{
+										long nextDropTime = GameLoop.GameLoopTime;
+										
+										AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(player.Realm)));
+										if (realmLoyalty != null && realmLoyalty.LoyalDays > 0)
+										{
+											int tmpLoyal = realmLoyalty.LoyalDays > 30
+												? 30 : realmLoyalty.LoyalDays;
+											nextDropTime -= tmpLoyal * 1000; //reduce cooldown by 1s per loyalty day up to 30s cap
+										}
+										
 										loot.AddFixed(drop, lootTemplate.Count);
-										player.TempProperties.setProperty(XPItemKey, GameLoop.GameLoopTime);
+										player.TempProperties.setProperty(XPItemKey, nextDropTime);
 										
 										itemsDropped.Clear();
 										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
