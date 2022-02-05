@@ -184,6 +184,14 @@ namespace DOL.GS
             set { m_groundtargetInView = value; }
         }
 
+        protected int m_OutOfClassROGPercent = 0;
+
+        public int OutOfClassROGPercent
+        {
+            get { return m_OutOfClassROGPercent; }
+            set { m_OutOfClassROGPercent = value; }
+        }
+
         /// <summary>
         /// Player is in BG ?
         /// </summary>
@@ -5225,7 +5233,10 @@ namespace DOL.GS
             
             //check for realm loyalty
             var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
-            if (loyaltyCheck == null || loyaltyCheck < DateTime.Now.AddDays(-1))
+            if (loyaltyCheck == null)
+                loyaltyCheck = DateTime.UnixEpoch;
+
+            if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
                 List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
@@ -5234,8 +5245,9 @@ namespace DOL.GS
                 {
                     if (rl.Realm == (int)this.Realm)
                     {
-                        rl.LoyalDays++;
-                        numCurrentLoyalDays = rl.LoyalDays;
+                        if(rl.LastLoyaltyUpdate < DateTime.Now.AddDays(-1))
+                            rl.LoyalDays++;
+                        numCurrentLoyalDays = rl.LoyalDays; 
                         realmFound = true;
                     }
                     else
@@ -13353,7 +13365,7 @@ namespace DOL.GS
                     if (rloy.LastTimeRowUpdated > lastRealmLoyaltyUpdateTime)
                         lastRealmLoyaltyUpdateTime = rloy.LastTimeRowUpdated;
 
-                    if (rloy.Realm == this.Realm)
+                    if (rloy.Realm == (int)this.Realm)
                         loyaltyDays = rloy.LoyalDays;
                 }
             }
