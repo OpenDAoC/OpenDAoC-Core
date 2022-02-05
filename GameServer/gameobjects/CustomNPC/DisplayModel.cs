@@ -1,6 +1,7 @@
 
 
 using System;
+using DOL.Database;
 
 namespace DOL.GS {
     public class DisplayModel : GameNPC
@@ -8,7 +9,7 @@ namespace DOL.GS {
         private GamePlayer m_displayedPlayer;
         
         
-        public DisplayModel(GamePlayer player)
+        public DisplayModel(GamePlayer player, InventoryItem item)
         {
             m_displayedPlayer = player;
             //player model contains 5 bits of extra data that causes issues if used
@@ -31,9 +32,16 @@ namespace DOL.GS {
             var template = new GameNpcInventoryTemplate();
             foreach (var invItem in player.Inventory.EquippedItems)
             {
-                template.AddNPCEquipment((eInventorySlot)invItem.SlotPosition, invItem.Model, invItem.Color, invItem.Effect, invItem.Extension);
+                template.AddNPCEquipment((eInventorySlot)invItem.Item_Type, invItem.Model, invItem.Color, invItem.Effect, invItem.Extension);
             }
-            this.SwitchWeapon(player.ActiveWeaponSlot);
+
+            if (item != null)
+            {
+                if(template.GetItem((eInventorySlot)item.Item_Type) != null)
+                    template.RemoveNPCEquipment((eInventorySlot)item.Item_Type);
+                template.AddNPCEquipment((eInventorySlot)item.Item_Type, item.Model, item.Color, item.Effect, item.Extension);
+            }
+            
             this.Inventory = template.CloseTemplate();
         }
 
