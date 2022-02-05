@@ -790,4 +790,29 @@ namespace DOL.GS
 		//Atlas Orbs itemtemplate = token_many
 		public override string MoneyKey { get { return "token_many"; } }
 	}
+	
+	public class GameL20RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L20RewardToken"; } }
+	}
+	
+	public class GameL25RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L25RewardToken"; } }
+	}
+	
+	public class GameL30RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L30RewardToken"; } }
+	}
+	
+	public class GameL35RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L35RewardToken"; } }
+	}
+	
+	public class GameL40RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L40RewardToken"; } }
+	}
 }
