@@ -5312,7 +5312,7 @@ namespace DOL.GS
                 if (numCurrentLoyalDays > 30)
                     numCurrentLoyalDays = 30;
                 
-                RealmLoyaltyBonus = (long) (expTotal * (numCurrentLoyalDays / 30.0) * .5);
+                RealmLoyaltyBonus = (long) (expTotal * (numCurrentLoyalDays / 30.0) * .25);
 
                 if (this.CurrentRegion.IsRvR)
                     expTotal = (long)(expTotal * ServerProperties.Properties.RvR_XP_RATE);
