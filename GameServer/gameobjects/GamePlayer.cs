@@ -129,6 +129,7 @@ namespace DOL.GS
         public static readonly string LAST_USED_ITEM_SPELL = "last_used_item_spell";
         
         private static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
+        private static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
 
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
@@ -5199,9 +5200,32 @@ namespace DOL.GS
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             
+            int numCurrentLoyalDays = this.TempProperties.getProperty<int>(CURRENT_LOYALTY_KEY);
+            //check for cached loyalty days, and grab value if needed
+            if (numCurrentLoyalDays == null || numCurrentLoyalDays == 0)
+            {
+                AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                if (realmLoyalty == null)
+                {
+                    AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                    newLoyalty.AccountId = this.Client.Account.ObjectId;
+                    newLoyalty.Realm = (int)this.Realm;
+                    newLoyalty.LoyalDays = 1;
+                    numCurrentLoyalDays = 1;
+                    newLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.AddObject(newLoyalty);
+                }
+                else
+                {
+                    numCurrentLoyalDays = realmLoyalty.LoyalDays;
+                }
+                
+                this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+            }
+            
             //check for realm loyalty
             var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
-            if (loyaltyCheck == null || loyaltyCheck < DateTime.Now.AddDays(-1))
+            if (loyaltyCheck == null || loyaltyCheck < DateTime.Now.AddSeconds(-30))
             {
                 List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
@@ -5211,6 +5235,7 @@ namespace DOL.GS
                     if (rl.Realm == (int)this.Realm)
                     {
                         rl.LoyalDays++;
+                        numCurrentLoyalDays = rl.LoyalDays;
                         realmFound = true;
                     }
                     else
@@ -5234,13 +5259,17 @@ namespace DOL.GS
                     newLoyalty.AccountId = this.Client.Account.ObjectId;
                     newLoyalty.Realm = (int)this.Realm;
                     newLoyalty.LoyalDays = 1;
+                    numCurrentLoyalDays = 1;
                     newLoyalty.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.AddObject(newLoyalty);
                 }
                 
                 this.TempProperties.setProperty(REALM_LOYALTY_KEY, DateTime.Now);
+                this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
             }
 
+            long RealmLoyaltyBonus = 0;
+            long baseXp = 0;
             //xp rate modifier
             if (allowMultiply)
             {
@@ -5249,6 +5278,8 @@ namespace DOL.GS
                 expTotal -= expCampBonus;
                 expTotal -= expOutpostBonus;
                 expTotal -= atlasBonus;
+
+                baseXp = expTotal;
                 //[StephenxPimentel] - Zone Bonus XP Support
                 if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
                 {
@@ -5262,6 +5293,10 @@ namespace DOL.GS
                     }
                 }
 
+                if (numCurrentLoyalDays > 30)
+                    numCurrentLoyalDays = 30;
+                
+                RealmLoyaltyBonus = (long) (expTotal * (numCurrentLoyalDays / 30.0) * .5);
 
                 if (this.CurrentRegion.IsRvR)
                     expTotal = (long)(expTotal * ServerProperties.Properties.RvR_XP_RATE);
@@ -5284,8 +5319,12 @@ namespace DOL.GS
                 expTotal += expGroupBonus;
                 expTotal += expCampBonus;
                 expTotal += atlasBonus;
-
+                expTotal += RealmLoyaltyBonus;
             }
+            
+            double loyaltyPercent = ((double)RealmLoyaltyBonus / (baseXp)) * 100.0;
+            if (RealmLoyaltyBonus > 0 && XPLogState == eXPLogState.Verbose)
+                this.Out.SendMessage($"Loyalty: {RealmLoyaltyBonus.ToString("N0", System.Globalization.NumberFormatInfo.InvariantInfo)} | {loyaltyPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Get Champion Experience too
             GainChampionExperience(expTotal);
@@ -5312,6 +5351,7 @@ namespace DOL.GS
                 string expGroupBonusStr = "";
                 string expOutpostBonusStr = "";
                 string expSoloBonusStr = "";
+                string expRealmLoyaltyStr = "";
 
                 if (expCampBonus > 0)
                 {
@@ -5325,12 +5365,18 @@ namespace DOL.GS
                 {
                     expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", expOutpostBonus.ToString("N0", format)) + " ";
                 }
+
+                if (RealmLoyaltyBonus > 0)
+                {
+                    expRealmLoyaltyStr = "("+ RealmLoyaltyBonus.ToString("N0", format) + " realm loyalty bonus)";
+                }
+                    
                 if(atlasBonus > 0)
                 {
                     expSoloBonusStr = "("+ atlasBonus.ToString("N0", format) + " Atlas bonus)";
                 }
 
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             Experience += expTotal;
