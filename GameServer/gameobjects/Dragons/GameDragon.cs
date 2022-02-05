@@ -368,6 +368,7 @@ namespace DOL.GS
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsDragon++;
+                player.RaiseRealmLoyaltyFloor(2);
                 count++;
             }
 			return count;
