@@ -64,7 +64,7 @@ namespace DOL.GS.GameEvents
 			GamePlayer p = sender as GamePlayer;
 			const string customKey = "PvEBetaParticipation";
 			var hasPvEBetaParticipationTitle = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(p.Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
-			DateTime betaEnd = new DateTime(2022, 01, 30); // dummy date
+			DateTime betaEnd = new DateTime(2022, 03, 30); // dummy date
 			
 			if (p == null)
 				return;
