@@ -195,6 +195,7 @@ GamePlayer.PickupObject.NoOneWantsThis:			No one in group wants the {0}.
 GamePlayer.PickupObject.ObjectTooFarAway:		The {0} is too far away to pick up!
 GamePlayer.PickupObject.TooFarFromBoat:			You are too far from the boat to board!
 GamePlayer.PickupObject.YouGet:					You get {0} and put it in your backpack.
+GamePlayer.PickupObject.YouGetAmount:			You get {0} {1} and put it in your backpack.
 GamePlayer.PickupObject.YouPickUp:				You pick up {0}.
 GamePlayer.PickupObject.YourLootShare:			Your share of the loot is {0}.
 GamePlayer.Pray.AlreadyPraying:					You are already praying!	
