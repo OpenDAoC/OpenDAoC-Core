@@ -138,6 +138,11 @@ namespace DOL.GS.Scripts
                     return false;
 
                 case "trade this character":
+                    
+                    if (player.Boosted){
+                        player.Out.SendMessage("At the moment I'm only interested in characters that started from Level 1, sorry.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        return false;
+                    }
 
                     player.Out.SendCustomDialog(
                         "Are you sure you want to trade this character?",
