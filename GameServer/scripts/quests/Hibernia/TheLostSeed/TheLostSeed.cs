@@ -88,7 +88,7 @@ namespace DOL.GS.Quests.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 			
 			/* Now we bring to Terod the possibility to give this quest to players */
-			Terod.AddQuestToGive(typeof (TheLostSeed));
+			Terod?.AddQuestToGive(typeof (TheLostSeed));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
