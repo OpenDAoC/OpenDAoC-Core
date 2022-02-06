@@ -21,9 +21,7 @@ namespace DOL.GS.Scripts
         {
             Name = "Adris";
             GuildName = "Famous Collector";
-            Model = 1198;
             Level = 50;
-            Model = 2026;
             Size = 60;
             Flags |= eFlags.PEACE;
             return base.AddToWorld();
