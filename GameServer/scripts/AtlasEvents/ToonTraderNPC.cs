@@ -170,6 +170,9 @@ namespace DOL.GS.Scripts
                     player.MoveTo(249, 47417, 49571, 20832, 3089);
 
                     AtlasROGManager.GenerateOrbAmount(player, orbAmount);
+
+                    GameServer.Database.SaveObject(player.Client.Account);
+
                 }
             }
             else
