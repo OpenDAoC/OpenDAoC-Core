@@ -13,6 +13,7 @@ public class PlayerDeck
 {
     private const int PLAYER_DECK_SIZE = 500;
     private const int NUM_BONUS_DECKS = 1;
+    private const int NUM_NORMAL_DECKS = 3;
 
     private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
 
@@ -25,18 +26,19 @@ public class PlayerDeck
     {
         _cards.Clear();
 
-        for (int i = 0; i < PLAYER_DECK_SIZE; i++)
+        for (int i = 0; i < NUM_NORMAL_DECKS; i++)
         {
-            //mod by 100 to only generate numbers 0-99
-            //then offset by 1 to only generate 'cards' with values 1-100
-            _cards.Push((i % 100) + 1);
+            for (int j = 0; j < 100; j++)
+            {
+                _cards.Push(j+1); //offset by 1 to only generate 'cards' with values 1-100
+            }
         }
 
         for (int i = 0; i < NUM_BONUS_DECKS; i++)
         {
             for (int j = 50; j < 100; j++)
             {
-                //add a "bonus deck" of numbers 50-100
+                //add a "bonus deck" of numbers 50-99
                 _cards.Push(j);
             }
         }
