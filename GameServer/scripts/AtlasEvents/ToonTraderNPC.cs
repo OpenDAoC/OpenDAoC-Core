@@ -9,6 +9,7 @@ using System;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using System.Reflection;
+using DOL.Database;
 using log4net;
 
 namespace DOL.GS.Scripts
@@ -68,6 +69,9 @@ namespace DOL.GS.Scripts
                 return false;
 
             GamePlayer player = source as GamePlayer;
+            
+            const string soloKey = "solo_to_50";
+            var isSolo = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player?.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
 
             if (player == null)
                 return false;
@@ -77,7 +81,7 @@ namespace DOL.GS.Scripts
                 case "reward":
                     
                     var orbAmount = 10000;
-                    if (player.NoHelp)
+                    if (player.NoHelp || isSolo != null)
                     {
                         orbAmount = 25000;
                     }
