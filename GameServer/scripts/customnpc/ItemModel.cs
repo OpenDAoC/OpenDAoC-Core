@@ -8,11 +8,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DOL.GS.Spells;
+using Microsoft.CodeAnalysis;
 
 namespace DOL.GS {
     public class ItemModel : GameNPC {
         public string TempProperty = "ItemModel";
         public string DisplayedItem = "ItemDisplay";
+        public string TempModelID = "TempModelID";
+        public string TempModelPrice = "TempModelPrice";
         public string currencyName = "Orbs";
         private int Chance;
         private Random rnd = new Random();
@@ -47,6 +51,8 @@ namespace DOL.GS {
             {
                 TurnTo(player, 500);
                 InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
+                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                
                 if (item == null)
                 {
                     SendReply(player, "Hello there! \n" +
@@ -57,8 +63,13 @@ namespace DOL.GS {
                 {
                     ReceiveItem(player, item);
                 }
+                
+                if(displayItem != null)
+                    DisplayReskinPreviewTo(player, (InventoryItem)displayItem.Clone());
+
                 return true;
             }
+
             return false;
         }
 
@@ -93,6 +104,9 @@ namespace DOL.GS {
             GamePlayer player = source as GamePlayer;
             TurnTo(player.X, player.Y);
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
+            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            int cachedModelID = player.TempProperties.getProperty<int>(TempModelID);
+            int cachedModelPrice = player.TempProperties.getProperty<int>(TempModelPrice);
 
             if (item == null)
             {
@@ -102,6 +116,24 @@ namespace DOL.GS {
 
             switch (str.ToLower())
             {
+                case "confirm model":
+                    //Console.WriteLine($"Cached: {cachedModelID}");
+                    if (cachedModelID > 0 && cachedModelPrice > 0)
+                    {
+                        if(cachedModelPrice == armorpads)
+                            SetExtension(player, (byte)cachedModelID, cachedModelPrice);
+                        else
+                            SetModel(player, cachedModelID, cachedModelPrice);
+                        
+                        return true;
+                    }
+                    else
+                    {
+                        SendReply(player, "I'm sorry, I seem to have lost track of the model you wanted. Please start over.");
+                    }
+                    
+                    break;
+                
                 #region helms
                 case "dragonslayer helm":
                     if (item.Item_Type != Slot.HELM)
@@ -5992,18 +6024,26 @@ namespace DOL.GS {
 
             }
 
+            //Console.WriteLine($"price {price} model {modelIDToAssign}");
             if (price == armorpads)
             {
-                int extens = item.Extension;
-                if (modelIDToAssign != extens) extens = modelIDToAssign;
-                SetExtension(player, (byte)extens, price);
+                InventoryItem tmpItem = (InventoryItem) displayItem.Clone();
+                byte tmp = tmpItem.Extension;
+                tmpItem.Extension = (byte)modelIDToAssign;
+                DisplayReskinPreviewTo(player, tmpItem);
+                tmpItem.Extension = tmp;
             }
             else
             {
-                int model = item.Model;
-                if (modelIDToAssign != 0) model = modelIDToAssign;
-                SetModel(player, model, price);
+                InventoryItem tmpItem = (InventoryItem) displayItem.Clone();
+                int tmp = tmpItem.Model;
+                tmpItem.Model = modelIDToAssign;
+                DisplayReskinPreviewTo(player, tmpItem);
+                tmpItem.Model = tmp;
             }
+            
+            player.TempProperties.setProperty(TempModelID, modelIDToAssign);
+            player.TempProperties.setProperty(TempModelPrice, price);
 
             return true;
         }
@@ -6023,6 +6063,8 @@ namespace DOL.GS {
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
+            
+            DisplayReskinPreviewTo(t, item);
 
             switch (item.Item_Type)
             {
@@ -6415,9 +6457,12 @@ namespace DOL.GS {
                     break;
             }
 
-            SendReply(t, ""
+            SendReply(t, "When you are finished browsing, let me know and I will [confirm model]."
                          );
+            var tmp = (InventoryItem) item.Clone();
             t.TempProperties.setProperty(TempProperty, item);
+            t.TempProperties.setProperty(DisplayedItem, tmp);
+            
             return false;
         }
 
@@ -6650,7 +6695,7 @@ namespace DOL.GS {
             player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
         }
 
-        public void SetModel(GamePlayer player, int number, int price)
+        public bool SetModel(GamePlayer player, int number, int price)
         {
             if (price > 0)
             {
@@ -6660,7 +6705,7 @@ namespace DOL.GS {
                 if (playerOrbs < price)
                 {
                     SendReply(player, "I'm sorry, but you cannot afford my services currently.");
-                    return;
+                    return false;
                 }
 
                 SendReply(player, "Thanks for your donation. " +
@@ -6668,17 +6713,23 @@ namespace DOL.GS {
                                   "I look forward to doing business with you in the future.");
 
                 InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-                player.TempProperties.removeProperty(TempProperty);
-
+                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
-                    return;
-
+                    return false;
+                
+                player.TempProperties.removeProperty(TempProperty);
+                player.TempProperties.removeProperty(DisplayedItem);
+                player.TempProperties.removeProperty(TempModelID);
+                
+                //Console.WriteLine($"item model: {item.Model} assignment {number}");
                 player.Inventory.RemoveItem(item);
                 ItemUnique unique = new ItemUnique(item.Template);
                 unique.Model = number;
                 item.IsTradable = false;
                 item.IsDropable = false;
                 GameServer.Database.AddObject(unique);
+                //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
                 InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
@@ -6689,11 +6740,12 @@ namespace DOL.GS {
                 player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
-                return;
+                return true;
             }
 
             SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
+            return false;
         }
 
         public void SetExtension(GamePlayer player, byte number, int price)
@@ -6701,7 +6753,7 @@ namespace DOL.GS {
             if (price > 0)
             {
                 int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack);
-                log.Info("Player Orbs:" + playerOrbs);
+                //log.Info("Player Orbs:" + playerOrbs);
 
                 if (playerOrbs < price)
                 {
@@ -6710,10 +6762,13 @@ namespace DOL.GS {
                 }
 
                 InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-                player.TempProperties.removeProperty(TempProperty);
-
+                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                     return;
+                
+                player.TempProperties.removeProperty(TempProperty);
+                player.TempProperties.removeProperty(DisplayedItem);
 
                 //only allow pads on valid slots: torso/hand/feet
                 if (item.Item_Type != (int)eEquipmentItems.TORSO && item.Item_Type != (int)eEquipmentItems.HAND && item.Item_Type != (int)eEquipmentItems.FEET)
@@ -6781,6 +6836,8 @@ namespace DOL.GS {
         {
             GameNPC display = CreateDisplayNPC(player, item);
             display.AddToWorld();
+            display.attackComponent.ShowAttackAnimation(new AttackData(), item);
+            
         }
     }
 }
