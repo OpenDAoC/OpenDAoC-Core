@@ -38,9 +38,6 @@ namespace DOL.GS
             if (p == null)
                 return;
 
-            if (p.castingComponent?.instantSpellHandler != null)
-                p.castingComponent.instantSpellHandler.Tick(tick);
-
             if (p.castingComponent?.spellHandler == null)
                 return;
 
