@@ -44,7 +44,8 @@ namespace DOL.GS.Spells
 	public class SpellHandler : ISpellHandler
 	{
 		private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
+		public object _stateLock = new object();
+
 		//GameLoop Methods
 		private eCastState castState;
 		private double _castFinishedTickTime;
@@ -1640,103 +1641,106 @@ namespace DOL.GS.Spells
 		//This is called after our pre-cast checks are done (Range, valid target, mana pre-req, and standing still?) and checks for the casting states
 		public void Tick(long currentTick)
 		{
-			switch (castState)
+			lock (_stateLock)
 			{
-				case eCastState.Precast:
-					if (Spell.Target == "Self")
-                    {
-						// Self spells should ignore whatever we actually have selected.
-						m_spellTarget = Caster;
-					}
-                    else
-                    {
-						m_spellTarget = Caster?.TargetObject as GameLiving;
-						
-						if (m_spellTarget is null && Caster is NecromancerPet nPet)
-                        {
-							m_spellTarget = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
-                        }
-                    }
-
-                    if (CheckBeginCast(m_spellTarget))
-					{
-						m_started = GameLoop.GameLoopTime;
-						_castStartTick = currentTick;
-						SendSpellMessages();
-						if (Spell.IsInstantCast)
+				switch (castState)
+				{
+					case eCastState.Precast:
+						if (Spell.Target == "Self")
 						{
-							if (!CheckEndCast(m_spellTarget))
-								castState = eCastState.Interrupted;
+							// Self spells should ignore whatever we actually have selected.
+							m_spellTarget = Caster;
+						}
+						else
+						{
+							m_spellTarget = Caster?.TargetObject as GameLiving;
+
+							if (m_spellTarget is null && Caster is NecromancerPet nPet)
+							{
+								m_spellTarget = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
+							}
+						}
+
+						if (CheckBeginCast(m_spellTarget))
+						{
+							m_started = GameLoop.GameLoopTime;
+							_castStartTick = currentTick;
+							SendSpellMessages();
+							if (Spell.IsInstantCast)
+							{
+								if (!CheckEndCast(m_spellTarget))
+									castState = eCastState.Interrupted;
+								else
+								{
+									SendCastAnimation(0);
+									castState = eCastState.Finished;
+								}
+							}
 							else
 							{
-								SendCastAnimation(0);
-								castState = eCastState.Finished;
+								SendCastAnimation();
+								castState = eCastState.Casting;
+								Caster.CurrentSpellHandler = this;
 							}
 						}
 						else
 						{
-							SendCastAnimation();
-							castState = eCastState.Casting;
-							Caster.CurrentSpellHandler = this;
-						}
-					}
-					else
-					{
-						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
-							castState = eCastState.Interrupted;
-						else
-							castState = eCastState.Cleanup;
-					}
-					break;
-				case eCastState.Casting:
-					if (!CheckDuringCast(m_spellTarget))
-					{
-						castState = eCastState.Interrupted;
-					}
-					if (_castStartTick + _calculatedCastTime  < currentTick)
-					{
-						if (!(m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize))
-						{
-							if (!CheckEndCast(m_spellTarget))
+							if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 								castState = eCastState.Interrupted;
 							else
-								castState = eCastState.Finished;
+								castState = eCastState.Cleanup;
 						}
-						else
-                        {
-							if (CheckEndCast(m_spellTarget))
-								castState = eCastState.Finished;
-                        }
-					}
-					break;
-				case eCastState.Interrupted:
-					InterruptCasting();
-					SendInterruptCastAnimation();
-					castState = eCastState.Cleanup;
-					break;
-                case eCastState.Focusing:
-                    if ((Caster is GamePlayer && (Caster as GamePlayer).IsStrafing) || Caster.IsMoving)
-                    {
-                        CasterMoves();
-                        castState = eCastState.Cleanup;
-                    }
-                    break;
-            }
+						break;
+					case eCastState.Casting:
+						if (!CheckDuringCast(m_spellTarget))
+						{
+							castState = eCastState.Interrupted;
+						}
+						if (_castStartTick + _calculatedCastTime < currentTick)
+						{
+							if (!(m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize))
+							{
+								if (!CheckEndCast(m_spellTarget))
+									castState = eCastState.Interrupted;
+								else
+									castState = eCastState.Finished;
+							}
+							else
+							{
+								if (CheckEndCast(m_spellTarget))
+									castState = eCastState.Finished;
+							}
+						}
+						break;
+					case eCastState.Interrupted:
+						InterruptCasting();
+						SendInterruptCastAnimation();
+						castState = eCastState.Cleanup;
+						break;
+					case eCastState.Focusing:
+						if ((Caster is GamePlayer && (Caster as GamePlayer).IsStrafing) || Caster.IsMoving)
+						{
+							CasterMoves();
+							castState = eCastState.Cleanup;
+						}
+						break;
+				}
 
-			//Process cast on same tick if finished.
-			if (castState == eCastState.Finished)
-			{
-				FinishSpellCast(m_spellTarget);
-				if (Spell.IsFocus)
-					castState = eCastState.Focusing;
-				else
-					castState = eCastState.Cleanup;
+				//Process cast on same tick if finished.
+				if (castState == eCastState.Finished)
+				{
+					FinishSpellCast(m_spellTarget);
+					if (Spell.IsFocus)
+						castState = eCastState.Focusing;
+					else
+						castState = eCastState.Cleanup;
+				}
 			}
-			
 			if (castState == eCastState.Cleanup)
 			{
 				CleanupSpellCast();
 			}
+
 			
 		}
 
@@ -1757,14 +1761,14 @@ namespace DOL.GS.Spells
 					}
 				}
 				else
-                {
+				{
 					p.castingComponent.instantSpellHandler = null;
-                }
+				}
 			}
-            else if (Caster is NecromancerPet nPet)
-            {
-                if (nPet.Brain is NecromancerPetBrain necroBrain)
-                {
+			else if (Caster is NecromancerPet nPet)
+			{
+				if (nPet.Brain is NecromancerPetBrain necroBrain)
+				{
 					if (Spell.CastTime > 0)
 					{
 						necroBrain.RemoveSpellFromQueue();
@@ -1785,16 +1789,16 @@ namespace DOL.GS.Spells
 							necroBrain.CheckSpellQueue();
 					}
 					else
-                    {
+					{
 						if (nPet.attackComponent.AttackState)
 							necroBrain.RemoveSpellFromAttackQueue();
 
 						Caster.castingComponent.instantSpellHandler = null;
 					}
 				}
-            }
-            else
-            {
+			}
+			else
+			{
 				if (Caster.castingComponent.queuedSpellHandler != null)
 				{
 					Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
