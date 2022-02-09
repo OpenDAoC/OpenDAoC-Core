@@ -9428,7 +9428,7 @@ namespace DOL.GS {
                     {
                         validModels.Add(876);
                         validModels.Add(22);
-                        validModels.Add(23);
+                        //validModels.Add(23);
                     }
                     if (Level > 20)
                     {
