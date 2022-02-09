@@ -12,7 +12,7 @@ namespace DOL.GS.Scripts
 		{
 			Model = 929;
 			Name = "Spectral Provisioner";
-			Size = 60;
+			Size = 90;
 			Level = 77;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead

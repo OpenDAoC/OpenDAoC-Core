@@ -11,7 +11,7 @@ namespace DOL.GS.Scripts
 		{
 			Model = 916;
 			Name = "Skeletal Sacristan";
-			Size = 80;
+			Size = 85;
 			Level = 77;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
