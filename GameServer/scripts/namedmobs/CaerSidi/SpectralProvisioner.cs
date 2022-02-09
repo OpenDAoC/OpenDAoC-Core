@@ -1,21 +1,21 @@
 ﻿using System;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
-    public class SkeletalSacristan : GameNPC
+    public class SpectralProvisioner : GameNPC
     {
-
-		public SkeletalSacristan() : base() { }
-		public static GameNPC SkeletalSacristanMob = new GameNPC();
+	    public SpectralProvisioner() : base() { }
+		public static GameNPC SpectralProvisionerMob = new GameNPC();
 		public override bool AddToWorld()
 		{
-			Model = 916;
-			Name = "Skeletal Sacristan";
-			Size = 80;
+			Model = 929;
+			Name = "Spectral Provisioner";
+			Size = 60;
 			Level = 77;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
@@ -23,7 +23,7 @@ namespace DOL.GS.Scripts
 			Flags -= eFlags.PEACE;
 			TetherRange = 2000;
 			RoamingRange = 0;
-			SkeletalSacristanBrain sBrain = new SkeletalSacristanBrain();
+			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
 			sBrain.AggroLevel = 100;
 			sBrain.AggroRange = 500;
@@ -31,21 +31,25 @@ namespace DOL.GS.Scripts
 			return true;
 		}
 		
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
-				log.Info("Skeletal Sacristan NPC Initializing...");
+				log.Info("Spectral Provisioner NPC Initializing...");
 		}
+		
+		
 		
 	}
     
 }
+
 namespace DOL.AI.Brain
 {
-	public class SkeletalSacristanBrain : StandardMobBrain
+	public class SpectralProvisionerBrain : StandardMobBrain
 	{
-		public SkeletalSacristanBrain() : base() { }
+		public SpectralProvisionerBrain() : base() { }
 
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
@@ -56,7 +60,16 @@ namespace DOL.AI.Brain
 		
 		public override void AttackMostWanted()
 		{
-
+			ItemTemplate sackJunk = GameServer.Database.FindObjectByKey<ItemTemplate>("sack_of_decaying_junk");
+			InventoryItem item = GameInventoryItem.Create(sackJunk);
+			
+			foreach (GamePlayer player in Body.GetPlayersInRadius(500))
+			{
+				if (player.IsAlive)
+				{
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+				}
+			}
 		}
 		
 		public override void Think()
