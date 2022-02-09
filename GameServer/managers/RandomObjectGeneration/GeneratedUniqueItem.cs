@@ -10478,6 +10478,7 @@ namespace DOL.GS {
                 case 444:
                     return "Falcata";
                 case 8:
+                case 645:
                     return "Scimitar";
                 case 651:
                     return "Jambiya";
