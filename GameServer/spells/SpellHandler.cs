@@ -1641,8 +1641,6 @@ namespace DOL.GS.Spells
 		//This is called after our pre-cast checks are done (Range, valid target, mana pre-req, and standing still?) and checks for the casting states
 		public void Tick(long currentTick)
 		{
-			lock (_stateLock)
-			{
 				switch (castState)
 				{
 					case eCastState.Precast:
@@ -1735,7 +1733,6 @@ namespace DOL.GS.Spells
 					else
 						castState = eCastState.Cleanup;
 				}
-			}
 			if (castState == eCastState.Cleanup)
 			{
 				CleanupSpellCast();
