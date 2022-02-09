@@ -2,16 +2,12 @@
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
     public class SkeletalSacristan : GameNPC
     {
-
-		public SkeletalSacristan() : base() { }
-		public static GameNPC SkeletalSacristanMob = new GameNPC();
-		public override bool AddToWorld()
+	    public override bool AddToWorld()
 		{
 			Model = 916;
 			Name = "Skeletal Sacristan";
@@ -20,13 +16,10 @@ namespace DOL.GS.Scripts
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
 			MaxDistance = 1500;
-			Flags -= eFlags.PEACE;
 			TetherRange = 2000;
 			RoamingRange = 0;
 			SkeletalSacristanBrain sBrain = new SkeletalSacristanBrain();
 			SetOwnBrain(sBrain);
-			sBrain.AggroLevel = 100;
-			sBrain.AggroRange = 500;
 			base.AddToWorld();
 			return true;
 		}
@@ -37,16 +30,13 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Skeletal Sacristan NPC Initializing...");
 		}
-		
-	}
+    }
     
 }
 namespace DOL.AI.Brain
 {
 	public class SkeletalSacristanBrain : StandardMobBrain
 	{
-		public SkeletalSacristanBrain() : base() { }
-
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			Body.WalkTo(Body.X + Util.Random(1000), Body.Y + Util.Random(1000), Body.Z, 460);

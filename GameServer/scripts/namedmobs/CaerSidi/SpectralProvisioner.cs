@@ -3,15 +3,12 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
     public class SpectralProvisioner : GameNPC
     {
-	    public SpectralProvisioner() : base() { }
-		public static GameNPC SpectralProvisionerMob = new GameNPC();
-		public override bool AddToWorld()
+	    public override bool AddToWorld()
 		{
 			Model = 929;
 			Name = "Spectral Provisioner";
@@ -20,28 +17,22 @@ namespace DOL.GS.Scripts
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
 			MaxDistance = 1500;
-			Flags -= eFlags.PEACE;
 			TetherRange = 2000;
 			RoamingRange = 0;
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
-			sBrain.AggroLevel = 100;
-			sBrain.AggroRange = 500;
 			base.AddToWorld();
 			return true;
 		}
-		
-		
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Spectral Provisioner NPC Initializing...");
 		}
-		
-		
-		
-	}
+
+    }
     
 }
 
@@ -49,8 +40,6 @@ namespace DOL.AI.Brain
 {
 	public class SpectralProvisionerBrain : StandardMobBrain
 	{
-		public SpectralProvisionerBrain() : base() { }
-
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			Body.WalkTo(Body.X + Util.Random(1000), Body.Y + Util.Random(1000), Body.Z, 460);
@@ -60,14 +49,17 @@ namespace DOL.AI.Brain
 		
 		public override void AttackMostWanted()
 		{
-			ItemTemplate sackJunk = GameServer.Database.FindObjectByKey<ItemTemplate>("sack_of_decaying_junk");
-			InventoryItem item = GameInventoryItem.Create(sackJunk);
-			
-			foreach (GamePlayer player in Body.GetPlayersInRadius(500))
+			if (Util.Chance(50))
 			{
-				if (player.IsAlive)
+				ItemTemplate sackJunk = GameServer.Database.FindObjectByKey<ItemTemplate>("sack_of_decaying_junk");
+				InventoryItem item = GameInventoryItem.Create(sackJunk);
+			
+				foreach (GamePlayer player in Body.GetPlayersInRadius(500))
 				{
-					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+					if (player.IsAlive)
+					{
+						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+					}
 				}
 			}
 		}
