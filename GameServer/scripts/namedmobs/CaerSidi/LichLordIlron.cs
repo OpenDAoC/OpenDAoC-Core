@@ -10,6 +10,30 @@ namespace DOL.GS.Scripts
 {
     public class LichLordIlron : GameNPC
     {
+	    
+	    public override double GetArmorAF(eArmorSlot slot)
+	    {
+		    return 1000;
+	    }
+
+	    public override double GetArmorAbsorb(eArmorSlot slot)
+	    {
+		    // 85% ABS is cap.
+		    return 0.85;
+	    }
+
+	    public override short MaxSpeedBase
+	    {
+		    get => (short)(191 + (Level * 2));
+		    set => m_maxSpeedBase = value;
+	    }
+	    public override int MaxHealth => 20000;
+
+	    public override int AttackRange
+	    {
+		    get => 180;
+		    set { }
+	    }
 	    public override bool AddToWorld()
 		{
 			Model = 441;
@@ -17,7 +41,6 @@ namespace DOL.GS.Scripts
 			Size = 60;
 			Level = 79;
 			Gender = eGender.Neutral;
-
 			BodyType = 11; // undead
 			MaxDistance = 1500;
 			TetherRange = 2000;
