@@ -5682,6 +5682,7 @@ namespace DOL.GS
                     soloBeetle.KeyName = soloKey;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
+                    AtlasROGManager.GenerateOrbAmount(this, 15000);
                     Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
                 
