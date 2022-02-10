@@ -1292,7 +1292,7 @@ namespace DOL.GS.ServerRules
 					if (GameLoop.GameLoopTime - killedNPC.SpawnTick > 1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
 					{
 						campBonusPerc = fullCampBonus;
-						killedNPC.CampBonus = 0.95;
+						killedNPC.CampBonus = 0.98;
 					}
 					else
 					{
