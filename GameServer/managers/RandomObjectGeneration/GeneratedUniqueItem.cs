@@ -9428,7 +9428,7 @@ namespace DOL.GS {
                     {
                         validModels.Add(876);
                         validModels.Add(22);
-                        validModels.Add(23);
+                        //validModels.Add(23);
                     }
                     if (Level > 20)
                     {
@@ -10478,6 +10478,7 @@ namespace DOL.GS {
                 case 444:
                     return "Falcata";
                 case 8:
+                case 645:
                     return "Scimitar";
                 case 651:
                     return "Jambiya";

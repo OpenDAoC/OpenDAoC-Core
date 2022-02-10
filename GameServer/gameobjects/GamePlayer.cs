@@ -13384,8 +13384,8 @@ namespace DOL.GS
                 //get the most recent loyalty update
                 foreach (var rloy in realmLoyaltyList)
                 {
-                    if (rloy.LastTimeRowUpdated > lastRealmLoyaltyUpdateTime)
-                        lastRealmLoyaltyUpdateTime = rloy.LastTimeRowUpdated;
+                    if (rloy.LastLoyaltyUpdate > lastRealmLoyaltyUpdateTime)
+                        lastRealmLoyaltyUpdateTime = rloy.LastLoyaltyUpdate;
 
                     if (rloy.Realm == (int)this.Realm)
                         loyaltyDays = rloy.LoyalDays;
