@@ -5682,6 +5682,7 @@ namespace DOL.GS
                     soloBeetle.KeyName = soloKey;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
+                    AtlasROGManager.GenerateOrbAmount(this, 15000);
                     Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
                 
@@ -13383,8 +13384,8 @@ namespace DOL.GS
                 //get the most recent loyalty update
                 foreach (var rloy in realmLoyaltyList)
                 {
-                    if (rloy.LastTimeRowUpdated > lastRealmLoyaltyUpdateTime)
-                        lastRealmLoyaltyUpdateTime = rloy.LastTimeRowUpdated;
+                    if (rloy.LastLoyaltyUpdate > lastRealmLoyaltyUpdateTime)
+                        lastRealmLoyaltyUpdateTime = rloy.LastLoyaltyUpdate;
 
                     if (rloy.Realm == (int)this.Realm)
                         loyaltyDays = rloy.LoyalDays;
@@ -13648,7 +13649,7 @@ namespace DOL.GS
                     realmLoyalty.AccountId = this.Client.Account.ObjectId;
                     realmLoyalty.Realm = (int)this.Realm;
                     realmLoyalty.LoyalDays = 1;
-                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+                    realmLoyalty.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.AddObject(realmLoyalty);
                 }
                 else

@@ -169,7 +169,7 @@ namespace DOL.GS
 				foreach (GamePlayer target in targets)
 				{
 					target.CapturedRelics++;
-					target.RaiseRealmLoyaltyFloor(5);
+					target.RaiseRealmLoyaltyFloor(3);
 				}
 
 				Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));

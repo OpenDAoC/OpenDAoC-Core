@@ -5551,6 +5551,7 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.Flexible);
+                    weaponTypes.Add(eObjectType.Flexible);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.CrushingWeapon);
                     weaponTypes.Add(eObjectType.Shield);
@@ -5560,12 +5561,17 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Instrument);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
+                    weaponTypes.Add(eObjectType.SlashingWeapon);
+                    weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Infiltrator:
                     weaponTypes.Add(eObjectType.SlashingWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.SlashingWeapon);
+                    weaponTypes.Add(eObjectType.ThrustWeapon);
+                    weaponTypes.Add(eObjectType.SlashingWeapon);
+                    weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.ThrustWeapon);
                     weaponTypes.Add(eObjectType.Crossbow);
                     weaponTypes.Add(eObjectType.Shield);
@@ -5757,6 +5763,8 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.HandToHand);
+                    weaponTypes.Add(eObjectType.HandToHand);
+                    weaponTypes.Add(eObjectType.HandToHand);
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
@@ -5769,9 +5777,11 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
                 case eCharacterClass.Berserker:
+                    weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
                     weaponTypes.Add(eObjectType.LeftAxe);
@@ -5791,7 +5801,6 @@ namespace DOL.GS {
                     weaponTypes.Add(eObjectType.Sword);
                     weaponTypes.Add(eObjectType.Axe);
                     weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Shield);
                     weaponTypes.Add(eObjectType.Shield);
                     break;
@@ -9419,7 +9428,7 @@ namespace DOL.GS {
                     {
                         validModels.Add(876);
                         validModels.Add(22);
-                        validModels.Add(23);
+                        //validModels.Add(23);
                     }
                     if (Level > 20)
                     {
@@ -10469,6 +10478,7 @@ namespace DOL.GS {
                 case 444:
                     return "Falcata";
                 case 8:
+                case 645:
                     return "Scimitar";
                 case 651:
                     return "Jambiya";

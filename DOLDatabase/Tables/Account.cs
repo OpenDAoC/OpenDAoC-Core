@@ -43,6 +43,8 @@ namespace DOL.Database
 		private String m_notes;
 		private bool m_isWarned;
 		private bool m_isTester;
+		private int m_charactersTraded;
+		private int m_soloCharactersTraded;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -245,6 +247,26 @@ namespace DOL.Database
 		{
 			get { return m_isTester; }
 			set { Dirty = true; m_isTester = value; }
+		}
+
+		/// <summary>
+		/// Number of characters turned in for the challenge titles
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public int CharactersTraded
+		{
+			get { return m_charactersTraded; }
+			set { Dirty = true; m_charactersTraded = value; }
+		}
+		
+		/// <summary>
+		/// Number of characters turned in for the challenge titles
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public int SoloCharactersTraded
+		{
+			get { return m_soloCharactersTraded; }
+			set { Dirty = true; m_soloCharactersTraded = value; }
 		}
 
 		/// <summary>

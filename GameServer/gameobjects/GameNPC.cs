@@ -5800,13 +5800,10 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsFriend(GameNPC npc)
 		{
-			if (npc.Name.Equals(Name))
-				return true;
-			else return false;
-			//if (Faction == null || npc.Faction == null)
-			//	return false;
-			//return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
-		}
+            if (Faction == null || npc.Faction == null)
+                return false;
+            return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
+        }
 
 		/// <summary>
 		/// Broadcast loot to the raid.

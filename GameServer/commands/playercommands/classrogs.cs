@@ -33,11 +33,6 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (args.Length < 2)
-            {
-                DisplaySyntax(client);
-                return;
-            }
             
             AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(client.Player.Realm)));
             int ROGCap = 0;
@@ -47,7 +42,14 @@ namespace DOL.GS.Commands
                 //scaled by loyalty%
                 ROGCap = (int)Math.Round(50 * (realmLoyalty.LoyalDays / 30.0)); 
             }
-
+            
+            if (args.Length < 2)
+            {
+                DisplaySyntax(client);
+                DisplayMessage(client, "Current cap: " + ROGCap);
+                return;
+            }
+            
             if (int.Parse(args[1]) > ROGCap)
             {
                 DisplayMessage(client, "Input too high. Current cap: " + ROGCap);
