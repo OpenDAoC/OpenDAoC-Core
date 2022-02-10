@@ -1284,6 +1284,9 @@ namespace DOL.GS.ServerRules
 					#region Camp Bonus
 					// average max camp bonus is somewhere between 50 and 60%
 					double fullCampBonus = ServerProperties.Properties.MAX_CAMP_BONUS;
+					if (killer.CurrentZone.IsDungeon)
+						fullCampBonus = 1; //dungeon gives +100% camp xp
+					
 					double campBonusPerc = 0;
 
 					if (GameLoop.GameLoopTime - killedNPC.SpawnTick > 1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
@@ -1301,6 +1304,7 @@ namespace DOL.GS.ServerRules
 					//"Camp bonuses" have been substantially upped in dungeons. Now camp bonuses in dungeons are, on average, 20% higher than outside camp bonuses.
 					if (killer.CurrentZone.IsDungeon)
 						campBonusPerc *= 1.50;
+
 
 					if (campBonusPerc < 0.01)
 						campBonusPerc = 0;
