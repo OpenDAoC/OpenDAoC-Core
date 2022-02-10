@@ -209,7 +209,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 40;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
-                    spell.Damage = 350;
+                    spell.Damage = 250;
                     spell.Name = "Essense of World Soul";
                     spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
                     spell.Message1 = "You are wracked with pain!";
