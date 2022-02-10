@@ -58,7 +58,13 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+        public override bool HasAbility(string keyName)
+        {
+            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+                return true;
 
+            return base.HasAbility(keyName);
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -253,7 +259,7 @@ namespace DOL.AI.Brain
                     spell.Name = "OG Bomb";
                     spell.TooltipId = 4445;
                     spell.Radius = 800;
-                    spell.SpellID = 11700;
+                    spell.SpellID = 11702;
                     spell.Target = "Enemy";
                     spell.Type = "DirectDamage";
                     spell.Uninterruptible = true;

@@ -48,9 +48,21 @@ namespace DOL.GS
             {
             }
         }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.85;
+        }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * OEMDifficulty / 100;
+            return 1000;
+        }
+        public override bool HasAbility(string keyName)
+        {
+            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
         }
 
         [ScriptLoadedEvent]
@@ -166,7 +178,6 @@ namespace DOL.AI.Brain
                         if (!inRangeLiving.Contains(living) || inRangeLiving.Contains(living) == false)
                         {
                             inRangeLiving.Add(living);
-
                         }
                     }
                 }
@@ -191,7 +202,18 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if(HasAggro && Body.InCombat)
+            if (Body.IsOutOfTetherRange)
+            {
+                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
+                this.Body.Health = this.Body.MaxHealth;
+            }
+            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            {
+                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
+                this.Body.Health = this.Body.MaxHealth;
+            }
+
+            if (HasAggro && Body.InCombat)
             {
                 if(Body.HealthPercent<100)
                 {
@@ -223,7 +245,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 30;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
-                    spell.Damage = 350 * 100 / 100;
+                    spell.Damage = 350;
                     spell.Name = "Essense of World Soul";
                     spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
                     spell.Message1 = "You are wracked with pain!";
@@ -259,7 +281,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 35;
                     spell.ClientEffect = 509;
                     spell.Icon = 509;
-                    spell.Damage = 45 * 100 / 100;
+                    spell.Damage = 45;
                     spell.Name = "Shield of World Soul";
                     spell.Message2 = "{0}'s armor becomes sorrounded with powerfull magic.";
                     spell.Message4 = "{0}'s powerfull magic wears off.";
