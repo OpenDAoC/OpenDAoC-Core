@@ -36,9 +36,6 @@ namespace DOL.GS.Scripts
 	    }
 	    public override bool AddToWorld()
 		{
-			Model = 441;
-			Name = "Lich Lord Ilron";
-			Size = 60;
 			Level = 79;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
@@ -162,7 +159,7 @@ namespace DOL.GS
 		{
 			Model = 441;
 			Name = "Lich Lord Ilron";
-			Size = 60;
+			Size = 130;
 			Level = 70;
 			RoamingRange = 350;
 			RespawnInterval = -1;

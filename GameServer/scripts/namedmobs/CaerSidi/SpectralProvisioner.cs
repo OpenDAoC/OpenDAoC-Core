@@ -33,9 +33,6 @@ namespace DOL.GS.Scripts
 	    }
 	    public override bool AddToWorld()
 		{
-			Model = 929;
-			Name = "Spectral Provisioner";
-			Size = 90;
 			Level = 77;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead

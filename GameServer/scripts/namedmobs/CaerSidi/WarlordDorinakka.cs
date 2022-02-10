@@ -28,9 +28,6 @@
 
 		public override bool AddToWorld()
 		{
-			Name = "Warlord Dorinakka";
-			Model = 927;
-			Size = 200;
 			Level = 81;
 			Gender = eGender.Neutral;
 			BodyType = 5; // giant
