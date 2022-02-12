@@ -44,7 +44,11 @@ namespace DOL.GS.Scripts
 
 			ScalingFactor = 40;
 			base.SetOwnBrain(new GudlaugrBrain());
-			GudlaugrBrain.StartRage = true;
+
+			// set aggrolevel + range
+			GudlaugrBrain brain = new GudlaugrBrain();
+			brain.AggroLevel = 200;
+			brain.AggroRange = 550;
 			base.AddToWorld();
 			
 			return true;
@@ -67,12 +71,9 @@ namespace DOL.GS.Scripts
 	{
 		public class GudlaugrBrain : StandardMobBrain
 		{
-			public GudlaugrBrain() : base()
-			{
-			}
+			public GudlaugrBrain() : base() { }
 
-			public static bool StartRage = true;
-
+			public static bool transmorph = true;
 			public override void Think()
 			{
 				if (Body.InCombat && Body.IsAlive && HasAggro)
@@ -80,13 +81,13 @@ namespace DOL.GS.Scripts
 					if (Body.TargetObject != null)
 					{
 						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
-						RageMode(StartRage);
+						RageMode(true);
 					}
 				}
-				else if (Body.IsReturningToSpawnPoint)
+				else if(!Body.InCombat && Body.IsAlive && !HasAggro)
 				{
 					// will be little wolf again
-					RageMode(!StartRage);
+					RageMode(false);
 				}
 			}
 			
@@ -114,13 +115,13 @@ namespace DOL.GS.Scripts
 			/// <param name="rage"></param>
 			public void RageMode(bool rage)
 			{
+
 				if (!rage)
 				{
 					// transmorph to little white wolf
 					Body.ScalingFactor = 40;
 					Body.Model = 650;
 					Body.Size = 40;
-					StartRage = false;
 				}
 				else
 				{
@@ -130,6 +131,12 @@ namespace DOL.GS.Scripts
 					Body.Constitution = 1500;
 					Body.Model = 649;
 					Body.Size = 110;
+					
+					if (transmorph)
+					{
+						Body.Health = Body.MaxHealth;
+						transmorph = false;
+					}
 				}
 				
 			}
