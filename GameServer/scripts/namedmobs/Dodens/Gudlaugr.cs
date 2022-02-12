@@ -75,14 +75,17 @@ namespace DOL.GS.Scripts
 
 			public override void Think()
 			{
-				if (Body.InCombat == true && Body.IsAlive && HasAggro)
+				if (Body.InCombat && Body.IsAlive && HasAggro)
 				{
 					if (Body.TargetObject != null)
 					{
+						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
+						RageMode(StartRage);
 					}
 				}
 				else if (Body.IsReturningToSpawnPoint)
 				{
+					// will be little wolf again
 					RageMode(!StartRage);
 				}
 			}
@@ -101,30 +104,32 @@ namespace DOL.GS.Scripts
 					Gudlaugr gud = sender as Gudlaugr;
 					if (e == GameObjectEvent.TakeDamage)
 					{
-						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
-						RageMode(StartRage);
+						
 					}
 				}
 			}
-			
-			public void RageMode(bool rage) // We define here transmorph
+			/// <summary>
+			/// Check if the wolf starts raging or not
+			/// </summary>
+			/// <param name="rage"></param>
+			public void RageMode(bool rage)
 			{
 				if (!rage)
 				{
+					// transmorph to little white wolf
 					Body.ScalingFactor = 40;
 					Body.Model = 650;
 					Body.Size = 40;
-					AggroLevel = 0;
-					AggroRange = 0;
 					StartRage = false;
 				}
 				else
 				{
+					// transmorph to demon wolf
 					Body.ScalingFactor = 60;
+					Body.Strength = 400;
+					Body.Constitution = 1500;
 					Body.Model = 649;
-					Body.Size = 75;
-					AggroLevel = 200;
-					AggroRange = 550;
+					Body.Size = 110;
 				}
 				
 			}
