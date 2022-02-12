@@ -128,7 +128,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.castingComponent.StartCastSpell((Spell)sk, sl);
 				}
 
-				player.TempProperties.setProperty(sk.Name, GameLoop.GameLoopTime);
+				player.TempProperties.setProperty(sk.Name, 75);
 			}
 			else if (sk is Styles.Style)
 			{
