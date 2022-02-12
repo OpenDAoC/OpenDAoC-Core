@@ -26,8 +26,8 @@ namespace DOL.GS.Scripts
 		{
 			Realm = eRealm.None;
 			Model = 650;
-			Size = 62;
-			Level = 72;
+			Size = 40;
+			Level = 64;
 			Strength = 255;
 			Dexterity = 120;
 			Constitution = 1200;
@@ -44,9 +44,15 @@ namespace DOL.GS.Scripts
 
 			ScalingFactor = 40;
 			base.SetOwnBrain(new GudlaugrBrain());
+			GudlaugrBrain.StartRage = true;
 			base.AddToWorld();
 			
 			return true;
+		}
+		
+		public override int MaxHealth
+		{
+			get { return 1500 * Constitution / 100; }
 		}
 
 		[ScriptLoadedEvent]
@@ -65,7 +71,7 @@ namespace DOL.GS.Scripts
 			{
 			}
 
-			public static bool startRage = true;
+			public static bool StartRage = true;
 
 			public override void Think()
 			{
@@ -75,7 +81,58 @@ namespace DOL.GS.Scripts
 					{
 					}
 				}
+				else if (Body.IsReturningToSpawnPoint)
+				{
+					RageMode(!StartRage);
+				}
 			}
+			
+			/// <summary>
+			/// Called whenever the gudlaugr's body sends something to its brain.
+			/// </summary>
+			/// <param name="e">The event that occured.</param>
+			/// <param name="sender">The source of the event.</param>
+			/// <param name="args">The event details.</param>
+			public override void Notify(DOLEvent e, object sender, EventArgs args)
+			{
+				base.Notify(e, sender, args);
+				if (sender == this)
+				{
+					Gudlaugr gud = sender as Gudlaugr;
+					if (e == GameObjectEvent.TakeDamage)
+					{
+						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
+						RageMode(StartRage);
+						StartRage = false;
+					}
+				}
+			}
+			
+			
+			public void RageMode(bool rage) // We define here transmorph
+			{
+				GudlaugrBrain gudBrain = new GudlaugrBrain();
+			
+				if (!rage)
+				{
+					Body.ScalingFactor = 40;
+					Body.Model = 650;
+					Body.Size = 40;
+					gudBrain.AggroLevel = 0;
+					gudBrain.AggroRange = 0;
+				}
+				else
+				{
+					Body.ScalingFactor = 60;
+					Body.Model = 649;
+					Body.Size = 75;
+					gudBrain.AggroLevel = 200;
+					gudBrain.AggroRange = 550;
+
+				}
+				
+			}
+			
 		}
 	}
 }
