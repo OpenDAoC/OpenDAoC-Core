@@ -103,32 +103,28 @@ namespace DOL.GS.Scripts
 					{
 						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
 						RageMode(StartRage);
-						StartRage = false;
 					}
 				}
 			}
 			
-			
 			public void RageMode(bool rage) // We define here transmorph
 			{
-				GudlaugrBrain gudBrain = new GudlaugrBrain();
-			
 				if (!rage)
 				{
 					Body.ScalingFactor = 40;
 					Body.Model = 650;
 					Body.Size = 40;
-					gudBrain.AggroLevel = 0;
-					gudBrain.AggroRange = 0;
+					AggroLevel = 0;
+					AggroRange = 0;
+					StartRage = false;
 				}
 				else
 				{
 					Body.ScalingFactor = 60;
 					Body.Model = 649;
 					Body.Size = 75;
-					gudBrain.AggroLevel = 200;
-					gudBrain.AggroRange = 550;
-
+					AggroLevel = 200;
+					AggroRange = 550;
 				}
 				
 			}
