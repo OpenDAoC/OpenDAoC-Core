@@ -82,6 +82,15 @@ namespace DOL.GS.Scripts
 					{
 						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
 						RageMode(true);
+
+						if (Body.IsAttacking)
+						{
+							new RegionTimer(Body, new RegionTimerCallback(CastSnare), 100);
+							if (Bleed.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+							{
+								new RegionTimer(Body, new RegionTimerCallback(StartBleed), 200);
+							}
+						}
 					}
 				}
 				else if(!Body.InCombat && Body.IsAlive && !HasAggro)
@@ -138,9 +147,111 @@ namespace DOL.GS.Scripts
 						transmorph = false;
 					}
 				}
-				
+			}
+
+			/// <summary>
+			/// Cast Snare on the Target
+			/// </summary>
+			/// <param name="timer">The timer that started this cast.</param>
+			/// <returns></returns>
+			private int CastSnare(RegionTimer timer)
+			{
+				Body.CastSpell(Snare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				return 0;
 			}
 			
+			/// <summary>
+			/// Starts Bleed on the Target
+			/// </summary>
+			/// <param name="timer">The timer that started this cast.</param>
+			/// <returns></returns>
+			private int StartBleed(RegionTimer timer)
+			{
+				Body.CastSpell(Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				return 0;
+			}
+			
+			#region Snare
+			private Spell m_Snare;
+			/// <summary>
+			/// The Snare spell.
+			/// </summary>
+			protected Spell Snare
+			{
+				get
+				{
+					if (m_Snare == null)
+					{
+						DBSpell spell = new DBSpell();
+						spell.AllowAdd = false;
+						spell.CastTime = 0;
+						spell.Uninterruptible = true;
+						spell.ClientEffect = 2135;
+						spell.Icon = 0;
+						spell.Description = "Reduces the target's movement speed by 60% for 12 seconds.";
+						spell.Name = "Bite wound";
+						spell.Range = 300;
+						spell.Radius = 0;
+						spell.Value = 60;
+						spell.Duration = 12;
+						spell.Damage = 150;
+						spell.DamageType = 10;
+						spell.SpellID = 20300;
+						spell.Target = "Enemy";
+						spell.MoveCast = true;
+						spell.Type = eSpellType.DamageSpeedDecrease.ToString();
+						spell.Message1 = "You begin to move more slowly!";
+						spell.Message2 = "{0} begins moving more slowly!";
+						m_Snare = new Spell(spell, 60);
+						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Snare);
+					}
+					return m_Snare;
+				}
+			}
+
+			#endregion
+			
+			#region StyleBleed
+			private Spell m_Bleed;
+			/// <summary>
+			/// The Snare spell.
+			/// </summary>
+			protected Spell Bleed
+			{
+				get
+				{
+					if (m_Bleed == null)
+					{
+						DBSpell spell = new DBSpell();
+						spell.AllowAdd = false;
+						spell.CastTime = 0;
+						spell.Uninterruptible = true;
+						spell.ClientEffect = 2130;
+						spell.Icon = 3472;
+						spell.Description = "Does 100 damage to a target every 3 seconds for 40 seconds. ";
+						spell.Name = "Bite wound";
+						spell.Range = 500;
+						spell.Radius = 0;
+						spell.Value = 0;
+						spell.Duration = 40;
+						spell.Frequency = 40;
+						spell.Pulse = 1;
+						spell.Damage = 100;
+						spell.DamageType = 10;
+						spell.SpellID = 20209;
+						spell.Target = "Enemy";
+						spell.MoveCast = true;
+						spell.Type = eSpellType.StyleBleeding.ToString();
+						spell.Message1 = "You are bleeding! ";
+						spell.Message2 = "{0} is bleeding! ";
+						m_Bleed = new Spell(spell, 60);
+						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bleed);
+					}
+					return m_Bleed;
+				}
+			}
+
+			#endregion
 		}
 	}
 }
