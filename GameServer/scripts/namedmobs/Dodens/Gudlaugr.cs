@@ -82,15 +82,7 @@ namespace DOL.GS.Scripts
 					{
 						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
 						RageMode(true);
-
-						if (Body.IsAttacking)
-						{
-							new RegionTimer(Body, new RegionTimerCallback(CastSnare), 100);
-							if (Bleed.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
-							{
-								new RegionTimer(Body, new RegionTimerCallback(StartBleed), 200);
-							}
-						}
+						
 					}
 				}
 				else if(!Body.InCombat && Body.IsAlive && !HasAggro)
@@ -109,13 +101,21 @@ namespace DOL.GS.Scripts
 			public override void Notify(DOLEvent e, object sender, EventArgs args)
 			{
 				base.Notify(e, sender, args);
-				if (sender == this)
+				if (sender == Body)
 				{
 					Gudlaugr gud = sender as Gudlaugr;
-					if (e == GameObjectEvent.TakeDamage)
+					if (e == GameLivingEvent.AttackFinished)
 					{
+						base.Notify(GameLivingEvent.AttackFinished, Body, args);
+						
+						new RegionTimer(Body, new RegionTimerCallback(CastSnare), 100);
+						if (Bleed.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+						{
+							new RegionTimer(Body, new RegionTimerCallback(StartBleed), 150);
+						}
 						
 					}
+
 				}
 			}
 			/// <summary>
