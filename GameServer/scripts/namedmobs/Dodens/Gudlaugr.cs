@@ -100,10 +100,19 @@ namespace DOL.GS.Scripts
 			/// <param name="args">The event details.</param>
 			public override void Notify(DOLEvent e, object sender, EventArgs args)
 			{
-				base.Notify(e, sender, args);
-				if (sender == Body)
+				AttackFinishedEventArgs aArgs = args as AttackFinishedEventArgs;
+				if (aArgs == null || aArgs.AttackData == null)
+					return;
+
+				GameNPC target = aArgs.AttackData.Target as GameNPC;
+			
+				if(target != null && !(target.Brain is IControlledBrain && ((IControlledBrain)target.Brain).GetPlayerOwner() != null))
+					base.Notify(e, sender, args);
+				
+				Gudlaugr gud = sender as Gudlaugr;
+				if (gud == Body)
 				{
-					Gudlaugr gud = sender as Gudlaugr;
+					
 					if (e == GameLivingEvent.AttackFinished)
 					{
 						base.Notify(GameLivingEvent.AttackFinished, Body, args);
