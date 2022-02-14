@@ -34,7 +34,7 @@ namespace DOL.GS
         {
             get
             {
-                return 10000 * Constitution / 100;
+                return 20000;
             }
         }
 
@@ -86,11 +86,11 @@ namespace DOL.GS
                 CO.Size = 250;
                 CO.CurrentRegionID = 191;//galladoria
 
-                CO.Strength = 310;
+                CO.Strength = 500;
                 CO.Intelligence = 220;
                 CO.Piety = 220;
                 CO.Dexterity = 200;
-                CO.Constitution = 100;
+                CO.Constitution = 200;
                 CO.Quickness = 125;
                 CO.BodyType = 5;
                 CO.MeleeDamageType = eDamageType.Slash;

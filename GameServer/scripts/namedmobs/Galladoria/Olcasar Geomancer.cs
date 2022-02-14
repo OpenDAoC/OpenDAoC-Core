@@ -34,7 +34,7 @@ namespace DOL.GS
         {
             get
             {
-                return 10000 * Constitution / 100;
+                return 20000;
             }
         }
 
@@ -85,11 +85,11 @@ namespace DOL.GS
                 OG.Size = 170;
                 OG.CurrentRegionID = 191;//galladoria
 
-                OG.Strength = 310;
+                OG.Strength = 500;
                 OG.Intelligence = 220;
                 OG.Piety = 220;
                 OG.Dexterity = 200;
-                OG.Constitution = 100;
+                OG.Constitution = 200;
                 OG.Quickness = 125;
                 OG.BodyType = 8;//magician
                 OG.MeleeDamageType = eDamageType.Slash;
@@ -284,7 +284,7 @@ namespace DOL.GS
         public static GameNPC og_adds = new GameNPC();
         public override int MaxHealth
         {
-            get { return 1500 * Constitution / 100; }
+            get { return 1200; }
         }
         public override void DropLoot(GameObject killer)//no loot
         {

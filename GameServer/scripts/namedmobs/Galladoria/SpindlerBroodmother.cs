@@ -34,7 +34,7 @@ namespace DOL.GS
         {
             get
             {
-                return 10000 * Constitution / 100;
+                return 20000;
             }
         }
 
@@ -86,11 +86,11 @@ namespace DOL.GS
                 SB.Size = 125;
                 SB.CurrentRegionID = 191;//galladoria
 
-                SB.Strength = 310;
+                SB.Strength = 500;
                 SB.Intelligence = 220;
                 SB.Piety = 220;
                 SB.Dexterity = 200;
-                SB.Constitution = 100;
+                SB.Constitution = 200;
                 SB.Quickness = 125;
                 SB.BodyType = 5;
                 SB.MeleeDamageType = eDamageType.Slash;
@@ -108,7 +108,6 @@ namespace DOL.GS
                 SpindlerBroodmotherBrain ubrain = new SpindlerBroodmotherBrain();
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 500;
-                SB.LoadedFromScript = false;
                 SB.SetOwnBrain(ubrain);
                 SB.AddToWorld();
                 SB.Brain.Start();

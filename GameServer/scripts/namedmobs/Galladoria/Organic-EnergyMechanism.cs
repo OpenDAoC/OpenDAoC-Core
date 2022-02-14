@@ -34,7 +34,7 @@ namespace DOL.GS
         {
             get
             {
-                return 10000 * Constitution / 100;
+                return 20000;
             }
         }
 
@@ -84,11 +84,11 @@ namespace DOL.GS
                 OEM.Size = 200;
                 OEM.CurrentRegionID = 191;//galladoria
 
-                OEM.Strength = 310;
+                OEM.Strength = 500;
                 OEM.Intelligence = 220;
                 OEM.Piety = 220;
                 OEM.Dexterity = 200;
-                OEM.Constitution = 100;
+                OEM.Constitution = 200;
                 OEM.Quickness = 125;
                 OEM.MeleeDamageType = eDamageType.Slash;
                 OEM.Faction = FactionMgr.GetFactionByID(96);
