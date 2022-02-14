@@ -27,7 +27,6 @@ namespace DOL.AI.Brain
         public ArosBrain()
             : base()
         {
-            
             AggroLevel = 200;
             AggroRange = 500;
             ThinkInterval = 1500;
@@ -42,8 +41,6 @@ namespace DOL.AI.Brain
 
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
-
-
 
         /// <summary>
         /// The brain main loop. Do necessary health checks first and take
@@ -106,11 +103,11 @@ namespace DOL.AI.Brain
             ushort radius = 3000;
 
             GameNPC summonedGuardian = null;
-            foreach (GameNPC Summonnpc in this.Body.GetNPCsInRadius(radius))
+            foreach (GameNPC summonNpc in this.Body.GetNPCsInRadius(radius))
             {
-                if (Summonnpc.Name.Equals("Guardian of Aros"))
+                if (summonNpc.Name.Equals("Guardian of Aros"))
                 {
-                    summonedGuardian = Summonnpc;
+                    summonedGuardian = summonNpc;
                     break;
                 }
 
@@ -196,30 +193,13 @@ namespace DOL.AI.Brain
 
 
                     GameObject source = (args as TakeDamageEventArgs).DamageSource;
-                    if (source != null)
+                    if (source != null && aros != null)
                     {
-                        if (aros.IsStunned)
-                        {
-                            aros.StopCurrentSpellcast();
-                        }
-                        else
-                        {
-                            if (aros.IsWithinRadius(source, aros.AttackRange))
-                            {
-                                aros.CheckDebuff(source as GamePlayer);
-                            }
-                            else
-                            {
-                                aros.WalkTo(source.X, source.Y, source.Z, 210);
-                                aros.StopFollowing();
-                                if (Body.AttackState)
-                                    Body.StopAttack();
-                                aros.CheckDebuff(source as GamePlayer);
-                                aros.CheckBomb();
-                            }
-                        }
+                        aros.WalkTo(source.X, source.Y, source.Z, 210); 
+                        aros.StopFollowing();
+                        aros.CheckDebuff(source as GamePlayer); 
+                        aros.CheckBomb();
                     }
-
                     else
                     {
                         log.Error("Aros the Spiritmaster takes damage from null source. args = " + (args == null ? "null" : args.ToString()));
@@ -232,23 +212,12 @@ namespace DOL.AI.Brain
                     // classes on him, if not, there's still Debuff...
 
                     GameObject source = (args as EnemyHealedEventArgs).HealSource;
-
-                    if (source != null)
+                    if (source != null && aros != null)
                     {
-                        if (aros.IsWithinRadius(source, aros.AttackRange))
-                        {
-                            if (Body.AttackState)
-                                Body.StopAttack();
-                            aros.WalkTo(source.X, source.Y, source.Z, 210);
-                            aros.StopFollowing();
-                            aros.CheckDebuff(source as GamePlayer);
-                            aros.CheckBomb();
-                        }
-                        else
-                        {
-                            aros.CheckDebuff(source as GamePlayer);
-                        }
-
+                        aros.WalkTo(source.X, source.Y, source.Z, 210);
+                        aros.StopFollowing();
+                        aros.CheckDebuff(source as GamePlayer);
+                        aros.CheckBomb();
                     }
                     else
                     {
@@ -410,12 +379,8 @@ namespace DOL.AI.Brain
                     default:
                         break;
                 }
-                                                      
-                
-
             }
             return false;
-
         }
         #endregion
     }
