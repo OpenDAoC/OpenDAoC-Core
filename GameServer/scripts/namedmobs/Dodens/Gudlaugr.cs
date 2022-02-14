@@ -28,14 +28,8 @@ namespace DOL.GS.Scripts
 			Model = 650;
 			Size = 40;
 			Level = 64;
-			Strength = 255;
-			Dexterity = 120;
-			Constitution = 1200;
-			Intelligence = 220;
+			Constitution = 1500;
 			Health = MaxHealth;
-			Piety = 130;
-			Empathy = 130;
-			Charisma = 130;
 			MaxDistance = 4000;
 			TetherRange = 3500;
 			Faction = FactionMgr.GetFactionByID(779);
@@ -44,11 +38,6 @@ namespace DOL.GS.Scripts
 
 			ScalingFactor = 40;
 			base.SetOwnBrain(new GudlaugrBrain());
-
-			// set aggrolevel + range
-			GudlaugrBrain brain = new GudlaugrBrain();
-			brain.AggroLevel = 200;
-			brain.AggroRange = 550;
 			base.AddToWorld();
 			
 			return true;
@@ -153,7 +142,7 @@ namespace DOL.GS.Scripts
 						new RegionTimer(Body, new RegionTimerCallback(CastSnare), 100);
 						if (Bleed.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							new RegionTimer(Body, new RegionTimerCallback(StartBleed), 150);
+							new RegionTimer(Body, new RegionTimerCallback(StartBleed), 200);
 						}
 						
 					}
@@ -179,7 +168,6 @@ namespace DOL.GS.Scripts
 					// transmorph to demon wolf
 					Body.ScalingFactor = 60;
 					Body.Strength = 400;
-					Body.Constitution = 1500;
 					Body.Model = 649;
 					Body.Size = 110;
 					
