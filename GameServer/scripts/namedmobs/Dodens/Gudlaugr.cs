@@ -53,10 +53,43 @@ namespace DOL.GS.Scripts
 			
 			return true;
 		}
-		
+
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			return base.AttackDamage(weapon) * Strength / 100;
+		}
 		public override int MaxHealth
 		{
-			get { return 1500 * Constitution / 100; }
+			get
+			{
+				return 20000;
+			}
+		}
+		public override int AttackRange
+		{
+			get
+			{
+				return 350;
+			}
+			set
+			{ }
+		}
+		public override bool HasAbility(string keyName)
+		{
+			if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+				return true;
+
+			return base.HasAbility(keyName);
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 1000;
+		}
+
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.85;
 		}
 
 		[ScriptLoadedEvent]
