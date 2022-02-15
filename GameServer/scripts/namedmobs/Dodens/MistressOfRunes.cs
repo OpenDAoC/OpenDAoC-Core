@@ -185,12 +185,12 @@ namespace DOL.AI.Brain
 				AggroLevel = 200;
 				AggroRange = 500;
 				ThinkInterval = 1500;
-				
+
 				m_SpearAnnounce = new String[] { "{0} casts a magical flaming spear on {1}!",
 					"{0} drops a flaming spear from above!",
 					"{0} uses all her might to create a flaming spear.",
 					"{0} casts a dangerous spell!" };
-				m_NearsightAnnounce = "{1} can no longer see properly and everyone in the vicinity!";
+				m_NearsightAnnounce = "{0} can no longer see properly and everyone in the vicinity!";
 			}
 
 			/// <summary>
@@ -208,14 +208,17 @@ namespace DOL.AI.Brain
 				{
 					if (Body.TargetObject != null)
 					{
-						foreach (GameLiving player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+						foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
 						{
+							if (player == null || !player.IsAlive || !player.IsVisibleTo(Body))
+								return;
+							
 							//cast AoE Spears
-							new RegionTimer(Body, new RegionTimerCallback(CastSpear), 2000);
+							new RegionTimer(Body, new RegionTimerCallback(timer => CastSpear(timer, player)), 2000);
 							if (Body.IsCasting && castsSpear)
 							{
 								int messageNo = Util.Random(1, m_SpearAnnounce.Length) - 1;
-								BroadcastMessage(String.Format(m_SpearAnnounce[messageNo], Body.Name));
+								BroadcastMessage(String.Format(m_SpearAnnounce[messageNo], Body.Name, player.Name));
 								castsSpear = false;
 							}
 							else
@@ -225,6 +228,15 @@ namespace DOL.AI.Brain
 							
 							//cast nearsight
 							CheckNearsight(player);
+							if(Body.IsCasting && castsNearsight)
+							{
+								BroadcastMessage(String.Format(m_NearsightAnnounce, player.Name));
+								castsNearsight = false;
+							}
+							else
+							{
+								castsNearsight = true;
+							}
 						}
 					}
 				}
@@ -319,8 +331,11 @@ namespace DOL.AI.Brain
 			/// </summary>
 			/// <param name="timer">The timer that started this cast.</param>
 			/// <returns></returns>
-			private int CastSpear(RegionTimer timer)
+			private int CastSpear(RegionTimer timer, GameLiving target)
 			{
+				if (target == null || !target.IsAlive)
+					return 0;
+				
 				Body.CastSpell(AoESpear, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				return 0;
 			}
@@ -362,26 +377,14 @@ namespace DOL.AI.Brain
 			}
 
 			/// <summary>
-			/// Announce the Nearsight and start the 2 second timer.
+			/// Announce the Nearsight and start the 5 second timer.
 			/// </summary>
 			private void PrepareToNearsight()
 			{
 				if (NearsightTarget == null) return;
 				Body.TurnTo(NearsightTarget);
 				
-				new RegionTimer(Body, new RegionTimerCallback(CastNearsight), 4000);
-				if (Body.IsCasting)
-				{
-					if (castsNearsight)
-					{
-						BroadcastMessage(String.Format(m_NearsightAnnounce, Body.TargetObject.Name));
-					}
-					castsNearsight = false;
-				}
-				else
-				{
-					castsNearsight = true;
-				}
+				new RegionTimer(Body, new RegionTimerCallback(CastNearsight), 5000);
 			}
 
 			/// <summary>
@@ -399,9 +402,20 @@ namespace DOL.AI.Brain
 				Body.Z = Body.SpawnPoint.Z; // this is a fix to correct Z errors that sometimes happen during Mistress fights
 				Body.TurnTo(NearsightTarget);
 				Body.CastSpell(Nearsight, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				if (Body.IsCasting)
+				{
+					if (castsNearsight)
+					{
+						BroadcastMessage(String.Format(m_NearsightAnnounce, NearsightTarget.Name));
+					}
+					castsNearsight = false;
+				}
+				else
+				{
+					castsNearsight = true;
+				}
 				NearsightTarget = null;
 				if (oldTarget != null) Body.TargetObject = oldTarget;
-
 				return 0;
 			}
 
