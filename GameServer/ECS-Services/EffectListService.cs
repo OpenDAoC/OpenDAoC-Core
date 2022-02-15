@@ -215,14 +215,14 @@ namespace DOL.GS
             lock (target.effectListComponent._effectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+            
+                if (effects != null && spellType == eSpellType.Null)
+                    return effects.FirstOrDefault();
+                else if (effects != null)
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == (byte)spellType).FirstOrDefault();
+                else
+                    return null;
             }
-
-            if (effects != null && spellType == eSpellType.Null)
-                return effects.FirstOrDefault();
-            else if (effects != null)
-                return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == (byte)spellType).FirstOrDefault();
-            else
-                return null;
         }
 
         public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
@@ -232,12 +232,12 @@ namespace DOL.GS
             lock (target.effectListComponent._effectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
-            }
 
-            if (effects != null) 
-                return effects.OfType<ECSGameSpellEffect>().Where(e => e is ECSGameSpellEffect && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == (byte)spellType)).FirstOrDefault();
-            else
-                return null;
+                if (effects != null)
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e is ECSGameSpellEffect && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == (byte)spellType)).FirstOrDefault();
+                else
+                    return null;
+            }
         }
 
         public static ECSGameAbilityEffect GetAbilityEffectOnTarget(GameLiving target, eEffect effectType)
@@ -247,12 +247,12 @@ namespace DOL.GS
             lock (target.effectListComponent._effectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
-            }
 
-            if (effects != null)
-                return (ECSGameAbilityEffect)effects.Where(e => e is ECSGameAbilityEffect).FirstOrDefault();
-            else
-                return null;
+                if (effects != null)
+                    return (ECSGameAbilityEffect)effects.Where(e => e is ECSGameAbilityEffect).FirstOrDefault();
+                else
+                    return null;
+            }
         }
 
         public static ECSImmunityEffect GetImmunityEffectOnTarget(GameLiving target, eEffect effectType)
@@ -262,12 +262,12 @@ namespace DOL.GS
             lock (target.effectListComponent._effectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
-            }
 
-            if (effects != null)
-                return (ECSImmunityEffect)effects.Where(e => e is ECSImmunityEffect).FirstOrDefault();
-            else
-                return null;
+                if (effects != null)
+                    return (ECSImmunityEffect)effects.Where(e => e is ECSImmunityEffect).FirstOrDefault();
+                else
+                    return null;
+            }
         }
 
         public static ECSPulseEffect GetPulseEffectOnTarget(GameLiving target)
@@ -277,12 +277,12 @@ namespace DOL.GS
             lock (target.effectListComponent._effectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out effects);
-            }
 
-            if (effects != null)
-                return (ECSPulseEffect)effects.Where(e => e is ECSPulseEffect).FirstOrDefault();
-            else
-                return null;
+                if (effects != null)
+                    return (ECSPulseEffect)effects.Where(e => e is ECSPulseEffect).FirstOrDefault();
+                else
+                    return null;
+            }
         }
 
         public static bool TryCancelFirstEffectOfTypeOnTarget(GameLiving target, eEffect effectType)
@@ -298,13 +298,13 @@ namespace DOL.GS
                     return false;
 
                 effectToCancel = GetEffectOnTarget(target, effectType);
+
+                if (effectToCancel == null)
+                    return false;
+
+                EffectService.RequestImmediateCancelEffect(effectToCancel);
+                return true;
             }
-
-            if (effectToCancel == null)
-                return false;
-
-            EffectService.RequestImmediateCancelEffect(effectToCancel);
-            return true;
         }
     }
 }
