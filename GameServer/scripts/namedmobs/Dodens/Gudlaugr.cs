@@ -122,32 +122,7 @@ namespace DOL.GS.Scripts
 			/// <param name="args">The event details.</param>
 			public override void Notify(DOLEvent e, object sender, EventArgs args)
 			{
-				AttackFinishedEventArgs aArgs = args as AttackFinishedEventArgs;
-				if (aArgs == null || aArgs.AttackData == null)
-					return;
-
-				GameNPC target = aArgs.AttackData.Target as GameNPC;
-			
-				if(target != null && !(target.Brain is IControlledBrain && ((IControlledBrain)target.Brain).GetPlayerOwner() != null))
-					base.Notify(e, sender, args);
-				
-				Gudlaugr gud = sender as Gudlaugr;
-				if (gud == Body)
-				{
-					
-					if (e == GameLivingEvent.AttackFinished)
-					{
-						base.Notify(GameLivingEvent.AttackFinished, Body, args);
-						
-						new RegionTimer(Body, new RegionTimerCallback(CastSnare), 100);
-						if (Bleed.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
-						{
-							new RegionTimer(Body, new RegionTimerCallback(StartBleed), 200);
-						}
-						
-					}
-
-				}
+				base.Notify(e, sender, args);
 			}
 			/// <summary>
 			/// Check if the wolf starts raging or not
