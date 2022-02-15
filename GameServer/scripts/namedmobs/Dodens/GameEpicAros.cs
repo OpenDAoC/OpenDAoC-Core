@@ -144,7 +144,7 @@ namespace DOL.GS.Scripts
             {
                 if (npc.Name.Contains("Guardian of Aros"))
                 {
-                    npc.RemoveFromWorld();
+                    npc.Die(killer);
                 }
                 if (npc.Name.Contains("Summoned Guardian"))
                 {
@@ -204,8 +204,7 @@ namespace DOL.GS.Scripts
 
             base.OnAttackedByEnemy(ad);
         }
-
-
+        
         /// <summary>
         /// Handle event notifications.
         /// </summary>
@@ -267,7 +266,7 @@ namespace DOL.GS.Scripts
             summonedGuardian.Z = this.Z;
             summonedGuardian.CurrentRegion = this.CurrentRegion;
             summonedGuardian.Heading = this.Heading;
-            summonedGuardian.Level = this.Level;
+            summonedGuardian.Level = 65;
             summonedGuardian.Realm = this.Realm;
             summonedGuardian.Faction = FactionMgr.GetFactionByID(779);
             summonedGuardian.Name = "Guardian of Aros";
