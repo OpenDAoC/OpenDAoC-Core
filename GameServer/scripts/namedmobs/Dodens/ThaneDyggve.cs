@@ -87,12 +87,44 @@ namespace DOL.GS.Scripts
 			// 85% ABS is cap.
 			return 0.85;
 		}
+		
+		/// <summary>
+		/// Return to spawn point, Thane Dyggve can't be attacked while it's
+		/// on it's way.
+		/// </summary>
+		public override void WalkToSpawn()
+		{
+			EvadeChance = 100;
+			WalkToSpawn(MaxSpeed);
+		}
+
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
+			if (EvadeChance == 100)
+				return;
+
+			base.OnAttackedByEnemy(ad);
+		}
+		
+		/// <summary>
+		/// Handle event notifications.
+		/// </summary>
+		/// <param name="e">The event that occured.</param>
+		/// <param name="sender">The sender of the event.</param>
+		public override void Notify(DOLEvent e, object sender)
+		{
+			base.Notify(e, sender);
+			// When Thane Dyggve arrives at its spawn point, make it vulnerable again.
+
+			if (e == GameNPCEvent.ArriveAtTarget)
+				EvadeChance = 0;
+		}
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
-				log.Info("Gudlaugr NPC Initializing...");
+				log.Info("Thane Dyggve NPC Initializing...");
 		}
 	}
 
