@@ -13,6 +13,7 @@ using System.Collections;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests.Triggers;
 using DOL.GS.Scripts;
 using DOL.GS.Scripts.DOL.AI.Brain;
 
@@ -184,7 +185,6 @@ namespace DOL.AI.Brain
 			{
 				AggroLevel = 200;
 				AggroRange = 500;
-				ThinkInterval = 1500;
 
 				m_SpearAnnounce = new String[] { "{0} casts a magical flaming spear on {1}!",
 					"{0} drops a flaming spear from above!",
@@ -213,28 +213,14 @@ namespace DOL.AI.Brain
 							if (player == null || !player.IsAlive || !player.IsVisibleTo(Body))
 								return;
 							
-							//cast AoE Spears
-							new RegionTimer(Body, new RegionTimerCallback(timer => CastSpear(timer, player)), 2000);
-							if (Body.IsCasting && castsSpear)
-							{
-								int messageNo = Util.Random(1, m_SpearAnnounce.Length) - 1;
-								BroadcastMessage(String.Format(m_SpearAnnounce[messageNo], Body.Name, player.Name));
-								castsSpear = false;
-							}
-							else
-							{
-								castsSpear = true;
-							}
-							
 							//cast nearsight
 							CheckNearsight(player);
-							if(Body.IsCasting && castsNearsight)
+							
+							//cast AoE Spears
+							new RegionTimer(Body, new RegionTimerCallback(timer => CastSpear(timer, player)), 4000);
+							if (!Body.IsCasting)
 							{
-								BroadcastMessage(String.Format(m_NearsightAnnounce, player.Name));
-								castsNearsight = false;
-							}
-							else
-							{
+								castsSpear = true;
 								castsNearsight = true;
 							}
 						}
@@ -325,7 +311,6 @@ namespace DOL.AI.Brain
 			{
 				base.Notify(e, sender, args);
 			}
-
 			/// <summary>
 			/// Cast Spears on the Target
 			/// </summary>
@@ -336,7 +321,11 @@ namespace DOL.AI.Brain
 				if (target == null || !target.IsAlive)
 					return 0;
 				
+				int messageNo = Util.Random(1, m_SpearAnnounce.Length) - 1;
+				BroadcastMessage(String.Format(m_SpearAnnounce[messageNo], Body.Name, target.Name));
+				
 				Body.CastSpell(AoESpear, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				castsSpear = false;
 				return 0;
 			}
 			
@@ -377,14 +366,14 @@ namespace DOL.AI.Brain
 			}
 
 			/// <summary>
-			/// Announce the Nearsight and start the 5 second timer.
+			/// Announce the Nearsight and start the 2 second timer.
 			/// </summary>
 			private void PrepareToNearsight()
 			{
 				if (NearsightTarget == null) return;
 				Body.TurnTo(NearsightTarget);
 				
-				new RegionTimer(Body, new RegionTimerCallback(CastNearsight), 5000);
+				new RegionTimer(Body, new RegionTimerCallback(CastNearsight), 2000);
 			}
 
 			/// <summary>
@@ -401,19 +390,9 @@ namespace DOL.AI.Brain
 				Body.TargetObject = NearsightTarget;
 				Body.Z = Body.SpawnPoint.Z; // this is a fix to correct Z errors that sometimes happen during Mistress fights
 				Body.TurnTo(NearsightTarget);
+				
+				BroadcastMessage(String.Format(m_NearsightAnnounce, NearsightTarget.Name));
 				Body.CastSpell(Nearsight, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				if (Body.IsCasting)
-				{
-					if (castsNearsight)
-					{
-						BroadcastMessage(String.Format(m_NearsightAnnounce, NearsightTarget.Name));
-					}
-					castsNearsight = false;
-				}
-				else
-				{
-					castsNearsight = true;
-				}
 				NearsightTarget = null;
 				if (oldTarget != null) Body.TargetObject = oldTarget;
 				return 0;
@@ -434,10 +413,11 @@ namespace DOL.AI.Brain
 					{
 						DBSpell spell = new DBSpell();
 						spell.AllowAdd = false;
-						spell.CastTime = 4;
+						spell.Uninterruptible = true;
+						spell.CastTime = 3;
 						spell.ClientEffect = 2958;
 						spell.Icon = 2958;
-						spell.Damage = 800 * MistressDifficulty / 100;
+						spell.Damage = 750 * MistressDifficulty / 100;
 						spell.Name = "Odin's Hatred";
 						spell.Range = 1000;
 						spell.Radius = 450;
@@ -445,7 +425,6 @@ namespace DOL.AI.Brain
 						spell.RecastDelay = SpearRecastInterval;
 						spell.Target = "Enemy";
 						spell.Type = eSpellType.DirectDamage.ToString();
-						spell.Uninterruptible = true;
 						spell.MoveCast = false;
 						spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 						m_AoESpell = new Spell(spell, 60);
@@ -470,8 +449,8 @@ namespace DOL.AI.Brain
 					{
 						DBSpell spell = new DBSpell();
 						spell.AllowAdd = false;
-						spell.CastTime = 1;
 						spell.Uninterruptible = true;
+						spell.CastTime = 1;
 						spell.ClientEffect = 2735;
 						spell.Icon = 2735;
 						spell.Description = "Nearsight";
@@ -480,7 +459,7 @@ namespace DOL.AI.Brain
 						spell.Radius = 1500;
 						spell.RecastDelay = NearsightRecastInterval;
 						spell.Value = 65;
-						spell.Duration = 90 * MistressDifficulty / 100;
+						spell.Duration = 45 * MistressDifficulty / 100;
 						spell.Damage = 0;
 						spell.DamageType = (int)eDamageType.Energy;
 						spell.SpellID = 2735;
