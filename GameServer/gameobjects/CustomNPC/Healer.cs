@@ -67,7 +67,8 @@ namespace DOL.GS
 				return false;
 
 			TurnTo(player, 5000);
-
+			player.Out.SendMessage("Greetings " + player.CharacterClass.Name + ". What can I do for you today?", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			
 			//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, CURED_SPELL_TYPE);
             ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness);
 			if (effect != null)
