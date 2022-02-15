@@ -168,8 +168,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-
-
+        
         /// <summary>
         /// Called whenever Aros the Spiritmaster's body sends something to its brain.
         /// </summary>
@@ -184,45 +183,12 @@ namespace DOL.AI.Brain
                 GameEpicAros aros = sender as GameEpicAros;
                 if (e == GameObjectEvent.TakeDamage)
                 {
-
                     if (CheckHealth()) return;
-
-
                     // Someone hit Aros the Spiritmaster. If the attacker is in melee range, there
                     // is a chance Aros will cast a Bomb + Debuff
-
-
-                    GameObject source = (args as TakeDamageEventArgs).DamageSource;
-                    if (source != null && aros != null)
-                    {
-                        aros.WalkTo(source.X, source.Y, source.Z, 210); 
-                        aros.StopFollowing();
-                        aros.CheckDebuff(source as GamePlayer); 
-                        aros.CheckBomb();
-                    }
-                    else
-                    {
-                        log.Error("Aros the Spiritmaster takes damage from null source. args = " + (args == null ? "null" : args.ToString()));
-                    }
                 }
                 else if (e == GameLivingEvent.EnemyHealed)
                 {
-                    // Someone healed an enemy. If the healer is in melee range, there
-                    // is a chance Aros the Spiritmaster will cast a debuff specific to ranged
-                    // classes on him, if not, there's still Debuff...
-
-                    GameObject source = (args as EnemyHealedEventArgs).HealSource;
-                    if (source != null && aros != null)
-                    {
-                        aros.WalkTo(source.X, source.Y, source.Z, 210);
-                        aros.StopFollowing();
-                        aros.CheckDebuff(source as GamePlayer);
-                        aros.CheckBomb();
-                    }
-                    else
-                    {
-                        log.Error("Aros the Spiritmaster heal source null. args = " + (args == null ? "null" : args.ToString()));
-                    }
                 }
 
             }

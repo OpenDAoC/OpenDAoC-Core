@@ -36,10 +36,10 @@ namespace DOL.GS.Scripts
         protected String[] m_DeathAnnounce;
         
         //check if he is doing spells
-        protected bool isBombing = true;
-        protected bool isBigBombing = true;
-        protected bool isSummoning = true;
-        protected bool isDebuffing = true;
+        private bool isBombing = true;
+        private bool isBigBombing = true;
+        private bool isSummoning = true;
+        private bool isDebuffing = true;
         
         /// <summary>
         /// Creates a new instance of GameEpicAros.
@@ -248,6 +248,24 @@ namespace DOL.GS.Scripts
             }
         }
 
+        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        {
+            base.Notify(e, sender, args);
+            if (sender == this)
+            {
+                GameLiving source = sender as GameLiving;
+                if (e == GameObjectEvent.TakeDamage)
+                {
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                    {
+                        CheckDebuff(player);
+                        CheckChanceBomb(player);
+                    }
+                    
+                }
+            }
+        }
+
         #endregion
 
         public void SpawnGuardian(GamePlayer enemy)
@@ -340,6 +358,52 @@ namespace DOL.GS.Scripts
             get;
         }
 
+        private const int m_BombChance = 3;
+        private GameLiving m_BombTarget;
+        
+        /// <summary>
+        /// Chance to cast Summon when a potential target has been detected.
+        /// </summary>
+        protected int BombChance
+        {
+            get { return m_BombChance; }
+        }
+
+        /// <summary>
+        /// The target for the next Summon attack.
+        /// </summary>
+        private GameLiving BombTarget
+        {
+            get { return m_BombTarget; }
+            set { m_BombTarget = value; PrepareToBombChance(); }
+        }
+
+        
+        /// <summary>
+        /// Check whether or not to cast Bomb.
+        /// </summary>
+        public bool CheckChanceBomb(GameLiving target)
+        {
+            if (target == null || BombTarget != null) return false;
+            bool success = Util.Chance(BombChance);
+            if (success)
+                BombTarget = target;
+            return success;   // Has a 3% chance to cast.
+        }
+        
+        /// <summary>
+        /// Announce the Debuff and start the 1 second timer.
+        /// </summary>
+        private void PrepareToBombChance()
+        {
+            if (BombTarget == null) return;
+            TurnTo(BombTarget);
+            WalkTo(BombTarget, 250);
+            int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
+            BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
+            new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
+        }
+        
         /// <summary>
         /// Check whether or not to cast Bomb.
         /// </summary>
@@ -365,23 +429,9 @@ namespace DOL.GS.Scripts
         {
             // Prevent brain from casting this over and over.
             HealthPercentOld = HealthPercent;
-            if (IsMoving)
-                StopFollowing();
-            
+            int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
+            BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
             new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
-            if (IsCasting)
-            {
-                if (isBombing)
-                {
-                    int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
-                    BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
-                }
-                isBombing = false;
-            }
-            else
-            {
-                isBombing = true;
-            }
         }
 
 
@@ -391,21 +441,8 @@ namespace DOL.GS.Scripts
         private void PrepareToBigBomb()
         {
             HealthPercentOld = HealthPercent;
-            if (IsMoving)
-                StopFollowing();
-            new RegionTimer(this, new RegionTimerCallback(CastBigBomb), 5000);  
-            if (IsCasting)
-            {
-                if (isBigBombing)
-                {
-                    BroadcastMessage(String.Format(m_BigBombAnnounce, Name));
-                }
-                isBigBombing = false;
-            }
-            else
-            {
-                isBigBombing = true;
-            }
+            BroadcastMessage(String.Format(m_BigBombAnnounce, Name));
+            new RegionTimer(this, new RegionTimerCallback(CastBigBomb), 5000);
         }
 
         /// <summary>
@@ -487,20 +524,8 @@ namespace DOL.GS.Scripts
         {
             if (DebuffTarget == null) return;
             TurnTo(DebuffTarget);
-            
+            BroadcastMessage(String.Format(m_DebuffAnnounce, Name, DebuffTarget.Name));
             new RegionTimer(this, new RegionTimerCallback(CastDebuff), 1000);
-            if (IsCasting)
-            {
-                if (isDebuffing)
-                {
-                    BroadcastMessage(String.Format(m_DebuffAnnounce, Name, DebuffTarget.Name));
-                }
-                isDebuffing = false;
-            }
-            else
-            {
-                isDebuffing = true;
-            }
         }
 
         /// <summary>
