@@ -5682,6 +5682,7 @@ namespace DOL.GS
                     soloBeetle.KeyName = soloKey;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
+                    AtlasROGManager.GenerateOrbAmount(this, 15000);
                     Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
                 
@@ -8196,9 +8197,9 @@ namespace DOL.GS
         /// <param name="killer">the killer</param>
         public override void Die(GameObject killer)
         {
-            // ambiant talk
+            // Ambient trigger upon killing player
             if (killer is GameNPC)
-                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, this);
+                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, killer as GameLiving);
 			
             CharacterClass.Die(killer);
 
@@ -10576,12 +10577,12 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// A general message from the area intended for this player.
+        /// A message sent to all objects within a set radius of the triggering entity (e.g., MessageToArea)
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="message"></param>
-        /// <param name="chatType"></param>
-        /// <param name="chatLocation"></param>
+        /// <param name="source">The originating source of the message</param>
+        /// <param name="message">The content of the message</param>
+        /// <param name="chatType">The message type (e.g., CT_Say, CT_Spell)</param>
+        /// <param name="chatLocation">The UI element to display the message in (e.g., CL_SystemWindow)</param>
         public virtual void MessageFromArea(GameObject source, string message, eChatType chatType, eChatLoc chatLocation)
         {
             Out.SendMessage(message, chatType, chatLocation);
@@ -13383,8 +13384,8 @@ namespace DOL.GS
                 //get the most recent loyalty update
                 foreach (var rloy in realmLoyaltyList)
                 {
-                    if (rloy.LastTimeRowUpdated > lastRealmLoyaltyUpdateTime)
-                        lastRealmLoyaltyUpdateTime = rloy.LastTimeRowUpdated;
+                    if (rloy.LastLoyaltyUpdate > lastRealmLoyaltyUpdateTime)
+                        lastRealmLoyaltyUpdateTime = rloy.LastLoyaltyUpdate;
 
                     if (rloy.Realm == (int)this.Realm)
                         loyaltyDays = rloy.LoyalDays;

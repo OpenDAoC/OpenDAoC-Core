@@ -28,6 +28,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using DOL.Database;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 using DOL.GS.Utils;
 
 namespace DOL.GS
@@ -320,6 +321,8 @@ namespace DOL.GS
 							
 							if (lootTemplatesToDrop != null)
 							{
+								long dropChan = 0;
+								long tmp = 0;
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop.Values)
 								{
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
@@ -377,7 +380,20 @@ namespace DOL.GS
 										tempProp -= 20 * 1000; //take 20 seconds off cooldown
 										player.TempProperties.setProperty(XPItemKey, tempProp);
 										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										tmp = tempProp;
+										dropChan = dropCooldown;
 									}
+								}
+								
+								if (tmp > 0 && dropChan > 0)
+								{
+									long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+									timeDifference *= -1;
+									//"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+									if(timeDifference > 0)
+										player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									else
+										player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								}
 							}
 						}
@@ -390,7 +406,9 @@ namespace DOL.GS
 						// due to the fact that 100% items always drop regardless of the drop limit
 
 						List<LootTemplate> lootTemplatesToDrop = new List<LootTemplate>();
-						
+
+						long dropChan = 0;
+						long tmp = 0;
 						foreach (MobXLootTemplate mobXLootTemplate in killedMobXLootTemplates)
 						{
 							loot = GenerateLootFromMobXLootTemplates(mobXLootTemplate, lootTemplatesToDrop, loot, player);
@@ -440,8 +458,21 @@ namespace DOL.GS
 										player.TempProperties.setProperty(XPItemKey, tempProp);
 										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
 									}
+									tmp = tempProp;
+									dropChan = dropCooldown;
 								}
 							}
+						}
+
+						if (tmp > 0 && dropChan > 0)
+						{
+							long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+							timeDifference *= -1;
+							//"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+							if(timeDifference > 0)
+								player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							else
+								player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 					}
 				}
