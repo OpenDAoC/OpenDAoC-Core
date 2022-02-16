@@ -87,7 +87,7 @@ public class StandardMobState_IDLE : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
         }
@@ -135,7 +135,7 @@ public class StandardMobState_WAKING_UP : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             //_brain.AttackMostWanted();
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
@@ -239,7 +239,7 @@ public class StandardMobState_ROAMING : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             //_brain.AttackMostWanted();
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
@@ -262,7 +262,7 @@ public class StandardMobState_ROAMING : StandardMobState
                     _brain.Body.WalkTo(target, 50);
                 }
 
-                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming);
+                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
             }
             _lastRoamTick = GameLoop.GameLoopTime;
         }
@@ -349,7 +349,7 @@ public class StandardMobState_PATROLLING : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
         }

@@ -4320,6 +4320,10 @@ namespace DOL.GS
                     }
                 }
             }
+			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
+            {
+				npc.CancelWalkToSpawn();
+            }
 		}
 
 		public void HandleDamageShields(AttackData ad)
