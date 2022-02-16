@@ -1,4 +1,4 @@
-/*
+﻿/*
 Mistress of Runes.
 <author>Kelt</author>
  */
@@ -212,17 +212,12 @@ namespace DOL.AI.Brain
 						{
 							if (player == null || !player.IsAlive || !player.IsVisibleTo(Body))
 								return;
-							
+
 							//cast nearsight
 							CheckNearsight(player);
-							
+
 							//cast AoE Spears
 							new RegionTimer(Body, new RegionTimerCallback(timer => CastSpear(timer, player)), 4000);
-							if (!Body.IsCasting)
-							{
-								castsSpear = true;
-								castsNearsight = true;
-							}
 						}
 					}
 				}
@@ -321,11 +316,22 @@ namespace DOL.AI.Brain
 				if (target == null || !target.IsAlive)
 					return 0;
 				
-				int messageNo = Util.Random(1, m_SpearAnnounce.Length) - 1;
-				BroadcastMessage(String.Format(m_SpearAnnounce[messageNo], Body.Name, target.Name));
-				
-				Body.CastSpell(AoESpear, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				castsSpear = false;
+				bool cast = Body.CastSpell(AoESpear, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+
+				if (Body.GetSkillDisabledDuration(AoESpear) > 0)
+				{
+					cast = false;
+				}
+				if (castsSpear && cast && Body.IsCasting)
+				{
+					castsSpear = false;
+					int messageNo = Util.Random(1, m_SpearAnnounce.Length) - 1;
+					BroadcastMessage(String.Format(m_SpearAnnounce[messageNo], Body.Name, target.Name));
+				}
+				else
+				{
+					castsSpear = true;
+				}
 				return 0;
 			}
 			
@@ -390,9 +396,20 @@ namespace DOL.AI.Brain
 				Body.TargetObject = NearsightTarget;
 				Body.Z = Body.SpawnPoint.Z; // this is a fix to correct Z errors that sometimes happen during Mistress fights
 				Body.TurnTo(NearsightTarget);
-				
-				BroadcastMessage(String.Format(m_NearsightAnnounce, NearsightTarget.Name));
-				Body.CastSpell(Nearsight, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				bool cast = Body.CastSpell(Nearsight, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				if (Body.GetSkillDisabledDuration(Nearsight) > 0)
+				{
+					cast = false;
+				}
+				if(castsNearsight && cast && Body.IsCasting)
+				{
+					castsNearsight = false;
+					BroadcastMessage(String.Format(m_NearsightAnnounce, NearsightTarget.Name));
+				}
+				else
+				{
+					castsNearsight = true;
+				}
 				NearsightTarget = null;
 				if (oldTarget != null) Body.TargetObject = oldTarget;
 				return 0;
