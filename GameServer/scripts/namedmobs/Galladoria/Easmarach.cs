@@ -318,13 +318,6 @@ namespace DOL.GS
             {
             }
         }
-        public override bool HasAbility(string keyName)
-        {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
-                return true;
-
-            return base.HasAbility(keyName);
-        }
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -344,12 +337,13 @@ namespace DOL.GS
             Realm = 0;
             CurrentRegionID = 191;//galladoria
 
-            Strength = 210;
+            Strength = 180;
             Intelligence = 150;
             Piety = 150;
             Dexterity = 200;
             Constitution = 200;
             Quickness = 125;
+            RespawnInterval = -1;
 
             Gender = eGender.Neutral;
             MeleeDamageType = eDamageType.Slash;
