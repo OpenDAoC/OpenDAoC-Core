@@ -3704,6 +3704,11 @@ namespace DOL.GS.Spells
             castState = eCastState.Cleanup;
             Caster.TempProperties.removeProperty(FOCUS_SPELL);
             Caster.LastPulseCast = null;
+			
+			if (this is DamageShieldSpellHandler)
+            {
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster.ControlledBrain.Body, eEffect.FocusShield));
+            }
             
             //CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
             //currentEffect.Cancel(false);
