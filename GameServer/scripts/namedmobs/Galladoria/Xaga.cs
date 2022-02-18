@@ -88,7 +88,7 @@ namespace DOL.GS
                 SB.Size = 250;
                 SB.CurrentRegionID = 191;//galladoria
 
-                SB.Strength = 550;
+                SB.Strength = 260;
                 SB.Intelligence = 220;
                 SB.Piety = 220;
                 SB.Dexterity = 200;
@@ -487,7 +487,29 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (source is GamePlayer || source is GamePet)
+            {
+                if (damageType == eDamageType.Cold)
+                {
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to cold damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
+                }
+                else
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
+            }
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -508,7 +530,7 @@ namespace DOL.GS
                 SB.Size = 80;
                 SB.CurrentRegionID = 191;//galladoria
 
-                SB.Strength = 400;
+                SB.Strength = 250;
                 SB.Intelligence = 150;
                 SB.Piety = 150;
                 SB.Dexterity = 200;
@@ -556,7 +578,7 @@ namespace DOL.AI.Brain
         {
             if(Body.InCombat && HasAggro)
             {
-                if(Util.Chance(5) && Body.TargetObject != null)
+                if(Util.Chance(10) && Body.TargetObject != null)
                 {
                     new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
                 }
@@ -578,10 +600,10 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.RecastDelay = 8;
                     spell.ClientEffect = 4568;
                     spell.Icon = 4568;
-                    spell.Damage = 550;
+                    spell.Damage = 300;
                     spell.Name = "Xaga Staff Bomb";
                     spell.TooltipId = 4568;
                     spell.Radius = 650;
@@ -658,7 +680,29 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (source is GamePlayer || source is GamePet)
+            {
+                if (damageType == eDamageType.Heat)
+                {
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to heat damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
+                }
+                else
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
+            }
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -675,11 +719,11 @@ namespace DOL.GS
                 SB.Name = "Tine";
                 SB.Model = 911;
                 SB.Realm = 0;
-                SB.Level = 65;
+                SB.Level = 67;
                 SB.Size = 80;
                 SB.CurrentRegionID = 191;//galladoria
 
-                SB.Strength = 400;
+                SB.Strength = 250;
                 SB.Intelligence = 150;
                 SB.Piety = 150;
                 SB.Dexterity = 200;
@@ -727,7 +771,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat && HasAggro)
             {
-                if (Util.Chance(5) && Body.TargetObject != null)
+                if (Util.Chance(10) && Body.TargetObject != null)
                 {
                     new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
                 }
@@ -749,10 +793,10 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.RecastDelay = 8;
                     spell.ClientEffect = 4227;
                     spell.Icon = 4227;
-                    spell.Damage = 550;
+                    spell.Damage = 300;
                     spell.Name = "Xaga Staff Bomb";
                     spell.TooltipId = 4227;
                     spell.Radius = 650;
