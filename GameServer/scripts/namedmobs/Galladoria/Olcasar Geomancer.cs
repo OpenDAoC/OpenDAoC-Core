@@ -186,10 +186,24 @@ namespace DOL.AI.Brain
                 Stage = 10;
 
             int health = Body.HealthPercent / 10;
+
+            if(Body.InCombat && HasAggro)
+            {
+                if (Util.Chance(15))
+                {
+                    PickRandomTarget();
+                }
+                if (Util.Chance(15))
+                {
+                    if (OGDS.TargetHasEffect(Body) == false)
+                    {
+                        Body.CastSpell(OGDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    }
+                }
+            }
             if (Body.TargetObject != null && health < Stage && Body.InCombat)
             {
-                
-                    switch (health)
+                switch (health)
                     {
                         case 1:
                         case 2:
@@ -228,6 +242,63 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
+
+        private GameLiving randomtarget;
+        private GameLiving RandomTarget
+        {
+            get { return randomtarget; }
+            set { randomtarget = value; }
+        }
+        public void PickRandomTarget()
+        {
+            ArrayList inRangeLiving = new ArrayList();
+            foreach (GameLiving living in Body.GetPlayersInRadius(2000))
+            {
+                if (living.IsAlive)
+                {
+                    if (living is GamePlayer || living is GamePet)
+                    {
+                        if (!inRangeLiving.Contains(living) || inRangeLiving.Contains(living) == false)
+                        {
+                            inRangeLiving.Add(living);
+                        }
+                    }
+                }
+            }
+            if (inRangeLiving.Count > 0)
+            {
+                GameLiving ptarget = ((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                RandomTarget = ptarget;
+                if (OGRoot.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body))
+                {
+                    PrepareToRoot();
+                }
+            }
+        }
+        private int CastRoot(RegionTimer timer)
+        {
+            GameObject oldTarget = Body.TargetObject;
+            Body.TargetObject = RandomTarget;
+            Body.TurnTo(RandomTarget);
+            if (Body.TargetObject != null)
+            {
+                Body.CastSpell(OGRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                spambroad = false;//to avoid spamming
+            }
+            RandomTarget = null;
+            if (oldTarget != null) Body.TargetObject = oldTarget;
+            return 0;
+        }
+        public static bool spambroad = false;
+        private void PrepareToRoot()
+        {
+            if (spambroad == false)
+            {
+                new RegionTimer(Body, new RegionTimerCallback(CastRoot), 5000);
+                spambroad = true;
+            }
+        }
+
         public void Spawn()
         {
             for (int i = 0; i < Util.Random(4,8); i++) // Spawn 4-8 adds
@@ -241,6 +312,7 @@ namespace DOL.AI.Brain
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
             }
+            BroadcastMessage(String.Format("...a piece of Olcasar Geomancer falls from its body, and attacks!"));
         }
 
         private Spell m_OGBomb;
@@ -255,13 +327,15 @@ namespace DOL.AI.Brain
                     spell.CastTime = 0;
                     spell.ClientEffect = 208;
                     spell.Icon = 208;
-                    spell.Damage = 650;
-                    spell.Name = "OG Bomb";
+                    spell.Damage = 450;
+                    spell.Duration = 35;
+                    spell.Value = 40;
+                    spell.Name = "Geomancer Snare";
                     spell.TooltipId = 4445;
                     spell.Radius = 800;
                     spell.SpellID = 11702;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamage";
+                    spell.Type = "DamageSpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold; 
@@ -269,6 +343,66 @@ namespace DOL.AI.Brain
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGBomb);
                 }
                 return m_OGBomb;
+            }
+        }
+
+        private Spell m_OGDS;
+        private Spell OGDS
+        {
+            get
+            {
+                if (m_OGDS == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 30;
+                    spell.ClientEffect = 57;
+                    spell.Icon = 57;
+                    spell.Damage = 20;
+                    spell.Duration = 30;
+                    spell.Name = "Geomancer Damage Shield";
+                    spell.TooltipId = 57;
+                    spell.SpellID = 11717;
+                    spell.Target = "Self";
+                    spell.Type = "DamageShield";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Heat;
+                    m_OGDS = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGDS);
+                }
+                return m_OGDS;
+            }
+        }
+
+        private Spell m_OGRoot;
+        private Spell OGRoot
+        {
+            get
+            {
+                if (m_OGRoot == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 60;
+                    spell.ClientEffect = 5089;
+                    spell.Icon = 5089;
+                    spell.Duration = 60;
+                    spell.Value = 99;
+                    spell.Name = "Geomancer Root";
+                    spell.TooltipId = 5089;
+                    spell.SpellID = 11718;
+                    spell.Target = "Enemy";
+                    spell.Type = "SpeedDecrease";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Matter;
+                    m_OGRoot = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGRoot);
+                }
+                return m_OGRoot;
             }
         }
     }
@@ -302,7 +436,7 @@ namespace DOL.GS
             MaxDistance = 2500;
             TetherRange = 3000;
             Size = (byte)Util.Random(45, 55);
-            Level = (byte)Util.Random(58, 62);
+            Level = (byte)Util.Random(60, 65);
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
