@@ -107,7 +107,7 @@ namespace DOL.GS
 
                 ConservatorBrain ubrain = new ConservatorBrain();
                 ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 500;
+                ubrain.AggroRange = 1500;//so players cant just pass him without aggroing
                 CO.SetOwnBrain(ubrain);
                 CO.AddToWorld();
                 CO.Brain.Start();
@@ -127,24 +127,55 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 500;
+            AggroRange = 1500;//so players cant just pass him without aggroing
+        }
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
         }
         protected virtual int PoisonTimer(RegionTimer timer)
         {
-            Body.CastSpell(COPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            spampoison = false;
+            if (Body.TargetObject != null)
+            {
+                Body.CastSpell(COPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                spampoison = false;
+            }
             return 0;
         }
-        protected virtual int DiseaseTimer(RegionTimer timer)
+        protected virtual int AoeTimer(RegionTimer timer)//1st timer to spam broadcast before real spell
         {
-            Body.CastSpell(CODisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            spamdisease = false;
+            if (Body.TargetObject != null)
+            {
+                BroadcastMessage(String.Format(Body.Name + " gathers energy from the water..."));
+                if (spamaoe == true)
+                {
+                    new RegionTimer(Body, new RegionTimerCallback(RealAoe), 5000);//5s
+                }
+            }
+            return 0;
+        }
+        protected virtual int RealAoe(RegionTimer timer)//real timer to cast spell and reset check
+        {
+            if (Body.TargetObject != null)
+            {
+                Body.CastSpell(COaoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                spamaoe = false;
+            }
             return 0;
         }
         public static bool spampoison = false;
-        public static bool spamdisease = false;
+        public static bool spamaoe = false;
         public override void Think()
         {
+            if (!HasAggressionTable())
+            {
+                //set state to RETURN TO SPAWN
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                this.Body.Health = this.Body.MaxHealth;
+            }
             if (Body.IsOutOfTetherRange)
             {
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
@@ -158,38 +189,26 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.InCombat)
             {
-                if(Util.Chance(5))//cast aoe dot
+                if (Util.Chance(10))//cast dot
                 {
-                    int rand = Util.Random(1, 2);//pick randomly only spell from 2
-                    switch(rand)
+                    if (Body.TargetObject != null && spampoison == false)
                     {
-                        case 1:
-                            {
-                                if (Body.TargetObject != null && spampoison == false)
-                                {
-                                    if (COPoison.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
-                                    {
-                                        Body.TurnTo(Body.TargetObject);
-                                        new RegionTimer(Body, new RegionTimerCallback(PoisonTimer), 5000);
-                                        spampoison = true;
-                                    }
-                                }
-                            }
-                            break;
-                        case 2:
-                            {
-                                if (Body.TargetObject != null && spamdisease == false)
-                                {
-                                    if (CODisease.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
-                                    {
-                                        Body.TurnTo(Body.TargetObject);
-                                        new RegionTimer(Body, new RegionTimerCallback(DiseaseTimer), 5000);
-                                        spamdisease = true;
-                                    }
-                                }
-                            }
-                            break;
-                    } 
+                        if (COPoison.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+                        {
+                            Body.TurnTo(Body.TargetObject);
+                            new RegionTimer(Body, new RegionTimerCallback(PoisonTimer), 5000);
+                            spampoison = true;
+                        }
+                    }
+                }               
+                if(Util.Chance(10))
+                {
+                    if (Body.TargetObject != null && spamaoe == false)
+                    {
+                        Body.TurnTo(Body.TargetObject);
+                            new RegionTimer(Body, new RegionTimerCallback(AoeTimer), 15000);//15s to avoid being it too often called
+                        spamaoe = true;
+                    }
                 }
             }
             base.Think();
@@ -209,7 +228,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 40;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
-                    spell.Damage = 250;
+                    spell.Damage = 45;
                     spell.Name = "Essense of World Soul";
                     spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
                     spell.Message1 = "You are wracked with pain!";
@@ -218,9 +237,8 @@ namespace DOL.AI.Brain
                     spell.Message4 = "{0} looks healthy again.";
                     spell.TooltipId = 4445;
                     spell.Range = 1800;
-                    spell.Radius = 1000;//big range
-                    spell.Duration = 45;
-                    spell.Frequency = 40; //dot tick every 4s
+                    spell.Duration = 40;
+                    spell.Frequency = 10; 
                     spell.SpellID = 11703;
                     spell.Target = "Enemy";
                     spell.Type = "DamageOverTime";
@@ -233,34 +251,31 @@ namespace DOL.AI.Brain
             }
         }
 
-        public Spell m_co_disease;
+        public Spell m_co_aoe;
 
-        public Spell CODisease
+        public Spell COaoe
         {
             get
             {
-                if (m_co_disease == null)
+                if (m_co_aoe == null)
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 30;
-                    spell.ClientEffect = 4375;
-                    spell.Icon = 4375;
-                    spell.Name = "Disease of World Soul";
-                    spell.Description = "Inflicts a wasting disease on the target that slows it, weakens it, and inhibits heal spells.";
-                    spell.TooltipId = 4375;
+                    spell.ClientEffect = 3510;
+                    spell.Icon = 3510;
+                    spell.TooltipId = 3510;
+                    spell.Damage = 350;
                     spell.Range = 1800;
-                    spell.Radius = 1000;
-                    spell.Duration = 120;//2min
+                    spell.Radius = 1200;
                     spell.SpellID = 11704;
                     spell.Target = "Enemy";
-                    spell.Type = "Disease";
+                    spell.Type = "DirectDamage";
                     spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
-                    m_co_disease = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_disease);
+                    m_co_aoe = new Spell(spell, 70);                   
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_aoe);
                 }
-                return m_co_disease;
+                return m_co_aoe;
             }
         }
     }
