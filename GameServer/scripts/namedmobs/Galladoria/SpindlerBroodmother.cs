@@ -65,7 +65,36 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-
+        public override void Die(GameObject killer)
+        {
+          SpawnAfterDead();
+          base.Die(killer);
+        }
+        public override bool AddToWorld()
+        {
+            foreach(GameNPC npc in GetNPCsInRadius(4000))
+            {
+                if(npc.RespawnInterval == -1 && npc.Brain is SBDeadAddsBrain)
+                {
+                    npc.RemoveFromWorld();
+                }
+            }
+            base.AddToWorld();
+            return true;
+        }
+        public void SpawnAfterDead()
+        {
+            for (int i = 0; i < Util.Random(20, 25); i++) // Spawn 20-25 adds
+            {
+                SBDeadAdds Add = new SBDeadAdds();
+                Add.X = X + Util.Random(-50, 80);
+                Add.Y = Y + Util.Random(-50, 80);
+                Add.Z = Z;
+                Add.CurrentRegion = CurrentRegion;
+                Add.Heading = Heading;
+                Add.AddToWorld();
+            }
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -217,6 +246,12 @@ namespace DOL.AI.Brain
             int health = Body.HealthPercent / Body.Charisma;
             if (Body.TargetObject != null && Body.InCombat)
             {
+                GameLiving target;
+                target= Body.TargetObject as GameLiving;
+                if (Util.Chance(15))
+                {
+                    PickRandomTarget();
+                }
                 #region check boss health and spawn adds
                 if (Body.HealthPercent <= 95 && Body.HealthPercent > 90 && spawnadds1==true)
                 {
@@ -315,9 +350,9 @@ namespace DOL.AI.Brain
                 }
                 #endregion check boss health and spawn adds
             }
-
             base.Think();
         }
+
         public void Spawn()
         {
             for (int i = 0; i < Util.Random(15, 20); i++) // Spawn 15-20 adds
@@ -330,6 +365,95 @@ namespace DOL.AI.Brain
                 Add.IsWorthReward = false;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
+            }
+        }
+        public void PickRandomTarget()
+        {
+            ArrayList inRangeLiving = new ArrayList();
+            foreach (GameLiving living in Body.GetPlayersInRadius(2000))
+            {
+                if (living.IsAlive)
+                {
+                    if (living is GamePlayer || living is GamePet)
+                    {
+                        if (!inRangeLiving.Contains(living) || inRangeLiving.Contains(living) == false)
+                        {
+                            inRangeLiving.Add(living);
+                        }
+                    }
+                }
+            }
+            if (inRangeLiving.Count > 0)
+            {
+                GameLiving ptarget = ((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                RandomTarget = ptarget;
+                if (Mezz.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body) && (randomtarget.HasAbility(Abilities.MezzImmunity)==false || randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity)==false))
+                {
+                    PrepareToMezz();
+                }
+            }
+        }
+        private GameLiving randomtarget;
+        private GameLiving RandomTarget
+        {
+            get { return randomtarget; }
+            set { randomtarget = value; }
+        }
+        private int CastMezz(RegionTimer timer)
+        {
+            GameObject oldTarget = Body.TargetObject;
+            Body.TargetObject = RandomTarget;
+            Body.TurnTo(RandomTarget);
+            if (Body.TargetObject != null && (randomtarget.HasAbility(Abilities.MezzImmunity)==false || randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity)==false))
+            {
+                Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                spambroad = false;//to avoid spamming
+            }
+            RandomTarget = null;
+            if (oldTarget != null) Body.TargetObject = oldTarget;
+            return 0;
+        }
+        public static bool spambroad = false;
+        private void PrepareToMezz()
+        {
+            if (spambroad == false && (randomtarget.HasAbility(Abilities.MezzImmunity)==false || randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity)==false))
+            {
+                new RegionTimer(Body, new RegionTimerCallback(CastMezz), 5000);
+                spambroad = true;
+            }
+        }
+
+        protected Spell m_mezSpell;
+        /// <summary>
+        /// The Mezz spell.
+        /// </summary>
+        protected Spell Mezz
+        {
+            get
+            {
+                if (m_mezSpell == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 30;
+                    spell.ClientEffect = 5317;
+                    spell.Icon = 5317;
+                    spell.TooltipId = 5317;
+                    spell.Damage = 0;
+                    spell.Name = "Mesmerized";
+                    spell.Range = 1500;
+                    spell.SpellID = 11716;
+                    spell.Duration = 60;
+                    spell.Target = "Enemy";
+                    spell.Type = "Mesmerize";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+                    m_mezSpell = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
+                }
+                return m_mezSpell;
             }
         }
     }
@@ -354,7 +478,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 904;
-            Name = "Broodmother's swarm";
+            Name = "newly born spindler";
             MeleeDamageType = eDamageType.Slash;
             RespawnInterval = -1;
             MaxDistance = 2500;
@@ -415,6 +539,65 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+            base.Think();
+        }
+    }
+}
+
+//////////////////////////////////adds after main boss die////////////////////////
+namespace DOL.GS
+{
+    public class SBDeadAdds : GameNPC
+{
+    public SBDeadAdds() : base() { }
+    public static GameNPC SI_Gnatants = new GameNPC();
+    public override int MaxHealth
+    {
+        get { return 800; }
+    }
+    public override double AttackDamage(InventoryItem weapon)
+    {
+        return base.AttackDamage(weapon) * Strength / 100;
+    }
+
+    public override bool AddToWorld()
+    {
+        Model = 904;
+        Name = "underdeveloped spindler";
+        MeleeDamageType = eDamageType.Slash;
+        RespawnInterval = -1;
+        MaxDistance = 2500;
+        TetherRange = 2000;
+        Strength = 100;
+        IsWorthReward = false;//worth no reward
+        Size = (byte)Util.Random(30, 40);
+        Level = 50;
+        Faction = FactionMgr.GetFactionByID(96);
+        Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+        Realm = 0;
+        SBDeadAddsBrain adds = new SBDeadAddsBrain();
+        LoadedFromScript = true;
+        SetOwnBrain(adds);
+        base.AddToWorld();
+        return true;
+    }
+
+}
+}
+namespace DOL.AI.Brain
+{
+    public class SBDeadAddsBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public SBDeadAddsBrain()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 800;
+        }
+
+        public override void Think()
+        {
             base.Think();
         }
     }
