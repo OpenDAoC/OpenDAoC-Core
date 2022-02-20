@@ -38,6 +38,11 @@ namespace DOL.GS.Scripts
 
             BodyType = 6; // Humanoid
             RoamingRange = 0;
+            MaxSpeedBase = 300;
+            
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            
             base.AddToWorld();
             base.SetOwnBrain(new UaimhLairmasterBrain());
             return true;
