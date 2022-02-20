@@ -22,8 +22,7 @@ namespace DOL.GS.Scripts
     {
         protected String m_FleeingAnnounce;
         public static bool IsFleeing = true;
-        UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
-        
+
         public UaimhLairmaster() : base()
         {
             m_FleeingAnnounce = "{0} starts fleeing!";
@@ -81,6 +80,10 @@ namespace DOL.GS.Scripts
         /// </summary>
         public override void WalkToSpawn()
         {
+            UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
+            StopAttack();
+            StopFollowing();
+            brain.AggroTable.Clear();
             EvadeChance = 100;
             WalkToSpawn(MaxSpeed);
         }
@@ -119,16 +122,8 @@ namespace DOL.GS.Scripts
             }
 
             if (e == GameNPCEvent.ArriveAtTarget)
-            {
-                foreach (GamePlayer player in GetPlayersInRadius(4000))
-                {
-                    if (IsVisibleTo(player) && player.IsAlive && player.IsAttackable)
-                    {
-                        EvadeChance = 0;
-                        StartAttack(player);
-                    }
-                }
-            }
+                EvadeChance = 0;
+            
         }
 
         #endregion
@@ -192,7 +187,7 @@ namespace DOL.GS.Scripts
                     ShrinkSize();
                 }
 
-                FSM.Think();
+                base.Think();
             }
 
             #region Broadcast Message
