@@ -153,6 +153,12 @@ namespace DOL.GS.Scripts
         }
 
         #endregion
+        
+        public override void Die(GameObject killer)
+        {
+            IsFleeing = true;
+            base.Die(killer);
+        }
     }
 
     namespace DOL.AI.Brain
