@@ -48,6 +48,49 @@ namespace DOL.GS.Scripts
             return true;
         }
 
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * Strength / 100;
+        }
+
+        public override int MaxHealth
+        {
+            get
+            {
+                return 20000;
+            }
+        }
+
+        public override int AttackRange
+        {
+            get
+            {
+                return 450;
+            }
+            set
+            {
+            }
+        }
+        
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+        
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 1000;
+        }
+
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.85;
+        }
+        
         /// <summary>
         /// Take some amount of damage inflicted by another GameObject.
         /// </summary>
@@ -178,7 +221,7 @@ namespace DOL.GS.Scripts
             {
                 m_AggroAnnounce = "{0} feels threatened and appears more menacing!";
             }
-
+            
             public override void Think()
             {
                 if (Body.InCombat && Body.IsAlive && HasAggro)
