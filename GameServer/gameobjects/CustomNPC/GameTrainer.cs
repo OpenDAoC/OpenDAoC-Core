@@ -422,7 +422,11 @@ namespace DOL.GS
 		{
 			if (CanTrainChampionLevels(player) == false)
 			{
-				SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.SeekElsewhere"));
+				// Check for ambient trigger messages for the NPC in the 'MobXAmbientBehaviour' table
+				var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
+				// If the NPC has no ambient trigger message assigned, then return this message
+				if (triggers == null || triggers.Length == 0)
+					SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.SeekElsewhere"));
 			}
 		}
 
@@ -432,11 +436,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		protected virtual void OfferTraining(GamePlayer player)
 		{
-			// Check for ambient trigger messages for the NPC in the 'MobXAmbientBehaviour' table
-			var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
-			// If the NPC has no ambient trigger message assigned, then return this message
-			if (triggers == null || triggers.Length == 0)
-				SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.WouldYouLikeTo"));
+			SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.WouldYouLikeTo"));
 		}
 		
 		/// <summary>
