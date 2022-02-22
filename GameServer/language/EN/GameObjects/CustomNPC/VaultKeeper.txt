@@ -1,2 +1,2 @@
-VaultKeeper.YouExamine:		You examine {0}. {1} is {2} and vaultkeeper.
+VaultKeeper.YouExamine:		You examine {0}. {1} is {2} and is a vaultkeeper.
 VaultKeeper.RightClick:		[Right click to display a vault window]
