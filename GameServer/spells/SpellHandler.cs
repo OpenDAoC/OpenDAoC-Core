@@ -528,10 +528,11 @@ namespace DOL.GS.Spells
 				if (CheckBeginCast(m_spellTarget))
 				{
 					//Added to force non-Concentration spells cast on Necromancer to be cast on pet instead
-					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null && (Caster.TargetObject as GamePlayer).IsShade)
-                    			{
-                        			m_spellTarget = m_spellTarget.ControlledBrain.Body;
-                    			}
+					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null 
+						&& (Caster.TargetObject as GamePlayer).IsShade && Spell.ID != 5999)
+                    {
+                        m_spellTarget = m_spellTarget.ControlledBrain.Body;
+                    }
 					
 					if (m_caster is GamePlayer && (m_caster as GamePlayer).IsOnHorse && !HasPositiveEffect)
 					{
@@ -2568,7 +2569,7 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade && Spell.ID != 5999)
 							{
 								if (!Spell.IsBuff)
 									list.Add(player.ControlledBrain.Body);
