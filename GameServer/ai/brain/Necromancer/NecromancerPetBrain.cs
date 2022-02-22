@@ -396,7 +396,7 @@ namespace DOL.AI.Brain
                 GameObject previousTarget = Body.TargetObject;
 				Body.TargetObject = spellTarget;
 
-				if (spellTarget != null && spellTarget != Body)
+				if (spellTarget != null && spellTarget != Body && spell.ID != 6221)
 					Body.TurnTo(spellTarget);
 
 				Body.CastSpell(spell, line);

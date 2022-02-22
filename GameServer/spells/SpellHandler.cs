@@ -1100,7 +1100,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
-			if (Caster is GameNPC casterNPC)
+			if (Caster is GameNPC casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 
 			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
