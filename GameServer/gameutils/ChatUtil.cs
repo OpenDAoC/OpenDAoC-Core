@@ -114,7 +114,7 @@ namespace DOL.GS
 		}
 		
 		/// <summary>
-		/// Used to send translated messages to a player, which displays as a dialog (pop-up) window.
+		/// Used to send translated messages to a player, which displays as a "/say" message in the chat window.
 		/// </summary>
 		/// <param name="target">The player triggering/receiving the message (i.e., typically "client").</param>
 		/// <param name="translationID">The translation string associated with the message (e.g., "Scripts.Blacksmith.Say").</param>
