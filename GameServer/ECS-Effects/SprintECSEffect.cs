@@ -33,11 +33,17 @@ namespace DOL.GS
         {
 			if (OwnerPlayer != null)
 			{
+				int regen = OwnerPlayer.GetModified(eProperty.EnduranceRegenerationRate);
+				var endchant = OwnerPlayer.GetModified(eProperty.FatigueConsumption);
+				var cost = -5 + regen;
+				if (endchant > 1) cost = (int)Math.Ceiling(cost * endchant * 0.01);
+				OwnerPlayer.Endurance += cost;
+
 				OwnerPlayer.Out.SendUpdateMaxSpeed();
 				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Sprint.PrepareSprint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				Owner.StartEnduranceRegeneration();
 			}
-        }
+		}
         public override void OnStopEffect()
         {
 			if (OwnerPlayer != null)
