@@ -29,6 +29,8 @@
         public override bool AddToWorld()
         {
             RespawnInterval = 10;
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158245);
+            LoadTemplate(npcTemplate);
             base.AddToWorld();
             return true;
         }
