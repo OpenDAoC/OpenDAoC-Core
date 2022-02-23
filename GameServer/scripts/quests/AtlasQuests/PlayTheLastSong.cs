@@ -375,8 +375,6 @@ namespace DOL.GS.Quests.Midgard
 								                     "My friend Dextz use to visit me very often, it must be something special that he has chosen you to check on me! " +
 								                     "I really wished to see him once again, but maybe you can help me to play my [last songs for Midgard]?");	
 							}
-							
-							
 							break;
 						case 3:
 							Freeya.SayTo(player, "Alright " + player.Name + ", all you have to do is say \"song\" to me and I will begin the ceremony!");
@@ -422,13 +420,9 @@ namespace DOL.GS.Quests.Midgard
 							}
 							break;
 						case "song":
-							if (Freeya.IsSinging == true)
-								break;
-
 							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
-							if (quest.Step == 3)
+							if (quest.Step == 3 && !Freeya.IsSinging)
 							{
-									
 								quest.Step = 4;
 								Freeya.IsSinging = true;
 
@@ -451,7 +445,7 @@ namespace DOL.GS.Quests.Midgard
 								
 								new RegionTimer(Freeya, new RegionTimerCallback(DelayedDeath), 23000);
 							}
-							
+
 							break;
 					}
 				}
@@ -830,8 +824,6 @@ namespace DOL.GS.Quests.Midgard
 		{
 			Freeya.Say(
 				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
-			//Thread.Sleep(1000);
-			Freeya.IsSinging = false;
 			Freeya.Die(Freeya);
 			return 0;
 		}
@@ -902,8 +894,8 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.GainExperience(eXPSource.Quest, 200, true);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
@@ -917,6 +909,21 @@ namespace DOL.GS.Quests.Midgard
 		{
 			IsSinging = false;
 			return base.RespawnTimerCallback(respawnTimer);
+		}
+
+		public override void Notify(DOLEvent e, EventArgs args)
+		{
+			if (e == GameNPCEvent.Dying)
+			{
+				IsSinging = false;
+			}
+
+			if (IsRespawning)
+			{
+				IsSinging = false;
+			}
+			
+			base.Notify(e, args);
 		}
 	}
 }
