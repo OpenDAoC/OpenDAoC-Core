@@ -994,6 +994,7 @@ namespace DOL.GS.Quests
 
 			return charQuest;
 		}
+		
 
 		/// <summary>
 		/// Can this player do this quest
@@ -1044,7 +1045,7 @@ namespace DOL.GS.Quests
 				{
 					if (q is DataQuest && (q as DataQuest).ID == ID)
 					{
-						if (q.IsDoingQuest(q) == true || (q as DataQuest).Count >= MaxQuestCount)
+						if (q.IsDoingQuest(q) == true || ((q as DataQuest).Count >= MaxQuestCount && MaxQuestCount >= 0))
 						{
 							return false; // player has done this quest the max number of times
 						}
