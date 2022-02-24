@@ -183,6 +183,14 @@ namespace DOL.GS {
 					SummonBoss(t,"DOL.GS.OlcasarGeomancer");
 					break;
 				#endregion
+				
+				#region Darkness Falls
+				case "darkness falls":
+					t.Out.SendMessage("Demons are tricky to capture, try again later."
+						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					break;
+				
+				#endregion
 					
 				case "reset":
 					if (source.InCombatInLast(10000)) return false;
