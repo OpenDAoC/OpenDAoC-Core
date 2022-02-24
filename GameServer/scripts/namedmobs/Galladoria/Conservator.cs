@@ -109,6 +109,8 @@ namespace DOL.GS
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 1500;//so players cant just pass him without aggroing
                 CO.SetOwnBrain(ubrain);
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
+                CO.LoadTemplate(npcTemplate);
                 CO.AddToWorld();
                 CO.Brain.Start();
                 CO.SaveIntoDatabase();

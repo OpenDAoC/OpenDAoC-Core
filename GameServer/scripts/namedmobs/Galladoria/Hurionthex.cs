@@ -130,6 +130,8 @@ namespace DOL.GS
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 500;
                 Hurion.SetOwnBrain(ubrain);
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162285);
+                Hurion.LoadTemplate(npcTemplate);
                 Hurion.AddToWorld();
                 Hurion.Brain.Start();
                 Hurion.SaveIntoDatabase();
