@@ -72,6 +72,7 @@ namespace DOL.GS {
 	        }
 	        
 	        player.Out.SendMessage("..as well as many demons from [Darkness Falls].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+	        player.Out.SendMessage("If you're not ready, I can also port you [back].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
 	        
             return true;
