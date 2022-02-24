@@ -8,9 +8,8 @@ using DOL.GS.API;
 
 namespace DOL.GS {
     public class LordOfBoss : GameTrainingDummy {
-       
-
-        public override bool AddToWorld()
+	    
+	    public override bool AddToWorld()
         {
             Name = "Mordbro";
             GuildName = "Lord Of Bosses";
@@ -29,6 +28,7 @@ namespace DOL.GS {
 	        bool inFight = false;
 	        
 	        if (!base.Interact(player)) return false;
+	        if (player.InCombatInLast(10000)) return false;
 	        TurnTo(player.X, player.Y);
 	        
 	        foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
@@ -56,8 +56,23 @@ namespace DOL.GS {
 		        return false;
 	        }
 	        
+	        player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I hope you're up for a challenge.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
-	        player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I hope you're up for a challenge, my minions definitely are. \n Are you ready to [start]?", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+	        switch (player.Realm)
+	        {
+		        case eRealm._FirstPlayerRealm:
+			        player.Out.SendMessage("I have some minions from [Caer Sidi] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			        break;
+		        case eRealm.Midgard:
+			        player.Out.SendMessage("I have some minions from [Tuscaren Glacier] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			        break;
+		        case eRealm.Hibernia:
+			        player.Out.SendMessage("I have some minions from [Galladoria] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			        break;
+	        }
+	        
+	        player.Out.SendMessage("..as well as many demons from [Darkness Falls].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+
 	        
             return true;
 			
@@ -70,7 +85,7 @@ namespace DOL.GS {
             if (source.InCombatInLast(10000)) return false;
 			GamePlayer t = (GamePlayer)source;
 			TurnTo(t.X, t.Y);
-			switch (str)
+			switch (str.ToLower())
 			{
 				case "back":
 					switch (t.Realm)
@@ -86,13 +101,34 @@ namespace DOL.GS {
 							break;
 					}
 					break;
-				case "start":
-					t.Out.SendMessage("I can summon [bane] if you wish.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				
+				#region Caer Sidi
+				case "caer sidi":
+					if (t.Realm != eRealm.Albion) return false;
+					t.Out.SendMessage("I can summon the following bosses from Caer Sidi:\n\n" +
+					                  "1. [Skeletal Sacristan]\n" +
+					                  "2. [Spectral Provisioner]\n" +
+					                  "3. [Lich Lord Ilron]\n" +
+					                  "4. [Bane of Hope]\n"
+						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					break;
+
+				case "skeletal sacristan":
+					SummonBoss(t,"DOL.GS.Scripts.SkeletalSacristan");
 					break;
 				
-				case "bane":
+				case "spectral provisioner":
+					SummonBoss(t,"DOL.GS.Scripts.SpectralProvisioner");
+					break;
+				
+				case "lich lord ilron":
+					SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
+					break;
+				
+				case "bane of hope":
 					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
 					break;
+				#endregion
 					
 				case "reset":
 					foreach (GameNPC mob in WorldMgr.GetNPCsFromRegion(t.CurrentRegionID))
@@ -117,8 +153,16 @@ namespace DOL.GS {
 
 		private void SummonBoss(GamePlayer player, string BossClass)
 		{
+			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
+			{
+				if (npc.Brain is LordOfBossBrain)
+					continue;
+				player.Out.SendMessage("You have already summoned a boss!.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				return;
+			}
+			
+			
 			//Create a new mob
-
 			GameNPC mob = new GameNPC();
 			mob = (GameNPC) Assembly.GetAssembly(typeof(GameServer)).CreateInstance(BossClass, false);
 			Console.WriteLine("Summoned " + BossClass);
@@ -136,7 +180,6 @@ namespace DOL.GS {
 				//Fill the living variables
 				mob.Flags |= eFlags.PEACE;
 				mob.AddToWorld();
-				
 				
 	    }
 
