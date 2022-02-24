@@ -3708,7 +3708,7 @@ namespace DOL.GS.Spells
 			
 			if (this is DamageShieldSpellHandler)
             {
-				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster.ControlledBrain.Body, eEffect.FocusShield));
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster?.ControlledBrain?.Body, eEffect.FocusShield));
             }
             
             //CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
