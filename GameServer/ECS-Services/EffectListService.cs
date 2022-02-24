@@ -227,6 +227,7 @@ namespace DOL.GS
 
         public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
         {
+            if (target == null) return null;
             List<ECSGameEffect> effects;
 
             lock (target.effectListComponent._effectsLock)
