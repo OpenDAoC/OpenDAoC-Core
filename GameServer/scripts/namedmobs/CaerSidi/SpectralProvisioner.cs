@@ -41,6 +41,8 @@ namespace DOL.GS.Scripts
 			RoamingRange = 0;
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
+			LoadTemplate(npcTemplate);
 			base.AddToWorld();
 			return true;
 		}
