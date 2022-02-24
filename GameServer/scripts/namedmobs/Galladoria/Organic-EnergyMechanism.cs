@@ -88,6 +88,9 @@ namespace DOL.GS
         public static bool addeffect = true;
         public override bool AddToWorld()
         {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
+            LoadTemplate(npcTemplate);
+            
             bool success = base.AddToWorld();
             if (success)
             {

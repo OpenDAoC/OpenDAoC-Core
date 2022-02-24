@@ -82,6 +82,14 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
         
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162285);
+            LoadTemplate(npcTemplate);
+            base.AddToWorld();
+            return true;
+        }
+        
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {

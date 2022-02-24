@@ -79,6 +79,9 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
+            
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166449);
+            LoadTemplate(npcTemplate);
             base.AddToWorld();
             return true;
         }

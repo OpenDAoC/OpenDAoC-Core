@@ -29,6 +29,14 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
+            LoadTemplate(npcTemplate);
+            base.AddToWorld();
+            return true;
+        }
 
         public override int MaxHealth
         {

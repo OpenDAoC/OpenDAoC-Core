@@ -65,6 +65,14 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
+            LoadTemplate(npcTemplate);
+            base.AddToWorld();
+            return true;
+        }
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in this.GetNPCsInRadius(4000))

@@ -119,6 +119,15 @@ namespace DOL.GS
                 base.Die(killer);
             }
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161336);
+            LoadTemplate(npcTemplate);
+            base.AddToWorld();
+            return true;
+        }
+        
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
