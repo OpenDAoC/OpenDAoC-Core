@@ -82,7 +82,7 @@ namespace DOL.GS {
 		{
 			if (!base.WhisperReceive(source, str)) return false;
 			if (!(source is GamePlayer)) return false;
-            if (source.InCombatInLast(10000)) return false;
+            if (source.InCombatInLast(10000) || source.Group != null && source.Group.Leader != source) return false;
 			GamePlayer t = (GamePlayer)source;
 			TurnTo(t.X, t.Y);
 			switch (str.ToLower())
@@ -131,14 +131,13 @@ namespace DOL.GS {
 				#endregion
 					
 				case "reset":
+					if (source.InCombatInLast(10000)) return false;
 					foreach (GameNPC mob in WorldMgr.GetNPCsFromRegion(t.CurrentRegionID))
 					{
 						if (mob.Brain is LordOfBossBrain)
 							continue;
 						mob.Delete();
 					}
-						
-					
 					break;
 				default: break;
 			}
