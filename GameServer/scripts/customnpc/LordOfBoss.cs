@@ -114,18 +114,72 @@ namespace DOL.GS {
 					break;
 
 				case "skeletal sacristan":
+					if (t.Realm != eRealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.SkeletalSacristan");
 					break;
 				
 				case "spectral provisioner":
+					if (t.Realm != eRealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.SpectralProvisioner");
 					break;
 				
 				case "lich lord ilron":
+					if (t.Realm != eRealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
 					break;
 				
 				case "bane of hope":
+					if (t.Realm != eRealm.Albion) return false;
+					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					break;
+				#endregion
+				
+				#region Galladoria
+				case "galladoria":
+					if (t.Realm != eRealm.Hibernia) return false;
+					t.Out.SendMessage("I can summon the following bosses from Galladoria:\n\n" +
+					                  "1. [Easmarach]\n" +
+					                  "2. [Organic Energy Mechanism]\n" +
+					                  "3. [Giant Sporite Cluster]\n" +
+					                  "4. [Conservator]\n" +
+					                  "5. [Beatha, Tine and Xaga]\n" +
+					                  "6. [Spindler Broodmother]\n" +
+					                  "7. [Olcasar Geomancer]\n"
+						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					break;
+
+				case "easmarach":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Scripts.SkeletalSacristan");
+					break;
+				
+				case "organic energy mechanism":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Scripts.SpectralProvisioner");
+					break;
+				
+				case "giant sporite cluster":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
+					break;
+				
+				case "conservator":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					break;
+				
+				case "beatha, tine and xaga":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					break;
+				
+				case "spindler broodmother":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					break;
+				
+				case "olcasar geomancer":
+					if (t.Realm != eRealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
 					break;
 				#endregion
