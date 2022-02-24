@@ -142,7 +142,7 @@ namespace DOL.GS {
 					                  "2. [Organic Energy Mechanism]\n" +
 					                  "3. [Giant Sporite Cluster]\n" +
 					                  "4. [Conservator]\n" +
-					                  "5. [Beatha, Tine and Xaga]\n" +
+					                  "5. [Xaga]\n" +
 					                  "6. [Spindler Broodmother]\n" +
 					                  "7. [Olcasar Geomancer]\n"
 						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
@@ -150,37 +150,37 @@ namespace DOL.GS {
 
 				case "easmarach":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.SkeletalSacristan");
+					SummonBoss(t,"DOL.GS.Easmarach");
 					break;
 				
 				case "organic energy mechanism":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.SpectralProvisioner");
+					SummonBoss(t,"DOL.GS.OrganicEnergyMechanism");
 					break;
 				
 				case "giant sporite cluster":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
+					SummonBoss(t,"DOL.GS.GiantSporiteCluster");
 					break;
 				
 				case "conservator":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					SummonBoss(t,"DOL.GS.Conservator");
 					break;
 				
-				case "beatha, tine and xaga":
+				case "xaga":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					SummonBoss(t,"DOL.GS.Xaga");
 					break;
 				
 				case "spindler broodmother":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					SummonBoss(t,"DOL.GS.SpindlerBroodmother");
 					break;
 				
 				case "olcasar geomancer":
 					if (t.Realm != eRealm.Hibernia) return false;
-					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+					SummonBoss(t,"DOL.GS.OlcasarGeomancer");
 					break;
 				#endregion
 					
