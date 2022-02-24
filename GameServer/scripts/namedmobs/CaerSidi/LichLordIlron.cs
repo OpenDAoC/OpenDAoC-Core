@@ -47,6 +47,8 @@ namespace DOL.GS.Scripts
 			sBrain.AggroLevel = 100;
 			sBrain.AggroRange = 500;
 			LichLordIlronBrain.spawnimages = true;
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
+			LoadTemplate(npcTemplate);
 			base.AddToWorld();
 			return true;
 		}
