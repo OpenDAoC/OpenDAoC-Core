@@ -42,7 +42,8 @@ namespace DOL.GS.Scripts
             
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
+            LoadTemplate(npcTemplate);
             base.AddToWorld();
             base.SetOwnBrain(new UaimhLairmasterBrain());
             return true;
