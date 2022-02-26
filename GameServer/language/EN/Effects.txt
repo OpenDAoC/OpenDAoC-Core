@@ -7,8 +7,15 @@ Effects.CantRemoveThis:	You can't remove this effect!
 Effects.Necro.TauntEffect.SeemsChange:			{0} seems to change in demeanor, appearing more aggressive than before.
 Effects.Necro.TauntEffect.SeemsLessAgg:			{0} seems to be less aggressive than before.
 
-Effects.BerserkEffect.GoBerserkerFrenzy:		You go into a berserker frenzy!
-Effects.BerserkEffect.BerserkerFrenzyEnds:		Your berserker frenzy ends.
+## Amnesia
+Amnesia.MessageToTarget:	Your mind goes blank and you forget what you were doing!
+Amnesia.MessageToArea:      {0} forgets what they were doing!
+
+## Berserker Frenzy
+Effects.BerserkEffect.StartFrenzy:		                You go into a berserker frenzy!
+Effects.BerserkEffect.AreaStartFrenzy:                  {0} goes into a berserker frenzy!
+Effects.BerserkEffect.EndFrenzy:		                Your berserker frenzy ends.
+Effects.BerserkEffect.AreaEndFrenzy:                    {0}'s berserker frenzy ends.
 Effects.BerserkEffect.Name:						Berserk
 Effects.BerserkEffect.InfoEffect:				This ability transforms the player into a Vendo beast and makes each hit that lands a critical hit, at the expense of any defensive abilities. It can be used one every seven minutes.
 
@@ -27,6 +34,18 @@ Effects.CamouflageEffect.YouAreCamouflaged:		You are now camouflaged!
 Effects.CamouflageEffect.YourCFIsGone:			Your camouflage is gone.
 Effects.CamouflageEffect.Name:					Camouflage
 Effects.CamouflageEffect.InfoEffect:			Available to the archer classes. This ability will make the archer undectable to the Mastery of Stealth Realm Ability for a period of time. Drawing a weapon or engaging in combat will cancel the effect and cause the player to be visible. This does not modify stealth skill.
+
+## Charge
+Effects.ChargeEffect.StartCharge:                       You begin to charge wildly!
+Effects.ChargeEffect.AreaStartCharge:                   {0} begins charging wildly!
+Effects.ChargeEffect.EndCharge:                         You no longer seem so crazy!
+Effects.ChargeEffect.AreaEndCharge:                     {0} ceases their charge!
+
+## Dirty Tricks
+Effects.DirtyTricks.EffectCancel:	                    You can see clearly again.
+Effects.DirtyTricks.AreaEffectCancel:                   {0} can see clearly again.
+Effects.DirtyTricks.EffectStart:	                    {0} flings a cloud of dirt in your eyes!
+Effects.DirtyTricks.AreaEffectStart:                    {0} flings dirt in {1}'s eyes!
 
 Effects.EngageEffect.ConcOnBlockingX:			You concentrate on blocking the blows of {0}!
 Effects.EngageEffect.YouNoConcOnBlock:			You no longer concentrate on blocking the blows!

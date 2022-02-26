@@ -18,19 +18,18 @@ namespace DOL.GS
             Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, (int)SpellHandler.Spell.Value);
             //GameEventMgr.AddHandler(e.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 
-            eChatType toLiving = (SpellHandler.Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
-            eChatType toOther = (SpellHandler.Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
-            (SpellHandler as AblativeArmorSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1, toLiving);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), toOther, Owner);
+            // "A crystal shield covers you."
+            // "A crystal shield covers {0}'s skin."
+            OnEffectStartsMsg(Owner, true, false, true);
         }
 
         public override void OnStopEffect()
         {
             Owner.TempProperties.removeProperty(AblativeArmorSpellHandler.ABLATIVE_HP);
-            //if (!noMessages && Spell.Pulse == 0)
-            //{
-            (SpellHandler as AblativeArmorSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message4, Owner.GetName(0, false)), eChatType.CT_SpellExpires, Owner);
+            // "Your crystal shield fades."
+            // "{0}'s crystal shield fades."
+            OnEffectExpiresMsg(Owner, true, false, true);
+
             //}
         }
     }

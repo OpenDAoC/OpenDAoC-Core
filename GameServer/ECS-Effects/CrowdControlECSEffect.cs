@@ -75,7 +75,11 @@ namespace DOL.GS
             Owner.IsStunned = true;
             OnHardCCStart();
             UpdatePlayerStatus();
-            SendMessages();
+            
+            // "You are stunned!"
+            // "{0} is stunned!"
+            OnEffectStartsMsg(Owner, true, true, true);
+
         }
 
         public override void OnStopEffect()
@@ -83,6 +87,11 @@ namespace DOL.GS
             Owner.IsStunned = false;
             OnHardCCStop();
             UpdatePlayerStatus();
+            
+            // "You recover from the stun.."
+            // "{0} recovers from the stun."
+            OnEffectExpiresMsg(Owner, true, false, true);
+
         }
     }
 
@@ -102,7 +111,10 @@ namespace DOL.GS
             Owner.IsMezzed = true;
             OnHardCCStart();
             UpdatePlayerStatus();
-            SendMessages();
+            
+            // "You are entranced!"
+            // "You are mesmerized!"
+            OnEffectStartsMsg(Owner, true, true, true);
         }
 
         public override void OnStopEffect()
@@ -110,6 +122,10 @@ namespace DOL.GS
             Owner.IsMezzed = false;
             OnHardCCStop();
             UpdatePlayerStatus();
+            
+            // "You are no longer entranced."
+            // "You recover from the mesmerize."
+            OnEffectExpiresMsg(Owner, true, false, true);
         }
     }
 }
