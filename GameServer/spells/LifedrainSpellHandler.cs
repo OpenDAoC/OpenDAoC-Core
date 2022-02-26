@@ -25,10 +25,6 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("Lifedrain")]
     public class LifedrainSpellHandler : DirectDamageSpellHandler
     {
-	    public override void CreateECSEffect(ECSGameEffectInitParams initParams)
-	    {
-		    new LifedrainECSEffect(initParams);
-	    }
 	    
 		protected override void DealDamage(GameLiving target, double effectiveness)
 		{
