@@ -240,7 +240,7 @@ namespace DOL.GS {
 				mob.Heading = 2050;
 
 				//Fill the living variables
-				mob.Flags |= eFlags.PEACE;
+				mob.Flags ^= eFlags.PEACE;
 				mob.AddToWorld();
 				
 	    }
