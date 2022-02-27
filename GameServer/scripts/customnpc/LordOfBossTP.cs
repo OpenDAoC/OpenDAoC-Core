@@ -24,9 +24,9 @@ namespace DOL.GS {
             if (!base.Interact(player)) return false;
             TurnTo(player.X, player.Y);
 
-            if (player.Level < 50 || player.Group == null)
+            if ((player.Level < 50 || player.Group == null) && player.Client.Account.PrivLevel == 1)
             {
-                player.Out.SendMessage("You must be level 50 and in a group to use this teleporter.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You must be level 50 and in a group to use this teleporter.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                 return false;
             }
 
@@ -44,7 +44,7 @@ namespace DOL.GS {
             {
                 case "boss arena":
 
-                    if (Level < 50 || Group == null)
+                    if ((t.Level < 50 || t.Group == null) && t.Client.Account.PrivLevel == 1)
                         return false;
 
                     switch (t.Realm)
