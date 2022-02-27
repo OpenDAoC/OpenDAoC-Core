@@ -29,12 +29,27 @@
         public override bool AddToWorld()
         {
             RespawnInterval = 10;
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158245);
+            LoadTemplate(npcTemplate);
             base.AddToWorld();
             return true;
         }
         
         public override void Die(GameObject killer)
         {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
             MoveTo(CurrentRegionID,31154,30913,13950,3043);
             base.Die(killer);
         }
