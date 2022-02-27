@@ -33,7 +33,7 @@ namespace DOL.GS {
 	        
 	        foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
 	        {
-		        if (npc.Brain is LordOfBossBrain)
+		        if (npc.Brain is LordOfBossBrain || npc.Name.Contains("Council") || npc.Name.Contains("isolationist") || npc.Name.Contains("muryan"))
 			        continue; 
 		        inFight = true;
 	        }
@@ -197,7 +197,7 @@ namespace DOL.GS {
 					if (source.InCombatInLast(10000)) return false;
 					foreach (GameNPC mob in WorldMgr.GetNPCsFromRegion(t.CurrentRegionID))
 					{
-						if (mob.Brain is LordOfBossBrain)
+						if (mob.Brain is LordOfBossBrain || mob.Name.Contains("Council") || mob.Name.Contains("isolationist") || mob.Name.Contains("muryan"))
 							continue;
 						mob.Delete();
 					}
@@ -217,7 +217,7 @@ namespace DOL.GS {
 		{
 			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
 			{
-				if (npc.Brain is LordOfBossBrain)
+				if (npc.Brain is LordOfBossBrain || npc.Name.Contains("Council") || npc.Name.Contains("isolationist") || npc.Name.Contains("muryan"))
 					continue;
 				player.Out.SendMessage("You have already summoned a boss!.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 				return;
@@ -233,9 +233,9 @@ namespace DOL.GS {
 				Console.WriteLine("Error loading mob " + BossClass);
 
 			//Fill the object variables
-				mob.X = 32000;
-				mob.Y = 33155;
-				mob.Z = 16000;
+				mob.X = 34885;
+				mob.Y = 35347;
+				mob.Z = 19153;
 				mob.CurrentRegion = player.CurrentRegion;
 				mob.Heading = 2050;
 
