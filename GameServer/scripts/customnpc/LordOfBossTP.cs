@@ -1,5 +1,6 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
 
 namespace DOL.GS {
     public class LordOfBossTP : GameTrainingDummy {
@@ -23,13 +24,14 @@ namespace DOL.GS {
             if (!base.Interact(player)) return false;
             TurnTo(player.X, player.Y);
 
-            if (!this.Flags.HasFlag(GameNPC.eFlags.GHOST))
+            if (player.Level < 50 || player.Group == null)
             {
-                player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I can teleport you to our [boss arena] if you think you stand a chance..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("You must be level 50 and in a group to use this teleporter.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
             }
+
+            player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I can teleport you to our [boss arena] if you think you stand a chance..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             return true;
-			
-			
         }
         public override bool WhisperReceive(GameLiving source, string str)
         {
@@ -41,6 +43,10 @@ namespace DOL.GS {
             switch (str)
             {
                 case "boss arena":
+
+                    if (Level < 50 || Group == null)
+                        return false;
+
                     switch (t.Realm)
                     {
                         case eRealm._FirstPlayerRealm:
