@@ -109,8 +109,8 @@ namespace DOL.GS {
 					t.Out.SendMessage("I can summon the following bosses from Caer Sidi:\n\n" +
 					                  "1. [Skeletal Sacristan]\n" +
 					                  "2. [Spectral Provisioner]\n" +
-					                  "3. [Lich Lord Ilron]\n" +
-					                  "4. [Bane of Hope]\n"
+					                  "3. [Lich Lord Ilron]\n" 
+					                  // "4. [Bane of Hope]\n"
 						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 					break;
 
