@@ -92,10 +92,10 @@ namespace DOL.GS {
 					switch (t.Realm)
 					{
 						case eRealm.Albion:
-							t.MoveTo(330, 52759, 39528, 4677, 36);
+							t.MoveTo(1, 560365, 511888, 2280, 66);
 							break;
 						case eRealm.Midgard:
-							t.MoveTo(334, 52160, 39862, 5472, 46);
+							t.MoveTo(100, 804750, 723986, 4680, 671);
 							break;
 						case eRealm.Hibernia:
 							t.MoveTo(200, 345684, 490996, 1071, 900);
