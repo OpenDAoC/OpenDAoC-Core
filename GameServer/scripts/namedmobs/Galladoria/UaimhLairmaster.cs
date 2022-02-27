@@ -22,8 +22,7 @@ namespace DOL.GS.Scripts
     {
         protected String m_FleeingAnnounce;
         public static bool IsFleeing = true;
-        UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
-        
+
         public UaimhLairmaster() : base()
         {
             m_FleeingAnnounce = "{0} starts fleeing!";
@@ -39,11 +38,60 @@ namespace DOL.GS.Scripts
 
             BodyType = 6; // Humanoid
             RoamingRange = 0;
+            MaxSpeedBase = 300;
+            
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
+            LoadTemplate(npcTemplate);
             base.AddToWorld();
             base.SetOwnBrain(new UaimhLairmasterBrain());
             return true;
         }
 
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * Strength / 100;
+        }
+
+        public override int MaxHealth
+        {
+            get
+            {
+                return 20000;
+            }
+        }
+
+        public override int AttackRange
+        {
+            get
+            {
+                return 450;
+            }
+            set
+            {
+            }
+        }
+        
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+        
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 1000;
+        }
+
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.85;
+        }
+        
         /// <summary>
         /// Take some amount of damage inflicted by another GameObject.
         /// </summary>
@@ -81,6 +129,10 @@ namespace DOL.GS.Scripts
         /// </summary>
         public override void WalkToSpawn()
         {
+            UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
+            StopAttack();
+            StopFollowing();
+            brain.AggroTable.Clear();
             EvadeChance = 100;
             WalkToSpawn(MaxSpeed);
         }
@@ -119,16 +171,8 @@ namespace DOL.GS.Scripts
             }
 
             if (e == GameNPCEvent.ArriveAtTarget)
-            {
-                foreach (GamePlayer player in GetPlayersInRadius(4000))
-                {
-                    if (IsVisibleTo(player) && player.IsAlive && player.IsAttackable)
-                    {
-                        EvadeChance = 0;
-                        StartAttack(player);
-                    }
-                }
-            }
+                EvadeChance = 0;
+            
         }
 
         #endregion
@@ -153,6 +197,12 @@ namespace DOL.GS.Scripts
         }
 
         #endregion
+        
+        public override void Die(GameObject killer)
+        {
+            IsFleeing = true;
+            base.Die(killer);
+        }
     }
 
     namespace DOL.AI.Brain
@@ -172,7 +222,7 @@ namespace DOL.GS.Scripts
             {
                 m_AggroAnnounce = "{0} feels threatened and appears more menacing!";
             }
-
+            
             public override void Think()
             {
                 if (Body.InCombat && Body.IsAlive && HasAggro)
@@ -192,7 +242,7 @@ namespace DOL.GS.Scripts
                     ShrinkSize();
                 }
 
-                FSM.Think();
+                base.Think();
             }
 
             #region Broadcast Message

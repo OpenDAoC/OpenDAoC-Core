@@ -139,6 +139,8 @@ namespace DOL.GS
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 500;
                 OEM.SetOwnBrain(ubrain);
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
+                OEM.LoadTemplate(npcTemplate);
                 OEM.AddToWorld();
                 OEM.Brain.Start();
                 OEM.SaveIntoDatabase();
