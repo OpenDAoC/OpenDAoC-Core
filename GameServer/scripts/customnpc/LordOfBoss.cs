@@ -246,10 +246,7 @@ namespace DOL.GS {
 	    }
 
 		}
-
-	
-
-
+    
     public class LordOfBossBrain : StandardMobBrain {
 
         public int timeBeforeRez = 3000; //3 seconds
@@ -259,75 +256,7 @@ namespace DOL.GS {
 
         public override void Think()
         {
-            if (playersToRez == null)
-                playersToRez = new Dictionary<GamePlayer, long>();
-
-
-            if (playersToKill == null)
-                playersToKill = new List<GamePlayer>();
-
-            if (Body.Flags.HasFlag(GameNPC.eFlags.GHOST))
-                return;
-
-            foreach(GamePlayer player in Body.GetPlayersInRadius(7000))
-            {
-                playersToKill.Add(player);
-            }
-
-            foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
-            {
-                if (!player.IsAlive && !playersToRez.ContainsKey(player))
-                {
-                    playersToRez.Add(player, GameLoop.GameLoopTime);
-                }
-
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
-                {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
-                }
-
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
-                {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
-                }
-
-                if(playersToKill.Contains(player))
-                    playersToKill.Remove(player);
-            }
-
-            foreach (GamePlayer deadPlayer in playersToRez.Keys)
-            {
-                if(playersToRez[deadPlayer] + timeBeforeRez <= GameLoop.GameLoopTime)
-                {
-                    deadPlayer.Health = deadPlayer.MaxHealth;
-                    deadPlayer.Mana = deadPlayer.MaxMana;
-                    deadPlayer.Endurance = deadPlayer.MaxEndurance;
-                    deadPlayer.MoveTo(Body.CurrentRegionID, Body.X, Body.Y+100, Body.Z,
-                                  Body.Heading);
-
-
-                    deadPlayer.StopReleaseTimer();
-                    deadPlayer.Out.SendPlayerRevive(deadPlayer);
-                    deadPlayer.Out.SendStatusUpdate();
-                    deadPlayer.Out.SendMessage("Mordred has found your soul worthy of resurrection!",
-                                           eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    deadPlayer.Notify(GamePlayerEvent.Revive, deadPlayer);
-
-                    AtlasROGManager.GenerateROG(deadPlayer, true);
-
-                    playersToRez.Remove(deadPlayer);
-                }
-            }
-
-            foreach (GamePlayer player in playersToKill)
-            {
-                player.MoveTo(Body.CurrentRegionID, Body.X + 100, Body.Y, Body.Z,
-                                  Body.Heading);
-                player.Client.Out.SendMessage("Cowardice is not appreciated in this arena.",
-                                           eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            }
-
-            playersToKill.Clear();
+           
         }
     }
 }
