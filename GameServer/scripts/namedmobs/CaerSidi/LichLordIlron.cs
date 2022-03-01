@@ -47,9 +47,35 @@ namespace DOL.GS.Scripts
 			sBrain.AggroLevel = 100;
 			sBrain.AggroRange = 500;
 			LichLordIlronBrain.spawnimages = true;
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
+			LoadTemplate(npcTemplate);
 			base.AddToWorld();
 			return true;
-		}
+		}        public override void Die(GameObject killer)
+	    {
+		    // debug
+		    log.Debug($"{Name} killed by {killer.Name}");
+            
+		    GamePlayer playerKiller = killer as GamePlayer;
+
+		    if (playerKiller?.Group != null)
+		    {
+			    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+			    {
+				    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+			    }
+		    }
+		    DropLoot(killer);
+		    base.Die(killer);
+		    
+		    foreach (GameNPC npc in GetNPCsInRadius(4000))
+		    {
+			    if (npc.Brain is IlronImagesBrain)
+			    {
+				    npc.RemoveFromWorld();
+			    }
+		    }
+	    }
 		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -57,20 +83,7 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Lich Lord Ilron NPC Initializing...");
 		}
-		public override void Die(GameObject killer)
-		{
-
-			base.Die(killer);
-			
-			foreach (GameNPC npc in GetNPCsInRadius(4000))
-			{
-				if (npc.Brain is IlronImagesBrain)
-				{
-					npc.RemoveFromWorld();
-				}
-			}
-		}
-	}
+    }
     
 }
 

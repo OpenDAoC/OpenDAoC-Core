@@ -96,7 +96,7 @@ namespace DOL.GS.Scripts
 
         public override bool HasAbility(string keyName)
         {
-            if (IsReturningHome && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsReturningHome && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
