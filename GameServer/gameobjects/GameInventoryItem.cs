@@ -408,6 +408,7 @@ namespace DOL.GS {
 
             if (Charges > 0 && (Name.Equals("Bead of Regeneration") || Name.Equals("Barrel of Combined Buffs") || Name.Equals("Barrel of Combined Regens")))
             {
+                delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
                 delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
                 delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
             }
