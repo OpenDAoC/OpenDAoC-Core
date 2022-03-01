@@ -1,43 +1,13 @@
-﻿
+﻿# Miscellaneous
 
-# Languages
-System.LanguagesName.EN:				English
-System.LanguagesName.IT:				Italian
-System.LanguagesName.FR:				French
-System.LanguagesName.DE:				German
-
-
-# System
-System.NoSense:								That would make no sense!
-System.MustSelectTarget:					You must select a target!
-System.ReleaseTimer:						Release Timer
-
-
-# PropertyCalculator
-PropertyCalc.MaxSpeed.YouAreEncumbered:			You are encumbered and cannot move.
-
-
-# GameGraveStone
-GameGravestone.GameGravestone.Grave:			{0}'s Grave
-
-
-# GameGuard
-GameGuard.GetExamineMessages.Examine:			You examine the {0}. {1} is {2} and is a guard.
-
-
-# GAMESTAICITEM
-GameStaticItem.GetName.Article1:			The {0}
-GameStaticItem.GetName.Article2:			the {0}
-
-# Dialog Content
+## Dialog Headers
 Dialog.Header.Content.WebAdmin:                ----- Web Admin Tool -----
 Dialog.Header.Content.MoreInfo:                ----- Additional Info -----
 Dialog.Header.Content.PrivLevels:               ----- Privilege Levels -----
 Dialog.Header.Content.Shutdown:                 ----- Implications of a Shutdown -----
 Dialog.Header.Content.Attention:                 ----- ATTENTION -----
 
-
-# URLs
+## URLs
 Hyperlinks.Atlas.WebAdminTool:                      https://admin.atlasfreeshard.com
 Hyperlinks.CommLibrary.Main:                        https://www.atlasfreeshard.com/threads/gm-commands-library.408/
 Hyperlinks.CommLibrary.Plvl:                        https://www.atlasfreeshard.com/threads/gm-commands-library.408/post-4379
