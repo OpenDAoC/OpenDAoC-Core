@@ -940,9 +940,18 @@ namespace DOL.GS
 		{
 			get
 			{
-				return (Flags & eFlags.STEALTH) != 0;
+				return false;// (Flags & eFlags.STEALTH) != 0;
 			}
 		}
+
+		bool m_wasStealthed = false;
+		public bool WasStealthed
+        {
+			get
+            {
+				return m_wasStealthed;
+            }
+        }
 
 		protected int m_maxdistance;
 		/// <summary>
@@ -3126,6 +3135,8 @@ namespace DOL.GS
 				m_teleporterIndicator.AddToWorld();
 			}
 
+			if (Flags.HasFlag(eFlags.STEALTH))
+				m_wasStealthed = true;
 			return true;
 		}
 
@@ -4722,7 +4733,12 @@ namespace DOL.GS
 				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
 				standardMobBrain.OnAttackedByEnemy(ad);
             }
-            base.OnAttackedByEnemy(ad);
+
+			if ((Flags & eFlags.STEALTH) != 0)
+				Flags ^= GameNPC.eFlags.STEALTH;
+
+
+			base.OnAttackedByEnemy(ad);
         }
 
         /// <summary>
