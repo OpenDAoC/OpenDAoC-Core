@@ -142,6 +142,23 @@ namespace DOL.GS
             return 0;
         }
 
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166029);
+            LoadTemplate(npcTemplate);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+
+            SilencerBrain adds = new SilencerBrain();
+            SetOwnBrain(adds);
+            base.AddToWorld();
+            return true;
+        }
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
@@ -184,8 +201,6 @@ namespace DOL.GS
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 600;
                 CO.SetOwnBrain(ubrain);
-                //INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
-               // CO.LoadTemplate(npcTemplate);
                 CO.AddToWorld();
                 CO.Brain.Start();
                 CO.SaveIntoDatabase();

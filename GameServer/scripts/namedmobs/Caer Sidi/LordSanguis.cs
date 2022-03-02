@@ -86,7 +86,19 @@ namespace DOL.GS
                     }
                 }
             }
-            return base.AddToWorld();
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163412);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            LordSanguisBrain sbrain = new LordSanguisBrain();
+            SetOwnBrain(sbrain);
+            base.AddToWorld();
+            return true;
+
         }
         public override void Die(GameObject killer)
         {
@@ -142,13 +154,6 @@ namespace DOL.GS
                 CO.Size = 100;
                 CO.CurrentRegionID = 60;//caer sidi
 
-                CO.Strength = 300;
-                CO.Intelligence = 220;
-                CO.Piety = 220;
-                CO.Dexterity = 200;
-                CO.Constitution = 200;
-                CO.Quickness = 125;
-                CO.BodyType = 5;
                 CO.MeleeDamageType = eDamageType.Crush;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
@@ -165,8 +170,6 @@ namespace DOL.GS
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 500;
                 CO.SetOwnBrain(ubrain);
-                //INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
-                // CO.LoadTemplate(npcTemplate);
                 CO.AddToWorld();
                 CO.Brain.Start();
                 CO.SaveIntoDatabase();
@@ -277,6 +280,16 @@ namespace DOL.GS
         }      
         public override bool AddToWorld()
         {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163267);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            ParryChance = npcTemplate.ParryChance;
+
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 67);
             Inventory = template.CloseTemplate();
@@ -290,9 +303,6 @@ namespace DOL.GS
             ParryChance = 35;
             RespawnInterval = -1;
 
-            Strength = 300;
-            Dexterity = 200;
-            Quickness = 125;
             MaxDistance = 2000;
             TetherRange = 2000;
             Size = 100;
@@ -422,20 +432,26 @@ namespace DOL.GS
             Name = "blood mage";
             RespawnInterval = -1;
 
-            Strength = 50;
-            Dexterity = 200;
-            Quickness = 125;
             MaxDistance = 2500;
             TetherRange = 3000;
+            RoamingRange = 120;
             Size = 50;
             Level = 75;
-            MaxSpeedBase = 200;
+            MaxSpeedBase = 200;           
 
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
             Realm = eRealm.None;
             ++MageCount;
+
+            Strength = 25;
+            Dexterity = 200;
+            Constitution = 100;
+            Quickness = 125;
+            Piety = 150;
+            Intelligence = 150;
+
             BloodMageBrain adds = new BloodMageBrain();
             SetOwnBrain(adds);
             base.AddToWorld();
