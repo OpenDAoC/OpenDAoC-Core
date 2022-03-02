@@ -1,2 +1,7 @@
-# GAMEDOOR
+# Game Door
+
+## Door Request Handler
+DoorRequestHandler.OnTick.TooFarAway:			        The {0} is too far away!
+
+## RvR
 GameDoor.NowOpen:					The {0} is now open!
