@@ -50,7 +50,7 @@ namespace DOL.GS
         {
             get
             {
-                return 450;
+                return 250;
             }
             set
             {
@@ -161,12 +161,12 @@ namespace DOL.GS
                 SB.Size = 200;
                 SB.CurrentRegionID = 191;//galladoria
 
-                SB.Strength = 220;
+                SB.Strength = 160;
                 SB.Intelligence = 150;
-                SB.Piety = 150;
-                SB.Dexterity = 200;
-                SB.Constitution = 200;
-                SB.Quickness = 125;
+                SB.Piety = 130;
+                SB.Dexterity = 100;
+                SB.Constitution = 100;
+                SB.Quickness = 75;
                 SB.BodyType = 5;
                 SB.MeleeDamageType = eDamageType.Slash;
                 SB.Faction = FactionMgr.GetFactionByID(96);
@@ -321,7 +321,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
     }
     public void Spawn() // We define here adds
     {
-        for (int i = 0; i < Util.Random(3,4); i++)//Spawn 3 or 4 adds
+        for (int i = 0; i < Util.Random(2,3); i++)//Spawn 2 or 3 adds
         {
             GameLiving ptarget = CalculateNextAttackTarget();
             GiantSporiteCluster Add = new GiantSporiteCluster();
@@ -335,15 +335,15 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             Add.Faction = FactionMgr.GetFactionByID(96);
             Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             Add.PackageID = "GSCCopy";
-            Add.Strength = 130;
-            Add.Intelligence = 150;
-            Add.Piety = 150;
-            Add.Dexterity = 200;
-            Add.Constitution = 200;
-            Add.Quickness = 125;
+            Add.Strength = 60;
+            Add.Intelligence = 110;
+            Add.Piety = 110;
+            Add.Dexterity = 100;
+            Add.Constitution = 100;
+            Add.Quickness = 55;
             Add.RespawnInterval = -1;
             Add.CurrentRegion = Body.CurrentRegion;
-            Add.MaxSpeedBase = 200;
+            Add.MaxSpeedBase = 185;//slow so players can kite
             Add.Heading = Body.Heading;
             GiantSporiteClusterBrain smb = new GiantSporiteClusterBrain();
             smb.AggroLevel = 100;
@@ -353,30 +353,13 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             GiantSporiteClusterBrain brain = (GiantSporiteClusterBrain)Add.Brain;
             brain.AddToAggroList(ptarget, 1);
             Add.StartAttack(ptarget);
+
             Add.Master_NPC = Body;
             Add.Master = false;
             if (Body is GiantSporiteCluster)
             {
                 GiantSporiteCluster sg = Body as GiantSporiteCluster;
                 sg.CopyNPC.Add(Add);
-            }
-        }
-    }
-    public override void AddToAggroList(GameLiving living, int aggroamount, bool NaturalAggro)
-    {
-        base.AddToAggroList(living, aggroamount, NaturalAggro);
-
-        if (!(Body as GiantSporiteCluster).Master && (Body as GiantSporiteCluster).Master_NPC != null && !((Body as GiantSporiteCluster).Master_NPC.Brain as GiantSporiteClusterBrain).HasAggro)
-        {
-            ((Body as GiantSporiteCluster).Master_NPC.Brain as GiantSporiteClusterBrain).AddToAggroList(living, aggroamount, NaturalAggro);
-        }
-
-        if ((Body as GiantSporiteCluster).Master && (Body as GiantSporiteCluster).CopyNPC != null && (Body as GiantSporiteCluster).CopyNPC.Count > 0)
-        {
-            foreach (GameNPC npc in (Body as GiantSporiteCluster).CopyNPC)
-            {
-                if (npc.IsAlive && !(npc.Brain as GiantSporiteClusterBrain).HasAggro)
-                    (npc.Brain as GiantSporiteClusterBrain).AddToAggroList(living, aggroamount, NaturalAggro);
             }
         }
     }
@@ -408,13 +391,14 @@ public class GiantSporiteClusterBrain : StandardMobBrain
                 DBSpell spell = new DBSpell();
                 spell.AllowAdd = false;
                 spell.CastTime = 0;
-                spell.RecastDelay = 8;
+                spell.RecastDelay = 25;
                 spell.ClientEffect = 4568;
                 spell.Icon = 4568;
-                spell.Damage = 250;
+                spell.Damage = 200;
                 spell.Name = "Xaga Staff Bomb";
                 spell.TooltipId = 4568;
-                spell.Radius = 300;
+                spell.Radius = 200;
+                spell.Range = 600;
                 spell.SpellID = 11709;
                 spell.Target = "Enemy";
                 spell.Type = "DirectDamage";
