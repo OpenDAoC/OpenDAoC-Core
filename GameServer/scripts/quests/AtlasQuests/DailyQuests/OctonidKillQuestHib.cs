@@ -13,7 +13,7 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Hibernia
 {
-	public class KillQuestHib : Quests.DailyQuest
+	public class OctonidKillQuestHib : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -29,19 +29,19 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private static int OctonidKilled = 0;
 
 		// Constructors
-		public KillQuestHib() : base()
+		public OctonidKillQuestHib() : base()
 		{
 		}
 
-		public KillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
+		public OctonidKillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public KillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public OctonidKillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public KillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public OctonidKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -104,7 +104,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (KillQuestHib));
+			Dean.AddQuestToGive(typeof (OctonidKillQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -124,7 +124,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (KillQuestHib));
+			Dean.RemoveQuestToGive(typeof (OctonidKillQuestHib));
 		}
 
 		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
@@ -134,11 +134,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (KillQuestHib), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			KillQuestHib quest = player.IsDoingQuest(typeof (KillQuestHib)) as KillQuestHib;
+			OctonidKillQuestHib quest = player.IsDoingQuest(typeof (OctonidKillQuestHib)) as OctonidKillQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -170,7 +170,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(KillQuestHib)), "Will you help Dean [Daily] Atlas for the Win?");
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean [Daily] Atlas for the Win?");
 							break;
 					}
 				}
@@ -196,7 +196,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (KillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -214,7 +214,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			KillQuestHib quest = player.IsDoingQuest(typeof (KillQuestHib)) as KillQuestHib;
+			OctonidKillQuestHib quest = player.IsDoingQuest(typeof (OctonidKillQuestHib)) as OctonidKillQuestHib;
 
 			if (quest == null)
 				return;
@@ -236,7 +236,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(KillQuestHib)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -247,10 +247,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (KillQuestHib), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (KillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
@@ -260,7 +260,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (KillQuestHib), player, 1))
+				if (!Dean.GiveQuest(typeof (OctonidKillQuestHib), player, 1))
 					return;
 				OctonidKilled = 0;
 
@@ -295,7 +295,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(KillQuestHib)) == null)
+			if (player == null || player.IsDoingQuest(typeof(OctonidKillQuestHib)) == null)
 				return;
 
 			if (Step == 1 && e == GameLivingEvent.Interact)
