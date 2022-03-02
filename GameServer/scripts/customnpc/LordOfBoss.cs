@@ -145,7 +145,8 @@ namespace DOL.GS {
 					                  "4. [Conservator]\n" +
 					                  "5. [Xaga]\n" +
 					                  "6. [Spindler Broodmother]\n" +
-					                  "7. [Olcasar Geomancer]\n"
+					                  "7. [Olcasar Geomancer]\n" +
+					                  "8. [Aroon the Urlamhai]\n"
 						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 					break;
 
@@ -184,6 +185,11 @@ namespace DOL.GS {
 				case "olcasar geomancer":
 					if (t.Realm != eRealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.OlcasarGeomancer");
+					break;
+				
+				case "aroon the urlamhai":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Aroon");
 					break;
 				#endregion
 				
