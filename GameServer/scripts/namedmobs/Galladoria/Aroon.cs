@@ -312,6 +312,24 @@ namespace DOL.GS
             AroonBrain.spawn_guardians = false;
             return base.AddToWorld();
         }
+        
+        public override void Die(GameObject killer)
+        {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
+            base.Die(killer);
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
