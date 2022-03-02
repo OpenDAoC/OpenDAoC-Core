@@ -13,7 +13,7 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Hibernia
 {
-	public class KillQuestHib : BaseQuest
+	public class KillQuestHib : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -262,6 +262,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				//Check if we can add the quest!
 				if (!Dean.GiveQuest(typeof (KillQuestHib), player, 1))
 					return;
+				OctonidKilled = 0;
 
 				Dean.SayTo(player, "You will find the Octinids in World\'s End.");
 
@@ -316,8 +317,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				if (gArgs.Target.Name.ToLower() == "octonid") 
 				{
 					OctonidKilled++;
+					player.Out.SendQuestUpdate(this);
 					
-					if (OctonidKilled == 10)
+					if (OctonidKilled >= 10)
 					{
 						// FinishQuest or go back to Dean
 						Step = 2;
@@ -336,6 +338,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, 200, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			OctonidKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}
