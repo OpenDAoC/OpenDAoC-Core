@@ -138,6 +138,8 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161336);
             LoadTemplate(npcTemplate);
+            GiantSporiteClusterBrain sBrain = new GiantSporiteClusterBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }

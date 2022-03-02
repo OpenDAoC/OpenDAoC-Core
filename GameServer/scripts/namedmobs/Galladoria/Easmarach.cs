@@ -70,6 +70,8 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
             LoadTemplate(npcTemplate);
+            EasmarachBrain sBrain = new EasmarachBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }

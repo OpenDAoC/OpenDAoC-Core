@@ -42,13 +42,13 @@ namespace DOL.GS.Scripts
 			MaxDistance = 1500;
 			TetherRange = 2000;
 			RoamingRange = 400;
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
+			LoadTemplate(npcTemplate);
 			LichLordIlronBrain sBrain = new LichLordIlronBrain();
 			SetOwnBrain(sBrain);
 			sBrain.AggroLevel = 100;
 			sBrain.AggroRange = 500;
 			LichLordIlronBrain.spawnimages = true;
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
-			LoadTemplate(npcTemplate);
 			base.AddToWorld();
 			return true;
 		}        public override void Die(GameObject killer)

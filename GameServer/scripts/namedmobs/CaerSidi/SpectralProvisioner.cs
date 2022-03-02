@@ -39,10 +39,11 @@ namespace DOL.GS.Scripts
 			MaxDistance = 1500;
 			TetherRange = 2000;
 			RoamingRange = 0;
-			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
-			SetOwnBrain(sBrain);
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
 			LoadTemplate(npcTemplate);
+			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
+			SetOwnBrain(sBrain);
+			
 			base.AddToWorld();
 			return true;
 		}

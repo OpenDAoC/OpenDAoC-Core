@@ -95,6 +95,8 @@ namespace DOL.GS
             
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166449);
             LoadTemplate(npcTemplate);
+            SpindlerBroodmotherBrain sBrain = new SpindlerBroodmotherBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }

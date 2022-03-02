@@ -34,6 +34,8 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
             LoadTemplate(npcTemplate);
+            ConservatorBrain sBrain = new ConservatorBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }

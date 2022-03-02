@@ -18,6 +18,8 @@ namespace DOL.GS.Scripts
 			MaxDistance = 1500;
 			TetherRange = 2000;
 			RoamingRange = 0;
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166180);
+			LoadTemplate(npcTemplate);
 			SkeletalSacristanBrain sBrain = new SkeletalSacristanBrain();
 			SetOwnBrain(sBrain);
 			base.AddToWorld();

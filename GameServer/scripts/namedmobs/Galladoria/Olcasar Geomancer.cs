@@ -70,6 +70,8 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164613);
             LoadTemplate(npcTemplate);
+            OlcasarGeomancerBrain sBrain = new OlcasarGeomancerBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }

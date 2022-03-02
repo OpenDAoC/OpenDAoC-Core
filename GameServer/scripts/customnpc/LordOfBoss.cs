@@ -172,6 +172,8 @@ namespace DOL.GS {
 				case "xaga":
 					if (t.Realm != eRealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Xaga");
+					SummonBoss(t,"DOL.GS.Beatha");
+					SummonBoss(t,"DOL.GS.Tine");
 					break;
 				
 				case "spindler broodmother":
