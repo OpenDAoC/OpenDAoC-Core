@@ -288,7 +288,8 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
         {
             Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
         }
-
+        if (_brain.Body.WasStealthed)
+            _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
         _brain.ClearAggroList();
         _brain.CheckForProximityAggro = false;
         _brain.Body.WalkToSpawn();

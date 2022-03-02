@@ -1,4 +1,9 @@
-# GAMEGUARD
+# Game Guard
+
+## Examine
+GameGuard.GetExamineMessages.Examine:			You examine {0}. {1} is {2} and is a guard.
+
+## Attack Dialogue
 GameGuard.Albion.StartAttackSay:					Have at thee, fiend!
 GameGuard.Midgard.StartAttackSay:					Death to the intruders!
 GameGuard.Hibernia.StartAttackSay:					The wicked shall be scourned!

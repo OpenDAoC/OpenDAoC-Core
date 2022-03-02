@@ -932,7 +932,7 @@ namespace DOL.GS
             }
 
             // TODO: need to look into these timers
-            p.SetLastMeleeAttackTick();
+            //p.SetLastMeleeAttackTick();
             //p.StartMeleeAttackTimer();
 
             LivingStartAttack(target);

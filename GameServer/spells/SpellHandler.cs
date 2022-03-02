@@ -528,10 +528,11 @@ namespace DOL.GS.Spells
 				if (CheckBeginCast(m_spellTarget))
 				{
 					//Added to force non-Concentration spells cast on Necromancer to be cast on pet instead
-					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null && (Caster.TargetObject as GamePlayer).IsShade)
-                    			{
-                        			m_spellTarget = m_spellTarget.ControlledBrain.Body;
-                    			}
+					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null 
+						&& (Caster.TargetObject as GamePlayer).IsShade && Spell.ID != 5999)
+                    {
+                        m_spellTarget = m_spellTarget.ControlledBrain.Body;
+                    }
 					
 					if (m_caster is GamePlayer && (m_caster as GamePlayer).IsOnHorse && !HasPositiveEffect)
 					{
@@ -1099,7 +1100,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
-			if (Caster is GameNPC casterNPC)
+			if (Caster is GameNPC casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 
 			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
@@ -1724,15 +1725,29 @@ namespace DOL.GS.Spells
 						break;
 				}
 
-				//Process cast on same tick if finished.
-				if (castState == eCastState.Finished)
+			//Process cast on same tick if finished.
+			if (castState == eCastState.Finished)
+			{
+				FinishSpellCast(m_spellTarget);
+				if (Spell.IsFocus)
 				{
-					FinishSpellCast(m_spellTarget);
-					if (Spell.IsFocus)
+					if (Spell.ID != 5998)
+					{
 						castState = eCastState.Focusing;
+					}
 					else
+					{
 						castState = eCastState.Cleanup;
-				}
+
+						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+						stone.CanUseAgainIn = stone.CanUseEvery;
+
+						//.SetCooldown();
+					}
+				}			
+				else
+					castState = eCastState.Cleanup;
+			}
 			if (castState == eCastState.Cleanup)
 			{
 				CleanupSpellCast();
@@ -2568,7 +2583,7 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade && Spell.ID != 5999)
 							{
 								if (!Spell.IsBuff)
 									list.Add(player.ControlledBrain.Body);
@@ -3707,7 +3722,7 @@ namespace DOL.GS.Spells
 			
 			if (this is DamageShieldSpellHandler)
             {
-				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster.ControlledBrain.Body, eEffect.FocusShield));
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster?.ControlledBrain?.Body, eEffect.FocusShield));
             }
             
             //CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);

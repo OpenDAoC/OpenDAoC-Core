@@ -48,7 +48,7 @@ namespace DOL.GS
                         // {0} is surrounded by an acidic cloud!
                         Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
                     }
-                    handler.OnDirectEffect(Owner, Effectiveness, true);
+                    handler.OnDirectEffect(Owner, Effectiveness);
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {
