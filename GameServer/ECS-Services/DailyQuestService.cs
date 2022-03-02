@@ -44,13 +44,13 @@ public class DailyQuestService
     public static void Tick(long tick)
     {
         Diagnostics.StartPerfCounter(ServiceName);
-        //Console.WriteLine($"daily:{lastDailyRollover.TimeOfDay.Minutes} weekly:{lastWeeklyRollover.TimeOfDay.Minutes} now:{DateTime.Now.TimeOfDay.Minutes}");
+       // Console.WriteLine($"daily:{lastDailyRollover.TimeOfDay.Minutes} weekly:{lastWeeklyRollover.TimeOfDay.Minutes} now:{DateTime.Now.TimeOfDay.Minutes}");
 
         //DateTime.Today.AddDays(1)
         //midnight today/tomorrow -^
         
         //set up for minutes atm, will recode to midnight check once done with testing
-        if (lastDailyRollover.TimeOfDay.Minutes < DateTime.Now.TimeOfDay.Minutes)
+        if (lastDailyRollover.TimeOfDay.Minutes < DateTime.Now.TimeOfDay.Minutes || lastDailyRollover.TimeOfDay.Hours < DateTime.Now.TimeOfDay.Hours)
         {
             lastDailyRollover = DateTime.Now;
             
@@ -70,10 +70,27 @@ public class DailyQuestService
                 newTime.RolloverInterval = DailyIntervalKey;
                 GameServer.Database.AddObject(newTime);
             }
-            
+
+            foreach (var player in EntityManager.GetAllPlayers())
+            {
+                List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
+                foreach (var quest in player.QuestListFinished)
+                {
+                    Console.WriteLine($"Aborting {quest} for {player}");
+                    quest.AbortQuest();
+                    questsToRemove.Add(quest);
+                }
+
+                foreach (var quest in questsToRemove)
+                {
+                    player.QuestList.Remove(quest);
+                    player.QuestListFinished.Remove(quest);
+                }
+            }
+            Console.WriteLine($"Daily refresh");
         } 
         //this is where the weekly check will go once testing is finished
-        else if (lastWeeklyRollover.TimeOfDay.Minutes+3 < DateTime.Now.TimeOfDay.Minutes)
+        else if (lastWeeklyRollover.TimeOfDay.Minutes+3 < DateTime.Now.TimeOfDay.Minutes || lastWeeklyRollover.TimeOfDay.Hours < DateTime.Now.TimeOfDay.Hours)
         {
             lastWeeklyRollover = DateTime.Now;
             
@@ -93,6 +110,8 @@ public class DailyQuestService
                 newTime.RolloverInterval = WeeklyIntervalKey;
                 GameServer.Database.AddObject(newTime);
             }
+            
+            Console.WriteLine($"Weekly refresh");
         }
 
         Diagnostics.StopPerfCounter(ServiceName);
