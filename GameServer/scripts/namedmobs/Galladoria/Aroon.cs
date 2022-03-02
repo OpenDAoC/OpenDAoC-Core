@@ -305,7 +305,10 @@ namespace DOL.GS
             FuarScaithBrain.switch_target = false;
             TaesScaithBrain.switch_target = false;
             ScorScaithBrain.switch_target = false;
-
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158075);
+            LoadTemplate(npcTemplate);
+            AroonBrain sBrain = new AroonBrain();
+            SetOwnBrain(sBrain);
             AroonBrain.spawn_guardians = false;
             return base.AddToWorld();
         }
