@@ -178,6 +178,19 @@ namespace DOL.GS.ServerRules
 					return false;
 				}
 			}
+			
+			if (Properties.TESTER_LOGIN)
+			{
+				if (account == null || !account.IsTester && account.PrivLevel == 1)
+				{
+					// Admins and Testers are still allowed to enter server
+					// Normal Players will not be allowed to Log in
+					client.IsConnected = false;
+					client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
+					log.Debug("IsAllowedToConnect deny access; tester and staff only login");
+					return false;
+				}
+			}
 
 			if (!Properties.ALLOW_DUAL_LOGINS)
 			{
@@ -1048,12 +1061,13 @@ namespace DOL.GS.ServerRules
 		/// <param name="killer">killer</param>
 		public virtual void OnNPCKilled(GameNPC killedNPC, GameObject killer)
 		{
+			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
 			lock (killedNPC.XPGainers.SyncRoot)
 			{
 				#region Worth no experience
 				//"This monster has been charmed recently and is worth no experience."
 				string message = "You gain no experience from this kill!";
-				if (killedNPC.CurrentRegion.Time - GameNPC.CHARMED_NOEXP_TIMEOUT < killedNPC.TempProperties.getProperty<long>(GameNPC.CHARMED_TICK_PROP))
+				if (killedNPC.CurrentRegion?.Time - GameNPC.CHARMED_NOEXP_TIMEOUT < killedNPC.TempProperties.getProperty<long>(GameNPC.CHARMED_TICK_PROP))
 				{
 					message = "This monster has been charmed recently and is worth no experience.";
 				}
@@ -1095,12 +1109,11 @@ namespace DOL.GS.ServerRules
 							plrGrpExp[player.Group] += 1;
 						else
 							plrGrpExp[player.Group] = 1;
-
-						// tolakram: only prepare for xp challenge code if player is in a group
-						if (highestPlayer == null || (player.Level > highestPlayer.Level))
-							highestPlayer = player;
 					}
 
+					// tolakram: only prepare for xp challenge code if player is in a group
+					if (highestPlayer == null || (player.Level > highestPlayer.Level))
+						highestPlayer = player;
 				}
 				#endregion
 
@@ -1198,6 +1211,15 @@ namespace DOL.GS.ServerRules
 					else
 						xpReward = npcExpValue;
 
+					//xp should divided across all members in the group, per this article: https://camelot.allakhazam.com/story.html?story=491
+					if (player != null && player.Group != null && player.Group.MemberCount > 1)
+					{
+						int scalingFactor = (int)Math.Ceiling((decimal)player.Group.MemberCount);
+						long tmpxp = (long)(xpReward * (1 + 0.125 * GetUniqueClassCount(player.Group)));
+						xpReward = tmpxp / scalingFactor;
+						//xpReward /= scalingFactor;
+					}
+
 					// exp cap
 					/*
 					
@@ -1251,26 +1273,38 @@ namespace DOL.GS.ServerRules
 					if (xpReward > expCap)
 						xpReward = expCap;
 
+					if(player != null && player.Group != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
+					{
+						player.Out.SendMessage($"XP Award: {xpReward.ToString("N0", format)} | Group XP Cap: {expCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						double expPercent = ((double)(xpReward) / (double)(expCap)) * 100;
+						player.Out.SendMessage($"% of Cap: {expPercent.ToString(".##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage($"---------------------------------------------------", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+
 					#region Camp Bonus
 					// average max camp bonus is somewhere between 50 and 60%
 					double fullCampBonus = ServerProperties.Properties.MAX_CAMP_BONUS;
+					if (killer.CurrentZone.IsDungeon)
+						fullCampBonus = 1; //dungeon gives +100% camp xp
+					
 					double campBonusPerc = 0;
 
 					if (GameLoop.GameLoopTime - killedNPC.SpawnTick > 1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
 					{
 						campBonusPerc = fullCampBonus;
-						killedNPC.CampBonus = 0.95;
+						killedNPC.CampBonus = 0.98;
 					}
 					else
 					{
 						campBonusPerc = fullCampBonus * killedNPC.CampBonus;
-						if (killedNPC.CampBonus >= 0.05) killedNPC.CampBonus -= 0.05; // decrease camp bonus by 5% per kill
+						if (killedNPC.CampBonus >= 0.02) killedNPC.CampBonus -= 0.02; // decrease camp bonus by 2% per kill
 					}
 
 					//1.49 http://news-daoc.goa.com/view_patchnote_archive.php?id_article=2478
 					//"Camp bonuses" have been substantially upped in dungeons. Now camp bonuses in dungeons are, on average, 20% higher than outside camp bonuses.
 					if (killer.CurrentZone.IsDungeon)
-						campBonusPerc *= 1.20;
+						campBonusPerc *= 1.50;
+
 
 					if (campBonusPerc < 0.01)
 						campBonusPerc = 0;
@@ -1278,6 +1312,18 @@ namespace DOL.GS.ServerRules
 						campBonusPerc = fullCampBonus;
 
 					campBonus = (long)(xpReward * campBonusPerc);
+					#endregion
+
+					#region Atlas Bonus
+					//up to 100% more exp while solo, scaled lower as group size grows
+					long atlasBonus = 0;
+					if (player != null && player.Group != null)
+					{
+						atlasBonus = (xpReward) / player.Group.GetPlayersInTheGroup().Count;
+					}
+					else
+						atlasBonus = (xpReward);
+
 					#endregion
 
 					#region Outpost Bonus
@@ -1316,14 +1362,14 @@ namespace DOL.GS.ServerRules
 					{
 						if (player != null)
 						{
-							if (player.XPLogState == GamePlayer.eXPLogState.Verbose)
+							if (player.XPLogState == eXPLogState.Verbose)
 							{
 								player.Out.SendMessage($"% of Camp remaining: {(campBonusPerc * 100 / fullCampBonus).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 							}
 							
 							if (player.Group != null && plrGrpExp.ContainsKey(player.Group))
-								groupExp += (long)(0.05 * xpReward * GetUniqueClassCount(player.Group)/*(int)plrGrpExp[player.Group]*/);
+								groupExp += (long)(0.125 * xpReward * GetUniqueClassCount(player.Group)/*(int)plrGrpExp[player.Group]*/);
 
 							// tolakram - remove this for now.  Correct calculation should be reduced XP based on damage pet did, not a flat reduction
 							//if (player.ControlledNpc != null)
@@ -1331,7 +1377,7 @@ namespace DOL.GS.ServerRules
 						}
 
 						//Ok we've calculated all the base experience.  Now let's add them all together.
-						xpReward += (long)campBonus + groupExp + outpostXP;
+						xpReward += (long)campBonus + groupExp + outpostXP + atlasBonus;
 
 						if (!living.IsAlive)//Dead living gets 25% exp only
 							xpReward = (long)(xpReward * 0.25);
@@ -1340,8 +1386,53 @@ namespace DOL.GS.ServerRules
 						if(plrGrpExp.Count > 0)
 							xpReward /= plrGrpExp.Count;
 
+						if (player != null && (player.XPLogState == eXPLogState.On || player.XPLogState == eXPLogState.Verbose))
+						{
+							double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
+							/*int scaleFactor = 1;
+							if (player.Group?.MemberCount > 1)
+								scaleFactor = player.Group.MemberCount;
+							double softXPCap = (long)((GameServer.ServerRules.GetExperienceForLiving(highestPlayer.Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100) / scaleFactor);
+							if (player.CurrentRegion.IsRvR)
+								softXPCap = (long)(softXPCap * ServerProperties.Properties.RvR_XP_RATE);
+							else
+								softXPCap = (long)(softXPCap * ServerProperties.Properties.XP_RATE);
+							*/
+							//Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
+							long softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(living.Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
+							player.Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | Solo Cap : {softXPCap.ToString("N0", format)} | %Cap: {((double)((baseXP) / (softXPCap)) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							
+							if (player.XPLogState == eXPLogState.Verbose)
+							{
+								double soloPercent = ((double)atlasBonus / (baseXP)) * 100.0;
+								double campPercent = ((double)campBonus / (baseXP)) * 100.0;
+								double groupPercent = ((double)groupExp / (baseXP)) * 100.0;
+								double outpostPercent = ((double)outpostXP / (baseXP)) * 100.0;
+								double levelPercent = ((double)(player.Experience + xpReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel)) * 100;
+								
+								player.Out.SendMessage($"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage($"# of kills needed to level at this rate: {(player.ExperienceForNextLevel - player.Experience) / xpReward}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (atlasBonus > 0)
+									player.Out.SendMessage($"Atlas: {atlasBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (campBonus > 0)
+									player.Out.SendMessage($"Camp: {campBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (player.Group != null)
+									player.Out.SendMessage($"Group: {groupExp.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								if (outpostXP > 0)
+									player.Out.SendMessage($"Outpost: {outpostXP.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+								//player.Out.SendMessage($"Total Bonus: {((double)((atlasBonus + campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								
+
+							}
+						}
+
 						//XP Rate is handled in GainExperience
-						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true, true, true);
+						living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, atlasBonus, true, true, true);
 					}
 				}
 			}
@@ -1828,7 +1919,7 @@ namespace DOL.GS.ServerRules
 
                 foreach (var player in playersToAward)
                 {
-	                if (player.Level < 35) continue;
+	                if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
                     AtlasROGManager.GenerateOrbs(player);
                     if (Properties.EVENT_THIDRANKI || Properties.EVENT_TUTORIAL)
                     {

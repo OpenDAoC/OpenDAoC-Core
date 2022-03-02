@@ -751,16 +751,17 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ConcentrationList)))
 			{
-				lock (m_gameClient.Player.ConcentrationEffects)
+				lock (m_gameClient.Player.effectListComponent._concentrationEffectsLock)
 				{
-					pak.WriteByte((byte)(m_gameClient.Player.ConcentrationEffects.Count));
+					pak.WriteByte((byte)(m_gameClient.Player.effectListComponent.ConcentrationEffects.Count));
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-                    for (int i = 0; i < m_gameClient.Player.ConcentrationEffects.Count; i++)
+					var effects = m_gameClient.Player.effectListComponent.ConcentrationEffects;
+                    for (int i = 0; i < effects.Count; i++)
                     {
-                        IConcentrationEffect effect = m_gameClient.Player.ConcentrationEffects[i];
+                        IConcentrationEffect effect = effects[i];
                         pak.WriteByte((byte)i);
                         pak.WriteByte(0); // unknown
                         pak.WriteByte(effect.Concentration);
@@ -2405,7 +2406,7 @@ namespace DOL.GS.PacketHandler
 					//		pak.WriteShort(icon);
 					//	}
 					//}
-                    lock (pet.EffectList)
+                    lock (pet.effectListComponent._effectsLock)
                     {
                         ArrayList icons = new ArrayList();
                         foreach (var effects in pet.effectListComponent.Effects.Values)
@@ -3978,62 +3979,62 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-                foreach (IGameEffect effect in m_gameClient.Player.EffectList)
-                {
-                    if (effect.Icon != 0)
-                    {
-                        fxcount++;
-                        if (changedEffects != null && !changedEffects.Contains(effect))
-                        {
-                            continue;
-                        }
+                //foreach (IGameEffect effect in m_gameClient.Player.EffectList)
+                //{
+                //    if (effect.Icon != 0)
+                //    {
+                //        fxcount++;
+                //        if (changedEffects != null && !changedEffects.Contains(effect))
+                //        {
+                //            continue;
+                //        }
 
-                        // store tooltip update for gamespelleffect.
-                        if (ForceTooltipUpdate && effect is GameSpellEffect gameEffect)
-                        {
-                            tooltipSpellHandlers.Add(gameEffect.SpellHandler);
-                        }
+                //        // store tooltip update for gamespelleffect.
+                //        if (ForceTooltipUpdate && effect is GameSpellEffect gameEffect)
+                //        {
+                //            tooltipSpellHandlers.Add(gameEffect.SpellHandler);
+                //        }
 
-                        //						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
-                        pak.WriteByte((byte)(fxcount - 1)); // icon index
-                        pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
+                //        //						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
+                //        pak.WriteByte((byte)(fxcount - 1)); // icon index
+                //        pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
 
-                        byte ImmunByte = 0;
-                        var gsp = effect as GameSpellEffect;
-                        if (gsp != null && gsp.IsDisabled)
-                            ImmunByte = 1;
-                        pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
+                //        byte ImmunByte = 0;
+                //        var gsp = effect as GameSpellEffect;
+                //        if (gsp != null && gsp.IsDisabled)
+                //            ImmunByte = 1;
+                //        pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
 
-                        // bit 0x08 adds "more..." to right click info
-                        pak.WriteShort(effect.Icon);
-                        //pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
-                        pak.WriteShort((ushort)(effect.RemainingTime / 1000));
-                        if (effect is GameSpellEffect)
-                            pak.WriteShort((ushort)((GameSpellEffect)effect).Spell.InternalID); //v1.110+ send the spell ID for delve info in active icon
-                        else
-                            pak.WriteShort(0);//don't override existing tooltip ids
+                //        // bit 0x08 adds "more..." to right click info
+                //        pak.WriteShort(effect.Icon);
+                //        //pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
+                //        pak.WriteShort((ushort)(effect.RemainingTime / 1000));
+                //        if (effect is GameSpellEffect)
+                //            pak.WriteShort((ushort)((GameSpellEffect)effect).Spell.InternalID); //v1.110+ send the spell ID for delve info in active icon
+                //        else
+                //            pak.WriteShort(0);//don't override existing tooltip ids
 
-                        byte flagNegativeEffect = 0;
-                        if (effect is StaticEffect)
-                        {
-                            if (((StaticEffect)effect).HasNegativeEffect)
-                            {
-                                flagNegativeEffect = 1;
-                            }
-                        }
-                        else if (effect is GameSpellEffect)
-                        {
-                            if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
-                            {
-                                flagNegativeEffect = 1;
-                            }
-                        }
-                        pak.WriteByte(flagNegativeEffect);
+                //        byte flagNegativeEffect = 0;
+                //        if (effect is StaticEffect)
+                //        {
+                //            if (((StaticEffect)effect).HasNegativeEffect)
+                //            {
+                //                flagNegativeEffect = 1;
+                //            }
+                //        }
+                //        else if (effect is GameSpellEffect)
+                //        {
+                //            if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
+                //            {
+                //                flagNegativeEffect = 1;
+                //            }
+                //        }
+                //        pak.WriteByte(flagNegativeEffect);
 
-                        pak.WritePascalString(effect.Name);
-                        entriesCount++;
-                    }
-                }
+                //        pak.WritePascalString(effect.Name);
+                //        entriesCount++;
+                //    }
+                //}
 
                 int oldCount = lastUpdateEffectsCount;
 				lastUpdateEffectsCount = fxcount;
@@ -4854,7 +4855,7 @@ namespace DOL.GS.PacketHandler
 				//			pak.WriteShort(effect.Icon);
 				//		}
 				//}
-                lock (living.effectListComponent.Effects.Values)
+                lock (living.effectListComponent._effectsLock)
                 {
                     byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
@@ -5771,7 +5772,7 @@ namespace DOL.GS.PacketHandler
 			var group = m_gameClient.Player.Group;
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
-				lock (group)
+				lock (group._groupLock)
 				{
 					// make sure group is not modified before update is sent else player index could change _before_ update
 					if (living.Group != group)

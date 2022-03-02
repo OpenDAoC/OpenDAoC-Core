@@ -51,7 +51,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Ping timeout definition in seconds
 		/// </summary>
-		public const long PING_TIMEOUT = 360; // 6 min default ping timeout (ticks are 100 nano seconds)
+		public const long PING_TIMEOUT = 60; // 1 min default ping timeout (ticks are 100 nano seconds)
 		/// <summary>
 		/// Holds the distance which player get experience from a living object
 		/// </summary>

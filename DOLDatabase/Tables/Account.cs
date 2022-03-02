@@ -40,6 +40,11 @@ namespace DOL.Database
 		private string m_language;
 		private string m_lastClientVersion;
 		private bool m_isMuted;
+		private String m_notes;
+		private bool m_isWarned;
+		private bool m_isTester;
+		private int m_charactersTraded;
+		private int m_soloCharactersTraded;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -52,6 +57,7 @@ namespace DOL.Database
 			m_plvl = 1;
 			m_realm = 0;
 			m_isMuted = false;
+			m_isTester = false;
 		}
 
 		/// <summary>
@@ -212,6 +218,55 @@ namespace DOL.Database
 		{
 			get { return m_isMuted; }
 			set { Dirty = true; m_isMuted = value; }
+		}
+		
+		/// <summary>
+		/// Is this account warned
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool IsWarned
+		{
+			get { return m_isWarned; }
+			set { Dirty = true; m_isWarned = value; }
+		}
+		
+		/// <summary>
+		/// Account notes
+		/// </summary>
+		[DataElement(AllowDbNull = true)]
+		public string Notes {
+			get { return m_notes; }
+			set { Dirty = true; m_notes = value; }
+		}
+		
+		/// <summary>
+		/// Is this account allowed to connect to PTR
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool IsTester
+		{
+			get { return m_isTester; }
+			set { Dirty = true; m_isTester = value; }
+		}
+
+		/// <summary>
+		/// Number of characters turned in for the challenge titles
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public int CharactersTraded
+		{
+			get { return m_charactersTraded; }
+			set { Dirty = true; m_charactersTraded = value; }
+		}
+		
+		/// <summary>
+		/// Number of characters turned in for the challenge titles
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public int SoloCharactersTraded
+		{
+			get { return m_soloCharactersTraded; }
+			set { Dirty = true; m_soloCharactersTraded = value; }
 		}
 
 		/// <summary>

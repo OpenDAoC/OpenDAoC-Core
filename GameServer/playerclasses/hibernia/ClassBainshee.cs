@@ -158,11 +158,11 @@ namespace DOL.GS.PlayerClass
 				return;
 
 			// Keep Wraith Form if Pulsing Offensive Spell Running
-			if (!forced && Player.ConcentrationEffects.OfType<PulsingSpellEffect>().Any(pfx => pfx.SpellHandler != null && !pfx.SpellHandler.HasPositiveEffect))
-			{
-				TurnInWraith();
-				return;
-			}
+			//if (!forced && Player.ConcentrationEffects.OfType<PulsingSpellEffect>().Any(pfx => pfx.SpellHandler != null && !pfx.SpellHandler.HasPositiveEffect))
+			//{
+			//	TurnInWraith();
+			//	return;
+			//}
 			
 			if (m_WraithTimerAction.IsAlive)
 				m_WraithTimerAction.Stop();

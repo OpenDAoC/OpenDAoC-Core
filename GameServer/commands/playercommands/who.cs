@@ -51,19 +51,21 @@ namespace DOL.GS.Commands
 		"Shows who is online",
 		//help:
 		//"/who  Can be modified with [playername], [class], [#] level, [location], [##] [##] level range",
-		"/WHO ALL lists all players online",
+		"/WHO ALL - lists all players online",
 		//"/WHO NF lists all players online in New Frontiers",
 		// "/WHO CSR lists all Customer Service Representatives currently online",
 		// "/WHO DEV lists all Development Team Members currently online",
 		// "/WHO QTA lists all Quest Team Assistants currently online",
-		"/WHO <name> lists players with names that start with <name>",
-		"/WHO <guild name> lists players with names that start with <guild name>",
-		"/WHO <class> lists players with of class <class>",
-		"/WHO <location> lists players in the <location> area",
-		"/WHO <level> lists players of level <level>",
-		"/WHO <level> <level> lists players in level range",
-		"/WHO BG lists all players leading a public BattleGroup",
-		"/WHO SOLO lists all ungrouped players"
+		"/WHO <name> lists - players with names that start with <name>",
+		"/WHO <guild name> - lists players with names that start with <guild name>",
+		"/WHO <class> - lists players with of class <class>",
+		"/WHO <location> - lists players in the <location> area",
+		"/WHO <level> - lists players of level <level>",
+		"/WHO <level> <level> - lists players in level range",
+		"/WHO BG - lists all players leading a public BattleGroup",
+		"/WHO nogroup - lists all ungrouped players",
+		"/WHO hc - lists all Hardcore players",
+		"/WHO solo - lists all SOLO players"
 	)]
 	public class WhoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
@@ -159,7 +161,7 @@ namespace DOL.GS.Commands
 					filters.Add(new BGFilter());
 					break;
 				}
-				case "solo":
+				case "nogroup":
 					filters = new ArrayList();
 					filters.Add(new SoloFilter());
 					break;
@@ -169,6 +171,26 @@ namespace DOL.GS.Commands
 						filters.Add(new RPFilter());
 						break;
 					}
+				case "hc":
+				case "hardcore":
+				{
+					filters = new ArrayList(1);
+					filters.Add(new HCFilter());
+					break;
+				}
+				case "solo":
+				case "nohelp":
+				{
+					filters = new ArrayList(1);
+					filters.Add(new NoHelpFilter());
+					break;
+				}
+				case "frontiers":
+				{
+					filters = new ArrayList();
+					filters.Add(new OldFrontiersFilter());
+					break;
+				}
 				default:
 					{
 						filters = new ArrayList();
@@ -256,14 +278,28 @@ namespace DOL.GS.Commands
 				if (log.IsErrorEnabled)
 					log.Error("no character class spec in who commandhandler for player " + player.Name);
 			}
+
 			if (player.CurrentZone != null)
 			{
-				result.Append(" in ");
-				result.Append(player.CurrentZone.Description);
+				// If '/who' source is a Player and target is plvl 3, do not return zone description (only return for Admins if Admin is source)
+				if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player || source.Account.PrivLevel == (uint)ePrivLevel.Admin)
+				{
+					result.Append(" in ");
+					// Counter-espionage behavior: Change zone description to "Frontiers" if source is a Player and target(s) located in OF (RVR-enabled zone in classic Alb/Hib/Mid region)
+					if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
+					{
+						result.Append("the Frontiers");
+					}
+					// If target player(s) are not in RvR-enabled zones in classic region, return zone name/description
+					else
+					{
+						result.Append(player.CurrentZone.Description);	
+					}
+				}
 			}
 			else
 			{
-				if (log.IsErrorEnabled)
+				if (log.IsErrorEnabled && player.Client.Account.PrivLevel != (uint)ePrivLevel.Admin)
 					log.Error("no currentzone in who commandhandler for player " + player.Name);
 			}
 			ChatGroup mychatgroup = (ChatGroup) player.TempProperties.getProperty<object>(ChatGroup.CHATGROUP_PROPERTY, null);
@@ -287,6 +323,14 @@ namespace DOL.GS.Commands
 			if (player.Advisor)
 			{
 				result.Append(" <ADV>");
+			}
+			if (player.HCFlag)
+			{
+				result.Append(" <HC>");
+			}
+			if (player.NoHelp)
+			{
+				result.Append(" <SOLO>");
 			}
 			if(player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 			{
@@ -377,7 +421,7 @@ namespace DOL.GS.Commands
 					return false;
 				if (player.CharacterClass.Name.ToLower().StartsWith(m_filterString))
 					return true;
-				if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString))
+				if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString) && !player.CurrentZone.IsOF)
 					return true;
 				return false;
 			}
@@ -463,11 +507,15 @@ namespace DOL.GS.Commands
 			}
 		}
 
-		private class NewFrontiersFilter : IWhoFilter
+		private class OldFrontiersFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)
 			{
-				return player.CurrentRegionID == 163;
+				if (player.Client.Account.PrivLevel == (uint)ePrivLevel.Admin && player.CurrentZone.IsRvR)
+					return false;
+				if (player.Client.Account.PrivLevel < (uint)ePrivLevel.Admin && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
+					return true;
+				return false;
 			}
 		}
 
@@ -479,6 +527,22 @@ namespace DOL.GS.Commands
 			}
 		}
 		
+		private class HCFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				return player.HCFlag;
+			}
+		}
+		
+		private class NoHelpFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				return player.NoHelp;
+			}
+		}
+
 		private class SoloFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)

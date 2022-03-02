@@ -359,24 +359,24 @@ namespace DOL.GS.Effects
 		/// <param name="noMessages"></param>
 		protected virtual void RemoveEffect(bool noMessages)
 		{
-			lock (m_LockObject)
-			{
-				StopTimers();
+			//lock (m_LockObject)
+			//{
+			//	StopTimers();
 				
-				// Expire Effect
-				IsExpired = true;
+			//	// Expire Effect
+			//	IsExpired = true;
 				
-				// Remove concentration Effect from Caster List.
-				if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null) 
-					SpellHandler.Caster.ConcentrationEffects.Remove(this);
+			//	// Remove concentration Effect from Caster List.
+			//	if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null) 
+			//		//SpellHandler.Caster.ConcentrationEffects.Remove(this);
 				
-				// Remove effect from Owner list
-				if(Owner != null && Owner.EffectList != null) 
-					Owner.EffectList.Remove(this);
-			}
+			//	// Remove effect from Owner list
+			//	if(Owner != null && Owner.EffectList != null) 
+			//		Owner.EffectList.Remove(this);
+			//}
 			
-			// Try disabling Effect
-			DisableEffect(false);
+			//// Try disabling Effect
+			//DisableEffect(false);
 		}
 		
 		/// <summary>
@@ -431,8 +431,8 @@ namespace DOL.GS.Effects
 					}
 					
 					// Add concentration Effect To Caster List.
-					if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null)
-						SpellHandler.Caster.ConcentrationEffects.Add(this);
+					if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.effectListComponent.ConcentrationEffects != null)
+						//SpellHandler.Caster.ConcentrationEffects.Add(this);
 					
 					StartTimers();
 				}
@@ -586,8 +586,8 @@ namespace DOL.GS.Effects
 				Effectiveness = effect.Effectiveness;
 
 				// Add concentration Effect To Caster List.
-				if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.ConcentrationEffects != null)
-					SpellHandler.Caster.ConcentrationEffects.Add(this);
+				if (Concentration > 0 && SpellHandler != null && SpellHandler.Caster != null && SpellHandler.Caster.effectListComponent.ConcentrationEffects != null)
+					//SpellHandler.Caster.ConcentrationEffects.Add(this);
 
 				// Restart Effect
 				IsExpired = false;

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 
@@ -26,7 +27,7 @@ namespace DOL.GS.Effects
         {
             if (OwnerPlayer == null) return;
 
-            ICollection<GamePlayer> playersToHeal = null;
+            ICollection<GamePlayer> playersToHeal = new List<GamePlayer>();
 
             // OF AM works on the caster as well, unlike NF AM.
             if (OwnerPlayer.Group == null)

@@ -54,10 +54,18 @@ namespace DOL.GS.Commands
 					return;
 				}
 				target = (GamePlayer) client.Player.TargetObject;
+				
 				if (!GameServer.ServerRules.IsAllowedToGroup(client.Player, target, false))
 				{
 					return;
 				}
+				
+				if (target.NoHelp)
+				{
+					client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				
 			}
 			else
 			{ // Inviting by name
@@ -74,6 +82,11 @@ namespace DOL.GS.Commands
 				if (target == client.Player)
 				{
 					client.Out.SendMessage("You can't invite yourself.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				if (target.NoHelp)
+				{
+					client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -102,7 +115,10 @@ namespace DOL.GS.Commands
 					group.AddMember(client.Player);
 					group.AddMember(target);
 				}
-				else
+				else if (target.NoHelp)
+				{
+					client.Out.SendMessage("Grouping this player would void their SOLO challenge", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				} else
 				{
 					client.Player.Group.AddMember(target);
 				}

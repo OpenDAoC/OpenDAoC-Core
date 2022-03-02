@@ -325,7 +325,7 @@ namespace DOL.AI.Brain
                     continue; // add only new NPCs
                 if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
                     continue;
-                if (npc is GameTaxi)
+                if (npc is GameTaxi || npc is GameTrainingDummy)
                     continue; //do not attack horses
 
                 if (CalculateAggroLevelToTarget(npc) > 0)
@@ -383,8 +383,8 @@ namespace DOL.AI.Brain
                 if (Body.Faction != null)
                 {
                     aggrolevel = Body.Faction.GetAggroToFaction(player);
-                    if (aggrolevel < 0)
-                        aggrolevel = 0;
+                    if (aggrolevel < 75)
+                        return;
                 }
 
                 if (aggrolevel <= 0 && AggroLevel <= 0)
@@ -400,7 +400,7 @@ namespace DOL.AI.Brain
                 if (CalculateAggroLevelToTarget(player) > 0)
                 {
                     if (useLOS && !AggroLOS) return;
-                    AddToAggroList(player, player.EffectiveLevel << 1, true);
+                    AddToAggroList(player, 1, true);
                 }
             }
         }
@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(1500, 5000 - (AggroLevel/2) * 100); }
+            get { return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
         }
 
         /// <summary>
@@ -1010,6 +1010,10 @@ namespace DOL.AI.Brain
 
                 if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
                 {
+                    if (this is CommanderBrain cBrain)
+                    {
+                        cBrain.Attack(ad.Attacker);
+                    }
                     FSM.SetCurrentState(eFSMStateType.AGGRO);
                     FSM.Think();
                 }
@@ -1530,7 +1534,7 @@ namespace DOL.AI.Brain
 
             bool casted = false;
 
-            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == (byte)eSpellType.DirectDamageWithDebuff)))
+            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == (byte)eSpellType.DirectDamageWithDebuff || spell.SpellType == (byte)eSpellType.DamageSpeedDecrease)))
             {
                 // Offensive spells require the caster to be facing the target
                 if (Body.TargetObject != Body)
@@ -1635,12 +1639,12 @@ namespace DOL.AI.Brain
                 }
             }*/
 
-            lock (target.effectListComponent)
+            spell.IsSpec = true;
+            if (EffectListService.GetEffectOnTarget(target, EffectService.GetEffectFromSpell(spell)) != null)
+            //if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell)))
             {
-                spell.IsSpec = true;
-                if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell))){
-                    return true;
-                }
+                return true;
+            }
                 /*
                 //Check through each effect in the target's effect list
                 foreach (IGameEffect effect in target.EffectList)
@@ -1655,7 +1659,7 @@ namespace DOL.AI.Brain
                     if (speffect.Spell.EffectGroup == spell.EffectGroup)
                         return true;
                 }*/
-            }
+
 
             //the answer is no, the effect has not been found
             return false;

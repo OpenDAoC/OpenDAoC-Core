@@ -18,9 +18,22 @@ namespace DOL.GS
         public Dictionary<eEffect, List<ECSGameEffect>> Effects = new Dictionary<eEffect, List<ECSGameEffect>>();
         public Dictionary<int, ECSGameEffect> EffectIdToEffect = new Dictionary<int, ECSGameEffect>();
 
+        /// <summary>
+        /// Holds the concentration effects list
+        /// </summary>
+        private List<ECSGameSpellEffect> m_concEffects;
+
+        public object _concentrationEffectsLock = new object();
+
+        /// <summary>
+        /// Gets the concentration effects list
+        /// </summary>
+        public List<ECSGameSpellEffect> ConcentrationEffects { get { return m_concEffects; } }
+
         public EffectListComponent(GameLiving p)
         {
             Owner = p;
+            m_concEffects = new List<ECSGameSpellEffect>(20);
         }
 
         public bool AddEffect(ECSGameEffect effect)
@@ -193,72 +206,109 @@ namespace DOL.GS
 
         public List<ECSGameEffect> GetAllEffects()
         {
-            var temp = new List<ECSGameEffect>();
-            foreach (var effects in Effects.Values.ToList())
+            lock (_effectsLock)
             {
-                for (int j = 0; j < effects.Count; j++)
+                var temp = new List<ECSGameEffect>();
+                foreach (var effects in Effects.Values.ToList())
                 {
-                    if (effects[j].EffectType != eEffect.Pulse)
-                        temp.Add(effects[j]);
+                    for (int j = 0; j < effects?.Count; j++)
+                    {
+                        if (effects[j].EffectType != eEffect.Pulse)
+                            temp.Add(effects[j]);
+                    }
                 }
+                return temp.OrderBy(e => e.StartTick).ToList();
             }
-            return temp.OrderBy(e => e.StartTick).ToList();
+        }
+
+        public List<ECSPulseEffect> GetAllPulseEffects()
+        {
+            lock (_effectsLock)
+            {
+                var temp = new List<ECSPulseEffect>();
+                foreach (var effects in Effects.Values.ToList())
+                {
+                    for (int j = 0; j < effects?.Count; j++)
+                    {
+                        if (effects[j].EffectType == eEffect.Pulse)
+                            temp.Add((ECSPulseEffect)effects[j]);
+                    }
+                }
+                return temp;
+            }
         }
 
         public List<IConcentrationEffect> GetConcentrationEffects()
         {
-            var temp = new List<IConcentrationEffect>();
-            foreach (var effects in Effects.Values.ToList())
+            lock (_effectsLock)
             {
-                for (int j = 0; j < effects.Count; j++)
+                var temp = new List<IConcentrationEffect>();
+                var allEffects = Effects.Values.ToList();
+
+                if (allEffects != null)
                 {
-                    if (effects[j] is IConcentrationEffect)
-                        temp.Add(effects[j] as IConcentrationEffect);
+                    foreach (var effects in allEffects)
+                    {
+                        for (int j = 0; j < effects?.Count; j++)
+                        {
+                            if (effects[j] is ECSPulseEffect || effects[j].IsConcentrationEffect())
+                                temp.Add(effects[j] as IConcentrationEffect);
+                        }
+                    }
                 }
+                return temp;
             }
-            return temp;
         }
 
         public ECSGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType = eEffect.Unknown)
         {
-            return GetSpellEffects(effectType)?.OrderByDescending(e => e.IsDisabled).ThenByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
+            lock (_effectsLock)
+            {
+                return GetSpellEffects(effectType)?.OrderByDescending(e => e.IsDisabled).ThenByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
+            }
         }
 
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType = eEffect.Unknown)
         {
-            var temp = new List<ECSGameSpellEffect>();
-            foreach (var effects in Effects.Values.ToList())
+            lock (_effectsLock)
             {
-                for (int j = 0; j < effects.Count; j++)
+                var temp = new List<ECSGameSpellEffect>();
+                foreach (var effects in Effects.Values.ToList())
                 {
-                    if (effects[j] is ECSGameSpellEffect)
+                    for (int j = 0; j < effects?.Count; j++)
                     {
-                        if (effectType != eEffect.Unknown)
+                        if (effects[j] is ECSGameSpellEffect)
                         {
-                            if (effects[j].EffectType == effectType)
+                            if (effectType != eEffect.Unknown)
+                            {
+                                if (effects[j].EffectType == effectType)
+                                    temp.Add(effects[j] as ECSGameSpellEffect);
+                            }
+                            else
                                 temp.Add(effects[j] as ECSGameSpellEffect);
                         }
-                        else
-                            temp.Add(effects[j] as ECSGameSpellEffect);
                     }
                 }
-            }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+                return temp.OrderBy(e => e.StartTick).ToList();
+            }
         }
 
         public List<ECSGameAbilityEffect> GetAbilityEffects()
         {
-            var temp = new List<ECSGameAbilityEffect>();
-            foreach (var effects in Effects.Values.ToList())
+            lock (_effectsLock)
             {
-                for (int j = 0; j < effects.Count; j++)
+                var temp = new List<ECSGameAbilityEffect>();
+                foreach (var effects in Effects.Values.ToList())
                 {
-                    if (effects[j] is ECSGameAbilityEffect)
-                        temp.Add(effects[j] as ECSGameAbilityEffect);
+                    for (int j = 0; j < effects?.Count; j++)
+                    {
+                        if (effects[j] is ECSGameAbilityEffect)
+                            temp.Add(effects[j] as ECSGameAbilityEffect);
+                    }
                 }
+                return temp.OrderBy(e => e.StartTick).ToList();
             }
-            return temp.OrderBy(e => e.StartTick).ToList();
         }
 
         public ECSGameEffect TryGetEffectFromEffectId(int effectId)

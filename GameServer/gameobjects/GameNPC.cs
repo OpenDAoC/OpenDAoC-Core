@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -58,6 +59,8 @@ namespace DOL.GS
 		/// Tested - min distance for mob sticking within combat range to player is 25
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
+
+		private int m_databaseLevel;
 
 		
 		#region Formations/Spacing
@@ -1729,9 +1732,14 @@ namespace DOL.GS
 				newX = followTarget.X;
 				newY = followTarget.Y;
 				newZ = followTarget.Z;
-				if (brain.CheckFormation(ref newX, ref newY, ref newZ))
+				if (TargetObject != null && TargetObject.Realm != this.Realm)
+				{
+					//do nothing 
+				}
+				else if (brain.CheckFormation(ref newX, ref newY, ref newZ) || TargetObject?.Realm == this.Realm)
 				{
 					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
+					
 					return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
 				}
 			}
@@ -1857,7 +1865,7 @@ namespace DOL.GS
 			if (this.IsWithinRadius(CurrentWayPoint, 100))
 			{
 				// reaching a waypoint can start an ambient sentence
-				FireAmbientSentence(eAmbientTrigger.moving);
+				FireAmbientSentence(eAmbientTrigger.moving, this);
 
 				if (CurrentWayPoint.Type == ePathType.Path_Reverse && CurrentWayPoint.FiredFlag)
 					CurrentWayPoint = CurrentWayPoint.Prev;
@@ -2083,6 +2091,7 @@ namespace DOL.GS
 
 			// Skip Level.set calling AutoSetStats() so it doesn't load the DB entry we already have
 			m_level = dbMob.Level;
+			m_databaseLevel = dbMob.Level;
 			AutoSetStats(dbMob);
 			Level = dbMob.Level;
 
@@ -2371,6 +2380,7 @@ namespace DOL.GS
 			this.GuildName = template.GuildName;
 			this.ExamineArticle = template.ExamineArticle;
 			this.MessageArticle = template.MessageArticle;
+			this.Faction = FactionMgr.GetFactionByID(template.FactionId);
 
 			#region Models, Sizes, Levels, Gender
 			// Grav: this.Model/Size/Level accessors are triggering SendUpdate()
@@ -3093,7 +3103,7 @@ namespace DOL.GS
 			// create the ambiant text list for this NPC
 			BuildAmbientTexts();
 			if (GameServer.Instance.ServerStatus == eGameServerStatus.GSS_Open)
-				FireAmbientSentence(eAmbientTrigger.spawning);
+				FireAmbientSentence(eAmbientTrigger.spawning, this);
 
 
 			if (ShowTeleporterIndicator)
@@ -3631,19 +3641,19 @@ namespace DOL.GS
 		#region Interact/WhisperReceive/SayTo
 
 		/// <summary>
-		/// The possible triggers for GameNPC ambient actions
+		/// The possible ambient triggers for GameNPC actions (e.g., killing, roaming, dying)
 		/// </summary>
 		public enum eAmbientTrigger
 		{
 			spawning,
-			dieing,
+			dying,
 			aggroing,
 			fighting,
 			roaming,
 			killing,
 			moving,
 			interact,
-			seeing,
+			seeing
 		}
 
 		/// <summary>
@@ -3660,7 +3670,7 @@ namespace DOL.GS
 		{
 			if (!base.Interact(player)) return false;
 			//if (!GameServer.ServerRules.IsSameRealm(this, player, true) && Faction.GetAggroToFaction(player) > 25)
-			if (!GameServer.ServerRules.IsSameRealm(this, player, true) && Faction != null && Faction.GetAggroToFaction(player) > 25)
+			if (!GameServer.ServerRules.IsSameRealm(this, player, true) && Faction != null && Faction.GetAggroToFaction(player) > 50)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.DirtyLook",
 					GetName(0, true, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -3700,7 +3710,7 @@ namespace DOL.GS
 
 				player.MountSteed(this, true);
 			}
-
+			
 			FireAmbientSentence(eAmbientTrigger.interact, player);
 			return true;
 		}
@@ -3742,6 +3752,18 @@ namespace DOL.GS
 				}
 			}
 			return true;
+		}
+
+		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		{
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
+			}
+			return base.ReceiveItem(source, item);
 		}
 
 		/// <summary>
@@ -3818,6 +3840,7 @@ namespace DOL.GS
         public virtual void StartAttack(GameObject target)
         {
             attackComponent.StartAttack(target);
+            FireAmbientSentence(eAmbientTrigger.fighting, target);
             //if (target == null)
             //    return;
 
@@ -3967,7 +3990,7 @@ namespace DOL.GS
 
 		//}
 
-		private int scalingFactor = 25;
+		private int scalingFactor = 23;
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
@@ -4048,9 +4071,9 @@ namespace DOL.GS
 		public void SetLastMeleeAttackTick()
 		{
 			if (TargetObject?.Realm == 0 || Realm == 0)
-				m_lastAttackTickPvE = m_CurrentRegion.Time;
+				m_lastAttackTickPvE = GameLoop.GameLoopTime;
 			else
-				m_lastAttackTickPvP = m_CurrentRegion.Time;
+				m_lastAttackTickPvP = GameLoop.GameLoopTime;
 		}
 
 		public void StartMeleeAttackTimer()
@@ -4204,7 +4227,7 @@ namespace DOL.GS
 		{
 			Brain?.KillFSM();
 
-			FireAmbientSentence(eAmbientTrigger.dieing, killer as GameLiving);
+			FireAmbientSentence(eAmbientTrigger.dying, killer);
 
 			if (ControlledBrain != null)
 				ControlledNPC_Release();
@@ -4543,6 +4566,9 @@ namespace DOL.GS
 				return;
 
 			int respawnInt = RespawnInterval;
+			int minBound = (int) Math.Floor(respawnInt * .95);
+			int maxBound = (int) Math.Floor(respawnInt * 1.05);
+			respawnInt = Util.Random(minBound, maxBound);
 			if (respawnInt > 0)
 			{
 				lock (m_respawnTimerLock)
@@ -4587,6 +4613,14 @@ namespace DOL.GS
 			//TODO some real respawn handling
 			if (IsAlive) return 0;
 			if (ObjectState == eObjectState.Active) return 0;
+			
+			/*
+			if (m_level >= 5 && m_databaseLevel < 60)
+			{
+				int minBound = (int) Math.Round(m_databaseLevel * .9);
+				int maxBound = (int) Math.Round(m_databaseLevel * 1.1);
+				this.Level = (byte)  Util.Random(minBound, maxBound);
+			}*/
 
 			//Heal this mob, move it to the spawnlocation
 			Health = MaxHealth;
@@ -4600,6 +4634,7 @@ namespace DOL.GS
 			Y = m_spawnPoint.Y;
 			Z = m_spawnPoint.Z;
 			Heading = m_spawnHeading;
+			SpawnTick = GameLoop.GameLoopTime;
 			AddToWorld();
 			m_spawnPoint.X = origSpawnX;
 			m_spawnPoint.Y = origSpawnY;
@@ -4856,7 +4891,7 @@ namespace DOL.GS
 						if (gainer is GamePlayer)
 						{
 							GamePlayer player = gainer as GamePlayer;
-							if (player.Autoloot && loot.IsWithinRadius(player, 1500)) // should be large enough for most casters to autoloot
+							if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
 							{
 								if (player.Group == null || (player.Group != null && player == player.Group.Leader))
 									aplayer.Add(player);
@@ -5628,14 +5663,14 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Handle triggers for ambient sentences
+		/// Handles all ambient messages triggered by a mob or NPC action
 		/// </summary>
-		/// <param name="action">The trigger action</param>
-		/// <param name="npc">The NPC to handle the trigger for</param>
-		public void FireAmbientSentence(eAmbientTrigger trigger, GameLiving living = null)
+		/// <param name="trigger">The action triggering the message (e.g., aggroing, dying, roaming)</param>
+		/// <param name="living">The entity triggering the action (e.g., a player)</param>
+		public void FireAmbientSentence(eAmbientTrigger trigger, GameObject living)
 		{
 			if (IsSilent || ambientTexts == null || ambientTexts.Count == 0) return;
-			if (trigger == eAmbientTrigger.interact && living == null) return;
+			if (trigger == eAmbientTrigger.interact && living == null) return; // Do not trigger interact messages with a corpse
 			List<MobXAmbientBehaviour> mxa = (from i in ambientTexts where i.Trigger == trigger.ToString() select i).ToList();
 			if (mxa.Count == 0) return;
 
@@ -5644,35 +5679,54 @@ namespace DOL.GS
 			if (!Util.Chance(chosen.Chance)) return;
 
 			string controller = string.Empty;
-			if (Brain is IControlledBrain)
+			if (Brain is IControlledBrain) // Used for '{controller}' trigger keyword, use the name of the mob's owner (else returns blank)--this is used when a pet has an ambient trigger.
 			{
-				GamePlayer playerOwner = (Brain as IControlledBrain).GetPlayerOwner();
+				GamePlayer playerOwner = ((IControlledBrain) Brain).GetPlayerOwner();
 				if (playerOwner != null)
 					controller = playerOwner.Name;
 			}
 
-			string text = chosen.Text.Replace("{sourcename}", Name).Replace("{targetname}", living == null ? string.Empty : living.Name).Replace("{controller}", controller);
+			string text = chosen.Text;
+
+			if (TargetObject == null)
+			{
+				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", living.Name) // '{targetname}' returns the mob/NPC target's name
+					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
+				
+				// Replace trigger keywords
+				if (living is GamePlayer)
+					text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
+				if (living is GameNPC)
+					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
+			}
+			else
+			{
+				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", TargetObject == null ? string.Empty : TargetObject.Name) // '{targetname}' returns the mob/NPC target's name
+					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
+				
+				// Replace trigger keywords
+				if (TargetObject is GamePlayer)
+					text = text.Replace("{class}", ((GamePlayer) TargetObject).CharacterClass.Name).Replace("{race}", ((GamePlayer) TargetObject).RaceName);
+				if (TargetObject is GameNPC)
+					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
+			}
+			// Replace trigger keywords
 
 			if (chosen.Emote != 0)
 			{
 				Emote((eEmote)chosen.Emote);
 			}
-
-			// issuing text
-			if (living is GamePlayer)
-				text = text.Replace("{class}", (living as GamePlayer).CharacterClass.Name).Replace("{race}", (living as GamePlayer).RaceName);
-			if (living is GameNPC)
+			
+			// Replace trigger keywords
+			if (TargetObject is GamePlayer || living is GamePlayer)
+				text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
+			if (TargetObject is GameNPC || living is GameNPC)
 				text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
-
-			// for interact text we pop up a window
-			if (trigger == eAmbientTrigger.interact)
-			{
-				(living as GamePlayer).Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
-				return;
-			}
-
-			// broadcasted , yelled or talked ?
-			if (chosen.Voice.StartsWith("b"))
+			
+			/*// Determines message delivery method for trigger voice
+			if (chosen.Voice.StartsWith("b")) // Broadcast message without "[Broadcast] {0}:" string start
 			{
 				foreach (GamePlayer player in CurrentRegion.GetPlayersInRadius(X, Y, Z, 25000, false, false))
 				{
@@ -5680,12 +5734,50 @@ namespace DOL.GS
 				}
 				return;
 			}
-			if (chosen.Voice.StartsWith("y"))
+			if (chosen.Voice.StartsWith("y")) // Yell message (increased range) without "{0} yells," string start
 			{
 				Yell(text);
 				return;
+			}*/
+			
+			// Determines message delivery method for triggers
+			switch (chosen.Voice)
+			{
+				case "b": // Broadcast message without "[Broadcast] {0}:" string start
+				{
+					foreach (GamePlayer player in CurrentRegion.GetPlayersInRadius(X, Y, Z, 25000, false, false))
+					{
+					  player.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+					}
+					return;
+				}
+				case "y": // Yell message (increased range) without "{0} yells," string start
+				{
+					Yell(text);
+					return;
+				}
+				case "s": // Return custom System message in System/Combat window to all players within range
+				{
+					Message.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512, null);
+					return;
+				}
+				case "c": // Return custom Say message in Chat window to all players within range, without "{0} says," string start
+				{
+					Message.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512, null);
+					return;
+				}
+				case "p": // Return custom System message in popup dialog only to player interating with the NPC
+					// For interact triggers
+				{
+					((GamePlayer) living).Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					return;
+				}
+				default: // Return Say message with "{0} says," string start included (contrary to parameter description)
+				{
+					Say(text);
+					return;
+				}
 			}
-			Say(text);
 		}
 		#endregion
 
@@ -5767,10 +5859,10 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsFriend(GameNPC npc)
 		{
-			if (Faction == null || npc.Faction == null)
-				return false;
-			return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
-		}
+            if (Faction == null || npc.Faction == null)
+                return false;
+            return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
+        }
 
 		/// <summary>
 		/// Broadcast loot to the raid.

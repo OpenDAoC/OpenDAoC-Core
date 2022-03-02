@@ -61,11 +61,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 				var player = (GamePlayer) m_actionSource;
 
 				IConcentrationEffect effect = null;
-                lock (player.ConcentrationEffects)
+                lock (player.effectListComponent._effectsLock)
                 {
-                    if (m_index < player.ConcentrationEffects.Count)
+                    if (m_index < player.effectListComponent.ConcentrationEffects.Count)
 					{
-						effect = player.ConcentrationEffects[m_index];
+						effect = player.effectListComponent.ConcentrationEffects[m_index];
 					}
 				}
 

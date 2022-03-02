@@ -94,9 +94,9 @@ namespace DOL.GS.Spells
 				}
             }
             			
-			GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
-			if (iWarLordEffect != null)
-				ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
+			//GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
+			//if (iWarLordEffect != null)
+			//	ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
                        
             //ad.CriticalDamage = 0; - DoTs can crit.
 			return ad;
@@ -249,8 +249,16 @@ namespace DOL.GS.Spells
 			// no interrupts on DoT direct effect
 			// calc damage
 			AttackData ad = CalculateDamageToTarget(target, effectiveness);
-			ad.CausesCombat = true;
+			//ad.CausesCombat = true;
 			SendDamageMessages(ad);
+			if (ad.Attacker.Realm == 0)
+			{
+				ad.Target.LastAttackTickPvE = GameLoop.GameLoopTime;
+			}
+			else
+			{
+				ad.Target.LastAttackTickPvP = GameLoop.GameLoopTime;
+			}
 			DamageTarget(ad, false);
 		}
 

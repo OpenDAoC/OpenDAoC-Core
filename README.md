@@ -1,72 +1,57 @@
 Atlas Freeshard - Core
 
-# Changelog
-
-21/12/12 - leftygamer - Added template and additional information regarding `serverconfig.xml`.
-21/12/06 - leftygamer - Added information about accessing the test server, updated AtlasPack information, added info about server properties to remove, fixed incorrect SQL setup commands.
-21/09/14 - leftygamer - Revised to account for removal of `Net5` directory. Changes made to `serverconfig.xml` instruction and building/running the project. Moved **Before You Start** section.
-21/08/31 - leftygamer - Expanded documentation for setting up environments for both Ubuntu & Window environments.
-
-# Before You Start
-
-You will need the following files and permissions before you'll be able to complete this process in its entirety. For each of these, please message clait on Discord:
-
-* Download the latest stable copy of `AtlasDB`.
-* Receive the `Developer` role (if applicable) on Discord to access team channels.
-* Obtain access to all team forums on the Atlas freeshard website.
-* Check out the [GM Command Library](https://www.atlasfreeshard.com/threads/gm-commands-library.408/) for more information on commands you may use in-game with the Admin or GM privilege level.
-
 # Setting Up an Atlas Dev Environment
 
 The following instructions should act as a guide for properly setting up an Ubuntu environment to fetch and push file changes with GitLab as well as build and run a DoL server successfully.
 
 Instructions currently exist regarding setups for both [Ubuntu](#setting-up-on-ubuntu) and [Windows](#setting-up-on-windows) operating systems.
 
-> **IMPORTANT:** Check the [Before You Start](#before-you-start) section first as you will not be able to complete certain sections without the proper resources or privileges.
+**IMPORTANT:** Check the [Before You Start](#before-you-start) section first as you will not be able to complete certain sections without the proper resources or privileges.
 
 The following sections outline the process of preparing your environment to build an Atlas server:
 
 1. [Environment Requirements](#environment-requirements)
-    1. [Considerations for IDEs](#considerations-for-ides)
+   1. [Before You Start](#before-you-start)
+   2. [Considerations for IDEs](#considerations-for-ides)
 2. [Setting Up on Ubuntu](#setting-up-on-ubuntu)
-    1. [Installing .NET 5.0](#installing-net-50-ubuntu)
-    2. [Installing MariaDB](#installing-mariadb-ubuntu)
-        1. [Preparing Your Database](#preparing-your-database-ubuntu)
-        2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
-        3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
-    3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
-        1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
-        2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
-            1. [Enabling SSH](#enabling-ssh-ubuntu)
-            2. [Configuring Your Router](#configuring-your-router-ubuntu)
-            3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
-            4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
-    4. [Installing Git](#installing-git-ubuntu)
-    5. [Cloning Atlas' Repos](#cloning-the-repository-ubuntu)
-    6. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
+   1. [Installing .NET 5.0](#installing-net-50-ubuntu)
+   2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
+      1. [Preparing Your Database](#preparing-your-database-ubuntu)
+      2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
+      3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
+   3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
+      1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
+      2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
+         1. [Enabling SSH](#enabling-ssh-ubuntu)
+         2. [Configuring Your Router](#configuring-your-router-ubuntu)
+         3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
+         4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
+   4. [Installing Git](#installing-git-ubuntu)
+   5. [Cloning Atlas' Repos](#cloning-the-repository-ubuntu)
+   6. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 3. [Setting Up on Windows](#setting-up-on-windows)
-    1. [Installing .NET 5.0](#installing-net-50-win)
-    2. [Installing MariaDB](#installing-mariadb-win)
-        1. [Preparing Your Database](#preparing-your-database-win)
-        2. [Configuring `My.ini`](#configuring-myini-win)
-        3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
-    3. [Encrypting File Transfers](#encrypting-file-transfers-win)
-        1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
-        2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
-            1. [Enabling SSH](#enabling-ssh-win)
-            2. [Configuring Your Router](#configuring-your-router-win)
-            3. [Creating an SSH Key](#creating-an-ssh-key-win)
-            4. [Adding the SSH Key to Gitlab](#adding-the-ssh-key-to-gitlab-win)
-    4. [Installing Git](#installing-git-win)
-    5. [Cloning Atlas' Repos](#cloning-the-repository-win)
-    6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
-4. [Removing Server Properties](#removing-server-properties)
-5. [Building Your DoL Server Locally](#building-your-dol-server-locally)
-6. [Accessing Local Servers](#accessing-local-servers)
-8. [Testing](#testing)
-    1. [In-Game Testing](#in-game-testing)
-    2. [Recommended Extensions for Testing](#recommended-extensions-for-testing)
-9. [Logging](#logging)
+   1. [Installing .NET 5.0](#installing-net-50-win)
+   2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
+      1. [Preparing Your Database](#preparing-your-database-win)
+      2. [Configuring `My.ini`](#configuring-myini-win)
+      3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
+   3. [Encrypting File Transfers](#encrypting-file-transfers-win)
+      1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
+      2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
+         1. [Enabling SSH](#enabling-ssh-win)
+         2. [Configuring Your Router](#configuring-your-router-win)
+         3. [Creating an SSH Key](#creating-an-ssh-key-win)
+         4. [Adding the SSH Key to Gitlab](#adding-the-ssh-key-to-gitlab-win)
+   4. [Installing Git](#installing-git-win)
+   5. [Cloning Atlas' Repos](#cloning-the-repository-win)
+   6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
+4. [Building Your DoL Server Locally](#building-your-dol-server-locally)
+5. [Accessing Local Servers](#accessing-local-servers)
+6. [Accessing the World Builders' Server](#accessing-the-world-builders-server)
+7. [Testing](#testing)
+   1. [In-Game Testing](#in-game-testing)
+   2. [Recommended Extensions for Testing](#recommended-extensions-for-testing)
+8. [Logging](#logging)
 
 ## Environment Requirements
 
@@ -75,9 +60,17 @@ The following are main OS, tool, and version requirements to consider when setti
 * **Operating System:** Ubuntu or Windows
 * **Source-Code Editor:** .NET IDE that supports C#, such as [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) or [Jetbrain Rider](https://www.jetbrains.com/rider/) (if you have a student email address)
 * **Source Control:** Git is recommended for tracking file changes, and [GitLab](http://gitlab.com) is the current file repository
-* **RDBMS:** [MariaDB v.10.5.X+](https://mariadb.com/kb/en/changes-improvements-in-mariadb-105/)
+* **RDBMS:** [MariaDB v.10.5.X](https://mariadb.com/kb/en/changes-improvements-in-mariadb-105/)
 
-> **NOTE:** This walkthrough assumes that you already have an account created on GitLab and have been granted access to Atlas' repos by a senior developer or administrator. If you have not done so already, [create an account on Gitlab](http://gitlab.com/) and send your username to an administrator or lead developer.
+_**NOTE:** This walkthrough assumes that you already have an account created on GitLab and have been granted access to Atlas' repos by a senior developer or administrator. If you have not done so already, [create an account on Gitlab](http://gitlab.com/) and send your username to an administrator or lead developer._
+
+### Before You Start
+
+You will need the following files or permissions before you'll be able to complete this process in its entirety. For each of these, please message clait on Discord:
+
+* Download the latest stable copy of `atlasDB.sql`.
+* Receive the `Developer` role on Discord to access team channels.
+* Obtain access to all team forums on the Atlas freeshard website.
 
 ### Considerations for IDEs
 
@@ -90,23 +83,25 @@ Whatever tool you decide to use, please check to see if it has any environment c
 
 ## Setting Up on Ubuntu
 
-This process assumes you do not already have a fully-configured environment with the specific tools or software installed previously.
+This process assumes you do not already have a fully-configured environment with the specific tools or software installed previously. 
 
 If you've' already completed a step previously, we recommend that you quickly review the steps outlined to ensure no special configurations are missed.
 
 1. [Installing .NET 5.0](#installing-net-50-ubuntu)
-2. [Installing MariaDB](#installing-mariadb-ubuntu)
-    1. [Preparing Your Database](#preparing-your-database-ubuntu)
-    2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
-    3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
+2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
+   1. [Preparing Your Database](#preparing-your-database-ubuntu)
+   2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
+   3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
 3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
-    1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
-    2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
-       1. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
-       2. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
-    3. [Installing Git](#installing-git-ubuntu)
-        1. [Cloning Atlas' repos](#cloning-the-repository-ubuntu)
-        2. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
+   1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
+   2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
+      1. [Enabling SSH](#enabling-ssh-ubuntu)
+      2. [Configuring Your Router](#configuring-your-router-ubuntu)
+      3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
+      4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
+   3. [Installing Git](#installing-git-ubuntu)
+      1. [Cloning Atlas' repos](#cloning-the-repository-ubuntu)
+      2. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 
 ### Installing .NET 5.0 (Ubuntu)
 
@@ -122,9 +117,9 @@ Perform the following steps from the Terminal:
 6. `dotnet --list-sdks`
 7. `dotnet --list-runtimes`
 
-### Installing MariaDB (Ubuntu)
+### Installing MariaDB 10.5 (Ubuntu)
 
-MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5+. These instructions will specifically install MariaDB 10.5, but you are welcome to pick a later version as desired.
+MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5.
 
 Perform the following steps from the Terminal:
 
@@ -142,23 +137,23 @@ The RDBMS is installed, but needs a user and database for Atlas to access and us
 
 The following steps walk you through the process of adding a user and database using MariaDB.
 
-If you're already familiar with the process and wish to skip it, just remember that the following values must be updated in `serverconfig.xml`:
+If you're already familiar with the process and wish to skip it, just remember that the following things are required to run `AtlasCore`:
 
-* The database user (defaulted to `atlas`)
-* The user's password (defaulted to `atlas`)
-* The database name (defaulted to `atlas`)
+* There must be a user named `atlas`.
+* The user's password must be `atlas`.
+* The `atlas` user must have sufficient privileges.
+* A database must exist called `atlas`.
 
-> **NOTE:** If the database connections are not updated in `serverconfig.xml`, `DOLServer` builds will fail.
-
+_**NOTE:** If you set values (user ID, user password, and database name) contrary to those specified here, `DOLServer` builds will fail._
 1. `sudo mysql -u root` <!-- This allows you to access the MariaDB client-->
 2. `CREATE DATABASE atlas;` <!-- The DB **MUST** be named "atlas" -->
 3. `SHOW DATABASES;`</li> <!-- Verify that the DB exists -->
 4. `CREATE USER 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- Both username and password must be "atlas" -->
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
-6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost;`.
-7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;`.
+6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- The 'atlas' user may exercise ALL privileges on ALL of your databases -->
+7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;` <!-- The 'atlas' user may only modify the 'atlas' DB -->
 8. `FLUSH PRIVILEGES` <!-- Refreshes the privilege changes -->
-9. `SHOW GRANTS FOR 'atlas'@localhost;`
+9. `SHOW GRANTS FOR 'atlas'@localhost;` <!-- This lists all privileges granted to the `atlas` user -->
 
 #### Configuring `My.cnf` (Ubuntu)
 
@@ -196,39 +191,63 @@ This should list multiple tables, which indicates the import was successful.
 
 GitLab requires encrypted communication between your repository and client machine. You may pick between two methods to accomplish this:
 
-1. [Personal Access Token](#setting-up-a-personal-access-token-ubuntu) (easiest)
-2. [SSH tunneling](#setting-up-ssh-tunneling-ubuntu)
+ 1. [Personal Access Token](#setting-up-a-personal-access-token-ubuntu) (easiest)
+ 2. [SSH tunneling](#setting-up-ssh-tunneling-ubuntu)
 
 #### Setting Up a Personal Access Token (Ubuntu)
 
 Creating and using a Personal Access Token is the easiest method of gaining access to Atlas' repositories.
 
-1. Navigate to [GitLab](https://gitlab.com/users/sign_in) and sign in.
-2. Click on your profile picture at the top-right corner of the screen and then **Edit profile**.
-3. Select the _Access Tokens_ tab on the left side of the screen.
-4. Provide a **Token name** and, if desired, an expiration date.
-5. Under **Select scopes**, make sure that **read_repository** and 6. write_repository** are selected.
-6. Click **Create personal access token**. A string appears.
-7. Copy this and paste it somewhere safe for later reference.
+ 1. Navigate to [GitLab](https://gitlab.com/users/sign_in) and sign in.
+ 2. Click on your profile picture at the top-right corner of the screen and then **Edit profile**.
+ 3. Select the _Access Tokens_ tab on the left side of the screen.
+ 4. Provide a **Token name** and, if desired, an expiration date.
+ 5. Under **Select scopes**, make sure that **read_repository** and 6. write_repository** are selected.
+ 6. Click **Create personal access token**. A string appears.
+ 7. Copy this and paste it somewhere safe for later reference.
 
 You may now continue to the next step, [Installing Git](#installing-git-ubuntu).
 
 #### Setting Up SSH Tunneling (Ubuntu)
 
-Secure Shell (SSH) is a network protocol used to secure connections between client and server. Enabling this requires access to your router's administrator interface.
+Enabling Secure Shell (SSH) is a network protocol used to secure connections between client and server. Enabling this requires access to your router's administrator interface.
 
 These are the steps associated with using SSH encryption:
 
-1. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
-2. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
+1. [Enabling SSH](#enabling-ssh-ubuntu)
+2. [Configuring Your Router](#configuring-your-router-ubuntu)
+3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
+4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-ubuntu)
+
+##### Enabling SSH (Ubuntu)
+
+By default, SSH functionality is not installed/enabled on Ubuntu.
+
+From the Terminal, enter the following commands:
+
+1. `sudo apt update`
+2. `sudo apt install openssh-server`
+3. `sudo systemctl status ssh`
+
+The output should indicate that the service is running and `active`. Now Ubuntu's firewall configuration tool, UFW, must have the SSH port opened:
+
+4. `sudo ufw allow ssh`
+
+##### Configuring Your Router (Ubuntu)
+
+As part of SSH, your router must allow external communication between GitLab and your machine. This process varies depending on the type of router and the web interface used, but the following actions must be performed as part of  SSH tunneling:
+
+1. Identify your device's internal IP address (typically starts with `192`).
+2. Make a DHCP reservation for the IP address (so that you don't have to reconfigure SSH every time your IP updates).
+3. Add a single port forwarding for that IP using port `22`.
 
 ##### Creating an SSH Key (Ubuntu)
 
 From the Terminal app, enter the following commands:
 
 1. `ssh username@public_ip_address` <!-- Replace 'username' with your root account username and 'ip_address' with your public IP address, e.g., linux@71.190.200.35 -->
-    1. `username` is the credential you use to log in on GitLab (not the email address).
-    2. If you don't know your public IP address, navigate to [https://api.ipify.org](https://api.ipify.org) and copy/paste the value found there.
+   1. `username` is the credential you use to log in on GitLab (not the email address).
+   2. If you don't know your public IP address, navigate to [https://api.ipify.org](https://api.ipify.org) and copy/paste the value found there.
 2. Type `yes` and then you'll be prompted to enter your account password.
 3. `ssh-keygen -t rsa -b 4096 -C "your_email@domain.com"`.
 4. Press **Enter** to accept the default file location and file name (or if you already have multiple keys, enter a name specific to the project that you'll easily recall, such as `atlas`). Provide a passphrase for security. Remember what you enter here.
@@ -267,55 +286,18 @@ With Git ready, it's time to clone the `AtlasCore` repository.
 
 ### Altering `serverconfig.xml` (Ubuntu)
 
-Depending on your needs, you may need to alter the `serverconfig.xml` file. By default, it is set to use the IP address `127.0.0.1` and port `10400` for local builds, which allows you to run an Atlas server and access it via instances of DAoC from the same machine.
+With the repo on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building Atlas locally.
 
-If your project does not have the `serverconfig.xml` file at **DOLServer > config**, then you should create one manually. 
-
-Open a text editor and copy/paste the following template:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-    <Server>
-        <Port>10400</Port>
-        <IP>0.0.0.0</IP>
-        <RegionIP>0.0.0.0</RegionIP>
-        <RegionPort>10400</RegionPort>
-        <UdpIP>0.0.0.0</UdpIP>
-        <UdpPort>10400</UdpPort>
-        <EnableUPnP>True</EnableUPnP>
-        <DetectRegionIP>True</DetectRegionIP>
-        <ServerName>Atlas Local Server</ServerName>
-        <ServerNameShort>DOLSERVER</ServerNameShort>
-        <LogConfigFile>./config/logconfig.xml</LogConfigFile>
-        <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
-        <ScriptAssemblies> </ScriptAssemblies>
-        <EnableCompilation>True</EnableCompilation>
-        <AutoAccountCreation>True</AutoAccountCreation>
-        <GameType>Normal</GameType>
-        <CheatLoggerName>cheats</CheatLoggerName>
-        <GMActionLoggerName>gmactions</GMActionLoggerName>
-        <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
-        <DBType>MYSQL</DBType>
-        <DBConnectionString>server=localhost;port=3306;database=atlas;user id=atlas;password=atlas;treattinyasboolean=false</DBConnectionString>
-        <DBAutosave>True</DBAutosave>
-        <DBAutosaveInterval>10</DBAutosaveInterval>
-        <CpuUse>8</CpuUse>
-    </Server>
-</root>
-```
-
-Save this file with the name `serverconfig.xml` and place it in the project at: **DOLServer> config**.
-
-If you need to change the IP to allow other devices to connect to your server:
-
-1. Open the file at `/AtlasCore/Debug/config/serverconfig.xml`.
-2. Within the `IP` tags, change the value `127.0.0.1` to one of these:
-    1. To test with other computers in your LAN/WAN, enter your server machine's IP address (use the Terminal command `ip a`, and it should start with `192`).
-    2. To allow client connections from outside your network, [enter your public IP address](https://api.ipify.org).
-3.  If you created a database, user, and password with different values than `atlas`, update the values in the `<DBConnectionString>` tags.
-
+1. Copy the file `/AtlasCore/Net5/DOLServer/config/serverconfig.example.xml` to `/AtlasCore/Net5/DOLServer/config/serverconfig.xml`.
+2. Open the `serverconfig.xml` file.
+3. Within the `RegionIP` tags, change the value `0.0.0.0` to one of these:
+   1. To test locally, enter `127.0.0.1`.
+   2. To test over LAN, enter your machine's IP address (use the Terminal command `ip a`, and it should start with `192`).
+   3. To test outside your network, [enter your public IP address](https://api.ipify.org).
+   
 Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
+
+
 
 ## Setting Up on Windows
 
@@ -324,16 +306,17 @@ This process assumes you do not already have a fully-configured environment with
 If you've already completed a step previously, we recommend that you quickly review the steps outlined to ensure no special configurations are missed.
 
 1. [Installing .NET 5.0](#installing-net-50-win)
-2. [Installing MariaDB](#installing-mariadb-win)
-    1. [Preparing Your Database](#preparing-your-database-win)
-    2. [Configuring `My.ini`](#configuring-myini-win)
-    3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
+2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
+   1. [Preparing Your Database](#preparing-your-database-win)
+   2. [Configuring `My.ini`](#configuring-myini-win)
+   3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
 3. [Encrypting File Transfers](#encrypting-file-transfers-win)
-    1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
-    2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
-        1. [Enabling SSH](#enabling-ssh-win)
-        2. [Creating an SSH Key](#creating-an-ssh-key-win)
-        3. [Adding the SSH Key to Gitlab](#adding-the-ssh-key-to-gitlab-win)
+   1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
+   2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
+      1. [Enabling SSH](#enabling-ssh-win)
+      2. [Configuring Your Router](#configuring-your-router-win)
+      3. [Creating an SSH Key](#creating-an-ssh-key-win)
+      4. [Adding the SSH Key to Gitlab](#adding-the-ssh-key-to-gitlab-win)
 4. [Installing Git](#installing-git-win)
 5. [Cloning Atlas' Repos](#cloning-the-repository-win)
 6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
@@ -345,13 +328,13 @@ If you've already completed a step previously, we recommend that you quickly rev
 1. Download the [.NET 5.0 installer](https://dotnet.microsoft.com/download/dotnet/5.0).
 2. Install the tool and make any configurations as needed.
 
-### Installing MariaDB (Win)
+### Installing MariaDB 10.5 (Win)
 
-MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5 for Windows development purposes.
+MariaDB is an open-source relational database management system (RDBMS). Atlas specifically uses v10.5.
 
 1. Download MariaDB:
-    1. [32-bit](https://downloads.mariadb.org/interstitial/mariadb-10.5.4/win32-packages/mariadb-10.5.4-win32.zip/from/https%3A//archive.mariadb.org/)
-    2. [64-bit](https://downloads.mariadb.org/interstitial/mariadb-10.5.4/winx64-packages/mariadb-10.5.4-winx64.zip/from/https%3A//archive.mariadb.org/)
+   1. [32-bit](https://downloads.mariadb.org/interstitial/mariadb-10.5.4/win32-packages/mariadb-10.5.4-win32.zip/from/https%3A//archive.mariadb.org/)
+   2. [64-bit](https://downloads.mariadb.org/interstitial/mariadb-10.5.4/winx64-packages/mariadb-10.5.4-winx64.zip/from/https%3A//archive.mariadb.org/)
 2. Initiate the MariaDB installer.
 3. Enable **Use UTF8 as default server's character set**. Make any changes to the following dialog windows as desired.
 4. Complete the installation by clicking **Install** and then **Finish**.
@@ -362,21 +345,22 @@ The RDBMS is installed, but needs a user and database for Atlas to access and us
 
 The following steps walk you through the process of adding a user and database using MariaDB.
 
-If you're already familiar with the process and wish to skip it, just remember that the following values must be updated in `serverconfig.xml`:
+If you're already familiar with the process and wish to skip it, just remember that the following things are required to run `AtlasCore`:
 
-* The database user (defaulted to `atlas`)
-* The user's password (defaulted to `atlas`)
-* The database name (defaulted to `atlas`)
+* There must be a user named `atlas`.
+* The user's password must be `atlas`.
+* The `atlas` user must have sufficient privileges.
+* A database must exist called `atlas`.
 
-> **NOTE:** If the database connections are not updated in `serverconfig.xml`, `DOLServer` builds will fail.
+_**NOTE:** If you set values (user ID, user password, and database name) contrary to those specified here, `DOLServer` builds will fail._
 
-1. Launch the **MySQL Client (MariaDB)** option from the Start menu.
+1. Launch the **MySQL Client (MariaDB 10.5)** option from the Start menu.
 2. `CREATE DATABASE atlas;` <!-- The DB **MUST** be named "atlas" -->
 3. `SHOW DATABASES;` <!-- Verify that the DB exists -->
 4. `CREATE USER 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- Both username and password must be "atlas" -->
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
-6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost;`.
-7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;`.
+6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- The 'atlas' user may exercise ALL privileges on ALL of your databases -->
+7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;` <!-- The 'atlas' user may only modify the 'atlas' DB -->
 8. `FLUSH PRIVILEGES` <!-- Refreshes the privilege changes -->
 9. `SHOW GRANTS FOR 'atlas'@localhost;` <!-- This lists all privileges granted to the `atlas` user -->
 
@@ -415,7 +399,7 @@ The application will process the entire SQL file. Once done, you should now see 
 GitLab requires encrypted communication between the repository and client machine. You may pick one of two methods to accomplish this:
 
 1. [Personal Access Token](#setting-up-a-personal-access-token-win) (easiest)
-2. [SSH Tunneling](#setting-up-ssh-tunneling-win)
+2. [SSH tunneling](#setting-up-ssh-tunneling-win)
 
 #### Setting Up a Personal Access Token (Win)
 
@@ -438,28 +422,37 @@ Enabling Secure Shell (SSH) is a network protocol used to secure connections bet
 These are the steps associated with using SSH encryption:
 
 1. [Enabling SSH](#enabling-ssh-win)
-2. [Creating an SSH Key](#creating-an-ssh-key-win)
-3. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-win)
+2. [Configuring Your Router](#configuring-your-router-win)
+3. [Creating an SSH Key](#creating-an-ssh-key-win)
+4. [Adding the SSH Key to GitLab](#adding-the-ssh-key-to-gitlab-win)
 
 ##### Enabling SSH (Win)
 
-By default, SSH functionality is supposed to be installed and enabled on Windows through PowerShell.
+By default, SSH functionality is already installed and enabled on Windows through PowerShell.
 
 However, you should first verify that the service is installed and running:
 
 1. Right-click on the **Windows PowerShell** app and select **Run as administrator**.
 2. First, check to make sure OpenSSH is installed: `Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'`.
 3. If `OpenSSH.Client` appears with the **State** of:
-    1. `NotPresent`, then type: `Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0`.
-    2. `Installed`, then continue to the next steps below.
+   1. `NotPresent`, then type: `Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0`.
+   2. `Installed`, then continue to the next steps below.
 
-If the SSH client is installed:
+If the SSH client is already installed:
 
 1. Type `Get-Service -Name ssh-agent`. If the **Status** returns as:
-    1. `Running`, continue to step 2.
-    2. `Stopped`, then type: `Start-Service ssh-agent`.
+   1. `Running`, continue to step 2.
+   2. `Stopped`, then type: `Start-Service ssh-agent`.
 2. `Set-Service ssh-agent -StartupType Automatic`
 3. `New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22`
+
+##### Configuring Your Router (Win)
+
+As part of SSH, your router must allow external communication between GitLab and your machine. This process varies depending on the type of router and the web interface used, but the following actions must be performed as part of  SSH tunneling:
+
+1. Identify your device's internal IP address (typically starts with `192`).
+2. Make a DHCP reservation for the IP address (so that you don't have to reconfigure SSH every time your IP updates).
+3. Add a single port forwarding for that IP using internal port `22`.
 
 ##### Creating an SSH Key (Win)
 
@@ -506,73 +499,23 @@ With Git ready, it's time to clone the `AtlasScripts` and `AtlasCore` repositori
 
 ### Altering `serverconfig.xml` (Win)
 
-Depending on your needs, you may need to alter the `serverconfig.xml` file. By default, it is set to use the IP address `127.0.0.1` and port `10400` for local builds, which allows you to run an Atlas server and access it via instances of DAoC from the same machine. If you need to change the IP to allow for other devices to connect to your server:
+With the repos on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building Atlas locally.
 
-If your project does not have the `serverconfig.xml` file at **DOLServer > config**, then you should create one manually.
-
-Open a text editor and copy/paste the following template:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-    <Server>
-        <Port>10400</Port>
-        <IP>0.0.0.0</IP>
-        <RegionIP>0.0.0.0</RegionIP>
-        <RegionPort>10400</RegionPort>
-        <UdpIP>0.0.0.0</UdpIP>
-        <UdpPort>10400</UdpPort>
-        <EnableUPnP>True</EnableUPnP>
-        <DetectRegionIP>True</DetectRegionIP>
-        <ServerName>Atlas Local Server</ServerName>
-        <ServerNameShort>DOLSERVER</ServerNameShort>
-        <LogConfigFile>./config/logconfig.xml</LogConfigFile>
-        <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
-        <ScriptAssemblies> </ScriptAssemblies>
-        <EnableCompilation>True</EnableCompilation>
-        <AutoAccountCreation>True</AutoAccountCreation>
-        <GameType>Normal</GameType>
-        <CheatLoggerName>cheats</CheatLoggerName>
-        <GMActionLoggerName>gmactions</GMActionLoggerName>
-        <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
-        <DBType>MYSQL</DBType>
-        <DBConnectionString>server=localhost;port=3306;database=atlas;user id=atlas;password=atlas;treattinyasboolean=false</DBConnectionString>
-        <DBAutosave>True</DBAutosave>
-        <DBAutosaveInterval>10</DBAutosaveInterval>
-        <CpuUse>8</CpuUse>
-    </Server>
-</root>
-```
-
-Save this file with the name `serverconfig.xml` and place it in the project at: **DOLServer> config**.
-
-If you need to change the IP to allow other devices to connect to your server:
-
-1. Open the file at `/AtlasCore/Debug/config/serverconfig.xml`.
-2. Within the `IP` tags, change the value `127.0.0.1` to one of these:
-    1. To test with other computers in your LAN/WAN, enter your server machine's IP address (use the PowerShell command `ipconfig`, and it should start with `192`).
-    2. To allow client connections from outside your network, [enter your public IP address](https://api.ipify.org).
-    3. If you created a database, user, and password with different values than `atlas`, update the values in the `<DBConnectionString>` tags.
+1. Copy the file `/AtlasCore/Net5/DOLServer/config/serverconfig.example.xml` to `/AtlasCore/Net5/DOLServer/config/serverconfig.xml`.
+2. Open the `serverconfig.xml` file.
+3. Within the `RegionIP` tags, change the value `0.0.0.0` to one of these:
+   1. To test locally, enter `127.0.0.1`.
+   2. To test over LAN, enter your machine's IP address (use the Terminal command `ipconfig`, and it should start with `192`).
+   3. To test outside your network, [enter your public IP address](https://api.ipify.org).
 
 Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
-
-## Removing Server Properties
-
-The database has webhooks set by default, which sends updates to the #dol channel on the Atlas Discord server regarding a server's accessibility. However, if these properties are left untouched on a local instance, they create some confusion among the staff regarding the status of the live server because each time a local instance is built, it sends an update to the channel saying the server is available for connections. Thus, it is requested that all staff remove the associated server properties prior to running a local instance of Atlas.
-
-From the `serverproperty` table, set the booleans under the *Value* column to `False` (or just delete them) for the following properties:
-
-* `Discord_Webhook_Active`
-* `serverlistupdate_enabled`
 
 ## Building Your DoL Server Locally
 
 This section provides the commands necessary for both building and running a DoL server locally.
 
-1. Launch Terminal or PowerShell, navigate to `/AtlasCore/` and type `dotnet build DOLLinux.sln`. This builds the DoL server on your machine. This may take around 1-2 minutes to complete. Don't panic if you see any errors.
-2. Enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins.
-
-Once the server finishes spinning up, you should see this message at the end: `GameServer is now open for connections!`
+1. Launch the Terminal or PowerShell, navigate to `/AtlasCore/Net5/` and type `dotnet build DOLdotnetLinux.sln`. This builds the DoL server on your machine. <!-- This may take around 1-2 minutes to complete. Don't panic if you see multiple warnings and errors. -->
+2. Enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
 
 Congratulations! You're now running an instance of Atlas on your machine.
 
@@ -581,70 +524,46 @@ Congratulations! You're now running an instance of Atlas on your machine.
 In order to access either local builds of Atlas or the World Builders' server, you need to have the DAoC client installed and equipped with the right files.
 
 1. Download the full [DAoC Client](https://darkageofcamelot.com/sites/daoc/files/downloads/DAoCSetup.exe).
-2. Install it, launch the DAoC application, and then download all patches.
+2. Install it, launch the application, and then download all patches. 
+3. Log in on the Atlas forums and download the [AtlasPack](https://www.atlasfreeshard.com/files/AtlasPack-0.2.zip) and [AtlasDF](https://www.atlasfreeshard.com/files/AtlasDF.zip).
+Extract the files. 
+4. Place everything from `AtlasPack` into the base directory (e.g., `C:\Program Files (x86)\Electronic Arts\Dark Age of Camelot\`). Replace any files affected when prompted. 
+5. Place the `zones` folder from `AtlasDF` onto the `zones` folder in the same directory as was used for `AtlasPack`.
+6. Download the [DAoCPortal](https://sourceforge.net/projects/dolserver/files/DAOC%20Portal/DAoCPortalSetup.msi/download) app and install it.
 
-> **NOTE:** You **MUST** patch DAoC fully before installing the AtlasPack, as you will encounter zone loading issues otherwise. The DAoC patch will overwrite any files you install from the AtlasPack.
+The client is ready for all Atlas servers.
 
-3. Navigate to the Atlas freeshard website and download the [AtlasPack](https://www.atlasfreeshard.com/how-to-connect/).
-4. Run the `.exe` file downloaded and specify the location of your DAoC install. This will automatically extract and replace existing DAoC files with Atlas-specific assets.
-5. (Optional) If you wish to log in to your local Atlas builds, download the [DAoCPortal](http://www.dolserver.net/viewtopic.php?f=63&t=23275) app and install it. Ignore any virus warnings.
-
-You may now access Atlas-specific servers. For additional information, see [Accessing Local Servers](#), [Accessing the Test Server](#), and [Accessing the Live Atlas Server](#).
-
-## Accessing Your Local Server
+## Accessing Local Servers
 
 Once you've built your Atlas server and it's running locally, you can now access it using the DAoC client and DAoCPortal.
-
-> **NOTE:** You may need to rename the `game1125.dll` Atlas file to `game.dll` in the `Dark Age of Camelot` directory to run the Atlas server via DAoCPortal.
 
 1. Launch DAoCPortal.
 2. Navigate to the _Custom Shards_ tab.
 3. Right-click in the app and click **Add Server...**.
 4. Enter whatever values you want for **Name** and **Description**.
 5. For **IP or Hostname**, enter `127.0.0.1` if you're accessing the server from the same machine.
-6. Leave the port set to `10400`.
+6. Leave the port set to `10300`.
 7. Click **OK**.
 8. Click on the desired server.
 9. Provide a value for **User** (Username) and **Pass** (Password).
-10. Click **Play!**.
+10. Click **Play!**
 
-The DAoC client launches and creates a new account based on the credentials you entered (unless the account already exists, then it just accesses the existing account if the credentials are correect). You should be brought to the character selection screen.
+The DAoC client launches and creates a new account based on the credentials you entered. You should be brought to the character selection screen now.
 
-## Accessing the Test Server
+## Accessing the World Builders' Server
 
-To test out existing functionality or make a commit/branch available to other Atlas staff, the private test server (PTR) is available.
+The World Builders all currently access a single live instance of the Atlas server to populate the regions with NPCs, mobs, and so on.
 
-> **NOTE:** If no branch or commit is currently being tested here, send all requests to Clait and he will update the server where possible. You should then communicate with the team what changes are available on PTR. 
+**TO GAIN ACCESS:** You must first request an account from clait to access this server. He will provide you with a regular (/plvl1) account. Should you require additional capabilities as a GameMaster (/plvl2) or World Builder/Administrator (/plvl3), an additional account will be provided.
 
-> **NOTE:** This environment is intended for testing purposes, so do not be afraid of breaking anything (though we ask that you not break anything out of malicious intent). For example, if you are unfamiliar with GM commands, PTR is an excellent environment in which to try them out.
+**NOTE:** This is not intended as a "play" server, as using GM commands can negatively impact the work of the World Builders. So we would ask that perform tests with caution and respect for the work the Builders have done.
 
-1. Create a new text file with the following format:
+1. From the base directory of the DAoC client, execute the `AtlasLauncher` application.
+2. Enter your login credentials and click **PLAY**.
 
-```
-start /d "<pathToDAoCFolder>" connect.exe game1127.dll 144.76.41.4:10325 <yourAccountName> <yourAccountPassword>
-```
+This should launch the DAoC client and then the character selection screen.
 
-See the example below:
-
-```
-start /d "C:\Program Files (x86)\Electronic Arts\Dark Age of Camelot" connect.exe game1127.dll 144.76.41.4:10325 myaccount password123
-```
-
-2. Save this file with whatever name you wish, but with the `.bat` extension.
-3. Run the `.bat` file from any folder location. It will automatically launch the DAoC client and connect to the test server.
-
-> **NOTE:** Do not share this test server information with non-Atlas staff as it is intended for internal use only.
-
-## Accessing the Live Atlas Server
-
-Every Atlas staff member is given two accounts to use on the Atlas live server, one with the Player privilege level (your own account to use for ordinary playing, or testing if desired) and another with a privilege level of either GM or Admin (for use in moderating players and assisting/troubleshooting issues via GM commands).
-
-> **NOTE:** If you do not already have these accounts set up, please notify Clait and he will create account(s) with the necessary privilege level.
-
-1. Navigate to your DAoC install folder and run `connect.exe`.
-2. Enter your login credentials and log in.
-
-You're on the Atlas live server!
+**If you are unable to get past the loading screen**, check the `dol` channel on Discord to see if the server is online.
 
 ## Testing
 
@@ -652,9 +571,11 @@ You're on the Atlas live server!
 
 ### In-Game Testing
 
-Testing components of DAoC, such as combat (PvP or PvE), cannot be done as a _Gamemaster_ or _Admin_ (creatures and players cannot attack these player types). You must have an account with `/plvl 1` status or change your character's individual privilege level as needed.
+When testing Atlas in-game, special attention should be paid when utilizing the `/plvl` GM command. Changing this setting for an account is currently **permanent** in Atlas.
 
-A full list of GM commands may be found on the Atlas forums.
+Also, testing components such as combat (PvP or PvE) cannot be done as a _Gamemaster_ or _Admin_ (creatures and players cannot attack these player types). You must have an account with `/plvl 1` status.
+
+A full list of GM commands may be found [on the Atlas forums](https://www.atlasfreeshard.com/threads/wip-list-of-gm-commands.102/).
 
 ### Recommended Extensions for Testing
 
@@ -666,8 +587,8 @@ If you're using Jetbrain Rider, [explore plugins currently available](https://pl
 
 Should you have any tools or plugins you'd like to recommend, please let us know and we'll include them here.
 
-> **NOTE:** Currently, not all tests run reliably during a full suite run. This is especially true in the `Integration` category, as several ephemeral failures may result due to race conditions with the database. Performing manual reruns of individual tests after a full-suite run should have the end result of clearing most previous failures.
+_**NOTE:** Currently, not all tests run reliably during a full suite run. This is especially true in the `Integration` category, as several ephemeral failures may result due to race conditions with the database. Performing manual reruns of individual tests after a full-suite run should have the end result of clearing most previous failures._
 
 ### Logging
 
-Logging is controlled by the `/AtlasCore/Debug/config/logconfig.xml` file. The default configuration may not be verbose enough for the purposes of development, so make any changes here as needed for logging.
+Logging is controlled by the `/AtlasCore/Net5/Debug/config/logconfig.xml` file. The default configuration may not be verbose enough for the purposes of development, so make any changes here as needed for logging.

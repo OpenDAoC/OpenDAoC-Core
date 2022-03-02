@@ -9,7 +9,7 @@ namespace DOL.AI.Brain
 	/// </summary>
     public class AlluvianGlobuleBrain : StandardMobBrain
 	{
-		public bool hasGrown = false;
+		internal bool hasGrown = false;
 
 		/// <summary>
 		/// Put on lower think cycle so mobs spawn a little slower.
@@ -19,17 +19,68 @@ namespace DOL.AI.Brain
 		{
 			ThinkInterval = 3000;
 			hasGrown = false;
+		}
 
-			FSM.ClearStates();
-			FSM.Add(new AlluvianGlobuleState_IDLE(FSM, this));
-			FSM.Add(new AlluvianGlobuleState_ROAMING(FSM, this));
-			FSM.Add(new StandardMobState_WAKING_UP(FSM, this));
-			FSM.Add(new StandardMobState_AGGRO(FSM, this));
-			FSM.Add(new StandardMobState_RETURN_TO_SPAWN(FSM, this));
-			FSM.Add(new StandardMobState_PATROLLING(FSM, this));
-			FSM.Add(new StandardMobState_DEAD(FSM, this));
+		/// <summary>
+		/// Determine if there's currently a storm to do effect.
+		/// Special logic for group fights.
+		/// This mob also casts a DD. Will leave out until gameloop is ready.
+		/// </summary>
+		public override void Think()
+		{
+			if (CheckStorm())
+			{
+				if (!hasGrown)
+				{
+					Grow();
+				}
+			}
+			if (!Body.IsReturningHome)
+			{
+				if (!Body.AttackState && AggroRange > 0)
+				{
+					var currentPlayersSeen = new List<GamePlayer>();
+					foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
+					{
+						if (!PlayersSeen.Contains(player))
+						{
+							PlayersSeen.Add(player);
+						}
+						currentPlayersSeen.Add(player);
+					}
+					for (int i = 0; i < PlayersSeen.Count; i++)
+					{
+						if (!currentPlayersSeen.Contains(PlayersSeen[i]))
+						{
+							PlayersSeen.RemoveAt(i);
+						}
+					}
+				}
+				if (!Body.AttackState && AggroLevel > 0)
+				{
+					CheckPlayerAggro();
+					CheckNPCAggro();
+				}
+				if (HasAggro)
+				{
+					AttackMostWanted();
+					return;
+				}
+				if (!HasAggro)
+				{
+					if (Body.AttackState)
+					{
+						Body.StopAttack();
+					}
 
-			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+					Body.TargetObject = null;
+				}
+			}
+			if (!Body.AttackState && !Body.IsMoving && !Body.InCombat)
+			{
+				// loc range around the lake that Alluvian spanws.
+				Body.WalkTo(544196 + Util.Random(1, 3919), 514980 + Util.Random(1, 3200), 3140 + Util.Random(1, 540), 80);
+			}
 		}
 
 		/// <summary>

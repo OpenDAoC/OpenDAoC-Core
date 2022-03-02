@@ -81,7 +81,7 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lukas", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -97,7 +97,7 @@ namespace DOL.GS.Quests.Albion
 					log.Warn("Could not find Lukas , creating it ...");
 				Lukas = new GameNPC();
 				Lukas.Model = 33;
-				Lukas.Name = "Lukas";
+				Lukas.Name = "Sir Lukas";
 				Lukas.GuildName = "Emissary of the King";
 				Lukas.Realm = eRealm.Albion;
 				Lukas.CurrentRegionID = 1;
@@ -389,9 +389,10 @@ namespace DOL.GS.Quests.Albion
 							break;
 						case "Vetusta Abbey":
 							
-							SirLukas.SayTo(player, "Here, is the speech. Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates.");
+							
 							if (quest.Step == 3)
 							{
+								SirLukas.SayTo(player, "Here, is the speech. Go to the North Gates of Camelot. You will find Vetusta Abbey near the gates.");
 								GiveItem(player, funeral_speech_scroll);
 								quest.Step = 4;
 							}
@@ -478,9 +479,9 @@ namespace DOL.GS.Quests.Albion
 					switch (wArgs.Text)
 					{
 						case "her bow":
-							EllynWeyland.SayTo(player, "Here is the bow, thank you for doing this.");
 							if (quest.Step == 1)
 							{
+								EllynWeyland.SayTo(player, "Here is the bow, thank you for doing this.");
 								quest.Step = 2;
 								GiveItem(player, FlitzitinaBow);
 							}
@@ -632,6 +633,8 @@ namespace DOL.GS.Quests.Albion
 						return "Speak with Sir Lukas and find out where the grave will be placed.";
 					case 4:
 						return "Find Flitzitina\'s Grave in Vetusta Abbey near North Camelot Entrance.";
+					case 5:
+						return "Rest in Peace Flitzitina! (quest completed)";
 				}
 				return base.Description;
 			}
@@ -680,6 +683,7 @@ namespace DOL.GS.Quests.Albion
 				if (gArgs.Target.Name.Equals("Flitzitina\'s Grave"))
 				{
 					RemoveItem(player, funeral_speech_scroll);
+					Step = 5;
 					FinishQuest();
 				}
 			}
@@ -761,8 +765,8 @@ namespace DOL.GS.Quests.Albion
 				Lukas.Emote(eEmote.Curtsey);
 				Lukas.ResetHeading();
 
-				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
-				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
+				m_questPlayer.GainExperience(eXPSource.Quest, 200, true);
+				m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			}

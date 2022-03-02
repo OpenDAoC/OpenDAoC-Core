@@ -23,9 +23,11 @@ using System.Reflection;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Events;
 using DOL.Language;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
 
 namespace DOL.GS
 {
@@ -276,9 +278,12 @@ namespace DOL.GS
 
 			int itemCount = Math.Max(1, item.Count);
 			int packSize = Math.Max(1, item.PackSize);
-			
+
 			long val = item.Price * itemCount / packSize * ServerProperties.Properties.ITEM_SELL_RATIO / 100;
 
+			if (item.Price == 1 && val == 0)
+				val = item.Price * itemCount / packSize;
+			
 			if (!item.IsDropable)
 			{
 				val = 0;
@@ -449,6 +454,13 @@ namespace DOL.GS
 				player.GainBountyPoints(item.Count * value);
 				player.Inventory.RemoveItem(item);
 				return true;
+			}
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
 			}
 
 			return base.ReceiveItem(source, item);
@@ -695,34 +707,49 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool ReceiveItem(GameLiving source, InventoryItem item)
 		{
-			if (source is GamePlayer player && item != null && m_currencyValues != null
-				&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
-				&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
+			
+			GamePlayer t = source as GamePlayer;
+			if (t == null || item == null)
+				return false;
+			
+			if (DataQuestList.Count > 0)
 			{
-				int giveCount = item.Count * receiveCost / giveCost;
-
-				if (giveCount > 0)
+				foreach (DataQuest quest in DataQuestList)
 				{
-					// Create and give new item to player
-					InventoryItem newItem = GameInventoryItem.Create(m_itemTemplate);
-					newItem.OwnerID = player.InternalID;
-					newItem.Count = giveCount;
-
-					if (!player.Inventory.AddTemplate(newItem, newItem.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-						player.CreateItemOnTheGround(newItem);
-
-					// Remove received items
-					InventoryItem playerItem = player.Inventory.GetItem((eInventorySlot)item.SlotPosition);
-					playerItem.Count -= giveCount * giveCost;
-
-					if (playerItem.Count < 1)
-						player.Inventory.RemoveItem(item);
-
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(t, this, item));
 					return true;
 				}
 			}
-
-			return base.ReceiveItem(source, item);
+			return false;
+			
+			// if (source is GamePlayer player && item != null && m_currencyValues != null
+			// 	&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
+			// 	&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
+			// {
+			// 	int giveCount = item.Count * receiveCost / giveCost;
+			//
+			// 	if (giveCount > 0)
+			// 	{
+			// 		// Create and give new item to player
+			// 		InventoryItem newItem = GameInventoryItem.Create(m_itemTemplate);
+			// 		newItem.OwnerID = player.InternalID;
+			// 		newItem.Count = giveCount;
+			//
+			// 		if (!player.Inventory.AddTemplate(newItem, newItem.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			// 			player.CreateItemOnTheGround(newItem);
+			//
+			// 		// Remove received items
+			// 		InventoryItem playerItem = player.Inventory.GetItem((eInventorySlot)item.SlotPosition);
+			// 		playerItem.Count -= giveCount * giveCost;
+			//
+			// 		if (playerItem.Count < 1)
+			// 			player.Inventory.RemoveItem(item);
+			//
+			// 		return true;
+			// 	}
+			// }
+			//
+			// return base.ReceiveItem(source, item);
 		}
 	}
 
@@ -765,5 +792,30 @@ namespace DOL.GS
 	{
 		//Atlas Orbs itemtemplate = token_many
 		public override string MoneyKey { get { return "token_many"; } }
+	}
+	
+	public class GameL20RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L20RewardToken"; } }
+	}
+	
+	public class GameL25RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L25RewardToken"; } }
+	}
+	
+	public class GameL30RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L30RewardToken"; } }
+	}
+	
+	public class GameL35RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L35RewardToken"; } }
+	}
+	
+	public class GameL40RewardsMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "L40RewardToken"; } }
 	}
 }

@@ -45,42 +45,42 @@ namespace DOL.GS
 		protected virtual double RandomDoubleImpl()
 		{
 			double rand = RandomGen.NextDouble();
-
-			if (lastRandomDouble == 0)
-			{
-				lastRandomDouble = rand;
-				return rand;
-			}
-			else
-			{
-				while (lastRandomDouble == rand)
-				{
-					rand = RandomGen.NextDouble();
-				}
-				lastRandomDouble = rand;
-				return rand;
-			}
+			return rand;
+			//if (lastRandomDouble == 0)
+			//{
+			//	lastRandomDouble = rand;
+			//	return rand;
+			//}
+			//else
+			//{
+			//	while (lastRandomDouble == rand)
+			//	{
+			//		rand = RandomGen.NextDouble();
+			//	}
+			//	lastRandomDouble = rand;
+			//	return rand;
+			//}
 			//return RandomGen.NextDouble();
 		}
 
 		protected virtual int RandomImpl(int min, int max)
 		{
 			int rand = RandomGen.Next(min, max + 1);
-
-			if (lastRandomInt == 0)
-			{				
-				lastRandomInt = rand;
-				return rand;
-			}
-			else
-			{				
-				while (lastRandomInt == rand)
-                {
-					rand = RandomGen.Next(min, max + 1);
-				}
-				lastRandomInt = rand;
-				return rand;
-			}
+			return rand;
+			//if (lastRandomInt == 0)
+			//{				
+			//	lastRandomInt = rand;
+			//	return rand;
+			//}
+			//else
+			//{				
+			//	while (lastRandomInt == rand)
+   //             {
+			//		rand = RandomGen.Next(min, max + 1);
+			//	}
+			//	lastRandomInt = rand;
+			//	return rand;
+			//}
 		}
 
 		#region Random

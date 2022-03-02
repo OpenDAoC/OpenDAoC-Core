@@ -32,7 +32,7 @@ namespace DOL.GS.Quests
 	public class KillTask : AbstractTask
 	{
 		// Chance of npc having task for player
-		protected new const ushort CHANCE = 75;
+		protected new const ushort CHANCE = 100;
 
 		protected const String MOB_NAME = "mobName";
 		protected const String ITEM_INDEX = "itemIndex";
@@ -119,7 +119,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public override string Description
 		{
-			get { return ((KillTask)m_taskPlayer.Task).MobKilled == false ? "Find a " + MobName + " and kill it then return to me for your reward." : "Return to " + RecieverName + " for your reward!"; }
+			get { return ((KillTask)m_taskPlayer.Task).MobKilled == false ? "Find a " + MobName + " and kill it then return to me for your reward." : "Return to " + ReceiverName + " for your reward!"; }
 		}
 		
 		/// <summary>
@@ -163,12 +163,12 @@ namespace DOL.GS.Quests
 					if (((KillTask)player.Task).MobName == target.Name)
 					{
 						((KillTask)player.Task).MobKilled = true;
-						player.Out.SendMessage("You must now return to " + player.Task.RecieverName + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("You must now return to " + player.Task.ReceiverName + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 				}
 				else
 				{
-					// check wether the right mob was killed
+					// check whether the right mob was killed
 					if (target.Name != MobName)
 						return;
 
@@ -263,7 +263,7 @@ namespace DOL.GS.Quests
 				if (((KillTask)player.Task).MobKilled == true)
 				{
 					InteractWithEventArgs myargs = (InteractWithEventArgs)args;
-					if (myargs.Target.Name == ((KillTask)player.Task).RecieverName)
+					if (myargs.Target.Name == ((KillTask)player.Task).ReceiverName)
 					{
 						player.Out.SendMessage(myargs.Target.Name + " says, *Good work " + player.Name + ". Here is your reward as promised.*", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						FinishTask();
@@ -276,7 +276,7 @@ namespace DOL.GS.Quests
 				GameLiving target = gArgs.Target as GameLiving;
 				InventoryItem item = gArgs.Item;
 
-				if (player.Task.RecieverName == target.Name && item.Name == player.Task.ItemName)
+				if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
 					player.Inventory.RemoveItem(item);
                     InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
@@ -299,7 +299,14 @@ namespace DOL.GS.Quests
 				return false;
 
 			GameNPC Mob = GetRandomMob(player);
-			if(Mob == null)
+
+			if (Mob == null)
+			{
+				player.Out.SendMessage("Sorry, I couldn't find any mob kill order. Come back later!",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+				return false;
+			}
+			
+			if (!GameServer.ServerRules.IsAllowedToAttack(player,Mob,true) || string.IsNullOrEmpty(Mob.Name))
 			{
 				player.Out.SendMessage("I have no task for you, come back later",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
@@ -311,7 +318,7 @@ namespace DOL.GS.Quests
 				((KillTask)player.Task).MobKilled = false;
 				((KillTask)player.Task).ItemIndex = Util.Random(0, TaskObjects.Length - 1);
 				((KillTask)player.Task).MobName = Mob.Name;
-				player.Task.RecieverName = source.Name;
+				player.Task.ReceiverName = source.Name;
 				player.Out.SendMessage(source.Name + " says, *Very well " + player.Name + ", it's good to see adventurers willing to help out the realm in such times. Search to the " + GetDirectionFromHeading(Mob.Heading) + " and kill a " + Mob.Name + " and return to me for your reward. Good luck!*", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				player.Out.SendDialogBox(eDialogCode.SimpleWarning, 1, 1, 1, 1, eDialogType.Ok, false, "You have been given a task!");
 				return true;
@@ -349,8 +356,8 @@ namespace DOL.GS.Quests
 		{
 			int minLevel = GameLiving.NoXPForLevel[Player.Level]+1;
 			int maxLevel = Player.Level;
-
 			GameNPC npc = Player.CurrentZone.GetRandomNPC(eRealm.None, minLevel,maxLevel);
+			
 			return npc;
 		}
 
@@ -414,12 +421,12 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
-			if (name.StartsWith("Sir ") && (living.GuildName==null || living.GuildName=="") )
+			if (name.StartsWith("Sir ") && string.IsNullOrEmpty(living.GuildName) )
 			{
 				return true;
 			}
 
-			if (name.StartsWith("Captain ") && (living.GuildName==null || living.GuildName=="") )
+			if (name.StartsWith("Captain ") && string.IsNullOrEmpty(living.GuildName) )
 			{
 				return true;
 			}
@@ -429,7 +436,7 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
-			if (name.StartsWith("Lady ") && (living.GuildName==null || living.GuildName=="") )
+			if (name.StartsWith("Lady ") && string.IsNullOrEmpty(living.GuildName) )
 			{
 				return true;
 			}
@@ -460,6 +467,17 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
+			if (name.StartsWith("Bork "))
+			{
+				return true;
+			}
+			
+			if (name.Contains("Flayer"))
+			{
+				if (name.EndsWith("Kegnar"))
+					return true;
+			}
+			
 			return false;
 		}
 

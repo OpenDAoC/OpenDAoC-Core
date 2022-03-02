@@ -122,7 +122,7 @@ namespace DOL.GS.Spells
 			ad.DamageType = Spell.DamageType;
 			ad.AttackResult = eAttackResult.HitUnstyled;
 			ad.SpellHandler = this;
-			ad.CausesCombat = true;
+			ad.CausesCombat = false;
 
 			return ad;
 		}

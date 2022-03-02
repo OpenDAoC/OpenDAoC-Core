@@ -28,6 +28,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using DOL.Database;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 using DOL.GS.Utils;
 
 namespace DOL.GS
@@ -191,7 +192,7 @@ namespace DOL.GS
 
 			// First see if there are any MobXLootTemplates associated with this mob
 
-			var mxlts = DOLDB<MobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
+			var mxlts = DOLDB<MobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name.ToLower()));
 
 			if (mxlts != null)
 			{
@@ -232,7 +233,7 @@ namespace DOL.GS
 				}
 			}
 
-			var lootTemplates = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName));
+			var lootTemplates = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName.ToLower()));
 
 			if (lootTemplates != null)
 			{
@@ -262,6 +263,9 @@ namespace DOL.GS
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
 
+			string XPItemKey = "XP_Item";
+			string XPItemDroppersKey = "XP_Item_Droppers";
+
 			try
 			{
 				GamePlayer player = null;
@@ -286,9 +290,9 @@ namespace DOL.GS
 					List<MobXLootTemplate> killedMobXLootTemplates = null;
 					
 					// Graveen: we first privilegiate the loottemplate named 'templateid' if it exists	
-					if (mob.NPCTemplate != null && m_mobXLootTemplates.ContainsKey(mob.NPCTemplate.TemplateId.ToString()))
+					if (mob.NPCTemplate != null && m_mobXLootTemplates.ContainsKey(mob.NPCTemplate.TemplateId.ToString().ToLower()))
 					{
-						killedMobXLootTemplates = m_mobXLootTemplates[mob.NPCTemplate.TemplateId.ToString()];
+						killedMobXLootTemplates = m_mobXLootTemplates[mob.NPCTemplate.TemplateId.ToString().ToLower()];
 					}
 					// else we are choosing the loottemplate named 'mob name'
 					// this is easily allowing us to affect different level choosen loots to different level choosen mobs
@@ -305,7 +309,7 @@ namespace DOL.GS
 					// TemplateName usually equals Mob name, so if you want to know what drops for a mob:
 					// select * from LootTemplate where templatename = 'mob name';
 					// It is possible to have TemplateName != MobName but this works only if there is an entry in MobXLootTemplate for the MobName.
-
+					
 					if (killedMobXLootTemplates == null)
 					{
 						// If there is no MobXLootTemplate entry then every item in this mobs LootTemplate can drop.
@@ -313,16 +317,23 @@ namespace DOL.GS
 						if (m_lootTemplates.ContainsKey(mob.Name.ToLower()))
 						{
 							Dictionary<string, LootTemplate> lootTemplatesToDrop = m_lootTemplates[mob.Name.ToLower()];
-
+							List<LootTemplate> timedDrops = new List<LootTemplate>();
+							
 							if (lootTemplatesToDrop != null)
 							{
+								long dropChan = 0;
+								long tmp = 0;
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop.Values)
 								{
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
-
+									
 									if (drop != null && (drop.Realm == (int)player.Realm || drop.Realm == 0 || player.CanUseCrossRealmItems))
 									{
-										if (lootTemplate.Chance == 100)
+										if (lootTemplate.Chance < 0)
+										{
+											timedDrops.Add(lootTemplate);
+										}
+										else if (lootTemplate.Chance == 100)
 										{
 											loot.AddFixed(drop, lootTemplate.Count);
 										}
@@ -331,6 +342,58 @@ namespace DOL.GS
 											loot.AddRandom(lootTemplate.Chance, drop, 1);
 										}
 									}
+								}
+
+								if (timedDrops.Count > 0)
+								{
+									LootTemplate lootTemplate = timedDrops[Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
+									
+									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
+									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
+									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
+									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
+
+									//if we've never dropped an item, or our cooldown is up, drop an item
+									if (tempProp == 0 ||
+									    tempProp + dropCooldown < GameLoop.GameLoopTime)
+									{
+										long nextDropTime = GameLoop.GameLoopTime;
+										
+										AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(player.Realm)));
+										if (realmLoyalty != null && realmLoyalty.LoyalDays > 0)
+										{
+											int tmpLoyal = realmLoyalty.LoyalDays > 30
+												? 30 : realmLoyalty.LoyalDays;
+											nextDropTime -= tmpLoyal * 1000; //reduce cooldown by 1s per loyalty day up to 30s cap
+										}
+										
+										loot.AddFixed(drop, lootTemplate.Count);
+										player.TempProperties.setProperty(XPItemKey, nextDropTime);
+										
+										itemsDropped.Clear();
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										
+									} //else if this drop cycle has not seen this item, reduce global cooldown
+									else if (!itemsDropped.Contains(drop.Name))
+									{
+										itemsDropped.Add(drop.Name);
+										tempProp -= 20 * 1000; //take 20 seconds off cooldown
+										player.TempProperties.setProperty(XPItemKey, tempProp);
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										tmp = tempProp;
+										dropChan = dropCooldown;
+									}
+								}
+								
+								if (tmp > 0 && dropChan > 0)
+								{
+									long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+									timeDifference *= -1;
+									//"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+									if(timeDifference > 0)
+										player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									else
+										player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								}
 							}
 						}
@@ -343,22 +406,82 @@ namespace DOL.GS
 						// due to the fact that 100% items always drop regardless of the drop limit
 
 						List<LootTemplate> lootTemplatesToDrop = new List<LootTemplate>();
+
+						long dropChan = 0;
+						long tmp = 0;
 						foreach (MobXLootTemplate mobXLootTemplate in killedMobXLootTemplates)
 						{
 							loot = GenerateLootFromMobXLootTemplates(mobXLootTemplate, lootTemplatesToDrop, loot, player);
-
+							
 							if (lootTemplatesToDrop != null)
 							{
+								List<LootTemplate> timedDrops = new List<LootTemplate>();
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop)
 								{
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
-
-									if (drop != null && (drop.Realm == (int)player.Realm || drop.Realm == 0 || player.CanUseCrossRealmItems))
+									
+									if (lootTemplate.Chance < 0)
+									{
+										timedDrops.Add(lootTemplate);
+									}
+									else if (drop != null && (drop.Realm == (int)player.Realm || drop.Realm == 0 || player.CanUseCrossRealmItems))
 									{
 										loot.AddRandom(lootTemplate.Chance, drop, 1);
 									}
 								}
+								
+								if (timedDrops.Count > 0)
+								{
+									LootTemplate lootTemplate = timedDrops[Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
+									
+									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
+									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
+									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
+									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
+									if (itemsDropped == null) itemsDropped = new List<string>();
+											
+									//if we've never dropped an item, or our cooldown is up, drop an item
+									if (tempProp == 0 ||
+									    tempProp + dropCooldown < GameLoop.GameLoopTime)
+									{
+										long nextDropTime = GameLoop.GameLoopTime;
+										AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(player.Realm)));
+										if (realmLoyalty != null && realmLoyalty.LoyalDays > 0)
+										{
+											int tmpLoyal = realmLoyalty.LoyalDays > 30
+												? 30 : realmLoyalty.LoyalDays;
+											nextDropTime -= tmpLoyal * 1000; //reduce cooldown by 1s per loyalty day up to 30s cap
+										}
+										
+										loot.AddFixed(drop, lootTemplate.Count);
+										player.TempProperties.setProperty(XPItemKey, nextDropTime);
+										
+										itemsDropped.Clear();
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										
+									} //else if this drop cycle has not seen this item, reduce global cooldown
+									else if (!itemsDropped.Contains(drop.Name))
+									{
+										itemsDropped.Add(drop.Name);
+										tempProp -= 20 * 1000; //take 20 seconds off cooldown
+										player.TempProperties.setProperty(XPItemKey, tempProp);
+										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+									}
+									tmp = tempProp;
+									dropChan = dropCooldown;
+								}
 							}
+						}
+
+						if (tmp > 0 && dropChan > 0)
+						{
+							long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+							timeDifference *= -1;
+							//"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+							if(timeDifference > 0)
+								player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							else
+								player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 					}
 				}
@@ -388,10 +511,10 @@ namespace DOL.GS
 			// Using Name + Realm (if ALLOW_CROSS_REALM_ITEMS) for the key to try and prevent duplicate drops
 
 			Dictionary<string, LootTemplate> templateList = null;
-
-			if (m_lootTemplates.ContainsKey(mobXLootTemplates.LootTemplateName.ToLower()))
+			
+			if (m_lootTemplates.ContainsKey(mobXLootTemplates.MobName.ToLower()))
 			{
-				templateList = m_lootTemplates[mobXLootTemplates.LootTemplateName.ToLower()];
+				templateList = m_lootTemplates[mobXLootTemplates.MobName.ToLower()];
 			}
 
 			if (templateList != null)

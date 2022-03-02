@@ -79,6 +79,14 @@ namespace DOL.GS.Commands
 							info.Add(" + Sell List:  Not Present !\n");
 						info.Add(" ");
 					}
+
+					if (target.Faction != null)
+					{
+						info.Add("Faction: " + target.Faction.Name);
+						info.Add("ID:   " + target.Faction.ID);
+						info.Add("Enemies: " + target.Faction.EnemyFactions.Count);
+						info.Add("Friends: " + target.Faction.FriendFactions.Count);
+					}
 					if (client.Player.TargetObject is GamePet)
 					{
 						var targetP = client.Player.TargetObject as GamePet;
@@ -108,6 +116,7 @@ namespace DOL.GS.Commands
 					
 					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);
 					info.Add(" + Health: " + target.Health + "/" + target.MaxHealth);
+					info.Add("Attacker Count: " + target.attackComponent.Attackers.Count);
 					
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)
@@ -333,7 +342,7 @@ namespace DOL.GS.Commands
 				{
 					var target = client.Player.TargetObject as GamePlayer;
 
-					info.Add("ENDURANCE INFORMANTION");
+					info.Add("ENDURANCE INFORMATION");
 					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
 					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
 					info.Add("Last Regen amount: " + target.Regen);
@@ -343,9 +352,14 @@ namespace DOL.GS.Commands
 					info.Add("REGEN INFORMATION");
 					info.Add("Last EnduDebuff:" + target.EnduDebuff);
 					info.Add("Last RegenBuff: " + target.RegenBuff);
+					info.Add("Player has Tireless: " + target.HasAbility(Abilities.Tireless));
 					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
 					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
+					info.Add("Combat flag: " + target.InCombat);
 					info.Add("Last Combat Regen: " + target.CombatRegen);
+					info.Add(" ");
+					info.Add("DETERMINATION INFORMATION");
+					info.Add("CC reduction: " + target.AbilityBonus[(int)eProperty.MesmerizeDurationReduction]);
 					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);

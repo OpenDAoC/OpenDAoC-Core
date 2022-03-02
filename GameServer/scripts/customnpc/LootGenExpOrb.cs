@@ -17,7 +17,6 @@
  *
  ***************Made by Scrubtasticx*******************************************
  */
-using System;
 using DOL.AI.Brain;
 using DOL.Database;
 
@@ -55,9 +54,7 @@ namespace DOL.GS
                 {
                     return loot;
                 }
-
-                ItemTemplate token_many = new ItemTemplate(m_token_many);
-
+                
                 int killedcon = (int)player.GetConLevel(mob) + 3;
 
                 if (killedcon <= 0)
@@ -66,15 +63,9 @@ namespace DOL.GS
                 }
 
                 int lvl = mob.Level + 1;
-                if (lvl < 1)
-                {
-                    lvl = 1;
-                }
 
-                if (player.Level < 50){
-                    int maxcount = Util.Random(1, 10);
-                    loot.AddFixed(m_token_many, maxcount);
-                }
+                int maxcount = Util.Random(player.Level, lvl);
+                loot.AddFixed(m_token_many, maxcount);
 
             }
             catch

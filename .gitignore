@@ -31,8 +31,15 @@
 /*.user
 /nuget.exe
 /Debug.zip
-.idea/
-/Net5
-/ConnectTest - Copy.bat - Shortcut.lnk
-/ConnectTest.bat - Shortcut.lnk
+mono_crash.*
+.idea
+.vscode
 /ConnectTestBoth.bat - Shortcut.lnk
+/ConnectTest.bat - Shortcut.lnk
+/ConnectTest - Copy.bat - Shortcut.lnk
+/GameServer/Properties/PublishProfiles
+/GameServer/GameServer.csproj.user
+/ConnectTestAlt - Shortcut.lnk
+/ConnectTest - Shortcut.lnk
+/usbwebserver - Shortcut.lnk
+/heidisql - Shortcut.lnk

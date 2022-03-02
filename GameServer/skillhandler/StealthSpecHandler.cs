@@ -75,7 +75,7 @@ namespace DOL.GS.SkillHandler
 
 				//"You can't hide with a relic!"
 
-				if (player.ConcentrationEffects.GetOfType(typeof (PulsingSpellEffect)) != null)
+				if (player.effectListComponent.GetAllPulseEffects().Count > 0)
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseActivePulsingSpell"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;

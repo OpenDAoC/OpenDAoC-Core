@@ -44,7 +44,9 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
+using JNogueira.Discord.Webhook.Client;
 using log4net;
+using Newtonsoft.Json;
 
 namespace DOL.GS
 {
@@ -67,6 +69,8 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+
+        private PlayerDeck _randomNumberDeck;
 
         #region Client/Character/VariousFlags
 
@@ -123,6 +127,9 @@ namespace DOL.GS
         /// Last spell cast from a used item
         /// </summary>
         public static readonly string LAST_USED_ITEM_SPELL = "last_used_item_spell";
+        
+        public static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
+        public static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
 
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
@@ -151,6 +158,18 @@ namespace DOL.GS
             set { m_targetInView = value; }
         }
 
+        public PlayerDeck RandomNumberDeck
+        {
+            get
+            {
+                if (_randomNumberDeck == null)
+                    _randomNumberDeck = new PlayerDeck();
+                
+                return _randomNumberDeck;
+            }
+            set { _randomNumberDeck = value; }
+        }
+
         /// <summary>
         /// Holds the ground target visibility flag
         /// </summary>
@@ -163,6 +182,14 @@ namespace DOL.GS
         {
             get { return m_groundtargetInView; }
             set { m_groundtargetInView = value; }
+        }
+
+        protected int m_OutOfClassROGPercent = 0;
+
+        public int OutOfClassROGPercent
+        {
+            get { return m_OutOfClassROGPercent; }
+            set { m_OutOfClassROGPercent = value; }
         }
 
         /// <summary>
@@ -182,13 +209,7 @@ namespace DOL.GS
             get { return m_usedetailedcombatlog; }
             set { m_usedetailedcombatlog = value;}
         }
-
-        public enum eXPLogState {
-            Off = 0,
-            On = 1,
-            Verbose = 2
-        }
-
+        
         public eXPLogState XPLogState
         {
             get { return m_xplogstate; }
@@ -406,7 +427,37 @@ namespace DOL.GS
             get { return (DBCharacter != null ? DBCharacter.RPFlag : true); }
             set { if (DBCharacter != null) DBCharacter.RPFlag = value; }
         }
-
+        
+        /// <summary>
+        /// Gets or sets the hardcore flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool HCFlag
+        {
+            get { return (DBCharacter != null ? DBCharacter.HCFlag : true); }
+            set { if (DBCharacter != null) DBCharacter.HCFlag = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets the hardcore flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool HCCompleted
+        {
+            get { return (DBCharacter != null ? DBCharacter.HCCompleted : true); }
+            set { if (DBCharacter != null) DBCharacter.HCCompleted = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets the boosted flag for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool Boosted
+        {
+            get { return (DBCharacter != null ? DBCharacter.isBoosted : true); }
+            set { if (DBCharacter != null) DBCharacter.isBoosted = value; }
+        }
+        
         /// <summary>
         /// gets or sets the guildnote for this player
         /// (delegate to property in DBCharacter)
@@ -1396,7 +1447,8 @@ namespace DOL.GS
         protected const int RELEASE_TIME = 900;
 
         /// <summary>
-        /// The property name that is set when releasing to another region
+        /// The property name that is set when relea
+        /// sing to another region
         /// </summary>
         public const string RELEASING_PROPERTY = "releasing";
 
@@ -1745,7 +1797,7 @@ namespace DOL.GS
 
             if (Realm != eRealm.None)
             {
-                if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL)
+                if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL && !HCFlag)
                 {
                     // actual lost exp, needed for 2nd stage deaths
                     long lostExp = Experience;
@@ -2842,7 +2894,7 @@ namespace DOL.GS
         /// </summary>
         public override int Concentration
         {
-            get { return MaxConcentration - ConcentrationEffects.UsedConcentration; }
+            get { return MaxConcentration - UsedConcentration; }
         }
 
         /// <summary>
@@ -4887,12 +4939,12 @@ namespace DOL.GS
         public virtual long GetExperienceNeededForLevel(int level)
         {
             if (level > MaxLevel)
-                return GetExperienceAmountForLevel(MaxLevel);
+                return GetScaledExperienceAmountForLevel(MaxLevel);
 
             if (level <= 0)
-                return GetExperienceAmountForLevel(0);
+                return GetScaledExperienceAmountForLevel(0);
 
-            return GetExperienceAmountForLevel(level - 1);
+            return GetScaledExperienceAmountForLevel(level - 1);
         }
 		
         /// <summary>
@@ -4905,6 +4957,18 @@ namespace DOL.GS
             try
             {
                 return XPForLevel[level];
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        
+        public static long GetScaledExperienceAmountForLevel(int level)
+        {
+            try
+            {
+                return ScaledXPForLevel[level];
             }
             catch
             {
@@ -4959,6 +5023,65 @@ namespace DOL.GS
             6899999950, // xp to level 39
             8599999950, // xp to level 40
             12899999950, // xp to level 41
+            20699999950, // xp to level 42
+            29999999950, // xp to level 43
+            40799999950, // xp to level 44
+            53999999950, // xp to level 45
+            69599999950, // xp to level 46
+            88499999950, // xp to level 47
+            110999999950, // xp to level 48
+            137999999950, // xp to level 49
+            169999999950, // xp to level 50
+            999999999950, // xp to level 51
+        };
+        
+        /// <summary>
+        /// A table that holds the required XP/Level
+        /// This must include a final entry for MaxLevel + 1
+        /// </summary>
+        private static readonly long[] ScaledXPForLevel =
+        {
+            0, // xp to level 1
+            50, // xp to level 2
+            250, // xp to level 3
+            850, // xp to level 4
+            2300, // xp to level 5
+            6350, // xp to level 6
+            15950, // xp to level 7
+            37950, // xp to level 8
+            88950, // xp to level 9
+            203950, // xp to level 10
+            459950, // xp to level 11
+            839950, // xp to level 12
+            1399950, // xp to level 13
+            2199950, // xp to level 14
+            3399950, // xp to level 15
+            6499938, // xp to level 16
+            9953937, // xp to level 17
+            14985937, // xp to level 18
+            22399936, // xp to level 19
+            33410936, // xp to level 20
+            49659935, // xp to level 21
+            71656935, // xp to level 22
+            101639934, // xp to level 23
+            142309934, // xp to level 24
+            196979933, // xp to level 25
+            269999933, // xp to level 26
+            367199932, // xp to level 27
+            493199932, // xp to level 28
+            662399931, // xp to level 29
+            889599931, // xp to level 30
+            1189999930, // xp to level 31
+            1579199930, // xp to level 32
+            2087399929, // xp to level 33
+            2759899929, // xp to level 34
+            3643199928, // xp to level 35
+            4813999928, // xp to level 36
+            6277999927, // xp to level 37
+            8084999927, // xp to level 38
+            10211999926, // xp to level 39
+            12813999926, // xp to level 40
+            16382999937, // xp to level 41
             20699999950, // xp to level 42
             29999999950, // xp to level 43
             40799999950, // xp to level 44
@@ -5040,9 +5163,9 @@ namespace DOL.GS
         /// <param name="expGroupBonus"></param>
         /// <param name="expOutpostBonus"></param>
         /// <param name="sendMessage"></param>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long atlasBonus, long expOutpostBonus, bool sendMessage)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, true);
         }
 
         /// <summary>
@@ -5054,9 +5177,9 @@ namespace DOL.GS
         /// <param name="expOutpostBonus"></param>
         /// <param name="sendMessage"></param>
         /// <param name="allowMultiply"></param>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long atlasBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, true);
         }
 
         /// <summary>
@@ -5069,13 +5192,100 @@ namespace DOL.GS
         /// <param name="sendMessage"></param>
         /// <param name="allowMultiply"></param>
         /// <param name="notify"></param>
-        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
+        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, long atlasBonus, bool sendMessage, bool allowMultiply, bool notify)
         {
             if (!GainXP && expTotal > 0)
                 return;
 
+            if (HCFlag && this.Group != null)
+            {
+                foreach (var player in this.Group.GetPlayersInTheGroup())
+                {
+                    if (player.Level > this.Level + 5)
+                        expTotal = 0;
+                }
+                if(expTotal == 0)
+                    this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
             
+            int numCurrentLoyalDays = this.TempProperties.getProperty<int>(CURRENT_LOYALTY_KEY);
+            //check for cached loyalty days, and grab value if needed
+            if (numCurrentLoyalDays == null || numCurrentLoyalDays == 0)
+            {
+                AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                if (realmLoyalty == null)
+                {
+                    AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                    newLoyalty.AccountId = this.Client.Account.ObjectId;
+                    newLoyalty.Realm = (int)this.Realm;
+                    newLoyalty.LoyalDays = 1;
+                    numCurrentLoyalDays = 1;
+                    newLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.AddObject(newLoyalty);
+                }
+                else
+                {
+                    numCurrentLoyalDays = realmLoyalty.LoyalDays;
+                }
+                
+                this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+            }
+            
+            //check for realm loyalty
+            var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+            if (loyaltyCheck == null)
+                loyaltyCheck = DateTime.UnixEpoch;
 
+            if (loyaltyCheck < DateTime.Now.AddDays(-1))
+            {
+                List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
+
+                bool realmFound = false;
+                foreach (var rl in realmLoyalty)
+                {
+                    if (rl.Realm == (int)this.Realm)
+                    {
+                        if(rl.LastLoyaltyUpdate < DateTime.Now.AddDays(-1))
+                            rl.LoyalDays++;
+                        numCurrentLoyalDays = rl.LoyalDays; 
+                        realmFound = true;
+                    }
+                    else
+                    {
+                        /*if (rl.LoyalDays < 2)
+                        {
+                            rl.LoyalDays = 0;
+                        }
+                        else {
+                            rl.LoyalDays--;
+                            rl.LoyalDays--;    
+                        }
+
+                        if (rl.LoyalDays < rl.MinimumLoyalDays)
+                            rl.LoyalDays = rl.MinimumLoyalDays;
+                            */
+                    }
+                    rl.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.SaveObject(rl);
+                }
+                
+                if (realmFound == false)
+                {
+                    AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                    newLoyalty.AccountId = this.Client.Account.ObjectId;
+                    newLoyalty.Realm = (int)this.Realm;
+                    newLoyalty.LoyalDays = 1;
+                    numCurrentLoyalDays = 1;
+                    newLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.AddObject(newLoyalty);
+                }
+                
+                this.TempProperties.setProperty(REALM_LOYALTY_KEY, DateTime.Now);
+                this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+            }
+
+            long RealmLoyaltyBonus = 0;
+            long baseXp = 0;
             //xp rate modifier
             if (allowMultiply)
             {
@@ -5083,19 +5293,26 @@ namespace DOL.GS
                 expTotal -= expGroupBonus;
                 expTotal -= expCampBonus;
                 expTotal -= expOutpostBonus;
+                expTotal -= atlasBonus;
 
+                baseXp = expTotal;
                 //[StephenxPimentel] - Zone Bonus XP Support
                 if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
                 {
-                    int zoneBonus = (((int)expTotal * ZoneBonus.GetXPBonus(this)) / 100);
+                    long zoneBonus = expTotal * ZoneBonus.GetXPBonus(this) / 100;
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.XP_RATE), ZoneBonus.eZoneBonusType.XP),
+                        long tmpBonus = (long)(zoneBonus * ServerProperties.Properties.XP_RATE);
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.eZoneBonusType.XP),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        GainExperience(eXPSource.Other, (long)(zoneBonus * ServerProperties.Properties.XP_RATE), 0, 0, 0, false, false, false);
+                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, 0, false, false, false);
                     }
                 }
 
+                if (numCurrentLoyalDays > 30)
+                    numCurrentLoyalDays = 30;
+                
+                RealmLoyaltyBonus = (long) (expTotal * (numCurrentLoyalDays / 30.0) * .25);
 
                 if (this.CurrentRegion.IsRvR)
                     expTotal = (long)(expTotal * ServerProperties.Properties.RvR_XP_RATE);
@@ -5117,25 +5334,18 @@ namespace DOL.GS
                 expTotal += expOutpostBonus;
                 expTotal += expGroupBonus;
                 expTotal += expCampBonus;
-
-            }
-
-            //up to 100% more exp while solo, scaled lower as group size grows
-            long atlasBonus = 0;
-            if (Group != null)
-            {
-                atlasBonus = (expTotal) / Group.GetPlayersInTheGroup().Count;   
-            }
-            else
-                atlasBonus = (expTotal);
-
-            if(xpSource == eXPSource.NPC || xpSource == eXPSource.Player)
                 expTotal += atlasBonus;
+                expTotal += RealmLoyaltyBonus;
+            }
+            
+            double loyaltyPercent = ((double)RealmLoyaltyBonus / (baseXp)) * 100.0;
+            if (RealmLoyaltyBonus > 0 && XPLogState == eXPLogState.Verbose)
+                this.Out.SendMessage($"Loyalty: {RealmLoyaltyBonus.ToString("N0", System.Globalization.NumberFormatInfo.InvariantInfo)} | {loyaltyPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Get Champion Experience too
             GainChampionExperience(expTotal);
 
-            base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, notify);
+            base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
 
             if (IsLevelSecondStage)
             {
@@ -5157,6 +5367,7 @@ namespace DOL.GS
                 string expGroupBonusStr = "";
                 string expOutpostBonusStr = "";
                 string expSoloBonusStr = "";
+                string expRealmLoyaltyStr = "";
 
                 if (expCampBonus > 0)
                 {
@@ -5170,50 +5381,18 @@ namespace DOL.GS
                 {
                     expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", expOutpostBonus.ToString("N0", format)) + " ";
                 }
+
+                if (RealmLoyaltyBonus > 0)
+                {
+                    expRealmLoyaltyStr = "("+ RealmLoyaltyBonus.ToString("N0", format) + " realm loyalty bonus)";
+                }
+                    
                 if(atlasBonus > 0)
                 {
                     expSoloBonusStr = "("+ atlasBonus.ToString("N0", format) + " Atlas bonus)";
                 }
 
-                
-                if(XPLogState == eXPLogState.On || XPLogState == eXPLogState.Verbose)
-                {
-                    double baseXP = expTotal - atlasBonus - expCampBonus - expGroupBonus - expOutpostBonus;
-                    double softXPCap = (long)(GameServer.ServerRules.GetExperienceForLiving(Level) * ServerProperties.Properties.XP_CAP_PERCENT / 100);
-                    double expPercent = (double)((baseXP) / (softXPCap)) * 100;
-                    //Console.WriteLine($"Soft xp cap: {softXPCap} getexp: {GameServer.ServerRules.GetExperienceForLiving(Level)}");
-
-                    Out.SendMessage($"Base XP: {baseXP.ToString("N0", format)} | XP Cap: {softXPCap.ToString("N0", format)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    Out.SendMessage($"% of Cap: {expPercent.ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    
-                    if(XPLogState == eXPLogState.Verbose)
-                    {
-                        double soloPercent = ((double)atlasBonus / (expTotal - atlasBonus)) * 100.0;
-                        double campPercent = ((double)expCampBonus / (baseXP)) * 100.0;
-                        double groupPercent = ((double)expGroupBonus / (baseXP)) * 100.0;
-                        double outpostPercent = ((double)expOutpostBonus / (expTotal-expOutpostBonus)) * 100.0;
-                        double levelPercent = ((double)(Experience + expTotal - ExperienceForCurrentLevel) / (ExperienceForNextLevel - ExperienceForCurrentLevel)) * 100;
-
-                        if(atlasBonus > 0)
-                            Out.SendMessage($"Atlas: {atlasBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        if(expCampBonus > 0)
-                            Out.SendMessage($"Camp: {expCampBonus.ToString("N0", format)} | {campPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        if(Group != null)
-                            Out.SendMessage($"Group: {expGroupBonus.ToString("N0", format)} | {groupPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        if(expOutpostBonus > 0)
-                            Out.SendMessage($"Output: {expOutpostBonus.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                        Out.SendMessage($"Total Bonus: {((double)((atlasBonus + expCampBonus + expGroupBonus) / baseXP) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage($"XP needed: {ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage($"# of kills needed to level at this rate: {(ExperienceForNextLevel - Experience) / expTotal}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        
-                    }                    
-                }
-
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             Experience += expTotal;
@@ -5237,6 +5416,11 @@ namespace DOL.GS
                 else if (Level < MaxLevel && Experience >= ExperienceForNextLevel)
                 {
                     Level++;
+                }
+
+                if(Level >= 50)
+                {
+
                 }
             }
             Out.SendUpdatePoints();
@@ -5304,6 +5488,35 @@ namespace DOL.GS
         public virtual void OnLevelUp(int previouslevel)
         {
             IsLevelSecondStage = false;
+            int isSolo = 0;
+            int isHardcore = 0;
+            int isBoosted = 0;
+            int realm = 0;
+            
+            if (HCFlag)
+                isHardcore = 1;
+            
+            if (NoHelp)
+                isSolo = 1;
+
+            if (Boosted)
+                isBoosted = 1;
+
+                switch (Realm)
+            {
+                case eRealm._FirstPlayerRealm:
+                    realm = 1;
+                    break;
+                case eRealm.Midgard:
+                    realm = 2;
+                    break;
+                case eRealm._LastPlayerRealm:
+                    realm = 3;
+                    break;
+                default:
+                    realm = 0;
+                    break;
+            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouRaise", Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouAchieved", Level), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -5312,8 +5525,52 @@ namespace DOL.GS
             {
                 Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.FreeLevelEligible"));
             }
-            // PvE Beta Custom Params
             
+            if (Level == 20)
+            {
+                // Creates a TimeXLevel to track the levelling time to 20
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
+            }
+
+            if (Level == 30)
+            {
+                // Creates a TimeXLevel to track the levelling time to 30
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
+            }
+            
+            // PVE Beta Lv35 Title Reward
             if (Level == 35)
             {
                 const string customKey = "PvEBeta35";
@@ -5329,21 +5586,140 @@ namespace DOL.GS
                     Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
             }
-            
+
+            if (Level == 40)
+            {
+                const string customKey = "BoostedLevel-30";
+                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                if (usedi30 != null)
+                {
+                    Out.SendMessage("You have been awarded a bonus of 1000 Atlas Orbs for hitting level 40 with a test character.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 1000);
+                }
+                
+                // Creates a TimeXLevel to track the levelling time to 40
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
+            }
+
+            if (Level == 45)
+            {
+                // Creates a TimeXLevel to track the levelling time to 45
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
+            }
+
             if (Level == 50)
             {
-                const string customKey = "PvEBeta50";
-                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                const string customKey = "BoostedLevel-30";
+                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                
+                const string customKey2 = "BoostedLevel-40";
+                var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
-                if (hasPvEBeta50Title == null)
+                if (usedi30 != null)
+                {
+                    Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 5000);
+                }
+                else if (usedi40 != null)
+                {
+                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 2000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 2000);
+                }
+                    
+                
+                // Check if player has completed the Hardcore Challenge
+                if (HCFlag)
+                {
+                    HCFlag = false;
+                    HCCompleted = true;
+                    Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 50000);
+                }
+                
+                // Check if player has completed the Solo Challenge
+                const string groupedKey = "grouped_char";
+                const string soloKey = "solo_to_50";
+                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(groupedKey)));
+                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
+                
+                if ((NoHelp && hasGrouped == null || hasGrouped == null) && !Boosted)
+                {
+                    NoHelp = false;
+                    DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
+                    soloBeetle.DOLCharactersObjectId = this.ObjectId;
+                    soloBeetle.KeyName = soloKey;
+                    soloBeetle.Value = "1";
+                    GameServer.Database.AddObject(soloBeetle);
+                    AtlasROGManager.GenerateOrbAmount(this, 15000);
+                    Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                }
+                
+                // PVE Beta Lv50 Title Reward
+                const string pve50key = "PvEBeta50";
+                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(pve50key)));
+
+                if (hasPvEBeta50Title == null && !Boosted)
                 {
                     AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
                     PvEBeta50Title.Name = Client.Account.Name;
-                    PvEBeta50Title.KeyName = customKey;
+                    PvEBeta50Title.KeyName = pve50key;
                     PvEBeta50Title.Value = "1";
                     GameServer.Database.AddObject(PvEBeta50Title);
                     Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
+                
+                // Creates a TimeXLevel to track the levelling time to 50
+
+                if (Client.Account.PrivLevel == 1)
+                {
+                    TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
+                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    MaxLevelTime.Character_ID = this.ObjectId;
+                    MaxLevelTime.Character_Name = this.Name;
+                    MaxLevelTime.Character_Realm = realm;
+                    MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Level = this.Level;
+                    MaxLevelTime.Solo = isSolo;
+                    MaxLevelTime.Hardcore = isHardcore;
+                    MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
+                    MaxLevelTime.SecondsToLevel = PlayedTime;
+                    MaxLevelTime.HoursToLevel = PlayedTime / 60 / 60;
+                    MaxLevelTime.Boosted = isBoosted;
+                    GameServer.Database.AddObject(MaxLevelTime);
+                }
+
             }
 
             if (Level == MaxLevel)
@@ -5597,6 +5973,27 @@ namespace DOL.GS
             return 0;
         }
         #endregion
+
+        public void RaiseRealmLoyaltyFloor(int amount)
+        {
+            AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+            if (realmLoyalty != null)
+            {
+                realmLoyalty.MinimumLoyalDays += amount;
+                GameServer.Database.SaveObject(realmLoyalty);
+            }
+            else
+            {
+                AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                newLoyalty.AccountId = this.Client.Account.ObjectId;
+                newLoyalty.Realm = (int)this.Realm;
+                newLoyalty.MinimumLoyalDays = amount;
+                newLoyalty.LoyalDays = newLoyalty.MinimumLoyalDays;
+                newLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                GameServer.Database.AddObject(newLoyalty);
+            }
+        }
 
         #region Combat
         ///// <summary>
@@ -7746,6 +8143,53 @@ namespace DOL.GS
             get { return m_lastDeathRealmPoints; }
             set { m_lastDeathRealmPoints = value; }
         }
+        
+        /// <summary>
+        /// Method to broadcast Player to Discord
+        /// </summary>
+        /// <param name="message">The message</param>
+        /// <param name="realm">The realm</param>
+        public static void BroadcastDeathOnDiscord(string message, string name, string lastname, string playerClass, int level, long playedTime)
+        {
+            int color = 0;
+            TimeSpan timeLived = TimeSpan.FromSeconds(playedTime);
+            string timeLivedString = timeLived.Days + "d " + timeLived.Hours + "h " + timeLived.Minutes + "m ";
+
+            string playerName = "";
+                if (lastname != "")
+                    playerName = name + " " + lastname;
+                else
+                    playerName = name;
+            
+
+            var DiscordObituaryHook =
+                "https://discord.com/api/webhooks/929154632389910558/kfJbtzDC9JzyOXvZ0rYUwaPM31LRUebGzDZKSczUKDk_4YyHmB-WJVsh7pJoa4M9-D1U"; // Make it a property later
+            var client = new DiscordWebhookClient(DiscordObituaryHook);
+
+            // Create your DiscordMessage with all parameters of your message.
+            var discordMessage = new DiscordMessage(
+                "",
+                username: "Atlas Obituary",
+                avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928726197645496382/skull2.png",
+                tts: false,
+                embeds: new[]
+                {
+                    new DiscordMessageEmbed(
+                        author: new DiscordMessageEmbedAuthor(playerName),
+                        color: color,
+                        description: message,
+                        fields: new[]
+                        {
+                            new DiscordMessageEmbedField("Level", level.ToString()),
+                            new DiscordMessageEmbedField("Class", playerClass),
+                            new DiscordMessageEmbedField("Time alive", timeLivedString)
+                        }
+                    )
+                }
+            );
+            client.SendToDiscord(discordMessage);
+        }
+        
 
         /// <summary>
         /// Called when the player dies
@@ -7753,9 +8197,9 @@ namespace DOL.GS
         /// <param name="killer">the killer</param>
         public override void Die(GameObject killer)
         {
-            // ambiant talk
+            // Ambient trigger upon killing player
             if (killer is GameNPC)
-                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, this);
+                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, killer as GameLiving);
 			
             CharacterClass.Die(killer);
 
@@ -7818,6 +8262,18 @@ namespace DOL.GS
                     }
                 }
             }
+
+            if (HCFlag)
+            {
+                playerMessage = "[HC Lv" + Level + "] " + playerMessage;
+                publicMessage = "[HC Lv" + Level + "] " + publicMessage;
+
+                if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))
+                {
+                    BroadcastDeathOnDiscord(publicMessage, Name, LastName, CharacterClass.Name, Level, PlayedTime);
+                }
+            }
+                
 
             DuelStop();
 
@@ -7979,7 +8435,7 @@ namespace DOL.GS
                         DeathCount++;
                         m_deathtype = eDeathType.PvE;
                         long xpLoss = (ExperienceForNextLevel - ExperienceForCurrentLevel) * xpLossPercent / 1000;
-                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, false, true);
+                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, 0, false, true);
                         TempProperties.setProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 
@@ -8021,6 +8477,39 @@ namespace DOL.GS
 			//effectListComponent.CancelAll();
 
             IsSwimming = false;
+
+            if (HCFlag)
+            {
+                string realm = "";
+                    if (Realm == eRealm._FirstPlayerRealm)
+                        realm = "Albion";
+                    else if (Realm == eRealm._LastPlayerRealm)
+                        realm = "Hibernia";
+                    else
+                        realm = "Midgard";
+                    
+                Out.SendCustomDialog($"Today is a bad day for {realm}.\n This character will be automatically deleted.", new CustomDialogResponse(HCDeathResponse));
+            }
+            
+            
+        }
+        
+        protected virtual void HCDeathResponse(GamePlayer player, byte response)
+        {
+            DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
+
+            // If no character exists that matches the exact name entered
+            if (cha == null)
+            {
+                return;
+            }
+            // If the character is logged in, remove them from the game
+            // player.Release(eReleaseType.Normal, true);
+            // player.Quit(true);
+            GameServer.Database.DeleteObject(cha);
+            player.Client.Out.SendPlayerQuit(true);
+            
+            
         }
 
         public override void EnemyKilled(GameLiving enemy)
@@ -9100,8 +9589,9 @@ namespace DOL.GS
                         if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                         {
                             SwitchWeapon(eActiveWeaponSlot.Distance);
+                            if(useItem.Object_Type == (int)eObjectType.Instrument) return;
                         }
-                        else if (!attackComponent.AttackState)
+                        else if (!attackComponent.AttackState && useItem.Object_Type != (int)eObjectType.Instrument)
                         {
                             StopCurrentSpellcast();
                             attackComponent.StartAttack(TargetObject);
@@ -9165,7 +9655,7 @@ namespace DOL.GS
 
                 if (useItem.SpellID != 0 || useItem.SpellID1 != 0 || useItem.PoisonSpellID != 0) // don't return without firing events
                 {
-                    if (IsSitting)
+                    if (IsSitting && useItem.Object_Type != (int)eObjectType.Poison)
                     {
                         Out.SendMessage("You can't use an item while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
@@ -10087,12 +10577,12 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// A general message from the area intended for this player.
+        /// A message sent to all objects within a set radius of the triggering entity (e.g., MessageToArea)
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="message"></param>
-        /// <param name="chatType"></param>
-        /// <param name="chatLocation"></param>
+        /// <param name="source">The originating source of the message</param>
+        /// <param name="message">The content of the message</param>
+        /// <param name="chatType">The message type (e.g., CT_Say, CT_Spell)</param>
+        /// <param name="chatLocation">The UI element to display the message in (e.g., CL_SystemWindow)</param>
         public virtual void MessageFromArea(GameObject source, string message, eChatType chatType, eChatLoc chatLocation)
         {
             Out.SendMessage(message, chatType, chatLocation);
@@ -10288,6 +10778,17 @@ namespace DOL.GS
                 ((BaseInstance)CurrentRegion).OnPlayerEnterInstance(this);
 
             RefreshItemBonuses();
+            
+            var playerDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+            if (playerDeck != null)
+            {
+                this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
+                //Console.WriteLine($"loaded deck. first card: {this.RandomNumberDeck.GetInt()}");
+            }
+            else
+            {
+                this.RandomNumberDeck = new PlayerDeck();
+            }
 
             return true;
         }
@@ -12255,7 +12756,7 @@ namespace DOL.GS
                     if (mybattlegroup != null && mybattlegroup.GetBGLootType() == true && mybattlegroup.GetBGTreasurer() != null)
                     {
                         GamePlayer theTreasurer = mybattlegroup.GetBGTreasurer();
-                        if (theTreasurer.CanSeeObject(floorObject))
+                        if (theTreasurer.CanSeeObject(floorObject) || this.CanSeeObject((floorObject)))
                         {
                             bool good = false;
                             if (floorItem.Item.IsStackable)
@@ -12868,13 +13369,92 @@ namespace DOL.GS
             if (!(obj is DOLCharacters))
                 return;
             m_dbCharacter = (DOLCharacters)obj;
+            
+            
+            List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
+            DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
+            int loyaltyDays = 0;
+            
+            if (realmLoyaltyList == null)
+            {
+               
+            }
+            else
+            {
+                //get the most recent loyalty update
+                foreach (var rloy in realmLoyaltyList)
+                {
+                    if (rloy.LastLoyaltyUpdate > lastRealmLoyaltyUpdateTime)
+                        lastRealmLoyaltyUpdateTime = rloy.LastLoyaltyUpdate;
+
+                    if (rloy.Realm == (int)this.Realm)
+                        loyaltyDays = rloy.LoyalDays;
+                }
+            }
+            
+            //set that date as our temp property for reference on kill
+            this.TempProperties.setProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
+            this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
+            
+            AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+            if (MoneyForRealm == null)
+            {
+                int realmMithril = 0;
+                int realmPlatinum = 0;
+                int realmGold = 0;
+                int realmSilver = 0;
+                int realmCopper = 0;
+
+                AccountXMoney newMoney = new AccountXMoney();
+                newMoney.AccountId = this.Client.Account.ObjectId;
+                newMoney.Realm = (int)this.Realm;
+                
+                foreach (DOLCharacters character in this.Client.Account.Characters) // cycling through their toons
+                {
+                    if ((eRealm)character.Realm == this.Realm) // account money is realm bound
+                    {
+                        realmCopper += character.Copper;
+                        realmSilver += character.Silver;
+                        realmGold += character.Gold;
+                        realmPlatinum += character.Platinum;
+                        realmMithril += character.Mithril;
+
+                        if (realmCopper > 100)
+                        {
+                            realmCopper -= 100;
+                            realmSilver += 1;
+                        }
+                        if (realmSilver > 100)
+                        {
+                            realmSilver -= 100;
+                            realmGold += 1;
+                        }
+                        if (realmGold > 1000)
+                        {
+                            realmGold -= 1000;
+                            realmPlatinum += 1;
+                        }
+
+                    }
+                }
+                
+                newMoney.Copper = realmCopper;
+                newMoney.Silver = realmSilver;
+                newMoney.Gold = realmGold;
+                newMoney.Platinum = realmPlatinum;
+                newMoney.Mithril = realmMithril;
+                
+                GameServer.Database.AddObject(newMoney);
+                MoneyForRealm = newMoney;
+            }
 
             // Money
-            m_Copper = DBCharacter.Copper;
-            m_Silver = DBCharacter.Silver;
-            m_Gold = DBCharacter.Gold;
-            m_Platinum = DBCharacter.Platinum;
-            m_Mithril = DBCharacter.Mithril;
+            m_Copper = MoneyForRealm.Copper;
+            m_Silver = MoneyForRealm.Silver;
+            m_Gold = MoneyForRealm.Gold;
+            m_Platinum = MoneyForRealm.Platinum;
+            m_Mithril = MoneyForRealm.Mithril;
 			
             Model = (ushort)DBCharacter.CurrentModel;
 
@@ -12969,9 +13549,7 @@ namespace DOL.GS
                 Mana = DBCharacter.Mana;
                 Endurance = DBCharacter.Endurance; // has to be set after max, same applies to other values with max properties
             }
-
             
-
             if (Health <= 0)
             {
                 Health = 1;
@@ -13049,6 +13627,61 @@ namespace DOL.GS
         {
             try
             {
+                var existingDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+                if (existingDeck != null)
+                {
+                    existingDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
+                    GameServer.Database.SaveObject(existingDeck);
+                }
+                else
+                {
+                    DOLCharactersXDeck playerDeck = new DOLCharactersXDeck();
+                    playerDeck.DOLCharactersObjectId = this.ObjectId;
+                    playerDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
+                    GameServer.Database.AddObject(playerDeck);
+                }
+                
+                AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+                if (realmLoyalty == null)
+                {
+                    realmLoyalty = new AccountXRealmLoyalty();
+                    realmLoyalty.AccountId = this.Client.Account.ObjectId;
+                    realmLoyalty.Realm = (int)this.Realm;
+                    realmLoyalty.LoyalDays = 1;
+                    realmLoyalty.LastLoyaltyUpdate = DateTime.Now;
+                    GameServer.Database.AddObject(realmLoyalty);
+                }
+                else
+                {
+                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+                    GameServer.Database.SaveObject(realmLoyalty);
+                }
+
+                AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+
+                if (MoneyForRealm == null)
+                {
+                    AccountXMoney newMoney = new AccountXMoney();
+                    newMoney.AccountId = this.Client.Account.ObjectId;
+                    newMoney.Realm = (int)this.Realm;
+                    newMoney.Copper = DBCharacter.Copper;
+                    newMoney.Silver = DBCharacter.Silver;
+                    newMoney.Gold = DBCharacter.Gold;
+                    newMoney.Platinum = DBCharacter.Platinum;
+                    GameServer.Database.AddObject(newMoney);
+                    MoneyForRealm = newMoney;
+                }
+                else
+                {
+                    MoneyForRealm.Copper = Copper;
+                    MoneyForRealm.Silver = Silver;
+                    MoneyForRealm.Gold = Gold;
+                    MoneyForRealm.Platinum = Platinum;
+                    MoneyForRealm.Mithril = Mithril;
+                    GameServer.Database.SaveObject(MoneyForRealm);
+                }
+
                 // Ff this player is a GM always check and set the IgnoreStatistics flag
                 if (Client.Account.PrivLevel > (uint)ePrivLevel.Player && DBCharacter.IgnoreStatistics == false)
                 {
@@ -13332,6 +13965,12 @@ namespace DOL.GS
             if (goStealth && CraftTimer != null && CraftTimer.IsAlive)
             {
                 Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+            
+            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse) )
+            {
+                Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -14282,6 +14921,13 @@ namespace DOL.GS
         public virtual void CraftItem(ushort itemID)
         {
             var recipe = RecipeDB.FindBy(itemID);
+            
+            if (recipe == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn("[CRAFTING] Item " + itemID + " not found in recipe database!");
+                return;
+            }
 
             AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(recipe.RequiredCraftingSkill);
             if (skill != null)

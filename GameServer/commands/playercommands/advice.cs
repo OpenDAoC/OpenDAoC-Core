@@ -18,17 +18,20 @@
  */
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts.discord;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&advice",
+		 new string[] { "&adv" },
 		ePrivLevel.Player,
 		"Ask for advice from an advisor",
 		"Advisors will reply via /send",
 		"Please answer them via /send <Name of the Advisor>",
 		"/advice - shows all advisors",
-		"/advice <message>")]
+		"/adv <message>")]
 	public class AdviceCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -71,12 +74,13 @@ namespace DOL.GS.Commands
 			foreach (GameClient playerClient in WorldMgr.GetAllClients())
 			{
 				if (playerClient.Player == null) continue;
-				if ((playerClient.Player.Advisor &&
-					playerClient.Player.Realm == client.Player.Realm) ||
-					playerClient.Account.PrivLevel > 1)
-					playerClient.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Advice.Advice", getRealmString(client.Player.Realm), client.Player.Name, msg), eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+				if ((playerClient.Player.Realm == client.Player.Realm ||
+					playerClient.Account.PrivLevel > 1) && !playerClient.Player.IsIgnoring(client.Player))
+					playerClient.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Advice.Advice", getRealmString(client.Player.Realm), client.Player.Name, msg), eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
 
 			}
+			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
+
 		}
 
 		public string getRealmString(eRealm Realm)

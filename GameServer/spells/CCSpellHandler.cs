@@ -160,11 +160,12 @@ namespace DOL.GS.Spells
 		{
 			int resistvalue = 0;
 			int resist = 0;
+			/*
 			GameSpellEffect fury = SpellHandler.FindEffectOnTarget(target, "Fury");
 			if (fury != null)
 			{
 				resist += (int)fury.Spell.Value;
-			}
+			}*/
 
             //bonedancer rr5
             if (target.EffectList.GetOfType<AllureofDeathEffect>() != null)
@@ -379,7 +380,7 @@ namespace DOL.GS.Spells
 
 //
 
-			if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity))//target.HasAbility(Abilities.MezzImmunity))
+			if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
@@ -409,6 +410,7 @@ namespace DOL.GS.Spells
 //				SendEffectAnimation(target, 0, false, 0);
 				return;
 			}
+            /*
 			GameSpellEffect mezblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerMezz");
 			if (mezblock != null)
 			{
@@ -420,7 +422,7 @@ namespace DOL.GS.Spells
 				SendEffectAnimation(target, 0, false, 0);
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
-			}
+			}*/
 
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}
@@ -433,10 +435,10 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = base.CalculateEffectDuration(target, effectiveness);
-			//duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
+			duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
 			NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 			if (npcImmune != null)
-				duration *= npcImmune.CalclulateStunDuration((long)duration);
+				duration = npcImmune.CalclulateStunDuration((long)duration);
 
 			if (duration < 1)
 				duration = 1;
@@ -576,6 +578,7 @@ namespace DOL.GS.Spells
 			//Ceremonial bracer dont intercept physical stun
 			if(Spell.SpellType != (byte)eSpellType.StyleStun)
 			{
+				/*
 				GameSpellEffect stunblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerStun");
 				if (stunblock != null)
 				{
@@ -584,7 +587,7 @@ namespace DOL.GS.Spells
 						(target as GamePlayer).Out.SendMessage("Your item effect intercepts the stun spell and fades!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 					base.OnSpellResisted(target);
 					return;
-				}
+				}*/
 			}
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}
@@ -600,7 +603,7 @@ namespace DOL.GS.Spells
 			double duration = base.CalculateEffectDuration(target, effectiveness);
 			NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 			if (npcImmune != null)
-				duration *= npcImmune.CalclulateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
+				duration = npcImmune.CalclulateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
 
 			if (duration < 1)
 				duration = 1;

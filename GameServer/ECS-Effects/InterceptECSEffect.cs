@@ -70,7 +70,7 @@ namespace DOL.GS
 					return 30;
 				else if (pet != null)
 					// Patch 1.125: Reduced the spirit warrior's intercept chance from 75% to 60% and intercept radius from 150 to 125
-					return 60;
+					return 75;
 				else
 					return 50;
 			}

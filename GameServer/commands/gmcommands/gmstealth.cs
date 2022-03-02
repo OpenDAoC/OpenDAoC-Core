@@ -43,6 +43,7 @@ namespace DOL.GS.Commands
                 if (client.Player.IsStealthed != true)
                 {
                    client.Player.Stealth(true);
+                   client.Player.CurrentSpeed = 191;
                 }
         	}
             else if (args[1].ToLower().Equals("off"))

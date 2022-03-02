@@ -166,17 +166,40 @@ namespace DOL.GS
 
         private static Recipe LoadFromDB(ushort recipeDatabaseID)
         {
+
+            string craftingDebug = "";
+            
             var dbRecipe = GameServer.Database.FindObjectByKey<DBCraftedItem>(recipeDatabaseID.ToString());
-            if (dbRecipe == null) throw new ArgumentException("No DBCraftedItem with ID " + recipeDatabaseID + "exists.");
+            if (dbRecipe == null)
+            {
+                craftingDebug = "[CRAFTING] No DBCraftedItem with ID " + recipeDatabaseID + " exists.";
+                log.Warn(craftingDebug);
+                return null;
+                //throw new ArgumentException(craftingDebug);
+            }
+                
+            
 
             ItemTemplate product = GameServer.Database.FindObjectByKey<ItemTemplate>(dbRecipe.Id_nb);
-            if (product == null) throw new ArgumentException("Product ItemTemplate " + dbRecipe.Id_nb + " for Recipe with ID " + dbRecipe.CraftedItemID + " does not exist.");
+            if (product == null)
+            {
+                craftingDebug = "[CRAFTING] ItemTemplate " + dbRecipe.Id_nb + " for Recipe with ID " + dbRecipe.CraftedItemID + " does not exist.";
+                log.Warn(craftingDebug);
+                return null;
+                //throw new ArgumentException(craftingDebug);
+            }
 
             var rawMaterials = DOLDB<DBCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(dbRecipe.Id_nb));
-            if (rawMaterials.Count == 0) throw new ArgumentException("Recipe with ID " + dbRecipe.CraftedItemID + " has no ingredients.");
+            if (rawMaterials.Count == 0)
+            {
+                craftingDebug = "[CRAFTING] Recipe with ID " + dbRecipe.CraftedItemID + " has no ingredients.";
+                log.Warn(craftingDebug);
+                return null;
+                //throw new ArgumentException(craftingDebug);
+            }
 
             bool isRecipeValid = true;
-            var errorText = "";
+
             var ingredients = new List<Ingredient>();
             foreach (DBCraftedXItem material in rawMaterials)
             {
@@ -184,12 +207,18 @@ namespace DOL.GS
 
                 if (template == null)
                 {
-                    errorText += "Cannot find raw material ItemTemplate: " + material.IngredientId_nb + ") needed for recipe: " + dbRecipe.CraftedItemID + "\n";
+                    craftingDebug = "[CRAFTING] Cannot find raw material ItemTemplate: " + material.IngredientId_nb + ") needed for recipe: " + dbRecipe.CraftedItemID + "\n";
                     isRecipeValid = false;
                 }
                 ingredients.Add(new Ingredient(material.Count, template));
             }
-            if (!isRecipeValid) throw new ArgumentException(errorText);
+
+            if (!isRecipeValid)
+            {
+                log.Warn(craftingDebug);
+                return null;
+                //throw new ArgumentException(errorText);
+            }
 
             var recipe = new Recipe(product, ingredients, (eCraftingSkill)dbRecipe.CraftingSkillType, dbRecipe.CraftingLevel, dbRecipe.MakeTemplated);
             return recipe;

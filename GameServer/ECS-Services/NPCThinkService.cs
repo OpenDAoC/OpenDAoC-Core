@@ -44,87 +44,27 @@ namespace DOL.GS
 
             GameLiving[] arr = EntityManager.GetAllNpcsArrayRef();
 
-            lock (arr)
+            Parallel.ForEach(arr, npc =>
             {
-                for (int ctr = 1; ctr <= Math.Ceiling(((double)arr.Count()) / _segmentsize); ctr++)
+                if (npc == null)
                 {
-                    int elements = _segmentsize;
-                    int offset = (ctr - 1) * _segmentsize;
-                    int upper = offset + elements;
-                    if ((upper) > arr.Count())
-                        elements = arr.Count() - offset;
+                    return;
+                }
+                if (npc is GameNPC && (npc as GameNPC).Brain != null)
+                {
+                    var brain = (npc as GameNPC).Brain;
 
-                    ArraySegment<GameLiving> segment = new ArraySegment<GameLiving>(arr, offset, elements);
-
-                    _tasks.Add(Task.Factory.StartNew((Object obj) =>
+                    if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
                     {
-                        TaskStats data = obj as TaskStats;
-                        if (data == null)
-                            return;
+                        brain.Think();
+                        brain.LastThinkTick = tick;
+                    }
 
-                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
-                        IList<GameLiving> npc = (IList<GameLiving>)segment;
-
-                        for (int index = 0; index < npc.Count; index++)
-                        {
-                            if (npc[index] == null)
-                                continue;
-
-                            if (npc[index] is GameNPC && (npc[index] as GameNPC).Brain != null)
-                            {
-                                var brain = (npc[index] as GameNPC).Brain;
-
-                                if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
-                                {
-                                    brain.Think();
-                                    brain.LastThinkTick = tick;
-                                    data.Completed += 1;
-                                }
-                                else
-                                {
-                                    data.Unthinking += 1;
-                                }
-                            }
-                        }
-                        data.ThreadNum = Thread.CurrentThread.ManagedThreadId;
-                    },
-                    new TaskStats() { Name = ctr, CreationTime = DateTime.Now.Ticks }));
                 }
-                Task.WaitAll(_tasks.ToArray());
-            }
-
-            /*
-            foreach (var task in _tasks)
-            {
-                var data = task.AsyncState as TaskStats;
-                if (data != null)
-                {
-                    completed += data.Completed;
-                    unthinking += data.Unthinking;
-                }
-            }
-            */
-
-            _tasks.Clear();
-
-            /*
-            if (last_interval + interval < tick)
-            {
-                Console.WriteLine("{0} thoughts completed this period. {1} unthinking scanned.", completed, unthinking);
-                Console.WriteLine("Threads: {0}", Process.GetCurrentProcess().Threads.Count);
-                completed = 0;
-                unthinking = 0;
-                last_interval = tick;
-            }
-            */
-
+            });
+            
             Diagnostics.StopPerfCounter(ServiceName);
         }
 
-        //Parrellel Thread does this
-        private static void HandleTick(long tick)
-        {
-
-        }
     }
 }

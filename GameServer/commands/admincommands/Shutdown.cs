@@ -470,7 +470,7 @@ namespace DOL.GS.Commands
 							date = new DateTime(date.Year, date.Month, date.Day, date.Hour + 1, 0, 0);
 
 						date = date.AddHours(hour - date.Hour);
-						date = date.AddMinutes(min - date.Minute + 2);
+						date = date.AddMinutes(min - date.Minute + 1);
 						date = date.AddSeconds(- date.Second);
 
 						m_counter = (date.ToFileTime() - DateTime.Now.ToFileTime()) / TimeSpan.TicksPerSecond;

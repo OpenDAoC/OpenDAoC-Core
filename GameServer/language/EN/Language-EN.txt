@@ -640,8 +640,8 @@ Scripts.Player.Guild.BuffRealmPoints:			Your guild will now gain 5% bonus to rea
 Scripts.Player.Guild.ClaimNotNear:			You must be near a keep to claim it.	
 Scripts.Player.Guild.ConfirmLeave:			Do you really want to leave {0}?	
 Scripts.Player.Guild.DemotedHigherThanPlayer:		You can only demote to ranks below your own.	
-Scripts.Player.Guild.DemotedOther:			{0} has been demoted to {1}.	
-Scripts.Player.Guild.DemotedSelf:			You have been demoted to {0}.	
+Scripts.Player.Guild.DemotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
+Scripts.Player.Guild.DemotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
 Scripts.Player.Guild.DepositAmount:			You deposit {0} into your guilds bank account.	
 Scripts.Player.Guild.DepositFull:			The guild bank seems to be full.	
 Scripts.Player.Guild.DepositInvalid:		That is an invalid deposit amount.
@@ -766,8 +766,8 @@ Scripts.Player.Guild.NotInYourGuild:			That player is not in your guild.
 Scripts.Player.Guild.NotMember:				You must be in a guild before you can use any guild commands.	
 Scripts.Player.Guild.OMotdSet:				You have set the officer motd for the guild.	
 Scripts.Player.Guild.PlayerNotFound:			That player could not be found in the game.	
-Scripts.Player.Guild.PromotedOther:			{0} has been promoted to {1}.	
-Scripts.Player.Guild.PromotedSelf:			You have been promoted to {0}.	
+Scripts.Player.Guild.PromotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
+Scripts.Player.Guild.PromotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
 Scripts.Player.Guild.PromoteHigherThanPlayer:		You can only promote to ranks below your own.	
 Scripts.Player.Guild.PromoteHaveToUseDemote:	You can't demote the GuildRank of this players with promote commands. Use /demote <ranklevel> players.
 Scripts.Player.Guild.Purged:				{0} has been purged.	

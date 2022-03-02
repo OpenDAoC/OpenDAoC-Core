@@ -50,7 +50,7 @@ namespace DOL.GS.Commands
 				if(client.Player.IsCloakInvisible)
 				{
 					client.Player.IsCloakInvisible = false;
-					client.Out.SendMessage("Your cloak will no longer be hidden from view.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+					//client.Out.SendMessage("Your cloak will no longer be hidden from view.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
 					return;
 				}
 				else
@@ -70,7 +70,7 @@ namespace DOL.GS.Commands
 				else
 				{
 					client.Player.IsCloakInvisible = true;
-					client.Out.SendMessage("Your cloak will now be hidden from view.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+					//client.Out.SendMessage("Your cloak will now be hidden from view.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}

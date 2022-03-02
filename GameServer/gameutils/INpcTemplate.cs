@@ -124,5 +124,7 @@ namespace DOL.GS
 		/// What object ClassType should this template use?
 		/// </summary>
 		string ClassType { get; }
+		
+		int FactionId { get; }
 	}
 }

@@ -20,8 +20,10 @@
 using System;
 using System.Collections;
 using DOL.Database;
+using DOL.Events;
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
 
 namespace DOL.GS
 {
@@ -54,7 +56,14 @@ namespace DOL.GS
 				return false;
 
 			TurnTo(player.X, player.Y);
-			SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.Interact"));
+			
+			// Check for ambient trigger messages for the NPC in the 'MobXAmbientBehaviour' table
+			var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
+			// If the NPC has no ambient trigger message assigned, then return this message
+			if (triggers == null || triggers.Length == 0)
+				// Message: "I can recharge weapons or armor for you, Just hand me the item you want recharged and I'll see what I can do, for a small fee."
+				SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.Interact"));
+			
 			return true;
 		}
 
@@ -67,6 +76,14 @@ namespace DOL.GS
 			GamePlayer player = source as GamePlayer;
 			if (player == null || item == null)
 				return false;
+			
+			if (this.DataQuestList.Count > 0)
+			{
+				foreach (DataQuest quest in DataQuestList)
+				{
+					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
+				}
+			}
 
 			if (item.Count != 1)
 			{

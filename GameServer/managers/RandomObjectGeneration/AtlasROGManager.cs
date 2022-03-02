@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 namespace DOL.GS {
     public static class AtlasROGManager {
 
+        private static ItemTemplate beadTemplate = null;
+
         public static void GenerateROG(GameLiving living)
         {
             GenerateROG(living, false);
@@ -65,12 +67,33 @@ namespace DOL.GS {
                 ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
-
+                
                 int maxcount = Util.Random(10, 20);
-                player.Inventory.AddTemplate(item, maxcount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-
-                //player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+                int orbBonus = (int) Math.Floor((decimal) (maxcount * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) * .2))); //up to 20% bonus orbs from loyalty
+                player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You gain an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            }
+        }
+        
+        public static void GenerateOrbAmount(GameLiving living, int amount)
+        {
+            if (living != null && living is GamePlayer)
+            {
+                GamePlayer player = living as GamePlayer;
+
+                ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+
+                InventoryItem item = GameInventoryItem.Create(orbs);
+                
+                int orbBonus = (int) Math.Floor((decimal) (amount * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) * .2))); //up to 20% bonus orbs from loyalty
+                player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                if (orbBonus > 0)
+                    player.Out.SendMessage("You gain an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                
             }
         }
 
@@ -78,13 +101,21 @@ namespace DOL.GS {
         {
             GeneratedUniqueItem item = null;
             item = new GeneratedUniqueItem(realm, charClass, level);
-            item.CapUtility(level);
             item.AllowAdd = true;
             item.IsTradable = true;
-            //GameServer.Database.AddObject(item);
-
+            //item.CapUtility(level);
             return item;
             
+        }
+
+        public static ItemUnique GenerateBeadOfRegeneration()
+        {
+            if(beadTemplate == null)
+                beadTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>("Bead_Of_Regeneration");
+            
+            ItemUnique item = new ItemUnique(beadTemplate);
+            
+            return item;
         }
 
     }

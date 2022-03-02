@@ -129,9 +129,9 @@ GamePlayer.GetExamineMessages.YouExamine:			You examine {0}.
 GamePlayer.GetExamineMessages.YourGuildMember:		You examine {0}. {1} is a member of the {2} class in your guild.
 GamePlayer.IsCloakHoodUp.NoLongerWear:				You will no longer wear your hood up.		
 GamePlayer.IsCloakHoodUp.NowWear:					You will now wear your hood up.		
-GamePlayer.IsCloakInvisible.Invisible:				You will now don't see your cloak.		
+GamePlayer.IsCloakInvisible.Invisible:				You will no longer see your cloak.		
 GamePlayer.IsCloakInvisible.Visible:				You will now see your cloak.		
-GamePlayer.IsHelmInvisible.Invisible:				You will now don't see your helm.		
+GamePlayer.IsHelmInvisible.Invisible:				You will no longer see your helm.		
 GamePlayer.IsHelmInvisible.Visible:					You will now see your helm.		
 GamePlayer.IsOnHorse.DismountSteed:			You dismount your steed.
 GamePlayer.IsOnHorse.MountSteed:			You mount your steed.
@@ -195,6 +195,7 @@ GamePlayer.PickupObject.NoOneWantsThis:			No one in group wants the {0}.
 GamePlayer.PickupObject.ObjectTooFarAway:		The {0} is too far away to pick up!
 GamePlayer.PickupObject.TooFarFromBoat:			You are too far from the boat to board!
 GamePlayer.PickupObject.YouGet:					You get {0} and put it in your backpack.
+GamePlayer.PickupObject.YouGetAmount:			You get {0} {1} and put it in your backpack.
 GamePlayer.PickupObject.YouPickUp:				You pick up {0}.
 GamePlayer.PickupObject.YourLootShare:			Your share of the loot is {0}.
 GamePlayer.Pray.AlreadyPraying:					You are already praying!	

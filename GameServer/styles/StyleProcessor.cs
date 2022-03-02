@@ -530,7 +530,8 @@ namespace DOL.GS.Styles
 									{
 										attackData.StyleEffects.Add(effect);
 										if ((attackData.Style.OpeningRequirementType == Style.eOpening.Offensive && attackData.Style.OpeningRequirementValue > 0) 
-											|| attackData.Style.OpeningRequirementType == Style.eOpening.Defensive)
+											|| attackData.Style.OpeningRequirementType == Style.eOpening.Defensive
+											|| attackData.Style.ClassID == 19) //reaver styles have no variance
 										{
 											effect.UseMinVariance = true;
 										}

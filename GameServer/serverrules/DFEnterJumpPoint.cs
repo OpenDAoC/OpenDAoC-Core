@@ -22,6 +22,7 @@ using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Events;
+using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS.ServerRules
 {
@@ -48,10 +49,16 @@ namespace DOL.GS.ServerRules
 				return true;
 			if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
 				return true;
+			if (player.Realm == PreviousOwner && LastRealmSwapTick + GracePeriod >= GameLoop.GameLoopTime)
+				return true;
 			return (player.Realm == DarknessFallOwner);
 		}
 
 		public static eRealm DarknessFallOwner = eRealm.None;
+		public static eRealm PreviousOwner = eRealm.None;
+
+		public static long GracePeriod = 900 * 1000; //15 mins
+		public static long LastRealmSwapTick = 0;
 		
 		/// <summary>
 		/// initialize the darkness fall entrance system
@@ -91,6 +98,8 @@ namespace DOL.GS.ServerRules
 			}
 		}
 
+
+
 		/// <summary>
 		/// when  keep is taken it check if the realm which take gain the control of DF
 		/// </summary>
@@ -108,11 +117,16 @@ namespace DOL.GS.ServerRules
 				int currentDFOwnerTowerCount = GameServer.KeepManager.GetKeepCountByRealm(DarknessFallOwner);
 				int challengerOwnerTowerCount = GameServer.KeepManager.GetKeepCountByRealm(realm);
 				if (currentDFOwnerTowerCount < challengerOwnerTowerCount)
+                {
+					PreviousOwner = DarknessFallOwner;
+					LastRealmSwapTick = GameLoop.GameLoopTime;
 					DarknessFallOwner = realm;
+				}
+					
 				string realmName = "";
 
 				string messageDFGetControl = string.Format("The forces of {0} have gained access to Darkness Falls!", GlobalConstants.RealmToName(realm));
-				string messageDFLostControl = string.Format("{0} has lost control of Darkness Falls!", oldDFOwner);
+				string messageDFLostControl = string.Format("{0} will lose access to Darkness Falls in 15 minutes!", oldDFOwner);
 
 				if (oldDFOwner != GlobalConstants.RealmToName(DarknessFallOwner))
 				{ 
@@ -140,10 +154,27 @@ namespace DOL.GS.ServerRules
 				}
 			}
 			
-			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
+			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID))
 			{
-				var hook = new DolWebHook(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
-				hook.SendMessage(message);
+				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+
+				// Create your DiscordMessage with all parameters of your message.
+				var discordMessage = new DiscordMessage(
+					"",
+					username: "Atlas RvR",
+					avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928728399449571388/keep.png",
+					tts: false,
+					embeds: new[]
+					{
+						new DiscordMessageEmbed(
+							author: new DiscordMessageEmbedAuthor("Darkness Falls"),
+							color: 0,
+							description: message
+						)
+					}
+				);
+				
+				client.SendToDiscord(discordMessage);
 			}
 			
 		}

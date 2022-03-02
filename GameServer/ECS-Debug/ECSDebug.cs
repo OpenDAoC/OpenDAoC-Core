@@ -1,13 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
+using ECS.Debug;
+using log4net;
+using log4net.Core;
 
 namespace ECS.Debug
 {
     public static class Diagnostics
     {
+        private static readonly ILog log = LogManager.GetLogger("Performance");
+
+        //Create FileStream and append to it as needed
+        private static StreamWriter _perfStreamWriter;
+        private static bool _streamWriterInitialized = false;
+
         private static object _GameEventMgrNotifyLock = new object();
         private static bool PerfCountersEnabled = false;
         private static bool stateMachineDebugEnabled = false;
@@ -25,7 +37,13 @@ namespace ECS.Debug
 
         public static void TogglePerfCounters(bool enabled)
         {
+            if (enabled == false)
+            {
+                _perfStreamWriter.Close();
+                _streamWriterInitialized = false;
+            }
             PerfCountersEnabled = enabled;
+
         }
 
         public static void ToggleStateMachineDebug(bool enabled)
@@ -52,11 +70,24 @@ namespace ECS.Debug
             }
         }
 
+        private static void InitializeStreamWriter()
+        {
+            if (_streamWriterInitialized)
+                return;
+            else
+            {
+                var _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PerfLog" + DateTime.Now.ToFileTime());
+                _perfStreamWriter = new StreamWriter(_filePath, false);
+                _streamWriterInitialized = true;
+            }
+        }
+
         public static void StartPerfCounter(string uniqueID)
         {
             if (!PerfCountersEnabled)
                 return;
 
+            InitializeStreamWriter();
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
             PerfCounters.Add(uniqueID, stopwatch);
         }
@@ -91,7 +122,10 @@ namespace ECS.Debug
                     elapsedString = DOL.GS.Util.TruncateString(elapsedString, 4);
                     logString += ($"{counterName} {elapsedString}ms | ");
                 }
-                Console.WriteLine(logString);
+                //Console.WriteLine(logString);
+                //log.Logger.Log(typeof(Diagnostics), Level.Info, logString, null);
+                //log.Info(logString);
+                _perfStreamWriter.WriteLine(logString);
                 PerfCounters.Clear();
             }
         }

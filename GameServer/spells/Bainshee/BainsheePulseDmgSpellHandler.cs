@@ -50,11 +50,11 @@ namespace DOL.GS.Spells
 		}
         public override bool CancelPulsingSpell(GameLiving living, byte spellType)
         {
-            lock (living.ConcentrationEffects)
+            lock (living.effectListComponent._concentrationEffectsLock)
             {
-                for (int i = 0; i < living.ConcentrationEffects.Count; i++)
+                for (int i = 0; i < living.effectListComponent.ConcentrationEffects.Count; i++)
                 {
-                    PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
+					PulsingSpellEffect effect = null; //living.ConcentrationEffects[i] as PulsingSpellEffect;
                     if (effect == null)
                         continue;
                     if (effect.SpellHandler.Spell.SpellType == spellType)

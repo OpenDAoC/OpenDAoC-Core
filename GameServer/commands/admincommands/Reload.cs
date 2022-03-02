@@ -28,7 +28,7 @@ namespace DOL.GS.Commands
 	[Cmd("&Reload",
 		ePrivLevel.Admin,
 		"Reload various elements",
-		"/reload mob|object|specs|spells"
+		"/reload mob|object|specs|spells|teleports"
 		)]
 	public class ReloadCommandHandler : ICommandHandler
 	{
@@ -102,6 +102,8 @@ namespace DOL.GS.Commands
 					SendSystemMessageObject(client);
 					client.Out.SendMessage(" /reload specs - reload all specializations.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					client.Out.SendMessage(" /reload spells - reload a spells and spelllines, checking db for changed and new spells.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(" /reload teleports - reload all teleport locations", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(" /reload npctemplates - reload all NPCTemplates", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 				log.Info("/reload command failed, review parameters.");
 				return;
@@ -193,6 +195,22 @@ namespace DOL.GS.Commands
 				int count = SkillBase.LoadSpecializations();
 				if (client != null) client.Out.SendMessage(string.Format("{0} specializations loaded.", count), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				log.Info(string.Format("{0} specializations loaded.", count));
+				return;
+			}
+			
+			if (args[1].ToLower() == "teleports")
+			{
+				WorldMgr.LoadTeleports();
+				if (client != null) client.Out.SendMessage("Teleport locations reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				log.Info("Teleport locations reloaded.");
+				return;
+			}
+			
+			if (args[1].ToLower() == "npctemplates")
+			{
+				NpcTemplateMgr.Reload();
+				if (client != null) client.Out.SendMessage("NPC templates reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				log.Info("NPC templates reloaded.");
 				return;
 			}
 

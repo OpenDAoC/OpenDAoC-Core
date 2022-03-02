@@ -36,6 +36,11 @@ namespace DOL.GS.Spells
 	[SpellHandler("DamageAdd")]
 	public class DamageAddSpellHandler : AbstractDamageAddSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new DamageAddECSEffect(initParams);
+		}
+
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
@@ -155,6 +160,11 @@ namespace DOL.GS.Spells
 	[SpellHandler("DamageShield")]
 	public class DamageShieldSpellHandler : AbstractDamageAddSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new DamageShieldECSEffect(initParams);
+		}
+
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>

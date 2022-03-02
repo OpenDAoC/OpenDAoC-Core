@@ -17,6 +17,7 @@ public class StandardMobState : State
     protected StandardMobBrain _brain = null;
     protected eFSMStateType _id;
 
+
     public StandardMobState(FSM fsm, StandardMobBrain brain) : base(fsm)
     {
         _brain = brain;
@@ -86,7 +87,7 @@ public class StandardMobState_IDLE : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
         }
@@ -134,7 +135,7 @@ public class StandardMobState_WAKING_UP : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             //_brain.AttackMostWanted();
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
@@ -208,6 +209,9 @@ public class StandardMobState_AGGRO : StandardMobState
 
 public class StandardMobState_ROAMING : StandardMobState
 {
+    private int _roamCooldown = 45 * 1000;
+    private long _lastRoamTick = 0;
+
     public StandardMobState_ROAMING(FSM fsm, StandardMobBrain brain) : base(fsm, brain)
     {
         _id = eFSMStateType.ROAMING;
@@ -235,7 +239,7 @@ public class StandardMobState_ROAMING : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             //_brain.AttackMostWanted();
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
@@ -244,7 +248,7 @@ public class StandardMobState_ROAMING : StandardMobState
         //if randomWalkChance,
         //find new point
         //walk to point
-        if (Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
+        if (Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE) && _lastRoamTick + _roamCooldown <= GameLoop.GameLoopTime )
         {
             IPoint3D target = _brain.CalcRandomWalkTarget();
             if (target != null)
@@ -258,8 +262,9 @@ public class StandardMobState_ROAMING : StandardMobState
                     _brain.Body.WalkTo(target, 50);
                 }
 
-                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming);
+                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
             }
+            _lastRoamTick = GameLoop.GameLoopTime;
         }
 
 
@@ -344,7 +349,7 @@ public class StandardMobState_PATROLLING : StandardMobState
         //setStatus = aggro
         if (_brain.HasAggressionTable())
         {
-            _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
+            //_brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _brain.Body.TargetObject as GameLiving);
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
         }

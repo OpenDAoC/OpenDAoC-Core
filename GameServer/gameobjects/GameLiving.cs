@@ -51,6 +51,8 @@ namespace DOL.GS
         public RangeAttackComponent rangeAttackComponent;
         public StyleComponent styleComponent;
         public Spell LastPulseCast;
+		public int UsedConcentration;
+
         #region Combat
         /// <summary>
         /// Holds the AttackData object of last attack
@@ -2883,7 +2885,7 @@ namespace DOL.GS
 		/// <param name="weapon"></param>
 		public virtual void CheckWeaponMagicalEffect(AttackData ad, InventoryItem weapon)
 		{
-			if (weapon == null)
+			if (weapon == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 				return;
 
 			// Proc chance is 2.5% per SPD, i.e. 10% for a 3.5 SPD weapon. - Tolakram, changed average speed to 3.5
@@ -3831,7 +3833,7 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount, EngageECSGameEffect engage )
+		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
 		{
 			// Block
       
@@ -3909,7 +3911,36 @@ namespace DOL.GS
 					blockChance = .9;
 				else if (shieldSize == 3 && blockChance > .99)
 					blockChance = .99;
+				
+				if (this.IsEngaging)
+				{
+					EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
+					if (engage != null && this.attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
+					{
+						// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate							
+						// You cannot engage a mob that was attacked within the last X seconds...
+						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
+						{
+							if (engage.Owner is GamePlayer)
+								(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						}  // Check if player has enough endurance left to engage
+						else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
+						{
+							engage.Cancel(false); // if player ran out of endurance cancel engage effect
+						}
+						else
+						{
+							engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
+							if (engage.Owner is GamePlayer)
+								(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
+							if (blockChance < .95)
+								blockChance = .95;
+						}
+					}
+				}
+
+				/*
 				// KNutters - Removed the AttackState check because it is imposible to be in melee range
 				// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
 				if( engage != null  && engage.EngageTarget == ad.Attacker )
@@ -3927,13 +3958,14 @@ namespace DOL.GS
 						engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
 						if( engage.Owner is GamePlayer )
 							(engage.Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((engage.Owner as GamePlayer).Client.Account.Language, "GameLiving.TryBlock.Blocking"), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-						if( blockChance < 0.85 )
-							blockChance = 0.85;
+						if( blockChance < 0.95 )
+							blockChance = 0.95;
 					}
 					// if player ran out of endurance cancel engage effect
 					else
 						engage.Cancel( false );
 				}
+				*/
 			}
 			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
 			{
@@ -4068,6 +4100,7 @@ namespace DOL.GS
 
 			bool wasAlive = IsAlive;
 
+			/*
 			//[Freya] Nidel: Use2's Flask
 			if(this is GamePlayer)
 			{
@@ -4086,7 +4119,7 @@ namespace DOL.GS
 						}
 					}
 				}
-			}
+			}*/
 
 			Health -= damageAmount + criticalAmount;
 
@@ -4125,7 +4158,7 @@ namespace DOL.GS
 
 			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
@@ -4161,8 +4194,8 @@ namespace DOL.GS
 
 				GamePlayer owner = brain?.GetPlayerOwner();
 
-                if (owner != null)
-                    owner.Stealth(false);
+                //if (owner != null)
+                   // owner.Stealth(false);
 
                 if (ad.Target is GamePlayer)
 				{
@@ -4233,62 +4266,63 @@ namespace DOL.GS
 
 				// Melee Attack that actually caused damage.
 				if (ad.IsMeleeAttack && ad.Damage > 0)
-				{
+				{					
 					// Handle Ablatives
-					if (effectListComponent.Effects.ContainsKey(eEffect.AblativeArmor))
+					var effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+					for (int i = 0; i < effects.Count; i++)
 					{
-						var effects = effectListComponent.Effects[eEffect.AblativeArmor];
-						for (int i = 0; i < effects.Count; i++)
+						var effect = effects[i] as ECSGameSpellEffect;
+						if (effect is null)
+							continue;
+
+						if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
+
+						int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
+						double absorbPercent = 25;
+						if (effect.SpellHandler.Spell.Damage > 0)
+							absorbPercent = effect.SpellHandler.Spell.Damage;
+						//because albatives can reach 100%
+						if (absorbPercent > 100)
+							absorbPercent = 100;
+						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
+						if (damageAbsorbed > ablativehp)
+							damageAbsorbed = ablativehp;
+						ablativehp -= damageAbsorbed;
+						ad.Damage -= damageAbsorbed;
+						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+
+						if (ad.Target is GamePlayer)
+							(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+						if (ad.Attacker is GamePlayer)
+							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+						if (ablativehp <= 0)
 						{
-							var effect = effects[i] as ECSGameSpellEffect;
-							if (effect is null)
-								continue;
-
-							if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
-
-							int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
-							double absorbPercent = 25;
-							if (effect.SpellHandler.Spell.Damage > 0)
-								absorbPercent = effect.SpellHandler.Spell.Damage;
-							//because albatives can reach 100%
-							if (absorbPercent > 100)
-								absorbPercent = 100;
-							int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
-							if (damageAbsorbed > ablativehp)
-								damageAbsorbed = ablativehp;
-							ablativehp -= damageAbsorbed;
-							ad.Damage -= damageAbsorbed;
-							(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
-
-							if (ad.Target is GamePlayer)
-								(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-							if (ad.Attacker is GamePlayer)
-								(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-							if (ablativehp <= 0)
-							{
-								EffectService.RequestImmediateCancelEffect(effect);
-							}
-							else
-							{
-								effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
-							}
+							EffectService.RequestImmediateCancelEffect(effect);
+						}
+						else
+						{
+							effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
 						}
 					}
+				}
 
-					var dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
-                    // Handle DefensiveProcs
-                    if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+				var dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
+                // Handle DefensiveProcs
+                if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+                {
+                    for (int i = 0; i < dProcEffects.Count; i++)
                     {
-                        for (int i = 0; i < dProcEffects.Count; i++)
-                        {
-                            var dProcEffect = dProcEffects[i];
+                        var dProcEffect = dProcEffects[i];
 
-                            (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
-                        }
+                        (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
                     }
                 }
+            }
+			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
+            {
+				npc.CancelWalkToSpawn();
             }
 		}
 
@@ -4369,22 +4403,27 @@ namespace DOL.GS
             // Remove Mez
             if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
-				var effect = effectListComponent.Effects[eEffect.Mez].FirstOrDefault();
-				EffectService.RequestImmediateCancelEffect(effect);
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
+
+				if (effect != null)
+					EffectService.RequestImmediateCancelEffect(effect);
 			}
 
 			// Remove Snare/Root
 			if (removeSnare && effectListComponent.Effects.ContainsKey(eEffect.Snare))
 			{
-				var effect = effectListComponent.Effects[eEffect.Snare].FirstOrDefault();
-				EffectService.RequestImmediateCancelEffect(effect);
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
+
+				if (effect != null)
+					EffectService.RequestImmediateCancelEffect(effect);
 			}
 
             // Remove MovementSpeedDebuff
-            if (removeMovementSpeedDebuff && effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff))
+            if (removeMovementSpeedDebuff)
             {
-                var effect = effectListComponent.Effects[eEffect.MovementSpeedDebuff].FirstOrDefault();
-				if (effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
+				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
+
+				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
 					EffectService.RequestImmediateCancelEffect(effect);
             }
 
@@ -4413,9 +4452,8 @@ namespace DOL.GS
 
 			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
-				var effects = effectListComponent.Effects[eEffect.MovementSpeedBuff];/*.Where(e => e.IsDisabled == false).FirstOrDefault();*/
+				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
-				//foreach (var effect in effects)
 				for (int i = 0; i < effects.Count; i++)
 				{
 					if (effects[i] is null)
@@ -4426,37 +4464,24 @@ namespace DOL.GS
 					{
 						effectRemoved = false;
 					}
-					/*
-					else if (!isAttacker && spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
-					{
-						effectRemoved = false;
-					}*/
-					else
-					{
-						EffectService.RequestImmediateCancelEffect(effects[i]);
-						effectRemoved = true;
-					}
+
+					EffectService.RequestImmediateCancelEffect(effects[i]);
+					effectRemoved = true;
 				}
             }
 
             if (this is GameNPC npc && npc.Brain is ControlledNpcBrain pBrain || this is GamePet pet)
             {
-				var ownerEffects = new List<ECSGameEffect>(1);
+				var ownerEffects = new List<ECSGameSpellEffect>(1);
 				pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
 				pet = this as GamePet;
 				if (pBrain != null)
 				{
-					if (pBrain.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-					{
-						ownerEffects = pBrain.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff];
-					}
+					ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 				}
 				else
                 {
-					if (pet.Owner.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-					{
-						ownerEffects = pet.Owner.effectListComponent.Effects[eEffect.MovementSpeedBuff];
-					}
+					ownerEffects = pet.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 				}
 
 				for (int i = 0; i < ownerEffects.Count; i++)
@@ -4783,7 +4808,7 @@ namespace DOL.GS
             attackComponent.Attackers.Clear();
 
 			// cancel all concentration effects
-			ConcentrationEffects.CancelAll();
+			//ConcentrationEffects.CancelAll();
 
             // clear all of our targets
             rangeAttackComponent.RangeAttackTarget = null;
@@ -4818,7 +4843,7 @@ namespace DOL.GS
 		/// <param name="expOutpostBonus">outpost bonux to display</param>
 		/// <param name="sendMessage">should exp gain message be sent</param>
 		/// <param name="allowMultiply">should the xp amount be multiplied</param>
-		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
+		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, long atlasBonus, bool sendMessage, bool allowMultiply, bool notify)
 		{
 			if (expTotal > 0 && notify) Notify(GameLivingEvent.GainedExperience, this, new GainedExperienceEventArgs(expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, xpSource));
 		}
@@ -4844,7 +4869,7 @@ namespace DOL.GS
 		/// <param name="exp">base amount of xp to gain</param>
 		public void GainExperience(eXPSource xpSource, long exp)
 		{
-			GainExperience(xpSource, exp, 0, 0, 0, true, false, true);
+			GainExperience(xpSource, exp, 0, 0, 0, 0, true, false, true);
 		}
 
 		/// <summary>
@@ -4854,7 +4879,7 @@ namespace DOL.GS
 		/// <param name="allowMultiply">Do we allow the xp to be multiplied</param>
 		public void GainExperience(eXPSource xpSource, long exp, bool allowMultiply)
 		{
-			GainExperience(xpSource, exp, 0, 0, 0, true, allowMultiply, true);
+			GainExperience(xpSource, exp, 0, 0, 0, 0, true, allowMultiply, true);
 		}
 
 		/// <summary>
@@ -5888,14 +5913,7 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Holds the concentration effects list
-		/// </summary>
-		private readonly ConcentrationList m_concEffects;
-		/// <summary>
-		/// Gets the concentration effects list
-		/// </summary>
-		public ConcentrationList ConcentrationEffects { get { return m_concEffects; } }
+		
 
 		/// <summary>
 		/// Cancels all concentration effects by this living and on this living
@@ -5911,7 +5929,10 @@ namespace DOL.GS
 		public void CancelAllConcentrationEffects(bool leaveSelf, bool updateplayer)
 		{
 			// cancel conc spells
-			ConcentrationEffects.CancelAll(leaveSelf, updateplayer);
+			for (int i = 0; i < effectListComponent.ConcentrationEffects.Count; i++)
+            {
+				EffectService.RequestCancelConcEffect(effectListComponent.ConcentrationEffects[i]);
+            }
 
 			//cancel all active conc spell effects from other casters
 			if (effectListComponent != null)
@@ -7327,7 +7348,7 @@ namespace DOL.GS
             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 			m_xpGainers = new HybridDictionary();
 			m_effects = CreateEffectsList();
-			m_concEffects = new ConcentrationList(this);
+			
 			//m_attackers = new List<GameObject>();
 
 			m_health = 1;

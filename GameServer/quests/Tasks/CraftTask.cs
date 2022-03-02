@@ -87,7 +87,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public override string Description
 		{
-			get { return "Craft the " + ItemName + " for " + RecieverName + " in " + RecieverZone; }
+			get { return "Craft the " + ItemName + " for " + ReceiverName + " in " + RecieverZone; }
 		}
 
 
@@ -137,7 +137,7 @@ namespace DOL.GS.Quests
 				GameLiving target = gArgs.Target as GameLiving;
 				InventoryItem item = gArgs.Item;
 
-				if (player.Task.RecieverName == target.Name && item.Name == player.Task.ItemName)
+				if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
 					player.Inventory.RemoveItem(item);
                     InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
@@ -195,7 +195,7 @@ namespace DOL.GS.Quests
 								{
 									TimeOut = DateTime.Now.AddHours(2),
 									ItemName = taskItem.Name,
-									RecieverName = NPC.Name,
+									ReceiverName = NPC.Name,
 									RecieverZone = NPC.CurrentZone.Description
 								};
 

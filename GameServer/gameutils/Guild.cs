@@ -26,6 +26,7 @@ using DOL.GS.Keeps;
 using log4net;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -260,7 +261,7 @@ namespace DOL.GS
                 return;
             }
 
-			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", Money.GetString(long.Parse(amount.ToString()))), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", Money.GetString(long.Parse(amount.ToString()))), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 
 			donating.Guild.UpdateGuildWindow();
 			m_DBguild.Bank += amount;
@@ -472,6 +473,19 @@ namespace DOL.GS
 			{
 				this.m_DBguild.BountyPoints = value;
 				this.SaveIntoDatabase();
+			}
+		}
+
+		public bool IsStartingGuild
+		{
+			get 
+			{ 
+				return m_DBguild.IsStartingGuild; 
+			}
+			set
+			{
+				m_DBguild.IsStartingGuild = value;
+				SaveIntoDatabase();
 			}
 		}
 
