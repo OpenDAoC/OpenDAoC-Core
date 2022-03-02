@@ -1,4 +1,6 @@
-﻿
+﻿# Brains
+
+## Necromancer Pet
 AI.Brain.Necromancer.CastSpellAfterAction:	The {0} will begin casting this spell after its current action is finished.
 AI.Brain.Necromancer.ServantFarAwayToCast:	Your servant is too far away from your target to cast that spell!
 AI.Brain.Necromancer.PetCantSeeTarget:		Your controlled {0} can't see its target!

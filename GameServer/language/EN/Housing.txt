@@ -1,11 +1,9 @@
-﻿# HOUSING
-# /house
+﻿# Housing
+
+## Details
 House.DBHousePermissions.AccessLevel:			Access level {0}
 House.Edit.NotEnoughMoney:				You don't have enough money to do that!
 House.Edit.PayForChanges:				You pay {0} for your changes.
-House.Enter.EnteredHouse:				You have entered house number {0}.
-House.Enter.EnteringHouse:				Entering house {0}.
-House.Exit.LeftHouse:					You have left house number {0}.
 House.SendHouseInfo.DoorMaterial:			-Door: {0}	
 House.SendHouseInfo.ExteriorMaterials:			Exterior Materials:	
 House.SendHouseInfo.ExteriorUpgrades:			Exterior Upgrades:	
@@ -16,7 +14,7 @@ House.SendHouseInfo.InteriorCarpets:			Interior Carpets:
 House.SendHouseInfo.InteriorUpgrades:			Interior Upgrades:	
 House.SendHouseInfo.Level:				Level: {0}
 House.SendHouseInfo.Lockbox:				Lockbox: {0}
-House.SendHouseInfo.Lotnum:				Lotnum: {0}
+House.SendHouseInfo.Lotnum:				Lot #: {0}
 House.SendHouseInfo.MaxLockbox:				Max in Lockbox: {0}
 House.SendHouseInfo.OutdoorGuildBanner:			-Banner: {0}	
 House.SendHouseInfo.OutdoorGuildShield:			-Shield: {0}	
@@ -27,7 +25,7 @@ House.SendHouseInfo.PorchEnabled:			-Enabled: {0}
 House.SendHouseInfo.PorchMaterial:			-Porch: {0}	
 House.SendHouseInfo.PorchRoofColor:			-Color: {0}	
 House.SendHouseInfo.RentalPrice:			Rental Price: {0}	
-House.SendHouseInfo.RentDueIn:				Rent due in: {0} days, {1} hours
+House.SendHouseInfo.RentDueIn:				Rent due in: {0} day(s), {1} hour(s)
 House.SendHouseInfo.RoofMaterial:			-Roof: {0}	
 House.SendHouseInfo.Rug1Color:				-First Color: {0}
 House.SendHouseInfo.Rug2Color:				-Second Color: {0}
@@ -37,11 +35,8 @@ House.SendHouseInfo.TrussMaterial:			-Support: {0}
 House.SendHouseInfo.WallMaterial:			-Wall: {0}	
 House.SendHouseInfo.WindowMaterial:			-Shutter: {0}
 
-HouseEnterLeave.TooFarAway:					You are too far to enter the house {0}.
-HouseEnterLeave.CantEnter:					You cannot enter the house {0}.
-
+## House Management
 HousingDecorationRotate.Rotated:			A {0} degrees to {1} degrees turned interior object.
-
 # /HousingPlaceItemHandler
 Scripts.Player.Housing.BadShieldBanner:			That is not a valid shield or banner object.
 Scripts.Player.Housing.CantBeSold:			This item cannot be sold!
@@ -50,12 +45,12 @@ Scripts.Player.Housing.ClearHookPoint: 			Would you like to clear the current ho
 Scripts.Player.Housing.EnteredHouse:			You have entered house number {0}.
 Scripts.Player.Housing.GardenItemPlaced:		Garden object placed. {0} slots remaining.	
 Scripts.Player.Housing.GardenItemPlacedName:		You have placed {0} in your garden.	
-Scripts.Player.Housing.GardenMaxObjects:		You have already placed 30 objects in your garden. You cannot place more.	
+Scripts.Player.Housing.GardenMaxObjects:		You have already placed 30 objects in your garden. You cannot place more.
 Scripts.Player.Housing.GuildNowOwns:			[Guild] {0} now owns a guild house from {1}!
 Scripts.Player.Housing.HookPointAdded:			That item has been added to your house.
-Scripts.Player.Housing.HookPointAlready: 		That HookPoint already has an item!	
-Scripts.Player.Housing.HookPointCleared: 		That HookPoint has been cleared.	
-Scripts.Player.Housing.HookPointCloser:			Stand as close to the housepoint as possible and face the proper direction and press accept.
+Scripts.Player.Housing.HookPointAlready: 		That hookpoint already has an item!
+Scripts.Player.Housing.HookPointCleared: 		The hookpoint has been cleared.
+Scripts.Player.Housing.HookPointCloser:			Stand as close to the hookpoint as possible, face the proper direction, and press accept.
 Scripts.Player.Housing.HookPointID:			The hookpoint ID is: {0}
 Scripts.Player.Housing.HookPointLogged:			Logged hookpoint position {0}!
 Scripts.Player.Housing.HookPointLogLoc:			Log this housepoint location?
@@ -70,15 +65,7 @@ Scripts.Player.Housing.IndoorWallPlaced:		You have placed {0} onto the wall of y
 Scripts.Player.Housing.InteriorBannersAdded:		Your interior guild banners have been changed.	
 Scripts.Player.Housing.InteriorBannersRemoved:		Your interior guild banners have been removed.	
 Scripts.Player.Housing.InteriorShieldsAdded:		Your interior guild shields have been changed.	
-Scripts.Player.Housing.InteriorShieldsRemoved:		Your interior guild shields have been removed.	
-Scripts.Player.Housing.LeftHouse:			You have exited house number {0}.
-Scripts.Player.Housing.LotAlready:			You already own another lot or house (Number {0})
-Scripts.Player.Housing.LotBought:			You just bought this lot for {0}!
-Scripts.Player.Housing.LotCost:			
-Scripts.Player.Housing.LotNotItem:			That is not a valid house deed.
-Scripts.Player.Housing.LotNotYours:			You do not own this lot!
-Scripts.Player.Housing.LotOffer:			Do you wish to buy this lot? It costs {0}.
-Scripts.Player.Housing.LotTargeted:			You target lot number {0}.
+Scripts.Player.Housing.InteriorShieldsRemoved:		Your interior guild shields have been removed.
 Scripts.Player.Housing.NotFloorObject:			This item cannot be placed on the floor!
 Scripts.Player.Housing.NotHookPoint:			This item cannot be placed on a hookpoint!
 Scripts.Player.Housing.NotWallObject:			This item cannot be placed on a wall!
@@ -91,5 +78,22 @@ Scripts.Player.Housing.PaidNotEnough:			You do not have enough money to do that!
 Scripts.Player.Housing.PorchAlready:			This house already has a porch!
 Scripts.Player.Housing.PorchNone:			This house does not have a porch!
 Scripts.Player.Housing.PorchNotItem:			This is not a porch item!
+
+## Player Position
+Scripts.Player.Housing.LotTargeted:			You target lot number {0}.
+House.Enter.EnteredHouse:				You have entered house number {0}.
+House.Enter.EnteringHouse:				Entering house {0}.
+House.Exit.LeftHouse:					You have left house number {0}.
+HouseEnterLeave.TooFarAway:					You are too far to enter the house {0}.
+HouseEnterLeave.CantEnter:					You cannot enter the house {0}.
+Scripts.Player.Housing.LeftHouse:			You have exited house number {0}.
+
+## Purchasing
+Scripts.Player.Housing.LotAlready:			You already own another lot or house (Number {0})
+Scripts.Player.Housing.LotBought:			You just bought this lot for {0}!
+Scripts.Player.Housing.LotCost:			    
+Scripts.Player.Housing.LotNotItem:			That is not a valid house deed.
+Scripts.Player.Housing.LotNotYours:			You do not own this lot!
+Scripts.Player.Housing.LotOffer:			Do you wish to buy this lot? It costs {0}.
 Scripts.Player.Housing.TransferToGuild:			Do you want to transfer this house to {0}?
 
