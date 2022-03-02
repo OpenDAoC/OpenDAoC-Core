@@ -116,7 +116,7 @@ namespace DOL.GS.Commands
 					
 					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);
 					info.Add(" + Health: " + target.Health + "/" + target.MaxHealth);
-					info.Add("Attacker Count: " + target.attackComponent.Attackers.Count);
+					info.Add(" + Attacker Count: " + target.attackComponent.Attackers.Count);
 					info.Add(" + AF: " + GetTotalAFHelper(target));
 					
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
