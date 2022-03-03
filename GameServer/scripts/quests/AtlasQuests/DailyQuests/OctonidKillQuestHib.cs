@@ -264,7 +264,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					return;
 				OctonidKilled = 0;
 
-				Dean.SayTo(player, "You will find the Octinids in World\'s End.");
+				Dean.SayTo(player, "You will find the Octonids in World\'s End.");
 
 			}
 		}
@@ -309,8 +309,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 
 			
-			
-			if (e == GameLivingEvent.EnemyKilled)
+			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
@@ -325,8 +324,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 						Step = 2;
 					}
 				}
-				
 			}
+			
 		}
 
 		public override void AbortQuest()
