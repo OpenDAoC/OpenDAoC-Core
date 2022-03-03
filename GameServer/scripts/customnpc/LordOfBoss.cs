@@ -101,17 +101,22 @@ namespace DOL.GS {
 							t.MoveTo(200, 345684, 490996, 1071, 900);
 							break;
 					}
+
 					break;
-				
+
 				#region Caer Sidi
+
 				case "caer sidi":
 					if (t.Realm != eRealm.Albion) return false;
 					t.Out.SendMessage("I can summon the following bosses from Caer Sidi:\n\n" +
 					                  "1. [Skeletal Sacristan]\n" +
 					                  "2. [Spectral Provisioner]\n" +
-					                  "3. [Lich Lord Ilron]\n" 
-					                  // "4. [Bane of Hope]\n"
-						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					                  "3. [Lich Lord Ilron]\n" +
+					                  "4. [Warlord Dorinakka]\n" 
+										// "4. [Bane of Hope]\n"
+			,
+
+			eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 					break;
 
 				case "skeletal sacristan":
@@ -127,6 +132,11 @@ namespace DOL.GS {
 				case "lich lord ilron":
 					if (t.Realm != eRealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
+					break;
+				
+				case "warlord dorinakka":
+					if (t.Realm != eRealm.Albion) return false;
+					SummonBoss(t,"DOL.GS.Scripts.WarlordDorinakka");
 					break;
 				
 				case "bane of hope":
