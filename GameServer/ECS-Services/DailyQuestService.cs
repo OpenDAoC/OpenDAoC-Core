@@ -44,13 +44,12 @@ public class DailyQuestService
     public static void Tick(long tick)
     {
         Diagnostics.StartPerfCounter(ServiceName);
-       // Console.WriteLine($"daily:{lastDailyRollover.TimeOfDay.Minutes} weekly:{lastWeeklyRollover.TimeOfDay.Minutes} now:{DateTime.Now.TimeOfDay.Minutes}");
+        //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
 
         //DateTime.Today.AddDays(1)
         //midnight today/tomorrow -^
         
-        //set up for minutes atm, will recode to midnight check once done with testing
-        if (lastDailyRollover.TimeOfDay.Minutes < DateTime.Now.TimeOfDay.Minutes || lastDailyRollover.TimeOfDay.Hours < DateTime.Now.TimeOfDay.Hours)
+        if (lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || lastDailyRollover.Year < DateTime.Now.Year)
         {
             lastDailyRollover = DateTime.Now;
             
@@ -87,10 +86,10 @@ public class DailyQuestService
                     player.QuestListFinished.Remove(quest);
                 }
             }
-            Console.WriteLine($"Daily refresh");
+            //Console.WriteLine($"Daily refresh");
         } 
         //this is where the weekly check will go once testing is finished
-        else if (lastWeeklyRollover.TimeOfDay.Minutes+3 < DateTime.Now.TimeOfDay.Minutes || lastWeeklyRollover.TimeOfDay.Hours < DateTime.Now.TimeOfDay.Hours)
+        else if (lastWeeklyRollover.Date.DayOfYear+7 < DateTime.Now.Date.DayOfYear || lastWeeklyRollover.Year < DateTime.Now.Year)
         {
             lastWeeklyRollover = DateTime.Now;
             
@@ -110,8 +109,6 @@ public class DailyQuestService
                 newTime.RolloverInterval = WeeklyIntervalKey;
                 GameServer.Database.AddObject(newTime);
             }
-            
-            Console.WriteLine($"Weekly refresh");
         }
 
         Diagnostics.StopPerfCounter(ServiceName);
