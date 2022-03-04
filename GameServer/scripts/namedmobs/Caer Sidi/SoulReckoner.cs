@@ -80,10 +80,21 @@ namespace DOL.GS
             ReckonedSoul.SoulCount = 0;
             SoulReckonerBrain adds = new SoulReckonerBrain();
             SetOwnBrain(adds);
-            if(spawn_souls == false)
+            if (CurrentRegionID == 60)
             {
-                SpawnSouls();
-                spawn_souls = true;
+                if (spawn_souls == false)
+                {
+                    SpawnSouls();
+                    spawn_souls = true;
+                }
+            }
+            else
+            {
+                if (spawn_souls == false)
+                {
+                    SpawnSouls();
+                    spawn_souls = true;
+                }
             }
             base.AddToWorld();
             return true;
@@ -247,13 +258,29 @@ namespace DOL.AI.Brain
             Point3D room_radius = new Point3D();
             room_radius.X = 28472; room_radius.Y = 35857; room_radius.Z = 15370;//room middle point
 
-            if (Body.IsWithinRadius(room_radius, 900))//if is in room
+            if (Body.CurrentRegionID == 60)
             {
-                InRoom = true;
+                if (Body.IsWithinRadius(room_radius, 900))//if is in room
+                {
+                    InRoom = true;
+                }
+                else//is out of room
+                {
+                    InRoom = false;
+                }
             }
-            else//is out of room
+            else
             {
-                InRoom = false;
+                Point3D spawnpoint = new Point3D();
+                spawnpoint.X = Body.SpawnPoint.X; spawnpoint.Y = Body.SpawnPoint.Y; spawnpoint.Z = Body.SpawnPoint.Z;
+                if (Body.IsWithinRadius(spawnpoint, 900))//if is in radius of spawnpoint
+                {
+                    InRoom = true;
+                }
+                else//is out of room
+                {
+                    InRoom = false;
+                }
             }
         }
         public static bool BafMobs = false;
