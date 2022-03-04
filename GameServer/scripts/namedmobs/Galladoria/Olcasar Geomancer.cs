@@ -70,6 +70,8 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164613);
             LoadTemplate(npcTemplate);
+            OlcasarGeomancerBrain sBrain = new OlcasarGeomancerBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }
@@ -174,11 +176,12 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        protected virtual int BombTimer(RegionTimer timer)
+        public  int BombTimer(RegionTimer timer)
         {           
             Body.CastSpell(OGBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 Spawn(); // spawn adds
             Body.MaxSpeedBase = 300;
+            spawnadds = true;
             return 0; 
         }
         public static bool spawnadds = true;
@@ -189,6 +192,7 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 spawnadds = true;
+                spambroad = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc.Brain is OGAddsBrain)
@@ -258,9 +262,13 @@ namespace DOL.AI.Brain
                                         Body.StopMoving();
                                     }
                                     Body.MaxSpeedBase = 0;
-                                    BroadcastMessage(String.Format(Body.Name + " calling ice magic to aid him in battle!"));
-                                    ppl.Out.SendSpellCastAnimation(Body, 159, 4);//casting bomb effect
-                                    new RegionTimer(Body, new RegionTimerCallback(BombTimer), 5000);
+                                    
+                                    if (spawnadds == true)
+                                    {
+                                        BroadcastMessage(String.Format(Body.Name + " calling ice magic to aid him in battle!"));
+                                        new RegionTimer(Body, new RegionTimerCallback(BombTimer), 5000);
+                                        spawnadds = false;
+                                    }
                                 }
                             }
                         }

@@ -91,6 +91,9 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
             LoadTemplate(npcTemplate);
             
+            OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
+            SetOwnBrain(sBrain);
+            
             bool success = base.AddToWorld();
             if (success)
             {

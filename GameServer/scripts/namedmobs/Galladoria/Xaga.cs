@@ -72,6 +72,10 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
             LoadTemplate(npcTemplate);
+            
+            XagaBrain sBrain = new XagaBrain();
+            SetOwnBrain(sBrain);
+            
             base.AddToWorld();
             return true;
         }
@@ -132,13 +136,15 @@ namespace DOL.GS
                 SB.TetherRange = 2500;
                 SB.MaxSpeedBase = 300;
                 SB.Heading = 2013;
+                
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
+                SB.LoadTemplate(npcTemplate);
 
                 XagaBrain ubrain = new XagaBrain();
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 500;
                 SB.SetOwnBrain(ubrain);
-                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
-                SB.LoadTemplate(npcTemplate);
+
                 SB.AddToWorld();
                 SB.Brain.Start();
                 SB.SaveIntoDatabase();

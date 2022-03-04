@@ -25,6 +25,8 @@
 			get => 180;
 			set { }
 		}
+		
+		public override byte ParryChance => 100;
 
 		public override bool AddToWorld()
 		{
@@ -36,6 +38,8 @@
 			RoamingRange = 400;
 			Realm = eRealm.None;
 			ParryChance = 100; // 100% parry chance
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167787);
+			LoadTemplate(npcTemplate);
 			base.AddToWorld();
 			return true;
 		}
