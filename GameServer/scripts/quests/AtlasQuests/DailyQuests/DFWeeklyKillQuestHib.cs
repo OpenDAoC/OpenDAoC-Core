@@ -25,9 +25,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 		protected const int maximumLevel = 50;
 		
 		// prevent grey killing
-		protected byte MIN_PLAYER_LVL = 35;
+		protected const byte MIN_PLAYER_LVL = 35;
 		// Kill Goal
-		protected int MAX_KILLED = 50;
+		protected const int MAX_KILLED = 50;
 
 		private static GameNPC Dean = null; // Start NPC
 
