@@ -165,8 +165,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else if (sk is Spell)
 					{
-						if(sksib != null && sksib is SpellLine)
+						if (sksib != null && sksib is SpellLine)
+						{
+							
+							if (GameLoop.GameLoopTime > player.TempProperties.getProperty<long>(sk.Name) + GameLoop.TickRate)
+							{
+							//todo How to attach a spell to a player? Casting Service should in theory create spellHandler and add to the player -- not the component
+							//player.CastSpell((Spell)sk, sl);
 							player.castingComponent.StartCastSpell((Spell)sk, (SpellLine)sksib);
+						}
+						}
+
+						player.TempProperties.setProperty(sk.Name, GameLoop.GameLoopTime);
 					}
 					else if (sk is Style)
 					{

@@ -1,12 +1,12 @@
-# Unknown
+# Realm Rank Titles
 GamePlayer.RealmTitle.UnknownRealm:					Unknown Realm
 
-# Starter titles
+## Starter
 GamePlayer.RealmTitle.Defender:						Defender
 GamePlayer.RealmTitle.Invader:						Invader
 
-# Albion
-# /Male
+## Albion
+### Male
 GamePlayer.RealmTitle.Albion.RR0.Male:				Invader
 GamePlayer.RealmTitle.Albion.RR1.Male:				Guardian
 GamePlayer.RealmTitle.Albion.RR2.Male:				Warder
@@ -23,7 +23,7 @@ GamePlayer.RealmTitle.Albion.RR12.Male:				Baronet
 GamePlayer.RealmTitle.Albion.RR13.Male:				Baron
 GamePlayer.RealmTitle.Albion.RR14.Male:				Arch Duke
 
-# /Female
+### Female
 GamePlayer.RealmTitle.Albion.RR0.Female:			Invader
 GamePlayer.RealmTitle.Albion.RR1.Female:			Guardian
 GamePlayer.RealmTitle.Albion.RR2.Female:			Warder
@@ -40,9 +40,8 @@ GamePlayer.RealmTitle.Albion.RR12.Female:			Baronetess
 GamePlayer.RealmTitle.Albion.RR13.Female:			Baroness
 GamePlayer.RealmTitle.Albion.RR14.Female:			Arch Duchess
 
-
-# Midgard
-# /Male
+## Midgard
+### Male
 GamePlayer.RealmTitle.Midgard.RR0.Male:				Invader
 GamePlayer.RealmTitle.Midgard.RR1.Male:				Skiltvakten
 GamePlayer.RealmTitle.Midgard.RR2.Male:				Isen Vakten
@@ -59,7 +58,7 @@ GamePlayer.RealmTitle.Midgard.RR12.Male:			Hersir
 GamePlayer.RealmTitle.Midgard.RR13.Male:			Vicomte
 GamePlayer.RealmTitle.Midgard.RR14.Male:			Stor Jarl
 
-# /Female
+### Female
 GamePlayer.RealmTitle.Midgard.RR0.Female:			Invader
 GamePlayer.RealmTitle.Midgard.RR1.Female:			Skiltvakten
 GamePlayer.RealmTitle.Midgard.RR2.Female:			Isen Vakten
@@ -76,8 +75,8 @@ GamePlayer.RealmTitle.Midgard.RR12.Female:			Baronsfru
 GamePlayer.RealmTitle.Midgard.RR13.Female:			Vicomtessa
 GamePlayer.RealmTitle.Midgard.RR14.Female:			Stor Hurfru
 
-# Hibernia
-# /Male
+## Hibernia
+### Male
 GamePlayer.RealmTitle.Hibernia.RR0.Male:			Defender
 GamePlayer.RealmTitle.Hibernia.RR1.Male:			Savant
 GamePlayer.RealmTitle.Hibernia.RR2.Male:			Cosantoir
@@ -91,10 +90,10 @@ GamePlayer.RealmTitle.Hibernia.RR9.Male:			Tiarna
 GamePlayer.RealmTitle.Hibernia.RR10.Male:			Emerald Ridere
 GamePlayer.RealmTitle.Hibernia.RR11.Male:			Barun
 GamePlayer.RealmTitle.Hibernia.RR12.Male:			Ard Tiarna
-GamePlayer.RealmTitle.Hibernia.RR13.Male:			Ciann Cath
+GamePlayer.RealmTitle.Hibernia.RR13.Male:			Ciann
 GamePlayer.RealmTitle.Hibernia.RR14.Male:			Ard Diuc
 
-# /Female
+### Female
 GamePlayer.RealmTitle.Hibernia.RR0.Female:			Defender
 GamePlayer.RealmTitle.Hibernia.RR1.Female:			Savant
 GamePlayer.RealmTitle.Hibernia.RR2.Female:			Cosantoir
@@ -103,10 +102,10 @@ GamePlayer.RealmTitle.Hibernia.RR4.Female:			Grove Protector
 GamePlayer.RealmTitle.Hibernia.RR5.Female:			Raven Ardent
 GamePlayer.RealmTitle.Hibernia.RR6.Female:			Silver Hand
 GamePlayer.RealmTitle.Hibernia.RR7.Female:			Thunderer
-GamePlayer.RealmTitle.Hibernia.RR8.Female:			GildedSpear
+GamePlayer.RealmTitle.Hibernia.RR8.Female:			Gilded Spear
 GamePlayer.RealmTitle.Hibernia.RR9.Female:			Bantiarna
 GamePlayer.RealmTitle.Hibernia.RR10.Female:			Emerald Ridere
 GamePlayer.RealmTitle.Hibernia.RR11.Female:			Banbharun
 GamePlayer.RealmTitle.Hibernia.RR12.Female:			Ard Bantiarna
-GamePlayer.RealmTitle.Hibernia.RR13.Female:			Ciann Cath
+GamePlayer.RealmTitle.Hibernia.RR13.Female:			Cath
 GamePlayer.RealmTitle.Hibernia.RR14.Female:			Ard Bandiuc

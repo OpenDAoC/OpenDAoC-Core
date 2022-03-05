@@ -39,3 +39,7 @@ mono_crash.*
 /ConnectTest - Copy.bat - Shortcut.lnk
 /GameServer/Properties/PublishProfiles
 /GameServer/GameServer.csproj.user
+/ConnectTestAlt - Shortcut.lnk
+/ConnectTest - Shortcut.lnk
+/usbwebserver - Shortcut.lnk
+/heidisql - Shortcut.lnk

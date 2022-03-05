@@ -116,9 +116,34 @@ namespace DOL.GS
                 }
                 CopyNPC = new List<GameNPC>();
                 GiantSporiteClusterBrain.spawn3 = true;
+                
+                // debug
+                log.Debug($"{Name} killed by {killer.Name}");
+            
+                GamePlayer playerKiller = killer as GamePlayer;
+
+                if (playerKiller?.Group != null)
+                {
+                    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                    {
+                        AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                    }
+                }
+                DropLoot(killer);
                 base.Die(killer);
             }
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161336);
+            LoadTemplate(npcTemplate);
+            GiantSporiteClusterBrain sBrain = new GiantSporiteClusterBrain();
+            SetOwnBrain(sBrain);
+            base.AddToWorld();
+            return true;
+        }
+        
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {

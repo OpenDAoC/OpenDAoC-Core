@@ -67,6 +67,36 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
+            LoadTemplate(npcTemplate);
+            
+            XagaBrain sBrain = new XagaBrain();
+            SetOwnBrain(sBrain);
+            
+            base.AddToWorld();
+            return true;
+        }
+        
+        public override void Die(GameObject killer)
+        {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
+            base.Die(killer);
+        }
 
 
         [ScriptLoadedEvent]
@@ -106,13 +136,15 @@ namespace DOL.GS
                 SB.TetherRange = 2500;
                 SB.MaxSpeedBase = 300;
                 SB.Heading = 2013;
+                
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
+                SB.LoadTemplate(npcTemplate);
 
                 XagaBrain ubrain = new XagaBrain();
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 500;
                 SB.SetOwnBrain(ubrain);
-                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
-                SB.LoadTemplate(npcTemplate);
+
                 SB.AddToWorld();
                 SB.Brain.Start();
                 SB.SaveIntoDatabase();
