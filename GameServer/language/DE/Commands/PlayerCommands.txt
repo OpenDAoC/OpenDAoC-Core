@@ -1,10 +1,10 @@
 ﻿# /Advice
-Scripts.Players.Advice.Advice:				[Anfrage{0}] {1}: "{2}"
-Scripts.Players.Advice.AdvicersOn:			Es sind {0} Ratgeber online!
+Social.SendAdvice.Msg.Channel:				[Anfrage {0}] {1}: "{2}"
+PLCommands.Advice.List.AdvisorsOn:			Es sind {0} Ratgeber online!
 
 # /Advisor
-Scripts.Players.Advisor.Off:				Eure Ratgeberkennung wurde ausgeschaltet.
-Scripts.Players.Advisor.On:				Ihr seid nun als Ratgeber in Eurem Reich aktiv. Das Ratgeber-System wird von Spielern betrieben und benutzt, die anderen Leuten bei Problemen mit dem Spiel helfen wollen. Bitte aktiviert diese Funktion nur dann, wenn Ihr anderen Spielern helfen wollt.\nWenn Ihr wieder Eure Ruhe haben und nicht mehr als Ratgeber tätig sein wollt, gebt einfach erneut '/advisor' ein.
+PLCommands.Advisor.Msg.OffFlag:				Eure Ratgeberkennung wurde ausgeschaltet.
+PLCommands.Advisor.Msg.OnFlag:				Ihr seid nun als Ratgeber in Eurem Reich aktiv. Das Ratgeber-System wird von Spielern betrieben und benutzt, die anderen Leuten bei Problemen mit dem Spiel helfen wollen. Bitte aktiviert diese Funktion nur dann, wenn Ihr anderen Spielern helfen wollt.\nWenn Ihr wieder Eure Ruhe haben und nicht mehr als Ratgeber tätig sein wollt, gebt einfach erneut '/advisor' ein.
 
 # /Afk
 Scripts.Players.Afk.Off:				AFK ausgeschaltet.

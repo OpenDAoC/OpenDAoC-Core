@@ -191,6 +191,12 @@ namespace DOL.GS.Commands
 					filters.Add(new OldFrontiersFilter());
 					break;
 				}
+				case "adv": // Filter for '/advisor' system
+				{
+					filters = new ArrayList();
+					filters.Add(new AdvisorFilter());
+					break;
+				}
 				default:
 					{
 						filters = new ArrayList();
@@ -524,6 +530,14 @@ namespace DOL.GS.Commands
 			public bool ApplyFilter(GamePlayer player)
 			{
 				return player.RPFlag;
+			}
+		}
+		
+		private class AdvisorFilter : IWhoFilter
+		{
+			public bool ApplyFilter(GamePlayer player)
+			{
+				return player.Advisor;
 			}
 		}
 		

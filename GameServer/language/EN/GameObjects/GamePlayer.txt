@@ -64,7 +64,11 @@ GamePlayer.Attack.Location.Torso:			torso
 
 ## Communication
 System.NoSense:								That would make no sense!
-Scripts.Players.Advice.Advice:				[ADVICE{0}] {1}: "{2}"
+Social.SendMessage.Err.OfflineOtherRealm:                {0} is not in the game, or is a member of another realm.
+Social.SendMessage.Err.CantMsgYourself:                 You can't message yourself!
+Social.SendAdvice.Msg.Channel:				                [ADVICE {0}] {1}: {2}
+Social.SendAdvice.Msg.YouSendTo:                        You send, "{0}" to {1} [ADVISOR].
+Social.SendAdvice.Msg.Sends:                            {0} [ADVICE] sends, "{1}"
 Scripts.Players.Broadcast.Message:			[Broadcast] {0}: {1}
 Scripts.Players.Region.Message:				[Region] {0}: {1}
 Scripts.Players.LFG.Message:				[LFG] {0}: {1}
@@ -79,6 +83,8 @@ GamePlayer.SendReceive.AfkMessage:				<AFK> {0} sends, "{1}"
 GamePlayer.Send.target.DontUnderstandYou:		{0} doesn't seem to understand you!
 GamePlayer.Send.YouSendTo:						You send, "{0}" to {1}.
 GamePlayer.Whisper.SelectTarget:				Select a target to whisper to!
+Social.SendAdvisor.Target.GMAnon:                       {0} tried to send you an [Advisor] message: "{1}"
+Social.SendAdvice.Err.NotAdvisor:                       {0} is not an Advisor!
 
 ## Crafting
 GamePlayer.CraftItem.DontHaveAbilityMake:		You do not have the ability to make this item.

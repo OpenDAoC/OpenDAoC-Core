@@ -1,12 +1,12 @@
 ﻿
 # PlayerCommands
 # /Advice
-Scripts.Players.Advice.Advice:				[CONSEIL{0}] {1}: "{2}"
-Scripts.Players.Advice.AdvicersOn:			Il y a {0} conseillers en ligne !
+Social.SendAdvice.Msg.Channel:				[CONSEIL {0}] {1}: "{2}"
+PLCommands.Advice.List.AdvisorsOn:			Il y a {0} conseillers en ligne !
 
 # /Advisor
-Scripts.Players.Advisor.Off:				Vous ne recevrez désormais plus de message du canal conseil.
-Scripts.Players.Advisor.On:					Vous recevrez désormais des messages du canal conseil.
+PLCommands.Advisor.Msg.OffFlag:				Vous ne recevrez désormais plus de message du canal conseil.
+PLCommands.Advisor.Msg.OnFlag:					Vous recevrez désormais des messages du canal conseil.
 
 # /Afk
 Scripts.Players.Afk.Off:					Vous n'êtes plus considéré(e) comme étant AFK.
