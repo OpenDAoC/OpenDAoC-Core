@@ -175,7 +175,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "support Midgard":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Herou [Weekly] Vacuum Darkness Falls?");
+							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Herou "+questTitle+"?");
 							break;
 					}
 				}

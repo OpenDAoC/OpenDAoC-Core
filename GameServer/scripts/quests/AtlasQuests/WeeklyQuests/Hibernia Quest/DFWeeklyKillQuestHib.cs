@@ -175,7 +175,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "support Hibernia":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestHib)), "Will you help Dean [Weekly] Vacuum Darkness Falls");
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestHib)), "Will you help Dean "+questTitle+"?");
 							break;
 					}
 				}

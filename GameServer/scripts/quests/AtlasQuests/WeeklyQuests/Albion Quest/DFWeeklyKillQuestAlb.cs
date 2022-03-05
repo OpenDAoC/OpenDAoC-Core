@@ -175,7 +175,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "support Albion":
-							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestAlb)), "Will you help Haszan [Weekly] Vacuum Darkness Falls?");
+							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestAlb)), "Will you help Haszan "+questTitle+"?");
 							break;
 					}
 				}
