@@ -159,6 +159,25 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
+        
+        public override void Die(GameObject killer)//on kill generate orbs
+        {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
+                }
+            }
+            DropLoot(killer);
+            base.Die(killer);
+        }
+        
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
