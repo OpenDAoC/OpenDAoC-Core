@@ -3646,7 +3646,7 @@ namespace DOL.GS.Spells
 				(Caster as GamePlayer).MessageToSelf(message, type);
 			}
 			else if (Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain
-			         && (type == eChatType.CT_YouHit || type == eChatType.CT_SpellResisted))
+			         && (type == eChatType.CT_YouHit || type == eChatType.CT_SpellResisted || type == eChatType.CT_Spell))
 			{
 				GamePlayer owner = ((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
 				if (owner != null)
