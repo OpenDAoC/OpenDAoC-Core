@@ -207,12 +207,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if (timediff > 0)
 			{
-				distance = client.Player.LastPositionUpdatePoint.GetDistanceTo(new Point3D(realX, realY, realZ));
+				var newPoint = new Point3D(realX, realY, realZ);
+				distance = newPoint.GetDistanceTo(new Point3D((int)client.Player.LastPositionUpdatePoint.X, (int)client.Player.LastPositionUpdatePoint.Y,
+					(int)client.Player.LastPositionUpdatePoint.Z));
 				coordsPerSec = distance * 1000 / timediff;
 
 				if (distance < 100 && client.Player.LastPositionUpdatePoint.Z > 0)
 				{
-					jumpDetect = realZ - client.Player.LastPositionUpdatePoint.Z;
+					jumpDetect = realZ - (int)client.Player.LastPositionUpdatePoint.Z;
 				}
 			}
 
@@ -813,11 +815,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//int speed = (newPlayerSpeed & 0x1FF);
 			//Flags1 = (eFlags1)playerState;
 			//Flags2 = (eFlags2)playerAction;                        
-
 			if (client.Player.IsMezzed || client.Player.IsStunned)
 				client.Player.CurrentSpeed = 0;
 			else
-				client.Player.CurrentSpeed = (short)newPlayerSpeed;
+            {
+				if (client.Player.CurrentSpeed == 0 && (client.Player.LastPositionUpdatePoint.X != newPlayerX 
+					|| client.Player.LastPositionUpdatePoint.Y != newPlayerY || client.Player.LastPositionUpdatePoint.Z != newPlayerZ))
+					client.Player.CurrentSpeed = 1;
+				else
+					client.Player.CurrentSpeed = (short)newPlayerSpeed;
+			}
+				
 			/*
 			client.Player.IsStrafing = Flags1 == eFlags1.STRAFELEFT || Flags1 == eFlags1.STRAFERIGHT;
 			client.Player.IsDiving = Flags2 == eFlags2.DIVING ? true : false;
@@ -864,7 +872,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					client.Player.MaxLastZ = int.MinValue;
 				}
 				// Update water level and diving flag for the new zone
-				//client.Out.SendPlayerPositionAndObjectID();
+				client.Out.SendPlayerPositionAndObjectID();
 
 				/*
 				 * "You have entered Burial Tomb."
@@ -903,19 +911,21 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if (timediff > 0)
 			{
-				distance = client.Player.LastPositionUpdatePoint.GetDistanceTo(new Point3D(newPlayerX, newPlayerY, newPlayerZ));
+				var newPoint = new Point3D(newPlayerX, newPlayerY, newPlayerZ);
+				distance = newPoint.GetDistanceTo(new Point3D((int)client.Player.LastPositionUpdatePoint.X, (int)client.Player.LastPositionUpdatePoint.Y,
+					(int)client.Player.LastPositionUpdatePoint.Z));
 				coordsPerSec = distance * 1000 / timediff;
 
 				if (distance < 100 && client.Player.LastPositionUpdatePoint.Z > 0)
 				{
-					jumpDetect = (int)newPlayerZ - client.Player.LastPositionUpdatePoint.Z;
+					jumpDetect = (int)(newPlayerZ - client.Player.LastPositionUpdatePoint.Z);
 				}
 			}
 
 			client.Player.LastPositionUpdateTick = Environment.TickCount;
-			client.Player.LastPositionUpdatePoint.X = (int)newPlayerX;
-			client.Player.LastPositionUpdatePoint.Y = (int)newPlayerY;
-			client.Player.LastPositionUpdatePoint.Z = (int)newPlayerZ;
+			client.Player.LastPositionUpdatePoint.X = newPlayerX;
+			client.Player.LastPositionUpdatePoint.Y = newPlayerY;
+			client.Player.LastPositionUpdatePoint.Z = newPlayerZ;
 			client.Player.X = (int)newPlayerX;
 			client.Player.Y = (int)newPlayerY;
 			client.Player.Z = (int)newPlayerZ;

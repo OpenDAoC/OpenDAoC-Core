@@ -1,5 +1,6 @@
-﻿
+﻿# Craft Master NPCs
 
+## Interact
 CraftNPC.CraftNpcDialogResponse.Accepted:		You've been accepted by the {0}!
 CraftNPC.Interact.Examine:				You examine {0}. He is friendly 
 CraftNPC.Interact.NotMaster:				I am not your master.

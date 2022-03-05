@@ -25,11 +25,11 @@ namespace DOL.GS.Scripts
 			MaxDistance = 1500;
 			TetherRange = 2000;
 			RoamingRange = 400;
-			DOL.AI.Brain.GnatBrain sBrain = new DOL.AI.Brain.GnatBrain();
+			GnatBrain sBrain = new GnatBrain();
 			SetOwnBrain(sBrain);
 			sBrain.AggroLevel = 100;
 			sBrain.AggroRange = 500;
-			DOL.AI.Brain.GnatBrain.spawnants = true;
+			GnatBrain.spawnants = true;
 			base.AddToWorld();
 			return true;
 		}

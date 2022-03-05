@@ -1,4 +1,13 @@
-﻿
+﻿# Effects
+GamePlayer.Spell.Proc.NotImplemented:		Reactive effect ID {0} is not implemented yet on this server.
+
+## Interact
+Effects.GameSpellEffect.CantRemoveEffect:		You can't remove this effect!
+Effects.StaticEffect.YouCantRemoveThisEffect:	You can't remove this effect!
+Effects.CantRemoveThis:	                        You can't remove this effect!
+SpellHandler.CancelEffect:	                    You cancel your effect.
+
+## Delve Information
 Effects.DelveInfo.MinutesRemaining:				- {0}: {1} minutes remaining.
 Effects.DelveInfo.SecondsRemaining:				- {0} seconds remaining.
 Effects.DelveInfo.Seconds:				{0} seconds.

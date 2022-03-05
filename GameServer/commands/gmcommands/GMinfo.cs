@@ -116,7 +116,8 @@ namespace DOL.GS.Commands
 					
 					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);
 					info.Add(" + Health: " + target.Health + "/" + target.MaxHealth);
-					info.Add("Attacker Count: " + target.attackComponent.Attackers.Count);
+					info.Add(" + Attacker Count: " + target.attackComponent.Attackers.Count);
+					info.Add(" + AF: " + GetTotalAFHelper(target));
 					
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)
@@ -869,6 +870,26 @@ namespace DOL.GS.Commands
 			if (material == 9) return " Onyx";
 			
 			return null;
+		}
+
+		private double GetTotalAFHelper(GameLiving living)
+		{
+			List<eArmorSlot> armorSlots = new List<eArmorSlot>();
+			armorSlots.Add(eArmorSlot.HEAD);
+			armorSlots.Add(eArmorSlot.TORSO);
+			armorSlots.Add(eArmorSlot.LEGS);
+			armorSlots.Add(eArmorSlot.HAND);
+			armorSlots.Add(eArmorSlot.ARMS);
+			armorSlots.Add(eArmorSlot.FEET);
+
+			double totalArmor = 0;
+			
+			foreach (var slot in armorSlots)
+			{
+				totalArmor += living.GetArmorAF(slot);
+			}
+
+			return totalArmor;
 		}
 	}
 }

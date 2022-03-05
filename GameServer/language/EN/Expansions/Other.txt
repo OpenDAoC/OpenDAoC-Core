@@ -1,0 +1,159 @@
+# Other Expansion Content
+
+## Horse
+HorseEmote.MustBeOnMount:					You can only do that while mounted.
+HorseEmote.You:							you
+HorseEmote.courbette.ToOthers:				-
+HorseEmote.courbette.ToSource:				-
+HorseEmote.courbette.NoTargetToOthers:			{0}'s mount performs a courbette.
+HorseEmote.courbette.NoTargetToSource:			Your mount performs a courbette.
+HorseEmote.graze.ToOthers:					-
+HorseEmote.graze.ToSource:					-
+HorseEmote.graze.NoTargetToOthers:				{0} lets {1} mount graze.
+HorseEmote.graze.NoTargetToSource:				You let your mount graze.
+HorseEmote.halt.ToOthers:					{0} orders {1} to halt.
+HorseEmote.halt.ToSource:					You order {0} to halt.
+HorseEmote.halt.NoTargetToOthers:				{0} orders everyone to halt.
+HorseEmote.halt.NoTargetToSource:				You order everyone to halt.
+HorseEmote.nod.ToOthers:						{0}'s mount nods at {1}.
+HorseEmote.nod.ToSource:						Your mount nods at {0}.
+HorseEmote.nod.NoTargetToOthers:				{0}'s mount nods.
+HorseEmote.nod.NoTargetToSource:				Your mount nods.
+HorseEmote.pet.ToOthers:						-
+HorseEmote.pet.ToSource:						-
+HorseEmote.pet.NoTargetToOthers:				{0} pets {1} mount.
+HorseEmote.pet.NoTargetToSource:				You pet your mount.
+HorseEmote.rear.ToOthers:					{0}'s mount rears at the sight of {1}.
+HorseEmote.rear.ToSource:					Your mount rears at the sight of {0}.
+HorseEmote.rear.NoTargetToOthers:				{0}'s mount rears.
+HorseEmote.rear.NoTargetToSource:				Your mount rears.
+HorseEmote.startle.ToOthers:					{0}'s mount is startled by {1}.
+HorseEmote.startle.ToSource:					Your mount is startled by {0}.
+HorseEmote.startle.NoTargetToOthers:			{0}'s mount is startled.
+HorseEmote.startle.NoTargetToSource:			Your mount is startled.
+HorseEmote.trick.ToOthers:					{0} stands on {2} mount to impress {1}.
+HorseEmote.trick.ToSource:					You stand on your mount to impress {0}.
+HorseEmote.trick.NoTargetToOthers:				{0} stands on {1} mount to impress everyone.
+HorseEmote.trick.NoTargetToSource:				You stand on your mount to impress everyone.
+GameNPC.Interact.IsFull:					This {0} is full.
+GamePlayer.UseSlot.StopCallingMount:			You stop calling your mount.
+GamePlayer.UseSlot.SummonHorseLevel:			You must have {0} level for summon this horse.
+GamePlayer.UseSlot.WhistleMount:				You whistle for your mount.
+GamePlayer.UseSlot.CantSummonRvR:				You cannot summon that mount in RvR zones.
+GamePlayer.UseSlot.CantMountCombat:				You are in combat and cannot call your mount.
+GamePlayer.UseSlot.CantMountHere:			You cannot summon a mount here!
+GamePlayer.UseSlot.CantMountMoving:				You can't mount while you're moving.
+GamePlayer.UseSlot.CantMountStealthed:			You can't mount while you're in stealth.
+GamePlayer.UseSlot.CantMountWhileDead:			You can't mount while you're dead.
+GamePlayer.UseSlot.CantMountRelicCarrier:		You can't mount while carrying a Relic!
+GamePlayer.UseSlot.CantCallMountSeated:			You cannot call your mount while seated.
+GamePlayer.Sit.InterruptCallMount:			You attempt to sit down and interrupt your call for your mount.
+
+## Horse Details
+DetailDisplayHandler.WriteHorseInfo.AdvancedHorse:	    This is an advanced horse.
+DetailDisplayHandler.WriteHorseInfo.Armor:		- Armor: {0}
+DetailDisplayHandler.WriteHorseInfo.Barding:		- Barding: None
+DetailDisplayHandler.WriteHorseInfo.BasicHorse:		This is a basic horse.
+DetailDisplayHandler.WriteHorseInfo.Food:		- Favorite food: Hay and the occasional apple
+DetailDisplayHandler.WriteHorseInfo.MountWindow:	To make this horse your active mount, place this icon in the appropriate slot of your Mount window.
+DetailDisplayHandler.WriteHorseInfo.Name:		- Name: {0}.
+DetailDisplayHandler.WriteHorseInfo.NameMount:		  (Use /namemount to name your horse.)
+DetailDisplayHandler.WriteHorseInfo.Quickbar:		To summon this horse, from your Mount window drag the horse icon to your quickbar, and summon by using the quickbar icon.
+DetailDisplayHandler.WriteHorseInfo.RvRZzones:		Can't be summoned in RvR zones.
+DetailDisplayHandler.WriteHorseInfo.Speed1:		(+35% speed)
+DetailDisplayHandler.WriteHorseInfo.Speed2:		(+45% speed)
+DetailDisplayHandler.WriteHorseInfo.Summon:		Click this icon in your quickbar to summon (or dismount) your horse.
+GamePlayer.OnPlayerMove.CannotCallMount:		You are moving and cannot call your mount.
+
+## Boats
+Scripts.Player.Boat.AlreadyOnBoat:			That player is already on the boat!
+Scripts.Player.Boat.BoardingDenied:			Your request to board {0} was denied.
+Scripts.Player.Boat.BoardingGranted:			You accepted the boarding request.
+Scripts.Player.Boat.BoardingRequest:			{0} is trying to board your boat. Accept?
+Scripts.Player.Boat.BoatTooFar:				{0} is too far away for you to board.
+Scripts.Player.Boat.BootedBy:				You have been kicked off the boat by {0}.
+Scripts.Player.Boat.BootedTarget:			You have booted {0} from the boat.
+Scripts.Player.Boat.DeleteConfirmation:			Do you really want to delete your boat {0}?
+Scripts.Player.Boat.FullBoat:				The boat is currently full.
+Scripts.Player.Boat.Help.Board:				'/boat board' - Boards the targeted boat.
+Scripts.Player.Boat.Help.Boot:				'/boat boot' - Boots the selected player from your boat.
+Scripts.Player.Boat.Help.Delete:			'/boat delete' - Gives a confirmation dialog to delete your current boat !!permanantly!!
+Scripts.Player.Boat.Help.Follow:			'/boat follow' - Orders your boat to follow your selected target.
+Scripts.Player.Boat.Help.StopFollow:			'/boat stopfollow' - Orders your boat to stop following its target.
+Scripts.Player.Boat.Help.Summon:			'/boat summon' - Summons your boat.
+Scripts.Player.Boat.Help.Unsummon:			'/boat unsummon' - Unsummons your targeted boat.
+Scripts.Player.Boat.InviteNoSelf:			You cannot invite yourself!
+Scripts.Player.Boat.InviteRecieved:			{0} has invited you to join them on their boat.
+Scripts.Player.Boat.InviteSent:				You have invited {0} to join you on your boat.
+Scripts.Player.Boat.MoveFollow:				Your boat begins to follow {0}.
+Scripts.Player.Boat.NoBoatSelected:			You must select a boat first!
+Scripts.Player.Boat.NoPlayerSelected:			You need to select a player first.
+Scripts.Player.Boat.NotInWater:				You must be in the water before you can summon your boat!
+Scripts.Player.Boat.NotOwnBoat:				You do not own a boat.
+Scripts.Player.Boat.OwnerNotOn:				The owner of that boat is not online.
+Scripts.Player.Boat.PlayerIsDead:			You cannot interact with a dead player!
+Scripts.Player.Boat.StopFollow:				You bring your boat to a halt.
+Scripts.Player.Boat.Summoned:				Your {0} has been summoned.
+Scripts.Player.Boat.TargetNotInBoat:			{0} is not in your boat.
+Scripts.Player.Boat.UnknownCommand:			That is not a valid boat command. /boat for help.
+Scripts.Player.Boat.Unsummoned:				Your {0} has been unsummoned.
+Scripts.Player.Boat.Usage:				Usage:
+Scripts.Player.Boat.YouBoard:				You board the {0}.
+GamePlayer.PickupObject.TooFarFromBoat:			You are too far from the boat to board!
+
+## Bodyguard
+Effects.BodyguardEffect.Name:					Bodyguard
+Effects.BodyguardEffect.InfoEffect:				Ability that if successful will guard an attack meant for the ability's target. You will block in the target's place.
+Effects.BodyguardEffect.NowBGXButSC:			You are now Bodyguarding {0}, but you must stand closer.
+Effects.BodyguardEffect.XNowBGYouButSC:			{0} is now Bodyguarding you, but you must stand closer.
+Effects.BodyguardEffect.YouAreNowBGX:			You are now Bodyguarding {0}.
+Effects.BodyguardEffect.XIsBGYou:				{0} is now Bodyguarding you.
+Effects.BodyguardEffect.YouAreNoLongerBGX:		You are no longer Bodyguarding {0}.
+Effects.BodyguardEffect.XIsNoLongerBGYou:		{0} is no longer Bodyguarding you.
+Effects.BodyguardEffect.XIsBodyguardingY:		{0} is Bodyguarding {1}
+Effects.BodyguardEffect.BodyguardedByName:		{0} bodyguarded by {1}
+Skill.Ability.CannotUse.Bodyguard.Dead:	You're dead and can't Bodyguard!
+Skill.Ability.CannotUse.Bodyguard.CancelTargetNull:	You are no longer Bodyguarding anyone.
+Skill.Ability.CannotUse.Bodyguard.GuardTargetIsGuardSource:	You can't Bodyguard yourself!
+Skill.Ability.CannotUse.Bodyguard.NotInGroup:	You can only guard players in your group!
+Skill.Ability.CannotUse.Bodyguard.GuardTargetAlreadyBodyGuarded:	{0} is already guarding {1}!
+Skill.Ability.CannotUse.Bodyguard.GuardSourceBodyGuarded:	You cannot bodyguard someone if you are Bodyguarded!
+GameLiving.CalculateEnemyAttackResult.YouAttempt:		You attempt to attack {0}, {1} is bodyguarded by {2}!
+GameLiving.CalculateEnemyAttackResult.YouHaveProtected: 	You have protected {0} from the attack from {1}!
+GameLiving.CalculateEnemyAttackResult.YourPetAttempts:		Your pet attempts to attack {0}, {1} is bodyguarded by {2}!
+GameLiving.CalculateEnemyAttackResult.YouWereProtected:		You were protected by {0} from the attack from {1}!
+
+## Banners
+Effects.BannerOfWardingEffect.Name:				Banner of Warding
+Effects.BannerOfWardingEffect.Description:		Grants a 10% bonus to all magical resists.
+Effects.BannerOfShieldingEffect.Name			Banner of Shielding
+Effects.BannerOfShieldingEffect.Description:	Grants a 6% bonus to all melee resists.
+Effects.BannerOfFreedomEffect.Name				Banner of Freedom
+Effects.BannerOfFreedomEffect.Description:		Reduces all Crowd Controls by 6%.
+Effects.BannerOfBesiegingEffect.Name:			Banner of Besieging
+Effects.BannerOfBesiegingEffect.Description:	Reduces the fireing speed of siegeweapons by 6%.
+
+## Brittle Guard
+GameLiving.CalculateEnemyAttackResult.BlowIntercepted:		The blow was intercepted by Brittle Guard!
+GameLiving.CalculateEnemyAttackResult.StrikeIntercepted:	Your strike was intercepted by a Brittle Guard!
+
+## Details
+DetailDisplayHandler.HandlePacket.ChampionLevel:	 - Requires: Champion Level {0}
+
+## King Throne NPC
+CLWeaponNPC.ReceiveItem.RespecCL:			Thanks, I added a single champion skill respec to use /respec cl.
+KingNPC.WhisperReceive.IsNowChampion:			You have just embraced on the life of the champions!
+KingNPC.WhisperReceive.AlreadyChampion:			You are already a champion!
+KingNPC.WhisperReceive.AskForChampion:			Would you like to embrace in the life of [Champions]?
+
+## Warlock
+GamePlayer.CastSpell.AlreadyChosenSpells:		You have already chosen your spells for this chamber.
+GamePlayer.CastSpell.FollowSpell:			You ready a {0} as a follow up!
+GamePlayer.CastSpell.NotAFollowSpell:			You may not ready this spell as a followup!
+GamePlayer.CastSpell.PrimarySpellFirst:			You must store a primary spell first!
+GamePlayer.CastSpell.PrepareSecondarySpell:		You prepare this as a secondary spell!
+GamePlayer.CastSpell.SelectSecondSpell:			Select the second spell for your {0}.
+GamePlayer.CastSpell.SpellInChamber:			You load {0} into your {1}.
+GamePlayer.CastSpell.SpellNotInChamber:			This spell cannot be stored in this chamber.
+GamePlayer.CastSpell.OnlyASecondarySpell:		Only a secondary spell can follow up the spell your are casting!
+GamePlayer.CastSpell.CantSpellDirectly:			You cannot cast this spell directly!

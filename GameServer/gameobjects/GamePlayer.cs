@@ -10175,10 +10175,11 @@ namespace DOL.GS
 
                     if (spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
+                        castingComponent.StartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
-                        m_runningSpellHandler = spellHandler;
-                        m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-                        spellHandler.CastSpell(item);
+                        //m_runningSpellHandler = spellHandler;
+                        //m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                        //spellHandler.CastSpell(item);
                         return true;
                     }
                 }
@@ -11385,12 +11386,12 @@ namespace DOL.GS
             set { m_lastPositionUpdateTick = value; }
         }
 
-        private Point3D m_lastPositionUpdatePoint = new Point3D(0, 0, 0);
+        private Point3DFloat m_lastPositionUpdatePoint = new Point3DFloat(0, 0, 0);
 
         /// <summary>
         /// The last recorded position of this player
         /// </summary>
-        public Point3D LastPositionUpdatePoint
+        public Point3DFloat LastPositionUpdatePoint
         {
             get { return m_lastPositionUpdatePoint; }
             set { m_lastPositionUpdatePoint = value; }

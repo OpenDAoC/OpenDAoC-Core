@@ -25,6 +25,8 @@
 			get => 180;
 			set { }
 		}
+		
+		public override byte ParryChance => 100;
 
 		public override bool AddToWorld()
 		{
@@ -36,8 +38,28 @@
 			RoamingRange = 400;
 			Realm = eRealm.None;
 			ParryChance = 100; // 100% parry chance
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167787);
+			LoadTemplate(npcTemplate);
 			base.AddToWorld();
 			return true;
+		}
+		
+		public override void Die(GameObject killer)
+		{
+			// debug
+			log.Debug($"{Name} killed by {killer.Name}");
+            
+			GamePlayer playerKiller = killer as GamePlayer;
+
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+				}
+			}
+			DropLoot(killer);
+			base.Die(killer);
 		}
 	}
 }

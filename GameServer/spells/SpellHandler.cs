@@ -1725,15 +1725,29 @@ namespace DOL.GS.Spells
 						break;
 				}
 
-				//Process cast on same tick if finished.
-				if (castState == eCastState.Finished)
+			//Process cast on same tick if finished.
+			if (castState == eCastState.Finished)
+			{
+				FinishSpellCast(m_spellTarget);
+				if (Spell.IsFocus)
 				{
-					FinishSpellCast(m_spellTarget);
-					if (Spell.IsFocus)
+					if (Spell.ID != 5998)
+					{
 						castState = eCastState.Focusing;
+					}
 					else
+					{
 						castState = eCastState.Cleanup;
-				}
+
+						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+						stone.CanUseAgainIn = stone.CanUseEvery;
+
+						//.SetCooldown();
+					}
+				}			
+				else
+					castState = eCastState.Cleanup;
+			}
 			if (castState == eCastState.Cleanup)
 			{
 				CleanupSpellCast();

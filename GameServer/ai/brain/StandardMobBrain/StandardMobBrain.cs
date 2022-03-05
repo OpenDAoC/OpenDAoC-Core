@@ -1010,6 +1010,10 @@ namespace DOL.AI.Brain
 
                 if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
                 {
+                    if (this is CommanderBrain cBrain)
+                    {
+                        cBrain.Attack(ad.Attacker);
+                    }
                     FSM.SetCurrentState(eFSMStateType.AGGRO);
                     FSM.Think();
                 }
