@@ -317,8 +317,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				//prevent grey killing
-				
+
 				if (gArgs.Target.Name.ToLower() == DRAGON_NAME && gArgs.Target.Realm == 0) 
 				{
 					DragonKilled++;
