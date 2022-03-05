@@ -321,6 +321,8 @@ namespace DOL.GS
 							
 							if (lootTemplatesToDrop != null)
 							{
+								long dropChan = 0;
+								long tmp = 0;
 								foreach (LootTemplate lootTemplate in lootTemplatesToDrop.Values)
 								{
 									ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplate.ItemTemplateID);
@@ -378,7 +380,20 @@ namespace DOL.GS
 										tempProp -= 20 * 1000; //take 20 seconds off cooldown
 										player.TempProperties.setProperty(XPItemKey, tempProp);
 										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+										tmp = tempProp;
+										dropChan = dropCooldown;
 									}
+								}
+								
+								if (tmp > 0 && dropChan > 0)
+								{
+									long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+									timeDifference *= -1;
+									//"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+									if(timeDifference > 0)
+										player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									else
+										player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								}
 							}
 						}
@@ -429,8 +444,17 @@ namespace DOL.GS
 									if (tempProp == 0 ||
 									    tempProp + dropCooldown < GameLoop.GameLoopTime)
 									{
+										long nextDropTime = GameLoop.GameLoopTime;
+										AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(player.Realm)));
+										if (realmLoyalty != null && realmLoyalty.LoyalDays > 0)
+										{
+											int tmpLoyal = realmLoyalty.LoyalDays > 30
+												? 30 : realmLoyalty.LoyalDays;
+											nextDropTime -= tmpLoyal * 1000; //reduce cooldown by 1s per loyalty day up to 30s cap
+										}
+										
 										loot.AddFixed(drop, lootTemplate.Count);
-										player.TempProperties.setProperty(XPItemKey, GameLoop.GameLoopTime);
+										player.TempProperties.setProperty(XPItemKey, nextDropTime);
 										
 										itemsDropped.Clear();
 										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
@@ -454,7 +478,10 @@ namespace DOL.GS
 							long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
 							timeDifference *= -1;
 							//"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
-							player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							if(timeDifference > 0)
+								player.Out.SendMessage(TimeSpan.FromMilliseconds(timeDifference).Hours + "h " + TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " + TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							else
+								player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 					}
 				}

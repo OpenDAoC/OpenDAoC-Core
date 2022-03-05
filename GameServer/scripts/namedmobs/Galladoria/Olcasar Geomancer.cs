@@ -65,6 +65,34 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164613);
+            LoadTemplate(npcTemplate);
+            OlcasarGeomancerBrain sBrain = new OlcasarGeomancerBrain();
+            SetOwnBrain(sBrain);
+            base.AddToWorld();
+            return true;
+        }
+        
+        public override void Die(GameObject killer)
+        {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
+            base.Die(killer);
+        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)

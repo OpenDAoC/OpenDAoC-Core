@@ -12,7 +12,7 @@ namespace DOL.GS.Utils;
 public class PlayerDeck
 {
     private const int PLAYER_DECK_SIZE = 500;
-    private const int NUM_BONUS_DECKS = 1;
+    private const int NUM_BONUS_DECKS = 2;
     private const int NUM_NORMAL_DECKS = 3;
 
     private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
@@ -48,6 +48,8 @@ public class PlayerDeck
     {
         InitializeDeck();
         //shuffle thrice for good luck?
+        Shuffle();
+        Shuffle();
         Shuffle();
         Shuffle();
         Shuffle();

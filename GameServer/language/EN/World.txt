@@ -1,6 +1,17 @@
-﻿# ZONE BONUSES
+﻿# WORLD
 
-ZoneBonus.AdditionalXP: You gain an additional {0} experience for adventuring in this zone!
-ZoneBonus.AdditionalRP: You gain an additional {0} realmpoints for adventuring in this zone!
-ZoneBonus.AdditionalBP: You gain an additional {0} bountypoints for adventuring in this zone!
-ZoneBonus.AdditionalCoin: You gain additional coins for adventuring in this zone!
+## Areas
+AbstractArea.Entered:					        (Region) You have entered {0}.
+AbstractArea.Left:					            (Region) You have left {0}.
+
+## Jump Requirements
+DemonsBreachJumpPoint.Requirements:			You do not meet the requirements to enter this region!
+
+## Zones
+PlayerPositionUpdateHandler.Entered:			You have entered {0}.
+
+## Zone Bonuses
+ZoneBonus.AdditionalXP:                         You gain an additional {0} experience for adventuring in this zone!
+ZoneBonus.AdditionalRP:                         You gain an additional {0} realm points for adventuring in this zone!
+ZoneBonus.AdditionalBP:                         You gain an additional {0} bounty points for adventuring in this zone!
+ZoneBonus.AdditionalCoin:                       You gain additional coins for adventuring in this zone!

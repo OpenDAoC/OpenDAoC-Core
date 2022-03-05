@@ -42,7 +42,12 @@ namespace DOL.GS
 				return false;
 
 			TurnTo(player, 5000);
-			SayTo(player, eChatLoc.CL_ChatWindow, "For 5 gold, I can put the emblem of your guild on the item. Just hand me the item.");
+			
+			// Check for ambient trigger messages for the NPC in the 'MobXAmbientBehaviour' table
+			var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
+			// If the NPC has no ambient trigger message assigned, then return this message
+			if (triggers == null || triggers.Length == 0)
+				SayTo(player, eChatLoc.CL_ChatWindow, "For 5 gold, I can put the emblem of your guild on the item. Just hand me the item.");
 
 			return true;
 		}
