@@ -24,6 +24,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 		protected const int minimumLevel = 40;
 		protected const int maximumLevel = 50;
 
+		// Kill Goal
+		protected const int MAX_KILLED = 10;
+		
 		private static GameNPC Dean = null; // Start NPC
 
 		private static int OctonidKilled = 0;
@@ -272,7 +275,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		//Set quest name
 		public override string Name
 		{
-			get { return "[Daily] Atlas for the Win"; }
+			get { return questTitle; }
 		}
 
 		// Define Steps
@@ -316,9 +319,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				if (gArgs.Target.Name.ToLower() == "octonid") 
 				{
 					OctonidKilled++;
+					player.Out.SendMessage("[Daily] Octonid Killed: ("+OctonidKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (OctonidKilled >= 10)
+					if (OctonidKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to Dean
 						Step = 2;
