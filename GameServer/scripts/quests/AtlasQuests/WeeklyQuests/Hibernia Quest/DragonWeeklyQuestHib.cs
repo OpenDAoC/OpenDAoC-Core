@@ -11,16 +11,16 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace DOL.GS.DailyQuest.Hibernia
 {
-	public class DragonWeeklyQuestAlb : Quests.WeeklyQuest
+	public class DragonWeeklyQuestHib : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string DRAGON_NAME = "Golestandt";
+		protected const string DRAGON_NAME = "Cuuldurach the Glimmer King";
 		
 		protected const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
 		protected const int minimumLevel = 45;
@@ -31,22 +31,22 @@ namespace DOL.GS.DailyQuest.Albion
 		// Quest Counter
 		private static int DragonKilled = 0;
 		
-		private static GameNPC Haszan = null; // Start NPC
+		private static GameNPC Dean = null; // Start NPC
 
 		// Constructors
-		public DragonWeeklyQuestAlb() : base()
+		public DragonWeeklyQuestHib() : base()
 		{
 		}
 
-		public DragonWeeklyQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public DragonWeeklyQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public DragonWeeklyQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DragonWeeklyQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public DragonWeeklyQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DragonWeeklyQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -60,37 +60,37 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
+					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
 					{
-						Haszan = npc;
+						Dean = npc;
 						break;
 					}
 
-			if (Haszan == null)
+			if (Dean == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Haszan , creating it ...");
-				Haszan = new GameNPC();
-				Haszan.Model = 51;
-				Haszan.Name = "Haszan";
-				Haszan.GuildName = "Atlas Quest";
-				Haszan.Realm = eRealm.Albion;
-				//Castle Sauvage Location
-				Haszan.CurrentRegionID = 1;
-				Haszan.Size = 50;
-				Haszan.Level = 59;
-				Haszan.X = 583866;
-				Haszan.Y = 477497;
-				Haszan.Z = 2600;
-				Haszan.Heading = 3111;
-				Haszan.AddToWorld();
+					log.Warn("Could not find Dean , creating it ...");
+				Dean = new GameNPC();
+				Dean.Model = 355;
+				Dean.Name = "Dean";
+				Dean.GuildName = "Atlas Quest";
+				Dean.Realm = eRealm.Hibernia;
+				//Druim Ligen Location
+				Dean.CurrentRegionID = 200;
+				Dean.Size = 50;
+				Dean.Level = 59;
+				Dean.X = 334962;
+				Dean.Y = 420687;
+				Dean.Z = 5184;
+				Dean.Heading = 1571;
+				Dean.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Haszan.SaveIntoDatabase();
+					Dean.SaveIntoDatabase();
 				}
 			}
 
@@ -105,11 +105,11 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-			GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
-			/* Now we bring to Haszan the possibility to give this quest to players */
-			Haszan.AddQuestToGive(typeof (DragonWeeklyQuestAlb));
+			/* Now we bring to Dean the possibility to give this quest to players */
+			Dean.AddQuestToGive(typeof (DragonWeeklyQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -119,31 +119,31 @@ namespace DOL.GS.DailyQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Haszan == null)
+			if (Dean == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-			GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
-			/* Now we remove to Haszan the possibility to give this quest to players */
-			Haszan.RemoveQuestToGive(typeof (DragonWeeklyQuestAlb));
+			/* Now we remove to Dean the possibility to give this quest to players */
+			Dean.RemoveQuestToGive(typeof (DragonWeeklyQuestHib));
 		}
 
-		protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Haszan.CanGiveQuest(typeof (DragonWeeklyQuestAlb), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (DragonWeeklyQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			DragonWeeklyQuestAlb quest = player.IsDoingQuest(typeof (DragonWeeklyQuestAlb)) as DragonWeeklyQuestAlb;
+			DragonWeeklyQuestHib quest = player.IsDoingQuest(typeof (DragonWeeklyQuestHib)) as DragonWeeklyQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -152,18 +152,18 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Haszan.SayTo(player, player.Name + ", please travel to Dartmoor and kill the dragon for Albion!");
+							Dean.SayTo(player, player.Name + ", please travel to Sheeroe Hills and kill the dragon for Hibernia!");
 							break;
 						case 2:
-							Haszan.SayTo(player, "Hello " + player.Name + ", did you [slay the dragon] and return for your reward?");
+							Dean.SayTo(player, "Hello " + player.Name + ", did you [slay the dragon] and return for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
-					                       "\nCan you support Albion and [kill the dragon]?");
+					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, do you need a task? "+
+					                   "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n"+
+					                   "\nCan you support Hibernia and [kill the dragon]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -175,7 +175,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "kill the dragon":
-							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestAlb)), "Will you help Haszan "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestHib)), "Will you help Dean "+questTitle+"?");
 							break;
 					}
 				}
@@ -201,7 +201,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (DragonWeeklyQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (DragonWeeklyQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -219,7 +219,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			DragonWeeklyQuestAlb quest = player.IsDoingQuest(typeof (DragonWeeklyQuestAlb)) as DragonWeeklyQuestAlb;
+			DragonWeeklyQuestHib quest = player.IsDoingQuest(typeof (DragonWeeklyQuestHib)) as DragonWeeklyQuestHib;
 
 			if (quest == null)
 				return;
@@ -241,7 +241,7 @@ namespace DOL.GS.DailyQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -252,10 +252,10 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Haszan.CanGiveQuest(typeof (DragonWeeklyQuestAlb), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (DragonWeeklyQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (DragonWeeklyQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (DragonWeeklyQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
@@ -265,11 +265,11 @@ namespace DOL.GS.DailyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Haszan.GiveQuest(typeof (DragonWeeklyQuestAlb), player, 1))
+				if (!Dean.GiveQuest(typeof (DragonWeeklyQuestHib), player, 1))
 					return;
 				DragonKilled = 0;
 
-				Haszan.SayTo(player, "Please, find the dragon in Dartmoor and defend our realm.");
+				Dean.SayTo(player, "Please, find the dragon in Sheeroe Hills and defend our realm.");
 
 			}
 		}
@@ -288,9 +288,9 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Travel to Dartmoor and slay " + DRAGON_NAME + " for Albion. \nKilled: " + DRAGON_NAME + "("+ DragonKilled +" | " + MAX_KILLED + ")";
+						return "Travel to Sheeroe Hills and slay " + DRAGON_NAME + " for Hibernia. \nKilled: " + DRAGON_NAME + "("+ DragonKilled +" | " + MAX_KILLED + ")";
 					case 2:
-						return "Return to Haszan for your Reward.";
+						return "Return to Dean for your Reward.";
 				}
 				return base.Description;
 			}
@@ -300,15 +300,15 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestAlb)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestHib)) == null)
 				return;
 
 			if (Step == 1 && e == GameLivingEvent.Interact)
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == Haszan.Name)
+				if (gArgs.Source.Name == Dean.Name)
 				{
-					Haszan.SayTo(player, "Did you know that Fen is awesome? Now you know!");
+					Dean.SayTo(player, "Did you know that Fen is awesome? Now you know!");
 					return;
 				}
 			}
@@ -327,7 +327,7 @@ namespace DOL.GS.DailyQuest.Albion
 					
 					if (DragonKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to Haszan
+						// FinishQuest or go back to Dean
 						Step = 2;
 					}
 				}
