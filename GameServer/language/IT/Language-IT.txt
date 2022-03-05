@@ -661,12 +661,12 @@ Scripts.GM.Ban.MustTarget:				Devi selezionare un bersaglio!
 
 # PlayerCommands
 # /Advice
-Scripts.Players.Advice.Advice:				[ADVICE{0}] {1}: "{2}"
-Scripts.Players.Advice.AdvicersOn:			Ci sono {0} advisors online!
+Social.SendAdvice.Msg.Channel:				[ADVICE {0}] {1}: "{2}"
+PLCommands.Advice.List.AdvisorsOn:			Ci sono {0} Advisors online!
 
 # /Advisor
-Scripts.Players.Advisor.Off:				Non riceverai piu' messaggi dal canale advice.
-Scripts.Players.Advisor.On:				Da ora riceverai i messaggi dal canale advice.
+PLCommands.Advisor.Msg.OffFlag:				Non riceverai piu' messaggi dal canale advice.
+PLCommands.Advisor.Msg.OnFlag:				Da ora riceverai i messaggi dal canale advice.
 
 # /Afk
 Scripts.Players.Afk.Off:						Non sei piu' segnalato come AFK.

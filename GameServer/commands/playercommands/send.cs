@@ -43,6 +43,7 @@ namespace DOL.GS.Commands
 			}
 
 			string targetName = args[1];
+			var name = !string.IsNullOrWhiteSpace(targetName) && char.IsLower(targetName, 0) ? targetName.Replace(targetName[0],char.ToUpper(targetName[0])) : targetName; // If first character in args[1] is lowercase, replace with uppercase character
 			string message = string.Join(" ", args, 2, args.Length - 2);
 
 			int result = 0;
@@ -54,8 +55,8 @@ namespace DOL.GS.Commands
 
 			if (targetClient == null)
 			{
-				// nothing found
-				client.Out.SendMessage(targetName + " is not in the game, or in another realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: "{0} is not in the game, or is a member of another realm."
+				ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
 				return;
 			}
 
@@ -64,7 +65,8 @@ namespace DOL.GS.Commands
             {
 				if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
 				{
-					client.Out.SendMessage(targetName + " is not in the game, or in another realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					// Message: "{0} is not in the game, or is a member of another realm."
+					ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
 					targetClient.Player.Out.SendMessage(string.Format("{0} tried to send: {1}", client.Player.Name, message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
 				}
 				else

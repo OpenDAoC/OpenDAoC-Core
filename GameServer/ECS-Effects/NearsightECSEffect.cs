@@ -18,8 +18,11 @@ namespace DOL.GS
             Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)SpellHandler.Spell.Value;
             //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
             (SpellHandler as NearsightSpellHandler).SendEffectAnimation(Owner, 0, false, 1);
-            (SpellHandler as NearsightSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_Spell, Owner);
+            
+            // "Your combat skills are hampered by blindness!"
+            // "{0} stumbles, unable to see!"
+            OnEffectStartsMsg(Owner, true, true, true);
+
         }
 
         public override void OnStopEffect()
@@ -28,8 +31,10 @@ namespace DOL.GS
             Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)SpellHandler.Spell.Value;
             Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)SpellHandler.Spell.Value;
 
-            (SpellHandler as NearsightSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message4, Owner.GetName(0, false)), eChatType.CT_SpellExpires, Owner);
+            // "Your vision returns to normal."
+            // "The blindness recedes from {0}."
+            OnEffectExpiresMsg(Owner, true, false, true);
+
         }
     }
 }

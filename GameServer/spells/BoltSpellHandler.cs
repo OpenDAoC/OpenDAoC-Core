@@ -320,6 +320,13 @@ namespace DOL.GS.Spells
 				caster.OnAttackEnemy(ad);
 				if (ad.Damage > 0)
 				{
+					// "A bolt of runic energy hits you!"
+					m_handler.MessageToLiving(target, m_handler.Spell.Message1, eChatType.CT_Spell);
+					// "{0} is hit by a bolt of runic energy!"
+					m_handler.MessageToCaster(eChatType.CT_Spell, m_handler.Spell.Message2, target.GetName(0, true));
+					// "{0} is hit by a bolt of runic energy!"
+					Message.SystemToArea(target, Util.MakeSentence(m_handler.Spell.Message2, target.GetName(0, true)), eChatType.CT_System, target, caster);
+					
 					m_handler.SendDamageMessages(ad);
 				}
 				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));

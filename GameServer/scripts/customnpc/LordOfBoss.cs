@@ -112,7 +112,11 @@ namespace DOL.GS {
 					                  "1. [Skeletal Sacristan]\n" +
 					                  "2. [Spectral Provisioner]\n" +
 					                  "3. [Lich Lord Ilron]\n" +
-					                  "4. [Warlord Dorinakka]\n" 
+					                  "4. [Warlord Dorinakka]\n" +
+					                  "5. [Soul Reckoner]\n" +
+					                  "6. [Crypt Lord]\n" +
+					                  "7. [Silencer]\n" +
+					                  "8. [Lord Sanguis]\n"
 										// "4. [Bane of Hope]\n"
 			,
 
@@ -139,6 +143,26 @@ namespace DOL.GS {
 					SummonBoss(t,"DOL.GS.Scripts.WarlordDorinakka");
 					break;
 				
+				case "soul reckoner":
+					if (t.Realm != eRealm.Albion) return false;
+					SummonBoss(t,"DOL.GS.SoulReckoner");
+					break;
+				
+				case "crypt lord":
+					if (t.Realm != eRealm.Albion) return false;
+					SummonBoss(t,"DOL.GS.CryptLord");
+					break;
+				
+				case "silencer":
+					if (t.Realm != eRealm.Albion) return false;
+					SummonBoss(t,"DOL.GS.Silencer");
+					break;
+				
+				case "lord sanguis":
+					if (t.Realm != eRealm.Albion) return false;
+					SummonBoss(t,"DOL.GS.LordSanguis");
+					break;
+				
 				case "bane of hope":
 					if (t.Realm != eRealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
@@ -156,7 +180,8 @@ namespace DOL.GS {
 					                  "5. [Xaga]\n" +
 					                  "6. [Spindler Broodmother]\n" +
 					                  "7. [Olcasar Geomancer]\n" +
-					                  "8. [Aroon the Urlamhai]\n"
+					                  "8. [Aroon the Urlamhai]\n" +
+					                  "8. [Hurionthex]\n"
 						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 					break;
 
@@ -201,6 +226,12 @@ namespace DOL.GS {
 					if (t.Realm != eRealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Aroon");
 					break;
+				
+				case "hurionthex":
+					if (t.Realm != eRealm.Hibernia) return false;
+					SummonBoss(t,"DOL.GS.Hurionthex");
+					break;
+				
 				#endregion
 				
 				#region Darkness Falls
