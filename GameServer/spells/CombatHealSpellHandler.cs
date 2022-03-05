@@ -27,6 +27,11 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("CombatHeal")]
 	public class CombatHealSpellHandler : HealSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new HealOverTimeECSGameEffect(initParams);
+		}
+		
 		/// <summary>
 		/// Execute heal spell
 		/// </summary>

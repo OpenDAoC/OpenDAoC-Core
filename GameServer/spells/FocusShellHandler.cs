@@ -34,6 +34,11 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("FocusShell")]
 	public class FocusShellHandler : SpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new FocusECSEffect(initParams);
+		}
+		
 		private GamePlayer FSTarget = null;
 		private FSTimer timer = null;
 
@@ -88,14 +93,7 @@ namespace DOL.GS.Spells
 				GameEventMgr.AddHandler(FSTarget, GameLivingEvent.AttackFinished, new DOLEventHandler(CancelSpell));
 				GameEventMgr.AddHandler(FSTarget, GameLivingEvent.CastStarting, new DOLEventHandler(CancelSpell));
 			}
-
-			//Send the spell messages
-			MessageToLiving(FSTarget, Spell.Message1, eChatType.CT_Spell);
-			foreach (GamePlayer player in FSTarget.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-			{
-				if (player != FSTarget)
-					MessageToLiving(player, string.Format(Spell.Message3, FSTarget.Name), eChatType.CT_Spell);
-			}
+			
 
 			timer = new FSTimer(Caster, this);
 			timer.Start(1);
@@ -115,15 +113,7 @@ namespace DOL.GS.Spells
 			}
 
 			timer.Stop();
-
-			//Send the spell messages
-			MessageToLiving(FSTarget, Spell.Message2, eChatType.CT_SpellExpires);
-			foreach (GamePlayer player in FSTarget.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-			{
-				if (player != FSTarget)
-					MessageToLiving(player, string.Format(Spell.Message4, FSTarget.Name), eChatType.CT_System);
-			}
-
+			
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
