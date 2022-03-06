@@ -20,7 +20,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Atlas for the Win";
+		protected const string questTitle = "[Daily] Octonid Invasion";
 		protected const int minimumLevel = 40;
 		protected const int maximumLevel = 50;
 
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean [Daily] Atlas for the Win?");
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -308,22 +308,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			if (player == null || player.IsDoingQuest(typeof(OctonidKillQuestHib)) == null)
 				return;
-
-			if (Step == 1 && e == GameLivingEvent.Interact)
-			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == Dean.Name)
-				{
-					Dean.SayTo(player, "Did you know that Fen is awesome? Now you know!");
-					return;
-				}
-			}
-
 			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-
 				if (gArgs.Target.Name.ToLower() == "octonid") 
 				{
 					OctonidKilled++;
@@ -347,11 +335,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,10,50,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
 			OctonidKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			
 		}
 	}
 }
