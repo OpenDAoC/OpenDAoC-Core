@@ -1362,6 +1362,12 @@ namespace DOL.GS.ServerProperties
 		public static int NPC_MIN_RESPAWN_INTERVAL;
 
 		/// <summary>
+		/// Respawn Interval for Shrouded Isles Epic Encounter
+		/// </summary>
+		[ServerProperty("world", "set_si_epic_encounter_respawninterval", "Respawn Time, in minutes, for Epic Encounters in Shrouded Isles", 60)]
+		public static int SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL;
+
+		/// <summary>
 		/// Allow Roam
 		/// </summary>
 		[ServerProperty("npc", "allow_roam", "Allow mobs to roam on the server", true)]
