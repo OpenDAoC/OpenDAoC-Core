@@ -820,7 +820,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			else
             {
 				if (client.Player.CurrentSpeed == 0 && (client.Player.LastPositionUpdatePoint.X != newPlayerX 
-					|| client.Player.LastPositionUpdatePoint.Y != newPlayerY || client.Player.LastPositionUpdatePoint.Z != newPlayerZ))
+					|| client.Player.LastPositionUpdatePoint.Y != newPlayerY))
 					client.Player.CurrentSpeed = 1;
 				else
 					client.Player.CurrentSpeed = (short)newPlayerSpeed;

@@ -424,10 +424,11 @@ namespace DOL.GS.Spells
             if (Util.Chance(baseChance))
             {
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)ad.Attacker, m_procSpell, m_procSpellLine);
-                handler.Spell.Level = this.Spell.Level;
+                
                 if (handler != null)
                 {
-                    switch (m_procSpell.Target.ToLower())
+					handler.Spell.Level = this.Spell.Level;
+					switch (m_procSpell.Target.ToLower())
                     {
                         case "enemy":
                             handler.StartSpell(ad.Target);
