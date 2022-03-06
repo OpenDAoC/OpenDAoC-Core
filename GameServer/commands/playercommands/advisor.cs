@@ -29,7 +29,6 @@ namespace DOL.GS.Commands
 		// Displays next to the command when '/cmd' is entered
 		"Flags your character as a class or tradeskill Advisor (<ADV>) for new players' questions.",
 		// Syntax: '/advisor' - Flags your character as an Advisor (<ADV>) to indicate that you are willing to answer new players' questions.
-		// '/advisor' - Flags your character as an Advisor (<ADV>) to indicate that you are willing to answer new players' questions.
 		"PLCommands.Advisor.Syntax.Advisor",
 		// Message: '/advisor <advisorName> <message>' - Directly messages an Advisor with your question.
 		"PLCommands.Advice.Syntax.SendAdvisor")]
@@ -40,7 +39,7 @@ namespace DOL.GS.Commands
 			// If the player has had the `/mute` GM command used on them
 			if (client.Player.IsMuted)
 			{
-				// Message: "You have been muted by Atlas staff and are not allowed to use this command."
+				// Message: You have been muted by Atlas staff and are not allowed to use this command.
 				ChatUtil.SendGMMessage(client, "GMCommands.Mute.Err.NoUseCommand", null);
 				return;
 			}
@@ -50,8 +49,12 @@ namespace DOL.GS.Commands
 			var totalPlayed = client.Player.PlayedTime / 60 / 60; // Time played total for character
 			
 			// Anti-spamming measure
-			if (IsSpammingCommand(client.Player, "advisor"))
+			if (IsSpammingCommand(client.Player, "advisor", 500))
+			{
+				// Message: Slow down, you're typing too fast--make the moment last.
+				ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.SlowDown", null);
 				return;
+			}
 			
 			switch (args.Length)
 			{
@@ -146,6 +149,11 @@ namespace DOL.GS.Commands
 		                    return;
 	                    }
 	                    case 2: // Player name not unique (partial entry is shared between multiple characters).
+	                    {
+		                    // Message: "{0} is not a unique character name."
+		                    ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.NameNotUnique", name);
+		                    return;
+	                    }
 	                    case 3: // Exact player name match
 	                    {
 		                    // If you've specified yourself
@@ -157,10 +165,10 @@ namespace DOL.GS.Commands
 		                    else
 		                    {
 			                    // Message: [ADVICE] {0} sends, "{1}"
-			                    ChatUtil.SendSendMessage(advisorClient.Player, "Social.SendAdvice.Msg.Sends",
+			                    ChatUtil.SendSendMessage(advisorClient.Player, "Social.ReceiveMessage.Advice.Sends",
 				                    client.Player.Name, message);
 			                    // Message: You send, "{0}" to {1} [ADVISOR].
-			                    ChatUtil.SendSendMessage(client.Player, "Social.SendAdvice.Msg.YouSendTo", message,
+			                    ChatUtil.SendSendMessage(client.Player, "Social.SendMessage.Advisor.YouSendTo", message,
 				                    advisorClient.Player.Name);
 		                    }
 
