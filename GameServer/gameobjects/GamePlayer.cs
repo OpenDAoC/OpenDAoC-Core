@@ -10369,7 +10369,7 @@ namespace DOL.GS
                 if (Client != source.Client && Client.Account.PrivLevel != 1 && TempProperties.getProperty<bool>("SendAlert") == false)
                     Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
                 if (source.Client.Account.PrivLevel > 1)
-                    // Message: {0} sends, "{1}"
+                    // Message: {0} [STAFF] sends, "{1}"
                     ChatUtil.SendGMMessage(Client, "Social.ReceiveMessage.Staff.SendsToYou", source.Name, str);
                 else
                     // Message: {0} sends, "{1}"
