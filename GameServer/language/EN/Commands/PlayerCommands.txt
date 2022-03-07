@@ -24,13 +24,16 @@ PLCommands.Advisor.Err.NoMessage:                       You must include a messa
 PLCommands.Advisor.Err.MinimumReqs:                     You do not yet meet the requirements to become an Advisor. Class Advisors must have at least 15 hours of played time while at level 50. Tradeskill Advisors must have Legendary status in a primary tradeskill, '/setwho craft' enabled, and a minimum of 15 total hours played.
 
 ## /afk
-Scripts.Players.Afk.Off:				Your AFK flag is now off.
-Scripts.Players.Afk.On:					Your AFK flag is now on.
+PLCommands.AFK.Syntax.AFK:              '/afk' - '/afk' - Enables/disables a flag that indicates you are "away from keyboard," and allows you to attach a message that will auto-send to any player that uses '/send' to you (e.g., '/afk Bio break').
+PLCommands.AFK.Syntax.MessageAFK:       '/afk <message>' - Sets yourself as "away from keyboard," and attaches a message that will auto-send to any player that uses '/send' to you.
+PLCommands.AFK.Msg.Off:				Your AFK flag is now off.
+PLCommands.AFK.Msg.On:					Your AFK flag is now on.
 
 ## /anonymous
-Scripts.Players.Anonymous.Error:			Anonymous mode is disabled.
-Scripts.Players.Anonymous.Off:				You are no longer anonymous.
-Scripts.Players.Anonymous.On:				You are now anonymous.
+PLCommands.Anonymous.Syntax.Anon:                   '/anonymous' or '/anon' - Enables/disables anonymous mode, which hides you from player searches (e.g., '/who').
+PLCommands.Anonymous.Err.Disabled:			Anonymous mode is currently disabled.
+PLCommands.Anonymous.Msg.Off:				You are no longer anonymous.
+PLCommands.Anonymous.Msg.On:				You are now anonymous.
 
 ## /appeal
 Scripts.Players.Appeal.NeedMoreDetail:			Your appeal has NOT been submitted. Please reenter your appeal with additional details.
@@ -373,13 +376,14 @@ GamePlayer.Pray.CantPrayRiding:				You can't pray while riding!
 
 ## /quit
 GamePlayer.Quit.CantQuitCrafting:			You can't quit while you're crafting.		
-GamePlayer.Quit.CantQuitDead:				You can't quit now, you're dead. Type '/release' to release your corpse.	
+GamePlayer.Quit.CantQuitDead:				You can't quit now, you're dead. Type '/release' to release your corpse.
 GamePlayer.Quit.CantQuitInInstance:			You cannot quit in an instance!
 GamePlayer.Quit.CantQuitMount:				You have to dismount before you can quit.	
 GamePlayer.Quit.CantQuitStanding:			        You must be standing still to quit.
-GamePlayer.Quit.RecentlyInCombat:			You were recently in combat and must wait longer to quit.		
-GamePlayer.Quit.YouWillQuit1:				You will quit after sitting for {0} seconds...	
-GamePlayer.Quit.YouWillQuit2:				You will quit after sitting for {0} seconds. Type '/stand' or move if you don't want to quit.	
+GamePlayer.Quit.RecentlyInCombat:			        You were recently in combat and must wait longer to quit.
+GamePlayer.Quit.YouWillQuit1:				You will quit in {0} seconds.
+GamePlayer.Quit.YouWillQuit2:				You will quit after sitting for {0} seconds. Type '/stand' or move if you don't want to quit.
+GamePlayer.Sit.NoLongerWaitingQuit:			        You are no longer waiting to quit.
 
 ## /range
 Scripts.Players.Range.InvalidObject:			This command only works on objects.
@@ -417,6 +421,9 @@ Scripts.Players.Relic.Power:            Power
 Scripts.Players.Relic.Strength:            Strength
 Scripts.Players.Relic.Title:            Relic status
 Scripts.Players.Relic.UseRealmCommand:      Use '/realm' for Realm Info.
+
+## /send
+PLCommands.SendMessage.Syntax.Send:                     '/send <targetName> <message>' - Sends a private message to the target player.
 
 ## /setwho
 PLCommands.SetWho.Err.CraftAdvisor:             You cannot turn off your craft title while your Advisor flag is active, as you do not meet the other level and/or time played requirements.

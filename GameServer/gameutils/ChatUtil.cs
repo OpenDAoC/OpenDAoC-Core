@@ -42,6 +42,7 @@
 *  into the comment above the affected message return(s). This is
 *  done for ease of reference. */
 
+
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -112,7 +113,7 @@ namespace DOL.GS
 
 			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 		}
-		
+
 		/// <summary>
 		/// Used to send translated messages to a player, which displays as a "/say" message in the chat window.
 		/// </summary>
@@ -370,7 +371,6 @@ namespace DOL.GS
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
 			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -384,7 +384,6 @@ namespace DOL.GS
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 			
 			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendDebugMessage(GamePlayer target, string message)

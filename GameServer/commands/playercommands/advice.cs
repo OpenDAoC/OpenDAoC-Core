@@ -29,6 +29,7 @@ namespace DOL.GS.Commands
 		"&advice",
 		 new [] { "&adv" },
 		ePrivLevel.Player,
+		// Displays next to the command when '/cmd' is entered
 		"Lists all flagged Advisors, sends advisors questions, and sends messages to the Advice channel.",
 		// Message: '/adv <message>' - Sends a message to the Advice channel.
 		"PLCommands.Advice.Syntax.AdvChannel",
@@ -44,7 +45,7 @@ namespace DOL.GS.Commands
 		{
 			if (client.Player.IsMuted)
 			{
-				// Message: "You have been muted by Atlas staff and are not allowed to speak in this channel."
+				// Message: You have been muted by Atlas staff and are not allowed to speak in this channel.
 				ChatUtil.SendGMMessage(client, "GMCommands.Mute.Err.NoSpeakChannel", null);
 				return;
 			}
@@ -65,7 +66,7 @@ namespace DOL.GS.Commands
 				int total = 0;
 				TimeSpan showPlayed = TimeSpan.FromSeconds(client.Player.PlayedTime);
 				
-				// Message: "The following players are flagged as Advisors:"
+				// Message: The following players are flagged as Advisors:
 				ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.TheFollowing", null);
 				
 				foreach (GameClient playerClient in WorldMgr.GetAllClients())
@@ -78,19 +79,21 @@ namespace DOL.GS.Commands
 						total++;
 						if (playerClient.Player.ClassNameFlag == false && playerClient.Player.CraftTitle.GetValue(playerClient.Player, client.Player).StartsWith("Legendary"))
 						{
-							// Message: "{0}) {1}, Level {2} {3} ({4} days, {5} hours, {6} minutes played)"
+							// Message: {0}) {1}, Level {2} {3} ({4} days, {5} hours, {6} minutes played)
+							// Example: 1) Fen, Level 43 Legendary Grandmaster Basic Crafter (1 days, 3 hours, 31 minutes played)
 							ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Result", total, playerClient.Player.Name, playerClient.Player.Level, playerClient.Player.CraftTitle.GetValue(playerClient.Player, client.Player), showPlayed.Days, showPlayed.Hours, showPlayed.Minutes);
 						}
 						else
 							// Message: "{0}) {1}, Level {2} {3} ({4} days, {5} hours, {6} minutes played)"
+							// Example: 1) Kelt, Level 50 Bard (14 days, 3 hours, 31 minutes played)
 							ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Result", total, playerClient.Player.Name, playerClient.Player.Level, playerClient.Player.CharacterClass.Name, showPlayed.Days, showPlayed.Hours, showPlayed.Minutes);
 					}
 				}
 				if (total == 1)
-					// Message: "There is 1 Advisor online!"
+					// Message: There is 1 Advisor online!
 					ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.1AdvisorOn", null);
 				else
-					// Message: "There are {0} Advisors online!"
+					// Message: There are {0} Advisors online!
 					ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.AdvisorsOn", total);
 				return;
 			}
@@ -100,7 +103,7 @@ namespace DOL.GS.Commands
 				if ((playerClient.Player.Realm == client.Player.Realm ||
 					playerClient.Account.PrivLevel > 1) && !playerClient.Player.IsIgnoring(client.Player))
 					// Message: [ADVICE {0}] {1}: {2}
-					ChatUtil.SendAdviceMessage(playerClient, "Social.Players.Advice.Send", getRealmString(client.Player.Realm), client.Player.Name, msg);
+					ChatUtil.SendAdviceMessage(playerClient, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), client.Player.Name, msg);
 
 			}
 			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);

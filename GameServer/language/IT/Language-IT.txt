@@ -316,12 +316,12 @@ GamePlayer.SaveIntoDatabase.CharacterSaved:	Il tuo personaggio e' stato salvato.
 GamePlayer.Say.YouSay:					Dici, "{0}"
 GamePlayer.SayReceive.Says:				{0} dice, "{1}"
 GamePlayer.SayReceive.FalseLanguage:			{0} dice qualcosa in un linguaggio che non comprendi.
-GamePlayer.SendReceive.Sends:				{0} dice, {1}
-GamePlayer.SendReceive.FalseLanguage:			{0} dice qualcosa in una lingua che non capisci.
-GamePlayer.SendReceive.Afk:				{0} e' attualmente AFK.
-GamePlayer.SendReceive.AfkMessage:			<AFK> {0} dice, "{1}"
-GamePlayer.Send.target.DontUnderstandYou:		{0} sembra che non ti capisca!
-GamePlayer.Send.YouSendTo:				Dici, "{0}" a {1}.
+Social.ReceiveMessage.Private.Sends:				{0} dice, "{1}"
+Social.ReceiveMessage.Private.FalseLanguage:			{0} dice qualcosa in una lingua che non capisci.
+Social.ReceiveMessage.AFK.PlayerAFK:				{0} è attualmente AFK.
+Social.ReceiveMessage.AFK.Sends:			<AFK> {0} dice, "{1}"
+Social.SendMessage.Private.DontUnderstandYou:		{0} sembra che non ti capisca!
+Social.SendMessage.Private.YouSendTo:				Dici, "{0}" a {1}.
 GamePlayer.SetControlledNpc.ReleaseTarget:				Rilasci il controllo del tuo bersaglio.
 GamePlayer.Shade.AlreadyShade:				Sei gia' un'ombra!
 GamePlayer.Shade.NoLongerShade:				Non sei piu' un'ombra!
@@ -669,13 +669,13 @@ PLCommands.Advisor.Msg.OffFlag:				Non riceverai piu' messaggi dal canale advice
 PLCommands.Advisor.Msg.OnFlag:				Da ora riceverai i messaggi dal canale advice.
 
 # /Afk
-Scripts.Players.Afk.Off:						Non sei piu' segnalato come AFK.
-Scripts.Players.Afk.On:							Ora sei segnalato come AFK.
+PLCommands.AFK.Msg.Off:						Non sei piu' segnalato come AFK.
+PLCommands.AFK.Msg.On:							Ora sei segnalato come AFK.
 
 # /Anonymous
-Scripts.Players.Anonymous.Error:				La modalita' Anonimo e' disabilitata.
-Scripts.Players.Anonymous.Off:					Non sei piu' segnalato come Anonimo.
-Scripts.Players.Anonymous.On:					Ora sei segnalato come Anonimo.
+PLCommands.Anonymous.Err.Disabled:				La modalita' Anonimo e' disabilitata.
+PLCommands.Anonymous.Msg.Off:					Non sei piu' segnalato come Anonimo.
+PLCommands.Anonymous.Msg.On:					Ora sei segnalato come Anonimo.
 
 # /Assist
 Scripts.Players.Assist.CantAssistYourself:		Non puoi assistere te stesso.

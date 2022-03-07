@@ -20,7 +20,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Net;
+using System.Net.Sockets;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -40,7 +41,11 @@ namespace DOL.GS.Commands
 			uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
 			uint minute = WorldMgr.GetCurrentGameTime() / 1000 / 60 % 60;
 			uint seconde = WorldMgr.GetCurrentGameTime() / 1000 % 60;
-				
+			IPHostEntry ip = Dns.GetHostByName(Dns.GetHostName());
+			string myNIC = ip.AddressList[0].ToString();
+
+			string myInternetIP = ip.AddressList[0].ToString();
+
 			string name = "(NoName)";
 			var info = new List<string>();
 			info.Add("        Current Region : " + client.Player.CurrentRegionID );
@@ -342,7 +347,7 @@ namespace DOL.GS.Commands
 				if (client.Player.TargetObject is GamePlayer)
 				{
 					var target = client.Player.TargetObject as GamePlayer;
-
+					
 					info.Add("ENDURANCE INFORMATION");
 					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
 					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
@@ -372,6 +377,8 @@ namespace DOL.GS.Commands
 					info.Add(" ");
 					info.Add("  - Account Name : " + target.AccountName);
 					info.Add("  - IP : " + target.Client.Account.LastLoginIP);
+					info.Add("  - Local: " + target.Client.Socket.LocalEndPoint);
+					info.Add("  - Remote: " + target.Client.Socket.RemoteEndPoint);
 					info.Add("  - Priv. Level : " + target.Client.Account.PrivLevel);
 					info.Add("  - Client Version: " + target.Client.Account.LastClientVersion);
 					info.Add(" ");
@@ -872,6 +879,18 @@ namespace DOL.GS.Commands
 			return null;
 		}
 
+		public string GetComputerName(string clientIP)
+		{                        
+			try
+			{                
+				var hostEntry = Dns.GetHostEntry(clientIP);
+				return hostEntry.HostName;
+			}
+			catch (Exception ex)
+			{
+				return string.Empty;
+			}            
+		}
 		private double GetTotalAFHelper(GameLiving living)
 		{
 			List<eArmorSlot> armorSlots = new List<eArmorSlot>();
