@@ -73,7 +73,7 @@ namespace DOL.GS {
                 player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-                player.Out.SendMessage("You gain an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You gained an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }
         
@@ -92,7 +92,7 @@ namespace DOL.GS {
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 if (orbBonus > 0)
-                    player.Out.SendMessage("You gain an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You gained an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 
             }
         }
