@@ -671,7 +671,8 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))// Stage < 2) //only interrupt if we're under 50% of the way through the cast
+			if (IsCasting && !Caster.castingComponent.spellHandler.Spell.Uninterruptible && 
+				(GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))// Stage < 2) //only interrupt if we're under 50% of the way through the cast
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -1889,6 +1890,14 @@ namespace DOL.GS.Spells
 					focusBonus = 0.4;
 				else if (focusBonus < 0)
 					focusBonus = 0;
+				if (Caster is GamePlayer)
+				{
+					var spec = ((GamePlayer)Caster).GetModifiedSpecLevel(SpellLine.Spec);
+					double specBonus = Math.Min(spec, 50) / (Spell.Level * 1.0);
+					if (specBonus > 1)
+						specBonus = 1;
+					focusBonus *= specBonus;
+				}
 				power -= basepower * focusBonus; //<== So i can finally use 'basepower' for both calculations: % and absolut
 			}
 			else if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ClassType == eClassType.Hybrid)
