@@ -173,58 +173,61 @@ namespace DOL.GS
 
 				if (lootOTDs != null)
 				{
-					foreach (GameObject gainer in mob.XPGainers.Keys)
+					lock (mob.XPGainers.SyncRoot)
 					{
-						GamePlayer player = null;
+						foreach (GameObject gainer in mob.XPGainers.Keys)
+						{
+							GamePlayer player = null;
 
-						if (gainer is GamePlayer)
-						{
-							player = gainer as GamePlayer;
-						}
-						else if (gainer is GameNPC)
-						{
-							IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
-							if (brain != null)
+							if (gainer is GamePlayer)
 							{
-								player = brain.GetPlayerOwner();
+								player = gainer as GamePlayer;
 							}
-						}
-
-						if (player != null)
-						{
-							foreach (LootOTD drop in lootOTDs)
+							else if (gainer is GameNPC)
 							{
-								if (drop.MinLevel <= player.Level)
+								IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
+								if (brain != null)
 								{
-									var hasDrop = DOLDB<CharacterXOneTimeDrop>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.QuestPlayerID).And(DB.Column("ItemTemplateID").IsEqualTo(drop.ItemTemplateID)));
+									player = brain.GetPlayerOwner();
+								}
+							}
 
-									if (hasDrop == null)
+							if (player != null)
+							{
+								foreach (LootOTD drop in lootOTDs)
+								{
+									if (drop.MinLevel <= player.Level)
 									{
-										ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(drop.ItemTemplateID);
+										var hasDrop = DOLDB<CharacterXOneTimeDrop>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.QuestPlayerID).And(DB.Column("ItemTemplateID").IsEqualTo(drop.ItemTemplateID)));
 
-										if (item != null)
+										if (hasDrop == null)
 										{
-											if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(item)))
-											{
-												CharacterXOneTimeDrop charXDrop = new CharacterXOneTimeDrop();
-												charXDrop.CharacterID = player.QuestPlayerID;
-												charXDrop.ItemTemplateID = drop.ItemTemplateID;
-												GameServer.Database.AddObject(charXDrop);
+											ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(drop.ItemTemplateID);
 
-												player.Out.SendMessage(string.Format("You receive {0} from {1}!", item.GetName(1, false), mob.GetName(1, false)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-                                                InventoryLogging.LogInventoryAction(mob, player, eInventoryActionType.Loot, item);
+											if (item != null)
+											{
+												if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(item)))
+												{
+													CharacterXOneTimeDrop charXDrop = new CharacterXOneTimeDrop();
+													charXDrop.CharacterID = player.QuestPlayerID;
+													charXDrop.ItemTemplateID = drop.ItemTemplateID;
+													GameServer.Database.AddObject(charXDrop);
+
+													player.Out.SendMessage(string.Format("You receive {0} from {1}!", item.GetName(1, false), mob.GetName(1, false)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+													InventoryLogging.LogInventoryAction(mob, player, eInventoryActionType.Loot, item);
+												}
+												else
+												{
+													// do not drop, player will have to try again
+													player.Out.SendMessage("Your inventory is full and a one time drop cannot be added!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+													log.DebugFormat("OTD Failed, Inventory full: {0} from mob {1} for player {2}.", drop.ItemTemplateID, drop.MobName, player.Name);
+													break;
+												}
 											}
 											else
 											{
-												// do not drop, player will have to try again
-												player.Out.SendMessage("Your inventory is full and a one time drop cannot be added!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-												log.DebugFormat("OTD Failed, Inventory full: {0} from mob {1} for player {2}.", drop.ItemTemplateID, drop.MobName, player.Name);
-												break;
+												log.ErrorFormat("Error trying to drop ItemTemplate {0} from {1}.  Item not found.", drop.ItemTemplateID, drop.MobName);
 											}
-										}
-										else
-										{
-											log.ErrorFormat("Error trying to drop ItemTemplate {0} from {1}.  Item not found.", drop.ItemTemplateID, drop.MobName);
 										}
 									}
 								}

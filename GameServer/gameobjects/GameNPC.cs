@@ -4262,19 +4262,22 @@ namespace DOL.GS
 				// Handle faction alignement changes // TODO Review
 				if ((Faction != null) && (killer is GamePlayer))
 				{
-					// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
-					foreach (DictionaryEntry de in this.XPGainers)
-					{
-						GameLiving living = de.Key as GameLiving;
-						GamePlayer player = living as GamePlayer;
-
-						// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
-						if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
-							player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-
-						if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					lock (this.XPGainers.SyncRoot)
+					{ 
+						// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
+						foreach (DictionaryEntry de in this.XPGainers)
 						{
-							Faction.KillMember(player);
+							GameLiving living = de.Key as GameLiving;
+							GamePlayer player = living as GamePlayer;
+
+							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
+							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
+								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+
+							if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+							{
+								Faction.KillMember(player);
+							}
 						}
 					}
 				}

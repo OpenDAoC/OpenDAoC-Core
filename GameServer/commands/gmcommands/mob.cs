@@ -1186,11 +1186,14 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				targetMob.attackComponent.AddAttacker(client.Player);
-				targetMob.AddXPGainer(client.Player, targetMob.Health);
-				targetMob.Die(client.Player);
-				targetMob.XPGainers.Clear();
-				client.Out.SendMessage("Mob '" + targetMob.Name + "' killed", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				lock (targetMob.XPGainers.SyncRoot)
+				{
+					targetMob.attackComponent.AddAttacker(client.Player);
+					targetMob.AddXPGainer(client.Player, targetMob.Health);
+					targetMob.Die(client.Player);
+					targetMob.XPGainers.Clear();
+					client.Out.SendMessage("Mob '" + targetMob.Name + "' killed", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
 			}
 			catch (Exception e)
 			{
