@@ -88,7 +88,7 @@ namespace DOL.GS {
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
                 int orbBonus = (int) Math.Floor((decimal) (amount * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) * .2))); //up to 20% bonus orbs from loyalty
-                player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                player.Inventory.AddTemplate(item, amount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 if (orbBonus > 0)
