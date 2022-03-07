@@ -50,7 +50,15 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		{
 		}
 
-
+		public override int Level
+		{
+			get
+			{
+				// Quest Level
+				return minimumLevel;
+			}
+		}
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{

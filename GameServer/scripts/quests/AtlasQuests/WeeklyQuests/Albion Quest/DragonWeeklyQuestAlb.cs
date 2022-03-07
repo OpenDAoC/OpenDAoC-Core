@@ -50,7 +50,15 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-
+		public override int Level
+		{
+			get
+			{
+				// Quest Level
+				return minimumLevel;
+			}
+		}
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
