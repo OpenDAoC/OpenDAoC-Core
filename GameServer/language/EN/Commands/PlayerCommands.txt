@@ -8,26 +8,38 @@ AllCommands.Header.Note.Divider:                    --- NOTE: ---
 AllCommands.Header.Note.Dashes:                     --------------
 
 ## /advice
-Scripts.Players.Advice.AdvicersOn:			There are {0} advisors online!
+PLCommands.Advice.Syntax.AdvChannel:                    '/adv <message>' - Sends a message to the Advice channel.
+PLCommands.Advice.Syntax.Advice:                        '/advice' - Lists all online Advisors.
+PLCommands.Advice.List.TheFollowing:                    The following players are flagged as Advisors:
+PLCommands.Advice.List.Result:                          {0}) {1}, Level {2} {3} ({4} days, {5} hours, {6} minutes played)
+PLCommands.Advice.List.1AdvisorOn:			            There is 1 Advisor online!
+PLCommands.Advice.List.AdvisorsOn:			            There are {0} Advisors online!
 
 ## /advisor
-Scripts.Players.Advisor.Off:				You will no longer receive messages from the advice channel.
-Scripts.Players.Advisor.On:				You will now receive messages from the advice channel.
+PLCommands.Advisor.Syntax.Advisor:                      '/advisor' - Flags your character as an Advisor (<ADV>) to indicate that you are willing to answer new players' questions.
+PLCommands.Advisor.Syntax.SendAdvisor:                  '/advisor <advisorName> <message>' - Directly messages an Advisor with your question.
+PLCommands.Advisor.Msg.OffFlag:				            Your Advisor flag has been turned off.
+PLCommands.Advisor.Msg.OnFlag:				            Your Advisor flag (<ADV>) has been turned on. The Advisor system is run and used by players at their own risk. We ask that only players interested in answering new players' basic questions turn this flag on. To turn this flag off at any time, simply type '/advisor' again.
+PLCommands.Advisor.Err.NoMessage:                       You must include a message to communicate with this Advisor! Use '/advisor <advisorName> <message>' to communicate with an Advisor.
+PLCommands.Advisor.Err.MinimumReqs:                     You do not yet meet the requirements to become an Advisor. Class Advisors must have at least 15 hours of played time while at level 50. Tradeskill Advisors must have Legendary status in a primary tradeskill, '/setwho craft' enabled, and a minimum of 15 total hours played.
 
 ## /afk
-Scripts.Players.Afk.Off:				Your AFK flag is now off.
-Scripts.Players.Afk.On:					Your AFK flag is now on.
+PLCommands.AFK.Syntax.AFK:              '/afk' - '/afk' - Enables/disables a flag that indicates you are "away from keyboard," and allows you to attach a message that will auto-send to any player that uses '/send' to you (e.g., '/afk Bio break').
+PLCommands.AFK.Syntax.MessageAFK:       '/afk <message>' - Sets yourself as "away from keyboard," and attaches a message that will auto-send to any player that uses '/send' to you.
+PLCommands.AFK.Msg.Off:				Your AFK flag is now off.
+PLCommands.AFK.Msg.On:					Your AFK flag is now on.
 
 ## /anonymous
-Scripts.Players.Anonymous.Error:			Anonymous mode is disabled.
-Scripts.Players.Anonymous.Off:				You are no longer anonymous.
-Scripts.Players.Anonymous.On:				You are now anonymous.
+PLCommands.Anonymous.Syntax.Anon:                   '/anonymous' or '/anon' - Enables/disables anonymous mode, which hides you from player searches (e.g., '/who').
+PLCommands.Anonymous.Err.Disabled:			Anonymous mode is currently disabled.
+PLCommands.Anonymous.Msg.Off:				You are no longer anonymous.
+PLCommands.Anonymous.Msg.On:				You are now anonymous.
 
 ## /appeal
-Scripts.Players.Appeal.NeedMoreDetail:			Report has NOT been received.  Please resubmit your report with a bit more detail.
-Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal, please wait for server staff to address your appeal before submitting another.
-Scripts.Players.Appeal.DoNotHaveAppeal:			You do not have an appeal to cancel or it has already been closed for you.
-Scripts.Players.Appeal.StaffClosedYourAppeal:	Staffmember {0} has closed your appeal.
+Scripts.Players.Appeal.NeedMoreDetail:			Your appeal has NOT been submitted. Please reenter your appeal with additional details.
+Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for Atlas server staff to address your current appeal before submitting another.
+Scripts.Players.Appeal.DoNotHaveAppeal:			You do not have an appeal to cancel, or it has already been closed for you.
+Scripts.Players.Appeal.StaffClosedYourAppeal:	Atlas Staff {0} has closed your appeal.
 Scripts.Players.Appeal.PleaseBePatient:			Please be patient while we work to address your concern as quickly as possible.
 Scripts.Players.Appeal.IfYouLogOut:				If you log out with an active appeal it will be saved and automatically reinstated when you log back in.  (Even if you switch characters)
 Scripts.Players.Appeal.ToCancelYourAppeal:		To cancel your appeal use /checkappeal cancel.
@@ -120,7 +132,7 @@ Scripts.Players.Battlegroup.BattlegroupLootThresholdOn:	The battlegroup lootleve
 Scripts.Players.Battlegroup.BattleGroupLootTreasurer:	The battlegroup loot type is set to go to the treasurer.
 Scripts.Players.Battlegroup.BattlegroupStatus:		The current status of your battlegroup is {0}.
 Scripts.Players.Battlegroup.BattlegroupTreasurerIs:	The treasurer of the battlegroup has been changed to {0}.
-Scripts.Players.Battlegroup.BattlegroupTreasurerIsYou:	You have been made treasuerer of the battlegroup.
+Scripts.Players.Battlegroup.BattlegroupTreasurerIsYou:	You have been made treasurer of the battlegroup.
 Scripts.Players.Battlegroup.BattlegroupTreasurerOff:	The battlegroup does not currently  have a treasurer.
 Scripts.Players.Battlegroup.BattlegroupTreasurerOn:	You have changed the treasurer of the Battlegroup to: {0}.
 
@@ -364,13 +376,14 @@ GamePlayer.Pray.CantPrayRiding:				You can't pray while riding!
 
 ## /quit
 GamePlayer.Quit.CantQuitCrafting:			You can't quit while you're crafting.		
-GamePlayer.Quit.CantQuitDead:				You can't quit now, you're dead. Type '/release' to release your corpse.	
+GamePlayer.Quit.CantQuitDead:				You can't quit now, you're dead. Type '/release' to release your corpse.
 GamePlayer.Quit.CantQuitInInstance:			You cannot quit in an instance!
 GamePlayer.Quit.CantQuitMount:				You have to dismount before you can quit.	
 GamePlayer.Quit.CantQuitStanding:			        You must be standing still to quit.
-GamePlayer.Quit.RecentlyInCombat:			You were recently in combat and must wait longer to quit.		
-GamePlayer.Quit.YouWillQuit1:				You will quit after sitting for {0} seconds...	
-GamePlayer.Quit.YouWillQuit2:				You will quit after sitting for {0} seconds. Type '/stand' or move if you don't want to quit.	
+GamePlayer.Quit.RecentlyInCombat:			        You were recently in combat and must wait longer to quit.
+GamePlayer.Quit.YouWillQuit1:				You will quit in {0} seconds.
+GamePlayer.Quit.YouWillQuit2:				You will quit after sitting for {0} seconds. Type '/stand' or move if you don't want to quit.
+GamePlayer.Sit.NoLongerWaitingQuit:			        You are no longer waiting to quit.
 
 ## /range
 Scripts.Players.Range.InvalidObject:			This command only works on objects.
@@ -408,6 +421,12 @@ Scripts.Players.Relic.Power:            Power
 Scripts.Players.Relic.Strength:            Strength
 Scripts.Players.Relic.Title:            Relic status
 Scripts.Players.Relic.UseRealmCommand:      Use '/realm' for Realm Info.
+
+## /send
+PLCommands.SendMessage.Syntax.Send:                     '/send <targetName> <message>' - Sends a private message to the target player.
+
+## /setwho
+PLCommands.SetWho.Err.CraftAdvisor:             You cannot turn off your craft title while your Advisor flag is active, as you do not meet the other level and/or time played requirements.
 
 ## Misc
 Scripts.Player.Guild.InCombat:				You can't unsummon your Banner while you're in Combat!

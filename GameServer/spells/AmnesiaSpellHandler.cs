@@ -31,6 +31,11 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("Amnesia")]
 	public class AmnesiaSpellHandler : SpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new AmnesiaECSEffect(initParams);
+		}
+		
 		/// <summary>
 		/// Execute direct damage spell
 		/// </summary>

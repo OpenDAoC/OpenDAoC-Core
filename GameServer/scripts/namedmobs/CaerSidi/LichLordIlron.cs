@@ -51,7 +51,8 @@ namespace DOL.GS.Scripts
 			LichLordIlronBrain.spawnimages = true;
 			base.AddToWorld();
 			return true;
-		}        public override void Die(GameObject killer)
+		}        
+	    public override void Die(GameObject killer)
 	    {
 		    // debug
 		    log.Debug($"{Name} killed by {killer.Name}");

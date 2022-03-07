@@ -17,8 +17,10 @@ namespace DOL.GS
 
             (SpellHandler as DiseaseSpellHandler).SendUpdates(this);
 
-            (SpellHandler as DiseaseSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, true)), eChatType.CT_System, Owner);
+            // "You are diseased!"
+            // "{0} is diseased!"
+            OnEffectStartsMsg(Owner, true, true, true);
+
 
             //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
             if (Owner is GameNPC)
@@ -34,8 +36,10 @@ namespace DOL.GS
             Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, EffectType);
             Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, EffectType);
 
-            (SpellHandler as DiseaseSpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message4, Owner.GetName(0, true)), eChatType.CT_SpellExpires, Owner);
+            // "You look healthy."
+            // "{0} looks healthy again."
+            OnEffectExpiresMsg(Owner, true, true, true);
+
 
             (SpellHandler as DiseaseSpellHandler).SendUpdates(this);
         }

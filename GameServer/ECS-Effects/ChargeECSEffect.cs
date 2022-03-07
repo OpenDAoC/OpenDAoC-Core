@@ -35,7 +35,10 @@ namespace DOL.GS
             //Send messages
             if (OwnerPlayer != null)
             {
-                OwnerPlayer.Out.SendMessage("You begin to charge wildly!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                // "You begin to charge wildly!"
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.StartCharge"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                // "{0} begins charging wildly!"
+                Message.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaStartCharge",OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
             }
             else if (Owner is GameNPC)
             {
@@ -95,7 +98,11 @@ namespace DOL.GS
             {
                 //GamePlayer player = m_living as GamePlayer;
                 //player.Out.SendUpdateMaxSpeed();
-                OwnerPlayer.Out.SendMessage("You no longer seem so crazy!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                
+                // "You no longer seem so crazy!"
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.EndCharge"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                // "{0} ceases their charge!"
+                Message.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaEndCharge", OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
             }
             else if (Owner is GameNPC)
             {

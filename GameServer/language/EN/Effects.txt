@@ -10,4 +10,19 @@ SpellHandler.CancelEffect:	                    You cancel your effect.
 ## Delve Information
 Effects.DelveInfo.MinutesRemaining:				- {0}: {1} minutes remaining.
 Effects.DelveInfo.SecondsRemaining:				- {0} seconds remaining.
-Effects.DelveInfo.Seconds:				        {0} seconds.
+Effects.DelveInfo.Seconds:				{0} seconds.
+Effects.CantRemoveThis:	You can't remove this effect!
+
+## Amnesia
+Amnesia.MessageToTarget:	Your mind goes blank and you forget what you were doing!
+Amnesia.MessageToArea:      {0} forgets what they were doing!
+
+## Misc
+Effects.BannerOfWardingEffect.Name:				Banner of Warding
+Effects.BannerOfWardingEffect.Description:		Grants a 10% bonus to all magical resists.
+Effects.BannerOfShieldingEffect.Name			Banner of Shielding
+Effects.BannerOfShieldingEffect.Description:	Grants a 6% bonus to all melee resists.
+Effects.BannerOfFreedomEffect.Name				Banner of Freedom
+Effects.BannerOfFreedomEffect.Description:		Reduces all Crowd Controls by 6%.
+Effects.BannerOfBesiegingEffect.Name:			Banner of Besieging
+Effects.BannerOfBesiegingEffect.Description:	Reduces the fireing speed of siegeweapons by 6%.

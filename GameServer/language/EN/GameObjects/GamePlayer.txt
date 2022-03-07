@@ -64,7 +64,10 @@ GamePlayer.Attack.Location.Torso:			torso
 
 ## Communication
 System.NoSense:								That would make no sense!
-Scripts.Players.Advice.Advice:				[ADVICE{0}] {1}: "{2}"
+Social.SendMessage.Err.SlowDown:                        Slow down, you're typing too fast--make the moment last.
+Social.SendMessage.Err.OfflineOtherRealm:                {0} is not in the game, or is a member of another realm.
+Social.SendMessage.Err.CantMsgYourself:                 You can't message yourself!
+Social.SendAdvice.Msg.Channel:				                [ADVICE {0}] {1}: {2}
 Scripts.Players.Broadcast.Message:			[Broadcast] {0}: {1}
 Scripts.Players.Region.Message:				[Region] {0}: {1}
 Scripts.Players.LFG.Message:				[LFG] {0}: {1}
@@ -72,13 +75,21 @@ Scripts.Players.Trade.Message:				[Trade] {0}: {1}
 GamePlayer.Say.YouSay:							You say, "{0}"
 GamePlayer.SayReceive.Says:						{0} says, "{1}"
 GamePlayer.SayReceive.FalseLanguage:			{0} says something in a language you don't understand.
-GamePlayer.SendReceive.Sends:					{0} sends, "{1}"
-GamePlayer.SendReceive.FalseLanguage:			{0} sends something in a language you don't understand.
-GamePlayer.SendReceive.Afk:						{0} is currently AFK.
-GamePlayer.SendReceive.AfkMessage:				<AFK> {0} sends, "{1}"
-GamePlayer.Send.target.DontUnderstandYou:		{0} doesn't seem to understand you!
-GamePlayer.Send.YouSendTo:						You send, "{0}" to {1}.
+Social.ReceiveMessage.Private.Sends:					{0} sends, "{1}"
+Social.ReceiveMessage.Private.FalseLanguage:			{0} sends something in a language you don't understand.
+Social.ReceiveMessage.Advice.Sends:                     {0} [ADVICE] sends, "{1}"
+Social.ReceiveMessage.Staff.SendsToYou:                    {0} [STAFF] sends, "{1}"
+Social.ReceiveMessage.AFK.PlayerAFK:						{0} is currently AFK.
+Social.ReceiveMessage.AFK.Sends:				<AFK> {0} sends, "{1}"
+Social.SendMessage.Private.YouSendTo:					You send, "{0}" to {1}.
+Social.SendMessage.Private.DontUnderstandYou:		{0} doesn't seem to understand you!
+Social.SendMessage.Staff.YouSendAnon:                   You send, "{0}" to {1} [ANON].
+Social.SendMessage.Advisor.YouSendTo:                   You send, "{0}" to {1} [ADVISOR].
+Social.SendAdvisor.Target.GMAnon:                       {0} tried to send you an [Advisor] message: "{1}"
+Social.SendMessage.Staff.TriedToSend:                   {0} tried to send you a message: "{1}"
 GamePlayer.Whisper.SelectTarget:				Select a target to whisper to!
+Social.SendAdvice.Err.NotAdvisor:                       {0} is not an Advisor!
+Social.SendMessage.Err.NameNotUnique:                   {0} is not a unique character name.
 
 ## Crafting
 GamePlayer.CraftItem.DontHaveAbilityMake:		You do not have the ability to make this item.
@@ -152,7 +163,6 @@ GamePlayer.Sit.CantSitDead:					You can't sit down now, you're dead!
 GamePlayer.Sit.CantSitMezzed:				You can't rest when you are mesmerized!
 GamePlayer.Sit.CantSitStunned:				You can't rest when you are stunned!
 GamePlayer.Sit.MustStandingStill:			You must be standing still to sit down.
-GamePlayer.Sit.NoLongerWaitingQuit:			You are no longer waiting to quit.
 GamePlayer.Sit.NotSitting:					You are not sitting!
 GamePlayer.Sit.YouSitDown:					You sit down.  Type '/stand' or move to stand up.
 GamePlayer.Sit.YouStandUp:					You stand up.

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -24,7 +25,12 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&afk",
 		ePrivLevel.Player,
-		"Toggle away from keyboard. You may optional set a message to display.", "/afk <text>")]
+		// Displays next to the command when '/cmd' is entered
+		"Enables/disables a flag that indicates you are \"away from keyboard,\" and allows you to attach a message that will auto-send to any player that uses '/send' to you (e.g., '/afk Bio break').",
+		// Syntax: '/afk' - Enables/disables a flag that indicates you are "away from keyboard," and allows you to attach a message that will auto-send to any player that uses '/send' to you (e.g., '/afk Bio break').
+		"PLCommands.AFK.Syntax.AFK",
+		// Syntax: '/afk <message>' - Sets yourself as "away from keyboard," and attaches a message that will auto-send to any player that uses '/send' to you.
+		"PLCommands.AFK.Syntax.MessageAFK")]
 	public class AFKCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -32,7 +38,8 @@ namespace DOL.GS.Commands
 			if (client.Player.TempProperties.getProperty<string>(GamePlayer.AFK_MESSAGE) != null && args.Length == 1)
 			{
 				client.Player.TempProperties.removeProperty(GamePlayer.AFK_MESSAGE);
-				client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Afk.Off"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: Your AFK flag is now off.
+				ChatUtil.SendErrorMessage(client, "PLCommands.AFK.Msg.Off", null);
 			}
 			else
 			{
@@ -45,7 +52,9 @@ namespace DOL.GS.Commands
 				{
 					client.Player.TempProperties.setProperty(GamePlayer.AFK_MESSAGE, "");
 				}
-				client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Afk.On"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				
+				// Message: Your AFK flag is now on.
+				ChatUtil.SendErrorMessage(client, "PLCommands.AFK.Msg.On", null);
 			}
 		}
 	}

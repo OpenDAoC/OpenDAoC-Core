@@ -74,13 +74,12 @@ namespace DOL.GS
                                 true);
                     }
                 }
-                
-                (SpellHandler as SpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1,
-                    eChatType.CT_Spell);
-                Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, true)),
-                    eChatType.CT_Spell, Owner);
             }
 
+            // "Your agility is suppressed!"
+            // "{0} seems uncoordinated!"
+            OnEffectStartsMsg(Owner, true, true, true);
+            
             //IsBuffActive = true;
         }
 
@@ -128,6 +127,10 @@ namespace DOL.GS
             {
                 Owner.StartHealthRegeneration();
             }
+            
+            // "Your coordination returns."
+            // "{0}'s coordination returns."
+            OnEffectExpiresMsg(Owner, true, false, true);
 
             IsBuffActive = false;
         }

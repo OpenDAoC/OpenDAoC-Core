@@ -20,15 +20,20 @@ namespace DOL.GS
             {
                 chatType = eChatType.CT_Spell;
             }
-            (SpellHandler as SpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message1, chatType);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, true)), chatType, Owner);
+            
+            // "A crystal shield covers you."
+            // "A crystal shield covers {0}'s skin."
+            OnEffectStartsMsg(Owner, true, false, true);
+
             //GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
         }
 
         public override void OnStopEffect()
         {
-            (SpellHandler as SpellHandler).MessageToLiving(Owner, SpellHandler.Spell.Message3, eChatType.CT_SpellExpires);
-            Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message4, Owner.GetName(0, true)), eChatType.CT_SpellExpires, Owner);
+            // "Your crystal shield fades."
+            // "{0}'s crystal shield fades."
+            OnEffectExpiresMsg(Owner, true, false, true);
+
         }
     }
 }
