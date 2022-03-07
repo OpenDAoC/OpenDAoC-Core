@@ -137,7 +137,7 @@ namespace DOL.GS
 			if (msgArea)
 			{
 					// "{0} looks more agile!"
-					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_System, target);
+					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
 		}
         
