@@ -288,7 +288,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Travel to Sheeroe Hills and slay " + DRAGON_NAME + " for Hibernia. \nKilled: " + DRAGON_NAME + "("+ DragonKilled +" | " + MAX_KILLED + ")";
+						return "Travel to Sheeroe Hills and slay " + DRAGON_NAME + " for Hibernia. \nKilled: " + DRAGON_NAME + " ("+ DragonKilled +" | " + MAX_KILLED + ")";
 					case 2:
 						return "Return to Dean for your Reward.";
 				}

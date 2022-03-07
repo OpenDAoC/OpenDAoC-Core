@@ -288,7 +288,7 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Travel to Dartmoor and slay " + DRAGON_NAME + " for Albion. \nKilled: " + DRAGON_NAME + "("+ DragonKilled +" | " + MAX_KILLED + ")";
+						return "Travel to Dartmoor and slay " + DRAGON_NAME + " for Albion. \nKilled: " + DRAGON_NAME + " ("+ DragonKilled +" | " + MAX_KILLED + ")";
 					case 2:
 						return "Return to Haszan for your Reward.";
 				}

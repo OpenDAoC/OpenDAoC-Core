@@ -288,7 +288,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Travel to Malmohus and slay " + DRAGON_NAME + " for Midgard. \nKilled: " + DRAGON_NAME + "("+ DragonKilled +" | " + MAX_KILLED + ")";
+						return "Travel to Malmohus and slay " + DRAGON_NAME + " for Midgard. \nKilled: " + DRAGON_NAME + " ("+ DragonKilled +" | " + MAX_KILLED + ")";
 					case 2:
 						return "Return to Herou for your Reward.";
 				}
