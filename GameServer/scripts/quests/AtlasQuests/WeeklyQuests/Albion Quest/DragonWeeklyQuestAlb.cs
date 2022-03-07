@@ -318,9 +318,9 @@ namespace DOL.GS.DailyQuest.Albion
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Name.ToLower() == DRAGON_NAME && gArgs.Target.Realm == 0) 
+				if (gArgs.Target.Name.ToLower() == DRAGON_NAME.ToLower()) 
 				{
-					DragonKilled++;
+					DragonKilled = 1;
 					player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
