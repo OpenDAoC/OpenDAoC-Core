@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		private static GameNPC Dean = null; // Start NPC
 
-		private static int OctonidKilled = 0;
+		private int OctonidKilled = 0;
 
 		// Constructors
 		public OctonidKillQuestHib() : base()
@@ -273,7 +273,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 				//Check if we can add the quest!
 				if (!Dean.GiveQuest(typeof (OctonidKillQuestHib), player, 1))
 					return;
-				OctonidKilled = 0;
 
 				Dean.SayTo(player, "You will find the Octonids in World\'s End.");
 

@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Kill Goal
 		protected const int MAX_KILLED = 1;
 		// Quest Counter
-		private static int DragonKilled = 0;
+		private int DragonKilled = 0;
 		
 		private static GameNPC Haszan = null; // Start NPC
 
@@ -275,7 +275,6 @@ namespace DOL.GS.DailyQuest.Albion
 				//Check if we can add the quest!
 				if (!Haszan.GiveQuest(typeof (DragonWeeklyQuestAlb), player, 1))
 					return;
-				DragonKilled = 0;
 
 				Haszan.SayTo(player, "Please, find the dragon in Dartmoor and defend our realm.");
 

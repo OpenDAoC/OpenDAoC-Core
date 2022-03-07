@@ -31,7 +31,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static GameNPC Herou = null; // Start NPC
 
-		private static int EnemiesKilled = 0;
+		private int EnemiesKilled = 0;
 
 		// Constructors
 		public DFWeeklyKillQuestMid() : base()
@@ -275,7 +275,6 @@ namespace DOL.GS.DailyQuest.Midgard
 				//Check if we can add the quest!
 				if (!Herou.GiveQuest(typeof (DFWeeklyKillQuestMid), player, 1))
 					return;
-				EnemiesKilled = 0;
 
 				Herou.SayTo(player, "Defend your realm in Darkness Falls and kill them for your reward.");
 

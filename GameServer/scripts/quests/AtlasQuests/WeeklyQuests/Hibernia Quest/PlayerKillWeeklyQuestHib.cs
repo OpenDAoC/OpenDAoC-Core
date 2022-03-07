@@ -26,7 +26,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 
 		private static GameNPC ReyHib = null; // Start NPC
 
-		private static int PlayersKilled = 0;
+		private int PlayersKilled = 0;
 		
 		// Kill Goal
 		private static int MAX_KILLING_GOAL = 100;
@@ -277,7 +277,6 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 				//Check if we can add the quest!
 				if (!ReyHib.GiveQuest(typeof (PlayerKillWeeklyQuestHib), player, 1))
 					return;
-				PlayersKilled = 0;
 
 				ReyHib.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 

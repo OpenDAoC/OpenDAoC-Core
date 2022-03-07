@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		// Kill Goal
 		protected const int MAX_KILLED = 1;
 		// Quest Counter
-		private static int DragonKilled = 0;
+		private int DragonKilled = 0;
 		
 		private static GameNPC Dean = null; // Start NPC
 
@@ -275,7 +275,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 				//Check if we can add the quest!
 				if (!Dean.GiveQuest(typeof (DragonWeeklyQuestHib), player, 1))
 					return;
-				DragonKilled = 0;
 
 				Dean.SayTo(player, "Please, find the dragon in Sheeroe Hills and defend our realm.");
 

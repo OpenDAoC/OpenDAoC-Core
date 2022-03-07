@@ -29,7 +29,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		private static int PlayersKilled = 0;
 		
 		// Kill Goal
-		private static int MAX_KILLING_GOAL = 100;
+		private int MAX_KILLING_GOAL = 100;
 		// Prevent Grey Killing
 		private static int MIN_LEVEL = 35;
 

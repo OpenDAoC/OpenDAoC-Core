@@ -31,7 +31,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static GameNPC Dean = null; // Start NPC
 
-		private static int EnemiesKilled = 0;
+		private int EnemiesKilled = 0;
 
 		// Constructors
 		public DFWeeklyKillQuestHib() : base()
@@ -275,7 +275,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 				//Check if we can add the quest!
 				if (!Dean.GiveQuest(typeof (DFWeeklyKillQuestHib), player, 1))
 					return;
-				EnemiesKilled = 0;
 
 				Dean.SayTo(player, "Defend your realm in Darkness Falls and kill them for your reward.");
 

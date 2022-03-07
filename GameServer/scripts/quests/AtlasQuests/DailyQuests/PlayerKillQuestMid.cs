@@ -26,7 +26,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static GameNPC ReyMid = null; // Start NPC
 
-		private static int PlayersKilled = 0;
+		private int PlayersKilled = 0;
 
 		// Constructors
 		public PlayerKillQuestMid() : base()
@@ -272,7 +272,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 				//Check if we can add the quest!
 				if (!ReyMid.GiveQuest(typeof (PlayerKillQuestMid), player, 1))
 					return;
-				PlayersKilled = 0;
 
 				ReyMid.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 

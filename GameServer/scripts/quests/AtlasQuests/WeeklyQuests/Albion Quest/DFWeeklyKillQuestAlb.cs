@@ -31,7 +31,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static GameNPC Haszan = null; // Start NPC
 
-		private static int EnemiesKilled = 0;
+		private int EnemiesKilled = 0;
 
 		// Constructors
 		public DFWeeklyKillQuestAlb() : base()
@@ -275,7 +275,6 @@ namespace DOL.GS.DailyQuest.Albion
 				//Check if we can add the quest!
 				if (!Haszan.GiveQuest(typeof (DFWeeklyKillQuestAlb), player, 1))
 					return;
-				EnemiesKilled = 0;
 
 				Haszan.SayTo(player, "Defend your realm in Darkness Falls and kill them for your reward.");
 

@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Kill Goal
 		protected const int MAX_KILLED = 1;
 		// Quest Counter
-		private static int DragonKilled = 0;
+		private int DragonKilled = 0;
 		
 		private static GameNPC Herou = null; // Start NPC
 
@@ -275,7 +275,6 @@ namespace DOL.GS.DailyQuest.Midgard
 				//Check if we can add the quest!
 				if (!Herou.GiveQuest(typeof (DragonWeeklyQuestMid), player, 1))
 					return;
-				DragonKilled = 0;
 
 				Herou.SayTo(player, "Please, find the dragon in Malmohus and defend our realm.");
 

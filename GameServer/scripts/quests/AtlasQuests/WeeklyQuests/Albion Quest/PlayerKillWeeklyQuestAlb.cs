@@ -26,7 +26,7 @@ namespace DOL.GS.WeeklyQuests.Albion
 
 		private static GameNPC ReyAlb = null; // Start NPC
 
-		private static int PlayersKilled = 0;
+		private int PlayersKilled = 0;
 		
 		// Kill Goal
 		private static int MAX_KILLING_GOAL = 100;
@@ -277,7 +277,6 @@ namespace DOL.GS.WeeklyQuests.Albion
 				//Check if we can add the quest!
 				if (!ReyAlb.GiveQuest(typeof (PlayerKillWeeklyQuestAlb), player, 1))
 					return;
-				PlayersKilled = 0;
 
 				ReyAlb.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 
