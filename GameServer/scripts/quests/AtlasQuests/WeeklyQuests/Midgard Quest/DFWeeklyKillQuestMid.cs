@@ -296,7 +296,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Defend Hibernia in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
+						return "Defend Midgard in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
 					case 2:
 						return "Return to Herou for your Reward.";
 				}
