@@ -310,6 +310,33 @@ namespace DOL.GS.DailyQuest.Albion
 			if (player == null || player.IsDoingQuest(typeof(DFWeeklyKillQuestAlb)) == null)
 				return;
 
+			if (e != GameLivingEvent.EnemyKilled)
+				return;
+			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_PLAYER_LVL && gArgs.Target.CurrentRegionID == 249) 
+			{
+				EnemiesKilled++;
+				player.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+					
+				if (EnemiesKilled >= MAX_KILLED)
+				{
+					// FinishQuest or go back to Haszan
+					Step = 2;
+				}
+			}
+			
+			base.Notify(e, sender, args);
+		}
+		/*public override void Notify(DOLEvent e, object sender, EventArgs args)
+		{
+			GamePlayer player = sender as GamePlayer;
+
+			if (player == null || player.IsDoingQuest(typeof(DFWeeklyKillQuestAlb)) == null)
+				return;
+
 			if (Step == 1 && e == GameLivingEvent.Interact)
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
@@ -341,7 +368,7 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 			}
 			
-		}
+		}*/
 
 		public override void AbortQuest()
 		{
