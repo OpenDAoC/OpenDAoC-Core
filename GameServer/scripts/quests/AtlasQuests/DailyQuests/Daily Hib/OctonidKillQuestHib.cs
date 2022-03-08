@@ -313,16 +313,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				if (gArgs.Target.Name.ToLower() == "octonid") 
 				{
-					if (player?.Group != null)
-					{
-						foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
-						{
-							OctonidKilled++;
-							groupPlayer.Out.SendMessage("[Daily] Octonid Killed: ("+OctonidKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-							groupPlayer.Out.SendQuestUpdate(this);
-						}
-					}
-
+					OctonidKilled++;
+					player.Out.SendMessage("[Daily] Octonid Killed: ("+OctonidKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendQuestUpdate(this);
+					
 					if (OctonidKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to Dean

@@ -27,7 +27,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private static GameNPC ReyAlb = null; // Start NPC
 
 		private int PlayersKilled = 0;
-		protected const int MAX_KILLED = 10;
 
 		// Constructors
 		public PlayerKillQuestAlb() : base()
@@ -293,7 +292,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+MAX_KILLED+")";
+						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | 10)";
 					case 2:
 						return "Return to Rey in Castle Sauvage for your Reward.";
 				}
@@ -326,18 +325,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
 				{
-					if (player?.Group != null)
-					{
-						foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
-						{
-							PlayersKilled++;
-							groupPlayer.Out.SendMessage(
-								"[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")",
-								eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-							groupPlayer.Out.SendQuestUpdate(this);
-						}
-					}
-
+					PlayersKilled++;
+					player.Out.SendQuestUpdate(this);
+					
 					if (PlayersKilled >= 10)
 					{
 						// FinishQuest or go back to Dean
