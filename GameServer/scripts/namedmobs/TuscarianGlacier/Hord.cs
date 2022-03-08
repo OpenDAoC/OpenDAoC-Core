@@ -50,7 +50,7 @@ namespace DOL.GS.Scripts
         {
             get
             {
-                return 20000;
+                return 20000 * HordDifficulty / 100;
             }
         }
 
@@ -73,13 +73,13 @@ namespace DOL.GS.Scripts
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 1000 * HordDifficulty / 100;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.85 * HordDifficulty / 100;
         }
         public override void Die(GameObject killer)
         {
