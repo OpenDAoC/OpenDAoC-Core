@@ -1,22 +1,22 @@
 ﻿# Healer NPC
 
 ## Cure Sickness
-GameNPC.Healer.Interact.CuresRS:			        {0} cures your resurrection sickness.
+GameNPC.Interact.CuresRS.Healer:			        {0} cures your resurrection sickness.
 
 ## Dialogue
-GameNPC.Healer.Dialogue.Greetings:                  {0} says, "Greetings, {1}. What can I do for you today?"
+GameNPC.Dialogue.Greetings.Healer:                  {0} says, "Greetings, {1}. What can I do for you today?"
 
 ## Examine
 GameNPC.Examine.YouExamine.Healer:		            You examine {0}. {1} is {2} and is a healer.
-GameNPC.Healer.Interact.GiveDonation:               [Right-click to restore lost Constitution]
+GameNPC.Examine.GiveDonation.Healer:               [Right-click to restore lost Constitution]
 
 ## Interact
-GameNPC.Healer.Dialog.AcceptDecline:                It will cost {0} to have your lost constitution restored. Do you accept?
-GameNPC.Healer.Interact.Decline:                    You decline to have your constitution restored.
-GameNPC.Healer.Interact.YouGiveDonation:            You give {0} a donation of {1}.
-GameNPC.Healer.Interact.NeedMoney:                  {0} says, "It costs {1} to restore {2} lost constitution. You don't have that much."
+GameNPC.Dialog.AcceptDecline.Healer:                It will cost {0} to have your lost constitution restored. Do you accept?
+GameNPC.Interact.Decline.Healer:                    You decline to have your constitution restored.
+GameNPC.Interact.YouGiveDonation.Healer:            You give {0} a donation of {1}.
+GameNPC.Interact.NeedMoney.Healer:                  {0} says, "It costs {1} to restore {2} lost constitution. You don't have that much."
 
 ## Restore Constitution
-GameNPC.Healer.Interact.RestoresMoreCon:            {0} restores {1} points of your lost constitution.
-GameNPC.Healer.Interact.RestoresOneCon:             {0} restores {1} point of your lost constitution.
-GameNPC.Healer.Interact.AlreadyRestored:            Your constitution is already fully restored!
+GameNPC.Interact.RestoresMoreCon.Healer:            {0} restores {1} points of your lost constitution.
+GameNPC.Interact.RestoresOneCon.Healer:             {0} restores {1} point of your lost constitution.
+GameNPC.Interact.AlreadyRestored.Healer:            Your constitution is already fully restored!

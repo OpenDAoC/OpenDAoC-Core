@@ -1,8 +1,8 @@
 ﻿GameNPC.Examine.YouExamine.Healer:	Es interessiert Euch {0}. {1} ist Euch {2} gesonnen und kann andere Leute heilen.
 GameNPC.Interact.TooFarAway:	{0} ist zu weit entfernt!
-GameNPC.Healer.Interact.Decline:	Ihr lehnt es ab, Konstitutionspunkte wieder zu bekommen.
-GameNPC.Healer.Interact.YouGiveDonation:	{0} stellt Eure verlorene Konstitution wieder vollständig her. Ihr gebt ihm eine Spende in Höhe von {1}.
+GameNPC.Interact.Decline.Healer:	Ihr lehnt es ab, Konstitutionspunkte wieder zu bekommen.
+GameNPC.Interact.YouGiveDonation.Healer:	{0} stellt Eure verlorene Konstitution wieder vollständig her. Ihr gebt ihm eine Spende in Höhe von {1}.
 Healer.HealerDialogResponse.Text4:	Ihr braucht {0} um {1} Konstitutionspunkte wieder herzustellen.
-GameNPC.Healer.Interact.CuresRS:			{0} erlöst Euch von Eurer Wiederbelebungsübelkeit.
-GameNPC.Healer.Dialog.AcceptDecline:			Es wird Euch {0} kosten, Eure verlorene Konstitution wieder herzustellen. Seid Ihr einverstanden?
-GameNPC.Healer.Interact.AlreadyRestored:			Eure Konstitution ist schon komplett wieder hergestellt!
+GameNPC.Interact.CuresRS.Healer:			{0} erlöst Euch von Eurer Wiederbelebungsübelkeit.
+GameNPC.Dialog.AcceptDecline.Healer:			Es wird Euch {0} kosten, Eure verlorene Konstitution wieder herzustellen. Seid Ihr einverstanden?
+GameNPC.Interact.AlreadyRestored.Healer:			Eure Konstitution ist schon komplett wieder hergestellt!
