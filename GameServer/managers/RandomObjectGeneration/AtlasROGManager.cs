@@ -69,7 +69,7 @@ namespace DOL.GS {
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
                 int maxcount = Util.Random(10, 20);
-                int orbBonus = (int) Math.Floor((decimal) (maxcount * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) * .2))); //up to 20% bonus orbs from loyalty
+                int orbBonus = (int) Math.Floor((decimal) ((maxcount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
@@ -87,7 +87,7 @@ namespace DOL.GS {
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
-                int orbBonus = (int) Math.Floor((decimal) (amount * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) * .2))); //up to 20% bonus orbs from loyalty
+                int orbBonus = (int) Math.Floor((decimal) ((amount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, amount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
