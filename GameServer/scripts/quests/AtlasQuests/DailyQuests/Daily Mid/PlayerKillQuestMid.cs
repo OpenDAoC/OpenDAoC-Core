@@ -27,6 +27,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private static GameNPC ReyMid = null; // Start NPC
 
 		private int PlayersKilled = 0;
+		protected const int MAX_KILLED = 10;
 
 		// Constructors
 		public PlayerKillQuestMid() : base()
@@ -292,7 +293,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | 10)";
+						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+MAX_KILLED+")";
 					case 2:
 						return "Return to Rey in Svasud Faste for your Reward.";
 				}
@@ -325,8 +326,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
 				{
-					PlayersKilled++;
-					player.Out.SendQuestUpdate(this);
+					if (player?.Group != null)
+					{
+						foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
+						{
+							PlayersKilled++;
+							groupPlayer.Out.SendMessage(
+								"[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")",
+								eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+							groupPlayer.Out.SendQuestUpdate(this);
+						}
+					}
 					
 					if (PlayersKilled >= 10)
 					{

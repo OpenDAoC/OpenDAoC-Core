@@ -330,9 +330,17 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_LEVEL) 
 				{
-					PlayersKilled++;
-					player.Out.SendMessage("[Weekly] Enemy Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+					if (player?.Group != null)
+					{
+						foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
+						{
+							PlayersKilled++;
+							groupPlayer.Out.SendMessage(
+								"[Weekly] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLING_GOAL + ")",
+								eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+							groupPlayer.Out.SendQuestUpdate(this);
+						}
+					}
 					
 					if (PlayersKilled >= MAX_KILLING_GOAL)
 					{

@@ -329,10 +329,16 @@ namespace DOL.GS.DailyQuest.Albion
 				
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_PLAYER_LVL && gArgs.Target.CurrentRegionID == 249) 
 				{
-					EnemiesKilled++;
-					player.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-					
+					if (player?.Group != null)
+					{
+						foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
+						{
+							EnemiesKilled++;
+							groupPlayer.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+							groupPlayer.Out.SendQuestUpdate(this);
+						}
+					}
+
 					if (EnemiesKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to Haszan
