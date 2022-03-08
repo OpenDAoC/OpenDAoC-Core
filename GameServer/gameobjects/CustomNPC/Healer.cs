@@ -29,7 +29,7 @@ using DOL.Language;
 namespace DOL.GS
 {
 	/// <summary>
-	/// Represents an in-game GameHealer NPC
+	/// Represents an in-game Healer NPC, which can remove resurrection illness and restore lost Constitution points.
 	/// </summary>
 	[NPCGuildScript("Healer")]
 	public class GameHealer : GameNPC
@@ -46,78 +46,84 @@ namespace DOL.GS
 		{
 		}
 
-		#region Examine/Interact Message
-
-		/// <summary>
-		/// Adds messages to ArrayList which are sent when object is targeted
-		/// </summary>
-		/// <param name="player">GamePlayer that is examining this object</param>
-		/// <returns>list with string messages</returns>
+		#region Examine Messages
 		public override IList GetExamineMessages(GamePlayer player)
         {
 			IList list = new ArrayList();
-            list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.GetExamineMessages.Text1",
-                GetName(0, false, player.Client.Account.Language, this), GetPronoun(0, true, player.Client.Account.Language), GetAggroLevelString(player, false)));
+			// Message: You target [{0}].
+			list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Target.YouTarget.Object", GetName(0, false, player.Client.Account.Language, this)));
+			// Message: You examine {0}. {1} is {2} and is a healer.
+            list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Examine.YouExamine.Healer", GetName(0, false, player.Client.Account.Language, this), GetPronoun(0, true, player.Client.Account.Language), GetAggroLevelString(player, false)));
+            // Message: [Right-click to restore lost Constitution]
+            list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Healer.Interact.GiveDonation", null));
             return list;
 		}
+		#endregion Examine Messages
 
+		#region Interact Messages
 		public override bool Interact(GamePlayer player)
 		{
 			if (!base.Interact(player))
-				return false;
+				return false; // Prevent interact
 
-			TurnTo(player, 5000);
+			TurnTo(player, 5000); // Face the player upon interact
 			
 			// Check for ambient trigger messages for the NPC in the 'MobXAmbientBehaviour' table
 			var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
-			// If the NPC has no ambient trigger message assigned, then return this message
+			// If the NPC has no ambient trigger message assigned, then return this message upon interact
 			if (triggers == null || triggers.Length == 0)
-				player.Out.SendMessage("Greetings " + player.CharacterClass.Name + ". What can I do for you today?", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-			
+				// Message: {0} says, "Greetings, {1}. What can I do for you today?"
+				ChatUtil.SendSayMessage(player, "GameNPC.Healer.Dialogue.Greetings", GetName(0, true), player.CharacterClass.Name);
+
 			//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, CURED_SPELL_TYPE);
-            ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness);
-			if (effect != null)
+            ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness); // Identify effect to remove
+			if (effect != null) // If PvE sickness is active
 			{
-                //effect.Cancel(false);
-                EffectService.RequestImmediateCancelEffect(effect);
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
-                    GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				EffectService.RequestImmediateCancelEffect(effect); // Cancel sickness
+				// Message: {0} cures your resurrection sickness.
+                ChatUtil.SendSystemMessage(player, "GameNPC.Healer.Interact.CuresRS", GetName(0, true, player.Client.Account.Language, this));
             }
-            ECSGameEffect rvrEffect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness);
-            if (rvrEffect != null)
+            ECSGameEffect rvrEffect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness); // Identify effect to remove
+            if (rvrEffect != null) // If RvR sickness is active
             {
-                //effect.Cancel(false);
-                EffectService.RequestImmediateCancelEffect(rvrEffect);
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text1",
-                    GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            EffectService.RequestImmediateCancelEffect(rvrEffect); // Cancel sickness
+	            // Message: {0} cures your resurrection sickness.
+	            ChatUtil.SendSystemMessage(player, "GameNPC.Healer.Interact.CuresRS", GetName(0, true, player.Client.Account.Language, this));
             }
 
+            // Trigger if player has lost any Constitution from deaths
             if (player.TotalConstitutionLostAtDeath > 0)
 			{
 				int oneConCost = GamePlayer.prcRestore[player.Level < GamePlayer.prcRestore.Length ? player.Level : GamePlayer.prcRestore.Length - 1];
 				player.TempProperties.setProperty(COST_BY_PTS, (long)oneConCost);
-                player.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text2", 
-                    Money.GetString(player.TotalConstitutionLostAtDeath * (long)oneConCost)), new CustomDialogResponse(HealerDialogResponse));
+				
+				// Trigger custom ACCEPT/DECLINE dialog
+				// Message: It will cost {0} to have your lost constitution restored. Do you accept?
+				player.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Healer.Dialog.AcceptDecline", Money.GetString(player.TotalConstitutionLostAtDeath * (long)oneConCost)), new CustomDialogResponse(HealerDialogResponse));
             }
-			else
+			else // No Con is missing
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.Interact.Text3"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
-			return true;
+				// Message: Your constitution is already fully restored!
+				ChatUtil.SendSystemMessage(player, "GameNPC.Healer.Interact.AlreadyRestored", null);
+			}
+			return true; // Trigger interact
 		}
 
 		protected void HealerDialogResponse(GamePlayer player, byte response)
         {
-            if (!this.IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
+	        // Prevent dialog trigger if player is not within range
+            if (!IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.HealerDialogResponse.Text1",
-                    GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            // Message: You are too far away to interact with {0}.
+	            ChatUtil.SendSystemMessage(player, "GameNPC.Interact.TooFarAway", GetName(0, false, player.Client.Account.Language, this));
                 return;
             }
 
-            if (response != 0x01) //declined
+            // Player selects 'DECLINE' dialog option
+            if (response != 0x01) // Declined value
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.HealerDialogResponse.Text2"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            // Message: You decline to have your constitution restored.
+	            ChatUtil.SendSystemMessage(player, "GameNPC.Healer.Interact.Decline", null);
                 return;
             }
 
@@ -125,21 +131,31 @@ namespace DOL.GS
             player.TempProperties.removeProperty(COST_BY_PTS);
             int restorePoints = (int)Math.Min(player.TotalConstitutionLostAtDeath, player.GetCurrentMoney() / cost);
             if (restorePoints < 1)
-                restorePoints = 1; // at least one
-            long totalCost = restorePoints * cost;
+                restorePoints = 1; // Constitution reduced by 1 at minimum
+            long totalCost = restorePoints * cost; // Total cost to restore full Con lost
+            
+            // Trigger if player has sufficient money to "donate"
             if (player.RemoveMoney(totalCost))
             {
-                InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalCost);
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.HealerDialogResponse.Text3", this.Name, Money.GetString(totalCost)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.TotalConstitutionLostAtDeath -= restorePoints;
-                player.Out.SendCharStatsUpdate();
+                InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalCost); // Deduct the cost from the player
+                if (restorePoints == 1)
+	                // Message: {0} restores {1} point of your lost constitution.
+	                ChatUtil.SendErrorMessage(player, "GameNPC.Healer.Interact.RestoresOneCon", Name, restorePoints);
+                else
+	                // Message: {0} restores {1} points of your lost constitution.
+	                ChatUtil.SendErrorMessage(player, "GameNPC.Healer.Interact.RestoresMoreCon", Name, restorePoints);
+                // Message: You give {0} a donation of {1}.
+                ChatUtil.SendSystemMessage(player, "GameNPC.Healer.Interact.YouGiveDonation", GetPronoun(2, false, player.Client.Account.Language), Money.GetString(totalCost));
+                player.TotalConstitutionLostAtDeath -= restorePoints; // Restore lost Con
+                player.Out.SendCharStatsUpdate(); // Update the character with the change
             }
-            else
+            else // If insufficient funds available, throw "error"
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Healer.HealerDialogResponse.Text4", Money.GetString(totalCost), restorePoints), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            // Message: {0} says, "It costs {1} to restore {2} lost constitution. You don't have that much."
+	            ChatUtil.SendSayMessage(player, "GameNPC.Healer.Interact.NeedMoney", GetName(0, true, player.Client.Account.Language, this), Money.GetString(totalCost), restorePoints);
             }
             return;
         }
-		#endregion Examine/Interact Message
+		#endregion Interact Messages
 	}
 }

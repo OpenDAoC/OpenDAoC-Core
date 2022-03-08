@@ -238,7 +238,6 @@ System.MustSelectTarget:					You must select a target!
 GamePlayer.Attack.NeedTarget:				You need to select a target to attack!
 GamePlayer.Attack.NotInView:				{0} is not in view!
 GamePlayer.Attack.TooFarAway:				{0} is too far away to attack!
-GameObject.GetExamineMessages.YouTarget:	You target [{0}].
 GameObject.Interact.TooFarAway:				{0} is too far away!
 PlayerPickUpRequestHandler.HandlePacket.InvalidTarget:	You have an invalid target!
 PlayerPickUpRequestHandler.HandlePacket.Target:		    You must have a target to get something!
