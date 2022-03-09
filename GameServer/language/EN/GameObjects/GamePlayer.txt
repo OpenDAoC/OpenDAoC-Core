@@ -26,6 +26,7 @@ GamePlayer.Release.NotDead:						You are not dead!
 GamePlayer.Attack.Miss:						You miss!
 GamePlayer.Attack.StrafMiss:				You were strafing in combat and miss!
 GamePlayer.Attack.Fumble:					You fumble the attack and take time to recover!
+GamePlayer.Attack.Fumbled:					{0} fumbled!
 GameLiving.AttackData.AttacksYou:		    {0} attacks you and you block the blow!
 GamePlayer.Attack.Parry:					{0} attacks you and you parry the blow!
 GamePlayer.Attack.Evade:					{0} attacks you and you evade the blow!
