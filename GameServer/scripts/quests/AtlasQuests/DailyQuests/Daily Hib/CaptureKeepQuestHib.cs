@@ -309,6 +309,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(CaptureKeepQuestHib)) == null)
 				return;
 			
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GamePlayerEvent.CapturedKeepsChanged)
 			{
 				_isCaptured = 1;

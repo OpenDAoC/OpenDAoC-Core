@@ -310,17 +310,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestHib)) == null)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.Interact)
-			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == Dean.Name)
-				{
-					Dean.SayTo(player, "Did you know that Fen is awesome? Now you know!");
-					return;
-				}
-			}
+			if (sender != m_questPlayer)
+				return;
 
-			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
