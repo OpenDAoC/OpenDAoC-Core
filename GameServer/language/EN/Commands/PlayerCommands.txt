@@ -3,6 +3,9 @@
 ## Error
 AllCommands.Error.NoCommand:                        No such command ({0}).
 
+## General
+AllCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
+
 ## Notes
 AllCommands.Header.Note.Divider:                    --- NOTE: ---
 AllCommands.Header.Note.Dashes:                     --------------
@@ -37,20 +40,20 @@ PLCommands.Anonymous.Msg.On:				You are now anonymous.
 
 ## /appeal
 Scripts.Players.Appeal.NeedMoreDetail:			Your appeal has NOT been submitted. Please reenter your appeal with additional details.
-Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for Atlas server staff to address your current appeal before submitting another.
+Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for the Atlas server team to address your current appeal before submitting another.
 Scripts.Players.Appeal.DoNotHaveAppeal:			You do not have an appeal to cancel, or it has already been closed for you.
-Scripts.Players.Appeal.StaffClosedYourAppeal:	Atlas Staff {0} has closed your appeal.
+Scripts.Players.Appeal.StaffClosedYourAppeal:	{0} [TEAM] has closed your appeal.
 Scripts.Players.Appeal.PleaseBePatient:			Please be patient while we work to address your concern as quickly as possible.
 Scripts.Players.Appeal.IfYouLogOut:				If you log out with an active appeal it will be saved and automatically reinstated when you log back in.  (Even if you switch characters)
 Scripts.Players.Appeal.ToCancelYourAppeal:		To cancel your appeal use /checkappeal cancel.
 Scripts.Players.Appeal.CriticalMessage:			Critical Appeals may need urgent attention!
 Scripts.Players.Appeal.YouAreMuted:				You are muted and are not allowed to submit an appeal at this time.
 Scripts.Players.Appeal.AppealSubmitted:			Your appeal has been submitted successfully...  use /checkappeal to check the status of your appeal.
-Scripts.Players.Appeal.StaffChangedStatus:		Staffmember {0} has changed the status of your appeal to {1}.
+Scripts.Players.Appeal.StaffChangedStatus:		{0} [TEAM] has changed the status of your appeal to {1}.
 Scripts.Players.Appeal.CanceledYourAppeal:		You have canceled your appeal.
 Scripts.Players.Appeal.LoginMessage:			If you need in-game assistance from server staff (such as stuck character) please use /appeal.
 Scripts.Players.Appeal.YouHavePendingAppeal:	You have a pending appeal in the queue, please use /checkappeal to see its status or to cancel the appeal.
-Scripts.Players.Appeal.CurrentStaffAvailable:	There are currently {0} staff available and {1} appeals in queue.
+Scripts.Players.Appeal.CurrentStaffAvailable:	There are currently {0} Atlas team members available and {1} appeals in queue.
 Scripts.Players.Appeal.SystemDisabled:			The appeal system is currently disabled.
 
 ## /assist
