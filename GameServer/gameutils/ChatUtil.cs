@@ -396,7 +396,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Officer, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
