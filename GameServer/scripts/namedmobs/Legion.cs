@@ -205,7 +205,7 @@ namespace DOL.GS
         {
             get
             {
-                return 7000;
+                return 1500;
             }
         }
 
@@ -221,13 +221,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 150;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.50;
         }
         public override bool AddToWorld()
         {
