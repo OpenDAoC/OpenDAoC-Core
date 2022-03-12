@@ -42,6 +42,7 @@
 *  into the comment above the affected message return(s). This is
 *  done for ease of reference. */
 
+
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -112,7 +113,7 @@ namespace DOL.GS
 
 			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 		}
-		
+
 		/// <summary>
 		/// Used to send translated messages to a player, which displays as a "/say" message in the chat window.
 		/// </summary>
@@ -265,6 +266,124 @@ namespace DOL.GS
 		public static void SendErrorMessage(GameClient target, string message)
 		{
 			target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated '/send' messages
+		/// </summary>
+		/// <param name="target">The client receiving the message (e.g., "client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
+		public static void SendSendMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated '/send' messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "player.Client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player" (if no args, then use "null")</param>
+		public static void SendSendMessage(GamePlayer target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+		}
+
+		/// <summary>
+		/// Used to send translated '/send' messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "player.Client")</param>
+		/// <param name="message">The message string (e.g., "This is a message.")</param>
+		public static void SendSendMessage(GamePlayer target, string message)
+		{
+			SendSendMessage(target.Client, message);
+		}
+
+		/// <summary>
+		/// Used to send translated '/send' messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "client")</param>
+		/// <param name="message">The message string (e.g., "This is a message.")</param>
+		public static void SendSendMessage(GameClient target, string message)
+		{
+			target.Out.SendMessage(message, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated '/adv' messages
+		/// </summary>
+		/// <param name="target">The client receiving the message (e.g., "client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
+		public static void SendAdviceMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated '/adv' messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "player.Client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player" (if no args, then use "null")</param>
+		public static void SendAdviceMessage(GamePlayer target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
+		}
+
+		/// <summary>
+		/// Used to send translated '/adv' messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "player.Client")</param>
+		/// <param name="message">The message string (e.g., "This is a message.")</param>
+		public static void SendAdviceMessage(GamePlayer target, string message)
+		{
+			SendAdviceMessage(target.Client, message);
+		}
+
+		/// <summary>
+		/// Used to send translated '/adv' messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "client")</param>
+		/// <param name="message">The message string (e.g., "This is a message.")</param>
+		public static void SendAdviceMessage(GameClient target, string message)
+		{
+			target.Out.SendMessage(message, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated staff messages
+		/// </summary>
+		/// <param name="target">The client receiving the message (e.g., "client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
+		public static void SendGMMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated staff messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "player.Client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player" (if no args, then use "null")</param>
+		public static void SendGMMessage(GamePlayer target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
 		}
 
 		public static void SendDebugMessage(GamePlayer target, string message)

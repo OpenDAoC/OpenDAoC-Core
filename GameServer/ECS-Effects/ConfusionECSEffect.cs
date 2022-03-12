@@ -30,6 +30,11 @@ namespace DOL.GS
                     GamePlayer gPlayer = Owner as GamePlayer;
 
                     gPlayer.StartInterruptTimer(gPlayer.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
+                    
+                    // "You can't focus your knight viking badger helmet... meow!"
+                    // "{0} is confused!"
+                    OnEffectStartsMsg(Owner, true, false, true);
+
                 }
                 EffectService.RequestImmediateCancelEffect(this);
             }
@@ -47,6 +52,10 @@ namespace DOL.GS
                 GameNPC npc = Owner as GameNPC;
 
                 npc.IsConfused = true;
+                
+                // "{0} is confused!"
+                OnEffectStartsMsg(Owner, false, false, true);
+
 
                 //if (log.IsDebugEnabled)
                 //    log.Debug("CONFUSION: " + npc.Name + " was confused(true," + doAttackFriend.ToString() + ")");

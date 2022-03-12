@@ -26,9 +26,12 @@ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 	  "&anonymous",
+	  new [] {"&anon"},
 	  ePrivLevel.Player,
-	  "Toggle anonymous mode (name doesn't show up in /who)",
-	  "/anonymous")]
+	  // Displays next to the command when '/cmd' is entered
+	  "Enables/disables anonymous mode, which hides you from player searches (e.g., '/who').",
+	  // Syntax: '/anonymous' or '/anon' - Enables/disables anonymous mode, which hides you from player searches (e.g., '/who').
+	  "PLCommands.Anonymous.Syntax.Anon")]
 	public class AnonymousCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		/// <summary>
@@ -41,18 +44,25 @@ namespace DOL.GS.Commands
 			if (client.Player == null)
 				return;
 			
+			// If anonymous mode is disabled from the 'serverproperty' table
 			if (client.Account.PrivLevel == 1 && ServerProperties.Properties.ANON_MODIFIER == -1)
 			{
-				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Anonymous.Error"));
+				// Message: Anonymous mode is currently disabled.
+				ChatUtil.SendSystemMessage(client, "PLCommands.Anonymous.Err.Disabled", null);
 				return;
 			}
 
+			// Sets the default value for anonymous mode on a character (off)
 			client.Player.IsAnonymous = !client.Player.IsAnonymous;
 
+			// Enable anonymous mode
 			if (client.Player.IsAnonymous)
-				client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Anonymous.On"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: You are now anonymous.
+				ChatUtil.SendErrorMessage(client, "PLCommands.Anonymous.Msg.On", null);
+			// Disable anonymous mode
 			else
-				client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Anonymous.Off"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: You are no longer anonymous.
+				ChatUtil.SendErrorMessage(client, "PLCommands.Anonymous.Msg.Off", null);
 		}
 	}
 }

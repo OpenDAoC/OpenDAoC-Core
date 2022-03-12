@@ -1,21 +1,21 @@
 ﻿
 # PlayerCommands
 # /Advice
-Scripts.Players.Advice.Advice:				[CONSEIL{0}] {1}: "{2}"
-Scripts.Players.Advice.AdvicersOn:			Il y a {0} conseillers en ligne !
+Social.SendAdvice.Msg.Channel:				[CONSEIL {0}] {1}: "{2}"
+PLCommands.Advice.List.AdvisorsOn:			Il y a {0} conseillers en ligne !
 
 # /Advisor
-Scripts.Players.Advisor.Off:				Vous ne recevrez désormais plus de message du canal conseil.
-Scripts.Players.Advisor.On:					Vous recevrez désormais des messages du canal conseil.
+PLCommands.Advisor.Msg.OffFlag:				Vous ne recevrez désormais plus de message du canal conseil.
+PLCommands.Advisor.Msg.OnFlag:					Vous recevrez désormais des messages du canal conseil.
 
 # /Afk
-Scripts.Players.Afk.Off:					Vous n'êtes plus considéré(e) comme étant AFK.
-Scripts.Players.Afk.On:						Vous êtes maintenant considéré(e) comme étant AFK.
+PLCommands.AFK.Msg.Off:					Vous n'êtes plus considéré(e) comme étant AFK.
+PLCommands.AFK.Msg.On:						Vous êtes maintenant considéré(e) comme étant AFK.
 
 # /Anonymous
-Scripts.Players.Anonymous.Error:			Le mode anonyme est désactivé.
-Scripts.Players.Anonymous.Off:				Vous n'êtes plus anonyme.
-Scripts.Players.Anonymous.On:				Vous êtes maintenant anonyme.
+PLCommands.Anonymous.Err.Disabled:			Le mode anonyme est désactivé.
+PLCommands.Anonymous.Msg.Off:				Vous n'êtes plus anonyme.
+PLCommands.Anonymous.Msg.On:				Vous êtes maintenant anonyme.
 
 # /Assist
 Scripts.Players.Assist.CantAssistYourself:	Vous ne pouvez pas vous assister vous-même.

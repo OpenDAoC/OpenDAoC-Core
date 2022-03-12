@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace DOL.GS
 {
-    public class DamageAddECSEffect : ECSGameSpellEffect
+    public class AmnesiaECSEffect : ECSGameSpellEffect
     {
-        public DamageAddECSEffect(ECSGameEffectInitParams initParams)
+        public AmnesiaECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
         public override void OnStartEffect()
         {
             // "Lashing energy ripples around you."
             // "Dangerous energy surrounds {0}."
-            OnEffectStartsMsg(Owner, true, false, true);
+            OnEffectStartsMsg(Owner, true, true, true);
         }
 
         public override void OnStopEffect()

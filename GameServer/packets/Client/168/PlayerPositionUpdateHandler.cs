@@ -820,7 +820,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			else
             {
 				if (client.Player.CurrentSpeed == 0 && (client.Player.LastPositionUpdatePoint.X != newPlayerX 
-					|| client.Player.LastPositionUpdatePoint.Y != newPlayerY || client.Player.LastPositionUpdatePoint.Z != newPlayerZ))
+					|| client.Player.LastPositionUpdatePoint.Y != newPlayerY))
 					client.Player.CurrentSpeed = 1;
 				else
 					client.Player.CurrentSpeed = (short)newPlayerSpeed;
@@ -872,7 +872,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					client.Player.MaxLastZ = int.MinValue;
 				}
 				// Update water level and diving flag for the new zone
-				client.Out.SendPlayerPositionAndObjectID();
+				//client.Out.SendPlayerPositionAndObjectID();
 
 				/*
 				 * "You have entered Burial Tomb."

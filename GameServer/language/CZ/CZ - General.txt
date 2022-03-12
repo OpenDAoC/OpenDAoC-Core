@@ -249,12 +249,12 @@ GamePlayer.RemoveAbility.YouLose:			Prisel jsi o dovednost {0}!
 GamePlayer.RemoveSpecialization.YouLose:	Prisel jsi o dovednost {0}!
 GamePlayer.RemoveSpellLine.YouLose:			Prisel jsi o {0} magii!
 GamePlayer.SaveIntoDatabase.CharacterSaved:	Tvoje postava byla ulozena.
-GamePlayer.Send.target.DontUnderstandYou:         {0} se nezda ze ti rozumi.
-GamePlayer.Send.YouSendTo:            Poslal jsi, "{0}" k {1}.
-GamePlayer.SendReceive.Afk:            {0} je v soucasne dobe AFK.
-GamePlayer.SendReceive.AfkMessage:         <AFK> {0} posila, "{1}"
-GamePlayer.SendReceive.FalseLanguage:         {0} poslal neco v jazyce kteremu nerozumis.
-GamePlayer.SendReceive.Sends:            {0} posila, "{1}"
+Social.SendMessage.Private.DontUnderstandYou:         {0} se nezda ze ti rozumi.
+Social.SendMessage.Private.YouSendTo:            Poslal jsi, "{0}" k {1}.
+Social.ReceiveMessage.AFK.PlayerAFK:            {0} je v soucasne dobe AFK.
+Social.ReceiveMessage.AFK.Sends:         <AFK> {0} posila, "{1}"
+Social.ReceiveMessage.Private.FalseLanguage:         {0} poslal neco v jazyce kteremu nerozumis.
+Social.ReceiveMessage.Private.Sends:            {0} posila, "{1}"
 GamePlayer.SetControlledNpc.ReleaseTarget:				Prestal jsi ovladat sveho pomocnika.
 GamePlayer.Shade.AlreadyShade:				Uz je z tebe stin!
 GamePlayer.Shade.NoLongerShade:				Nejsi dale stinem!

@@ -370,6 +370,10 @@ GMCommands.Merchant.Type.Changed:			Merchant type changed to {0}.
 
 ## /mob
 
+## /mute
+GMCommands.Mute.Err.NoSpeakChannel:                   You have been muted by Atlas staff and are not allowed to speak in this channel.
+GMCommands.Mute.Err.NoUseCommand:                     You have been muted by Atlas staff and are not allowed to use this command.
+
 ## /viewreports
 Scripts.Player.ViewReport.Usage: 			Usage:
 Scripts.Player.ViewReport.Help.Close:			'/viewreport close <report #>' Will close the report of id #.
@@ -377,7 +381,7 @@ Scripts.Player.ViewReport.Help.Delete:			'/viewreport delete <report #' Deletes 
 Scripts.Player.ViewReport.InvalidReport:		That is not a valid report.
 Scripts.Player.ViewReport.UnknownCommand:		That is not a valid command.
 Scripts.Player.ViewReport.ReportDeleted:		Report {0} has been deleted.
-Scripts.Player.ViewReport.NoPriv:			You do not have the privilages to edit reports.
+Scripts.Player.ViewReport.NoPriv:			You do not have the privileges to edit reports.
 
 ## Misc Commands
 ### /ban (OLD)

@@ -237,7 +237,7 @@ namespace DOL.GS
         /// <param name="weapon">attack weapon</param>
         public eDamageType AttackDamageType(InventoryItem weapon)
         {
-            if (owner is GamePlayer)
+            if (owner is GamePlayer || owner is CommanderPet)
             {
                 var p = owner as GamePlayer;
 

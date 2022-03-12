@@ -46,6 +46,9 @@
     <TranslationFiles Include=".\language\**\*.txt" />
     <APIDocs Include=".\API\docs\*" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="scripts\commands\player" />
+  </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
     <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(APIDocs)" DestinationFiles="@(APIDocs->'$(MSBuildProjectDirectory)\..\$(Configuration)\wwwroot\docs\%(RecursiveDir)%(Filename)%(Extension)')" />

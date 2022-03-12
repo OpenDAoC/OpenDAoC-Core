@@ -28,6 +28,11 @@ namespace DOL.GS.Spells
 	[SpellHandler("StyleStun")]
 	public class StyleStun : StunSpellHandler
 	{
+		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		{
+			new StunECSGameEffect(initParams);
+		}
+		
 		public override int CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;

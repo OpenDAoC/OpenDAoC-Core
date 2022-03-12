@@ -23,8 +23,10 @@ Skill.Ability.SecRemaining:	  seconds remaining.
 ## Berserk
 Effects.BerserkEffect.Name:						Berserk
 Effects.BerserkEffect.InfoEffect:				This ability transforms the player into a Vendo beast and makes each hit that lands a critical hit, at the expense of any defensive abilities. It can be used one every seven minutes.
-Effects.BerserkEffect.GoBerserkerFrenzy:		You go into a berserker frenzy!
-Effects.BerserkEffect.BerserkerFrenzyEnds:		Your berserker frenzy ends.
+Effects.BerserkEffect.StartFrenzy:		                You go into a berserker frenzy!
+Effects.BerserkEffect.AreaStartFrenzy:                  {0} goes into a berserker frenzy!
+Effects.BerserkEffect.EndFrenzy:		                Your berserker frenzy ends.
+Effects.BerserkEffect.AreaEndFrenzy:                    {0}'s berserker frenzy ends.
 
 ## Camouflage
 Effects.CamouflageEffect.Name:					Camouflage
@@ -38,6 +40,12 @@ Skill.Ability.CannotUse.Camouflage.NotStealthed:	You must be hidden to camouflag
 Skill.Ability.CannotUse.Camouflage.Dead:	You can't use camouflage when dead!
 Skill.Ability.CannotUse.Camouflage.DisableDuration:	You must wait {0} more second to attempt to use camouflage!
 
+## Charge
+Effects.ChargeEffect.StartCharge:                       You begin to charge wildly!
+Effects.ChargeEffect.AreaStartCharge:                   {0} begins charging wildly!
+Effects.ChargeEffect.EndCharge:                         You no longer seem so crazy!
+Effects.ChargeEffect.AreaEndCharge:                     {0} ceases their charge!
+
 ## Critical Shot
 Skill.Ability.CriticalShot.SwitchToRegular:	You switch to a regular shot!
 GamePlayer.Attack.CantCritical:				You can't get a critical shot on your target, you switch to a standard shot.
@@ -46,8 +54,10 @@ GamePlayer.Attack.CantCritical:				You can't get a critical shot on your target,
 Skill.Ability.DirtyTricks.Name:	Dirty Tricks
 Skill.Ability.DirtyTricks.Description:	The player will toss dirt into the face of the enemy and causes his fumble rate to increase temporarily.
 Skill.Ability.DirtyTricks.DelveString:	Causes target's fumble rate to increase.
-Skill.Ability.DirtyTricks.EffectCancel:	Your attacks return to normal.
-Skill.Ability.DirtyTricks.EffectStart:	You get dirt thrown in your face!
+Effects.DirtyTricks.EffectCancel:	                    You can see clearly again.
+Effects.DirtyTricks.AreaEffectCancel:                   {0} can see clearly again.
+Effects.DirtyTricks.EffectStart:	                    {0} flings a cloud of dirt in your eyes!
+Effects.DirtyTricks.AreaEffectStart:                    {0} flings dirt in {1}'s eyes!
 
 ## Engage
 Effects.EngageEffect.Name:						Engage
@@ -141,7 +151,7 @@ Skill.Ability.RapidFire.CannotUseDead:	You can't switch to rapid fire when dead!
 ## Spirit of the Hunt
 Effects.StagEffect.Name:						Spirit of the Hunt
 Effects.StagEffect.InfoEffect:					Hero-only ability, that transforms a player into a stag-headed Huntsman. This lasts 30 seconds, and gives the player a burst in hitpoints. May be used once every 30 minutes. Initiate = 20%, Member =30%, Leader = 40%, Master = 50% bonus to HP.
-Effects.StagEffect.HuntsSpiritChannel:			You channel the spirit of the Hunt!
+Effects.StagEffect.HuntsSpiritChannel:			You channel the Spirit of the Hunt!
 Effects.StagEffect.YourHuntsSpiritEnds:			Your Spirit of the Hunt ends.
 
 ## Sprint
@@ -179,3 +189,15 @@ Effects.TripleWieldEffect.Name:					Triple Wield
 Effects.TripleWieldEffect.InfoEffect:			Magical blade that does additional damage.
 Effects.TripleWieldEffect.MBHitsExtraDamage:	Your magical blade hits {0} for {1} extra damage!
 Effects.TripleWieldEffect.XMBExtraDamageToYou:	{0}'s magical blade does {1} extra damage to you!
+
+## Misc
+Effects.BodyguardEffect.NowBGXButSC:			You are now Bodyguarding {0}, but you must stand closer.
+Effects.BodyguardEffect.XNowBGYouButSC:			{0} is now Bodyguarding you, but you must stand closer.
+Effects.BodyguardEffect.YouAreNowBGX:			You are now Bodyguarding {0}.
+Effects.BodyguardEffect.XIsBGYou:				{0} is now Bodyguarding you.
+Effects.BodyguardEffect.YouAreNoLongerBGX:		You are no longer Bodyguarding {0}.
+Effects.BodyguardEffect.XIsNoLongerBGYou:		{0} is no longer Bodyguarding you.
+Effects.BodyguardEffect.XIsBodyguardingY:		{0} is Bodyguarding {1}
+Effects.BodyguardEffect.BodyguardedByName:		{0} bodyguarded by {1}
+Effects.BodyguardEffect.Name:					Bodyguard
+Effects.BodyguardEffect.InfoEffect:				Ability that if successful will guard an attack meant for the ability's target. You will block in the target's place.

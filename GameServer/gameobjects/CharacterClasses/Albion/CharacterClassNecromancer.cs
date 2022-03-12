@@ -180,6 +180,7 @@ namespace DOL.GS
 
 				Player.Health = Math.Min(Player.Health, Player.MaxHealth * Math.Max(10, m_savedPetHealthPercent) / 100);
 			}
+			Player.Out.SendUpdatePlayer();
 		}
 
 		/// <summary>
