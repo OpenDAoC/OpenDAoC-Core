@@ -152,6 +152,20 @@ namespace DOL.AI.Brain
 
                 _isSpawning = true;
             }
+
+            if (Body.InCombat && HasAggro && Body.TargetObject != null)
+            {
+                foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+                {
+                    if (npc.Name.ToLower().Contains("drakulv"))
+                    {
+                        foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                        {
+                            npc.StartAttack(player);
+                        }
+                    }
+                }
+            }
             base.Think();
         }
 
