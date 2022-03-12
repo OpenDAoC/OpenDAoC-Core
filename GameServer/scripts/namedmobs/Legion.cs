@@ -165,6 +165,13 @@ namespace DOL.AI.Brain
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
+
+            if (e == GameLivingEvent.Dying && sender is GamePlayer)
+            {
+                GamePlayer player = sender as GamePlayer;
+                Body.Health += player.MaxHealth / 4;
+                Body.UpdateHealthManaEndu();
+            }
         }
 
         public void SpawnAdds()
