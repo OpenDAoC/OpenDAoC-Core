@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
             AggroRange = 500;
         }
 
-        private bool IsSpawning = true;
+        private bool _isSpawning = true;
         
         public void BroadcastMessage(String message)
         {
@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                IsSpawning = true;
+                _isSpawning = true;
             }
             base.Think();
         }
@@ -161,11 +161,16 @@ namespace DOL.AI.Brain
 
             if (e == GameObjectEvent.TakeDamage && Body.HealthPercent <= 30)
             {
-                if (IsSpawning)
+                if (_isSpawning)
                 {
                     SpawnAdds();
-                    IsSpawning = false;
+                    _isSpawning = false;
                 }
+            }
+
+            if (e == GameLivingEvent.Dying)
+            {
+                _isSpawning = true;
             }
         }
 
