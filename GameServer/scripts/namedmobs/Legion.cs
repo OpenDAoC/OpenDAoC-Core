@@ -11,6 +11,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
 using DOL.GS.Effects;
 using DOL.GS.Scripts;
+using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.GS.Scripts
@@ -108,6 +109,21 @@ namespace DOL.GS.Scripts
             // debug
             log.Debug($"{Name} killed by {killer.Name}");
             
+            bool canReportNews = true;
+
+            // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+
+                if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+                {
+                    if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                        canReportNews = false;
+                }
+
+            }
+            
             GamePlayer playerKiller = killer as GamePlayer;
 
             if (playerKiller?.Group != null)
@@ -119,7 +135,55 @@ namespace DOL.GS.Scripts
             }
             DropLoot(killer);
             base.Die(killer);
+            
+            if (canReportNews)
+            {
+                ReportNews(killer);
+            }
         }
+        
+        
+        #region Custom Methods
+        /// <summary>
+        /// Post a message in the server news and award a legion kill point for
+        /// every XP gainer in the raid.
+        /// </summary>
+        /// <param name="killer">The living that got the killing blow.</param>
+        protected void ReportNews(GameObject killer)
+        {
+            int numPlayers = AwardLegionKillPoint();
+            String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+            NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+
+            if (Properties.GUILD_MERIT_ON_LEGION_KILL > 0)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    if (player.IsEligibleToGiveMeritPoints)
+                    {
+                        GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_LEGION_KILL);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Award dragon kill point for each XP gainer.
+        /// </summary>
+        /// <returns>The number of people involved in the kill.</returns>
+        protected int AwardLegionKillPoint()
+        {
+            int count = 0;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.KillsLegion++;
+                player.RaiseRealmLoyaltyFloor(2);
+                count++;
+            }
+            return count;
+        }
+
+        #endregion
     }
 }
 
