@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 500;
+            AggroRange = 750;
         }
 
         public void BroadcastMessage(String message)
