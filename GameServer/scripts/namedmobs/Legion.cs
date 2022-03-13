@@ -164,8 +164,8 @@ namespace DOL.AI.Brain
             {
                 if (Body.TargetObject != null)
                 {
-                    // 5% chance to spawn 15-20 zombies
-                    if (Util.Chance(5))
+                    // 3% chance to spawn 15-20 zombies
+                    if (Util.Chance(3))
                     {
                         SpawnAdds();
                     }
@@ -188,16 +188,15 @@ namespace DOL.AI.Brain
             for (int i = 0; i < Util.Random(15, 20); i++)
             {
                 LegionAdd add = new LegionAdd();
-                add.X = Body.X;
-                add.Y = Body.Y;
-                add.Z = Body.Z;
-                add.CurrentRegion = Body.CurrentRegion;
-                add.Heading = Body.Heading;
+                add.X = 45066;
+                add.Y = 51731;
+                add.Z = 15468;
+                add.CurrentRegionID = 249;
+                add.Heading = 2053;
                 add.IsWorthReward = false;
                 int level = Util.Random(52, 58);
                 add.Level = (byte) level;
                 add.AddToWorld();
-                break;
             }
         }
         
@@ -229,8 +228,8 @@ namespace DOL.AI.Brain
 
             if (player == null)
                 return;
-            
-            if (Util.Chance(50))
+
+            if (e == GameLivingEvent.HealthChanged && sender is Legion)
             {
                 foreach (GamePlayer portPlayer in player.GetPlayersInRadius(250))
                 {
@@ -244,10 +243,36 @@ namespace DOL.AI.Brain
                 player.BroadcastUpdate();
             }
         }
-        
+
+        private int killAreaTimer(RegionTimer timer)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(800))
+            {
+                if (player == null)
+                    return 0;
+                
+                List<GamePlayer> potKiller = new List<GamePlayer>();
+                int ranId = Util.Random(0, potKiller.Count);
+                if (ranId >= 0)
+                {
+                    potKiller[ranId].Die(Body);
+                    //player.Die(potKiller[ranId]);
+                }
+               
+            }
+            return 0;
+        }
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
+            if (e == AreaEvent.PlayerEnter)
+            {
+                if (Util.Chance(100))
+                {
+                    BroadcastMessage("Legion doesn't like enemies in his lair");
+                    new RegionTimer(Body, new RegionTimerCallback(killAreaTimer), 3000);
+                }
+            }
 
             if (e == GameLivingEvent.Dying && sender is GamePlayer)
             {
