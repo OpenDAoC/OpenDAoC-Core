@@ -38,6 +38,9 @@ namespace DOL.GS.Scripts
 
             // demon
             BodyType = 2;
+
+            Faction = FactionMgr.GetFactionByID(191);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
             
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
