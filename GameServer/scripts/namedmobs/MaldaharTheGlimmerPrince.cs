@@ -143,6 +143,30 @@ namespace DOL.AI.Brain
             {
                 if(Body.TargetObject != null)
                 {
+                    if (Body.IsWithinRadius(Body, Body.AttackRange + 250))
+                    {
+                        switch (Util.Random(1, 2))
+                        {
+                            case 1:
+                                if (Util.Chance(4))
+                                {
+                                    Body.TurnTo(Body.TargetObject);
+                                    new RegionTimer(Body, new RegionTimerCallback(CastLifetap),
+                                        3000); //3s to avoid being it too often called
+                                }
+                                break;
+                            case 2:
+                                if (Util.Chance(4))
+                                {
+                                    Body.TurnTo(Body.TargetObject);
+                                    new RegionTimer(Body, new RegionTimerCallback(CastPBAoe),
+                                        3000); //3s to avoid being it too often called
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
                 
             }
@@ -165,13 +189,13 @@ namespace DOL.AI.Brain
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
-            MaldaharTheGlimmerPrince maldahar = sender as MaldaharTheGlimmerPrince;
+            
             if (e == GameObjectEvent.TakeDamage || e == GameLivingEvent.EnemyHealed)
             {
                 GameObject source = (args as TakeDamageEventArgs).DamageSource;
                 if (source != null)
                 {
-                    if (!maldahar.IsWithinRadius(source, maldahar.AttackRange))
+                    if (!Body.IsWithinRadius(source, Body.AttackRange + 250))
                     {
                         switch (Util.Random(1,2))
                         {
@@ -185,31 +209,6 @@ namespace DOL.AI.Brain
                                 break;
                             case 2:
                                 if (Util.Chance(10))
-                                {
-                                    Body.TurnTo(Body.TargetObject);
-                                    new RegionTimer(Body, new RegionTimerCallback(CastPBAoe),
-                                        3000); //3s to avoid being it too often called
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        
-                    }
-                    else
-                    {
-                        switch (Util.Random(1,2))
-                        {
-                            case 1:
-                                if (Util.Chance(2))
-                                {
-                                    Body.TurnTo(Body.TargetObject);
-                                    new RegionTimer(Body, new RegionTimerCallback(CastLifetap),
-                                        3000); //3s to avoid being it too often called
-                                }
-                                break;
-                            case 2:
-                                if (Util.Chance(2))
                                 {
                                     Body.TurnTo(Body.TargetObject);
                                     new RegionTimer(Body, new RegionTimerCallback(CastPBAoe),
@@ -238,15 +237,15 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
+                    spell.CastTime = 2;
                     spell.ClientEffect = 710;
                     spell.RecastDelay = 10;
                     spell.Icon = 710;
                     spell.TooltipId = 710;
                     spell.Value -= 200;
                     spell.LifeDrainReturn = 200;
-                    spell.Damage = 1250;
-                    spell.Range = 1500;
+                    spell.Damage = 1150;
+                    spell.Range = 2500;
                     spell.Radius = 250;
                     spell.SpellID = 710;
                     spell.Target = "Enemy";
@@ -271,14 +270,14 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 3;
+                    spell.CastTime = 2;
                     spell.ClientEffect = 4204;
                     spell.Power = 0;
                     spell.RecastDelay = 10;
                     spell.Icon = 4204;
                     spell.TooltipId = 4204;
                     spell.SpellGroup = 4201;
-                    spell.Damage = 1250;
+                    spell.Damage = 1150;
                     spell.Range = 2500;
                     spell.Radius = 550;
                     spell.SpellID = 4204;
