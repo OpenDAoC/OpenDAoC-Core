@@ -28,15 +28,10 @@ namespace DOL.GS.Scripts
         public override void LoadFromDatabase(DataObject obj)
         {
             base.LoadFromDatabase(obj);
-            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(45066,51731,15468) == null)
-            {
-                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", 45066, 51731, 15468, 540));
-                log.Debug("Legion's Lair created");
-            }
-            else
-            {
-                log.Debug("Legion's Lair already exists");
-            }
+            var radius = 540;
+            WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X,Y,Z, radius));
+                
+            log.Debug("Legion's Lair created with radius " + radius + " at " + X + " " + Y + " " + Z);
         }
         public override bool AddToWorld()
         {
@@ -61,15 +56,10 @@ namespace DOL.GS.Scripts
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
             
-            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(45066,51731,15468) == null)
-            {
-                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", 45066, 51731, 15468, 540));
-                log.Debug("Legion's Lair created");
-            }
-            else
-            {
-                log.Debug("Legion's Lair already exists");
-            }
+            var radius = 540;
+            WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X,Y,Z, radius));
+                
+            log.Debug("Legion's Lair created with radius " + radius + " at " + X + " " + Y + " " + Z);
             
             base.AddToWorld();
             return true;
@@ -350,15 +340,14 @@ namespace DOL.AI.Brain
         {
             base.Notify(e, sender, args);
             GamePlayer player = sender as GamePlayer;
-
+            AreaEventArgs aargs = args as AreaEventArgs;
+            GamePlayer playerArea = aargs?.GameObject as GamePlayer;
+            
             if (player == null)
                 return;
             
             if (e == AreaEvent.PlayerEnter)
             {
-                AreaEventArgs aargs = args as AreaEventArgs;
-                GamePlayer playerArea = aargs?.GameObject as GamePlayer;
-
                 if (playerArea == null) 
                     return;
                 
