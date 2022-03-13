@@ -28,9 +28,9 @@ namespace DOL.GS.Scripts
         public override void LoadFromDatabase(DataObject obj)
         {
             base.LoadFromDatabase(obj);
-            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(X,Y,Z) == null)
+            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(45066,51731,15468) == null)
             {
-                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X, Y, Z, 2500));
+                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", 45066, 51731, 15468, 540));
                 log.Debug("Legion's Lair created");
             }
             else
@@ -61,9 +61,9 @@ namespace DOL.GS.Scripts
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
             
-            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(X,Y,Z) == null)
+            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(45066,51731,15468) == null)
             {
-                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X, Y, Z, 2500));
+                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", 45066, 51731, 15468, 540));
                 log.Debug("Legion's Lair created");
             }
             else
@@ -74,8 +74,6 @@ namespace DOL.GS.Scripts
             base.AddToWorld();
             return true;
         }
-        
-        
 
         public virtual int LegionDifficulty
         {
@@ -223,7 +221,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 750;
+            AggroRange = 850;
         }
 
         public void BroadcastMessage(String message)
@@ -273,18 +271,22 @@ namespace DOL.AI.Brain
         }
         public void SpawnAdds()
         {
-            for (int i = 0; i < Util.Random(15, 20); i++)
+            foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
             {
-                LegionAdd add = new LegionAdd();
-                add.X = 45066;
-                add.Y = 51731;
-                add.Z = 15468;
-                add.CurrentRegionID = 249;
-                add.Heading = 2053;
-                add.IsWorthReward = false;
-                int level = Util.Random(52, 58);
-                add.Level = (byte) level;
-                add.AddToWorld();
+                for (int i = 0; i < Util.Random(15, 20); i++)
+                {
+                    LegionAdd add = new LegionAdd();
+                    add.X = 45066;
+                    add.Y = 51731;
+                    add.Z = 15468;
+                    add.CurrentRegionID = 249;
+                    add.Heading = 2053;
+                    add.IsWorthReward = false;
+                    int level = Util.Random(52, 58);
+                    add.Level = (byte) level;
+                    add.AddToWorld();
+                    add.StartAttack(player);
+                }
             }
         }
         
@@ -338,7 +340,6 @@ namespace DOL.AI.Brain
                 if (ranId >= 0)
                 {
                     potKiller[ranId].Die(Body);
-                    //player.Die(potKiller[ranId]);
                 }
                 potKiller.Clear();
                
@@ -348,18 +349,46 @@ namespace DOL.AI.Brain
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
+            GamePlayer player = sender as GamePlayer;
+
+            if (player == null)
+                return;
+            
             if (e == AreaEvent.PlayerEnter)
             {
-                if (Util.Chance(100))
+                AreaEventArgs aargs = args as AreaEventArgs;
+                GamePlayer playerArea = aargs?.GameObject as GamePlayer;
+
+                if (playerArea == null) 
+                    return;
+                
+                Console.WriteLine("entered Legions Lair");
+                if (HasAggro && Body.InCombat && Body.TargetObject != null)
                 {
-                    BroadcastMessage("Legion doesn't like enemies in his lair");
-                    new RegionTimer(Body, new RegionTimerCallback(killAreaTimer), 3000);
+                    if (Util.Chance(33))
+                    {
+                        BroadcastMessage(String.Format(Body.Name + " doesn't like enemies in his lair"));
+                        new RegionTimer(Body, new RegionTimerCallback(killAreaTimer), 3000);
+                    }
                 }
             }
-
-            if (e == GameLivingEvent.Dying && sender is GamePlayer)
+            
+            if (e == GameNPCEvent.HealthChanged)
             {
-                GamePlayer player = sender as GamePlayer;
+                foreach (GamePlayer portPlayer in player.GetPlayersInRadius(250))
+                {
+                    if (portPlayer.IsAlive)
+                    {
+                        portPlayer.MoveTo(249, 48117, 49573, 20833, 1006);
+                        portPlayer.BroadcastUpdate();
+                    }
+                }
+                player.MoveTo(249, 48117, 49573, 20833, 1006);
+                player.BroadcastUpdate();
+            }
+
+            if (e == GameLivingEvent.Dying)
+            {
                 Body.Health += player.MaxHealth;
                 Body.UpdateHealthManaEndu();
             }
