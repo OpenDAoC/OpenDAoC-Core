@@ -168,7 +168,7 @@ namespace DOL.GS.Scripts
         }
 
         /// <summary>
-        /// Award dragon kill point for each XP gainer.
+        /// Award legion kill point for each XP gainer.
         /// </summary>
         /// <returns>The number of people involved in the kill.</returns>
         protected int AwardLegionKillPoint()
