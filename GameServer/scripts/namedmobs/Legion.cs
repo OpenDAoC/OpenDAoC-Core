@@ -202,9 +202,10 @@ namespace DOL.AI.Brain
             AggroRange = 500;
         }
 
-        public void BroadcastMessage(String message)
+        public static void BroadcastMessage(String message)
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            Legion legion = new Legion();
+            foreach (GamePlayer player in legion.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
@@ -280,19 +281,25 @@ namespace DOL.AI.Brain
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             #region defineAreas
-            Legion_Area = WorldMgr.GetRegion(Legion_Lair.RegionID).AddArea(new Area.Circle("Legion Lair", Legion_Lair.X, Legion_Lair.Y, Legion_Lair.Z, 530));
-            Legion_Area.RegisterPlayerLeave(new DOLEventHandler(PlayerEnterLegionArea));
+            Legion_Area.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
+            WorldMgr.GetRegion(Legion_Lair.RegionID).RemoveArea(Legion_Area);
             #endregion
         }
         
-        private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
+        protected static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
         {
             AreaEventArgs aargs = args as AreaEventArgs;
             GamePlayer player = aargs?.GameObject as GamePlayer;
+            Legion legion = new Legion();
 
             if (player == null)
                 return;
-
+            
+            if (e == AreaEvent.PlayerEnter)
+            {
+                BroadcastMessage("Legion doesn't like enemies in his lair");
+                new RegionTimer(legion, new RegionTimerCallback(killAreaTimer), 3000);
+            }
             if (e == GameLivingEvent.HealthChanged && sender is Legion)
             {
                 foreach (GamePlayer portPlayer in player.GetPlayersInRadius(250))
@@ -308,9 +315,10 @@ namespace DOL.AI.Brain
             }
         }
 
-        private int killAreaTimer(RegionTimer timer)
+        private static int killAreaTimer(RegionTimer timer)
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(800))
+            Legion legion = new Legion();
+            foreach (GamePlayer player in legion.GetPlayersInRadius(800))
             {
                 if (player == null)
                     return 0;
@@ -320,7 +328,7 @@ namespace DOL.AI.Brain
                 int ranId = Util.Random(0, potKiller.Count);
                 if (ranId >= 0)
                 {
-                    potKiller[ranId].Die(Body);
+                    potKiller[ranId].Die(legion);
                     //player.Die(potKiller[ranId]);
                 }
                 potKiller.Clear();
