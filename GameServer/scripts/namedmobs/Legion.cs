@@ -252,12 +252,14 @@ namespace DOL.AI.Brain
                     return 0;
                 
                 List<GamePlayer> potKiller = new List<GamePlayer>();
+                potKiller.Add(player);
                 int ranId = Util.Random(0, potKiller.Count);
                 if (ranId >= 0)
                 {
                     potKiller[ranId].Die(Body);
                     //player.Die(potKiller[ranId]);
                 }
+                potKiller.Clear();
                
             }
             return 0;
