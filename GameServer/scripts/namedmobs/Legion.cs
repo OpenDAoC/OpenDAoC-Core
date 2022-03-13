@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using log4net;
@@ -24,11 +20,30 @@ namespace DOL.GS.Scripts
             : base()
         {
         }
+
+        /// <summary>
+        /// Create Legion's Lair after it was loaded from the DB.
+        /// </summary>
+        /// <param name="obj"></param>
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            base.LoadFromDatabase(obj);
+            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(X,Y,Z) == null)
+            {
+                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X, Y, Z, 2500));
+                log.Debug("Legion's Lair created");
+            }
+            else
+            {
+                log.Debug("Legion's Lair already exists");
+            }
+        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(13333);
             LoadTemplate(npcTemplate);
-            
+
+            Size = 120;
             Strength = npcTemplate.Strength;
             Constitution = npcTemplate.Constitution;
             Dexterity = npcTemplate.Dexterity;
@@ -45,6 +60,17 @@ namespace DOL.GS.Scripts
             
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
+            
+            if (WorldMgr.GetRegion(CurrentRegionID).GetAreasOfSpot(X,Y,Z) == null)
+            {
+                WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X, Y, Z, 2500));
+                log.Debug("Legion's Lair created");
+            }
+            else
+            {
+                log.Debug("Legion's Lair already exists");
+            }
+            
             base.AddToWorld();
             return true;
         }
@@ -192,8 +218,6 @@ namespace DOL.AI.Brain
     public class LegionBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static IArea Legion_Area = null;
-        private static GameLocation Legion_Lair = new GameLocation("Legion\'s Lair", 249, 45066, 51731, 15468, 2053);
 
         public LegionBrain()
             : base()
@@ -270,19 +294,12 @@ namespace DOL.AI.Brain
             if (log.IsInfoEnabled)
                 log.Info("Legion initializing ...");
             
-            #region defineAreas
-            Legion_Area = WorldMgr.GetRegion(Legion_Lair.RegionID).AddArea(new Area.Circle("Legion Lair", Legion_Lair.X, Legion_Lair.Y, Legion_Lair.Z, 530));
-            Legion_Area.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
-            #endregion
         }
         
         [ScriptUnloadedEvent]
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
-            #region defineAreas
-            Legion_Area = WorldMgr.GetRegion(Legion_Lair.RegionID).AddArea(new Area.Circle("Legion Lair", Legion_Lair.X, Legion_Lair.Y, Legion_Lair.Z, 530));
-            Legion_Area.RegisterPlayerLeave(new DOLEventHandler(PlayerEnterLegionArea));
-            #endregion
+
         }
         
         private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
