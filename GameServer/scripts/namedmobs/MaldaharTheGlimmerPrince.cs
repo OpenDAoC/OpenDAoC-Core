@@ -141,31 +141,93 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.InCombat)
             {
-                if (Util.Chance(10))
+                if(Body.TargetObject != null)
                 {
-                    if (Body.TargetObject != null)
-                    {
-                        Body.TurnTo(Body.TargetObject);
-                        new RegionTimer(Body, new RegionTimerCallback(CastLifetap),
-                            10000); //10s to avoid being it too often called
-                    }
                 }
+                
             }
 
             base.Think();
         }
-
+        
         protected virtual int CastLifetap(RegionTimer timer)
         {
             Body.CastSpell(LifeTap, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
         
+        protected virtual int CastPBAoe(RegionTimer timer)
+        {
+            Body.CastSpell(PBAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            return 0;
+        }
+        
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
+            MaldaharTheGlimmerPrince maldahar = sender as MaldaharTheGlimmerPrince;
+            if (e == GameObjectEvent.TakeDamage || e == GameLivingEvent.EnemyHealed)
+            {
+                GameObject source = (args as TakeDamageEventArgs).DamageSource;
+                if (source != null)
+                {
+                    if (!maldahar.IsWithinRadius(source, maldahar.AttackRange))
+                    {
+                        switch (Util.Random(1,2))
+                        {
+                            case 1:
+                                if (Util.Chance(10))
+                                {
+                                    Body.TurnTo(Body.TargetObject);
+                                    new RegionTimer(Body, new RegionTimerCallback(CastLifetap),
+                                        3000); //3s to avoid being it too often called
+                                }
+                                break;
+                            case 2:
+                                if (Util.Chance(10))
+                                {
+                                    Body.TurnTo(Body.TargetObject);
+                                    new RegionTimer(Body, new RegionTimerCallback(CastPBAoe),
+                                        3000); //3s to avoid being it too often called
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                    }
+                    else
+                    {
+                        switch (Util.Random(1,2))
+                        {
+                            case 1:
+                                if (Util.Chance(2))
+                                {
+                                    Body.TurnTo(Body.TargetObject);
+                                    new RegionTimer(Body, new RegionTimerCallback(CastLifetap),
+                                        3000); //3s to avoid being it too often called
+                                }
+                                break;
+                            case 2:
+                                if (Util.Chance(2))
+                                {
+                                    Body.TurnTo(Body.TargetObject);
+                                    new RegionTimer(Body, new RegionTimerCallback(CastPBAoe),
+                                        3000); //3s to avoid being it too often called
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+            }
+            
+            
         }
 
+        #region Lifetap Spell
         public Spell m_Lifetap;
 
         public Spell LifeTap
@@ -196,5 +258,41 @@ namespace DOL.AI.Brain
                 return m_Lifetap;
             }
         }
+        #endregion
+
+        #region PBAoe Spell
+        public Spell m_PBAoe;
+
+        public Spell PBAoe
+        {
+            get
+            {
+                if (m_PBAoe == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 3;
+                    spell.ClientEffect = 4204;
+                    spell.Power = 0;
+                    spell.RecastDelay = 10;
+                    spell.Icon = 4204;
+                    spell.TooltipId = 4204;
+                    spell.SpellGroup = 4201;
+                    spell.Damage = 1250;
+                    spell.Range = 2500;
+                    spell.Radius = 550;
+                    spell.SpellID = 4204;
+                    spell.Target = "Enemy";
+                    spell.Type = "DirectDamage";
+                    spell.DamageType = (int)eDamageType.Energy;
+                    m_PBAoe = new Spell(spell, 60);                   
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_PBAoe);
+                }
+                return m_PBAoe;
+            }
+        }
+        
+
+        #endregion
     }
 }
