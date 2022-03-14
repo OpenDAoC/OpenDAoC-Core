@@ -257,7 +257,6 @@ namespace DOL.GS
                         }
                     }
                 }
-                DropLoot(killer);
                 HostCount = 0;//reset host count to 0
                 base.Die(killer);
             }

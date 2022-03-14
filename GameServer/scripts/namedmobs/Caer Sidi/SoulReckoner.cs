@@ -192,7 +192,7 @@ namespace DOL.GS
                     }
                 }
             }
-            DropLoot(killer);
+            
             spawn_souls = false;
             base.Die(killer);
         }

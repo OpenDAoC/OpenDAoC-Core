@@ -57,7 +57,7 @@ namespace DOL.GS.Scripts
                     AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
                 }
             }
-            DropLoot(killer);
+            
             MoveTo(CurrentRegionID,31154,30913,13950,3043);
             base.Die(killer);
         }
