@@ -528,10 +528,11 @@ namespace DOL.GS.Spells
 				if (CheckBeginCast(m_spellTarget))
 				{
 					//Added to force non-Concentration spells cast on Necromancer to be cast on pet instead
-					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null && (Caster.TargetObject as GamePlayer).IsShade)
-                    			{
-                        			m_spellTarget = m_spellTarget.ControlledBrain.Body;
-                    			}
+					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null 
+						&& (Caster.TargetObject as GamePlayer).IsShade && Spell.ID != 5999)
+                    {
+                        m_spellTarget = m_spellTarget.ControlledBrain.Body;
+                    }
 					
 					if (m_caster is GamePlayer && (m_caster as GamePlayer).IsOnHorse && !HasPositiveEffect)
 					{
@@ -1099,7 +1100,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
-			if (Caster is GameNPC casterNPC)
+			if (Caster is GameNPC casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 
 			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
@@ -1724,15 +1725,29 @@ namespace DOL.GS.Spells
 						break;
 				}
 
-				//Process cast on same tick if finished.
-				if (castState == eCastState.Finished)
+			//Process cast on same tick if finished.
+			if (castState == eCastState.Finished)
+			{
+				FinishSpellCast(m_spellTarget);
+				if (Spell.IsFocus)
 				{
-					FinishSpellCast(m_spellTarget);
-					if (Spell.IsFocus)
+					if (Spell.ID != 5998)
+					{
 						castState = eCastState.Focusing;
+					}
 					else
+					{
 						castState = eCastState.Cleanup;
-				}
+
+						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+						stone.CanUseAgainIn = stone.CanUseEvery;
+
+						//.SetCooldown();
+					}
+				}			
+				else
+					castState = eCastState.Cleanup;
+			}
 			if (castState == eCastState.Cleanup)
 			{
 				CleanupSpellCast();
@@ -2568,7 +2583,7 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade && Spell.ID != 5999)
 							{
 								if (!Spell.IsBuff)
 									list.Add(player.ControlledBrain.Body);
@@ -3512,6 +3527,17 @@ namespace DOL.GS.Spells
 				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 					aggroBrain.AddToAggroList(Caster, 1);
+
+				if (Caster.Realm == 0 || target.Realm == 0)
+				{
+					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				}
+				else
+				{
+					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+				}
 			}
 		}
 
@@ -3693,6 +3719,11 @@ namespace DOL.GS.Spells
             castState = eCastState.Cleanup;
             Caster.TempProperties.removeProperty(FOCUS_SPELL);
             Caster.LastPulseCast = null;
+			
+			if (this is DamageShieldSpellHandler)
+            {
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster?.ControlledBrain?.Body, eEffect.FocusShield));
+            }
             
             //CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
             //currentEffect.Cancel(false);
@@ -4517,6 +4548,17 @@ namespace DOL.GS.Spells
 				IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 					aggroBrain.AddToAggroList(Caster, 1);
+
+				if (Caster.Realm == 0 || ad.Target.Realm == 0)
+				{
+					ad.Target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				}
+				else
+				{
+					ad.Target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+				}
 			}
 
 			if (ad.Damage > 0)

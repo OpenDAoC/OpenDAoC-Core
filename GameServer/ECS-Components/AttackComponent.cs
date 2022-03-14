@@ -932,7 +932,7 @@ namespace DOL.GS
             }
 
             // TODO: need to look into these timers
-            p.SetLastMeleeAttackTick();
+            //p.SetLastMeleeAttackTick();
             //p.StartMeleeAttackTimer();
 
             LivingStartAttack(target);
@@ -2030,7 +2030,7 @@ namespace DOL.GS
                     }
                 }
 
-                double blockChance = owner.TryBlock(ad, lastAD, attackerConLevel, attackerCount, engage);
+                double blockChance = owner.TryBlock(ad, lastAD, attackerConLevel, attackerCount);
                 ad.BlockChance = blockChance;
                 double ranBlockNum = Util.CryptoNextDouble() * 10000;
                 ranBlockNum = Math.Floor(ranBlockNum);

@@ -316,9 +316,30 @@ namespace DOL.GS
             FuarScaithBrain.switch_target = false;
             TaesScaithBrain.switch_target = false;
             ScorScaithBrain.switch_target = false;
-
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158075);
+            LoadTemplate(npcTemplate);
+            AroonBrain sBrain = new AroonBrain();
+            SetOwnBrain(sBrain);
             AroonBrain.spawn_guardians = false;
             return base.AddToWorld();
+        }
+        
+        public override void Die(GameObject killer)
+        {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
+            base.Die(killer);
         }
 
         [ScriptLoadedEvent]

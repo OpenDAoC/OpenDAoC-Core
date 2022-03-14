@@ -67,8 +67,21 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-          SpawnAfterDead();
-          base.Die(killer);
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            SpawnAfterDead();
+            DropLoot(killer);
+            base.Die(killer);
         }
         public override bool AddToWorld()
         {
@@ -79,6 +92,11 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
+            
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166449);
+            LoadTemplate(npcTemplate);
+            SpindlerBroodmotherBrain sBrain = new SpindlerBroodmotherBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }

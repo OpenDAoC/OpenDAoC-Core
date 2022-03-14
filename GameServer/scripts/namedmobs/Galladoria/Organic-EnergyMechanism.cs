@@ -88,6 +88,12 @@ namespace DOL.GS
         public static bool addeffect = true;
         public override bool AddToWorld()
         {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
+            LoadTemplate(npcTemplate);
+            
+            OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
+            SetOwnBrain(sBrain);
+            
             bool success = base.AddToWorld();
             if (success)
             {
@@ -98,6 +104,24 @@ namespace DOL.GS
                 }
             }
             return success;
+        }
+        
+        public override void Die(GameObject killer)
+        {
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
+            base.Die(killer);
         }
 
         [ScriptLoadedEvent]

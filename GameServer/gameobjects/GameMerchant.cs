@@ -278,9 +278,12 @@ namespace DOL.GS
 
 			int itemCount = Math.Max(1, item.Count);
 			int packSize = Math.Max(1, item.PackSize);
-			
+
 			long val = item.Price * itemCount / packSize * ServerProperties.Properties.ITEM_SELL_RATIO / 100;
 
+			if (item.Price == 1 && val == 0)
+				val = item.Price * itemCount / packSize;
+			
 			if (!item.IsDropable)
 			{
 				val = 0;

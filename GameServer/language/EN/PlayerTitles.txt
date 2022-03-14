@@ -1,18 +1,95 @@
-﻿#All
-PlayerClass.GetTitle.none:		none
+﻿# Titles
+PlayerClass.GetTitle.none:		            none
 
-PlayerClass.Mauler.GetTitle.50:		Master Mauler
-PlayerClass.Mauler.GetTitle.45:		Scrapper
-PlayerClass.Mauler.GetTitle.40:		Iron Fist
-PlayerClass.Mauler.GetTitle.35:		Brawler
-PlayerClass.Mauler.GetTitle.30:		Ten Hands
-PlayerClass.Mauler.GetTitle.25:		Aggressor
-PlayerClass.Mauler.GetTitle.20:		Pugilist
-PlayerClass.Mauler.GetTitle.15:		Five Paws
-PlayerClass.Mauler.GetTitle.10:		Stone Palm
-PlayerClass.Mauler.GetTitle.5:		Initiate Mauler
+## Title Handler
+GamePlayer.CurrentTitle.TitleCleared:			Your title has been cleared.	
 
-#Albion
+## Achievement-based Titles
+
+### Keeps/Relics Claimed
+Titles.Claim.Frontier.FrontierChallenger:	Frontier Challenger
+Titles.Claim.Frontier.FrontierVindicator:	Frontier Vindicator
+Titles.Claim.Stronghold.StrongholdChief:	Stronghold Chief
+Titles.Claim.Stronghold.StrongholdSoldier:	Stronghold Soldier
+
+### RvR Deathblows
+Titles.Deathblows.BattleEnforcer:			Battle Enforcer
+Titles.Deathblows.BattleMaster:				Battle Master
+
+### RvR/PvE Kills
+Titles.Kills.Albion.BaneOfAlbion:			Bane of Albion
+Titles.Kills.Albion.ScourgeOfAlbion:		Scourge of Albion
+Titles.Kills.All.MasterAssassine:			Master Assassin
+Titles.Kills.All.MasterEnforcer:			Master Enforcer
+Titles.Kills.All.MasterSoldier:				Master Soldier
+Titles.Kills.Demon.DemonBane:				Demon Bane
+Titles.Kills.Demon.DemonScourge:			Demon Scourge
+Titles.Kills.Demon.DemonSlayer:				Demon Slayer
+Titles.Kills.Demon.DreadVanquisher:			Dread Vanquisher
+Titles.Kills.Dragon.DragonFoe:				Dragon Foe
+Titles.Kills.Dragon.DragonScourge:			Dragon Scourge
+Titles.Kills.Dragon.DragonSlayer:			Dragon Slayer
+Titles.Kills.Epic.EpicChallenger:			Epic Challenger
+Titles.Kills.Epic.EpicVictor:				Epic Victor
+Titles.Kills.Hibernia.BaneOfHibernia:		Bane of Hibernia
+Titles.Kills.Hibernia.ScourgeOfHibernia:	Scourge of Hibernia
+Titles.Kills.Midgard.BaneOfMidgard:			Bane of Midgard
+Titles.Kills.Midgard.ScourgeOfMidgard:		Scourge of Midgard
+
+### Solo Kills
+Titles.Solokills.DuelMaster:				Duel Master
+Titles.Solokills.LoneEnforcer:				Lone Enforcer
+
+### Time Played
+Titles.Time.Account.ElderTitle:				Elder
+Titles.Time.Character.Veteran:				Veteran
+
+## Level-based Titles
+Titles.Level.Level20Info:				    Level 20+
+Titles.Level.Level20:					    Level {0}
+
+## Privilege Level Titles
+Titles.PrivLevel.Administrator:				Atlas Team
+Titles.PrivLevel.Gamemaster:				Gamemaster
+
+## Champion Level Titles
+Titles.CL.Level1:					        Seeker
+Titles.CL.Level2:					        Enforcer
+Titles.CL.Level3:					        Outrider
+Titles.CL.Level4:					        Lightbringer
+Titles.CL.Level5:					        King's Champion
+Titles.CL.Level6:					        King´s Emissary
+Titles.CL.Level7:					        Patron of Minotaur
+Titles.CL.Level8:					        Visionary
+Titles.CL.Level9:					        Gladiator
+Titles.CL.Level10:					        Labyrinthian
+
+## Master Level Titles
+Titles.ML.Line1:					        Banelord
+Titles.ML.Line2:					        Battlemaster
+Titles.ML.Line3:					        Convoker
+Titles.ML.Line4:					        Perfecter
+Titles.ML.Line5:					        Sojourner
+Titles.ML.Line6:					        Spymaster
+Titles.ML.Line7:					        Stormlord
+Titles.ML.Line8:					        Warlord
+
+## Class Titles
+
+#### Mauler
+PlayerClass.Mauler.GetTitle.50:		        Master Mauler
+PlayerClass.Mauler.GetTitle.45:		        Scrapper
+PlayerClass.Mauler.GetTitle.40:		        Iron Fist
+PlayerClass.Mauler.GetTitle.35:		        Brawler
+PlayerClass.Mauler.GetTitle.30:		        Ten Hands
+PlayerClass.Mauler.GetTitle.25:		        Aggressor
+PlayerClass.Mauler.GetTitle.20:		        Pugilist
+PlayerClass.Mauler.GetTitle.15:		        Five Paws
+PlayerClass.Mauler.GetTitle.10:		        Stone Palm
+PlayerClass.Mauler.GetTitle.5:		        Initiate Mauler
+
+### Albion
+#### Armsman
 PlayerClass.Armsman.GetTitle.50:	General
 PlayerClass.Armsman.GetTitle.45:	Captain
 PlayerClass.Armsman.GetTitle.40:	Centurian
@@ -24,6 +101,7 @@ PlayerClass.Armsman.GetTitle.15:	Infantry
 PlayerClass.Armsman.GetTitle.10:	Footsoldier
 PlayerClass.Armsman.GetTitle.5:		Enlistee
 
+#### Cabalist
 PlayerClass.Cabalist.GetTitle.50:	Cleric Prime
 PlayerClass.Cabalist.GetTitle.45:	Master Imbuer
 PlayerClass.Cabalist.GetTitle.40:	Master Spiritist
@@ -35,6 +113,7 @@ PlayerClass.Cabalist.GetTitle.15:	Imbuer
 PlayerClass.Cabalist.GetTitle.10:	Journeyman Cleric
 PlayerClass.Cabalist.GetTitle.5:	Apprentice Cleric
 
+#### Cleric
 PlayerClass.Cleric.GetTitle.50:		Pontifex
 PlayerClass.Cleric.GetTitle.45:		Cardinal
 PlayerClass.Cleric.GetTitle.40:		Bishop
@@ -46,6 +125,7 @@ PlayerClass.Cleric.GetTitle.15:		Curate
 PlayerClass.Cleric.GetTitle.10:		Novice
 PlayerClass.Cleric.GetTitle.5:		Initiate
 
+#### Friar
 PlayerClass.Friar.GetTitle.50:		Chaplain Primus
 PlayerClass.Friar.GetTitle.45:		Master Inquisitor
 PlayerClass.Friar.GetTitle.40:		Greater Chaplain
@@ -57,6 +137,7 @@ PlayerClass.Friar.GetTitle.15:		Fanatic
 PlayerClass.Friar.GetTitle.10:		Lesser Chaplain
 PlayerClass.Friar.GetTitle.5:		Friar Acolyte
 
+#### Heretic
 PlayerClass.Heretic.GetTitle.50:	Arawn's Own Reanimator
 PlayerClass.Heretic.GetTitle.45:	Priest of Arawn
 PlayerClass.Heretic.GetTitle.40:	Apostle of Arawn
@@ -68,6 +149,7 @@ PlayerClass.Heretic.GetTitle.15:	Initiate
 PlayerClass.Heretic.GetTitle.10:	Apprentice
 PlayerClass.Heretic.GetTitle.5:		Aspirant
 
+#### Infiltrator
 PlayerClass.Infiltrator.GetTitle.50:	Master Infiltrator
 PlayerClass.Infiltrator.GetTitle.45:	Infiltrator
 PlayerClass.Infiltrator.GetTitle.40:	Black Hand
@@ -79,6 +161,7 @@ PlayerClass.Infiltrator.GetTitle.15:	Blue Hand
 PlayerClass.Infiltrator.GetTitle.10:	Lurker
 PlayerClass.Infiltrator.GetTitle.5:	White Hand
 
+#### Mercenary
 PlayerClass.Mercenary.GetTitle.50:	Mercenary Master	
 PlayerClass.Mercenary.GetTitle.45:	Master Warrior
 PlayerClass.Mercenary.GetTitle.40:	Warrior
@@ -90,6 +173,7 @@ PlayerClass.Mercenary.GetTitle.15:	Escaladar
 PlayerClass.Mercenary.GetTitle.10:	Pugilist
 PlayerClass.Mercenary.GetTitle.5:	Strong-Arm
 
+#### Minstrel
 PlayerClass.Minstrel.GetTitle.50:	Virtuoso
 PlayerClass.Minstrel.GetTitle.45:	Master Soloist
 PlayerClass.Minstrel.GetTitle.40:	Soloist
@@ -101,6 +185,7 @@ PlayerClass.Minstrel.GetTitle.15:	Versesmith
 PlayerClass.Minstrel.GetTitle.10:	Sonneteer
 PlayerClass.Minstrel.GetTitle.5:	Balladeer
 
+#### Necromancer
 PlayerClass.Necromancer.GetTitle.50:	Master Reanimator
 PlayerClass.Necromancer.GetTitle.45:	Deathbringer
 PlayerClass.Necromancer.GetTitle.40:	Reanimator
@@ -112,6 +197,7 @@ PlayerClass.Necromancer.GetTitle.15:	Summoner
 PlayerClass.Necromancer.GetTitle.10:	Servant of Arawn
 PlayerClass.Necromancer.GetTitle.5:	Apprentice Necromancer
 
+#### Paladin
 PlayerClass.Paladin.GetTitle.50:	Templar
 PlayerClass.Paladin.GetTitle.45:	Champion
 PlayerClass.Paladin.GetTitle.40:	Justicator
@@ -123,6 +209,7 @@ PlayerClass.Paladin.GetTitle.15:	Protector
 PlayerClass.Paladin.GetTitle.10:	Tyro
 PlayerClass.Paladin.GetTitle.5:		Neophyte
 
+#### Reaver
 PlayerClass.Reaver.GetTitle.50:		Dark Knight
 PlayerClass.Reaver.GetTitle.45:		Hero of Arawn
 PlayerClass.Reaver.GetTitle.40:		Guardian of Arawn
@@ -134,6 +221,7 @@ PlayerClass.Reaver.GetTitle.15:		Protector of Arawn
 PlayerClass.Reaver.GetTitle.10:		Strongarm of Arawn
 PlayerClass.Reaver.GetTitle.5:		Dark Squire
 
+#### Scout
 PlayerClass.Scout.GetTitle.50:		Master Scout
 PlayerClass.Scout.GetTitle.45:		Ranger
 PlayerClass.Scout.GetTitle.40:		Sentinel
@@ -145,6 +233,7 @@ PlayerClass.Scout.GetTitle.15:		Tracker
 PlayerClass.Scout.GetTitle.10:		Bowman
 PlayerClass.Scout.GetTitle.5:		Apprentice Scout
 
+#### Sorcerer
 PlayerClass.Sorcerer.GetTitle.50:	Sorcerer Primus
 PlayerClass.Sorcerer.GetTitle.45:	Sorcerer
 PlayerClass.Sorcerer.GetTitle.40:	Enigmatic
@@ -156,6 +245,7 @@ PlayerClass.Sorcerer.GetTitle.15:	Befuddler
 PlayerClass.Sorcerer.GetTitle.10:	Journeyman Sorcerer
 PlayerClass.Sorcerer.GetTitle.5:	Apprentice Sorcerer
 
+#### Theurgist
 PlayerClass.Theurgist.GetTitle.50:	Master Theurgist
 PlayerClass.Theurgist.GetTitle.45:	Master Summoner
 PlayerClass.Theurgist.GetTitle.40:	Combat Engineer
@@ -167,6 +257,7 @@ PlayerClass.Theurgist.GetTitle.15:	Summoner
 PlayerClass.Theurgist.GetTitle.10:	Journeyman Theurgist
 PlayerClass.Theurgist.GetTitle.5:	Theurgist Recruit
 
+#### Wizard
 PlayerClass.Wizard.GetTitle.50:		Magus Prime
 PlayerClass.Wizard.GetTitle.45:		Master Spellbinder
 PlayerClass.Wizard.GetTitle.40:		Master Elementalist
@@ -178,9 +269,10 @@ PlayerClass.Wizard.GetTitle.15:		Elementalist
 PlayerClass.Wizard.GetTitle.10:		Wizard Adept
 PlayerClass.Wizard.GetTitle.5:		Apprentice Wizard
 
-#Midgard
+### Midgard
+#### Berserker
 PlayerClass.Berserker.GetTitle.50:	Hand of Modi
-PlayerClass.Berserker.GetTitle.45:	Frenzien Reaver
+PlayerClass.Berserker.GetTitle.45:	Frenzied Reaver
 PlayerClass.Berserker.GetTitle.40:	Frenzied Mauler
 PlayerClass.Berserker.GetTitle.35:	Frenzied Pillager
 PlayerClass.Berserker.GetTitle.30:	Ursine Reaver
@@ -190,7 +282,8 @@ PlayerClass.Berserker.GetTitle.15:	Ursine Fervent
 PlayerClass.Berserker.GetTitle.10:	Ursine Seeker
 PlayerClass.Berserker.GetTitle.5:	Ursine Initiate
 
-PlayerClass.Bonedancer.GetTitle.50:	Tribal Chieftan
+#### Bonedancer
+PlayerClass.Bonedancer.GetTitle.50:	Tribal Chieftain
 PlayerClass.Bonedancer.GetTitle.45:	Fervent of Bodgar
 PlayerClass.Bonedancer.GetTitle.40:	Bonemage
 PlayerClass.Bonedancer.GetTitle.35:	Tribal Elder
@@ -201,6 +294,7 @@ PlayerClass.Bonedancer.GetTitle.15:	Tribal Mystic
 PlayerClass.Bonedancer.GetTitle.10:	Bonegatherer
 PlayerClass.Bonedancer.GetTitle.5:	Initiate of Bodgar
 
+#### Healer
 PlayerClass.Healer.GetTitle.50:		Hand of Eir
 PlayerClass.Healer.GetTitle.45:		Oracle of Eir
 PlayerClass.Healer.GetTitle.40:		Healing Augur
@@ -212,6 +306,7 @@ PlayerClass.Healer.GetTitle.15:		Journeyman Healer
 PlayerClass.Healer.GetTitle.10:		Practitioner
 PlayerClass.Healer.GetTitle.5:		Healing Eleve
 
+#### Hunter
 PlayerClass.Hunter.GetTitle.50:		Hand of Skadi
 PlayerClass.Hunter.GetTitle.45:		Lord of the Hunt
 PlayerClass.Hunter.GetTitle.40:		Master of Prey
@@ -223,6 +318,7 @@ PlayerClass.Hunter.GetTitle.15:		Journeyman
 PlayerClass.Hunter.GetTitle.10:		Shadowed Seeker
 PlayerClass.Hunter.GetTitle.5:		Initiate Huntsman
 
+#### Runemaster
 PlayerClass.Runemaster.GetTitle.50:	Hand of Odin
 PlayerClass.Runemaster.GetTitle.45:	Runic Sage
 PlayerClass.Runemaster.GetTitle.40:	Runic Adept
@@ -234,6 +330,7 @@ PlayerClass.Runemaster.GetTitle.15:	Runecarver
 PlayerClass.Runemaster.GetTitle.10:	Runic Practitioner
 PlayerClass.Runemaster.GetTitle.5:	Runic Eleve
 
+#### Savage
 PlayerClass.Savage.GetTitle.50:		Fist of Kelgor
 PlayerClass.Savage.GetTitle.45:		Tribal Legend
 PlayerClass.Savage.GetTitle.40:		Protector of Kelgor
@@ -245,6 +342,7 @@ PlayerClass.Savage.GetTitle.15:		Servant of Kelgor
 PlayerClass.Savage.GetTitle.10:		Apprentice of Kelgor
 PlayerClass.Savage.GetTitle.5:		Initiate of Kelgor
 
+#### Shadowblade
 PlayerClass.Shadowblade.GetTitle.50:	Hand of Loki
 PlayerClass.Shadowblade.GetTitle.45:	Lord of Mischief
 PlayerClass.Shadowblade.GetTitle.40:	Master of Shadows
@@ -256,6 +354,7 @@ PlayerClass.Shadowblade.GetTitle.15:	Deceiver
 PlayerClass.Shadowblade.GetTitle.10:	Dark Seeker
 PlayerClass.Shadowblade.GetTitle.5:	Initiate Stalker
 
+#### Shaman
 PlayerClass.Shaman.GetTitle.50:		Hand of Ymir
 PlayerClass.Shaman.GetTitle.45:		Oracle of Ymir
 PlayerClass.Shaman.GetTitle.40:		Shamanic Visionary
@@ -267,6 +366,7 @@ PlayerClass.Shaman.GetTitle.15:		Journeyman
 PlayerClass.Shaman.GetTitle.10:		Practitioner
 PlayerClass.Shaman.GetTitle.5:		Shamanic Eleve
 
+#### Skald
 PlayerClass.Skald.GetTitle.50:		Hand of Bragi
 PlayerClass.Skald.GetTitle.45:		Lord of Eldas
 PlayerClass.Skald.GetTitle.40:		Lord of Sagas
@@ -278,6 +378,7 @@ PlayerClass.Skald.GetTitle.15:		Battle Chanter
 PlayerClass.Skald.GetTitle.10:		Chanter
 PlayerClass.Skald.GetTitle.5:		Initiate Chanter
 
+#### Spiritmaster
 PlayerClass.Spiritmaster.GetTitle.50:	Hand of Hel
 PlayerClass.Spiritmaster.GetTitle.45:	Spirit Sage
 PlayerClass.Spiritmaster.GetTitle.40:	Spirit Adept
@@ -289,10 +390,11 @@ PlayerClass.Spiritmaster.GetTitle.15:	Journeyman
 PlayerClass.Spiritmaster.GetTitle.10:	Practitioner
 PlayerClass.Spiritmaster.GetTitle.5:	Spiritist Eleve
 
+#### Thane
 PlayerClass.Thane.GetTitle.50:		Hand of Thor
 PlayerClass.Thane.GetTitle.45:		Lord of Tempests
 PlayerClass.Thane.GetTitle.40:		Lord of Storms
-PlayerClass.Thane.GetTitle.35:		Thors Thunder
+PlayerClass.Thane.GetTitle.35:		Thor's Thunder
 PlayerClass.Thane.GetTitle.30:		Battleclasher
 PlayerClass.Thane.GetTitle.25:		Thor's Hammer
 PlayerClass.Thane.GetTitle.20:		Fervent
@@ -300,6 +402,7 @@ PlayerClass.Thane.GetTitle.15:		Storm Caller
 PlayerClass.Thane.GetTitle.10:		Stormhammer
 PlayerClass.Thane.GetTitle.5:		Storm Initiate
 
+#### Valkyrie
 PlayerClass.Valkyrie.GetTitle.50:	Odin's Valkyrie
 PlayerClass.Valkyrie.GetTitle.45:	Odin's Shieldmaiden
 PlayerClass.Valkyrie.GetTitle.40:	Odin's Chosen
@@ -311,6 +414,7 @@ PlayerClass.Valkyrie.GetTitle.15:	Servant of Midgard
 PlayerClass.Valkyrie.GetTitle.10:	Handmaiden
 PlayerClass.Valkyrie.GetTitle.5:	Apprentice Handmaiden
 
+#### Warlock
 PlayerClass.Warlock.GetTitle.50:	Hel's Warlock
 PlayerClass.Warlock.GetTitle.45:	Hel's Conjurer
 PlayerClass.Warlock.GetTitle.40:	Hel's Chosen
@@ -322,6 +426,7 @@ PlayerClass.Warlock.GetTitle.15:	Initiate of Hel
 PlayerClass.Warlock.GetTitle.10:	Conjurer
 PlayerClass.Warlock.GetTitle.5:		Apprentice Conjurer
 
+#### Warrior
 PlayerClass.Warrior.GetTitle.50:	Hand of Tyr
 PlayerClass.Warrior.GetTitle.45:	Warlord
 PlayerClass.Warrior.GetTitle.40:	Warmonger
@@ -333,7 +438,8 @@ PlayerClass.Warrior.GetTitle.15:	Footman
 PlayerClass.Warrior.GetTitle.10:	Yeoman Fighter
 PlayerClass.Warrior.GetTitle.5:		Initiate Fighter
 
-#Hibernia
+### Hibernia
+#### Animist
 PlayerClass.Animist.GetTitle.50:	Might of Gaia
 PlayerClass.Animist.GetTitle.45:	Arboreal Champion
 PlayerClass.Animist.GetTitle.40:	Arboreal Mage
@@ -345,6 +451,7 @@ PlayerClass.Animist.GetTitle.15:	Friend of Gaia
 PlayerClass.Animist.GetTitle.10:	Arboreal Apprentice
 PlayerClass.Animist.GetTitle.5:		Grove Initiate
 
+#### Bainshee
 PlayerClass.Bainshee.GetTitle.50:	Spectral Warrior
 PlayerClass.Bainshee.GetTitle.45:	Spectral Guardian
 PlayerClass.Bainshee.GetTitle.40:	Revenant Prowler
@@ -356,6 +463,7 @@ PlayerClass.Bainshee.GetTitle.15:	Phantom Adept
 PlayerClass.Bainshee.GetTitle.10:	Wraith Apprentice
 PlayerClass.Bainshee.GetTitle.5:	Wraith Initiate
 
+#### Bard
 PlayerClass.Bard.GetTitle.50:		Master Songster
 PlayerClass.Bard.GetTitle.45:		Spellsinger
 PlayerClass.Bard.GetTitle.40:		Songster
@@ -367,6 +475,7 @@ PlayerClass.Bard.GetTitle.15:		Caroler
 PlayerClass.Bard.GetTitle.10:		Vocalist
 PlayerClass.Bard.GetTitle.5:		Chanter
 
+#### Blademaster
 PlayerClass.Blademaster.GetTitle.50:	Bladesong
 PlayerClass.Blademaster.GetTitle.45:	Armigerant
 PlayerClass.Blademaster.GetTitle.40:	Duelist
@@ -376,8 +485,9 @@ PlayerClass.Blademaster.GetTitle.25:	Gallant
 PlayerClass.Blademaster.GetTitle.20:	Blade Weaver
 PlayerClass.Blademaster.GetTitle.15:	Sabreur
 PlayerClass.Blademaster.GetTitle.10:	Stylist
-PlayerClass.Blademaster.GetTitle.5:	Bladist
+PlayerClass.Blademaster.GetTitle.5:	    Bladist
 
+#### Champion
 PlayerClass.Champion.GetTitle.50:	Archon
 PlayerClass.Champion.GetTitle.45:	Hero
 PlayerClass.Champion.GetTitle.40:	Consul
@@ -389,6 +499,7 @@ PlayerClass.Champion.GetTitle.15:	Propugner
 PlayerClass.Champion.GetTitle.10:	Charger
 PlayerClass.Champion.GetTitle.5:	Page
 
+#### Druid
 PlayerClass.Druid.GetTitle.50:		Grove Priest
 PlayerClass.Druid.GetTitle.45:		Grove Guardian
 PlayerClass.Druid.GetTitle.40:		Master Ovate
@@ -400,6 +511,7 @@ PlayerClass.Druid.GetTitle.15:		Apprentice Druid
 PlayerClass.Druid.GetTitle.10:		Student
 PlayerClass.Druid.GetTitle.5:		Novice
 
+#### Eldritch
 PlayerClass.Eldritch.GetTitle.50:	Prime Prestidigitist
 PlayerClass.Eldritch.GetTitle.45:	Prestidigitist
 PlayerClass.Eldritch.GetTitle.40:	Force Weaver
@@ -411,6 +523,7 @@ PlayerClass.Eldritch.GetTitle.15:	Conjurer
 PlayerClass.Eldritch.GetTitle.10:	Evoker
 PlayerClass.Eldritch.GetTitle.5:	Incanter
 
+#### Enchanter
 PlayerClass.Enchanter.GetTitle.50:	Etheralist
 PlayerClass.Enchanter.GetTitle.45:	Possessor
 PlayerClass.Enchanter.GetTitle.40:	Enticer
@@ -422,6 +535,7 @@ PlayerClass.Enchanter.GetTitle.15:	Glamourist
 PlayerClass.Enchanter.GetTitle.10:	Illusionist
 PlayerClass.Enchanter.GetTitle.5:	Charmer
 
+#### Hero
 PlayerClass.Hero.GetTitle.50:		Seraph
 PlayerClass.Hero.GetTitle.45:		Paragon
 PlayerClass.Hero.GetTitle.40:		Valorant
@@ -433,6 +547,7 @@ PlayerClass.Hero.GetTitle.15:		Confidant
 PlayerClass.Hero.GetTitle.10:		Servitor
 PlayerClass.Hero.GetTitle.5:		Attendant
 
+#### Mentalist
 PlayerClass.Mentalist.GetTitle.50:	Astralist
 PlayerClass.Mentalist.GetTitle.45:	Mind Weaver
 PlayerClass.Mentalist.GetTitle.40:	Mystagogue
@@ -444,6 +559,7 @@ PlayerClass.Mentalist.GetTitle.15:	Thought Walker
 PlayerClass.Mentalist.GetTitle.10:	Adept
 PlayerClass.Mentalist.GetTitle.5:	Mentalist Apprentice
 
+#### Nightshade
 PlayerClass.Nightshade.GetTitle.50:	Shademaster
 PlayerClass.Nightshade.GetTitle.45:	Shadowcaster
 PlayerClass.Nightshade.GetTitle.40:	Shadow Walker
@@ -455,6 +571,7 @@ PlayerClass.Nightshade.GetTitle.15:	Darkshade
 PlayerClass.Nightshade.GetTitle.10:	Nightwalker
 PlayerClass.Nightshade.GetTitle.5:	Trickster
 
+#### Ranger
 PlayerClass.Ranger.GetTitle.50:		Master Ranger
 PlayerClass.Ranger.GetTitle.45:		Master Marksman
 PlayerClass.Ranger.GetTitle.40:		Master Archer
@@ -466,6 +583,7 @@ PlayerClass.Ranger.GetTitle.15:		Archer
 PlayerClass.Ranger.GetTitle.10:		Lurker
 PlayerClass.Ranger.GetTitle.5:		Wilder
 
+#### Valewalker
 PlayerClass.Valewalker.GetTitle.50:	Vale Guardian
 PlayerClass.Valewalker.GetTitle.45:	Scythemaster
 PlayerClass.Valewalker.GetTitle.40:	Vale Warrior
@@ -477,6 +595,7 @@ PlayerClass.Valewalker.GetTitle.15:	Forestwalker
 PlayerClass.Valewalker.GetTitle.10:	Scythewielder
 PlayerClass.Valewalker.GetTitle.5:	Grove Apprentice
 
+#### Vampiir
 PlayerClass.Vampiir.GetTitle.50:	Vampiir Warrior
 PlayerClass.Vampiir.GetTitle.45:	Vampiir Guardian
 PlayerClass.Vampiir.GetTitle.40:	Vampiir Hunter
@@ -488,6 +607,7 @@ PlayerClass.Vampiir.GetTitle.15:	Vampiir Adept
 PlayerClass.Vampiir.GetTitle.10:	Vampiir Apprentice
 PlayerClass.Vampiir.GetTitle.5:		Vampiir Initiate
 
+#### Warden
 PlayerClass.Warden.GetTitle.50:		Master Forester
 PlayerClass.Warden.GetTitle.45:		Master Hunter
 PlayerClass.Warden.GetTitle.40:		Master Woodsman

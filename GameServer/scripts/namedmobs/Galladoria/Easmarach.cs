@@ -65,6 +65,16 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+        
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
+            LoadTemplate(npcTemplate);
+            EasmarachBrain sBrain = new EasmarachBrain();
+            SetOwnBrain(sBrain);
+            base.AddToWorld();
+            return true;
+        }
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in this.GetNPCsInRadius(4000))
@@ -74,6 +84,20 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
+            
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+            
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                }
+            }
+            DropLoot(killer);
             base.Die(killer);
         }
 

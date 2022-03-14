@@ -8197,9 +8197,9 @@ namespace DOL.GS
         /// <param name="killer">the killer</param>
         public override void Die(GameObject killer)
         {
-            // ambiant talk
+            // Ambient trigger upon killing player
             if (killer is GameNPC)
-                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, this);
+                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, killer as GameLiving);
 			
             CharacterClass.Die(killer);
 
@@ -10175,10 +10175,11 @@ namespace DOL.GS
 
                     if (spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
+                        castingComponent.StartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
-                        m_runningSpellHandler = spellHandler;
-                        m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-                        spellHandler.CastSpell(item);
+                        //m_runningSpellHandler = spellHandler;
+                        //m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                        //spellHandler.CastSpell(item);
                         return true;
                     }
                 }
@@ -10577,12 +10578,12 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// A general message from the area intended for this player.
+        /// A message sent to all objects within a set radius of the triggering entity (e.g., MessageToArea)
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="message"></param>
-        /// <param name="chatType"></param>
-        /// <param name="chatLocation"></param>
+        /// <param name="source">The originating source of the message</param>
+        /// <param name="message">The content of the message</param>
+        /// <param name="chatType">The message type (e.g., CT_Say, CT_Spell)</param>
+        /// <param name="chatLocation">The UI element to display the message in (e.g., CL_SystemWindow)</param>
         public virtual void MessageFromArea(GameObject source, string message, eChatType chatType, eChatLoc chatLocation)
         {
             Out.SendMessage(message, chatType, chatLocation);
@@ -11385,12 +11386,12 @@ namespace DOL.GS
             set { m_lastPositionUpdateTick = value; }
         }
 
-        private Point3D m_lastPositionUpdatePoint = new Point3D(0, 0, 0);
+        private Point3DFloat m_lastPositionUpdatePoint = new Point3DFloat(0, 0, 0);
 
         /// <summary>
         /// The last recorded position of this player
         /// </summary>
-        public Point3D LastPositionUpdatePoint
+        public Point3DFloat LastPositionUpdatePoint
         {
             get { return m_lastPositionUpdatePoint; }
             set { m_lastPositionUpdatePoint = value; }
