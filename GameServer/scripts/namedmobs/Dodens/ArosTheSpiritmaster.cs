@@ -10,7 +10,11 @@ using DOL.Events;
 using DOL.GS;
 using System.Reflection;
 using System.Collections;
+using DOL.AI;
 using DOL.AI.Brain;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+using log4net;
 
 
 namespace DOL.GS.Scripts
@@ -29,7 +33,7 @@ namespace DOL.GS.Scripts
 			Model = 173;
 			Size = 62;
 			Level = 72;
-			Strength = 855;
+			Strength = 435;
 			Dexterity = 220;
 			Constitution = 1200;
 			Intelligence = 220;
@@ -37,11 +41,12 @@ namespace DOL.GS.Scripts
 			Piety = 220;
 			Empathy = 220;
 			Charisma = 220;
+			ScalingFactor = 40;
 			Faction = FactionMgr.GetFactionByID(779);
 			Name = "Aros the Spiritmaster";
 			base.AddToWorld();
 			BroadcastLivingEquipmentUpdate();
-			SetOwnBrain(new ArosBrain());
+			base.SetOwnBrain(new ArosBrain());
 			
 			return true;
 		}
@@ -106,7 +111,7 @@ namespace DOL.GS.Scripts
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 2;
+					spell.CastTime = 1;
 					spell.Uninterruptible = true;
 					spell.ClientEffect = 2802;
 					spell.Description = "Summon a Pet";
@@ -139,7 +144,7 @@ namespace DOL.GS.Scripts
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 4;
+					spell.CastTime = 3;
 					spell.ClientEffect = 2797;
 					spell.Damage = 1100 * ArosDifficulty / 100;
 					spell.Name = "Soul Annihilation";
@@ -173,7 +178,7 @@ namespace DOL.GS.Scripts
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 10;
+					spell.CastTime = 6;
 					spell.ClientEffect = 2797;
 					spell.Damage = 1350 * ArosDifficulty / 100;
 					spell.Name = "Soul Annihilation";

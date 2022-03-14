@@ -34,7 +34,13 @@ namespace DOL.GS.Scripts
         protected String m_DebuffAnnounce;
         protected String m_SummonAnnounce;
         protected String[] m_DeathAnnounce;
-        protected GameNPC summonedGuard = new GameNPC();
+        
+        //check if he is doing spells
+        private bool isBombing = true;
+        private bool isBigBombing = true;
+        private bool isSummoning = true;
+        private bool isDebuffing = true;
+        
         /// <summary>
         /// Creates a new instance of GameEpicAros.
         /// </summary>
@@ -50,8 +56,8 @@ namespace DOL.GS.Scripts
             m_SummonAnnounce = "{0} uses his power to summon a protective spirit!";
             m_DeathAnnounce = new String[] { "{0} trips and falls on the hard stone floor.",
                 "'You will remember my name! {0}!'" };
-            MaxDistance = 2000;
-            TetherRange = 2000;
+            MaxDistance = 2500;
+            TetherRange = 3500;
             SetOwnBrain(new ArosBrain());
         }
 
@@ -138,7 +144,7 @@ namespace DOL.GS.Scripts
             {
                 if (npc.Name.Contains("Guardian of Aros"))
                 {
-                    npc.RemoveFromWorld();
+                    npc.Die(killer);
                 }
                 if (npc.Name.Contains("Summoned Guardian"))
                 {
@@ -198,8 +204,7 @@ namespace DOL.GS.Scripts
 
             base.OnAttackedByEnemy(ad);
         }
-
-
+        
         /// <summary>
         /// Handle event notifications.
         /// </summary>
@@ -243,54 +248,71 @@ namespace DOL.GS.Scripts
             }
         }
 
+        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        {
+            base.Notify(e, sender, args);
+            if (sender == this)
+            {
+                GameLiving source = sender as GameLiving;
+                if (e == GameObjectEvent.TakeDamage)
+                {
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                    {
+                        CheckDebuff(player);
+                        CheckChanceBomb(player);
+                    }
+                    
+                }
+            }
+        }
+
         #endregion
 
-        public void SpawnGuardian(GameObject enemy)
+        public void SpawnGuardian(GamePlayer enemy)
         {
-            GamePlayer player = enemy as GamePlayer;
-            summonedGuard.Health = summonedGuard.MaxHealth;
+            GameNPC summonedGuard = new GameNPC();
             SetVariables(summonedGuard);
             summonedGuard.AddToWorld();
-            summonedGuard.StartAttack(player);
-
+            summonedGuard.StartAttack(enemy);
         }
-        public void SetVariables(GameNPC summonedGuard)
+        public void SetVariables(GameNPC summonedGuardian)
         {
-            //summonedGuard.EquipmentTemplateID = "Summoned_Guardian";
-            summonedGuard.LoadEquipmentTemplateFromDatabase("Summoned_Guardian");
-            summonedGuard.X = this.X + 50;
-            summonedGuard.Y = this.Y + 50;
-            summonedGuard.Z = this.Z + 50;
-            summonedGuard.CurrentRegion = this.CurrentRegion;
-            summonedGuard.Heading = this.Heading;
-            summonedGuard.Level = this.Level;
-            summonedGuard.Realm = this.Realm;
-            summonedGuard.Faction = FactionMgr.GetFactionByID(779);
-            summonedGuard.Name = "Guardian of Aros";
-            summonedGuard.GuildName = "Summoned Ghost";
-            summonedGuard.Model = 140;
-            summonedGuard.Size = 65;
-            summonedGuard.AttackRange = 200;
-            summonedGuard.Flags |= eFlags.GHOST;
-            summonedGuard.MeleeDamageType = eDamageType.Spirit;
-            summonedGuard.RespawnInterval = -1; // dont respawn
-            summonedGuard.RoamingRange = this.RoamingRange;
-            summonedGuard.MaxDistance = 2000;
-            summonedGuard.MaxSpeedBase = this.MaxSpeedBase;
+            summonedGuardian.LoadEquipmentTemplateFromDatabase("Summoned_Guardian");
+            summonedGuardian.Health = summonedGuardian.MaxHealth;
+            summonedGuardian.X = this.X + 200;
+            summonedGuardian.Y = this.Y;
+            summonedGuardian.Z = this.Z;
+            summonedGuardian.CurrentRegion = this.CurrentRegion;
+            summonedGuardian.Heading = this.Heading;
+            summonedGuardian.Level = 65;
+            summonedGuardian.Realm = this.Realm;
+            summonedGuardian.Faction = FactionMgr.GetFactionByID(779);
+            summonedGuardian.Name = "Guardian of Aros";
+            summonedGuardian.GuildName = "Summoned Ghost";
+            summonedGuardian.Model = 140;
+            summonedGuardian.Size = 65;
+            summonedGuardian.AttackRange = 200;
+            summonedGuardian.Flags |= eFlags.GHOST;
+            summonedGuardian.MeleeDamageType = eDamageType.Spirit;
+            summonedGuardian.RespawnInterval = -1; // dont respawn
+            summonedGuardian.RoamingRange = this.RoamingRange;
+            summonedGuardian.MaxDistance = 2000;
+            summonedGuardian.MaxSpeedBase = this.MaxSpeedBase;
 
             // also copies the stats
+            summonedGuardian.CurrentSpeed = 200;
 
-            summonedGuard.Strength = this.Strength;
-            summonedGuard.Constitution = this.Constitution;
-            summonedGuard.Dexterity = this.Dexterity;
-            summonedGuard.Quickness = this.Quickness;
-            summonedGuard.Intelligence = this.Intelligence;
-            summonedGuard.Empathy = this.Empathy;
-            summonedGuard.Piety = this.Piety;
-            summonedGuard.Charisma = this.Charisma;
+            summonedGuardian.Strength = this.Strength;
+            summonedGuardian.Constitution = this.Constitution;
+            summonedGuardian.Dexterity = this.Dexterity;
+            summonedGuardian.Quickness = this.Quickness;
+            summonedGuardian.Intelligence = this.Intelligence;
+            summonedGuardian.Empathy = this.Empathy;
+            summonedGuardian.Piety = this.Piety;
+            summonedGuardian.Charisma = this.Charisma;
 
-            if (summonedGuard.Inventory != null)
-                summonedGuard.SwitchWeapon(this.ActiveWeaponSlot);
+            if (summonedGuardian.Inventory != null)
+                summonedGuardian.SwitchWeapon(this.ActiveWeaponSlot);
 
             ABrain mobBrain = null;
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -301,15 +323,15 @@ namespace DOL.GS.Scripts
             }
             if (mobBrain == null)
             {
-                summonedGuard.SetOwnBrain(new StandardMobBrain());
+                summonedGuardian.SetOwnBrain(new StandardMobBrain());
             }
             else if (mobBrain is StandardMobBrain)
             {
                 StandardMobBrain sbrain = (StandardMobBrain)mobBrain;
-                StandardMobBrain tbrain = (StandardMobBrain)this.Brain;
+                StandardMobBrain tbrain = (StandardMobBrain)Brain;
                 sbrain.AggroLevel = tbrain.AggroLevel;
                 sbrain.AggroRange = tbrain.AggroRange;
-                summonedGuard.SetOwnBrain(sbrain);
+                summonedGuardian.SetOwnBrain(sbrain);
             }
         }
 
@@ -336,6 +358,52 @@ namespace DOL.GS.Scripts
             get;
         }
 
+        private const int m_BombChance = 3;
+        private GameLiving m_BombTarget;
+        
+        /// <summary>
+        /// Chance to cast Summon when a potential target has been detected.
+        /// </summary>
+        protected int BombChance
+        {
+            get { return m_BombChance; }
+        }
+
+        /// <summary>
+        /// The target for the next Summon attack.
+        /// </summary>
+        private GameLiving BombTarget
+        {
+            get { return m_BombTarget; }
+            set { m_BombTarget = value; PrepareToBombChance(); }
+        }
+
+        
+        /// <summary>
+        /// Check whether or not to cast Bomb.
+        /// </summary>
+        public bool CheckChanceBomb(GameLiving target)
+        {
+            if (target == null || BombTarget != null) return false;
+            bool success = Util.Chance(BombChance);
+            if (success)
+                BombTarget = target;
+            return success;   // Has a 3% chance to cast.
+        }
+        
+        /// <summary>
+        /// Announce the Debuff and start the 1 second timer.
+        /// </summary>
+        private void PrepareToBombChance()
+        {
+            if (BombTarget == null) return;
+            TurnTo(BombTarget);
+            WalkTo(BombTarget, 250);
+            int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
+            BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
+            new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
+        }
+        
         /// <summary>
         /// Check whether or not to cast Bomb.
         /// </summary>
@@ -361,10 +429,6 @@ namespace DOL.GS.Scripts
         {
             // Prevent brain from casting this over and over.
             HealthPercentOld = HealthPercent;
-            if (this.AttackState)
-                this.StopAttack();
-            if (this.IsMoving)
-                this.StopFollowing();
             int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
             new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
@@ -377,10 +441,6 @@ namespace DOL.GS.Scripts
         private void PrepareToBigBomb()
         {
             HealthPercentOld = HealthPercent;
-            if (this.AttackState)
-                this.StopAttack();
-            if (this.IsMoving)
-                this.StopFollowing();
             BroadcastMessage(String.Format(m_BigBombAnnounce, Name));
             new RegionTimer(this, new RegionTimerCallback(CastBigBomb), 5000);
         }
@@ -422,7 +482,7 @@ namespace DOL.GS.Scripts
             get;
         }
 
-        private const int m_DebuffChance = 15;
+        private const int m_DebuffChance = 3;
 
         /// <summary>
         /// Chance to cast Debuff when a potential target has been detected.
@@ -542,7 +602,7 @@ namespace DOL.GS.Scripts
         {
             HealthPercentOld = HealthPercent;
             BroadcastMessage(String.Format(m_SummonAnnounce, Name));
-            new RegionTimer(this, new RegionTimerCallback(CastSummon), 1000);
+            new RegionTimer(this, new RegionTimerCallback(CastSummon), 2000);
         }
 
         /// <summary>
@@ -560,22 +620,25 @@ namespace DOL.GS.Scripts
 
                 if (player != null)
                 {
-                    if (GameServer.ServerRules.IsAllowedToAttack(this, player, false))
+                    if (IsCasting)
                     {
-                        SpawnGuardian(player);
-                        target = player;
-                        break;
+                        if (GameServer.ServerRules.IsAllowedToAttack(this, player, false) && isSummoning)
+                        {
+                            SpawnGuardian(player);
+                            target = player;
+                            break;
+                        }
+                        isSummoning = false;
                     }
-
-                }
-                else
-                {
-                    SpawnGuardian(this);
+                    else
+                    {
+                        isSummoning = true;
+                    }
+                   
                 }
                 if (target == null || Summon == null)
                     return 1;
             }
-
             return 0;
         }
         #endregion
