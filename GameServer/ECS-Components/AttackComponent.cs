@@ -1429,6 +1429,11 @@ namespace DOL.GS
                     lowerboundary = 75;
                     upperboundary = 125;
                 }
+                if(owner is GameEpicBoss)//do always same dmg(max cap), remove it incase of eny errors
+                {                        //
+                    lowerboundary = 125; //
+                    upperboundary = 125; //
+                }                        //remove till here if errors appears
 
                 int styleSpec = 0;
                 if (ad.Style != null)
@@ -2739,6 +2744,11 @@ namespace DOL.GS
 		/// <param name="weapon">attack weapon</param>
 		public double UnstyledDamageCap(InventoryItem weapon)
         {
+            if (owner is GameEpicBoss)//damage cap for epic encounters if they use melee weapons,if errors appear remove from here
+            {
+                var p = owner as GameEpicBoss;
+                return AttackDamage(weapon) * ((double)p.Empathy/100) * ServerProperties.Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+            }///////////////////////////remove until here if errors appear
             if (owner is GamePlayer)
             {
                 var p = owner as GamePlayer;
@@ -2806,7 +2816,9 @@ namespace DOL.GS
                 }
             }
             else
+            {
                 return AttackDamage(weapon) * (2.82 + 0.00009 * AttackSpeed(weapon));
+            }
         }
 
         /// <summary>
