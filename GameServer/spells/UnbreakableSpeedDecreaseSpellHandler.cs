@@ -34,6 +34,7 @@ namespace DOL.GS.Spells
 		{
 			new StatDebuffECSEffect(initParams);
 		}
+		
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);

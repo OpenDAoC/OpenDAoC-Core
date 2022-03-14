@@ -142,7 +142,8 @@ namespace DOL.GS
 
                     }
                 }
-            }           
+            }
+            (SpellHandler as CharmSpellHandler).m_controlledBrain = null;
         }
     }
 }

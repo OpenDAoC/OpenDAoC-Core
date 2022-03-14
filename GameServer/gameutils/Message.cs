@@ -75,7 +75,7 @@ namespace DOL.GS
 		/// <param name="centerObject">The center object of the message</param>
 		/// <param name="message">The message to send</param>
 		/// <param name="chatType">The type of message to send</param>
-		/// <param name="excludes">An optional list of excluded players</param>
+		/// <param name="excludes">An optional list of players to exclude from receiving the message</param>
 		public static void SystemToArea(GameObject centerObject, string message, eChatType chatType, params GameObject[] excludes)
 		{
 			SystemToArea(centerObject, message, chatType, WorldMgr.INFO_DISTANCE, excludes);

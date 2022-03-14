@@ -309,13 +309,13 @@ GamePlayer.Say.YouSay:					Ihr sagt: "{0}"
 GamePlayer.SayReceive.Says:				{0} sagt: "{1}"
 GamePlayer.SayReceive.FalseLanguage:			{0} sagt etwas in einer Sprache, die Ihr nicht versteht.
 
-GamePlayer.SendReceive.Sends:				{0} sendet: {1}
-GamePlayer.SendReceive.FalseLanguage:			{0} sendet etwas in einer Sprache, die Ihr nicht versteht.
-GamePlayer.SendReceive.Afk:				{0} ist momentan im AFK-Modus.
-GamePlayer.SendReceive.AfkMessage:			<AFK> {0} sendet: "{1}"
+Social.ReceiveMessage.Private.Sends:				{0} sendet: {1}
+Social.ReceiveMessage.Private.FalseLanguage:			{0} sendet etwas in einer Sprache, die Ihr nicht versteht.
+Social.ReceiveMessage.AFK.PlayerAFK:				{0} ist momentan im AFK-Modus.
+Social.ReceiveMessage.AFK.Sends:			<AFK> {0} sendet: "{1}"
 
-GamePlayer.Send.target.DontUnderstandYou:		{0} scheint Euch nicht zu verstehen!
-GamePlayer.Send.YouSendTo:				Ihr sendet: "{0}" an {1}.
+Social.SendMessage.Private.DontUnderstandYou:		{0} scheint Euch nicht zu verstehen!
+Social.SendMessage.Private.YouSendTo:				Ihr sendet: "{0}" an {1}.
 
 GamePlayer.SetControlledNpc.ReleaseTarget:		Ihr verliert die Kontrolle über Euer Wesen.
 GamePlayer.SetControlledNpc.ReleaseTarget2:		Ihr verliert die Kontrolle über {0}.

@@ -1,7 +1,11 @@
-﻿
+﻿# Game Objects
+GamePlayer.UseSlot.IllegalSourceObject:			Illegal source object. Readied {0}.
 
-GameObject.Casting.CastsASpell:				{0} casts a spell!
-GameObject.GetExamineMessages.YouTarget:	You target [{0}].
+## Examine
+GameObject.Target.YouTarget.Object:                 You target [{0}].
+GameObject.GetExamineMessages.YouTarget:	        You target [{0}].
+
+## Object Articles
 GameObject.GetName.Article1:				The {0}
 GameObject.GetName.Article2:				the {0}
 GameObject.GetName.Article3:				An {0}
@@ -14,6 +18,198 @@ GameObject.GetPronoun.Pronoun3:				Its
 GameObject.GetPronoun.Pronoun4:				its
 GameObject.GetPronoun.Pronoun5:				It
 GameObject.GetPronoun.Pronoun6:				it
-GameObject.Interact.TooFarAway:				{0} is too far away!
 
+## Item Articles
+GameStaticItem.GetName.Article1:			The {0}
+GameStaticItem.GetName.Article2:			the {0}
 
+## Interact
+Behaviour.DestroyItemAction.Destroyed:		{0} is destroyed.
+Behaviour.DropItemAction.DropsFrontYou:		{0} drops in front of you.
+GameLiving.AttackData.GainEndurancePoints:	You gain {0} endurance points.
+GameLiving.AttackData.GainPowerPoints:		You gain {0} power points.
+
+## Item Equip
+GamePlayer.OnItemEquipped.Increased:		Your {0} has increased.
+GamePlayer.OnItemEquipped.Magic:			The magic of {0} flows through you.
+GamePlayer.OnItemEquipped.WieldBothHands:	You wield {0} in both hands.
+GamePlayer.OnItemEquipped.WieldLeftHand:	You wield {0} in your left hand.
+GamePlayer.OnItemEquipped.WieldRightHand:	You wield {0} in your right hand.
+GamePlayer.OnItemUnequipped.BothHandsFree:	You sheathe {0}. Both hands are now free.
+GamePlayer.OnItemUnequipped.Decreased:		Your {0} has decreased.
+GamePlayer.OnItemUnequipped.LeftHandFree:	You sheathe {0} from your left hand.
+GamePlayer.OnItemUnequipped.RightHandFree:	You sheathe {0} from your right hand.
+
+## Item Use
+GamePlayer.UseSlot.NotEnouthPower:				You are not powerful enough to use this item's spell.
+GamePlayer.UseSlot.OutOfCharges:				The {0} is out of charges.
+GamePlayer.UseSlot.MustWaitBeforeUse:			You must wait {0} more second before use potion!
+GamePlayer.UseSlot.CantUseState:			    You can't use {0} in your state.
+GamePlayer.UseSlot.Used:			            {0} has been used.
+GamePlayer.UseSlot.CantUseCast:				You need to finish your current action for use your {0}!
+GamePlayer.UseSlot.AttemptToUse:				You attempt to use {0}.
+GamePlayer.UseSlot.CantUseFromBackpack:		You can't use this item from your backpack. Equip it before!
+GamePlayer.UseSlot.CantUseInCombat:				You can't use this item in combat!
+GameObject.Casting.CastsASpell:				{0} casts a spell!
+GameLiving.StartWeaponMagicalEffect.NotPowerful:	You are not powerful enough to use this item's spell.
+GamePlayer.Spell.NotEnoughPowerful:			You are not powerful enough to use this item's spell.
+
+## Condition
+GamePlayer.Attack.CouldRepair:				Your {0} could use repairs.
+GamePlayer.Attack.NeedRepair:				Your {0} is in need of repairs.	
+GamePlayer.Attack.NeedRepairDire:			Your {0} is in dire need of repairs.	
+
+## Item Bonuses
+### Stats
+GamePlayer.ItemBonusName.Bonus1:			Strength
+GamePlayer.ItemBonusName.Bonus2:			Dexterity
+GamePlayer.ItemBonusName.Bonus3:			Constitution
+GamePlayer.ItemBonusName.Bonus4:			Quickness
+GamePlayer.ItemBonusName.Bonus5:			Intelligence
+GamePlayer.ItemBonusName.Bonus6:			Piety
+GamePlayer.ItemBonusName.Bonus7:			Empathy
+GamePlayer.ItemBonusName.Bonus8:			Charisma
+GamePlayer.ItemBonusName.Bonus9:			Power
+GamePlayer.ItemBonusName.Bonus10:			Hits
+
+### Resists
+GamePlayer.ItemBonusName.Bonus11:			Body resistance
+GamePlayer.ItemBonusName.Bonus12:			Cold resistance
+GamePlayer.ItemBonusName.Bonus13:			Crush resistance
+GamePlayer.ItemBonusName.Bonus14:			Energy resistance
+GamePlayer.ItemBonusName.Bonus15:			Heat resistance
+GamePlayer.ItemBonusName.Bonus16:			Matter resistance
+GamePlayer.ItemBonusName.Bonus17:			Slash resistance
+GamePlayer.ItemBonusName.Bonus18:			Spirit resistance
+GamePlayer.ItemBonusName.Bonus19:			Thrust resistance
+
+## Player Gravestone
+GameGravestone.GameGravestone.Grave:			{0}'s Grave
+
+## Tooltip Details
+DetailDisplayHandler.GetShortItemInfo.CrafterName:	    Crafter : {0}
+DetailDisplayHandler.GetShortItemInfo.NoDrop:		    No Drop.
+DetailDisplayHandler.GetShortItemInfo.NoSell:		    No Sell.
+DetailDisplayHandler.GetShortItemInfo.NoTrade:		    No Trade.
+DetailDisplayHandler.HandlePacket.Any:			        Any
+DetailDisplayHandler.HandlePacket.Back:			        (Back)
+DetailDisplayHandler.HandlePacket.BonusLevel:		    Bonus Level: {0}
+DetailDisplayHandler.HandlePacket.CannotDestroyed:	    Cannot be destroyed.
+DetailDisplayHandler.HandlePacket.CannotDropped:	    Cannot be dropped or put in your bank.
+DetailDisplayHandler.HandlePacket.CannotSold:		    Cannot be sold to merchants.
+DetailDisplayHandler.HandlePacket.CannotTraded:		    Cannot be traded to other players.
+DetailDisplayHandler.HandlePacket.ChatItem:		        [Chat] {0}/Item: "{1}"
+DetailDisplayHandler.HandlePacket.CrafterName:		    Crafter : {0}
+DetailDisplayHandler.HandlePacket.Damage:		        Damage: 
+DetailDisplayHandler.HandlePacket.Defense:		        Defense: 
+DetailDisplayHandler.HandlePacket.Devastating:		    Devastating
+DetailDisplayHandler.HandlePacket.DontBelongGuild:	    You don't belong to a player guild.
+DetailDisplayHandler.HandlePacket.FatigueCost:		    Fatigue Cost: 
+DetailDisplayHandler.HandlePacket.FollowupStyle:	    Followup Style: {0}
+DetailDisplayHandler.HandlePacket.Front:		        (Front)	
+DetailDisplayHandler.HandlePacket.GuildItem:		    [Guild] {0}/Item: "{1}"
+DetailDisplayHandler.HandlePacket.High:			        High
+DetailDisplayHandler.HandlePacket.HighBonus:		    High Bonus
+DetailDisplayHandler.HandlePacket.HighPenalty:		    High Penalty
+DetailDisplayHandler.HandlePacket.Item:			        {0}/Item: "{1}"
+DetailDisplayHandler.HandlePacket.LevName:		        Lev   Name
+DetailDisplayHandler.HandlePacket.Low:			        Low
+DetailDisplayHandler.HandlePacket.LowBonus:		        Low Bonus
+DetailDisplayHandler.HandlePacket.LowPenalty:		    Low Penalty
+DetailDisplayHandler.HandlePacket.Medium:		        Medium
+DetailDisplayHandler.HandlePacket.MediumBonus:		    Medium Bonus
+DetailDisplayHandler.HandlePacket.MediumPenalty:	    Medium Penalty
+DetailDisplayHandler.HandlePacket.MustBeInChatGroup:	You must be in a chat group.
+DetailDisplayHandler.HandlePacket.MustBeInBattleGroup:	You must be in a battle group.
+DetailDisplayHandler.HandlePacket.NoBonus:		        No Bonus
+DetailDisplayHandler.HandlePacket.NoGroup:		        You are not part of a group.
+DetailDisplayHandler.HandlePacket.NoInformation:	    No special information!
+DetailDisplayHandler.HandlePacket.None:		            None
+DetailDisplayHandler.HandlePacket.NoPermissionToSpeak:	You don't have permission to speak on the on guild line.	
+DetailDisplayHandler.HandlePacket.OnlyModerator:	    Only moderator can talk on this chat group.
+DetailDisplayHandler.HandlePacket.Opening:		        Opening: 
+DetailDisplayHandler.HandlePacket.OpeningStyle:		    Opening Style: 
+DetailDisplayHandler.HandlePacket.Or:			        or {0}
+DetailDisplayHandler.HandlePacket.Positional:		    Positional 
+DetailDisplayHandler.HandlePacket.Side:			        (Side)
+DetailDisplayHandler.HandlePacket.TargetBlocks:		    Target Blocks
+DetailDisplayHandler.HandlePacket.TargetEffect:		    Target Effect: 
+DetailDisplayHandler.HandlePacket.TargetEvades:		    Target Evades
+DetailDisplayHandler.HandlePacket.TargetFumbles:	    Target Fumbles
+DetailDisplayHandler.HandlePacket.TargetHits:		    Target Hits
+DetailDisplayHandler.HandlePacket.TargetMisses:		    Target Misses
+DetailDisplayHandler.HandlePacket.TargetParrys:		    Target Parries
+DetailDisplayHandler.HandlePacket.TargetStyle:		    Target Style
+DetailDisplayHandler.HandlePacket.ToHit:		        To Hit: 
+DetailDisplayHandler.HandlePacket.VeryHigh:		        Very High
+DetailDisplayHandler.HandlePacket.VeryHighBonus:	    Very High Bonus	
+DetailDisplayHandler.HandlePacket.VeryHighPenalty:	    Very High Penalty
+DetailDisplayHandler.HandlePacket.VeryLow:		        Very Low
+DetailDisplayHandler.HandlePacket.VeryLowBonus:		    Very Low Bonus
+DetailDisplayHandler.HandlePacket.VeryLowPenalty:	    Very Low Penalty
+DetailDisplayHandler.HandlePacket.VeryStrange:		    The item is not recognized.
+DetailDisplayHandler.HandlePacket.WeaponType:		    Weapon Type: {0}
+DetailDisplayHandler.HandlePacket.YouBlock:		        You Block
+DetailDisplayHandler.HandlePacket.YouEvade:		        You Evade
+DetailDisplayHandler.HandlePacket.YouFumble:		    You Fumble
+DetailDisplayHandler.HandlePacket.YouHit:		        You Hit
+DetailDisplayHandler.HandlePacket.YouMiss:		        You Miss
+DetailDisplayHandler.HandlePacket.YouParry:		        You Parry
+DetailDisplayHandler.WriteBonusLine.Points:		        pts
+DetailDisplayHandler.WriteBonusLine.PowerPool:		    % of power pool.
+DetailDisplayHandler.WriteClassicArmorInfos.Absorption:	- {0}% Absorption
+DetailDisplayHandler.WriteClassicArmorInfos.ArmorMod:	Armor Modifiers:
+DetailDisplayHandler.WriteClassicArmorInfos.BaseFactor:	- {0} Base Factor
+DetailDisplayHandler.WriteClassicArmorInfos.ClampFact:	- {0} Clamped Factor
+DetailDisplayHandler.WriteClassicArmorInfos.Condition:	- {0}% Condition
+DetailDisplayHandler.WriteClassicArmorInfos.EffArmor:	Effective Armor:
+DetailDisplayHandler.WriteClassicArmorInfos.Factor:	    - {0} Factor
+DetailDisplayHandler.WriteClassicArmorInfos.Quality:	- {0}% Quality
+DetailDisplayHandler.WriteClassicShieldInfos.BaseDPS:	- {0} Base DPS
+DetailDisplayHandler.WriteClassicShieldInfos.ClampDPS:	- {0} Clamped DPS
+DetailDisplayHandler.WriteClassicShieldInfos.DamageMod:	Damage Modifiers (when used with shield styles):
+DetailDisplayHandler.WriteClassicShieldInfos.Large: 	- Shield Size : Large
+DetailDisplayHandler.WriteClassicShieldInfos.Medium:	- Shield Size : Medium
+DetailDisplayHandler.WriteClassicShieldInfos.Small:	    - Shield Size : Small
+DetailDisplayHandler.WriteClassicShieldInfos.SPD:	    - {0} Shield Speed
+DetailDisplayHandler.WriteClassicWeaponInfos.BaseDPS:	- {0} Base DPS
+DetailDisplayHandler.WriteClassicWeaponInfos.ClampDPS:	- {0} Clamped DPS
+DetailDisplayHandler.WriteClassicWeaponInfos.Condition:	- {0}% Condition
+DetailDisplayHandler.WriteClassicWeaponInfos.DamageMod:	Damage Modifiers:
+DetailDisplayHandler.WriteClassicWeaponInfos.DamageType:- Damage Type: {0}
+DetailDisplayHandler.WriteClassicWeaponInfos.EffDamage:	Effective Damage:
+DetailDisplayHandler.WriteClassicWeaponInfos.Quality:	- {0}% Quality
+DetailDisplayHandler.WriteClassicWeaponInfos.SPD:	    - {0} Weapon Speed
+DetailDisplayHandler.WriteMagicalBonuses.ChargedMagic:	Charged Magic Ability:
+DetailDisplayHandler.WriteMagicalBonuses.Charges:	    - {0} Charges
+DetailDisplayHandler.WriteMagicalBonuses.FocusBonus:	Focus Bonuses:
+DetailDisplayHandler.WriteMagicalBonuses.Level:		    - {0} Level
+DetailDisplayHandler.WriteMagicalBonuses.LevelRequired:	Level Requirement
+DetailDisplayHandler.WriteMagicalBonuses.LevelRequired2:Level Requirement: {0} Level
+DetailDisplayHandler.WriteMagicalBonuses.MagicAbility:	Magical Ability:
+DetailDisplayHandler.WriteMagicalBonuses.MagicBonus:	Magical Bonuses:
+DetailDisplayHandler.WriteMagicalBonuses.MaxCharges:	- {0} Max
+DetailDisplayHandler.WriteMagicalBonuses.StrikeArmor:	- Spell has a chance of casting when enemy strikes at this armor.
+DetailDisplayHandler.WriteMagicalBonuses.StrikeEnemy:	- Spell has a chance of casting when this weapon strikes an enemy.
+DetailDisplayHandler.WriteMagicalBonuses.UsedItem:	    - Spell has a chance of casting when this item is used.
+DetailDisplayHandler.WriteMagicalBonuses.UseItem1:	    Can use item every: {0}
+DetailDisplayHandler.WriteMagicalBonuses.UseItem2:	    Can use item every: 3:00 min.
+DetailDisplayHandler.WriteMagicalBonuses.UseItem3:	    Can use again in: {0}.
+DetailDisplayHandler.WritePoisonInfo.Charges:		    - {0} Charges
+DetailDisplayHandler.WritePoisonInfo.Level:		        - {0} Level
+DetailDisplayHandler.WritePoisonInfo.LevelRequired:	    Level Requirement:
+DetailDisplayHandler.WritePoisonInfo.MaxCharges:	    - {0} Max
+DetailDisplayHandler.WritePoisonInfo.ProcAbility:	    Offensive Proc Ability:
+DetailDisplayHandler.WritePotionInfo.ChargedMagic:	    Charged Magic Ability:
+DetailDisplayHandler.WritePotionInfo.Charges:		    - {0} Charges
+DetailDisplayHandler.WritePotionInfo.Level:		        - {0} Level
+DetailDisplayHandler.WritePotionInfo.LevelRequired:	    Level Requirement:
+DetailDisplayHandler.WritePotionInfo.MaxCharges:	    - {0} Max
+DetailDisplayHandler.WritePotionInfo.NoUseInCombat:	    Cannot be used in combat
+DetailDisplayHandler.WritePotionInfo.UseItem2:		    Can use item every: 1:00 min
+DetailDisplayHandler.WritePotionInfo.UseItem3:		    Can use again in: {0}
+DetailDisplayHandler.WritePotionInfo.Type:		        Type : {0}
+DetailDisplayHandler.WritePotionInfo.Value:		        Value : {0}
+DetailDisplayHandler.WritePotionInfo.Target:	        Target : {0}
+DetailDisplayHandler.WritePotionInfo.Range:		        Range : {0}
+DetailDisplayHandler.WriteUsableClasses.UsableBy:	    Usable by: 

@@ -229,7 +229,7 @@ namespace DOL.GS.Spells
 								{
 									// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate							
 									// You cannot engage a mob that was attacked within the last X seconds...
-									if (engage.EngageTarget.LastAttackedByEnemyTick > engage.EngageTarget.CurrentRegion.Time - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
+									if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
 									{
 										if (engage.Owner is GamePlayer)
 											(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -244,8 +244,8 @@ namespace DOL.GS.Spells
 										if (engage.Owner is GamePlayer)
 											(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
-										if (blockchance < 85)
-											blockchance = 85;
+										if (blockchance < 95)
+											blockchance = 95;
 									}
 								}
 							}
@@ -320,6 +320,13 @@ namespace DOL.GS.Spells
 				caster.OnAttackEnemy(ad);
 				if (ad.Damage > 0)
 				{
+					// "A bolt of runic energy hits you!"
+					m_handler.MessageToLiving(target, m_handler.Spell.Message1, eChatType.CT_Spell);
+					// "{0} is hit by a bolt of runic energy!"
+					m_handler.MessageToCaster(eChatType.CT_Spell, m_handler.Spell.Message2, target.GetName(0, true));
+					// "{0} is hit by a bolt of runic energy!"
+					Message.SystemToArea(target, Util.MakeSentence(m_handler.Spell.Message2, target.GetName(0, true)), eChatType.CT_System, target, caster);
+					
 					m_handler.SendDamageMessages(ad);
 				}
 				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));

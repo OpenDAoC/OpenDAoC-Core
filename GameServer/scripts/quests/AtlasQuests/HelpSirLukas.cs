@@ -765,8 +765,8 @@ namespace DOL.GS.Quests.Albion
 				Lukas.Emote(eEmote.Curtsey);
 				Lukas.ResetHeading();
 
-				m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
-				m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
+				m_questPlayer.GainExperience(eXPSource.Quest, 200, true);
+				m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			}

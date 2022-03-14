@@ -13,10 +13,16 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
+            // "Lashing energy ripples around you."
+            // "Dangerous energy surrounds {0}."
+            OnEffectStartsMsg(Owner, true, false, true);
         }
 
         public override void OnStopEffect()
         {
+            // "Your energy field dissipates."
+            // "{0}'s energy field dissipates."
+            OnEffectExpiresMsg(Owner, true, false, true);
         }
     }
 }

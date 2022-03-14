@@ -10175,10 +10175,11 @@ namespace DOL.GS
 
                     if (spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
+                        castingComponent.StartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
-                        m_runningSpellHandler = spellHandler;
-                        m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-                        spellHandler.CastSpell(item);
+                        //m_runningSpellHandler = spellHandler;
+                        //m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                        //spellHandler.CastSpell(item);
                         return true;
                     }
                 }
@@ -10367,12 +10368,17 @@ namespace DOL.GS
                 // If GM/Admin uses '/alert send on', receive audio alert for all sends
                 if (Client != source.Client && Client.Account.PrivLevel != 1 && TempProperties.getProperty<bool>("SendAlert") == false)
                     Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.Sends", source.Name, str), type, eChatLoc.CL_ChatWindow);
+                if (source.Client.Account.PrivLevel > 1)
+                    // Message: {0} [TEAM] sends, "{1}"
+                    ChatUtil.SendGMMessage(Client, "Social.ReceiveMessage.Staff.SendsToYou", source.Name, str);
+                else
+                    // Message: {0} sends, "{1}"
+                    ChatUtil.SendSendMessage(Client, "Social.ReceiveMessage.Private.Sends", source.Name, str);
             }
             else
             {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SendReceive.FalseLanguage", source.Name),
-                    eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+                // Message: {0} sends something in a language you don't understand.
+                ChatUtil.SendSystemMessage(Client, "Social.ReceiveMessage.Private.FalseLanguage", source.Name);
                 return true;
             }
 
@@ -10381,14 +10387,15 @@ namespace DOL.GS
             {
                 if (afkmessage == "")
                 {
-                    source.Out.SendMessage(LanguageMgr.GetTranslation(source.Client.Account.Language, "GamePlayer.SendReceive.Afk", Name),
-                        eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: {0} is currently AFK.
+                    ChatUtil.SendSystemMessage(source.Client, "Social.ReceiveMessage.AFK.PlayerAFK", Name);
                 }
                 else
                 {
-                    source.Out.SendMessage(
-                        LanguageMgr.GetTranslation(source.Client.Account.Language, "GamePlayer.SendReceive.AfkMessage", Name, afkmessage), eChatType.CT_Say,
-                        eChatLoc.CL_ChatWindow);
+                    // Message: {0} is currently AFK.
+                    ChatUtil.SendSystemMessage(source.Client, "Social.ReceiveMessage.AFK.PlayerAFK", Name);
+                    // Message: <AFK> {0} sends, "{1}"
+                    ChatUtil.SendSendMessage(source.Client, "Social.ReceiveMessage.AFK.Sends", Name, afkmessage);
                 }
             }
 
@@ -10412,16 +10419,16 @@ namespace DOL.GS
 
             if (!target.PrivateMessageReceive(this, str))
             {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Send.target.DontUnderstandYou", target.Name),
-                    eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+                // Message: {0} doesn't seem to understand you!
+                ChatUtil.SendSystemMessage(Client, "Social.SendMessage.Private.DontUnderstandYou", target.Name);
                 return false;
             }
 
             if (Client.Account.PrivLevel == 1 && target.Client.Account.PrivLevel > 1 && target.IsAnonymous)
                 return true;
 
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Send.YouSendTo", str, target.Name), eChatType.CT_Send,
-                eChatLoc.CL_ChatWindow);
+            // Message: You send, "{0}" to {1}.
+            ChatUtil.SendSendMessage(Client, "Social.SendMessage.Private.YouSendTo", str, target.Name);
 
             return true;
         }
@@ -11385,12 +11392,12 @@ namespace DOL.GS
             set { m_lastPositionUpdateTick = value; }
         }
 
-        private Point3D m_lastPositionUpdatePoint = new Point3D(0, 0, 0);
+        private Point3DFloat m_lastPositionUpdatePoint = new Point3DFloat(0, 0, 0);
 
         /// <summary>
         /// The last recorded position of this player
         /// </summary>
-        public Point3D LastPositionUpdatePoint
+        public Point3DFloat LastPositionUpdatePoint
         {
             get { return m_lastPositionUpdatePoint; }
             set { m_lastPositionUpdatePoint = value; }

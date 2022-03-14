@@ -16,33 +16,38 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&send",
-		new string[] { "&tell", "&t" },
+		new [] { "&tell", "&t" },
 		ePrivLevel.Player,
-		"Sends a private message to a player",
-		"Use: SEND <TARGET> <TEXT TO SEND>")]
+		// Displays next to the command when '/cmd' is entered
+		"Sends a private message to the target player.",
+		"PLCommands.SendMessage.Syntax.Send")]
 	public class SendCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
 			if (args.Length < 3)
 			{
-				client.Out.SendMessage("Use: SEND <TARGET> <TEXT TO SEND>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: '/send <targetName> <message>' - Sends a private message to the target player.
+				ChatUtil.SendSystemMessage(client, "PLCommands.SendMessage.Syntax.Send", null);
 				return;
 			}
 
 			if (IsSpammingCommand(client.Player, "send", 500))
 			{
-				DisplayMessage(client, "Slow down! Think before you say each word!");
+				// Message: "Slow down, you're typing too fast--make the moment last."
+				ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.SlowDown", null);
 				return;
 			}
 
 			string targetName = args[1];
+			var name = !string.IsNullOrWhiteSpace(targetName) && char.IsLower(targetName, 0) ? targetName.Replace(targetName[0],char.ToUpper(targetName[0])) : targetName; // If first character in args[1] is lowercase, replace with uppercase character
 			string message = string.Join(" ", args, 2, args.Length - 2);
 
 			int result = 0;
@@ -54,8 +59,8 @@ namespace DOL.GS.Commands
 
 			if (targetClient == null)
 			{
-				// nothing found
-				client.Out.SendMessage(targetName + " is not in the game, or in another realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: "{0} is not in the game, or is a member of another realm."
+				ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
 				return;
 			}
 
@@ -64,30 +69,38 @@ namespace DOL.GS.Commands
             {
 				if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
 				{
-					client.Out.SendMessage(targetName + " is not in the game, or in another realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					targetClient.Player.Out.SendMessage(string.Format("{0} tried to send: {1}", client.Player.Name, message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+					// Message: "{0} is not in the game, or is a member of another realm."
+					ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
+					// Message: {0} tried to send you a message: "{1}"
+					ChatUtil.SendSendMessage(targetClient.Player, "Social.ReceiveMessage.Staff.TriedToSend", client.Player.Name, message);
 				}
-				else
+				if (client.Account.PrivLevel > (uint)ePrivLevel.Player)
 				{
-					// Let GM's communicate with other anon GM's
-					client.Player.SendPrivateMessage(targetClient.Player, "(anon) " + message);
+					// Let staff ignore anon state for other staff members
+					// Message: You send, "{0}" to {1} [ANON].
+					ChatUtil.SendSendMessage(client, "Social.SendMessage.Staff.YouSendAnon", message, targetClient.Player.Name);
+					// Message: {0} [TEAM] sends, "{1}"
+					ChatUtil.SendGMMessage(targetClient.Player, "Social.ReceiveMessage.Staff.SendsToYou", client.Player.Name, message);
 				}
                 return;
             }
 
 			switch (result)
 			{
-				case 2: // name not unique
-					client.Out.SendMessage("Character name is not unique.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				case 2: // Name not unique based on partial entry
+					// Message: "{0} is not a unique character name."
+					ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.NameNotUnique", name);
 					return;
-				case 3: // exact match
-				case 4: // guessed name
+				case 3: // Exact name match
+				case 4: // Guessed name based on partial entry
 					if (targetClient == client)
 					{
-						client.Out.SendMessage("You can't /send to yourself!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						// Message: "You can't message yourself!"
+						ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.CantMsgYourself", null);
 					}
 					else
 					{
+						// Send the message
 						client.Player.SendPrivateMessage(targetClient.Player, message);
 					}
 					return;

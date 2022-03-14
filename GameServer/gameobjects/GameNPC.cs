@@ -940,9 +940,18 @@ namespace DOL.GS
 		{
 			get
 			{
-				return (Flags & eFlags.STEALTH) != 0;
+				return false;// (Flags & eFlags.STEALTH) != 0;
 			}
 		}
+
+		bool m_wasStealthed = false;
+		public bool WasStealthed
+        {
+			get
+            {
+				return m_wasStealthed;
+            }
+        }
 
 		protected int m_maxdistance;
 		/// <summary>
@@ -3126,6 +3135,8 @@ namespace DOL.GS
 				m_teleporterIndicator.AddToWorld();
 			}
 
+			if (Flags.HasFlag(eFlags.STEALTH))
+				m_wasStealthed = true;
 			return true;
 		}
 
@@ -3573,17 +3584,21 @@ namespace DOL.GS
 			switch (player.Client.Account.Language)
 			{
 				case "EN":
-					{
-						IList list = base.GetExamineMessages(player);
-						list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetExamineMessages.YouExamine",
-															GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
-						return list;
-					}
+				{
+					IList list = base.GetExamineMessages(player);
+					// Message: You target [{0}].
+					list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Target.YouTarget.Object", GetName(0, false, player.Client.Account.Language, this)));
+					// Message: You examine {0}. {1} is {2}.
+					list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Examine.YouExamine.Generic", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
+					return list;
+				}
 				default:
 					{
 						IList list = new ArrayList(4);
+						// Message: You target [{0}].
 						list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.GetExamineMessages.YouTarget",
 															GetName(0, false, player.Client.Account.Language, this)));
+						// Message: You examine {0}. {1} is {2}.
 						list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetExamineMessages.YouExamine",
 															GetName(0, false, player.Client.Account.Language, this),
 															GetPronoun(0, true, player.Client.Account.Language), GetAggroLevelString(player, false)));
@@ -3710,7 +3725,7 @@ namespace DOL.GS
 
 				player.MountSteed(this, true);
 			}
-
+			
 			FireAmbientSentence(eAmbientTrigger.interact, player);
 			return true;
 		}
@@ -3840,7 +3855,7 @@ namespace DOL.GS
         public virtual void StartAttack(GameObject target)
         {
             attackComponent.StartAttack(target);
-            FireAmbientSentence(eAmbientTrigger.fighting, this);
+            FireAmbientSentence(eAmbientTrigger.fighting, target);
             //if (target == null)
             //    return;
 
@@ -4071,9 +4086,9 @@ namespace DOL.GS
 		public void SetLastMeleeAttackTick()
 		{
 			if (TargetObject?.Realm == 0 || Realm == 0)
-				m_lastAttackTickPvE = m_CurrentRegion.Time;
+				m_lastAttackTickPvE = GameLoop.GameLoopTime;
 			else
-				m_lastAttackTickPvP = m_CurrentRegion.Time;
+				m_lastAttackTickPvP = GameLoop.GameLoopTime;
 		}
 
 		public void StartMeleeAttackTimer()
@@ -4227,7 +4242,7 @@ namespace DOL.GS
 		{
 			Brain?.KillFSM();
 
-			FireAmbientSentence(eAmbientTrigger.dying, killer as GameLiving);
+			FireAmbientSentence(eAmbientTrigger.dying, killer);
 
 			if (ControlledBrain != null)
 				ControlledNPC_Release();
@@ -4251,19 +4266,22 @@ namespace DOL.GS
 				// Handle faction alignement changes // TODO Review
 				if ((Faction != null) && (killer is GamePlayer))
 				{
-					// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
-					foreach (DictionaryEntry de in this.XPGainers)
-					{
-						GameLiving living = de.Key as GameLiving;
-						GamePlayer player = living as GamePlayer;
-
-						// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
-						if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
-							player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-
-						if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					lock (this.XPGainers.SyncRoot)
+					{ 
+						// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
+						foreach (DictionaryEntry de in this.XPGainers)
 						{
-							Faction.KillMember(player);
+							GameLiving living = de.Key as GameLiving;
+							GamePlayer player = living as GamePlayer;
+
+							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
+							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
+								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+
+							if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+							{
+								Faction.KillMember(player);
+							}
 						}
 					}
 				}
@@ -4722,7 +4740,12 @@ namespace DOL.GS
 				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
 				standardMobBrain.OnAttackedByEnemy(ad);
             }
-            base.OnAttackedByEnemy(ad);
+
+			if ((Flags & eFlags.STEALTH) != 0)
+				Flags ^= GameNPC.eFlags.STEALTH;
+
+
+			base.OnAttackedByEnemy(ad);
         }
 
         /// <summary>
@@ -5666,8 +5689,8 @@ namespace DOL.GS
 		/// Handles all ambient messages triggered by a mob or NPC action
 		/// </summary>
 		/// <param name="trigger">The action triggering the message (e.g., aggroing, dying, roaming)</param>
-		/// <param name="living">The NPC/mob triggering the action (e.g., living, Brain.Body)</param>
-		public void FireAmbientSentence(eAmbientTrigger trigger, GameLiving living)
+		/// <param name="living">The entity triggering the action (e.g., a player)</param>
+		public void FireAmbientSentence(eAmbientTrigger trigger, GameObject living)
 		{
 			if (IsSilent || ambientTexts == null || ambientTexts.Count == 0) return;
 			if (trigger == eAmbientTrigger.interact && living == null) return; // Do not trigger interact messages with a corpse
@@ -5679,19 +5702,40 @@ namespace DOL.GS
 			if (!Util.Chance(chosen.Chance)) return;
 
 			string controller = string.Empty;
-			if (Brain is IControlledBrain) // Used for '{controller}' trigger keyword, use the name of the mob's owner (else returns blank)
+			if (Brain is IControlledBrain) // Used for '{controller}' trigger keyword, use the name of the mob's owner (else returns blank)--this is used when a pet has an ambient trigger.
 			{
-				GamePlayer playerOwner = (Brain as IControlledBrain).GetPlayerOwner();
+				GamePlayer playerOwner = ((IControlledBrain) Brain).GetPlayerOwner();
 				if (playerOwner != null)
 					controller = playerOwner.Name;
 			}
-			//else
-			//	controller = TargetObject.Name; // If target is not a pet, then return the target's name (to avoid blanks in trigger sentences or confusion over when to use {controller} vs {targetname})
-			
+
+			string text = chosen.Text;
+
+			if (TargetObject == null)
+			{
+				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", living.Name) // '{targetname}' returns the mob/NPC target's name
+					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
+				
+				// Replace trigger keywords
+				if (living is GamePlayer)
+					text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
+				if (living is GameNPC)
+					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
+			}
+			else
+			{
+				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", TargetObject == null ? string.Empty : TargetObject.Name) // '{targetname}' returns the mob/NPC target's name
+					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
+				
+				// Replace trigger keywords
+				if (TargetObject is GamePlayer)
+					text = text.Replace("{class}", ((GamePlayer) TargetObject).CharacterClass.Name).Replace("{race}", ((GamePlayer) TargetObject).RaceName);
+				if (TargetObject is GameNPC)
+					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
+			}
 			// Replace trigger keywords
-			var text = chosen.Text.Replace("{sourcename}", Name) // '{sourcename}' returns the mob or NPC name
-				.Replace("{targetname}", TargetObject == null ? string.Empty : TargetObject.Name) // '{targetname}' returns the mob/NPC target's name
-				.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
 
 			if (chosen.Emote != 0)
 			{
@@ -5699,9 +5743,9 @@ namespace DOL.GS
 			}
 			
 			// Replace trigger keywords
-			if (TargetObject is GamePlayer)
-				text = text.Replace("{class}", (TargetObject as GamePlayer).CharacterClass.Name).Replace("{race}", (TargetObject as GamePlayer).RaceName);
-			if (TargetObject is GameNPC)
+			if (TargetObject is GamePlayer && living is GamePlayer)
+				text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
+			if (TargetObject is GameNPC && living is GameNPC)
 				text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
 			
 			/*// Determines message delivery method for trigger voice
@@ -5748,7 +5792,7 @@ namespace DOL.GS
 				case "p": // Return custom System message in popup dialog only to player interating with the NPC
 					// For interact triggers
 				{
-					(living as GamePlayer).Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					((GamePlayer) living).Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					return;
 				}
 				default: // Return Say message with "{0} says," string start included (contrary to parameter description)

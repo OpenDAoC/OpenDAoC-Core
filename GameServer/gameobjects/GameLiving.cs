@@ -434,6 +434,8 @@ namespace DOL.GS
 		{
 			get { return m_activeWeaponSlot; }
 		}
+
+		public object _xpGainersLock = new object();
 		/// <summary>
 		/// Gets a hashtable holding
 		/// gameobject->float
@@ -3833,7 +3835,7 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount, EngageECSGameEffect engage )
+		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
 		{
 			// Block
       
@@ -3911,7 +3913,36 @@ namespace DOL.GS
 					blockChance = .9;
 				else if (shieldSize == 3 && blockChance > .99)
 					blockChance = .99;
+				
+				if (this.IsEngaging)
+				{
+					EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
+					if (engage != null && this.attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
+					{
+						// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate							
+						// You cannot engage a mob that was attacked within the last X seconds...
+						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
+						{
+							if (engage.Owner is GamePlayer)
+								(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						}  // Check if player has enough endurance left to engage
+						else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
+						{
+							engage.Cancel(false); // if player ran out of endurance cancel engage effect
+						}
+						else
+						{
+							engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
+							if (engage.Owner is GamePlayer)
+								(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
+							if (blockChance < .95)
+								blockChance = .95;
+						}
+					}
+				}
+
+				/*
 				// KNutters - Removed the AttackState check because it is imposible to be in melee range
 				// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
 				if( engage != null  && engage.EngageTarget == ad.Attacker )
@@ -3929,13 +3960,14 @@ namespace DOL.GS
 						engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
 						if( engage.Owner is GamePlayer )
 							(engage.Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((engage.Owner as GamePlayer).Client.Account.Language, "GameLiving.TryBlock.Blocking"), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-						if( blockChance < 0.85 )
-							blockChance = 0.85;
+						if( blockChance < 0.95 )
+							blockChance = 0.95;
 					}
 					// if player ran out of endurance cancel engage effect
 					else
 						engage.Cancel( false );
 				}
+				*/
 			}
 			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
 			{
@@ -4289,6 +4321,10 @@ namespace DOL.GS
                         (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
                     }
                 }
+            }
+			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
+            {
+				npc.CancelWalkToSpawn();
             }
 		}
 

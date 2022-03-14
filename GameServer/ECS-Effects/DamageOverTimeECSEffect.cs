@@ -22,12 +22,21 @@ namespace DOL.GS
             // attack ignores DoT damage, since only the first tick of a DoT should remove stealth.            
             if (OwnerPlayer != null)
                 OwnerPlayer.Stealth(false);
+            
+            // "Searing pain fills your mind!"
+            // "{0} is wracked with pain!"
+            OnEffectStartsMsg(Owner, true, false, true);
         }
 
         public override void OnStopEffect()
         {
             if (EffectType == eEffect.Bleed && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
                 Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
+            
+            // "Your mental agony fades."
+            // "{0}'s mental agony fades."
+            OnEffectExpiresMsg(Owner, true, false, true);
+
         }
 
         public override void OnEffectPulse()
@@ -43,12 +52,11 @@ namespace DOL.GS
                 {
                     if (OwnerPlayer != null)
                     {
-                        // An acidic cloud surrounds you!
-                        handler.MessageToLiving(Owner, SpellHandler.Spell.Message1, eChatType.CT_Spell);
-                        // {0} is surrounded by an acidic cloud!
-                        Message.SystemToArea(Owner, Util.MakeSentence(SpellHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
+                        // "Searing pain fills your mind!"
+                        // "{0} is wracked with pain!"
+                        OnEffectStartsMsg(Owner, true, false, true);
                     }
-                    handler.OnDirectEffect(Owner, Effectiveness, true);
+                    handler.OnDirectEffect(Owner, Effectiveness);
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {

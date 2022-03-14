@@ -1,39 +1,74 @@
-﻿# /AdrenalineRushAbility
+﻿# Realm Abilities
+
+## Event Handler
+RealmAbility.AddReUseDelayInfo.Every:			Level {0}: Can use every: {1}
+RealmAbility..CheckPreconditions.BeInCombat:		You must be in combat recently to use this ability!
+RealmAbility..CheckPreconditions.BeInGroup:		You must be in a group use this ability!
+RealmAbility..CheckPreconditions.Combat:		You have been in combat recently and cannot use this ability!
+RealmAbility..CheckPreconditions.Dead:			You cannot use this ability while dead!
+RealmAbility..CheckPreconditions.Mesmerized:		You cannot use this ability while mesmerized!
+RealmAbility..CheckPreconditions.Sitting:		You cannot use this ability while sitting!
+RealmAbility..CheckPreconditions.Stealthed:		You cannot use this ability while stealthed!
+RealmAbility..CheckPreconditions.Stunned:		You cannot use this ability while stunned!
+RealmAbility.SendCasterSpellEffectAndCastMessage.Caster:{0} casts a spell!
+RealmAbility.SendCasterSpellEffectAndCastMessage.You:	You cast a {0} Spell!
+RealmAbility.SendCastMessage.PlayerCasts:		{0} casts a spell!
+RealmAbility.SendCastMessage.YouCast:			You cast a {0} Spell!
+
+## Adrenaline Rush
 AdrenalineRushAbility.AddEffectsInfo.Info1:		
 AdrenalineRushAbility.AddEffectsInfo.Info2:		
 AdrenalineRushAbility.AddEffectsInfo.Info3:		
 AdrenalineRushAbility.AddEffectsInfo.Info4:		
-AdrenalineRushAbility.AddEffectsInfo.Info5:		
+AdrenalineRushAbility.AddEffectsInfo.Info5:
+GameLiving.CheckWeaponMagicalEffect.Protected:		Your target is protected against your poison by a magical effect.
 
-# /BedazzlingAuraAbility
+## Bedazzling Aura
 BedazzlingAuraAbility.AddEffectsInfo.Info1:
 BedazzlingAuraAbility.AddEffectsInfo.Info2:
 BedazzlingAuraAbility.AddEffectsInfo.Info3:
 BedazzlingAuraAbility.AddEffectsInfo.Info4:
 BedazzlingAuraAbility.AddEffectsInfo.Info5:
 
-# /ConcentrationAbility
+## Concentration
 ConcentrationAbility.AddEffectsInfo.Info1:	Level 1: Value: 25%
 ConcentrationAbility.AddEffectsInfo.Info2:	Level 2: Value: 60%
 ConcentrationAbility.AddEffectsInfo.Info3:	Level 3: Value: 100%
 ConcentrationAbility.AddEffectsInfo.Info4:	Target: Self
 ConcentrationAbility.AddEffectsInfo.Info5:	Casting time: instant
 
-# /JuggernautAbility
+## Dashing Defense
+DashingDefenseAbility.AddEffectsInfo.Info1:		
+DashingDefenseAbility.AddEffectsInfo.Info2:		Target: Self
+DashingDefenseAbility.AddEffectsInfo.Info3:		Casting time: instant
+DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type!
+DashingDefenseAbility.Execute.MustInGroup:		You must be in a group to use this ability!
+
+## First Aid
+FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 30%
+FirstAidAbility.AddEffectsInfo.Info2:			Level 2: Value: 60%
+FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 90%
+FirstAidAbility.AddEffectsInfo.Info4:			Target: Self
+FirstAidAbility.AddEffectsInfo.Info5:			Casting time: instant
+FirstAidAbility.AddEffectsInfo.Info6:			
+FirstAidAbility.Execute.FullyHealed:			You are fully healed.
+FirstAidAbility.Execute.HealYourself:			You heal yourself for {0} hit points.
+
+## Juggernaut
 JuggernautAbility.AddEffectsInfo.Info1:
 JuggernautAbility.AddEffectsInfo.Info2:
 JuggernautAbility.AddEffectsInfo.Info3:
 JuggernautAbility.AddEffectsInfo.Info4:
 JuggernautAbility.AddEffectsInfo.Info5:
 
-# /MasteryofConcentrationAbility
+## Mastery of Concentration
 MasteryofConcentrationAbility.AddEffectsInfo.Info1:
 MasteryofConcentrationAbility.AddEffectsInfo.Info2:
 MasteryofConcentrationAbility.AddEffectsInfo.Info3:
 MasteryofConcentrationAbility.AddEffectsInfo.Info4:
 MasteryofConcentrationAbility.AddEffectsInfo.Info5:
 
-# /MysticCrystalLoreAbility
+## Mystic Crystal Lore
 MysticCrystalLoreAbility.AddEffectsInfo.Info1:	Level 1: Value: 25%
 MysticCrystalLoreAbility.AddEffectsInfo.Info2:	Level 2: Value: 60%
 MysticCrystalLoreAbility.AddEffectsInfo.Info3:	Level 3: Value: 100%
@@ -41,7 +76,7 @@ MysticCrystalLoreAbility.AddEffectsInfo.Info4:	Target: Self
 MysticCrystalLoreAbility.AddEffectsInfo.Info5:	Casting time: instant
 MysticCrystalLoreAbility.AddEffectsInfo.Info6:
 
-# /NegativeMaelstromAbility
+## Negative Maelstrom
 NegativeMaelstromAbility.AddEffectsInfo.Info1:
 NegativeMaelstromAbility.AddEffectsInfo.Info2:
 NegativeMaelstromAbility.AddEffectsInfo.Info3:
@@ -52,15 +87,23 @@ NegativeMaelstromAbility.AddEffectsInfo.Info7:
 NegativeMaelstromAbility.AddEffectsInfo.Info8:
 NegativeMaelstromAbility.AddEffectsInfo.Info9:
 
-# /RAPropertyEnhancer
+## Purge
+PurgeAbility.AddEffectsInfo.Info1:			
+PurgeAbility.AddEffectsInfo.Info2:			Target: Self
+PurgeAbility.AddEffectsInfo.Info3:			Casting time: instant
+PurgeAbility.OnTick.PurgeActivate:			Purge activates in {0} seconds!
+PurgeAbility.RemoveNegativeEffects.FallFromYou:		All negative effects fall from you.
+
+## RA Property Enhancer
 RAPropertyEnhancer.DelveInfo.Info1:		Level {0}: Amount: {1}{2}
 
-# /RAStatEnhancer
+## RA Stat Enhancer
 RAStatEnhancer.DelveInfo.Info1:			Level {0}: Amount: {1}
 
-# /SecondWindAbility
+## Second Wind
 SecondWindAbility.AddEffectsInfo.Info1:			
 SecondWindAbility.AddEffectsInfo.Info4:			
 SecondWindAbility.AddEffectsInfo.Info5:			
 
-
+## Selective Blindness
+GameLiving.AttackData.InvisibleToYou:		{0} is invisible to you!

@@ -1,15 +1,18 @@
-﻿Skill.Ability.CannotUseDead:	You cannot use this while Dead!
-Skill.Ability.CannotUseMezzed:	You cannot use this while Mezzed!
-Skill.Ability.CannotUseStunned:	You cannot use this while Stunned!
+﻿## Abilities
+
+## Player Events
+Skill.Ability.CannotUseDead:	    You can't do that while dead!
+Skill.Ability.CannotUseMezzed:	    You can't do that while mesmerized!
+Skill.Ability.CannotUseStunned:	    You can't do that while paralyzed!
 Skill.Ability.CannotUseStanding:	You must be standing to use this ability!
-Skill.Ability.CannotUseSnared:	You may not use this ability while snared!
+Skill.Ability.CannotUseSnared:	    You may not use this ability while snared!
 Skill.Ability.CannotUseNoTarget:	You need a target to use this ability!
 Skill.Ability.CannotAttackTarget:	You cannot attack {0}!
-Skill.Ability.CannotSeeTarget:	You cannot see {0}!
+Skill.Ability.CannotSeeTarget:	    You cannot see {0}!
 Skill.Ability.TargetIsWithinRadius:	Your target is too far away to use this ability!
 Skill.Ability.TargetIsPhaseshifted:	{0} is Phaseshifted and can't be attacked!
 Skill.Ability.TargetIsUnderSputinLegacy:	{0} is under Sputin Legacy effect and can't be attacked!
-Skill.Ability.CannotUseAlreadyActive:	That ability is already active, wait until it expires.
+Skill.Ability.CannotUseAlreadyActive:	That ability is already active; wait until it expires.
 Skill.Ability.CannotUseInCombat:	You have been in combat recently and cannot use this ability!
 Skill.Ability.CannotUseTargetNull:	You need a target for this ability!
 Skill.Ability.CannotUseMustBeInGroup:	You must be in a group use this ability!
@@ -17,6 +20,19 @@ Skill.Ability.CannotUseWhileStealthed:	You cannot use this ability while stealth
 Skill.Ability.MinRemaining:	  minutes remaining.
 Skill.Ability.SecRemaining:	  seconds remaining.
 
+## Berserk
+Effects.BerserkEffect.Name:						Berserk
+Effects.BerserkEffect.InfoEffect:				This ability transforms the player into a Vendo beast and makes each hit that lands a critical hit, at the expense of any defensive abilities. It can be used one every seven minutes.
+Effects.BerserkEffect.StartFrenzy:		                You go into a berserker frenzy!
+Effects.BerserkEffect.AreaStartFrenzy:                  {0} goes into a berserker frenzy!
+Effects.BerserkEffect.EndFrenzy:		                Your berserker frenzy ends.
+Effects.BerserkEffect.AreaEndFrenzy:                    {0}'s berserker frenzy ends.
+
+## Camouflage
+Effects.CamouflageEffect.Name:					Camouflage
+Effects.CamouflageEffect.InfoEffect:			Available to the archer classes. This ability will make the archer undetectable to the Mastery of Stealth Realm Ability for a period of time. Drawing a weapon or engaging in combat will cancel the effect and cause the player to be visible. This does not modify stealth skill.
+Effects.CamouflageEffect.YouAreCamouflaged:		You are now camouflaged!
+Effects.CamouflageEffect.YourCFIsGone:			Your camouflage is gone.
 Skill.Ability.Camouflage.UseCamo: You camouflage yourself into your surroundings!
 Skill.Ability.CannotUse.Camouflage.Mezzed:	You can't use camouflage while mesmerized!
 Skill.Ability.CannotUse.Camouflage.Stunned:	You can't use camouflage while stunned!
@@ -24,38 +40,130 @@ Skill.Ability.CannotUse.Camouflage.NotStealthed:	You must be hidden to camouflag
 Skill.Ability.CannotUse.Camouflage.Dead:	You can't use camouflage when dead!
 Skill.Ability.CannotUse.Camouflage.DisableDuration:	You must wait {0} more second to attempt to use camouflage!
 
-Skill.Ability.CannotUse.Bodyguard.Dead:	You're dead and can't Bodyguard!
-Skill.Ability.CannotUse.Bodyguard.CancelTargetNull:	You are no longer Bodyguarding anyone.
-Skill.Ability.CannotUse.Bodyguard.GuardTargetIsGuardSource:	You can't Bodyguard yourself!
-Skill.Ability.CannotUse.Bodyguard.NotInGroup:	You can only guard players in your group!
-Skill.Ability.CannotUse.Bodyguard.GuardTargetAlreadyBodyGuarded:	{0} is already guarding {1}!
-Skill.Ability.CannotUse.Bodyguard.GuardSourceBodyGuarded:	You cannot bodyguard someone if you are Bodyguarded!
+## Charge
+Effects.ChargeEffect.StartCharge:                       You begin to charge wildly!
+Effects.ChargeEffect.AreaStartCharge:                   {0} begins charging wildly!
+Effects.ChargeEffect.EndCharge:                         You no longer seem so crazy!
+Effects.ChargeEffect.AreaEndCharge:                     {0} ceases their charge!
 
-Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons:	You must ready a ranged weapon in your hands!
-Skill.Ability.CannotUse.CriticalShot.MustBeStanding:	You must be standing to attempt a ranged attack!
+## Critical Shot
 Skill.Ability.CriticalShot.SwitchToRegular:	You switch to a regular shot!
-Skill.Ability.CriticalShot.AlreadyFiring:	You are already firing this weapon!
+GamePlayer.Attack.CantCritical:				You can't get a critical shot on your target, you switch to a standard shot.
 
-Skill.Ability.DirtyTricks.EffectCancel:	Your attacks return to normal.
-Skill.Ability.DirtyTricks.EffectStart:	You get dirt thrown in your face!
+## Dirty Tricks
 Skill.Ability.DirtyTricks.Name:	Dirty Tricks
 Skill.Ability.DirtyTricks.Description:	The player will toss dirt into the face of the enemy and causes his fumble rate to increase temporarily.
 Skill.Ability.DirtyTricks.DelveString:	Causes target's fumble rate to increase.
+Effects.DirtyTricks.EffectCancel:	                    You can see clearly again.
+Effects.DirtyTricks.AreaEffectCancel:                   {0} can see clearly again.
+Effects.DirtyTricks.EffectStart:	                    {0} flings a cloud of dirt in your eyes!
+Effects.DirtyTricks.AreaEffectStart:                    {0} flings dirt in {1}'s eyes!
 
+## Engage
+Effects.EngageEffect.Name:						Engage
+Effects.EngageEffect.InfoEffect:				Endurance is drained in return for a significantly increased blocking rate. Engage can only be used at range, or while closing to attack. Once you attack, it is disabled.
+Effects.EngageEffect.ConcOnBlockingX:			You concentrate on blocking the blows of {0}!
+Effects.EngageEffect.YouNoConcOnBlock:			You no longer concentrate on blocking the blows!
+Effects.EngageEffect.YouNoAttemptToEngageT:		You are no longer attempting to engage a target!
+Effects.EngageEffect.XEngagesY:					{0} engages {1}
+Effects.EngageEffect.EngageName:				Engage: {0}
 Skill.Ability.Engage.CannotUseDead:	You can't enter combat mode while lying down!
 Skill.Ability.Engage.CannotUseStanding:	You can't enter combat mode while sitting down!
 Skill.Ability.Engage.CannotUseNoCaCWeapons:	You can't enter melee combat mode with a fired weapon!
 Skill.Ability.Engage.NoTarget:	You can only engage mobs hostile to you.
 Skill.Ability.Engage.TargetAttackedRecently:	{0} has been attacked recently and you are unable to engage.
 Skill.Ability.Engage.NotAllowedToEngageTarget:	You are not allowed to engage {0}.
+GameLiving.TryBlock.Blocking:				You concentrate on blocking the blow!
+GameLiving.TryBlock.Engage:				{0} has been attacked recently and you are unable to engage.
 
-Skill.Ability.Flurry.TargetNotPlayerOrGuards:	You can only attack players or guards of the enemy realms with this ability!
+## Flurry
+Skill.Ability.Flurry.TargetNotPlayerOrGuards:	You can only attack players or guards of enemy realms with this ability!
 Skill.Ability.Flurry.YouHit:	You hit {0} for {1} damage!
-Skill.Ability.Flurry.HitYou:	{0} flurry hits you for {1} damage!
+Skill.Ability.Flurry.HitYou:	{0}'s flurry hits you for {1} damage!
 
-Skill.Ability.SureShot.CannotUseDead:	You can't switch to sure shot when dead!
+## Guard
+Effects.GuardEffect.YouAreNowGuardingYBut:		You are now guarding {0}, but you must stand closer.
+Effects.GuardEffect.XIsNowGuardingYouBut:		{0} is now guarding you, but you must stand closer.
+Effects.GuardEffect.YouAreNowGuardingY:			You are now guarding {0}.
+Effects.GuardEffect.XIsNowGuardingYou:			{0} is now guarding you.
+Effects.GuardEffect.YourNoLongerGuardingY:		You are no longer guarding {0}.
+Effects.GuardEffect.XNoLongerGuardingYoy:		{0} is no longer guarding you.
+Effects.GuardEffect.InfoEffect:					Ability that if successful will guard an attack meant for the ability's target. You will block in the target's place.
+Effects.GuardEffect.GuardedByName:				{0} guarded by {1}
+Effects.GuardEffect.Name:						Guard
+Effects.GuardEffect.XIsGuardingY:				{0} is guarding {1}
+Skill.Ability.Guard.CancelTargetNull:	You are no longer guarding anyone.
+Skill.Ability.Guard.CannotUse.GuardTargetIsGuardSource:	You can't guard yourself!
+Skill.Ability.Guard.CannotUse.NotInGroup:	You can only guard players in your group!
+Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded:	{0} is already guarding {1}!
+GameLiving.AttackData.BlocksYou:		{0} blocks you from {1}'s attack!
+GameLiving.AttackData.YouBlock:			You block {0}'s attack against {1}!
+
+## Intercept
+Effects.InterceptEffect.Name:					Intercept
+Effects.InterceptEffect.InfoEffect:				Ability that if successful will intercept an attack meant for the ability's target. You will take damage in the target's place.
+Effects.InterceptEffect.YouAttemtInterceptYBut:	You are now attempting to intercept an attack for {0}, but you must stand closer.
+Effects.InterceptEffect.XAttemtInterceptYouBut:	{0} is now attempting to intercept an attack for you, but you must stand closer.
+Effects.InterceptEffect.YouAttemtInterceptY:	You are now attempting to intercept an attack for {0}.
+Effects.InterceptEffect.XAttemptInterceptYou:	{0} is now attempting to intercept an attack for you.
+Effects.InterceptEffect.YouNoAttemptInterceptY:	You are no longer attempting to intercept an attack for {0}.
+Effects.InterceptEffect.XNoAttemptInterceptYou:	{0} is no longer attempting to intercept an attack for you.
+Effects.InterceptEffect.InterceptedByName:		{0} intercepted by {1}
+Effects.InterceptEffect.XInterceptingY:			{0} is intercepting for {0}
+Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect:	{0} is already intercepting for {1}.
+Skill.Ability.Intercept.CannotUse.NotInGroup:	You can only take intercept attacks for players in your group!
+Skill.Ability.Intercept.CancelTargetNull:	You are no longer attempting to intercept attacks for anyone.
+GameLiving.AttackData.YouStepInFront:		You step in front of {0} and take the blow!
+GameLiving.AttackData.StepsInFront:		{0} steps in front of you and takes the blow!
+
+## Protect
+Effects.ProtectEffect.Name:						Protect
+Effects.ProtectEffect.InfoEffect:				Ability that if successful will protect an attack meant for the ability's target. You reduce tha aggro an action would have caused.
+Effects.ProtectEffect.YouProtectingYBut:		You are now protecting {0}, but you must stand closer.
+Effects.ProtectEffect.XProtectingYouBut:		{0} is now protecting you, but you must stand closer.
+Effects.ProtectEffect.YouProtectingY:			You are now protecting {0}.
+Effects.ProtectEffect.XProtectingYou:			{0} is now protecting you.
+Effects.ProtectEffect.YouNoProtectY:			You are no longer protecting {0}.
+Effects.ProtectEffect.XNoProtectYou:			{0} is no longer protecting you.
+Effects.ProtectEffect.ProtectByName:			{0} protected by {1}
+Effects.ProtectEffect.XProtectingY:				{0} is protecting {1}
+Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect:	{0} is already protecting {1}!
+Skill.Ability.Protect.CannotUse.NotInGroup:	You can only protect players in your group!
+Skill.Ability.Protect.CannotUse.CantProtectYourself:	You can't protect yourself!
+Skill.Ability.Protect.CancelTargetNull:	You are no longer protecting anyone.
+
+## Quick Cast
+Effects.QuickCastEffect.Name:					Quick Cast
+Effects.QuickCastEffect.InfoEffect:				This allows them to cast a single spell with a quickened casting time, but costs twice the power. It cannot be interrupted by melee or spells. The only exception to this is the Necromancer form of Quickcast (Facilitate Painworking). It allows the Necromancer's summoned undead pet to have six seconds of uninterrupted casting time.
+Effects.Quickcast.DelveInfo:	Can't be interrupted on the following spell.
+Effects.QuickCastEffect.YouActivatedQC:			You have activated quickcast.
+Effects.QuickCastEffect.YourNextSpellNoQCed:	Your next spell will not be quickcasted.
+Skill.Ability.QuickCast.CannotUseIsCasting:	You can't prepare a quickcast while casting a spell!
+Skill.Ability.QuickCast.CannotUseDead:	You can't quick cast when dead!
+Skill.Ability.QuickCast.CannotUseInMeleeCombat:	You can not cast when your are in melee combat.
+Skill.Ability.QuickCast.CannotUseChangeTick:	You must wait {0} more second to attempt to quick cast!
+
+## Rapid Fire
+Effects.RapidFireEffect.Name:					Rapid Fire
+Effects.RapidFireEffect.YouSwitchRFMode:		You switch to rapid fire mode!
 Skill.Ability.RapidFire.CannotUseDead:	You can't switch to rapid fire when dead!
 
+## Spirit of the Hunt
+Effects.StagEffect.Name:						Spirit of the Hunt
+Effects.StagEffect.InfoEffect:					Hero-only ability, that transforms a player into a stag-headed Huntsman. This lasts 30 seconds, and gives the player a burst in hitpoints. May be used once every 30 minutes. Initiate = 20%, Member =30%, Leader = 40%, Master = 50% bonus to HP.
+Effects.StagEffect.HuntsSpiritChannel:			You channel the Spirit of the Hunt!
+Effects.StagEffect.YourHuntsSpiritEnds:			Your Spirit of the Hunt ends.
+
+## Sprint
+Effects.SprintEffect.Name:						Sprint
+GamePlayer.Sprint.CantSprintDead:			You can't sprint when dead!
+GamePlayer.Sprint.CantSprintHidden:			You can't sprint while you are hidden!
+GamePlayer.Sprint.NoLongerReady:			You are no longer ready to sprint.
+GamePlayer.Sprint.PrepareSprint:			You prepare to sprint!
+GamePlayer.Sprint.TooFatigued:				You are too fatigued to sprint!
+
+## Stealth
+Effects.StealthEffect.Name:						Hidden
 Skill.Ability.Stealth.CannotUseToCloseAnEnemy:	You are too close to an enemy to hide!
 Skill.Ability.Stealth.CannotUseStunned:	You can't hide while stunned!
 Skill.Ability.Stealth.CannotUseMezzed:	You can't hide while mesmerized!
@@ -64,22 +172,32 @@ Skill.Ability.Stealth.CannotUseCombatState:	You must end your current action bef
 Skill.Ability.Stealth.CannotUseDead:	You can't hide when dead!
 Skill.Ability.Stealth.CannotUseInCombat: You've been in combat recently and can't hide yet!
 Skill.Ability.Stealth.CannotUseStealthChangeTick:	You must wait {0} more second to attempt to hide!
+GamePlayer.Stealth.NoLongerHidden:				You are no longer hidden!
+GamePlayer.Stealth.NowHidden:					You are now hidden!
 
-Skill.Ability.QuickCast.CannotUseIsCasting:	You can't prepare a quickcast while casting a spell!
-Skill.Ability.QuickCast.CannotUseDead:	You can't quick cast when dead!
-Skill.Ability.QuickCast.CannotUseInMeleeCombat:	You can not cast when your are in melee combat.
-Skill.Ability.QuickCast.CannotUseChangeTick:	You must wait {0} more second to attempt to quick cast!
+## Sure Shot
+Effects.SureShotEffect.Name:					Sure Shot
+Effects.SureShotEffect.YouSwitchToSSMode:		You switch to sure shot mode!
+Skill.Ability.SureShot.CannotUseDead:	You can't switch to sure shot when dead!
 
-Skill.Ability.Guard.CancelTargetNull:	You are no longer guarding anyone.
-Skill.Ability.Guard.CannotUse.GuardTargetIsGuardSource:	You can't guard yourself!
-Skill.Ability.Guard.CannotUse.NotInGroup:	You can only guard players in your group!
-Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded:	{0} is already guarding {1}!
+## Taunt
+Effects.Necro.TauntEffect.SeemsChange:			{0} seems to change in demeanor, appearing more aggressive than before.
+Effects.Necro.TauntEffect.SeemsLessAgg:			{0} seems to be less aggressive than before.
 
-Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect:	{0} is already intercepting for {1}.
-Skill.Ability.Intercept.CannotUse.NotInGroup:	You can only take intercept attacks for players in your group!
-Skill.Ability.Intercept.CancelTargetNull:	You are no longer attempting to intercept attacks for anyone.
+## Triple Wield
+Effects.TripleWieldEffect.Name:					Triple Wield
+Effects.TripleWieldEffect.InfoEffect:			Magical blade that does additional damage.
+Effects.TripleWieldEffect.MBHitsExtraDamage:	Your magical blade hits {0} for {1} extra damage!
+Effects.TripleWieldEffect.XMBExtraDamageToYou:	{0}'s magical blade does {1} extra damage to you!
 
-Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect:	{0} is already protecting {1}!
-Skill.Ability.Protect.CannotUse.NotInGroup:	You can only protect players in your group!
-Skill.Ability.Protect.CannotUse.CantProtectYourself:	You can't protect yourself!
-Skill.Ability.Protect.CancelTargetNull:	You are no longer protecting anyone.
+## Misc
+Effects.BodyguardEffect.NowBGXButSC:			You are now Bodyguarding {0}, but you must stand closer.
+Effects.BodyguardEffect.XNowBGYouButSC:			{0} is now Bodyguarding you, but you must stand closer.
+Effects.BodyguardEffect.YouAreNowBGX:			You are now Bodyguarding {0}.
+Effects.BodyguardEffect.XIsBGYou:				{0} is now Bodyguarding you.
+Effects.BodyguardEffect.YouAreNoLongerBGX:		You are no longer Bodyguarding {0}.
+Effects.BodyguardEffect.XIsNoLongerBGYou:		{0} is no longer Bodyguarding you.
+Effects.BodyguardEffect.XIsBodyguardingY:		{0} is Bodyguarding {1}
+Effects.BodyguardEffect.BodyguardedByName:		{0} bodyguarded by {1}
+Effects.BodyguardEffect.Name:					Bodyguard
+Effects.BodyguardEffect.InfoEffect:				Ability that if successful will guard an attack meant for the ability's target. You will block in the target's place.

@@ -20,6 +20,14 @@ namespace DOL.GS
             m_ownBrain.Body = this;
         }
 
+        public override bool IsStealthed
+        {
+            get
+            {
+                return (Flags & eFlags.STEALTH) != 0;
+            }
+        }
+
         public override void DropLoot(GameObject killer)
         {
             //Guards dont drop loot when they die
