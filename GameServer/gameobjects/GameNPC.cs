@@ -3586,18 +3586,13 @@ namespace DOL.GS
 				case "EN":
 				{
 					IList list = base.GetExamineMessages(player);
-					// Message: You target [{0}].
-					list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Target.YouTarget.Object", GetName(0, false, player.Client.Account.Language, this)));
 					// Message: You examine {0}. {1} is {2}.
-					list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Examine.YouExamine.Generic", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
+					list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetExamineMessages.YouExamine", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
 					return list;
 				}
 				default:
 					{
 						IList list = new ArrayList(4);
-						// Message: You target [{0}].
-						list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.GetExamineMessages.YouTarget",
-															GetName(0, false, player.Client.Account.Language, this)));
 						// Message: You examine {0}. {1} is {2}.
 						list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetExamineMessages.YouExamine",
 															GetName(0, false, player.Client.Account.Language, this),
