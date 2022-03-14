@@ -33,6 +33,8 @@ namespace DOL.GS.Scripts
 			MaxDistance = 4000;
 			TetherRange = 3500;
 			Faction = FactionMgr.GetFactionByID(779);
+			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
+			
 			Name = "Gudlaugr";
 			BodyType = 1;
 
