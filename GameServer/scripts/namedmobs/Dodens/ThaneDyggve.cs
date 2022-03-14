@@ -41,6 +41,8 @@ namespace DOL.GS.Scripts
 			TetherRange = 3500;
 			MeleeDamageType = eDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(779);
+			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
+			
 			Name = "Thane Dyggve";
 
 			ScalingFactor = 60;
