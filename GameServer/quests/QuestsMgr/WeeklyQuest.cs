@@ -2,8 +2,9 @@ using DOL.Database;
 
 namespace DOL.GS.Quests;
 
-public class WeeklyQuest : BaseQuest
+public abstract class WeeklyQuest : BaseQuest
 {
+    public abstract string QuestPropertyKey { get; set; }
     public override bool CheckQuestQualification(GamePlayer player)
     {
         if (player.QuestListFinished.Contains(this))
@@ -27,4 +28,7 @@ public class WeeklyQuest : BaseQuest
     public WeeklyQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
     {
     }
+    
+    public abstract void LoadQuestParameters();
+    public abstract void SaveQuestParameters();
 }

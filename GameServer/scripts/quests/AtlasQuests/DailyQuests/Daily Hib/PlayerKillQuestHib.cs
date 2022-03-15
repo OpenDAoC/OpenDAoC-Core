@@ -166,9 +166,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					ReyHib.SayTo(player, "Hello "+ player.Name +", I am Rey, Fen's Slave. "+
-					                       "Fen's insatiable desire to kill players is getting out of hand, and he's starting to outsource. \n\n"+
-					                       "\nCan you [help me out]?");
+					ReyHib.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
+					                     "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
+					                     "\nCan you lend me a hand? A leg could probably work too.");
 				}
 			}
 				// The player whispered to the NPC
@@ -202,7 +202,13 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 			}
 		}
-		
+
+		public override string QuestPropertyKey
+		{
+			get => "PlayerKillQuestHib";
+			set { ; }
+		}
+
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
@@ -220,6 +226,16 @@ namespace DOL.GS.DailyQuest.Hibernia
 				return false;
 
 			return true;
+		}
+
+		public override void LoadQuestParameters()
+		{
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
 		}
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
@@ -327,6 +343,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				
 			}
+		}
+
+		public override void SaveIntoDatabase()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
+			base.SaveIntoDatabase();
 		}
 
 		public override void AbortQuest()

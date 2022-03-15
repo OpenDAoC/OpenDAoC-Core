@@ -335,6 +335,22 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				
 			}
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "PlayerKillWeeklyQuestMid";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
+		}
 
 		public override void AbortQuest()
 		{

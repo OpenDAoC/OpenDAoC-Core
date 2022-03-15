@@ -13734,6 +13734,15 @@ namespace DOL.GS
                     cachedCharacter = DBCharacter;
                 }
 
+                foreach (var quest in this.QuestList)
+                {
+                    if(quest is Quests.DailyQuest dq)
+                        dq.SaveQuestParameters();
+
+                    if (quest is WeeklyQuest wq)
+                        wq.SaveQuestParameters();
+                }
+
 
                 if (m_mlSteps != null)
                     GameServer.Database.SaveObject(m_mlSteps.OfType<DBCharacterXMasterLevel>());
@@ -14328,6 +14337,12 @@ namespace DOL.GS
                         m_questListFinished.Add(quest);
                     else
                         m_questList.Add(quest);
+
+                    if (quest is Quests.DailyQuest dq)
+                        dq.LoadQuestParameters();
+                    
+                    if (quest is WeeklyQuest wq)
+                        wq.LoadQuestParameters();
                 }
             }
 

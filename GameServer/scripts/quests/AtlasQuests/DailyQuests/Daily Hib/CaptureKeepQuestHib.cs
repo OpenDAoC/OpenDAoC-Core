@@ -327,6 +327,21 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 			
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "CaptureKeepQuestHib";
+			set { ; }
+		}
+		public override void LoadQuestParameters()
+		{
+			
+		}
+
+		public override void SaveQuestParameters()
+		{
+			
+		}
 
 		public override void AbortQuest()
 		{

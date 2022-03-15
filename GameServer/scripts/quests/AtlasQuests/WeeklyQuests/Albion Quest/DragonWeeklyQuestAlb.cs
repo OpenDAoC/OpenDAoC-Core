@@ -332,6 +332,22 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 			
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "DragonWeeklyQuestAlb";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			
+		}
+
+		public override void SaveQuestParameters()
+		{
+			
+		}
 
 		public override void AbortQuest()
 		{

@@ -334,6 +334,22 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 			
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "DFWeeklyKillQuestMid";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
+		}
 
 		public override void AbortQuest()
 		{

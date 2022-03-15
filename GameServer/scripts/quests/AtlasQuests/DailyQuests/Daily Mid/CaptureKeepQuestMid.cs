@@ -327,6 +327,22 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 			
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "CaptureKeepQuestMid";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			
+		}
+
+		public override void SaveQuestParameters()
+		{
+			
+		}
 
 		public override void AbortQuest()
 		{

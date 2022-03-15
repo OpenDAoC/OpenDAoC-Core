@@ -327,6 +327,22 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 			
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "CaptureKeepQuestAlb";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			
+		}
+
+		public override void SaveQuestParameters()
+		{
+			
+		}
 
 		public override void AbortQuest()
 		{

@@ -333,6 +333,22 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 			
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "DFWeeklyKillQuestHib";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
+		}
 
 		public override void AbortQuest()
 		{

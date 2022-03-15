@@ -225,6 +225,16 @@ namespace DOL.GS.DailyQuest.Albion
 			return true;
 		}
 
+		public override void LoadQuestParameters()
+		{
+			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
+		}
+
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			DFWeeklyKillQuestAlb quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestAlb)) as DFWeeklyKillQuestAlb;
@@ -333,6 +343,12 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 			}
 			
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "DFWeeklyKillQuestAlb";
+			set { ; }
 		}
 
 		public override void AbortQuest()

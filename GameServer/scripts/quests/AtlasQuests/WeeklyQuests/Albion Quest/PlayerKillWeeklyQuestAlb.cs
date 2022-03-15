@@ -334,6 +334,22 @@ namespace DOL.GS.WeeklyQuests.Albion
 				
 			}
 		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "PlayerKillWeeklyQuestAlb";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
+		}
 
 		public override void AbortQuest()
 		{
