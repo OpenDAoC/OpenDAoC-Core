@@ -2875,13 +2875,37 @@ namespace DOL.GS
                     return 0;
 
                 if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+                {
+                    if (owner is GamePlayer ptemp && ptemp.UseDetailedCombatLog)
+                    {
+                        int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                        double effectiveness = 0;
+                        if (LASpec > 0)
+                        {
+                            effectiveness = 0.625 + 0.0034 * LASpec;
+                        }
+                        ptemp.Out.SendMessage(
+                            $"{Math.Round(effectiveness*100, 2)}% dmg (after LA penalty) \n",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
                     return 1; // always use left axe
+                }
+                    
 
                 int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual), owner.GetModifiedSpecLevel(Specs.Dual_Wield));
                 specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
+
+                decimal tmpOffhandChance = (25 + (specLevel - 1) * 68 / 100);
+                if (owner is GamePlayer p && p.UseDetailedCombatLog)
+                {
+                    p.Out.SendMessage(
+                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} \n",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+                
                 if (specLevel > 0)
                 {
-                    return Util.Chance(25 + (specLevel - 1) * 68 / 100) ? 1 : 0;
+                    return Util.Chance((int)tmpOffhandChance) ? 1 : 0;
                 }
 
                 // HtH chance
