@@ -2158,8 +2158,11 @@ namespace DOL.GS
                         bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
                         if (blockDouble == null || UseRNGOverride)
                         {
-                            if(guardchance > ranBlockNum)
-                                return eAttackResult.Blocked;    
+                            if (guardchance > ranBlockNum)
+                            {
+                                ad.Target = guard.GuardSource;
+                                return eAttackResult.Blocked;
+                            }
                         }
                         else
                         {
