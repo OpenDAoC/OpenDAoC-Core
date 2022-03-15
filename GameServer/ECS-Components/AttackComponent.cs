@@ -2136,7 +2136,7 @@ namespace DOL.GS
                             guardchance = .9;
                         else if (shieldSize == 3 && guardchance > .99)
                             guardchance = .99;
-
+                        
                         if (ad.AttackType == AttackData.eAttackType.MeleeDualWield) guardchance /= 2;
                         double ranBlockNum = Util.CryptoNextDouble() * 10000;
                         ranBlockNum = Math.Floor(ranBlockNum);
@@ -2147,12 +2147,12 @@ namespace DOL.GS
                         double? blockOutput = (blockDouble != null) ? blockDouble * 100: ranBlockNum;
                         if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         {
-                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
                         if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                         {
-                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
                         bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
@@ -2163,9 +2163,12 @@ namespace DOL.GS
                         }
                         else
                         {
-                            blockDouble *= 100;
-                            if(guardchance > blockDouble)
+                            if (guardchance > blockOutput)
+                            {
+                                ad.Target = guard.GuardSource;
                                 return eAttackResult.Blocked;
+                            }
+                                
                         }
                     }
                 }
