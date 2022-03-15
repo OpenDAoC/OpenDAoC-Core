@@ -128,6 +128,19 @@ namespace DOL.GS
 		}
 		
 		/// <summary>
+		/// Used to send translated messages to a player, which displays as a "/say" message in the chat window.
+		/// </summary>
+		/// <param name="target">The player triggering/receiving the message (i.e., typically "client").</param>
+		/// <param name="translationID">The translation string associated with the message (e.g., "Scripts.Blacksmith.Say").</param>
+		/// <param name="args">Any arguments to include in the message in place of placeholders like "{0}", or else "null".</param>
+		public static void SendSayMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
 		/// Used to send translated messages containing slash command descriptions and related information
 		/// </summary>
 		/// <param name="target">The player triggering/receiving the message (typically "client")</param>
@@ -371,6 +384,19 @@ namespace DOL.GS
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
 			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated team messages
+		/// </summary>
+		/// <param name="target">The client receiving the message (e.g., "client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
+		public static void SendTeamMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>

@@ -72,14 +72,14 @@ namespace DOL.GS.Commands
 					// Message: "{0} is not in the game, or is a member of another realm."
 					ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
 					// Message: {0} tried to send you a message: "{1}"
-					ChatUtil.SendSendMessage(targetClient.Player, "Social.SendMessage.Staff.TriedToSend", client.Player.Name, message);
+					ChatUtil.SendSendMessage(targetClient.Player, "Social.ReceiveMessage.Staff.TriedToSend", client.Player.Name, message);
 				}
 				if (client.Account.PrivLevel > (uint)ePrivLevel.Player)
 				{
 					// Let staff ignore anon state for other staff members
 					// Message: You send, "{0}" to {1} [ANON].
 					ChatUtil.SendSendMessage(client, "Social.SendMessage.Staff.YouSendAnon", message, targetClient.Player.Name);
-					// Message: {0} [STAFF] sends, "{1}"
+					// Message: {0} [TEAM] sends, "{1}"
 					ChatUtil.SendGMMessage(targetClient.Player, "Social.ReceiveMessage.Staff.SendsToYou", client.Player.Name, message);
 				}
                 return;

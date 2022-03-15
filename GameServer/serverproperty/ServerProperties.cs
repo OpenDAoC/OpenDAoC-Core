@@ -1362,6 +1362,18 @@ namespace DOL.GS.ServerProperties
 		public static int NPC_MIN_RESPAWN_INTERVAL;
 
 		/// <summary>
+		/// Respawn Interval for Shrouded Isles Epic Encounter
+		/// </summary>
+		[ServerProperty("world", "set_si_epic_encounter_respawninterval", "Respawn Time, in minutes, for Epic Encounters in Shrouded Isles", 60)]
+		public static int SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL;
+
+		/// <summary>
+		/// Weapon damage cap for epic encounters that use melee weapons
+		/// </summary>
+		[ServerProperty("npc", "set_epic_encounter_weapon_damage_cap", "Maximum damage cap multipler for epic encounters that use melee weapons", 1.5)]
+		public static double SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+
+		/// <summary>
 		/// Allow Roam
 		/// </summary>
 		[ServerProperty("npc", "allow_roam", "Allow mobs to roam on the server", true)]
@@ -2409,6 +2421,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("guild", "guild_merit_on_dragon_kill", "How much merit to reward guild when dragon is killed, if any.", (ushort)0)]
 		public static ushort GUILD_MERIT_ON_DRAGON_KILL;
+		
+		/// <summary>
+		/// How much merit to reward guild when legion is killed, if any.
+		/// </summary>
+		[ServerProperty("guild", "guild_merit_on_legion_kill", "How much merit to reward guild when legion is killed, if any.", (ushort)0)]
+		public static ushort GUILD_MERIT_ON_LEGION_KILL;
 
 		/// <summary>
 		/// When a banner is lost to the enemy how long is the wait before purchase is allowed?  In Minutes.

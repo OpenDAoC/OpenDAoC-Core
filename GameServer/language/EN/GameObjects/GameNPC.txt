@@ -1,7 +1,8 @@
 ﻿# Game NPC
 
 ## Examine
-GameNPC.GetExamineMessages.YouExamine:		You examine {0}. {1} is {2}.
+GameNPC.Examine.YouExamine.Generic:		You examine {0}. {1} is {2}.
+GameNPC.GetExamineMessages.YouExamine:              You examine {0}. {1} is {2}.
 
 ## Faction
 GameNPC.GetAggroLevelString.Aggressive1:	aggressive
@@ -15,6 +16,7 @@ GameNPC.GetAggroLevelString.Neutral2:		Neutral
 GameNPC.GetAggroLevelString.TowardsYou:		{0} towards you
 
 ## Interact
+GameNPC.Interact.TooFarAway:                        You are too far away to interact with {0}.
 GameNPC.Interact.DirtyLook:					{0} gives you a dirty look.
 GameNPC.SayTo.Says:							{0} says, "{1}"
 GameNPC.SayTo.SpeaksTo:						{0} speaks to {1}
