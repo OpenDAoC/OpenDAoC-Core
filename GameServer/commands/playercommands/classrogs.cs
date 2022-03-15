@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
     [CmdAttribute(
         "&classrogs",
         ePrivLevel.Player,
-        "change the chance% of getting ROGs outside of your current class",
+        "change the chance% of getting ROGs outside of your current class at level 50",
         "/classrogs <%chance>")]
     public class ClassRogsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
