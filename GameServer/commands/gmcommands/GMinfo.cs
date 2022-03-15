@@ -358,6 +358,8 @@ namespace DOL.GS.Commands
 					info.Add("REGEN INFORMATION");
 					info.Add("Last EnduDebuff:" + target.EnduDebuff + " | " + "Last RegenBuff: " + target.RegenBuff);
 					info.Add("HP Regen: " + target.GetModified(eProperty.HealthRegenerationRate)+ " | End Regen: " + target.GetModified(eProperty.EnduranceRegenerationRate) + " | Pow Regen: " + target.GetModified(eProperty.PowerRegenerationRate));
+					info.Add("HP: " + target.Health + "/" + target.GetModified(eProperty.MaxHealth)+ " " + Math.Round(((double)target.Health/(double)target.MaxHealth)*100, 2) + "%"
+					         + " | Power: " + target.Mana + "/" + target.GetModified(eProperty.MaxMana)+ " " +  Math.Round(((double)target.Mana/(double)target.MaxMana)*100, 2) + "%");
 					info.Add("Player has Tireless: " + target.HasAbility(Abilities.Tireless));
 					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
 					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
