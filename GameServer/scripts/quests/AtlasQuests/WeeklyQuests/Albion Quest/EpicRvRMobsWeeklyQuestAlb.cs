@@ -173,6 +173,7 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 				else
 				{
+					Haszan.SayTo(player, "*********************************************************************");
 					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
 					                       "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
 					                       "\nCan you support Albion and [kill the epic creatures] in frontiers?");
@@ -209,7 +210,13 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 			}
 		}
-		
+
+		public override string QuestPropertyKey
+		{
+			get => "EpicRvRMobsWeeklyQuestAlb";
+			set { ; }
+		}
+
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
@@ -227,6 +234,20 @@ namespace DOL.GS.DailyQuest.Albion
 				return false;
 
 			return true;
+		}
+
+		public override void LoadQuestParameters()
+		{
+			_evernKilled = GetCustomProperty(EVERN_NAME) != null ? int.Parse(GetCustomProperty(EVERN_NAME)) : 0;
+			_glacierGiantKilled = GetCustomProperty(GLACIERGIANT_NAME) != null ? int.Parse(GetCustomProperty(GLACIERGIANT_NAME)) : 0;
+			_greenKnightKilled = GetCustomProperty(GREENKNIGHT_NAME) != null ? int.Parse(GetCustomProperty(GREENKNIGHT_NAME)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(EVERN_NAME, _evernKilled.ToString());
+			SetCustomProperty(GLACIERGIANT_NAME, _glacierGiantKilled.ToString());
+			SetCustomProperty(GREENKNIGHT_NAME, _greenKnightKilled.ToString());
 		}
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)

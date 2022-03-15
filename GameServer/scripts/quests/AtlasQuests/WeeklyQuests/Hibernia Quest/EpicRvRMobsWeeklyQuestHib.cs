@@ -173,6 +173,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
+					Dean.SayTo(player, "*********************************************************************");
 					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, do you need a task? "+
 					                   "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n"+
 					                   "\nCan you support Hibernia and [kill the epic creatures] in frontiers?");
@@ -209,7 +210,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 			}
 		}
-		
+
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
@@ -227,6 +228,26 @@ namespace DOL.GS.DailyQuest.Hibernia
 				return false;
 
 			return true;
+		}
+
+		public override string QuestPropertyKey
+		{
+			get => "EpicRvRMobsWeeklyQuestHib";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			_evernKilled = GetCustomProperty(EVERN_NAME) != null ? int.Parse(GetCustomProperty(EVERN_NAME)) : 0;
+			_glacierGiantKilled = GetCustomProperty(GLACIERGIANT_NAME) != null ? int.Parse(GetCustomProperty(GLACIERGIANT_NAME)) : 0;
+			_greenKnightKilled = GetCustomProperty(GREENKNIGHT_NAME) != null ? int.Parse(GetCustomProperty(GREENKNIGHT_NAME)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(EVERN_NAME, _evernKilled.ToString());
+			SetCustomProperty(GLACIERGIANT_NAME, _glacierGiantKilled.ToString());
+			SetCustomProperty(GREENKNIGHT_NAME, _greenKnightKilled.ToString());
 		}
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)

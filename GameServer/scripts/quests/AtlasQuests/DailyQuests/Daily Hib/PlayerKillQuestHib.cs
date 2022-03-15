@@ -345,12 +345,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		public override void SaveIntoDatabase()
-		{
-			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
-			base.SaveIntoDatabase();
-		}
-
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
