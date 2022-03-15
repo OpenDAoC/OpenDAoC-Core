@@ -80,7 +80,7 @@ namespace DOL.GS
                 }
             }
             SpawnAfterDead();
-            DropLoot(killer);
+            
             base.Die(killer);
         }
         public override bool AddToWorld()

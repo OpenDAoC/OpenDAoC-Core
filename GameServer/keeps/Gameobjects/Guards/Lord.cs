@@ -178,12 +178,15 @@ namespace DOL.GS.Keeps
 
 						string listRPGainers = "";
 
-						foreach (System.Collections.DictionaryEntry de in XPGainers)
+						lock (XPGainers.SyncRoot)
 						{
-							GameLiving living = de.Key as GameLiving;
-							if (living != null)
+							foreach (System.Collections.DictionaryEntry de in XPGainers)
 							{
-								listRPGainers += living.Name + ";";
+								GameLiving living = de.Key as GameLiving;
+								if (living != null)
+								{
+									listRPGainers += living.Name + ";";
+								}
 							}
 						}
 

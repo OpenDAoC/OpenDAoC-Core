@@ -15,5 +15,5 @@ PlayerInitRequestHandler.OfficerMessage:		            Officer Message: {0}
 ## Player Enter/Exit
 Scripts.Events.PlayerEnterExit.Entered:			        {0} just entered the game!
 Scripts.Events.PlayerEnterExit.Left:			        {0} just left the game!
-Scripts.Events.PlayerEnterExit.Staff:			        [Staff Member] {0}
+Scripts.Events.PlayerEnterExit.Staff:			        [TEAM] {0}
 

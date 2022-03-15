@@ -508,47 +508,50 @@ namespace DOL.GS.GameEvents
 				return 0;
 
 			float totaldmg = 0f;
-			foreach (DictionaryEntry de in killedPlayer.XPGainers)
-			{
-				totaldmg += (float)de.Value;
-			}
+            lock (killedPlayer.XPGainers.SyncRoot)
+            {
+                foreach (DictionaryEntry de in killedPlayer.XPGainers)
+                {
+                    totaldmg += (float)de.Value;
+                }
 
-			foreach (DictionaryEntry de in killedPlayer.XPGainers)
-			{
-				GamePlayer key = de.Key as GamePlayer;
-				if (killer == key)
-				{
-					if (!killer.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-						return 0;
 
-					double damagePercent = (float)de.Value / totaldmg;
-					if (!key.IsAlive)//Dead living gets 25% exp only
-						damagePercent *= 0.25;
+                foreach (DictionaryEntry de in killedPlayer.XPGainers)
+                {
+                    GamePlayer key = de.Key as GamePlayer;
+                    if (killer == key)
+                    {
+                        if (!killer.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                            return 0;
 
-					int rpCap = key.RealmPointsValue * 2;
-					uint realmPoints = (uint)(killedPlayer.RealmPointsValue * damagePercent);
+                        double damagePercent = (float)de.Value / totaldmg;
+                        if (!key.IsAlive)//Dead living gets 25% exp only
+                            damagePercent *= 0.25;
 
-					realmPoints = (uint)(realmPoints * (1.0 + 2.0 * (killedPlayer.RealmLevel - killer.RealmLevel) / 900.0));
+                        int rpCap = key.RealmPointsValue * 2;
+                        uint realmPoints = (uint)(killedPlayer.RealmPointsValue * damagePercent);
 
-					if (killer.Group != null && killer.Group.MemberCount > 1)
-					{
-						int count = 0;
-						foreach (GamePlayer player in killer.Group.GetPlayersInTheGroup())
-						{
-							if (!player.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
-							count++;
-						}
-						realmPoints = (uint)(realmPoints * (1.0 + count * 0.125));
-					}
-					if (realmPoints > rpCap)
-						realmPoints = (uint)rpCap;
+                        realmPoints = (uint)(realmPoints * (1.0 + 2.0 * (killedPlayer.RealmLevel - killer.RealmLevel) / 900.0));
 
-					return realmPoints;
-				}
-				else
-					continue;
-			}
+                        if (killer.Group != null && killer.Group.MemberCount > 1)
+                        {
+                            int count = 0;
+                            foreach (GamePlayer player in killer.Group.GetPlayersInTheGroup())
+                            {
+                                if (!player.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
+                                count++;
+                            }
+                            realmPoints = (uint)(realmPoints * (1.0 + count * 0.125));
+                        }
+                        if (realmPoints > rpCap)
+                            realmPoints = (uint)rpCap;
 
+                        return realmPoints;
+                    }
+                    else
+                        continue;
+                }
+            }
 			return 0;
 		}
 	}

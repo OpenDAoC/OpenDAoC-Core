@@ -50,18 +50,18 @@ namespace DOL.Tests.Integration.Server
 
 			// player must have trainer selected when task given.
 			player.TargetObject = trainer;
-			
+
 			// mob for task
-			if (KillTask.BuildTask(player,trainer))
+			if (KillTask.BuildTask(player, trainer))
 			{
-				KillTask task =(KillTask) player.Task;
+				KillTask task = (KillTask)player.Task;
 
 				Assert.IsNotNull(task);
 				Assert.IsTrue(task.TaskActive);
 
-				Console.WriteLine("Mob:"+ task.MobName);
-				Console.WriteLine("Item:"+ task.ItemName);
-				Console.WriteLine(""+ task.Description);
+				Console.WriteLine("Mob:" + task.MobName);
+				Console.WriteLine("Item:" + task.ItemName);
+				Console.WriteLine("" + task.Description);
 
 				// Check Notify Event handling
 				InventoryItem item = GameInventoryItem.Create(new ItemTemplate());
@@ -75,9 +75,12 @@ namespace DOL.Tests.Integration.Server
 				mob.Level = player.Level;
 				mob.CurrentRegionID = player.CurrentRegionID;
 				mob.AddToWorld();
-				
-				// First we kill mob
-				mob.XPGainers.Add(player,1.0F);
+
+				lock (mob.XPGainers.SyncRoot)
+				{ 
+					// First we kill mob
+					mob.XPGainers.Add(player, 1.0F);
+				}
 				task.Notify(GameNPCEvent.EnemyKilled,player,new EnemyKilledEventArgs(mob));
 
 				// arificial pickup Item

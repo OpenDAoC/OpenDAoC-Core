@@ -1257,10 +1257,10 @@ namespace DOL.GS {
             //10 == maxHP =  *.25
             //11-19 == resists = *2
             //20-115 == skill = *5
-            //163 == all magic = *10
-            //164 == all melee = *10
-            //167 == all dual weild = *10
-            //168 == all archery = *10
+            //163 == all magic = *5
+            //164 == all melee = *5
+            //167 == all dual wield = *5
+            //168 == all archery = *5
             if (BonusType != 0 &&
                 Bonus != 0)
             {
@@ -1290,7 +1290,7 @@ namespace DOL.GS {
                   || BonusType == 168
                   || BonusType == 213)
                 {
-                    totalUti += Bonus * 10;
+                    totalUti += Bonus * 5;
                 }
             }
 

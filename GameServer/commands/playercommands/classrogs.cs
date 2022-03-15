@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
     [CmdAttribute(
         "&classrogs",
         ePrivLevel.Player,
-        "change the chance% of getting ROGs outside of your current class",
+        "change the chance% of getting ROGs outside of your current class at level 50",
         "/classrogs <%chance>")]
     public class ClassRogsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -36,11 +36,12 @@ namespace DOL.GS.Commands
             
             AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(client.Player.Realm)));
             int ROGCap = 0;
+            int tmpLoyal = realmLoyalty.LoyalDays > 30 ? 30 : realmLoyalty.LoyalDays; 
             if (realmLoyalty != null)
             {
                 //max cap of 50% out of class chance
                 //scaled by loyalty%
-                ROGCap = (int)Math.Round(50 * (realmLoyalty.LoyalDays / 30.0)); 
+                ROGCap = (int)Math.Round(50 * (tmpLoyal / 30.0)); 
             }
             
             if (args.Length < 2)

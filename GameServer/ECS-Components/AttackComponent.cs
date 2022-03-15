@@ -1429,6 +1429,11 @@ namespace DOL.GS
                     lowerboundary = 75;
                     upperboundary = 125;
                 }
+                if(owner is GameEpicBoss)//do always same dmg(max cap), remove it incase of eny errors
+                {                        //
+                    lowerboundary = 125; //
+                    upperboundary = 125; //
+                }                        //remove till here if errors appears
 
                 int styleSpec = 0;
                 if (ad.Style != null)
@@ -2131,7 +2136,7 @@ namespace DOL.GS
                             guardchance = .9;
                         else if (shieldSize == 3 && guardchance > .99)
                             guardchance = .99;
-
+                        
                         if (ad.AttackType == AttackData.eAttackType.MeleeDualWield) guardchance /= 2;
                         double ranBlockNum = Util.CryptoNextDouble() * 10000;
                         ranBlockNum = Math.Floor(ranBlockNum);
@@ -2142,25 +2147,31 @@ namespace DOL.GS
                         double? blockOutput = (blockDouble != null) ? blockDouble * 100: ranBlockNum;
                         if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         {
-                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            blockAttk.Out.SendMessage($"Chance to guard: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
                         if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                         {
-                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > ranBlockNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         }
 
                         bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
                         if (blockDouble == null || UseRNGOverride)
                         {
-                            if(guardchance > ranBlockNum)
-                                return eAttackResult.Blocked;    
+                            if (guardchance > ranBlockNum)
+                            {
+                                ad.Target = guard.GuardSource;
+                                return eAttackResult.Blocked;
+                            }
                         }
                         else
                         {
-                            blockDouble *= 100;
-                            if(guardchance > blockDouble)
+                            if (guardchance > blockOutput)
+                            {
+                                ad.Target = guard.GuardSource;
                                 return eAttackResult.Blocked;
+                            }
+                                
                         }
                     }
                 }
@@ -2739,6 +2750,11 @@ namespace DOL.GS
 		/// <param name="weapon">attack weapon</param>
 		public double UnstyledDamageCap(InventoryItem weapon)
         {
+            if (owner is GameEpicBoss)//damage cap for epic encounters if they use melee weapons,if errors appear remove from here
+            {
+                var p = owner as GameEpicBoss;
+                return AttackDamage(weapon) * ((double)p.Empathy/100) * ServerProperties.Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+            }///////////////////////////remove until here if errors appear
             if (owner is GamePlayer)
             {
                 var p = owner as GamePlayer;
@@ -2806,7 +2822,9 @@ namespace DOL.GS
                 }
             }
             else
+            {
                 return AttackDamage(weapon) * (2.82 + 0.00009 * AttackSpeed(weapon));
+            }
         }
 
         /// <summary>
@@ -2863,13 +2881,37 @@ namespace DOL.GS
                     return 0;
 
                 if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+                {
+                    if (owner is GamePlayer ptemp && ptemp.UseDetailedCombatLog)
+                    {
+                        int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                        double effectiveness = 0;
+                        if (LASpec > 0)
+                        {
+                            effectiveness = 0.625 + 0.0034 * LASpec;
+                        }
+                        ptemp.Out.SendMessage(
+                            $"{Math.Round(effectiveness*100, 2)}% dmg (after LA penalty) \n",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
                     return 1; // always use left axe
+                }
+                    
 
                 int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual), owner.GetModifiedSpecLevel(Specs.Dual_Wield));
                 specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
+
+                decimal tmpOffhandChance = (25 + (specLevel - 1) * 68 / 100);
+                if (owner is GamePlayer p && p.UseDetailedCombatLog)
+                {
+                    p.Out.SendMessage(
+                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} \n",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+                
                 if (specLevel > 0)
                 {
-                    return Util.Chance(25 + (specLevel - 1) * 68 / 100) ? 1 : 0;
+                    return Util.Chance((int)tmpOffhandChance) ? 1 : 0;
                 }
 
                 // HtH chance

@@ -118,7 +118,7 @@ namespace DOL.GS.Commands
                     	return;
                     }
                     
-                    // If the player is not online, anonymous, or is a member of another realm
+                    // If the player is online, but doesn't have the '<ADV>' flag active
                     if (!advisorClient.Player.Advisor)
                     {
 	                    // Message: "{0} is not an Advisor!"
@@ -134,8 +134,8 @@ namespace DOL.GS.Commands
                     	{
 	                        // Message: "{0} is not in the game, or is a member of another realm."
 	                        ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
-	                        // Message: "{0} tried to send an advice message: {1}"
-	                        ChatUtil.SendSendMessage(advisorClient.Player, "Social.SendAdvisor.Target.GMAnon", message);
+	                        // Message: "{0} tried to send an [ADVICE] message: {1}"
+	                        ChatUtil.SendSendMessage(advisorClient.Player, "Social.ReceiveMessage.Advisor.StaffAnon", client.Player.Name, message);
                         }
                         return;
                     }

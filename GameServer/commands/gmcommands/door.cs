@@ -424,12 +424,15 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				targetDoor.attackComponent.AddAttacker(client.Player);
-				targetDoor.AddXPGainer(client.Player, targetDoor.Health);
-				targetDoor.Die(client.Player);
-				targetDoor.XPGainers.Clear();
-				client.Out.SendMessage("Door " + targetDoor.Name + " health reaches 0", eChatType.CT_System,
-				                       eChatLoc.CL_SystemWindow);
+				lock (targetDoor.XPGainers.SyncRoot)
+				{
+					targetDoor.attackComponent.AddAttacker(client.Player);
+					targetDoor.AddXPGainer(client.Player, targetDoor.Health);
+					targetDoor.Die(client.Player);
+					targetDoor.XPGainers.Clear();
+					client.Out.SendMessage("Door " + targetDoor.Name + " health reaches 0", eChatType.CT_System,
+										   eChatLoc.CL_SystemWindow);
+				}
 			}
 			catch (Exception e)
 			{
