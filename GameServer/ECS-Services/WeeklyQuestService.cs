@@ -57,6 +57,25 @@ public class WeeklyQuestService
                 newTime.RolloverInterval = WeeklyIntervalKey;
                 GameServer.Database.AddObject(newTime);
             }
+            
+            foreach (var player in EntityManager.GetAllPlayers())
+            {
+                List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
+                foreach (var quest in player.QuestListFinished)
+                {
+                    if (quest is WeeklyQuest)
+                    {
+                        quest.AbortQuest();
+                        questsToRemove.Add(quest);    
+                    }
+                }
+
+                foreach (var quest in questsToRemove)
+                {
+                    player.QuestList.Remove(quest);
+                    player.QuestListFinished.Remove(quest);
+                }
+            }
         }
 
         Diagnostics.StopPerfCounter(ServiceName);
