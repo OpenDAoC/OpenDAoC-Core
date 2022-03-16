@@ -72,7 +72,6 @@ namespace DOL.GS
                     }
                 }
             }
-            DropLoot(killer);
             base.Die(killer);
         }
         public override bool AddToWorld()
