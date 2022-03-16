@@ -59,7 +59,6 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
                 }
             }
-            DropLoot(killer);
             base.Die(killer);
         }
         public override bool AddToWorld()
