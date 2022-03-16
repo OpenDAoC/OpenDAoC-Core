@@ -1943,7 +1943,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void InterruptCasting()
 		{
-			castState = eCastState.Interrupted;
+			//castState = eCastState.Interrupted;
 			if (m_interrupted || !IsCasting)
 				return;
 
@@ -1973,7 +1973,7 @@ namespace DOL.GS.Spells
 					((GamePlayer)m_caster).ClearSpellQueue();
 				}
 			}
-
+			castState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 			OnAfterSpellCastSequence();
 		}
