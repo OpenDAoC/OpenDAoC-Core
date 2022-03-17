@@ -43,12 +43,10 @@ namespace DOL.GS
                 var currentEffects = living.effectListComponent.Effects.Values.ToList();
                 for (int i = 0; i < currentEffects.Count; i++)
                 {
-                    if (currentEffects[i] != null) {
+                    if (currentEffects[i] != null)
+                    { 
                         var effects = currentEffects[i].ToArray();
-                    
-                    
-                        //foreach (var effects in currentEffects)
-                        //{
+                        
                         for (int j = 0; j < effects.Length; j++)
                         {
                             var e = effects[j];
@@ -150,8 +148,8 @@ namespace DOL.GS
                                 if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                                 {
                                     if (!effect.SpellHandler.Caster.
-                                            IsWithinRadius(effect.Owner,
-                                                effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
+                                        IsWithinRadius(effect.Owner,
+                                        effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                         && !effect.IsDisabled)
                                     {
                                         ECSGameSpellEffect disabled = null;
@@ -164,8 +162,8 @@ namespace DOL.GS
                                             EffectService.RequestEnableEffect(disabled);
                                     }
                                     else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
-                                                 effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
-                                             && effect.IsDisabled)
+                                        effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
+                                        && effect.IsDisabled)
                                     {
                                         ECSGameSpellEffect enabled = null;
                                         List<ECSGameEffect> concEffects;
@@ -205,7 +203,8 @@ namespace DOL.GS
                                 }
                             }
                         }
-                    }
+                        }
+
                 }
             }           
         }
