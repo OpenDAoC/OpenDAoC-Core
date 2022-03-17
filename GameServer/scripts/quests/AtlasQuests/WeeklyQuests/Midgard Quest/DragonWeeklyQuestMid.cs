@@ -310,6 +310,9 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestMid)) == null)
 				return;
 
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
@@ -328,6 +331,20 @@ namespace DOL.GS.DailyQuest.Midgard
 				}
 			}
 			
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "DragonWeeklyQuestMid";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+		}
+
+		public override void SaveQuestParameters()
+		{
 		}
 
 		public override void AbortQuest()

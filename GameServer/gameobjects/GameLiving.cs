@@ -434,6 +434,8 @@ namespace DOL.GS
 		{
 			get { return m_activeWeaponSlot; }
 		}
+
+		public object _xpGainersLock = new object();
 		/// <summary>
 		/// Gets a hashtable holding
 		/// gameobject->float

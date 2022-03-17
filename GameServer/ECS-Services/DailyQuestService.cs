@@ -65,9 +65,11 @@ public class DailyQuestService
                 List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
                 foreach (var quest in player.QuestListFinished)
                 {
-                    Console.WriteLine($"Aborting {quest} for {player}");
-                    quest.AbortQuest();
-                    questsToRemove.Add(quest);
+                    if (quest is Quests.DailyQuest)
+                    {
+                        quest.AbortQuest();
+                        questsToRemove.Add(quest);    
+                    }
                 }
 
                 foreach (var quest in questsToRemove)

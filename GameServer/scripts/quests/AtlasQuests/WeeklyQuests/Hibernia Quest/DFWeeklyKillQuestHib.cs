@@ -310,23 +310,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(DFWeeklyKillQuestHib)) == null)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.Interact)
-			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == Dean.Name)
-				{
-					Dean.SayTo(player, "Did you know that Fen is awesome? Now you know!");
-					return;
-				}
-			}
-
+			if (sender != m_questPlayer)
+				return;
 			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+				
 				//prevent grey killing
-				
-				
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_PLAYER_LVL && gArgs.Target.CurrentRegionID == 249) 
 				{
 					EnemiesKilled++;
@@ -341,6 +332,22 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 			}
 			
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "DFWeeklyKillQuestHib";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
 		}
 
 		public override void AbortQuest()

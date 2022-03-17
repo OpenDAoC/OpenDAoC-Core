@@ -222,6 +222,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			return true;
 		}
+		
+		public override void LoadQuestParameters()
+		{
+			OctonidKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, OctonidKilled.ToString());
+		}
+
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
@@ -308,6 +319,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(OctonidKillQuestHib)) == null)
 				return;
 			
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
@@ -325,6 +339,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 			}
 			
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "OctonidKillQuestHib";
+			set { ; }
 		}
 
 		public override void AbortQuest()

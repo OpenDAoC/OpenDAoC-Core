@@ -704,13 +704,14 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Adds messages to ArrayList which are sent when object is targeted
+		/// Creates an array list of examine messages to return to the player upon targeting the object
 		/// </summary>
-		/// <param name="player">GamePlayer that is examining this object</param>
-		/// <returns>list with string messages</returns>
+		/// <param name="player">The GamePlayer examining/targeting this object</param>
+		/// <returns>Multiple translated string messages</returns>
 		public virtual IList GetExamineMessages(GamePlayer player)
 		{
 			IList list = new ArrayList(4);
+			// Message: You target [{0}].
 			list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.GetExamineMessages.YouTarget", GetName(0, false)));
 			return list;
 		}

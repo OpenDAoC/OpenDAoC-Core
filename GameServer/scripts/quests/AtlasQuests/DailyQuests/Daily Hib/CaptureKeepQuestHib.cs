@@ -309,6 +309,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(CaptureKeepQuestHib)) == null)
 				return;
 			
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GamePlayerEvent.CapturedKeepsChanged)
 			{
 				_isCaptured = 1;
@@ -322,6 +325,21 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				
 			}
+			
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "CaptureKeepQuestHib";
+			set { ; }
+		}
+		public override void LoadQuestParameters()
+		{
+			
+		}
+
+		public override void SaveQuestParameters()
+		{
 			
 		}
 

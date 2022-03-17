@@ -56,6 +56,10 @@ namespace DOL.GS
                     {
                         if (!Effects.ContainsKey(effect.EffectType))
                             Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
+                        else if (effect.EffectType == eEffect.Protect || effect.EffectType == eEffect.Guard)
+                        {
+                            Effects[effect.EffectType].Add(effect);
+                        }
                         return true;
                     }
 

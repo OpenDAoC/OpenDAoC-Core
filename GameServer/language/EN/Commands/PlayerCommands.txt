@@ -3,6 +3,9 @@
 ## Error
 AllCommands.Error.NoCommand:                        No such command ({0}).
 
+## General
+AllCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
+
 ## Notes
 AllCommands.Header.Note.Divider:                    --- NOTE: ---
 AllCommands.Header.Note.Dashes:                     --------------
@@ -37,20 +40,20 @@ PLCommands.Anonymous.Msg.On:				You are now anonymous.
 
 ## /appeal
 Scripts.Players.Appeal.NeedMoreDetail:			Your appeal has NOT been submitted. Please reenter your appeal with additional details.
-Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for Atlas server staff to address your current appeal before submitting another.
+Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for the Atlas server team to address your current appeal before submitting another.
 Scripts.Players.Appeal.DoNotHaveAppeal:			You do not have an appeal to cancel, or it has already been closed for you.
-Scripts.Players.Appeal.StaffClosedYourAppeal:	Atlas Staff {0} has closed your appeal.
+Scripts.Players.Appeal.StaffClosedYourAppeal:	{0} [TEAM] has closed your appeal.
 Scripts.Players.Appeal.PleaseBePatient:			Please be patient while we work to address your concern as quickly as possible.
 Scripts.Players.Appeal.IfYouLogOut:				If you log out with an active appeal it will be saved and automatically reinstated when you log back in.  (Even if you switch characters)
 Scripts.Players.Appeal.ToCancelYourAppeal:		To cancel your appeal use /checkappeal cancel.
 Scripts.Players.Appeal.CriticalMessage:			Critical Appeals may need urgent attention!
 Scripts.Players.Appeal.YouAreMuted:				You are muted and are not allowed to submit an appeal at this time.
 Scripts.Players.Appeal.AppealSubmitted:			Your appeal has been submitted successfully...  use /checkappeal to check the status of your appeal.
-Scripts.Players.Appeal.StaffChangedStatus:		Staffmember {0} has changed the status of your appeal to {1}.
+Scripts.Players.Appeal.StaffChangedStatus:		{0} [TEAM] has changed the status of your appeal to {1}.
 Scripts.Players.Appeal.CanceledYourAppeal:		You have canceled your appeal.
 Scripts.Players.Appeal.LoginMessage:			If you need in-game assistance from server staff (such as stuck character) please use /appeal.
 Scripts.Players.Appeal.YouHavePendingAppeal:	You have a pending appeal in the queue, please use /checkappeal to see its status or to cancel the appeal.
-Scripts.Players.Appeal.CurrentStaffAvailable:	There are currently {0} staff available and {1} appeals in queue.
+Scripts.Players.Appeal.CurrentStaffAvailable:	There are currently {0} Atlas team members available and {1} appeals in queue.
 Scripts.Players.Appeal.SystemDisabled:			The appeal system is currently disabled.
 
 ## /assist
@@ -357,6 +360,142 @@ Scripts.Player.Guild.Help.GuildUsage:			Usage:
 Scripts.Player.Guild.Help.GuildWebpage:			'/gc webpage <the.guildpage.com>' is an additional line set by the leader that can be display in a /gc info command, as well as on the Herald.	
 Scripts.Player.Guild.Help.GuildWho:			'/gc who' to show all player in your guild	
 Scripts.Player.Guild.Help.GuildWithdraw:	'/gc withdraw <amount>' gets money from the guild bank account.
+Scripts.Player.Guild.AccountRemoved:			{0} has removed {1} from the guild.	
+Scripts.Player.Guild.ActiveBuff:			Your guild already has an active buff. You must wait for it to expire first.	
+Scripts.Player.Guild.AllianceAlreadyOther:		That guild already has an alliance.	
+Scripts.Player.Guild.AllianceAnsCancel:			The alliance offer has been cancelled.	
+Scripts.Player.Guild.AllianceDeclined:			You decline the alliance offer.	
+Scripts.Player.Guild.AllianceDeclinedOther:		The alliance offer has been declined	
+Scripts.Player.Guild.AllianceDisabled:			Alliances are disabled on this server.	
+Scripts.Player.Guild.AllianceIndexNotVal:		The alliance index is not a valid number.	
+Scripts.Player.Guild.AllianceInfo:			Alliance info for {0}:
+Scripts.Player.Guild.AllianceInvite:			You have invited a guild to join your alliance.	
+Scripts.Player.Guild.AllianceInvited:			You have been invited to join the alliance of {0}.	
+Scripts.Player.Guild.AllianceLeader:			Alliance leader {0}	
+Scripts.Player.Guild.AllianceMax:			You are unable to invite that guild to your alliance, as your alliance already has the max number of guilds.	
+Scripts.Player.Guild.AllianceMember:			{0} - {1}	
+Scripts.Player.Guild.AllianceMembers:			Alliance members:	
+Scripts.Player.Guild.AllianceMemNotSel:			You must select a player from the same alliance.	
+Scripts.Player.Guild.AllianceNoGMSelected:		You must select a GM of guild you want to invite.	
+Scripts.Player.Guild.AllianceNoLeader:			No alliance leader
+Scripts.Player.Guild.AllianceNotLeader:			You have to be the leader guild of the alliance , before you can remove a guild from the alliance.	
+Scripts.Player.Guild.AllianceNotMember:			You must be in an alliance to do that.	
+Scripts.Player.Guild.AlreadyInGuild:			{0} is already a member of a guild.	
+Scripts.Player.Guild.AlreadyInGuild:			They are already a member of a guild.	
+Scripts.Player.Guild.AMotdSet:				You have set the alliance motd for the guild.	
+Scripts.Player.Guild.BannerAlready:			Your guild already has a banner.	
+Scripts.Player.Guild.BannerBought:			You have purchased a guild banner for {0} bounty points.	
+Scripts.Player.Guild.BannerGroupSummoned:		Someone in your group has already summoned the guild banner.	
+Scripts.Player.Guild.BannerGuildSummoned:		Someone in your guild has already summoned the guild banner.	
+Scripts.Player.Guild.BannerNoGroup:			You need to be in a Group to summon a Banner.	
+Scripts.Player.Guild.BannerNone:			Your guild does not own a guild banner.	
+Scripts.Player.Guild.BannerNotAfford:			You need 50,000 bounty points to purchase a guild banner!	
+Scripts.Player.Guild.BannerSummoned:			You have summoned your guild banner.	
+Scripts.Player.Guild.BannerUnsummoned:			You have unsummoned your guild banner.	
+Scripts.Player.Guild.BannerNotRvR:			You need to be in an RvR zone to summon a guild banner!
+Scripts.Player.Guild.BuffActivated:			[Guild Buff] {0} has spent 1000 Guild Merit Points and activated a Guild Buff!	
+Scripts.Player.Guild.BuffBountyPoints:			Your guild will now gain 5% bonus to bounty points for 24 hours!	
+Scripts.Player.Guild.BuffBPActivated:			[Guild Buff] Your guild will now get a bonus to bounty points for 24 hours!	
+Scripts.Player.Guild.BuffMPActivated:			[Guild Buff] Your guild will now get a bonus to merit points for 24 hours!	
+Scripts.Player.Guild.BuffRealmPoints:			Your guild will now gain 5% bonus to realm points for 24 hours!	
+Scripts.Player.Guild.ClaimNotNear:			You must be near a keep to claim it.	
+Scripts.Player.Guild.ConfirmLeave:			Do you really want to leave {0}?	
+Scripts.Player.Guild.DemotedHigherThanPlayer:		You can only demote to ranks below your own.	
+Scripts.Player.Guild.DemotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
+Scripts.Player.Guild.DemotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
+Scripts.Player.Guild.DepositAmount:			You deposit {0} into your guilds bank account.	
+Scripts.Player.Guild.DepositFull:			The guild bank seems to be full.	
+Scripts.Player.Guild.DepositInvalid:		That is an invalid deposit amount.
+Scripts.Player.Guild.DepositTooMuch:		You don't have enough money to do that!
+Scripts.Player.Guild.DuesOff:				Guild dues are currently turned off.	
+Scripts.Player.Guild.DuesOn:				Guild dues are currently set at {0} percent.	
+Scripts.Player.Guild.EmailSet:				You have set the guild email to {0}.	
+Scripts.Player.Guild.EmblemAlready:			Your guild already has an emblem but you may change it for a hefty fee of 100 gold. You must select the EmblemNPC again for this procedure to happen.	
+Scripts.Player.Guild.EmblemNeedGold:			You must have 200 gold to re emblem your guild.	
+Scripts.Player.Guild.EmblemNeedNPC:			You must be near a valid emblemeer.	
+Scripts.Player.Guild.EmblemNPCNotSelected:		You must be near a valid emblemeer.	
+Scripts.Player.Guild.EmblemRedo:			Would you like to re-emblem your guild for 100 gold?	
+Scripts.Player.Guild.FormNoGroup:			You must be in a group to form a guild.	
+Scripts.Player.Guild.FormNoMembers:			You need {0} members in your group to form a guild.	
+Scripts.Player.Guild.GuildCreated:			The guild {0} has been formed. {1} is the leader.	
+Scripts.Player.Guild.GuildExists:			That guild cannot be created because it already exists.	
+Scripts.Player.Guild.GuildForceLeave:			You have been removed from {1} by {0}.
+Scripts.Player.Guild.GuildLeave:			You have left your guild.	
+Scripts.Player.Guild.GuildLevelReq:			Your guild is not high enough level for this command.	
+Scripts.Player.Guild.GuildNotExist:			That guild does not exist.
+Scripts.Player.Guild.InCombat:				You can't unsummon your Banner while you're in Combat!	
+Scripts.Player.Guild.InfoAMotd:				AllianceMessage: {0}	
+Scripts.Player.Guild.InfoCEmail:			Contact Email: {0}	
+Scripts.Player.Guild.InfoGDuesBank:			Dues: {0} Guild Bank: {1} copper pieces	
+Scripts.Player.Guild.InfoGuild:				Guild Info for {0}:	
+Scripts.Player.Guild.InfoGuildLevel:			Guild Level: {0}	
+Scripts.Player.Guild.InfoMotd:				Message:  {0}	
+Scripts.Player.Guild.InfoOMotd:				OfficerMessage: {0}	
+Scripts.Player.Guild.InfoRPBPMP:			Realm Points: {0} Bounty Points: {1} Merit Points: {2}	
+Scripts.Player.Guild.InfoWebpage:			Webpage: {0}	
+Scripts.Player.Guild.InvalidLetters:			Some of the characters entered are invalid.	
+Scripts.Player.Guild.InvalidRank:			That is not a valid rank.	
+Scripts.Player.Guild.InviteDead:			You cannot invite a dead player to your guild.	
+Scripts.Player.Guild.InviteNoSelected:			You must select a player.	
+Scripts.Player.Guild.InviteNoSelf:			You can't invite your self.	
+Scripts.Player.Guild.InviteNotThis:			You cannot invite this member.	
+Scripts.Player.Guild.InviteRecieved:			{0} has invited you to join their guild.	
+Scripts.Player.Guild.InviteSent:			You have invited {0} to join your guild.	
+Scripts.Player.Guild.Keep:				Your Guild has currently Claimed {0}.	
+Scripts.Player.Guild.LevelUp:				[Guild] Your guild has advanced to level {0}!	
+Scripts.Player.Guild.LoginsOff:				You will no longer be notified of guild members logging in, type /gc logins to start receiving notifications.	
+Scripts.Player.Guild.LoginsOn:				You will once again be notified of guild members logging in, type /gc logins to stop receiving notifications.	
+Scripts.Player.Guild.MadeLeader:			You are now the leader of {0}.	
+Scripts.Player.Guild.MadeLeaderOther:			{0} has been made the leader of {1}.	
+Scripts.Player.Guild.MemberLogin:			{0} has logged into the game.	
+Scripts.Player.Guild.MemberLogoff:			{0} has logged out of the game.	
+Scripts.Player.Guild.MemberRemoved:			{1} was removed from the guild.
+Scripts.Player.Guild.MeritPointReq:			Your guild does not have the required merit points.	
+Scripts.Player.Guild.MotdSet:				You have set the motd for the guild.	
+Scripts.Player.Guild.NoKeep:				You must have a keep before using that command.	
+Scripts.Player.Guild.NoPlayerSelected:			You must select a player.	
+Scripts.Player.Guild.NoPlayersInAcc:			There are no players from this account in your guild.	
+Scripts.Player.Guild.NoPrivilages:			You do not have high enough privilege in the guild to use that command.	
+Scripts.Player.Guild.NoteSet:				You set your guild note to: {0}	
+Scripts.Player.Guild.NotInYourGuild:			That player is not in your guild.	
+Scripts.Player.Guild.NotMember:				You must be in a guild before you can use any guild commands.	
+Scripts.Player.Guild.OMotdSet:				You have set the officer motd for the guild.	
+Scripts.Player.Guild.PlayerNotFound:			That player could not be found in the game.	
+Scripts.Player.Guild.PromotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
+Scripts.Player.Guild.PromotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
+Scripts.Player.Guild.PromoteHigherThanPlayer:		You can only promote to ranks below your own.	
+Scripts.Player.Guild.PromoteHaveToUseDemote:	You can't demote the Guild Rank of this players with promote commands. Use /demote <ranklevel> players.
+Scripts.Player.Guild.Purged:				{0} has been purged.	
+Scripts.Player.Guild.RankACHearSet:			You have {0} the ACHear of the rank {1}.	
+Scripts.Player.Guild.RankACSpeakSet:			You have {0} the ACSpeak of the rank {1}.	
+Scripts.Player.Guild.RankAlliSet:			You have {0} the Alliance of the rank {1}.	
+Scripts.Player.Guild.RankBuffSet:			You have {0} the Buff of the rank {1}.	
+Scripts.Player.Guild.RankClaimSet:			You have {0} the Claim of the rank {1}.	
+Scripts.Player.Guild.RankDuesSet:			You have {0} the Dues of the rank {1}.	
+Scripts.Player.Guild.RankEmblemSet:			You have {0} the emblem of the rank {1}.	
+Scripts.Player.Guild.RankGCHearSet:			You have {0} the GCHear of the rank {1}.	
+Scripts.Player.Guild.RankGCSpeakSet:			You have {0} the GCSpeak of the rank {1}.	
+Scripts.Player.Guild.RankInviteSet:			You have {0} the Invite of the rank {1}.	
+Scripts.Player.Guild.RankLevelSet:			You have set the level of the rank to {0}.	
+Scripts.Player.Guild.RankOCHearSet:			You have {0} the OCHear of the rank {1}.	
+Scripts.Player.Guild.RankOCSpeakSet:			You have {0} the OCSpeak of the rank {1}.	
+Scripts.Player.Guild.RankPromoteSet:			You have {0} the Promote of the rank {1}.	
+Scripts.Player.Guild.RankReleaseSet:			You have {0} the Release of the rank {1}.	
+Scripts.Player.Guild.RankRemoveSet:				You have {0} the Remove of the rank {1}.	
+Scripts.Player.Guild.RankTitleSet:				You have set the title of the rank to {0}.	
+Scripts.Player.Guild.RankUpgradeSet:			You have {0} the Upgrade of the rank {1}.	
+Scripts.Player.Guild.RankViewSet:				You have {0} the View of the rank {1}.	
+Scripts.Player.Guild.RankWithdrawSet:			You have {0} the Withdraw of the rank {1}.	
+Scripts.Player.Guild.ThirdArgNotNum:			The third argument must be a number.	
+Scripts.Player.Guild.UnableToCreate:			The guild {0} was unable to be created.	
+Scripts.Player.Guild.UnableToCreateLead:		The guild {0} was unable to be created {1} as leader.	
+Scripts.Player.Guild.UnknownCommand:			{0} is not a valid command:	
+Scripts.Player.Guild.UpgradeNoLevel:			You must specify a level to target for upgrade.	
+Scripts.Player.Guild.UpgradeScndArg:			The second argument must be a number.	
+Scripts.Player.Guild.WebpageSet:				You have set the guild webpage to {0}.	
+Scripts.Player.Guild.Withdrawamount:			You withdraw {0} from the guild bank.
+Scripts.Player.Guild.WithdrawInvalid:			That is an invalid amount to withdraw.	
+Scripts.Player.Guild.WithdrawTooMuch:			You cannot withdraw that much money from the guild bank.
 
 ## /language
 Scripts.Players.Language.Current:			Your language is currently set to: {0}.

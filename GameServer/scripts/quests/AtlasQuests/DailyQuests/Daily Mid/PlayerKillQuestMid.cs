@@ -166,9 +166,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey, Fen's Slave. "+
-					                       "Fen's insatiable desire to kill players is getting out of hand, and he's starting to outsource. \n\n"+
-					                       "\nCan you [help me out]?");
+					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
+					                       "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
+					                       "\nCan you lend me a hand? A leg could probably work too.");
 				}
 			}
 				// The player whispered to the NPC
@@ -307,18 +307,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(PlayerKillQuestMid)) == null)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.Interact)
-			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == ReyMid.Name)
-				{
-					ReyMid.SayTo(player, "Did you know that Fen is awesome? He pays me 50g every time I say that.");
-					return;
-				}
-			}
+			if (sender != m_questPlayer)
+				return;
 
-			
-			
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
@@ -336,6 +327,22 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				
 			}
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "PlayerKillQuestMid";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
 		}
 
 		public override void AbortQuest()

@@ -313,17 +313,8 @@ namespace DOL.GS.WeeklyQuests.Midgard
 			if (player == null || player.IsDoingQuest(typeof(PlayerKillWeeklyQuestMid)) == null)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.Interact)
-			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == ReyMid.Name)
-				{
-					ReyMid.SayTo(player, "Did you know that Fen is awesome? He pays me 50g every time I say that.");
-					return;
-				}
-			}
-
-			
+			if (sender != m_questPlayer)
+				return;
 			
 			if (e == GameLivingEvent.EnemyKilled)
 			{
@@ -343,6 +334,22 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				}
 				
 			}
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "PlayerKillWeeklyQuestMid";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
 		}
 
 		public override void AbortQuest()

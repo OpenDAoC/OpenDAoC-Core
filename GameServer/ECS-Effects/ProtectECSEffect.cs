@@ -17,8 +17,9 @@ namespace DOL.GS
         {
 			m_protectSource = protectSource;
 			m_protectTarget = protectTarget;
+			m_playerGroup = protectSource.Group;
             EffectType = eEffect.Protect;
-			EffectService.RequestStartEffect(this);
+            EffectService.RequestStartEffect(this);
 		}
 
 		/// <summary>
@@ -65,15 +66,17 @@ namespace DOL.GS
         public override long GetRemainingTimeForClient() { return 0; }
         public override void OnStartEffect()
         {
-			if (ProtectSource == null || ProtectTarget == null)			
+	        if (ProtectSource == null || ProtectTarget == null)			
 				return;
 
 
 			if (m_playerGroup != ProtectTarget.Group)
 				return;
 
-			GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+			if(m_playerGroup != null)
+				GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
 
+			
 			if (Owner == ProtectSource)
 			{
 				if (!ProtectSource.IsWithinRadius(ProtectTarget, ProtectAbilityHandler.PROTECT_DISTANCE))
@@ -95,12 +98,13 @@ namespace DOL.GS
         }
 		public void Cancel(bool playerCancel)
 		{
-			GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+			if(m_playerGroup != null)
+				GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
 
-			var protectSourceEffect = EffectListService.GetEffectOnTarget(m_protectSource, eEffect.Intercept);
+			var protectSourceEffect = EffectListService.GetEffectOnTarget(m_protectSource, eEffect.Protect);
 			if (protectSourceEffect != null)
 				EffectService.RequestImmediateCancelEffect(protectSourceEffect);
-			var protectTargetEffect = EffectListService.GetEffectOnTarget(m_protectTarget, eEffect.Intercept);
+			var protectTargetEffect = EffectListService.GetEffectOnTarget(m_protectTarget, eEffect.Protect);
 			if (protectTargetEffect != null)
 				EffectService.RequestImmediateCancelEffect(protectTargetEffect);
 

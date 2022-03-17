@@ -312,18 +312,9 @@ namespace DOL.GS.WeeklyQuests.Albion
 			if (player == null || player.IsDoingQuest(typeof(PlayerKillWeeklyQuestAlb)) == null)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.Interact)
-			{
-				InteractEventArgs gArgs = (InteractEventArgs) args;
-				if (gArgs.Source.Name == ReyAlb.Name)
-				{
-					ReyAlb.SayTo(player, "Did you know that Fen is awesome? He pays me 50g every time I say that.");
-					return;
-				}
-			}
+			if (sender != m_questPlayer)
+				return;
 
-			
-			
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
@@ -342,6 +333,22 @@ namespace DOL.GS.WeeklyQuests.Albion
 				}
 				
 			}
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "PlayerKillWeeklyQuestAlb";
+			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
 		}
 
 		public override void AbortQuest()

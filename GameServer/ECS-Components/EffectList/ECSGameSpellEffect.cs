@@ -103,28 +103,34 @@ namespace DOL.GS
         }
         
         /// <summary>
-        /// Specifies the entity casting the spell
+        /// Used for 'OnEffectStartMsg' and 'OnEffectExpiresMsg'. Identifies the entity triggering the effect (sometimes the caster and effect owner are the same entity).
         /// </summary>
         public GameLiving Caster { get; set; }
         
+        #region Effect Start Messages
         /// <summary>
-		/// Sends messages when a spell effect affects the target. These values are set from the 'spell' table in the database.
+		/// Sends Spell messages to all nearby/associated players when an ability/spell/style effect becomes active on a target.
 		/// </summary>
-		/// <param name="target">The target of the spell or spell effect.</param>
-        /// <param name="msgTarget">When set to 'true', the system sends a first-person spell message to the target.</param>
-		/// <param name="msgSelf">When set to 'true', the system sends a third-person spell message to the caster (ignoring proximity to the target).</param>
-		/// <param name="msgArea">When set to 'true', the system sends a third-person spell message to all players near the target.</param>
-		public virtual void OnEffectStartsMsg(GameLiving target, bool msgTarget, bool msgSelf, bool msgArea)
+		/// <param name="target">The owner of the effect.</param>
+        /// <param name="msgTarget">If 'true', the system sends a first-person spell message to the target/owner of the effect.</param>
+		/// <param name="msgSelf">If 'true', the system sends a third-person spell message to the caster triggering the effect, regardless of their proximity to the target.</param>
+		/// <param name="msgArea">If 'true', the system sends a third-person message to all players within range of the target.</param>
+		/// <returns>'Message1' and 'Message2' values from the 'spell' table.</returns>
+		public void OnEffectStartsMsg(GameLiving target, bool msgTarget, bool msgSelf, bool msgArea)
 		{
 			// If the target variable is at the start of the string, capitalize their name or article
-			bool upperCase = SpellHandler.Spell.Message2.StartsWith("{0}");
+			var upperCase = SpellHandler.Spell.Message2.StartsWith("{0}");
+			
+			// Sends no messages
+			if (msgTarget == false && msgSelf == false && msgArea == false)
+				return;
 
-			// Sends a first-person message directly to the caster's target, if they are a player.
+			// Sends a first-person message directly to the caster's target, if they are a player
 			if (msgTarget && target is GamePlayer)
 				// "You feel more dexterous!"
 				((SpellHandler) SpellHandler).MessageToLiving(target, SpellHandler.Spell.Message1, eChatType.CT_Spell);
 			
-			// Sends a third-person message directly to the caster to indicate the spell has taken effect.
+			// Sends a third-person message directly to the caster to indicate the spell has taken effect
 			if (msgSelf && target is GamePlayer && Caster != target)
 			{
 				if (Caster == target) return;
@@ -136,31 +142,37 @@ namespace DOL.GS
 			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
-					// "{0} looks more agile!"
-					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
+				// Temporarily disabled to gauge effect on server freezes -- Lefty, 22/03/08
+				// "{0} looks more agile!"
+				// Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
 		}
+        #endregion Effect Start Messages
         
+        #region Effect End Messages
 		/// <summary>
-		/// Sends spell messages when a spell effect ends or expires on the target.
+		/// Sends Spell messages to all nearby/associated players when an ability/spell/style effect ends on a target.
 		/// </summary>
-		/// <param name="target">The target of the spell or spell effect.</param>
-		/// <param name="msgTarget">When set to 'true', the system sends a first-person spell message to the target.</param>
-		/// <param name="msgSelf">When set to 'true', the system sends a third-person spell message to the caster (ignoring proximity to the target).</param>
-		/// <param name="msgArea">When set to 'true', the system sends a third-person spell message to all players near the target.</param>
+		/// <param name="target">The owner of the effect.</param>
+		/// <param name="msgTarget">If 'true', the system sends a first-person spell message to the target/owner of the effect.</param>
+		/// <param name="msgSelf">If 'true', the system sends a third-person spell message to the caster triggering the effect, regardless of their proximity to the target.</param>
+		/// <param name="msgArea">If 'true', the system sends a third-person message to all players within range of the target.</param>
+		/// <returns>'Message3' and 'Message4' values from the 'spell' table.</returns>
 		public void OnEffectExpiresMsg(GameLiving target, bool msgTarget, bool msgSelf, bool msgArea)
 		{
 			// If the target variable is at the start of the string, capitalize their name or article
-			bool upperCase = SpellHandler.Spell.Message4.StartsWith("{0}");
+			var upperCase = SpellHandler.Spell.Message4.StartsWith("{0}");
 
-			// Sends no messages.
+			// Sends no messages
 			if (msgTarget == false && msgSelf == false && msgArea == false)
 				return;
 			
-			// Sends a first-person message directly to the caster's target, if they are a player.
+			// Sends a first-person message directly to the caster's target, if they are a player
 			if (msgTarget && target is GamePlayer)
 				// "Your agility returns to normal."
 				((SpellHandler) SpellHandler).MessageToLiving(target, SpellHandler.Spell.Message3, eChatType.CT_Spell);
+			
+			// Sends a third-person message directly to the caster to indicate the spell has ended
 			if (msgSelf && target is GamePlayer)
 			{
 				if (Caster == target) return;
@@ -168,12 +180,16 @@ namespace DOL.GS
 				// "{0}'s enhanced agility fades."
 				((SpellHandler) SpellHandler).MessageToCaster(eChatType.CT_Spell, SpellHandler.Spell.Message4, Owner.GetName(0, upperCase));
 			}
+			
+			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
+				// Temporarily disabled to gauge effect on server freezes -- Lefty, 22/03/08
 				// "{0}'s enhanced agility fades."
-				Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_System, target);
+				// Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_System, target);
 			}
 		}
+		#endregion Effect Start Messages
 
     }
 }
