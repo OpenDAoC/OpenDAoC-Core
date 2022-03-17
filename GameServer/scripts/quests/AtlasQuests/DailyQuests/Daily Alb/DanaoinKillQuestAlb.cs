@@ -70,7 +70,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
+					if (npc.CurrentRegionID == 1 && npc.X == 583900 && npc.Y == 477497)
 					{
 						Cola = npc;
 						break;
