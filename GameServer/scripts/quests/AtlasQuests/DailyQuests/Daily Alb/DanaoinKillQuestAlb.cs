@@ -70,7 +70,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 1 && npc.X == 583900 && npc.Y == 477497)
+					if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
 					{
 						Cola = npc;
 						break;
@@ -89,8 +89,8 @@ namespace DOL.GS.DailyQuest.Albion
 				Cola.Size = 50;
 				Cola.Level = 59;
 				//Castle Sauvage Location
-				Cola.X = 583900;
-				Cola.Y = 477497;
+				Cola.X = 583860;
+				Cola.Y = 477619;
 				Cola.Z = 2600;
 				Cola.Heading = 3111;
 				Cola.AddToWorld();
