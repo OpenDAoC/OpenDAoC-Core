@@ -14,21 +14,88 @@ namespace DOL.GS
 	public class Evern : GameNPC
 	{
 		public Evern() : base() { }
-		public static GameNPC SI_Gnat = new GameNPC();
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 90;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 90;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
+				default: return 80;// dmg reduction for rest resists
+			}
+		}
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			return base.AttackDamage(weapon) * Strength / 100;
+		}
+		public override int AttackRange
+		{
+			get { return 350; }
+			set { }
+		}
+		public override bool HasAbility(string keyName)
+		{
+			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+				return true;
+
+			return base.HasAbility(keyName);
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 1000;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.85;
+		}
+		public override int MaxHealth
+		{
+			get { return 20000; }
+		}
+		public override void Die(GameObject killer)//on kill generate orbs
+		{
+			// debug
+			log.Debug($"{Name} killed by {killer.Name}");
+
+			GamePlayer playerKiller = killer as GamePlayer;
+
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
+				}
+			}
+			base.Die(killer);
+		}
 		public override bool AddToWorld()
 		{
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160628);
+			LoadTemplate(npcTemplate);
+			Strength = npcTemplate.Strength;
+			Dexterity = npcTemplate.Dexterity;
+			Constitution = npcTemplate.Constitution;
+			Quickness = npcTemplate.Quickness;
+			Piety = npcTemplate.Piety;
+			Intelligence = npcTemplate.Intelligence;
+			Empathy = npcTemplate.Empathy;
+
 			Model = 400;
 			Name = "Evern";
 			Size = 120;
-			Level = (byte)Util.Random(70, 75);
+			Level = (byte)Util.Random(75, 78);
 			Gender = eGender.Neutral;
 			TetherRange = 1700;//important for fairy heals and mechanic
 			Flags = eFlags.GHOST;
+			EvernBrain.spawnfairy = false;
 
 			EvernBrain sBrain = new EvernBrain();
 			SetOwnBrain(sBrain);
 			sBrain.AggroLevel = 100;
 			sBrain.AggroRange = 500;
+			LoadedFromScript = false;//load from database
+			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}
@@ -41,6 +108,7 @@ namespace DOL.AI.Brain
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public EvernBrain() : base() { }
 
+		public static bool spawnfairy = false;
 		public override void Think()
 		{
 			if (Body.InCombat == true && Body.IsAlive && HasAggro)
@@ -49,9 +117,13 @@ namespace DOL.AI.Brain
 				{
 					if(Body.HealthPercent<100)
                     {
-						if(Util.Chance(10))
-                        {
-						  new RegionTimer(Body, new RegionTimerCallback(DoSpawn), 5000);
+						if (spawnfairy == false)
+						{
+							if (Util.Chance(10))
+							{
+								new RegionTimer(Body, new RegionTimerCallback(DoSpawn), Util.Random(5000,15000));
+								spawnfairy = true;
+							}
 						}
                     }
 				}
@@ -95,6 +167,7 @@ namespace DOL.AI.Brain
 		private int DoSpawn(RegionTimer timer)
 		{
 			Spawn();
+			spawnfairy = false;
 			return 0;
 		}
 		public void Spawn() // We define here adds
@@ -118,9 +191,19 @@ namespace DOL.GS
 	{
 		public EvernFairy() : base() { }
 		public static GameNPC OF_EvernFairy = new GameNPC();
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 25;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 25;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 25;// dmg reduction for melee dmg
+				default: return 25;// dmg reduction for rest resists
+			}
+		}
 		public override int MaxHealth
 		{
-			get { return 1500 * Constitution / 100; }
+			get { return 2000; }
 		}
 
 		public override bool AddToWorld()
@@ -128,7 +211,6 @@ namespace DOL.GS
 			Model = 603;
 			Name = "Wraith Fairy";
 			MeleeDamageType = eDamageType.Thrust;
-			Constitution = 100;
 			RespawnInterval = -1;
 			Size = 50;
 			Flags = eFlags.FLYING;
