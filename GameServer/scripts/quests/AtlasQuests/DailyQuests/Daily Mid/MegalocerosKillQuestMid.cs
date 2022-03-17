@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Kill Goal
 		protected const int MAX_KILLED = 10;
 		
-		private static GameNPC Arthur = null; // Start NPC
+		private static GameNPC Isaac = null; // Start NPC
 
 		private int megalocerosKilled = 0;
 
@@ -66,37 +66,37 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Arthur", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766600 && npc.Y == 670398)
+					if (npc.CurrentRegionID == 100 && npc.X == 766600 && npc.Y == 670443)
 					{
-						Arthur = npc;
+						Isaac = npc;
 						break;
 					}
 
-			if (Arthur == null)
+			if (Isaac == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Arthur , creating it ...");
-				Arthur = new GameNPC();
-				Arthur.Model = 355;
-				Arthur.Name = "Arthur";
-				Arthur.GuildName = "Atlas Quest";
-				Arthur.Realm = eRealm.Midgard;
-				Arthur.CurrentRegionID = 1;
-				Arthur.Size = 50;
-				Arthur.Level = 59;
+					log.Warn("Could not find Isaac , creating it ...");
+				Isaac = new GameNPC();
+				Isaac.Model = 355;
+				Isaac.Name = "Isaac";
+				Isaac.GuildName = "Atlas Quest";
+				Isaac.Realm = eRealm.Midgard;
+				Isaac.CurrentRegionID = 1;
+				Isaac.Size = 50;
+				Isaac.Level = 59;
 				//Castle Sauvage Location
-				Arthur.X = 766600;
-				Arthur.Y = 670398;
-				Arthur.Z = 5736;
-				Arthur.Heading = 2242;
-				Arthur.AddToWorld();
+				Isaac.X = 766600;
+				Isaac.Y = 670443;
+				Isaac.Z = 5736;
+				Isaac.Heading = 2242;
+				Isaac.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Arthur.SaveIntoDatabase();
+					Isaac.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +111,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Arthur, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.AddHandler(Arthur, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we bring to Arthur the possibility to give this quest to players */
-			Arthur.AddQuestToGive(typeof (MegalocerosKillQuestMid));
+			/* Now we bring to Isaac the possibility to give this quest to players */
+			Isaac.AddQuestToGive(typeof (MegalocerosKillQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -125,17 +125,17 @@ namespace DOL.GS.DailyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Arthur == null)
+			if (Isaac == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Arthur, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.RemoveHandler(Arthur, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we remove to Arthur the possibility to give this quest to players */
-			Arthur.RemoveQuestToGive(typeof (MegalocerosKillQuestMid));
+			/* Now we remove to Isaac the possibility to give this quest to players */
+			Isaac.RemoveQuestToGive(typeof (MegalocerosKillQuestMid));
 		}
 
 		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
@@ -145,7 +145,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (player == null)
 				return;
 
-			if(Arthur.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
+			if(Isaac.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -158,16 +158,16 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Arthur.SayTo(player, "You will find Megaloceros in the South East of Gripklosa Mountains.");
+							Isaac.SayTo(player, "You will find Megaloceros in the South East of Gripklosa Mountains.");
 							break;
 						case 2:
-							Arthur.SayTo(player, "Hello " + player.Name + ", did you [kill] the Megaloceros?");
+							Isaac.SayTo(player, "Hello " + player.Name + ", did you [kill] the Megaloceros?");
 							break;
 					}
 				}
 				else
 				{
-					Arthur.SayTo(player, "Hello "+ player.Name +", I am Arthur, Preda\'s friend. "+
+					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. "+
 					                       "I heard you are strong enough to help me with Daily Missions of Midgard \n\n"+
 					                       "\nCan you [support Atlas]?");
 				}
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Arthur, QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)), "Will you help Arthur "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)), "Will you help Isaac "+questTitle+"");
 							break;
 					}
 				}
@@ -269,7 +269,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Arthur.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
+			if(Isaac.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (MegalocerosKillQuestMid)) != null)
@@ -282,10 +282,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Arthur.GiveQuest(typeof (MegalocerosKillQuestMid), player, 1))
+				if (!Isaac.GiveQuest(typeof (MegalocerosKillQuestMid), player, 1))
 					return;
 
-				Arthur.SayTo(player, "You will find the Megaloceros in Gripklosa Mountains.");
+				Isaac.SayTo(player, "You will find the Megaloceros in Gripklosa Mountains.");
 
 			}
 		}
@@ -306,7 +306,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					case 1:
 						return "Find Danaoin Farmers in the South East of Gripklosa Mountains. \nKilled: Megaloceros ("+ megalocerosKilled +" | 10)";
 					case 2:
-						return "Return to Arthur for your Reward.";
+						return "Return to Isaac for your Reward.";
 				}
 				return base.Description;
 			}
@@ -333,7 +333,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					
 					if (megalocerosKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to Arthur
+						// FinishQuest or go back to Isaac
 						Step = 2;
 					}
 				}
