@@ -71,7 +71,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
+					if (npc.CurrentRegionID == 100 && npc.X == 766332 && npc.Y == 670275)
 					{
 						Herou = npc;
 						break;
@@ -90,10 +90,10 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou.CurrentRegionID = 100;
 				Herou.Size = 50;
 				Herou.Level = 59;
-				Herou.X = 766401;
-				Herou.Y = 670349;
+				Herou.X = 766332;
+				Herou.Y = 670275;
 				Herou.Z = 5736;
-				Herou.Heading = 2284;
+				Herou.Heading = 2835;
 				Herou.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

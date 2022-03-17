@@ -70,7 +70,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766600 && npc.Y == 670443)
+					if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
 					{
 						Isaac = npc;
 						break;
@@ -89,10 +89,10 @@ namespace DOL.GS.DailyQuest.Midgard
 				Isaac.Size = 50;
 				Isaac.Level = 59;
 				//Castle Sauvage Location
-				Isaac.X = 766600;
-				Isaac.Y = 670443;
+				Isaac.X = 766590;
+				Isaac.Y = 670407;
 				Isaac.Z = 5736;
-				Isaac.Heading = 2242;
+				Isaac.Heading = 2358;
 				Isaac.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
