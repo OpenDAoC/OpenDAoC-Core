@@ -20,7 +20,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Danaoin Invasion";
+		protected const string questTitle = "[Daily] Megaloceros Invasion";
 		protected const int minimumLevel = 40;
 		protected const int maximumLevel = 50;
 
