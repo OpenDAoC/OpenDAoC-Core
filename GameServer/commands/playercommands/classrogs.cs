@@ -27,7 +27,8 @@ namespace DOL.GS.Commands
     [CmdAttribute(
         "&classrogs",
         ePrivLevel.Player,
-        "change the chance% of getting ROGs outside of your current class at level 50",
+        "change the chance% of getting ROGs outside of your current class at level 50," +
+        " or the likelihood of getting items relevant to your spec while under 50",
         "/classrogs <%chance>")]
     public class ClassRogsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -36,7 +37,8 @@ namespace DOL.GS.Commands
             
             AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(client.Player.Realm)));
             int ROGCap = 0;
-            int tmpLoyal = realmLoyalty.LoyalDays > 30 ? 30 : realmLoyalty.LoyalDays; 
+            int tmpLoyal = realmLoyalty.LoyalDays > 30 ? 30 : realmLoyalty.LoyalDays;
+            int cachedInput = 0;
             if (realmLoyalty != null)
             {
                 //max cap of 50% out of class chance
@@ -50,20 +52,27 @@ namespace DOL.GS.Commands
                 DisplayMessage(client, "Current cap: " + ROGCap);
                 return;
             }
-            
-            if (int.Parse(args[1]) > ROGCap)
+
+            cachedInput = int.Parse(args[1]);
+            if ( cachedInput > ROGCap)
             {
-                DisplayMessage(client, "Input too high. Current cap: " + ROGCap);
-                return;
+                DisplayMessage(client, "Input too high. Defaulting to cap: " + ROGCap);
+                cachedInput = ROGCap;
             }
-            else if (int.Parse(args[1]) < 0)
+            else if (cachedInput < 0)
             {
                 DisplayMessage(client, "Input must be 0 or above. Current cap: " + ROGCap);
                 return;
             }
 
-            client.Player.OutOfClassROGPercent = int.Parse(args[1]);
-            DisplayMessage(client, "You will now receive out of class ROGs " + args[1] + "% of the time.");
+            client.Player.OutOfClassROGPercent = cachedInput;
+            
+            if(client.Player.Level == 50)
+                DisplayMessage(client, "You will now receive out of class ROGs " + args[1] + "% of the time.");
+            else
+            {
+                //DisplayMessage(client, "You are now " + client.Player.OutOfClassROGPercent + "% more likely to get ROGs relevant to your spec.");
+            }
         }
     }
 }

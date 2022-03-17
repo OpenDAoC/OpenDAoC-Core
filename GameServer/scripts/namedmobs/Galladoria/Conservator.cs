@@ -34,6 +34,15 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Charisma = npcTemplate.Charisma;
+            Empathy = npcTemplate.Empathy;
+
             ConservatorBrain sBrain = new ConservatorBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
@@ -92,8 +101,6 @@ namespace DOL.GS
             
             base.Die(killer);
         }
-
-
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {

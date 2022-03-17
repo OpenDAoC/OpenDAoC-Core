@@ -5652,10 +5652,10 @@ namespace DOL.GS
                     Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 5000);
                 }
-                else if (usedi40 != null)
+                if (Boosted)
                 {
-                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 2000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 2000);
+                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 5000);
                 }
                     
                 
@@ -10930,7 +10930,7 @@ namespace DOL.GS
                 //notify event
                 CurrentRegion.Notify(RegionEvent.PlayerLeave, CurrentRegion, new RegionPlayerEventArgs(this));
 
-                CancelAllConcentrationEffects(true);
+                // CancelAllConcentrationEffects(true);
                 if (ControlledBrain != null)
                     CommandNpcRelease();
             }
@@ -13734,6 +13734,15 @@ namespace DOL.GS
                     cachedCharacter = DBCharacter;
                 }
 
+                foreach (var quest in this.QuestList)
+                {
+                    if(quest is Quests.DailyQuest dq)
+                        dq.SaveQuestParameters();
+
+                    if (quest is WeeklyQuest wq)
+                        wq.SaveQuestParameters();
+                }
+
 
                 if (m_mlSteps != null)
                     GameServer.Database.SaveObject(m_mlSteps.OfType<DBCharacterXMasterLevel>());
@@ -14328,6 +14337,12 @@ namespace DOL.GS
                         m_questListFinished.Add(quest);
                     else
                         m_questList.Add(quest);
+
+                    if (quest is Quests.DailyQuest dq)
+                        dq.LoadQuestParameters();
+                    
+                    if (quest is WeeklyQuest wq)
+                        wq.LoadQuestParameters();
                 }
             }
 
