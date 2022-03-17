@@ -21,7 +21,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected const string questTitle = "[Weekly] Slay the enemies";
-		protected const int minimumLevel = 45;
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
 		private static GameNPC ReyHib = null; // Start NPC

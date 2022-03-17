@@ -21,7 +21,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected const string questTitle = "[Daily] Fen's New Friends";
-		protected const int minimumLevel = 40;
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
 		private static GameNPC ReyHib = null; // Start NPC
