@@ -1,5 +1,10 @@
 ﻿# Game Objects
 GamePlayer.UseSlot.IllegalSourceObject:			Illegal source object. Readied {0}.
+
+## Examine
+GameObject.Target.YouTarget.Object:                 You target [{0}].
+GameObject.GetExamineMessages.YouTarget:	        You target [{0}].
+
 ## Object Articles
 GameObject.GetName.Article1:				The {0}
 GameObject.GetName.Article2:				the {0}

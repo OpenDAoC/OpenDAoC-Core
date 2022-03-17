@@ -479,7 +479,6 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
                 }
             }
-            DropLoot(killer);
             --ApocInitializator.HorsemanCount;
             FamesBrain.StartedFames = false;
             base.Die(killer);
@@ -676,7 +675,7 @@ namespace DOL.GS
                     }
                 }
             }
-            DropLoot(killer);
+            
             --ApocInitializator.HorsemanCount;
             BellumBrain.StartedBellum = false;
             spawn_fate2 = false;
@@ -920,7 +919,7 @@ namespace DOL.GS
                 }
                 CopyNPC = new List<GameNPC>();
 
-                DropLoot(killer);
+                
                 base.Die(killer);
             }
         }
@@ -1151,7 +1150,7 @@ namespace DOL.GS
                 }
                 CopyNPC2 = new List<GameNPC>();
 
-                DropLoot(killer);
+                
                 base.Die(killer);
             }
         }
@@ -1399,7 +1398,7 @@ namespace DOL.GS
                 }
                 CopyNPC3 = new List<GameNPC>();
 
-                DropLoot(killer);
+                
                 base.Die(killer);
             }
         }
@@ -1656,7 +1655,7 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
                 }
             }
-            DropLoot(killer);
+            
             --ApocInitializator.HorsemanCount;
             MorbusBrain.StartedMorbus = false;
             spawn_fate3 = false;
@@ -2185,7 +2184,7 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
                 }
             }
-            DropLoot(killer);
+            
             --ApocInitializator.HorsemanCount;
             spawn_fate4 = false;
             FunusBrain.StartedFunus = false;
@@ -2389,7 +2388,7 @@ namespace DOL.GS
                 }
             }
             BroadcastMessage(String.Format("Apocalypse shouts, 'Your end is at hand!'"));
-            DropLoot(killer);
+            
             --ApocInitializator.ApocCount;
             ApocalypseBrain.StartedApoc = false;
             base.Die(killer);

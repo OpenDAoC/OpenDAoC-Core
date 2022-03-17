@@ -6287,8 +6287,8 @@ namespace DOL.GS
 		/// <returns>true if moved</returns>
 		public override bool MoveTo(ushort regionID, int x, int y, int z, ushort heading)
 		{
-			if (regionID != CurrentRegionID)
-				CancelAllConcentrationEffects();
+			// if (regionID != CurrentRegionID)
+			// 	CancelAllConcentrationEffects();
 
 			return base.MoveTo(regionID, x, y, z, heading);
 		}

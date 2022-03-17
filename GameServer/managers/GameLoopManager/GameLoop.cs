@@ -65,6 +65,7 @@ namespace DOL.GS
             CastingService.Tick(GameLoopTime);
             EffectService.Tick(GameLoopTime);
             EffectListService.Tick(GameLoopTime);
+            DailyQuestService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;

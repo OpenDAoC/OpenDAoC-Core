@@ -96,6 +96,15 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162285);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Charisma = npcTemplate.Charisma;
+            Empathy = npcTemplate.Empathy;
+
             HurionthexBrain sbrain = new HurionthexBrain();
             SetOwnBrain(sbrain);
             base.AddToWorld();
@@ -116,7 +125,7 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
                 }
             }
-            DropLoot(killer);
+            
             base.Die(killer);
         }
         

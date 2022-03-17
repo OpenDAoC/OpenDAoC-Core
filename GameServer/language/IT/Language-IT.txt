@@ -647,7 +647,7 @@ Scripts.Blacksmith.YouTarget:				Selezioni [{0}].
 # /Playerenterexit
 Scripts.Events.PlayerEnterExit.Entered:			{0} e' appena entrato in gioco!
 Scripts.Events.PlayerEnterExit.Left:			{0} e' appena uscito dal gioco!
-Scripts.Events.PlayerEnterExit.Staff:			[Staff Member] {0}
+Scripts.Events.PlayerEnterExit.Staff:			[TEAM] {0}
 
 # GMCommands
 # /Ban

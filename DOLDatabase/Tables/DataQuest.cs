@@ -43,7 +43,7 @@ namespace DOL.Database
 		private string m_targetName;
 		private string m_targetText;
 		private string m_collectItemTemplate;
-		private ushort m_maxCount;
+		private short m_maxCount;
 		private byte m_minLevel;
 		private byte m_maxLevel;
 		private string m_rewardMoney;
@@ -233,7 +233,7 @@ namespace DOL.Database
 		/// Max number of times a player can do this quest
 		/// </summary>
 		[DataElement(AllowDbNull = false)]
-		public ushort MaxCount
+		public short MaxCount
 		{
 			get { return m_maxCount; }
 			set { m_maxCount = value; Dirty = true; }

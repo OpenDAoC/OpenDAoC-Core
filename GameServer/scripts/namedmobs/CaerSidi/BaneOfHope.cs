@@ -1,4 +1,6 @@
-﻿namespace DOL.GS.Scripts
+﻿using DOL.Database;
+
+namespace DOL.GS.Scripts
 {
     public class BaneOfHope : GameNPC
     {
@@ -12,6 +14,12 @@
             // 85% ABS is cap.
             return 0.85;
         }
+
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * 30;
+        }
+        
 
         public override short MaxSpeedBase
         {
@@ -49,7 +57,7 @@
                     AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
                 }
             }
-            DropLoot(killer);
+            
             MoveTo(CurrentRegionID,31154,30913,13950,3043);
             base.Die(killer);
         }

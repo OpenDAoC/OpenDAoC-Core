@@ -10369,7 +10369,7 @@ namespace DOL.GS
                 if (Client != source.Client && Client.Account.PrivLevel != 1 && TempProperties.getProperty<bool>("SendAlert") == false)
                     Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
                 if (source.Client.Account.PrivLevel > 1)
-                    // Message: {0} [STAFF] sends, "{1}"
+                    // Message: {0} [TEAM] sends, "{1}"
                     ChatUtil.SendGMMessage(Client, "Social.ReceiveMessage.Staff.SendsToYou", source.Name, str);
                 else
                     // Message: {0} sends, "{1}"
@@ -10930,7 +10930,7 @@ namespace DOL.GS
                 //notify event
                 CurrentRegion.Notify(RegionEvent.PlayerLeave, CurrentRegion, new RegionPlayerEventArgs(this));
 
-                CancelAllConcentrationEffects(true);
+                // CancelAllConcentrationEffects(true);
                 if (ControlledBrain != null)
                     CommandNpcRelease();
             }
@@ -13734,6 +13734,15 @@ namespace DOL.GS
                     cachedCharacter = DBCharacter;
                 }
 
+                foreach (var quest in this.QuestList)
+                {
+                    if(quest is Quests.DailyQuest dq)
+                        dq.SaveQuestParameters();
+
+                    if (quest is WeeklyQuest wq)
+                        wq.SaveQuestParameters();
+                }
+
 
                 if (m_mlSteps != null)
                     GameServer.Database.SaveObject(m_mlSteps.OfType<DBCharacterXMasterLevel>());
@@ -14328,6 +14337,12 @@ namespace DOL.GS
                         m_questListFinished.Add(quest);
                     else
                         m_questList.Add(quest);
+
+                    if (quest is Quests.DailyQuest dq)
+                        dq.LoadQuestParameters();
+                    
+                    if (quest is WeeklyQuest wq)
+                        wq.LoadQuestParameters();
                 }
             }
 

@@ -980,6 +980,9 @@ namespace DOL.AI.Brain
 				while (aggros.MoveNext())
 				{
 					GameLiving living = (GameLiving)aggros.Key;
+					
+					if(living == null)
+						continue;
 
 					if (living.IsMezzed ||
 					    living.IsAlive == false ||

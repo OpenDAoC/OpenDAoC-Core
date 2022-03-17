@@ -63,7 +63,7 @@ GameNPC.GetAggroLevelString.TowardsYou:         {0} vuci tobe.
 GameNPC.GetExamineMessages.YouExamine:         Prozkoumavas {0}. {1} je {2}.
 
 # GAMEOBJECT
-GameObject.GetExamineMessages.YouTarget:      Tvuj cil [{0}].
+GameObject.Target.YouTarget.Object:      Tvuj cil [{0}].
 GameObject.Interact.TooFarAway:            Jsi prilis daleko pro interakci s  {0}.
 
 # GAMEPLAYER

@@ -38,16 +38,15 @@ namespace DOL.GS
 
         private static void HandleEffects(long tick, GameLiving living)
         {
-            lock (living?.effectListComponent?._effectsLock)
+            if (living?.effectListComponent?.Effects.Count > 0)
             {
-                if (living?.effectListComponent?.Effects.Count > 0)
+                var currentEffects = living.effectListComponent.Effects.Values.ToList();
+                for (int i = 0; i < currentEffects.Count; i++)
                 {
-                    var currentEffects = living.effectListComponent.Effects.Values.ToList();
-                    for (int i = 0; i < currentEffects.Count; i++)
-                    {
+                    if (currentEffects[i] != null) {
                         var effects = currentEffects[i].ToArray();
-
-
+                    
+                    
                         //foreach (var effects in currentEffects)
                         //{
                         for (int j = 0; j < effects.Length; j++)
@@ -74,11 +73,9 @@ namespace DOL.GS
                             }
                             else if (e is ECSGameSpellEffect effect)
                             {
-                                if (tick > effect.ExpireTick &&
-                                    (!effect.IsConcentrationEffect() || effect.SpellHandler.Spell.IsFocus))
+                                if (tick > effect.ExpireTick && (!effect.IsConcentrationEffect() || effect.SpellHandler.Spell.IsFocus))
                                 {
-                                    if (effect.EffectType == eEffect.Pulse &&
-                                        effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
+                                    if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
                                     {
                                         if (effect.SpellHandler.Spell.PulsePower > 0)
                                         {
@@ -90,10 +87,8 @@ namespace DOL.GS
                                             }
                                             else
                                             {
-                                                ((SpellHandler) effect.SpellHandler).MessageToCaster(
-                                                    "You do not have enough power and your spell was canceled.",
-                                                    eChatType.CT_SpellExpires);
-                                                EffectService.RequestCancelConcEffect((IConcentrationEffect) effect);
+                                                ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
+                                                EffectService.RequestCancelConcEffect((IConcentrationEffect)effect);
                                                 continue;
                                             }
                                         }
@@ -103,28 +98,21 @@ namespace DOL.GS
                                             effect.ExpireTick += effect.PulseFreq;
                                         }
 
-                                        if (effect.SpellHandler.Spell.IsHarmful &&
-                                            effect.SpellHandler.Spell.SpellType != (byte) eSpellType.Charm &&
-                                            effect.SpellHandler.Spell.SpellType != (byte) eSpellType.SpeedDecrease)
+                                        if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
                                         {
                                             if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
-                                                ((SpellHandler) effect.SpellHandler).SendCastAnimation();
+                                                ((SpellHandler)effect.SpellHandler).SendCastAnimation();
 
                                         }
-                                        else if (effect.SpellHandler.Spell.SpellType == (byte) eSpellType.SpeedDecrease)
+                                        else if (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                                         {
-                                            ((SpeedDecreaseSpellHandler) effect.SpellHandler).SendEffectAnimation(
-                                                effect.SpellHandler.GetTarget(), 0, false, 1);
+                                            ((SpeedDecreaseSpellHandler)effect.SpellHandler).SendEffectAnimation(effect.SpellHandler.GetTarget(), 0, false, 1);
                                         }
                                     }
                                     else
                                     {
-                                        if (effect.SpellHandler.Spell.IsPulsing &&
-                                            effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
-                                            effect.ExpireTick >= (effect.LastTick +
-                                                                  (effect.Duration > 0
-                                                                      ? effect.Duration
-                                                                      : effect.PulseFreq)))
+                                        if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
+                                            effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                                         {
                                             //Add time to effect to make sure the spell refreshes instead of cancels
                                             effect.ExpireTick += GameLoop.TickRate;
@@ -137,19 +125,16 @@ namespace DOL.GS
                                     }
                                 }
 
-                                if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse &&
-                                    effect.SpellHandler.Spell.SpellType == (byte) eSpellType.SpeedDecrease)
+                                if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                                 {
                                     if (tick > effect.NextTick)
                                     {
-                                        double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) /
-                                            (double) (effect.Duration >> 1);
+                                        double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
                                         if (factor < 0) factor = 0;
                                         else if (factor > 1) factor = 1;
 
                                         //effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler.Spell.ID, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
-                                        effect.Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed,
-                                            effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
+                                        effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
                                         UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
                                         effect.NextTick += effect.TickInterval;
@@ -162,24 +147,16 @@ namespace DOL.GS
                                 {
                                     effect.OnEffectPulse();
                                 }
-
                                 if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                                 {
-                                    if (!effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
-                                            effect.SpellHandler.Spell.SpellType != (byte) eSpellType.EnduranceRegenBuff
-                                                ? ServerProperties.Properties.BUFF_RANGE > 0
-                                                    ?
-                                                    ServerProperties.Properties.BUFF_RANGE
-                                                    : 5000
-                                                : 1500)
+                                    if (!effect.SpellHandler.Caster.
+                                            IsWithinRadius(effect.Owner,
+                                                effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                         && !effect.IsDisabled)
                                     {
                                         ECSGameSpellEffect disabled = null;
-                                        if (effect.Owner.effectListComponent.GetSpellEffects(effect.EffectType).Count >
-                                            1)
-                                            disabled =
-                                                effect.Owner.effectListComponent.GetBestDisabledSpellEffect(
-                                                    effect.EffectType);
+                                        if (effect.Owner.effectListComponent.GetSpellEffects(effect.EffectType).Count > 1)
+                                            disabled = effect.Owner.effectListComponent.GetBestDisabledSpellEffect(effect.EffectType);
 
                                         EffectService.RequestDisableEffect(effect);
 
@@ -187,19 +164,12 @@ namespace DOL.GS
                                             EffectService.RequestEnableEffect(disabled);
                                     }
                                     else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
-                                                 effect.SpellHandler.Spell.SpellType !=
-                                                 (byte) eSpellType.EnduranceRegenBuff
-                                                     ? ServerProperties.Properties.BUFF_RANGE > 0
-                                                         ?
-                                                         ServerProperties.Properties.BUFF_RANGE
-                                                         : 5000
-                                                     : 1500)
+                                                 effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                              && effect.IsDisabled)
                                     {
                                         ECSGameSpellEffect enabled = null;
                                         List<ECSGameEffect> concEffects;
-                                        effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType,
-                                            out concEffects);
+                                        effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out concEffects);
                                         bool isBest = false;
                                         if (concEffects.Count == 1)
                                             isBest = true;
@@ -237,7 +207,7 @@ namespace DOL.GS
                         }
                     }
                 }
-            }
+            }           
         }
 
         public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
