@@ -90,7 +90,14 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
             LoadTemplate(npcTemplate);
-            
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Charisma = npcTemplate.Charisma;
+            Empathy = npcTemplate.Empathy;
             OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
             SetOwnBrain(sBrain);
             

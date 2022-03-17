@@ -95,6 +95,14 @@ namespace DOL.GS
             
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166449);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Charisma = npcTemplate.Charisma;
+            Empathy = npcTemplate.Empathy;
             SpindlerBroodmotherBrain sBrain = new SpindlerBroodmotherBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
