@@ -917,7 +917,6 @@ namespace DOL.GS
         {
             var p = owner as GameNPC;
 
-            p.StopMoving();
             p.StopMovingOnPath();
 
             if (p.Brain != null && p.Brain is IControlledBrain)

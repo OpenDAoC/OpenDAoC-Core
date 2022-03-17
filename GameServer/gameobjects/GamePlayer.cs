@@ -10930,7 +10930,7 @@ namespace DOL.GS
                 //notify event
                 CurrentRegion.Notify(RegionEvent.PlayerLeave, CurrentRegion, new RegionPlayerEventArgs(this));
 
-                CancelAllConcentrationEffects(true);
+                // CancelAllConcentrationEffects(true);
                 if (ControlledBrain != null)
                     CommandNpcRelease();
             }
