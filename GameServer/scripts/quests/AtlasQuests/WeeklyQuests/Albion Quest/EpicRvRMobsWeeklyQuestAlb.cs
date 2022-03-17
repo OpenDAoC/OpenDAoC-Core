@@ -20,7 +20,7 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Frontier cleanup";
+		protected const string questTitle = "[Weekly] Frontier Cleanup";
 		protected const int minimumLevel = 50;
 		protected const int maximumLevel = 50;
 		
