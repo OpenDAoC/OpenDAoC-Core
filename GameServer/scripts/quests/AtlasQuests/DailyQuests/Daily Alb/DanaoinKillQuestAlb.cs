@@ -81,7 +81,7 @@ namespace DOL.GS.DailyQuest.Albion
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Cola , creating it ...");
 				Cola = new GameNPC();
-				Cola.Model = 355;
+				Cola.Model = 724;
 				Cola.Name = "Cola";
 				Cola.GuildName = "Atlas Quest";
 				Cola.Realm = eRealm.Albion;

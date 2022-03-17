@@ -81,11 +81,11 @@ namespace DOL.GS.DailyQuest.Midgard
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Isaac , creating it ...");
 				Isaac = new GameNPC();
-				Isaac.Model = 355;
+				Isaac.Model = 774;
 				Isaac.Name = "Isaac";
 				Isaac.GuildName = "Atlas Quest";
 				Isaac.Realm = eRealm.Midgard;
-				Isaac.CurrentRegionID = 1;
+				Isaac.CurrentRegionID = 100;
 				Isaac.Size = 50;
 				Isaac.Level = 59;
 				//Castle Sauvage Location
