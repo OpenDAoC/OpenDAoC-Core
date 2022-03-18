@@ -168,7 +168,7 @@ namespace DOL.GS.DailyQuest.Albion
 				else
 				{
 					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola, Drmed\'s friend. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Albion \n\n"+
+					                       "I heard you are strong enough to help me with Daily Missions of Albion\n"+
 					                       "\nCan you [support Atlas]?");
 				}
 			}

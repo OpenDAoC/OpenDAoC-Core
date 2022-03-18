@@ -168,7 +168,7 @@ namespace DOL.GS.DailyQuest.Albion
 				else
 				{
 					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having on the border? \n\n"+
+					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having on the border?\n"+
 					                       "\nCan you help me [clear our frontiers]?");
 				}
 			}
