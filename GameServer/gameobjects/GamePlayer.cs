@@ -5910,6 +5910,7 @@ namespace DOL.GS
             {
                 Group.UpdateGroupWindow();
             }
+            Out.SendLevelUpSound(); // level animation
             Out.SendUpdatePlayer(); // Update player level
             Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
             Out.SendUpdatePlayerSkills();
