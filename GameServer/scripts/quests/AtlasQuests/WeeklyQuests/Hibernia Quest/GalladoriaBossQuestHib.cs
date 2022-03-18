@@ -331,7 +331,7 @@ namespace DOL.GS.DailyQuest.Hibernia
                 {
                     _deadGallaBossMob++;
                     player.Out.SendMessage(
-                        "[Daily] Bosses killed in Galladoria: (" + _deadGallaBossMob + " | " + MAX_KILLGOAL + ")",
+                        "[Weekly] Bosses killed in Galladoria: (" + _deadGallaBossMob + " | " + MAX_KILLGOAL + ")",
                         eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
                     player.Out.SendQuestUpdate(this);
 

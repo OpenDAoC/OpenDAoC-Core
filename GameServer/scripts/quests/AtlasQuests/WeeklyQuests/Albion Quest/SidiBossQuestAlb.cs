@@ -12,9 +12,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Midgard
+namespace DOL.GS.DailyQuest.Albion
 {
-    public class TuscarianBossQuestMid : WeeklyQuest
+    public class SidiBossQuestAlb : WeeklyQuest
     {
         /// <summary>
         /// Defines a logger for this class.
@@ -26,26 +26,26 @@ namespace DOL.GS.DailyQuest.Midgard
         protected const int maximumLevel = 50;
 
         // Kill Goal
-        private int _deadTuscaBossMob = 0;
+        private int _deadSidiBossMob = 0;
         protected const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Herou = null; // Start NPC
+        private static GameNPC Haszan = null; // Start NPC
 
 
         // Constructors
-        public TuscarianBossQuestMid() : base()
+        public SidiBossQuestAlb() : base()
         {
         }
 
-        public TuscarianBossQuestMid(GamePlayer questingPlayer) : base(questingPlayer, 1)
+        public SidiBossQuestAlb(GamePlayer questingPlayer) : base(questingPlayer, 1)
         {
         }
 
-        public TuscarianBossQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+        public SidiBossQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
         {
         }
 
-        public TuscarianBossQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public SidiBossQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 
@@ -67,37 +67,37 @@ namespace DOL.GS.DailyQuest.Midgard
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 100 && npc.X == 766332 && npc.Y == 670275)
+                    if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
                     {
-                        Herou = npc;
+                        Haszan = npc;
                         break;
                     }
 
-            if (Herou == null)
+            if (Haszan == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Herou , creating it ...");
-                Herou = new GameNPC();
-                Herou.Model = 142;
-                Herou.Name = "Herou";
-                Herou.GuildName = "Atlas Quest";
-                Herou.Realm = eRealm.Midgard;
-                //Svasud Faste Location
-                Herou.CurrentRegionID = 100;
-                Herou.Size = 50;
-                Herou.Level = 59;
-                Herou.X = 766332;
-                Herou.Y = 670275;
-                Herou.Z = 5736;
-                Herou.Heading = 2835;
-                Herou.AddToWorld();
+                    log.Warn("Could not find Haszan , creating it ...");
+                Haszan = new GameNPC();
+                Haszan.Model = 51;
+                Haszan.Name = "Haszan";
+                Haszan.GuildName = "Atlas Quest";
+                Haszan.Realm = eRealm.Albion;
+                //Castle Sauvage Location
+                Haszan.CurrentRegionID = 1;
+                Haszan.Size = 50;
+                Haszan.Level = 59;
+                Haszan.X = 583866;
+                Haszan.Y = 477497;
+                Haszan.Z = 2600;
+                Haszan.Heading = 3111;
+                Haszan.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Herou.SaveIntoDatabase();
+                    Haszan.SaveIntoDatabase();
                 }
             }
 
@@ -114,45 +114,45 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-            GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+            GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
+            GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
-            /* Now we bring to Herou the possibility to give this quest to players */
-            Herou.AddQuestToGive(typeof(TuscarianBossQuestMid));
+            /* Now we bring to Haszan the possibility to give this quest to players */
+            Haszan.AddQuestToGive(typeof(SidiBossQuestAlb));
 
             if (log.IsInfoEnabled)
-                log.Info("Quest \"" + questTitle + "\" Mid initialized");
+                log.Info("Quest \"" + questTitle + "\" Alb initialized");
         }
 
         [ScriptUnloadedEvent]
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Herou == null)
+            if (Haszan == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-            GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+            GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
+            GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
-            /* Now we remove to Herou the possibility to give this quest to players */
-            Herou.RemoveQuestToGive(typeof(TuscarianBossQuestMid));
+            /* Now we remove to Haszan the possibility to give this quest to players */
+            Haszan.RemoveQuestToGive(typeof(SidiBossQuestAlb));
         }
 
-        protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Herou.CanGiveQuest(typeof(TuscarianBossQuestMid), player) <= 0)
+            if (Haszan.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
-            TuscarianBossQuestMid quest = player.IsDoingQuest(typeof(TuscarianBossQuestMid)) as TuscarianBossQuestMid;
+            SidiBossQuestAlb quest = player.IsDoingQuest(typeof(SidiBossQuestAlb)) as SidiBossQuestAlb;
 
             if (e == GameObjectEvent.Interact)
             {
@@ -161,19 +161,19 @@ namespace DOL.GS.DailyQuest.Midgard
                     switch (quest.Step)
                     {
                         case 1:
-                            Herou.SayTo(player,
-                                "Please, enter Tuscaran Glacier and slay strong opponents. If you succeed come back for your reward.");
+                            Haszan.SayTo(player,
+                                "Please, enter Caer Sidi and slay strong opponents. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Herou.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            Haszan.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
-                                        "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n" +
-                                        "\nCan you [support Midgard]?");
+                    Haszan.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
+                                         "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n" +
+                                         "\nCan you [support Albion]?");
                 }
             }
             // The player whispered to the NPC
@@ -184,10 +184,10 @@ namespace DOL.GS.DailyQuest.Midgard
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Midgard":
-                            player.Out.SendQuestSubscribeCommand(Herou,
-                                QuestMgr.GetIDForQuestType(typeof(TuscarianBossQuestMid)),
-                                "Will you help Herou " + questTitle + "");
+                        case "support Albion":
+                            player.Out.SendQuestSubscribeCommand(Haszan,
+                                QuestMgr.GetIDForQuestType(typeof(SidiBossQuestAlb)),
+                                "Will you help Dean " + questTitle + "");
                             break;
                     }
                 }
@@ -217,7 +217,7 @@ namespace DOL.GS.DailyQuest.Midgard
         public override bool CheckQuestQualification(GamePlayer player)
         {
             // if the player is already doing the quest his level is no longer of relevance
-            if (player.IsDoingQuest(typeof(TuscarianBossQuestMid)) != null)
+            if (player.IsDoingQuest(typeof(SidiBossQuestAlb)) != null)
                 return true;
 
             // This checks below are only performed is player isn't doing quest already
@@ -235,7 +235,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
         private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
         {
-            TuscarianBossQuestMid quest = player.IsDoingQuest(typeof(TuscarianBossQuestMid)) as TuscarianBossQuestMid;
+            SidiBossQuestAlb quest = player.IsDoingQuest(typeof(SidiBossQuestAlb)) as SidiBossQuestAlb;
 
             if (quest == null)
                 return;
@@ -257,7 +257,7 @@ namespace DOL.GS.DailyQuest.Midgard
             if (qargs == null)
                 return;
 
-            if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(TuscarianBossQuestMid)))
+            if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(SidiBossQuestAlb)))
                 return;
 
             if (e == GamePlayerEvent.AcceptQuest)
@@ -268,10 +268,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Herou.CanGiveQuest(typeof(TuscarianBossQuestMid), player) <= 0)
+            if (Haszan.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
                 return;
 
-            if (player.IsDoingQuest(typeof(TuscarianBossQuestMid)) != null)
+            if (player.IsDoingQuest(typeof(SidiBossQuestAlb)) != null)
                 return;
 
             if (response == 0x00)
@@ -281,10 +281,10 @@ namespace DOL.GS.DailyQuest.Midgard
             else
             {
                 //Check if we can add the quest!
-                if (!Herou.GiveQuest(typeof(TuscarianBossQuestMid), player, 1))
+                if (!Haszan.GiveQuest(typeof(SidiBossQuestAlb), player, 1))
                     return;
 
-                Herou.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                Haszan.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -302,10 +302,10 @@ namespace DOL.GS.DailyQuest.Midgard
                 switch (Step)
                 {
                     case 1:
-                        return "Find a way to Tuscaran Glacier and kill strong opponents. \nKilled: Bosses in Tuscaran Glacier (" +
-                               _deadTuscaBossMob + " | "+ MAX_KILLGOAL +")";
+                        return "Find a way to Caer Sidi and kill strong opponents. \nKilled: Bosses in Caer Sidi (" +
+                               _deadSidiBossMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Herou for your Reward.";
+                        return "Return to Haszan for your Reward.";
                 }
 
                 return base.Description;
@@ -316,7 +316,7 @@ namespace DOL.GS.DailyQuest.Midgard
         {
             GamePlayer player = sender as GamePlayer;
 
-            if (player == null || player.IsDoingQuest(typeof(TuscarianBossQuestMid)) == null)
+            if (player == null || player.IsDoingQuest(typeof(SidiBossQuestAlb)) == null)
                 return;
 
             if (sender != m_questPlayer)
@@ -326,18 +326,18 @@ namespace DOL.GS.DailyQuest.Midgard
             {
                 EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
                 
-                // check if a GameEpicBoss died + if its in Tuscaran Glacier
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameEpicBoss && gArgs.Target.CurrentRegionID == 160)
+                // check if a GameEpicBoss died + if its in Caer Sidi
+                if (gArgs.Target.Realm == 0 && gArgs.Target is GameEpicBoss && gArgs.Target.CurrentRegionID == 60)
                 {
-                    _deadTuscaBossMob++;
+                    _deadSidiBossMob++;
                     player.Out.SendMessage(
-                        "[Weekly] Bosses killed in Tuscaran Glacier: (" + _deadTuscaBossMob + " | " + MAX_KILLGOAL + ")",
+                        "[Weekly] Bosses killed in Caer Sidi: (" + _deadSidiBossMob + " | " + MAX_KILLGOAL + ")",
                         eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
                     player.Out.SendQuestUpdate(this);
 
-                    if (_deadTuscaBossMob >= MAX_KILLGOAL)
+                    if (_deadSidiBossMob >= MAX_KILLGOAL)
                     {
-                        // FinishQuest or go back to Herou
+                        // FinishQuest or go back to Haszan
                         Step = 2;
                     }
                 }
@@ -346,18 +346,18 @@ namespace DOL.GS.DailyQuest.Midgard
 
         public override string QuestPropertyKey
         {
-            get => "TuscarianBossQuestMid";
+            get => "SidiBossQuestAlb";
             set { ; }
         }
 
         public override void LoadQuestParameters()
         {
-            _deadTuscaBossMob = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+            _deadSidiBossMob = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
         }
 
         public override void SaveQuestParameters()
         {
-            SetCustomProperty(QuestPropertyKey, _deadTuscaBossMob.ToString());
+            SetCustomProperty(QuestPropertyKey, _deadSidiBossMob.ToString());
         }
 
         public override void AbortQuest()
@@ -370,7 +370,7 @@ namespace DOL.GS.DailyQuest.Midgard
             m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
             m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 5, 0, Util.Random(50)), "You receive {0} as a reward.");
             AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
-            _deadTuscaBossMob = 0;
+            _deadSidiBossMob = 0;
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }
     }
