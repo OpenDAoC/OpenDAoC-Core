@@ -306,7 +306,7 @@ namespace DOL.GS.DailyQuest.Albion
 					case 1:
 						return "Find Danaoin Farmers in the West or North in Lyonesse. \nKilled: Danaoin Farmers ("+ danaoinKilled +" | 10)";
 					case 2:
-						return "Return to Cola for your Reward.";
+						return "Return to Cola in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}

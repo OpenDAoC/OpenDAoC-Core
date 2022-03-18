@@ -305,7 +305,7 @@ namespace DOL.GS.DailyQuest.Albion
 					case 1:
 						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
-						return "Return to Dean in Druim Ligen for your Reward.";
+						return "Return to Cola in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}
