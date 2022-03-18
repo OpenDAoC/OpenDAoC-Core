@@ -162,7 +162,7 @@ namespace DOL.GS.DailyQuest.Midgard
                     {
                         case 1:
                             Herou.SayTo(player,
-                                "Please, enter Tuscarian Glacier and slay some monsters. If you succeed come back for your reward.");
+                                "Please, enter Tuscaran Glacier and slay some monsters. If you succeed come back for your reward.");
                             break;
                         case 2:
                             Herou.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
@@ -302,7 +302,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 switch (Step)
                 {
                     case 1:
-                        return "Find a way to Tuscarian Glacier and kill some monsters. \nKilled: Monsters in Tuscarian Glacier (" +
+                        return "Find a way to Tuscaran Glacier and kill some monsters. \nKilled: Monsters in Tuscarian Glacier (" +
                                _deadTuscaMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
                         return "Return to Herou for your Reward.";
@@ -326,12 +326,12 @@ namespace DOL.GS.DailyQuest.Midgard
             {
                 EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
                 
-                // check if a GameNPC died + if its in Tuscarian Glacier
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 191)
+                // check if a GameNPC died + if its in Tuscaran Glacier
+                if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 160)
                 {
                     _deadTuscaMob++;
                     player.Out.SendMessage(
-                        "[Daily] Monsters killed in Tuscarian Glacier: (" + _deadTuscaMob + " | " + MAX_KILLGOAL + ")",
+                        "[Daily] Monsters killed in Tuscaran Glacier: (" + _deadTuscaMob + " | " + MAX_KILLGOAL + ")",
                         eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
                     player.Out.SendQuestUpdate(this);
 
