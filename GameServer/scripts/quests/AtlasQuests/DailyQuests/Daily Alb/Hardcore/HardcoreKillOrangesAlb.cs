@@ -12,9 +12,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest
 {
-	public class HardcorePlayerKillQuestAlb : Quests.DailyQuest
+	public class HardcoreKillOrangesAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -30,19 +30,19 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private int OrangeConKilled = 0;
 
 		// Constructors
-		public HardcorePlayerKillQuestAlb() : base()
+		public HardcoreKillOrangesAlb() : base()
 		{
 		}
 
-		public HardcorePlayerKillQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public HardcoreKillOrangesAlb(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public HardcorePlayerKillQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public HardcoreKillOrangesAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public HardcorePlayerKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public HardcoreKillOrangesAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -115,7 +115,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(SucciAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSucci));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			SucciAlb.AddQuestToGive(typeof (HardcorePlayerKillQuestAlb));
+			SucciAlb.AddQuestToGive(typeof (HardcoreKillOrangesAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -135,7 +135,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(SucciAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSucci));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			SucciAlb.RemoveQuestToGive(typeof (HardcorePlayerKillQuestAlb));
+			SucciAlb.RemoveQuestToGive(typeof (HardcoreKillOrangesAlb));
 		}
 
 		protected static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
@@ -145,17 +145,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(SucciAlb.CanGiveQuest(typeof (HardcorePlayerKillQuestAlb), player)  <= 0)
+			if(SucciAlb.CanGiveQuest(typeof (HardcoreKillOrangesAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			HardcorePlayerKillQuestAlb quest = player.IsDoingQuest(typeof (HardcorePlayerKillQuestAlb)) as HardcorePlayerKillQuestAlb;
+			HardcoreKillOrangesAlb oranges = player.IsDoingQuest(typeof (HardcoreKillOrangesAlb)) as HardcoreKillOrangesAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
-				if (quest != null)
+				if (oranges != null)
 				{
-					switch (quest.Step)
+					switch (oranges.Step)
 					{
 						case 1:
 							SucciAlb.SayTo(player, "Seek out creatures greater in strength than you and cast them into the abyss.");
@@ -177,12 +177,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else if (e == GameLivingEvent.WhisperReceive)
 			{
 				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
+				if (oranges == null)
 				{
 					switch (wArgs.Text)
 					{
 						case "today is not the day":
-							player.Out.SendQuestSubscribeCommand(SucciAlb, QuestMgr.GetIDForQuestType(typeof(HardcorePlayerKillQuestAlb)), "Will you undertake " + questTitle + "?");
+							player.Out.SendQuestSubscribeCommand(SucciAlb, QuestMgr.GetIDForQuestType(typeof(HardcoreKillOrangesAlb)), "Will you undertake " + questTitle + "?");
 							break;
 					}
 				}
@@ -191,10 +191,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "another sunrise":
-							if (quest.Step == 2)
+							if (oranges.Step == 2)
 							{
 								player.Out.SendMessage("From dust we are born, and to dust we return. Your time will come eventually.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
-								quest.FinishQuest();
+								oranges.FinishQuest();
 							}
 							break;
 						case "abort":
@@ -208,7 +208,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (HardcorePlayerKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (HardcoreKillOrangesAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -221,9 +221,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			HardcorePlayerKillQuestAlb quest = player.IsDoingQuest(typeof (HardcorePlayerKillQuestAlb)) as HardcorePlayerKillQuestAlb;
+			HardcoreKillOrangesAlb oranges = player.IsDoingQuest(typeof (HardcoreKillOrangesAlb)) as HardcoreKillOrangesAlb;
 
-			if (quest == null)
+			if (oranges == null)
 				return;
 
 			if (response == 0x00)
@@ -233,7 +233,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				SendSystemMessage(player, "Aborting Quest " + questTitle + ".");
-				quest.AbortQuest();
+				oranges.AbortQuest();
 			}
 		}
 
@@ -243,7 +243,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(HardcorePlayerKillQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(HardcoreKillOrangesAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -254,10 +254,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(SucciAlb.CanGiveQuest(typeof (HardcorePlayerKillQuestAlb), player)  <= 0)
+			if(SucciAlb.CanGiveQuest(typeof (HardcoreKillOrangesAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (HardcorePlayerKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (HardcoreKillOrangesAlb)) != null)
 				return;
 
 			if (player.Group != null)
@@ -270,7 +270,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!SucciAlb.GiveQuest(typeof (HardcorePlayerKillQuestAlb), player, 1))
+				if (!SucciAlb.GiveQuest(typeof (HardcoreKillOrangesAlb), player, 1))
 					return;
 
 				SucciAlb.SayTo(player, "Seek out creatures greater in strength than you and cast them into the abyss.");
@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(HardcorePlayerKillQuestAlb)) == null)
+			if (player == null || player.IsDoingQuest(typeof(HardcoreKillOrangesAlb)) == null)
 				return;
 			
 			if(player.Group != null && Step == 1)
@@ -318,11 +318,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				FailQuest();
 			}
 			
-			Console.WriteLine($"args {e}");
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				Console.WriteLine($"con {player.GetConLevel(gArgs.Target)}");
 				if (player.GetConLevel(gArgs.Target) > 0) 
 				{
 					OrangeConKilled++;
