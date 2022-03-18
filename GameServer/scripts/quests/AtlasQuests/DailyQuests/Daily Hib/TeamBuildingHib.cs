@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] A Team Building Exercise";
+		protected const string questTitle = "[Group Daily] A Team Building Exercise";
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
