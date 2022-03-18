@@ -49,6 +49,7 @@ namespace DOL.GS.Scripts
 
             // demon
             BodyType = 2;
+            Race = 2001;
 
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
@@ -324,6 +325,7 @@ namespace DOL.AI.Brain
                 int ranId = Util.Random(0, potKiller.Count);
                 if (ranId >= 0)
                 {
+                    player.Out.SendSpellEffectAnimation(potKiller[ranId], potKiller[ranId], 5933, 0, false, 1);
                     potKiller[ranId].Die(Body);
                 }
                 potKiller.Clear();
@@ -359,7 +361,7 @@ namespace DOL.AI.Brain
             
             if (e == GameNPCEvent.HealthChanged)
             {
-                foreach (GamePlayer portPlayer in player.GetPlayersInRadius(250))
+                foreach (GamePlayer portPlayer in player.GetPlayersInRadius(350))
                 {
                     if (portPlayer.IsAlive)
                     {
@@ -367,8 +369,6 @@ namespace DOL.AI.Brain
                         portPlayer.BroadcastUpdate();
                     }
                 }
-                player.MoveTo(249, 48117, 49573, 20833, 1006);
-                player.BroadcastUpdate();
             }
 
             if (e == GameLivingEvent.Dying)
