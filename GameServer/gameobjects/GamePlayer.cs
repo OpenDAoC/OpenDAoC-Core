@@ -5910,7 +5910,6 @@ namespace DOL.GS
             {
                 Group.UpdateGroupWindow();
             }
-            Out.SendLevelUpSound(); // level animation
             Out.SendUpdatePlayer(); // Update player level
             Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
             Out.SendUpdatePlayerSkills();
@@ -5918,6 +5917,17 @@ namespace DOL.GS
             UpdatePlayerStatus();
             // save player to database
             SaveIntoDatabase();
+            
+            Out.SendLevelUpSound(); // level animation
+            if (ObjectState == eObjectState.Active)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    if (player == null) continue;
+                    player.Out.SendEmoteAnimation(this, eEmote.LvlUp);
+                }
+            }
+            
         }
 
         /// <summary>
