@@ -1665,7 +1665,8 @@ namespace DOL.GS.Spells
 						{
 							m_started = GameLoop.GameLoopTime;
 							_castStartTick = currentTick;
-							SendSpellMessages();
+							if (!Spell.IsInstantCast)
+								SendSpellMessages();
 							if (Spell.IsInstantCast)
 							{
 								if (!CheckEndCast(m_spellTarget))
