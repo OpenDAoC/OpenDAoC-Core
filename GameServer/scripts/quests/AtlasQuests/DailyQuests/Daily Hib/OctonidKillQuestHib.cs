@@ -167,9 +167,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, Claits Slave. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Hibernia \n\n"+
-					                       "\nCan you [support Atlas]?");
+					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					                   "I heard you are strong. Do you think you're strong enough to help me with some Octonids causing trouble in the Shrouded Islands?\n"+
+					                   "\nCan you [support Atlas]?");
 				}
 			}
 				// The player whispered to the NPC

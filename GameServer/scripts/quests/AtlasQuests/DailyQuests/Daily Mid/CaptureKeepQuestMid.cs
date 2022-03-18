@@ -168,8 +168,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				}
 				else
 				{
-					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, Claits Slave. "+
-					                    "I heard you are strong enough to help me with Daily Missions of Midgard. \n\n"+
+					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					                    "I heard you are strong. Do you think you're strong enough to help me with some real estate matters? \n"+
 					                    "\nCan you [support our Realm]?");
 				}
 			}

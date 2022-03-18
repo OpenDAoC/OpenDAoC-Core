@@ -168,8 +168,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, Claits Slave. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Hibernia. \n\n"+
+					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
+											"I heard you are strong. Do you think you're strong enough to help me with some real estate matters? \n"+
 					                       "\nCan you [support our Realm]?");
 				}
 			}

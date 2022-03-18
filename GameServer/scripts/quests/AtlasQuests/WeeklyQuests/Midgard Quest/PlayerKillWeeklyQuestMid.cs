@@ -171,7 +171,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				}
 				else
 				{
-					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey, Fen's Slave. "+
+					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey, Fen's Resource Acquistion Specialist. "+
 					                     "Fen's insatiable desire to kill players is getting out of hand, and he's starting to outsource. \n\n"+
 					                     "\nAre you strong enough to [kill some enemies]?");
 				}
