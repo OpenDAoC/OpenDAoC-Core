@@ -12,37 +12,37 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest
 {
-	public class HardcorePlayerKillQuestMid : Quests.DailyQuest
+	public class HardcoreKillAPlayerAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Hardcore] Big Man On Campus";
+		protected const string questTitle = "[Hardcore] Apex Predator";
 		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 49;
+		protected const int maximumLevel = 50;
 
-		protected static GameNPC SucciMid = null; // Start NPC
+		protected static GameNPC SucciAlb = null; // Start NPC
 
-		private int OrangeConKilled = 0;
+		private int PlayerKilled = 0;
 
 		// Constructors
-		public HardcorePlayerKillQuestMid() : base()
+		public HardcoreKillAPlayerAlb() : base()
 		{
 		}
 
-		public HardcorePlayerKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public HardcoreKillAPlayerAlb(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public HardcorePlayerKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public HardcoreKillAPlayerAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public HardcorePlayerKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public HardcoreKillAPlayerAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -63,40 +63,40 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 100 && npc.X == 766767 && npc.Y == 670636)
+					if (npc.CurrentRegionID == 1 && npc.X == 584652 && npc.Y == 477773)
 					{
-						SucciMid = npc;
+						SucciAlb = npc;
 						break;
 					}
 				}
 
-			if (SucciMid == null)
+			if (SucciAlb == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find SucciMid , creating it ...");
-				SucciMid = new GameNPC();
-				SucciMid.Model = 902;
-				SucciMid.Name = "Succi";
-				SucciMid.GuildName = "Spectre of Death";
-				SucciMid.Realm = eRealm.Midgard;
-				//Svasud Location
-				SucciMid.CurrentRegionID = 100;
-				SucciMid.Size = 60;
-				SucciMid.Level = 59;
-				SucciMid.X = 766767;
-				SucciMid.Y = 670636;
-				SucciMid.Z = 5736;
-				SucciMid.Heading = 2536;
-				SucciMid.Flags |= GameNPC.eFlags.PEACE;
-				SucciMid.AddToWorld();
+					log.Warn("Could not find SucciAlb , creating it ...");
+				SucciAlb = new GameNPC();
+				SucciAlb.Model = 902;
+				SucciAlb.Name = "Succi";
+				SucciAlb.GuildName = "Spectre of Death";
+				SucciAlb.Realm = eRealm.Albion;
+				//Sauvage Location
+				SucciAlb.CurrentRegionID = 1;
+				SucciAlb.Size = 60;
+				SucciAlb.Level = 59;
+				SucciAlb.X = 584652;
+				SucciAlb.Y = 477773;
+				SucciAlb.Z = 2600;
+				SucciAlb.Heading = 2257;
+				SucciAlb.Flags |= GameNPC.eFlags.PEACE;
+				SucciAlb.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					SucciMid.SaveIntoDatabase();
+					SucciAlb.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +111,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(SucciMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToSucci));
-			GameEventMgr.AddHandler(SucciMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSucci));
+			GameEventMgr.AddHandler(SucciAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToSucci));
+			GameEventMgr.AddHandler(SucciAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSucci));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			SucciMid.AddQuestToGive(typeof (HardcorePlayerKillQuestMid));
+			SucciAlb.AddQuestToGive(typeof (HardcoreKillAPlayerAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -125,17 +125,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (SucciMid == null)
+			if (SucciAlb == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(SucciMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToSucci));
-			GameEventMgr.RemoveHandler(SucciMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSucci));
+			GameEventMgr.RemoveHandler(SucciAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToSucci));
+			GameEventMgr.RemoveHandler(SucciAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSucci));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			SucciMid.RemoveQuestToGive(typeof (HardcorePlayerKillQuestMid));
+			SucciAlb.RemoveQuestToGive(typeof (HardcoreKillAPlayerAlb));
 		}
 
 		protected static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
@@ -145,44 +145,44 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(SucciMid.CanGiveQuest(typeof (HardcorePlayerKillQuestMid), player)  <= 0)
+			if(SucciAlb.CanGiveQuest(typeof (HardcoreKillAPlayerAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			HardcorePlayerKillQuestMid quest = player.IsDoingQuest(typeof (HardcorePlayerKillQuestMid)) as HardcorePlayerKillQuestMid;
+			HardcoreKillAPlayerAlb oranges = player.IsDoingQuest(typeof (HardcoreKillAPlayerAlb)) as HardcoreKillAPlayerAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
-				if (quest != null)
+				if (oranges != null)
 				{
-					switch (quest.Step)
+					switch (oranges.Step)
 					{
 						case 1:
-							SucciMid.SayTo(player, "Seek out creatures greater in strength than you and cast them into the abyss.");
+							SucciAlb.SayTo(player, "Hunt, or be hunted.");
 							break;
 						case 2:
-							SucciMid.SayTo(player, "" + player.Name + ". You have earned [another sunrise].");
+							SucciAlb.SayTo(player, "" + player.Name + ". You have earned [another sunrise].");
 							break;
 					}
 				}
 				else
 				{
-					SucciMid.SayTo(player, ""+ player.Name +". I have seen visions of your death. "+
-					                     "Crushed beneath the blow of a mighty foe. Dashed against the rocks of eternity."+
-					                     "\n Will you defy them? Stand tall and let the spirits know [today is not the day].");
-					SucciMid.SayTo(player, " NOTE: This is a HARDCORE quest. If you die or join a group while doing this quest, it will be aborted automatically.");
+					SucciAlb.SayTo(player, "The flash of steel's bite. \n"+
+					                     "One stands above, one below. \n" +
+					                     "[Predator] eats well.");
+					SucciAlb.SayTo(player, " NOTE: This is a HARDCORE quest. If you die or join a group while doing this quest, it will be aborted automatically.");
 				}
 			}
 				// The player whispered to the NPC
 			else if (e == GameLivingEvent.WhisperReceive)
 			{
 				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
+				if (oranges == null)
 				{
-					switch (wArgs.Text)
+					switch (wArgs.Text.ToLower())
 					{
-						case "today is not the day":
-							player.Out.SendQuestSubscribeCommand(SucciMid, QuestMgr.GetIDForQuestType(typeof(HardcorePlayerKillQuestMid)), "Will you undertake " + questTitle + "?");
+						case "predator":
+							player.Out.SendQuestSubscribeCommand(SucciAlb, QuestMgr.GetIDForQuestType(typeof(HardcoreKillAPlayerAlb)), "Will you undertake " + questTitle + "?");
 							break;
 					}
 				}
@@ -191,10 +191,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "another sunrise":
-							if (quest.Step == 2)
+							if (oranges.Step == 2)
 							{
-								player.Out.SendMessage("From dust we are born, and to dust we return. Your time will come eventually.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
-								quest.FinishQuest();
+								player.Out.SendMessage("Enjoy your meal. With luck, it shall not be your last.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								oranges.FinishQuest();
 							}
 							break;
 						case "abort":
@@ -208,7 +208,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (HardcorePlayerKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (HardcoreKillAPlayerAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -221,9 +221,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			HardcorePlayerKillQuestMid quest = player.IsDoingQuest(typeof (HardcorePlayerKillQuestMid)) as HardcorePlayerKillQuestMid;
+			HardcoreKillAPlayerAlb oranges = player.IsDoingQuest(typeof (HardcoreKillAPlayerAlb)) as HardcoreKillAPlayerAlb;
 
-			if (quest == null)
+			if (oranges == null)
 				return;
 
 			if (response == 0x00)
@@ -233,7 +233,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				SendSystemMessage(player, "Aborting Quest " + questTitle + ".");
-				quest.AbortQuest();
+				oranges.AbortQuest();
 			}
 		}
 
@@ -243,7 +243,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(HardcorePlayerKillQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(HardcoreKillAPlayerAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -254,10 +254,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(SucciMid.CanGiveQuest(typeof (HardcorePlayerKillQuestMid), player)  <= 0)
+			if(SucciAlb.CanGiveQuest(typeof (HardcoreKillAPlayerAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (HardcorePlayerKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (HardcoreKillAPlayerAlb)) != null)
 				return;
 
 			if (player.Group != null)
@@ -265,15 +265,15 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("The titans shall tremble.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Look them in the eye.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!SucciMid.GiveQuest(typeof (HardcorePlayerKillQuestMid), player, 1))
+				if (!SucciAlb.GiveQuest(typeof (HardcoreKillAPlayerAlb), player, 1))
 					return;
 
-				SucciMid.SayTo(player, "Seek out creatures greater in strength than you and cast them into the abyss.");
+				SucciAlb.SayTo(player, "Hunt, or be hunted. Only one shall eat this night.");
 
 			}
 		}
@@ -291,10 +291,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				switch (Step)
 				{
+					case -1:
+						return "Your deeds are done for today.";
 					case 1:
-						return "Kill mobs orange con or higher. \n Orange Con Monsters Killed: ("+ OrangeConKilled +" | 10)";
+						return "Kill another player without dying. \n Life Taken: ("+ PlayerKilled +" | 1)";
 					case 2:
-						return "Return to Succi in Svasud Faste for your Reward.";
+						return "Return to Succi in Castle Sauvage for your grim reward.";
 				}
 				return base.Description;
 			}
@@ -304,7 +306,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(HardcorePlayerKillQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(HardcoreKillAPlayerAlb)) == null)
 				return;
 			
 			if(player.Group != null && Step == 1)
@@ -321,16 +323,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) > 0) 
+				if (player.GetConLevel(gArgs.Target) > -3 
+				    && gArgs.Target is GamePlayer enemyPlayer 
+				    && enemyPlayer.Realm != 0
+				    && player.Realm != enemyPlayer.Realm) 
 				{
-					OrangeConKilled++;
 					player.Out.SendQuestUpdate(this);
-					
-					if (OrangeConKilled >= 10)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
+					// FinishQuest or go back to npc
+					Step = 2;
 				}
 				
 			}
@@ -339,18 +339,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		public override string QuestPropertyKey
 		{
-			get => "HardcorePlayerKillQuestMid";
+			get => "HardcorePlayerKillQuestAlb";
 			set { ; }
 		}
 		
 		public override void LoadQuestParameters()
 		{
-			OrangeConKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, OrangeConKilled.ToString());
+			
 		}
 
 
@@ -364,14 +364,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 500);
-			OrangeConKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}
 
 		public void FailQuest()
 		{
-			OrangeConKilled = 0;
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
 			Step = -1;
