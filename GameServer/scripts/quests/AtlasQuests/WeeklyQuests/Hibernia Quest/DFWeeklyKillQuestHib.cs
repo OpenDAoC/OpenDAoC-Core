@@ -21,11 +21,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected const string questTitle = "[Weekly] Vacuum Darkness Falls";
-		protected const int minimumLevel = 45;
+		protected const int minimumLevel = 15;
 		protected const int maximumLevel = 50;
 		
 		// prevent grey killing
-		protected const byte MIN_PLAYER_LVL = 35;
+		protected const int MIN_PLAYER_CON = -3;
 		// Kill Goal
 		protected const int MAX_KILLED = 50;
 
@@ -318,7 +318,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				
 				//prevent grey killing
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_PLAYER_LVL && gArgs.Target.CurrentRegionID == 249) 
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && gArgs.Target.CurrentRegionID == 249) 
 				{
 					EnemiesKilled++;
 					player.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -358,7 +358,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel), true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			EnemiesKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
