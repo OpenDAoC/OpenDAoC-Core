@@ -345,19 +345,19 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNPC)
+				if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNPC && _evernKilled < MAX_KILLED)
 				{
 					_evernKilled = 1;
 					player.Out.SendMessage("[Weekly] You killed " + EVERN_NAME + ": (" + _evernKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 				}
-				else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNPC)
+				else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNPC && _greenKnightKilled < MAX_KILLED)
 				{
 					_greenKnightKilled = 1;
 					player.Out.SendMessage("[Weekly] You killed " + GREENKNIGHT_NAME + ": (" + _greenKnightKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 				}
-				else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNPC)
+				else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNPC && _glacierGiantKilled < MAX_KILLED)
 				{
 					_glacierGiantKilled = 1;
 					player.Out.SendMessage("[Weekly] You killed " + GLACIERGIANT_NAME + ": (" + _glacierGiantKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -380,7 +380,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override void FinishQuest()
 		{
 			//m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,Util.Random(15,20),32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level, 25,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			_evernKilled = 0;
 			_glacierGiantKilled = 0;
