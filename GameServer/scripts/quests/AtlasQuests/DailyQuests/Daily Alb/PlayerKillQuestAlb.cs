@@ -12,7 +12,7 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest.Albion
 {
 	public class PlayerKillQuestAlb : Quests.DailyQuest
 	{
