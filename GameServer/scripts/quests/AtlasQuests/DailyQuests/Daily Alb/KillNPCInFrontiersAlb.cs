@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Albion
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				if (player.GetConLevel(gArgs.Target) >= 0 
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentRegion.IsRvR) 
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
 					player.Out.SendQuestUpdate(this);
