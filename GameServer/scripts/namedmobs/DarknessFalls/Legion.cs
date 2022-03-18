@@ -12,7 +12,7 @@ using log4net;
 
 namespace DOL.GS.Scripts
 {
-    public class Legion : GameNPC
+    public class Legion : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -65,11 +65,6 @@ namespace DOL.GS.Scripts
             return true;
         }
 
-        public virtual int LegionDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -79,7 +74,7 @@ namespace DOL.GS.Scripts
         {
             get
             {
-                return 20000 * LegionDifficulty;
+                return 20000;
             }
         }
 
@@ -102,13 +97,13 @@ namespace DOL.GS.Scripts
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500 * LegionDifficulty;
+            return 1000;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65 * LegionDifficulty;
+            return 0.85;
         }
         public override void Die(GameObject killer)
         {
