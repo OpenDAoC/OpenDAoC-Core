@@ -28,6 +28,7 @@ namespace DOL.GS.DailyQuest.Albion
 		private static GameNPC ReyAlb = null; // Start NPC
 
 		private int PlayersKilled = 0;
+		protected const int MAX_KILLED = 10;
 
 		// Constructors
 		public PlayerKillQuestAlb() : base()
@@ -293,7 +294,7 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | 10)";
+						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+ MAX_KILLED +")";
 					case 2:
 						return "Return to Rey in Castle Sauvage for your Reward.";
 				}
@@ -318,9 +319,10 @@ namespace DOL.GS.DailyQuest.Albion
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
 				{
 					PlayersKilled++;
+					player.Out.SendMessage("[Daily] Killed Enemies: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (PlayersKilled >= 10)
+					if (PlayersKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to Dean
 						Step = 2;
@@ -355,7 +357,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1000);
 			PlayersKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
