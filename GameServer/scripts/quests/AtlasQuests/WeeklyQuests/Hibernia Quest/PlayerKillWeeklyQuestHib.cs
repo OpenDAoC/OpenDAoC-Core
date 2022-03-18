@@ -359,7 +359,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			PlayersKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
