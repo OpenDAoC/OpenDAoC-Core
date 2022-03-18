@@ -78,6 +78,15 @@ public class DailyQuestService
                     player.QuestListFinished.Remove(quest);
                 }
             }
+            
+            var existingDailyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%DailyQuest%"));
+
+            foreach (var existingDailyQuest in existingDailyQuests)
+            {
+                GameServer.Database.DeleteObject(existingDailyQuest);
+            }
+            
+            
             //Console.WriteLine($"Daily refresh");
         }
 
