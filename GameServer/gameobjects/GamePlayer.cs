@@ -5652,10 +5652,10 @@ namespace DOL.GS
                     Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 5000);
                 }
-                else if (usedi40 != null)
+                if (Boosted)
                 {
-                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 2000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 2000);
+                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    AtlasROGManager.GenerateOrbAmount(this, 5000);
                 }
                     
                 
@@ -5917,6 +5917,17 @@ namespace DOL.GS
             UpdatePlayerStatus();
             // save player to database
             SaveIntoDatabase();
+            
+            Out.SendLevelUpSound(); // level animation
+            if (ObjectState == eObjectState.Active)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    if (player == null) continue;
+                    player.Out.SendEmoteAnimation(this, eEmote.LvlUp);
+                }
+            }
+            
         }
 
         /// <summary>
