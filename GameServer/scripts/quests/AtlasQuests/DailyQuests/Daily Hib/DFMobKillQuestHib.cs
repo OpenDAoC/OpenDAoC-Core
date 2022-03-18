@@ -11,9 +11,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace DOL.GS.DailyQuest.Hibernia
 {
-	public class DFMobKillQuestAlb : WeeklyQuest
+	public class DFMobKillQuestHib : WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -27,24 +27,24 @@ namespace DOL.GS.DailyQuest.Albion
 		// Kill Goal
 		protected const int MAX_KILLED = 150;
 
-		private static GameNPC Haszan = null; // Start NPC
+		private static GameNPC Dean = null; // Start NPC
 
 		private int _mobsKilled = 0;
 
 		// Constructors
-		public DFMobKillQuestAlb() : base()
+		public DFMobKillQuestHib() : base()
 		{
 		}
 
-		public DFMobKillQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public DFMobKillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public DFMobKillQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DFMobKillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public DFMobKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFMobKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -66,37 +66,37 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
+					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
 					{
-						Haszan = npc;
+						Dean = npc;
 						break;
 					}
 
-			if (Haszan == null)
+			if (Dean == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Haszan , creating it ...");
-				Haszan = new GameNPC();
-				Haszan.Model = 51;
-				Haszan.Name = "Haszan";
-				Haszan.GuildName = "Atlas Quest";
-				Haszan.Realm = eRealm.Albion;
-				//Castle Sauvage Location
-				Haszan.CurrentRegionID = 1;
-				Haszan.Size = 50;
-				Haszan.Level = 59;
-				Haszan.X = 583866;
-				Haszan.Y = 477497;
-				Haszan.Z = 2600;
-				Haszan.Heading = 3111;
-				Haszan.AddToWorld();
+					log.Warn("Could not find Dean , creating it ...");
+				Dean = new GameNPC();
+				Dean.Model = 355;
+				Dean.Name = "Dean";
+				Dean.GuildName = "Atlas Quest";
+				Dean.Realm = eRealm.Hibernia;
+				//Druim Ligen Location
+				Dean.CurrentRegionID = 200;
+				Dean.Size = 50;
+				Dean.Level = 59;
+				Dean.X = 334962;
+				Dean.Y = 420687;
+				Dean.Z = 5184;
+				Dean.Heading = 1571;
+				Dean.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Haszan.SaveIntoDatabase();
+					Dean.SaveIntoDatabase();
 				}
 			}
 
@@ -111,45 +111,45 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-			GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
-			/* Now we bring to Haszan the possibility to give this quest to players */
-			Haszan.AddQuestToGive(typeof (DFMobKillQuestAlb));
+			/* Now we bring to Dean the possibility to give this quest to players */
+			Dean.AddQuestToGive(typeof (DFMobKillQuestHib));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" Alb initialized");
+				log.Info("Quest \"" + questTitle + "\" Hib initialized");
 		}
 
 		[ScriptUnloadedEvent]
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Haszan == null)
+			if (Dean == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-			GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
-			/* Now we remove to Haszan the possibility to give this quest to players */
-			Haszan.RemoveQuestToGive(typeof (DFMobKillQuestAlb));
+			/* Now we remove to Dean the possibility to give this quest to players */
+			Dean.RemoveQuestToGive(typeof (DFMobKillQuestHib));
 		}
 
-		protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Haszan.CanGiveQuest(typeof (DFMobKillQuestAlb), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			DFMobKillQuestAlb quest = player.IsDoingQuest(typeof (DFMobKillQuestAlb)) as DFMobKillQuestAlb;
+			DFMobKillQuestHib quest = player.IsDoingQuest(typeof (DFMobKillQuestHib)) as DFMobKillQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +158,18 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Haszan.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
+							Dean.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
 							break;
 						case 2:
-							Haszan.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
+							Dean.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
-					                       "\nCan you [support Albion]?");
+					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, do you need a task? "+
+					                       "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n"+
+					                       "\nCan you [support Hibernia]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +180,8 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "support Albion":
-							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestAlb)), "Will you help Haszan "+questTitle+"?");
+						case "support Hibernia":
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)), "Will you help Dean "+questTitle+"?");
 							break;
 					}
 				}
@@ -207,7 +207,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (DFMobKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (DFMobKillQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -235,7 +235,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			DFMobKillQuestAlb quest = player.IsDoingQuest(typeof (DFMobKillQuestAlb)) as DFMobKillQuestAlb;
+			DFMobKillQuestHib quest = player.IsDoingQuest(typeof (DFMobKillQuestHib)) as DFMobKillQuestHib;
 
 			if (quest == null)
 				return;
@@ -257,7 +257,7 @@ namespace DOL.GS.DailyQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -268,10 +268,10 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Haszan.CanGiveQuest(typeof (DFMobKillQuestAlb), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (DFMobKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (DFMobKillQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
@@ -281,10 +281,10 @@ namespace DOL.GS.DailyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Haszan.GiveQuest(typeof (DFMobKillQuestAlb), player, 1))
+				if (!Dean.GiveQuest(typeof (DFMobKillQuestHib), player, 1))
 					return;
 
-				Haszan.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
+				Dean.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
 
 			}
 		}
@@ -303,9 +303,9 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Enter Darkness Falls and kill monsters for Albion. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
+						return "Enter Darkness Falls and kill monsters for Hibernia. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
-						return "Return to Haszan for your Reward.";
+						return "Return to Dean for your Reward.";
 				}
 				return base.Description;
 			}
@@ -315,7 +315,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestAlb)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -343,7 +343,7 @@ namespace DOL.GS.DailyQuest.Albion
 		
 		public override string QuestPropertyKey
 		{
-			get => "DFMobKillQuestAlb";
+			get => "DFMobKillQuestHib";
 			set { ; }
 		}
 
