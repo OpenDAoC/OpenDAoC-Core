@@ -25,7 +25,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC ReyAlb = null; // Start NPC
+		protected static GameNPC ReyAlb = null; // Start NPC
 
 		private int PlayersKilled = 0;
 
@@ -192,7 +192,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 						case "hit your quota":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Ugh, some of these are still dripping. Well done, he'll be pleased.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -223,7 +223,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			return true;
 		}
 
-		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			PlayerKillQuestAlb quest = player.IsDoingQuest(typeof (PlayerKillQuestAlb)) as PlayerKillQuestAlb;
 
