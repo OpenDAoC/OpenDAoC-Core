@@ -14,38 +14,38 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Midgard
 {
-    public class TuscarianMobQuestMid : Quests.DailyQuest
+    public class TuscarianBossQuestMid : WeeklyQuest
     {
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Daily] Too many Monsters";
+        protected const string questTitle = "[Weekly] Harder Adversaries";
         protected const int minimumLevel = 45;
         protected const int maximumLevel = 50;
 
         // Kill Goal
-        private int _deadTuscaMob = 0;
+        private int _deadTuscaBossMob = 0;
         protected const int MAX_KILLGOAL = 3;
 
         private static GameNPC Herou = null; // Start NPC
 
 
         // Constructors
-        public TuscarianMobQuestMid() : base()
+        public TuscarianBossQuestMid() : base()
         {
         }
 
-        public TuscarianMobQuestMid(GamePlayer questingPlayer) : base(questingPlayer, 1)
+        public TuscarianBossQuestMid(GamePlayer questingPlayer) : base(questingPlayer, 1)
         {
         }
 
-        public TuscarianMobQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+        public TuscarianBossQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
         {
         }
 
-        public TuscarianMobQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public TuscarianBossQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 
@@ -118,7 +118,7 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
             /* Now we bring to Herou the possibility to give this quest to players */
-            Herou.AddQuestToGive(typeof(TuscarianMobQuestMid));
+            Herou.AddQuestToGive(typeof(TuscarianBossQuestMid));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Mid initialized");
@@ -138,7 +138,7 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
             /* Now we remove to Herou the possibility to give this quest to players */
-            Herou.RemoveQuestToGive(typeof(TuscarianMobQuestMid));
+            Herou.RemoveQuestToGive(typeof(TuscarianBossQuestMid));
         }
 
         protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
@@ -148,11 +148,11 @@ namespace DOL.GS.DailyQuest.Midgard
             if (player == null)
                 return;
 
-            if (Herou.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
+            if (Herou.CanGiveQuest(typeof(TuscarianBossQuestMid), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
-            TuscarianMobQuestMid quest = player.IsDoingQuest(typeof(TuscarianMobQuestMid)) as TuscarianMobQuestMid;
+            TuscarianBossQuestMid quest = player.IsDoingQuest(typeof(TuscarianBossQuestMid)) as TuscarianBossQuestMid;
 
             if (e == GameObjectEvent.Interact)
             {
@@ -162,7 +162,7 @@ namespace DOL.GS.DailyQuest.Midgard
                     {
                         case 1:
                             Herou.SayTo(player,
-                                "Please, enter Tuscaran Glacier and slay some monsters. If you succeed come back for your reward.");
+                                "Please, enter Tuscaran Glacier and slay strong opponents. If you succeed come back for your reward.");
                             break;
                         case 2:
                             Herou.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
@@ -172,7 +172,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 else
                 {
                     Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
-                                        "I heard you are strong enough to help me with Daily Missions of Midgard. \n\n" +
+                                        "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n" +
                                         "\nCan you [support Midgard]?");
                 }
             }
@@ -186,7 +186,7 @@ namespace DOL.GS.DailyQuest.Midgard
                     {
                         case "support Midgard":
                             player.Out.SendQuestSubscribeCommand(Herou,
-                                QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)),
+                                QuestMgr.GetIDForQuestType(typeof(TuscarianBossQuestMid)),
                                 "Will you help Herou " + questTitle + "");
                             break;
                     }
@@ -217,7 +217,7 @@ namespace DOL.GS.DailyQuest.Midgard
         public override bool CheckQuestQualification(GamePlayer player)
         {
             // if the player is already doing the quest his level is no longer of relevance
-            if (player.IsDoingQuest(typeof(TuscarianMobQuestMid)) != null)
+            if (player.IsDoingQuest(typeof(TuscarianBossQuestMid)) != null)
                 return true;
 
             // This checks below are only performed is player isn't doing quest already
@@ -235,7 +235,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
         private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
         {
-            TuscarianMobQuestMid quest = player.IsDoingQuest(typeof(TuscarianMobQuestMid)) as TuscarianMobQuestMid;
+            TuscarianBossQuestMid quest = player.IsDoingQuest(typeof(TuscarianBossQuestMid)) as TuscarianBossQuestMid;
 
             if (quest == null)
                 return;
@@ -257,7 +257,7 @@ namespace DOL.GS.DailyQuest.Midgard
             if (qargs == null)
                 return;
 
-            if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)))
+            if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(TuscarianBossQuestMid)))
                 return;
 
             if (e == GamePlayerEvent.AcceptQuest)
@@ -268,10 +268,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Herou.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
+            if (Herou.CanGiveQuest(typeof(TuscarianBossQuestMid), player) <= 0)
                 return;
 
-            if (player.IsDoingQuest(typeof(TuscarianMobQuestMid)) != null)
+            if (player.IsDoingQuest(typeof(TuscarianBossQuestMid)) != null)
                 return;
 
             if (response == 0x00)
@@ -281,7 +281,7 @@ namespace DOL.GS.DailyQuest.Midgard
             else
             {
                 //Check if we can add the quest!
-                if (!Herou.GiveQuest(typeof(TuscarianMobQuestMid), player, 1))
+                if (!Herou.GiveQuest(typeof(TuscarianBossQuestMid), player, 1))
                     return;
 
                 Herou.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
@@ -302,8 +302,8 @@ namespace DOL.GS.DailyQuest.Midgard
                 switch (Step)
                 {
                     case 1:
-                        return "Find a way to Tuscaran Glacier and kill some monsters. \nKilled: Monsters in Tuscaran Glacier (" +
-                               _deadTuscaMob + " | "+ MAX_KILLGOAL +")";
+                        return "Find a way to Tuscaran Glacier and kill strong opponents. \nKilled: Bosses in Tuscaran Glacier (" +
+                               _deadTuscaBossMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
                         return "Return to Herou for your Reward.";
                 }
@@ -316,7 +316,7 @@ namespace DOL.GS.DailyQuest.Midgard
         {
             GamePlayer player = sender as GamePlayer;
 
-            if (player == null || player.IsDoingQuest(typeof(TuscarianMobQuestMid)) == null)
+            if (player == null || player.IsDoingQuest(typeof(TuscarianBossQuestMid)) == null)
                 return;
 
             if (sender != m_questPlayer)
@@ -326,16 +326,16 @@ namespace DOL.GS.DailyQuest.Midgard
             {
                 EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
                 
-                // check if a GameNPC died + if its in Tuscaran Glacier
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 160)
+                // check if a GameEpicBoss died + if its in Tuscaran Glacier
+                if (gArgs.Target.Realm == 0 && gArgs.Target is GameEpicBoss && gArgs.Target.CurrentRegionID == 160)
                 {
-                    _deadTuscaMob++;
+                    _deadTuscaBossMob++;
                     player.Out.SendMessage(
-                        "[Daily] Monsters killed in Tuscaran Glacier: (" + _deadTuscaMob + " | " + MAX_KILLGOAL + ")",
+                        "[Daily] Bosses killed in Tuscaran Glacier: (" + _deadTuscaBossMob + " | " + MAX_KILLGOAL + ")",
                         eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
                     player.Out.SendQuestUpdate(this);
 
-                    if (_deadTuscaMob >= MAX_KILLGOAL)
+                    if (_deadTuscaBossMob >= MAX_KILLGOAL)
                     {
                         // FinishQuest or go back to Herou
                         Step = 2;
@@ -346,18 +346,18 @@ namespace DOL.GS.DailyQuest.Midgard
 
         public override string QuestPropertyKey
         {
-            get => "TuscarianMobQuestMid";
+            get => "TuscarianBossQuestMid";
             set { ; }
         }
 
         public override void LoadQuestParameters()
         {
-            _deadTuscaMob = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+            _deadTuscaBossMob = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
         }
 
         public override void SaveQuestParameters()
         {
-            SetCustomProperty(QuestPropertyKey, _deadTuscaMob.ToString());
+            SetCustomProperty(QuestPropertyKey, _deadTuscaBossMob.ToString());
         }
 
         public override void AbortQuest()
@@ -367,11 +367,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
         public override void FinishQuest()
         {
-            m_questPlayer.GainExperience(eXPSource.Quest,
-                (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 5, true);
-            m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level, 0, Util.Random(50)), "You receive {0} as a reward.");
-            AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1000);
-            _deadTuscaMob = 0;
+            m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
+            m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 5, 0, Util.Random(50)), "You receive {0} as a reward.");
+            AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
+            _deadTuscaBossMob = 0;
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }
     }
