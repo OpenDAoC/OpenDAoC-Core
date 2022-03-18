@@ -68,7 +68,7 @@ namespace DOL.GS.DailyQuest
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 200 && npc.X == 334908 && npc.Y == 419949)
+					if (npc.CurrentRegionID == 200 && npc.X == 335117 && npc.Y == 420642)
 					{
 						SucciHib = npc;
 						break;
@@ -88,8 +88,8 @@ namespace DOL.GS.DailyQuest
 				SucciHib.CurrentRegionID = 200;
 				SucciHib.Size = 60;
 				SucciHib.Level = 59;
-				SucciHib.X = 334908;
-				SucciHib.Y = 419949;
+				SucciHib.X = 335117;
+				SucciHib.Y = 420642;
 				SucciHib.Z = 5195;
 				SucciHib.Heading = 3723;
 				SucciHib.Flags |= GameNPC.eFlags.PEACE;
