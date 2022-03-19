@@ -170,8 +170,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				else
 				{
 					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n"+
-					                       "\nCan you [support Midgard]?");
+					                    "One of the scouts reported some enemy movement in Darkness Falls.  \n"+
+					                    "We need you to [shut that down] before they get a foothold.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "support Midgard":
+						case "shut that down":
 							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Herou "+questTitle+"?");
 							break;
 					}

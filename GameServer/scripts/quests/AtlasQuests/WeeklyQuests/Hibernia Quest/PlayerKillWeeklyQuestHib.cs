@@ -171,9 +171,9 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 				}
 				else
 				{
-					ReyHib.SayTo(player, "Hello "+ player.Name +", I am Rey, Fen's Resource Acquisiton Specialist. "+
-					                     "Fen's insatiable desire to kill players is getting out of hand, and he's starting to outsource. \n\n"+
-					                     "\nAre you strong enough to [kill some enemies]?");
+					ReyHib.SayTo(player, "Uh oh, "+ player.Name +". "+
+					                     "Fen put in a bulk order this time. There's no way I can collect this many bones in a week. \n" +
+					                     "I need your help with this, are you up for some [bone harvesting]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "kill some enemies":
+						case "bone harvesting":
 							player.Out.SendQuestSubscribeCommand(ReyHib, QuestMgr.GetIDForQuestType(typeof(PlayerKillWeeklyQuestHib)), "Will you undertake " + questTitle + "?");
 							break;
 					}

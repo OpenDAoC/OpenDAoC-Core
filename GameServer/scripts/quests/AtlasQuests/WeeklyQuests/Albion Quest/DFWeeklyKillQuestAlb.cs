@@ -170,8 +170,8 @@ namespace DOL.GS.DailyQuest.Albion
 				else
 				{
 					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
-					                       "\nCan you [support Albion]?");
+					                       "One of the scouts reported some enemy movement in Darkness Falls.  \n"+
+					                       "We need you to [shut that down] before they get a foothold.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "support Albion":
+						case "shut that down":
 							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestAlb)), "Will you help Haszan "+questTitle+"?");
 							break;
 					}
