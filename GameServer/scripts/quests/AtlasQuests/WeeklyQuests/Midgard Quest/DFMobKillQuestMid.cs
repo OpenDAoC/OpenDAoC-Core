@@ -13,44 +13,38 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Midgard
 {
-	public class EpicRvRMobsWeeklyQuestMid : Quests.WeeklyQuest
+	public class DFMobKillQuestMid : WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Frontier Cleanup";
-		protected const int minimumLevel = 50;
+		protected const string questTitle = "[Weekly] Darkness Falls Invasion";
+		protected const int minimumLevel = 30;
 		protected const int maximumLevel = 50;
 		
 		// Kill Goal
-		protected const int MAX_KILLED = 1;
-		// Quest Counter
-		private int _evernKilled = 0;
-		private int _glacierGiantKilled = 0;
-		private int _greenKnightKilled = 0;
-		
+		protected const int MAX_KILLED = 150;
+
 		private static GameNPC Herou = null; // Start NPC
 
-		protected const string EVERN_NAME = "Evern";
-		protected const string GREENKNIGHT_NAME = "Green Knight";
-		protected const string GLACIERGIANT_NAME = "Glacier Giant";
-		
+		private int _mobsKilled = 0;
+
 		// Constructors
-		public EpicRvRMobsWeeklyQuestMid() : base()
+		public DFMobKillQuestMid() : base()
 		{
 		}
 
-		public EpicRvRMobsWeeklyQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public DFMobKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public EpicRvRMobsWeeklyQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DFMobKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public EpicRvRMobsWeeklyQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFMobKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -121,10 +115,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
 			/* Now we bring to Herou the possibility to give this quest to players */
-			Herou.AddQuestToGive(typeof (EpicRvRMobsWeeklyQuestMid));
+			Herou.AddQuestToGive(typeof (DFMobKillQuestMid));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
+				log.Info("Quest \"" + questTitle + "\" Mid initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -141,7 +135,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
 			/* Now we remove to Herou the possibility to give this quest to players */
-			Herou.RemoveQuestToGive(typeof (EpicRvRMobsWeeklyQuestMid));
+			Herou.RemoveQuestToGive(typeof (DFMobKillQuestMid));
 		}
 
 		protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
@@ -151,11 +145,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (player == null)
 				return;
 
-			if(Herou.CanGiveQuest(typeof (EpicRvRMobsWeeklyQuestMid), player)  <= 0)
+			if(Herou.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			EpicRvRMobsWeeklyQuestMid quest = player.IsDoingQuest(typeof (EpicRvRMobsWeeklyQuestMid)) as EpicRvRMobsWeeklyQuestMid;
+			DFMobKillQuestMid quest = player.IsDoingQuest(typeof (DFMobKillQuestMid)) as DFMobKillQuestMid;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -164,19 +158,18 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Herou.SayTo(player, player.Name + ", please find allys and kill the epic creatures in frontiers for Midgard!");
+							Herou.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
 							break;
 						case 2:
-							Herou.SayTo(player, "Hello " + player.Name + ", did you [slay the creatures] and return for your reward?");
+							Herou.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Herou.SayTo(player, "*********************************************************************");
 					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, do you need a task? "+
 					                    "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n"+
-					                    "\nCan you support Midgard and [kill the epic creatures] in frontiers?");
+					                    "\nCan you [support Midgard]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -187,8 +180,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "kill the epic creatures":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(EpicRvRMobsWeeklyQuestMid)), "Will you help Herou "+questTitle+"?");
+						case "support Midgard":
+							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestMid)), "Will you help Herou "+questTitle+"?");
 							break;
 					}
 				}
@@ -196,7 +189,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "slay the creatures":
+						case "slay monsters":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -214,7 +207,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (EpicRvRMobsWeeklyQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (DFMobKillQuestMid)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -230,16 +223,26 @@ namespace DOL.GS.DailyQuest.Midgard
 			return true;
 		}
 
+		public override void LoadQuestParameters()
+		{
+			_mobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, _mobsKilled.ToString());
+		}
+
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			EpicRvRMobsWeeklyQuestMid quest = player.IsDoingQuest(typeof (EpicRvRMobsWeeklyQuestMid)) as EpicRvRMobsWeeklyQuestMid;
+			DFMobKillQuestMid quest = player.IsDoingQuest(typeof (DFMobKillQuestMid)) as DFMobKillQuestMid;
 
 			if (quest == null)
 				return;
 
 			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, now go out there and slay those creatures!");
+				SendSystemMessage(player, "Good, now go out there and finish your work!");
 			}
 			else
 			{
@@ -254,7 +257,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(EpicRvRMobsWeeklyQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestMid)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -265,10 +268,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Herou.CanGiveQuest(typeof (EpicRvRMobsWeeklyQuestMid), player)  <= 0)
+			if(Herou.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (EpicRvRMobsWeeklyQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (DFMobKillQuestMid)) != null)
 				return;
 
 			if (response == 0x00)
@@ -278,10 +281,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Herou.GiveQuest(typeof (EpicRvRMobsWeeklyQuestMid), player, 1))
+				if (!Herou.GiveQuest(typeof (DFMobKillQuestMid), player, 1))
 					return;
 
-				Herou.SayTo(player, "Please, find the epic monsters in frontiers and return for your reward.");
+				Herou.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
 
 			}
 		}
@@ -300,10 +303,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Find and slay the three dangerous epic monsters! \n" +
-						       "Killed: " + EVERN_NAME + " ("+ _evernKilled +" | " + MAX_KILLED + ")\n" +
-						       "Killed: " + GREENKNIGHT_NAME + " ("+ _greenKnightKilled +" | " + MAX_KILLED + ")\n" +
-						       "Killed: " + GLACIERGIANT_NAME + " ("+ _glacierGiantKilled +" | " + MAX_KILLED + ")\n";
+						return "Enter Darkness Falls and kill monsters for Midgard. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
 						return "Return to Herou for your Reward.";
 				}
@@ -315,7 +315,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(EpicRvRMobsWeeklyQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestMid)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -325,51 +325,26 @@ namespace DOL.GS.DailyQuest.Midgard
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNPC && _evernKilled < MAX_KILLED)
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249) 
 				{
-					_evernKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + EVERN_NAME + ": (" + _evernKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					_mobsKilled++;
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNPC && _greenKnightKilled < MAX_KILLED)
-				{
-					_greenKnightKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + GREENKNIGHT_NAME + ": (" + _greenKnightKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNPC && _glacierGiantKilled < MAX_KILLED)
-				{
-					_glacierGiantKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + GLACIERGIANT_NAME + ": (" + _glacierGiantKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				
-				if (_evernKilled >= MAX_KILLED && _greenKnightKilled >= MAX_KILLED && _glacierGiantKilled>= MAX_KILLED)
-				{
-					// FinishQuest or go back to Dean
-					Step = 2;
+					
+					if (_mobsKilled >= MAX_KILLED)
+					{
+						// FinishQuest or go back to Herou
+						Step = 2;
+					}
 				}
 			}
+			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "EpicRvRMobsWeeklyQuestMid";
+			get => "DFMobKillQuestMid";
 			set { ; }
-		}
-		
-		public override void LoadQuestParameters()
-		{
-			_evernKilled = GetCustomProperty(EVERN_NAME) != null ? int.Parse(GetCustomProperty(EVERN_NAME)) : 0;
-			_glacierGiantKilled = GetCustomProperty(GLACIERGIANT_NAME) != null ? int.Parse(GetCustomProperty(GLACIERGIANT_NAME)) : 0;
-			_greenKnightKilled = GetCustomProperty(GREENKNIGHT_NAME) != null ? int.Parse(GetCustomProperty(GREENKNIGHT_NAME)) : 0;
-		}
-
-		public override void SaveQuestParameters()
-		{
-			SetCustomProperty(EVERN_NAME, _evernKilled.ToString());
-			SetCustomProperty(GLACIERGIANT_NAME, _glacierGiantKilled.ToString());
-			SetCustomProperty(GREENKNIGHT_NAME, _greenKnightKilled.ToString());
 		}
 
 		public override void AbortQuest()
@@ -379,12 +354,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			//m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
-			_evernKilled = 0;
-			_glacierGiantKilled = 0;
-			_greenKnightKilled = 0;
+			_mobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}
