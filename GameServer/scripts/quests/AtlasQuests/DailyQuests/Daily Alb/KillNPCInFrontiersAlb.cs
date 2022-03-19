@@ -110,14 +110,14 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
-			/* Now we bring to Cola the possibility to give this quest to players */
+			/* Now we bring to Dean the possibility to give this quest to players */
 			Cola.AddQuestToGive(typeof (KillNPCInFrontiersAlb));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" Alb initialized");
+				log.Info("Quest \"" + questTitle + "\" initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -130,14 +130,14 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
-			/* Now we remove to Cola the possibility to give this quest to players */
+			/* Now we remove to Dean the possibility to give this quest to players */
 			Cola.RemoveQuestToGive(typeof (KillNPCInFrontiersAlb));
 		}
 
-		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -180,7 +180,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "clear our frontiers":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Cola "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -303,9 +303,9 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
-						return "Return to Cola in Castle Sauvage for your Reward.";
+						return "Return to Dean in Druim Ligen for your Reward.";
 				}
 				return base.Description;
 			}
@@ -324,14 +324,13 @@ namespace DOL.GS.DailyQuest.Albion
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) >= -1 
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
+				if (player.GetConLevel(gArgs.Target) >= 0 
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentRegion.IsRvR) 
 				{
 					FrontierMobsKilled++;
-					player.Out.SendMessage("[Daily] Monsters Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KILLED)
+					if (FrontierMobsKilled >= 25)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;
@@ -355,9 +354,9 @@ namespace DOL.GS.DailyQuest.Albion
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 2,50,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 500);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
 			FrontierMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
