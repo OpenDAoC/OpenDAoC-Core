@@ -118,7 +118,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Dean.AddQuestToGive(typeof (KillNPCInFrontiersHib));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
+				log.Info("Quest \"" + questTitle + "\" Hib initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
 						return "Return to Dean in Druim Ligen for your Reward.";
 				}
@@ -331,7 +331,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					FrontierMobsKilled++;
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= 25)
+					if (FrontierMobsKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;

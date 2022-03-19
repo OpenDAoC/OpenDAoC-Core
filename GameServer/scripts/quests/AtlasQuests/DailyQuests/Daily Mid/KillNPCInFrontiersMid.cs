@@ -114,11 +114,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
 			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
+			/* Now we bring to Isaac the possibility to give this quest to players */
 			Isaac.AddQuestToGive(typeof (KillNPCInFrontiersMid));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
+				log.Info("Quest \"" + questTitle + "\" Mid initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -134,7 +134,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
 			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
+			/* Now we remove to Isaac the possibility to give this quest to players */
 			Isaac.RemoveQuestToGive(typeof (KillNPCInFrontiersMid));
 		}
 
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "clear our frontiers":
-							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Dean "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Isaac "+questTitle+"");
 							break;
 					}
 				}
@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
 						return "Return to Isaac in Svasud Faste for your Reward.";
 				}
@@ -331,7 +331,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					FrontierMobsKilled++;
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= 25)
+					if (FrontierMobsKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;
