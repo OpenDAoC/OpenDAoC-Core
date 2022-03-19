@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Cache;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
@@ -11,38 +12,39 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest.Albion
 {
-	public class PlayerKillQuestMid : Quests.DailyQuest
+	public class EveryLittleBitHelpsQuestAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Fen's New Friends";
-		protected const int minimumLevel = 1;
+		protected const string questTitle = "[Daily] Every little bit helps";
+		protected const int minimumLevel = 40;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC ReyMid = null; // Start NPC
+		private static GameNPC ReyAlb = null; // Start NPC
 
-		private int PlayersKilled = 0;
-		protected const int MAX_KILLED = 10;
+		private int _playersKilledMid = 0;
+		private int _playersKilledHib = 0;
+		protected const int MAX_KILLGOAL = 5;
 
 		// Constructors
-		public PlayerKillQuestMid() : base()
+		public EveryLittleBitHelpsQuestAlb() : base()
 		{
 		}
 
-		public PlayerKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public EveryLittleBitHelpsQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public PlayerKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public EveryLittleBitHelpsQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public PlayerKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EveryLittleBitHelpsQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -63,40 +65,40 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 100 && npc.X == 766450 && npc.Y == 670339)
+					if (npc.CurrentRegionID == 1 && npc.X == 583867 && npc.Y == 477355)
 					{
-						ReyMid = npc;
+						ReyAlb = npc;
 						break;
 					}
 				}
 
-			if (ReyMid == null)
+			if (ReyAlb == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rey , creating it ...");
-				ReyMid = new GameNPC();
-				ReyMid.Model = 26;
-				ReyMid.Name = "Rey";
-				ReyMid.GuildName = "Bone Collector";
-				ReyMid.Realm = eRealm.Midgard;
-				//Svasud Faste Location
-				ReyMid.CurrentRegionID = 100;
-				ReyMid.Size = 60;
-				ReyMid.Level = 59;
-				ReyMid.X = 766450;
-				ReyMid.Y = 670339;
-				ReyMid.Z = 5736;
-				ReyMid.Heading = 2358;
-				ReyMid.Flags |= GameNPC.eFlags.PEACE;
-				ReyMid.AddToWorld();
+				ReyAlb = new GameNPC();
+				ReyAlb.Model = 26;
+				ReyAlb.Name = "Rey";
+				ReyAlb.GuildName = "Bone Collector";
+				ReyAlb.Realm = eRealm.Albion;
+				//Druim Ligen Location
+				ReyAlb.CurrentRegionID = 1;
+				ReyAlb.Size = 60;
+				ReyAlb.Level = 59;
+				ReyAlb.X = 583867;
+				ReyAlb.Y = 477355;
+				ReyAlb.Z = 2600;
+				ReyAlb.Heading = 3054;
+				ReyAlb.Flags |= GameNPC.eFlags.PEACE;
+				ReyAlb.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					ReyMid.SaveIntoDatabase();
+					ReyAlb.SaveIntoDatabase();
 				}
 			}
 
@@ -111,31 +113,31 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(ReyMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.AddHandler(ReyMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
-			ReyMid.AddQuestToGive(typeof (PlayerKillQuestMid));
+			/* Now we bring to Rey the possibility to give this quest to players */
+			ReyAlb.AddQuestToGive(typeof (EveryLittleBitHelpsQuestAlb));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
+				log.Info("Quest \"" + questTitle + "\" Alb initialized");
 		}
 
 		[ScriptUnloadedEvent]
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (ReyMid == null)
+			if (ReyAlb == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(ReyMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.RemoveHandler(ReyMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
-			ReyMid.RemoveQuestToGive(typeof (PlayerKillQuestMid));
+			/* Now we remove to Rey the possibility to give this quest to players */
+			ReyAlb.RemoveQuestToGive(typeof (EveryLittleBitHelpsQuestAlb));
 		}
 
 		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
@@ -145,11 +147,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(ReyMid.CanGiveQuest(typeof (PlayerKillQuestMid), player)  <= 0)
+			if(ReyAlb.CanGiveQuest(typeof (EveryLittleBitHelpsQuestAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			PlayerKillQuestMid quest = player.IsDoingQuest(typeof (PlayerKillQuestMid)) as PlayerKillQuestMid;
+			EveryLittleBitHelpsQuestAlb quest = player.IsDoingQuest(typeof (EveryLittleBitHelpsQuestAlb)) as EveryLittleBitHelpsQuestAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +160,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							ReyMid.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
+							ReyAlb.SayTo(player, "Find and kill enemies of Midgard and Hibernia. You will find suitable players in the frontiers.");
 							break;
 						case 2:
-							ReyMid.SayTo(player, "Hello " + player.Name + ", did you [hit your quota]?");
+							ReyAlb.SayTo(player, "Hello " + player.Name + ", did you [kill enemies] for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
-					                       "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
-					                       "\nCan you lend me a hand? A leg could probably work too.");
+					ReyAlb.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
+					                     "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
+					                     "\nCan you lend me a hand? A leg could probably work too.");
 				}
 			}
 				// The player whispered to the NPC
@@ -181,7 +183,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "help me out":
-							player.Out.SendQuestSubscribeCommand(ReyMid, QuestMgr.GetIDForQuestType(typeof(PlayerKillQuestMid)), "Will you undertake " + questTitle + "?");
+							player.Out.SendQuestSubscribeCommand(ReyAlb, QuestMgr.GetIDForQuestType(typeof(EveryLittleBitHelpsQuestAlb)), "Will you undertake " + questTitle + "?");
 							break;
 					}
 				}
@@ -189,10 +191,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "hit your quota":
+						case "kill enemies":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Ugh, some of these are still dripping. Well done, he'll be pleased.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -207,7 +209,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (PlayerKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (EveryLittleBitHelpsQuestAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -225,7 +227,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			PlayerKillQuestMid quest = player.IsDoingQuest(typeof (PlayerKillQuestMid)) as PlayerKillQuestMid;
+			EveryLittleBitHelpsQuestAlb quest = player.IsDoingQuest(typeof (EveryLittleBitHelpsQuestAlb)) as EveryLittleBitHelpsQuestAlb;
 
 			if (quest == null)
 				return;
@@ -247,7 +249,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(PlayerKillQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(EveryLittleBitHelpsQuestAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -258,10 +260,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(ReyMid.CanGiveQuest(typeof (PlayerKillQuestMid), player)  <= 0)
+			if(ReyAlb.CanGiveQuest(typeof (EveryLittleBitHelpsQuestAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (PlayerKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (EveryLittleBitHelpsQuestAlb)) != null)
 				return;
 
 			if (response == 0x00)
@@ -271,10 +273,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!ReyMid.GiveQuest(typeof (PlayerKillQuestMid), player, 1))
+				if (!ReyAlb.GiveQuest(typeof (EveryLittleBitHelpsQuestAlb), player, 1))
 					return;
 
-				ReyMid.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
+				ReyAlb.SayTo(player, "You will find suitable players in the frontiers.");
 
 			}
 		}
@@ -293,9 +295,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+ MAX_KILLED +")";
+						return "You will find suitable players in the frontiers. \n" +
+						       "Players Killed: Hibernia ("+ _playersKilledHib +" | "+ MAX_KILLGOAL +")" +
+						       "Players Killed: Midgard ("+ _playersKilledMid +" | "+ MAX_KILLGOAL +")";
 					case 2:
-						return "Return to Rey in Svasud Faste for your Reward.";
+						return "Return to Rey in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}
@@ -305,7 +309,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(PlayerKillQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(EveryLittleBitHelpsQuestAlb)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -315,17 +319,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
+				if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && _playersKilledMid < MAX_KILLGOAL) 
 				{
-					PlayersKilled++;
-					player.Out.SendMessage("[Daily] Killed Enemies: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					_playersKilledMid++;
+					player.Out.SendMessage("[Daily] Killed Midgard Enemy: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
-					
-					if (PlayersKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Dean
-						Step = 2;
-					}
+				}
+				else if (gArgs.Target.Realm == eRealm.Hibernia && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && _playersKilledHib < MAX_KILLGOAL) 
+				{
+					_playersKilledHib++;
+					player.Out.SendMessage("[Daily] Killed Hibernia Enemy: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendQuestUpdate(this);
+				}
+				
+				if (_playersKilledMid >= MAX_KILLGOAL && _playersKilledHib >= MAX_KILLGOAL)
+				{
+					// FinishQuest or go back to Rey
+					Step = 2;
 				}
 				
 			}
@@ -333,19 +343,22 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		public override string QuestPropertyKey
 		{
-			get => "PlayerKillQuestMid";
+			get => "EveryLittleBitHelpsQuestAlb";
 			set { ; }
 		}
 		
 		public override void LoadQuestParameters()
 		{
-			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			_playersKilledHib = GetCustomProperty("PlayersKilledHib") != null ? int.Parse(GetCustomProperty("PlayersKilledHib")) : 0;
+			_playersKilledMid = GetCustomProperty("PlayersKilledMid") != null ? int.Parse(GetCustomProperty("PlayersKilledMid")) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
+			SetCustomProperty("PlayersKilledHib", _playersKilledHib.ToString());
+			SetCustomProperty("PlayersKilledMid", _playersKilledMid.ToString());
 		}
+
 
 		public override void AbortQuest()
 		{
@@ -355,9 +368,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1000);
-			PlayersKilled = 0;
+			_playersKilledHib = 0;
+			_playersKilledMid = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}
