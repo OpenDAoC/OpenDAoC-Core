@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using log4net;
 
@@ -15,23 +12,35 @@ namespace DOL.GS.Scripts
     public class Legion : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static IArea legionArea = null;
+        
+        [ScriptLoadedEvent]
+		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		{
+            var radius = 650;
+            Region region = WorldMgr.GetRegion(249);
+            legionArea = region.AddArea(new Area.Circle("Legion's Lair", 45000,51700,15468, radius));
+            log.Debug("Legion's Lair created with radius " + radius + " at 45000 51700 15468");
+            legionArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
+            
+            GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
+            
+			if (log.IsInfoEnabled)
+				log.Info("Legion initialized..");
+		}
 
+		[ScriptUnloadedEvent]
+		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		{
+            legionArea.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
+			WorldMgr.GetRegion(249).RemoveArea(legionArea);
+            
+            GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
+        }
+        
         public Legion()
             : base()
         {
-        }
-
-        /// <summary>
-        /// Create Legion's Lair after it was loaded from the DB.
-        /// </summary>
-        /// <param name="obj"></param>
-        public override void LoadFromDatabase(DataObject obj)
-        {
-            base.LoadFromDatabase(obj);
-            var radius = 540;
-            WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X,Y,Z, radius));
-                
-            log.Debug("Legion's Lair created with radius " + radius + " at " + X + " " + Y + " " + Z);
         }
         public override bool AddToWorld()
         {
@@ -56,11 +65,6 @@ namespace DOL.GS.Scripts
             
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
-            
-            var radius = 540;
-            WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle("Legion's Lair", X,Y,Z, radius));
-                
-            log.Debug("Legion's Lair created with radius " + radius + " at " + X + " " + Y + " " + Z);
             
             base.AddToWorld();
             return true;
@@ -152,13 +156,86 @@ namespace DOL.GS.Scripts
             }
         }
         
-        
-        #region Custom Methods
-        /// <summary>
-        /// Post a message in the server news and award a legion kill point for
-        /// every XP gainer in the raid.
-        /// </summary>
-        /// <param name="killer">The living that got the killing blow.</param>
+        private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
+        {
+            AreaEventArgs aargs = args as AreaEventArgs;
+            GamePlayer player = aargs?.GameObject as GamePlayer;
+
+            Console.Write(player?.Name + " entered Legion's Lair");
+
+            var mobsInArea = player?.GetNPCsInRadius(2500);
+            
+            foreach (GameNPC mob in mobsInArea)
+            {
+                if (mob is not Legion || !mob.InCombat) continue;
+                Console.WriteLine("Legion is alive and in combat");
+
+                if (Util.Chance(33))
+                {
+                    Console.WriteLine("Whops, we got a hit!");
+                    player?.Out.SendSpellEffectAnimation(mob, player, 5933, 0, false, 1);
+                    player?.Die(mob);
+                }
+                else
+                {
+                    foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
+                    {
+                        playerNearby.MoveTo(249, 48117, 49573, 20833, 1006);
+                        playerNearby.BroadcastUpdate();
+                    }
+                    player.MoveTo(249, 48117, 49573, 20833, 1006);
+                }
+                player?.BroadcastUpdate();
+            }
+        }
+        private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
+        {
+            GamePlayer player = sender as GamePlayer;
+            
+            foreach (GameNPC mob in player.GetNPCsInRadius(2500))
+            {
+                if (mob is not Legion) continue;
+                mob.Health += player.MaxHealth;
+                mob.UpdateHealthManaEndu();
+            }
+            
+            foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
+            {
+                playerNearby.MoveTo(249, 48117, 49573, 20833, 1006);
+                playerNearby.BroadcastUpdate();
+            }
+        }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (source is GamePlayer)
+            {
+                if (Util.Chance(3))
+                {
+                    var spawnAmount = Util.Random(15, 20);
+                    SpawnAdds((GamePlayer) source, spawnAmount);
+                }
+            }
+            
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
+        public void SpawnAdds(GamePlayer target, int amount = 1)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                var distanceDelta = Util.Random(0, 300);
+                var level = Util.Random(52, 58);
+                
+                LegionAdd add = new LegionAdd();
+                add.X = target.X + distanceDelta;
+                add.Y = target.Y + distanceDelta;
+                add.Z = target.Z;
+                add.CurrentRegionID = target.CurrentRegionID;
+                add.IsWorthReward = false;
+                add.Level = (byte) level;
+                add.AddToWorld();
+                add.StartAttack(target);
+            }
+        }
         protected void ReportNews(GameObject killer)
         {
             int numPlayers = AwardLegionKillPoint();
@@ -176,11 +253,6 @@ namespace DOL.GS.Scripts
                 }
             }
         }
-
-        /// <summary>
-        /// Award legion kill point for each XP gainer.
-        /// </summary>
-        /// <returns>The number of people involved in the kill.</returns>
         protected int AwardLegionKillPoint()
         {
             int count = 0;
@@ -192,8 +264,7 @@ namespace DOL.GS.Scripts
             }
             return count;
         }
-
-        #endregion
+        
     }
 }
 
@@ -210,14 +281,6 @@ namespace DOL.AI.Brain
             AggroRange = 850;
         }
 
-        public void BroadcastMessage(String message)
-        {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-            {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-            }
-        }
-
         public override void Think()
         {
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
@@ -232,150 +295,7 @@ namespace DOL.AI.Brain
                 }
             }
             
-            if (HasAggro && Body.InCombat)
-            {
-                if (Body.TargetObject != null)
-                {
-                    // 3% chance to spawn 15-20 zombies
-                    if (Util.Chance(3))
-                    {
-                        SpawnAdds();
-                    }
-                }
-            }
-            else
-            {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-                {
-                    if (npc.Brain is LegionAddBrain)
-                    {
-                        npc.RemoveFromWorld();
-                    }
-                }
-            }
             base.Think();
-        }
-        public void SpawnAdds()
-        {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
-            {
-                for (int i = 0; i < Util.Random(15, 20); i++)
-                {
-                    LegionAdd add = new LegionAdd();
-                    add.X = 45066;
-                    add.Y = 51731;
-                    add.Z = 15468;
-                    add.CurrentRegionID = 249;
-                    add.Heading = 2053;
-                    add.IsWorthReward = false;
-                    int level = Util.Random(52, 58);
-                    add.Level = (byte) level;
-                    add.AddToWorld();
-                    add.StartAttack(player);
-                }
-            }
-        }
-        
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            if (log.IsInfoEnabled)
-                log.Info("Legion initializing ...");
-            
-        }
-        
-        [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
-        {
-
-        }
-        
-        private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
-        {
-            AreaEventArgs aargs = args as AreaEventArgs;
-            GamePlayer player = aargs?.GameObject as GamePlayer;
-
-            if (player == null)
-                return;
-
-            if (e == GameLivingEvent.HealthChanged && sender is Legion)
-            {
-                foreach (GamePlayer portPlayer in player.GetPlayersInRadius(250))
-                {
-                    if (portPlayer.IsAlive)
-                    {
-                        portPlayer.MoveTo(249, 48117, 49573, 20833, 1006);
-                        portPlayer.BroadcastUpdate();
-                    }
-                }
-                player.MoveTo(249, 48117, 49573, 20833, 1006);
-                player.BroadcastUpdate();
-            }
-        }
-
-        private int killAreaTimer(RegionTimer timer)
-        {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(800))
-            {
-                if (player == null)
-                    return 0;
-                
-                List<GamePlayer> potKiller = new List<GamePlayer>();
-                potKiller.Add(player);
-                int ranId = Util.Random(0, potKiller.Count);
-                if (ranId >= 0)
-                {
-                    player.Out.SendSpellEffectAnimation(potKiller[ranId], potKiller[ranId], 5933, 0, false, 1);
-                    potKiller[ranId].Die(Body);
-                }
-                potKiller.Clear();
-               
-            }
-            return 0;
-        }
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
-        {
-            base.Notify(e, sender, args);
-            GamePlayer player = sender as GamePlayer;
-            AreaEventArgs aargs = args as AreaEventArgs;
-            GamePlayer playerArea = aargs?.GameObject as GamePlayer;
-            
-            if (player == null)
-                return;
-            
-            if (e == AreaEvent.PlayerEnter)
-            {
-                if (playerArea == null) 
-                    return;
-                
-                Console.WriteLine("entered Legions Lair");
-                if (HasAggro && Body.InCombat && Body.TargetObject != null)
-                {
-                    if (Util.Chance(33))
-                    {
-                        BroadcastMessage(String.Format(Body.Name + " doesn't like enemies in his lair"));
-                        new RegionTimer(Body, new RegionTimerCallback(killAreaTimer), 3000);
-                    }
-                }
-            }
-            
-            if (e == GameNPCEvent.HealthChanged)
-            {
-                foreach (GamePlayer portPlayer in player.GetPlayersInRadius(350))
-                {
-                    if (portPlayer.IsAlive)
-                    {
-                        portPlayer.MoveTo(249, 48117, 49573, 20833, 1006);
-                        portPlayer.BroadcastUpdate();
-                    }
-                }
-            }
-
-            if (e == GameLivingEvent.Dying)
-            {
-                Body.Health += player.MaxHealth;
-                Body.UpdateHealthManaEndu();
-            }
         }
     }
 }
@@ -463,10 +383,6 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 800;
-        }
-        public override void Think()
-        {
-            base.Think();
         }
     }
 }
