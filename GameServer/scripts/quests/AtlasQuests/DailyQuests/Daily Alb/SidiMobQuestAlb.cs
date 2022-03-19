@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Albion
                 else
                 {
                     Haszan.SayTo(player, "Hello " + player.Name + ", I am Haszan. " +
-                                         "A scout reported strange wailings coming from inside Caer Sidi. \n" +
-                                         "Do you think you could [investigate] for us?");
+                                         "The king is preparing to send forces into Caer Sidi to clear it out. \n" +
+                                         "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
             }
             // The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.DailyQuest.Albion
                 {
                     switch (wArgs.Text)
                     {
-                        case "investigate":
+                        case "clearing the way":
                             player.Out.SendQuestSubscribeCommand(Haszan,
                                 QuestMgr.GetIDForQuestType(typeof(SidiMobQuestAlb)),
                                 "Will you help Haszan with " + questTitle + "");

@@ -169,9 +169,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					ReyHib.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
-					                     "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
-					                     "\nCan you lend me a hand? A leg could probably work too.");
+					ReyHib.SayTo(player, "You won't believe it, "+ player.Name +". We got a bulk order for exotic bones too. "+
+					                     "My workload is way too high, I'm going to ask for a raise. Well, at least after you bring me a [bunch of toeknuckles]. \n\n"+
+					                     "I have an order to fill, after all...");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "help me out":
+						case "bunch of toeknuckles":
 							player.Out.SendQuestSubscribeCommand(ReyHib, QuestMgr.GetIDForQuestType(typeof(ForTheRealmQuestHib)), "Will you undertake " + questTitle + "?");
 							break;
 					}

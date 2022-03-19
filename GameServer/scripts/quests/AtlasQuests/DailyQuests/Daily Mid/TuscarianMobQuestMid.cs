@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Midgard
                 else
                 {
                     Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
-                                        "A hunter reported strange wailings coming from inside Tuscaren Glacier. \n" +
-                                        "Do you think you could [investigate] for us?");
+                                        "The king is preparing to send forces into Tuscaren Glacier to clear it out. \n" +
+                                        "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
             }
             // The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 {
                     switch (wArgs.Text)
                     {
-                        case "investigate":
+                        case "clearing the way":
                             player.Out.SendQuestSubscribeCommand(Herou,
                                 QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)),
                                 "Will you help Herou with " + questTitle + "");

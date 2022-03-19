@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Midgard
                 else
                 {
                     Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
-                                        "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n" +
-                                        "\nCan you [support Midgard]?");
+                                        "A shadowblade has reported the forces in Tuscaren Glacier are planning an attack. \n" +
+                                        "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
             }
             // The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Midgard":
+                        case "end their plotting":
                             player.Out.SendQuestSubscribeCommand(Herou,
                                 QuestMgr.GetIDForQuestType(typeof(TuscarianBossQuestMid)),
                                 "Will you help Herou " + questTitle + "");

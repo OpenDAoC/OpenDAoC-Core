@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Albion
                 else
                 {
                     Haszan.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
-                                         "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n" +
-                                         "\nCan you [support Albion]?");
+                                         "An infiltrator has reported the forces in Caer Sidi are planning an attack. \n" +
+                                         "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
             }
             // The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.DailyQuest.Albion
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Albion":
+                        case "end their plotting":
                             player.Out.SendQuestSubscribeCommand(Haszan,
                                 QuestMgr.GetIDForQuestType(typeof(SidiBossQuestAlb)),
                                 "Will you help Dean " + questTitle + "");

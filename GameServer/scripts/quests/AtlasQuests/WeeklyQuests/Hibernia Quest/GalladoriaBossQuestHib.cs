@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Hibernia
                 else
                 {
                     Dean.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
-                                       "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n" +
-                                       "\nCan you [support Hibernia]?");
+                                       "A nightshade has reported the forces in Galladoria are planning an attack. \n" +
+                                       "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
             }
             // The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.DailyQuest.Hibernia
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Hibernia":
+                        case "end their plotting":
                             player.Out.SendQuestSubscribeCommand(Dean,
                                 QuestMgr.GetIDForQuestType(typeof(GalladoriaBossQuestHib)),
                                 "Will you help Dean " + questTitle + "");

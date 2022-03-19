@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Hibernia
                 else
                 {
                     Dean.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
-                                       "A ranger reported strange wailings coming from inside Galladoria. \n" +
-                                       "Do you think you could [investigate] for us?");
+                                       "The king is preparing to send forces into Galladoria to clear it out. \n" +
+                                       "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
             }
             // The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.DailyQuest.Hibernia
                 {
                     switch (wArgs.Text)
                     {
-                        case "investigate":
+                        case "clearing the way":
                             player.Out.SendQuestSubscribeCommand(Dean,
                                 QuestMgr.GetIDForQuestType(typeof(GallaMobQuestHib)),
                                 "Will you help Dean with " + questTitle + "");
