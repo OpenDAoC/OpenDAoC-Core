@@ -76,6 +76,13 @@ public class WeeklyQuestService
                     player.QuestListFinished.Remove(quest);
                 }
             }
+            
+            var existingWeeklyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%WeeklyQuest%"));
+
+            foreach (var existingWeeklyQuest in existingWeeklyQuests)
+            {
+                GameServer.Database.DeleteObject(existingWeeklyQuest);
+            }
         }
 
         Diagnostics.StopPerfCounter(ServiceName);

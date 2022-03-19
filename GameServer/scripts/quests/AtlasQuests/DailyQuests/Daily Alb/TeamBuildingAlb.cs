@@ -2,49 +2,55 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.API;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
 namespace DOL.GS.DailyQuest.Albion
 {
-	public class DanaoinKillQuestAlb : Quests.DailyQuest
+	public class TeamBuildingAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Danaoin Invasion";
-		protected const int minimumLevel = 40;
+		protected const string questTitle = "[Daily] A Team Building Exercise";
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 10;
+		protected const int MAX_KILLED = 50;
 		
 		private static GameNPC Cola = null; // Start NPC
 
-		private int danaoinKilled = 0;
+		private bool HasFighter = false;
+		private bool HasAcolyte = false;
+		private bool HasRogue = false;
+		private bool HasMageElemDisc = false;
+
+		private int TeamBuildMobsKilled = 0;
 
 		// Constructors
-		public DanaoinKillQuestAlb() : base()
+		public TeamBuildingAlb() : base() {
+		}
+
+		public TeamBuildingAlb(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public DanaoinKillQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public TeamBuildingAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public DanaoinKillQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-		{
-		}
-
-		public DanaoinKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TeamBuildingAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		
@@ -114,8 +120,8 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
 			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we bring to Cola the possibility to give this quest to players */
-			Cola.AddQuestToGive(typeof (DanaoinKillQuestAlb));
+			/* Now we bring to Dean the possibility to give this quest to players */
+			Cola.AddQuestToGive(typeof (TeamBuildingAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -134,8 +140,8 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
 			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we remove to Cola the possibility to give this quest to players */
-			Cola.RemoveQuestToGive(typeof (DanaoinKillQuestAlb));
+			/* Now we remove to Dean the possibility to give this quest to players */
+			Cola.RemoveQuestToGive(typeof (TeamBuildingAlb));
 		}
 
 		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
@@ -145,11 +151,11 @@ namespace DOL.GS.DailyQuest.Albion
 			if (player == null)
 				return;
 
-			if(Cola.CanGiveQuest(typeof (DanaoinKillQuestAlb), player)  <= 0)
+			if(Cola.CanGiveQuest(typeof (TeamBuildingAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			DanaoinKillQuestAlb quest = player.IsDoingQuest(typeof (DanaoinKillQuestAlb)) as DanaoinKillQuestAlb;
+			TeamBuildingAlb quest = player.IsDoingQuest(typeof (TeamBuildingAlb)) as TeamBuildingAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +164,18 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Cola.SayTo(player, "You will find Danaoin Farmers in the North or West of Lyonesse.");
+							Cola.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Cola.SayTo(player, "Hello " + player.Name + ", did you [kill] the Danaoin Farmers?");
+							Cola.SayTo(player, "Hello " + player.Name + ", did you [forge the bonds of unity]?");
 							break;
 					}
 				}
 				else
 				{
-					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola, Drmed\'s friend. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Albion\n"+
-					                       "\nCan you [support Atlas]?");
+					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					                       "The king recently implemented a new unity initiative and he wants you to help out.\n"+
+					                       "What do you say, are you [feeling social]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +186,8 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(DanaoinKillQuestAlb)), "Will you help Cola "+questTitle+"");
+						case "feeling social":
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(TeamBuildingAlb)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -189,10 +195,10 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "kill":
+						case "forge the bonds of unity":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("I can feel our realm growing more cohesive every day!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -207,7 +213,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (DanaoinKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (TeamBuildingAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -225,18 +231,18 @@ namespace DOL.GS.DailyQuest.Albion
 		
 		public override void LoadQuestParameters()
 		{
-			danaoinKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			TeamBuildMobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, danaoinKilled.ToString());
+			SetCustomProperty(QuestPropertyKey, TeamBuildMobsKilled.ToString());
 		}
 
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			DanaoinKillQuestAlb quest = player.IsDoingQuest(typeof (DanaoinKillQuestAlb)) as DanaoinKillQuestAlb;
+			TeamBuildingAlb quest = player.IsDoingQuest(typeof (TeamBuildingAlb)) as TeamBuildingAlb;
 
 			if (quest == null)
 				return;
@@ -258,7 +264,7 @@ namespace DOL.GS.DailyQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DanaoinKillQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(TeamBuildingAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -269,23 +275,23 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Cola.CanGiveQuest(typeof (DanaoinKillQuestAlb), player)  <= 0)
+			if(Cola.CanGiveQuest(typeof (TeamBuildingAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (DanaoinKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (TeamBuildingAlb)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm prosper.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Cola.GiveQuest(typeof (DanaoinKillQuestAlb), player, 1))
+				if (!Cola.GiveQuest(typeof (TeamBuildingAlb), player, 1))
 					return;
 
-				Cola.SayTo(player, "You will find the Danaoin Farmers in Lyonesse.");
+				Cola.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -304,7 +310,26 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Find Danaoin Farmers in the West or North in Lyonesse. \nKilled: Danaoin Farmers ("+ danaoinKilled +" | 10)";
+						if (HasFighter
+						    && HasAcolyte
+						    && HasRogue
+						    && HasMageElemDisc)
+						{
+							return "The spirit of unity flows through you. \n" +
+							       "Kill orange con or higher mobs: \n" + 
+							       "Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)";
+						}
+						else
+						{
+							StringBuilder output = new StringBuilder("Kill orange con or higher mobs while in a group containing the following base classes:\n");
+							if (!HasFighter) output.Append("Fighter required\n");
+							if (!HasAcolyte) output.Append("Acolyte required\n");
+							if (!HasRogue) output.Append("Rogue required\n");
+							if (!HasMageElemDisc) output.Append("Mage/Elementalist/Disciple required\n");
+							output.Append("Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)");
+							return output.ToString();
+						}
+						
 					case 2:
 						return "Return to Cola in Castle Sauvage for your Reward.";
 				}
@@ -316,34 +341,66 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DanaoinKillQuestAlb)) == null)
+			if (player == null || player.IsDoingQuest(typeof(TeamBuildingAlb)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
 				return;
+
+			if (player.Group != null)
+			{
+				foreach (var member in player.Group.GetMembersInTheGroup())
+				{
+					//update class counters
+					if (member is GamePlayer gplayer)
+					{
+						if (gplayer.CharacterClass is ClassFighter)
+							HasFighter = true;
+						if (gplayer.CharacterClass is ClassAcolyte)
+							HasAcolyte = true;
+						if (gplayer.CharacterClass is ClassAlbionRogue)
+							HasRogue = true;
+						if (gplayer.CharacterClass is ClassMage ||
+						    gplayer.CharacterClass is ClassElementalist ||
+						    gplayer.CharacterClass is ClassDisciple)
+							HasMageElemDisc = true;
+					}
+				}
+				player.Out.SendQuestUpdate(this);
+			}
+			else
+			{
+				//if we're ever ungrouped, clear our grouped class counters
+				HasFighter = false;
+				HasAcolyte = false;
+				HasRogue = false;
+				HasMageElemDisc = false;
+			}
 			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name.ToLower() == "danaoin farmer") 
+				if (player.GetConLevel(gArgs.Target) >= 1 &&
+				    player.Group != null &&
+				    HasFighter && HasAcolyte && HasRogue && HasMageElemDisc) 
 				{
-					danaoinKilled++;
-					player.Out.SendMessage("[Daily] Danaoin Farmers Killed: ("+danaoinKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					TeamBuildMobsKilled++;
 					player.Out.SendQuestUpdate(this);
 					
-					if (danaoinKilled >= MAX_KILLED)
+					if (TeamBuildMobsKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to Cola
+						// FinishQuest or go back to npc
 						Step = 2;
 					}
 				}
+				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "DanaoinKillQuestAlb";
+			get => "TeamBuildingAlb";
 			set { ; }
 		}
 
@@ -354,10 +411,10 @@ namespace DOL.GS.DailyQuest.Albion
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
-			danaoinKilled = 0;
+			TeamBuildMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}

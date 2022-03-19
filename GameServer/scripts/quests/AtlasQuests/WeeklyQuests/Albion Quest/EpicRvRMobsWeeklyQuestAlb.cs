@@ -380,7 +380,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override void FinishQuest()
 		{
 			//m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,25,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			_evernKilled = 0;
 			_glacierGiantKilled = 0;

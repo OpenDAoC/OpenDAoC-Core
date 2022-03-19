@@ -2,49 +2,55 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.API;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest.Albion
 {
-	public class OctonidKillQuestHib : Quests.DailyQuest
+	public class TeamBuildingHib : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Octonid Invasion";
-		protected const int minimumLevel = 40;
+		protected const string questTitle = "[Daily] A Team Building Exercise";
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 10;
+		protected const int MAX_KILLED = 50;
 		
 		private static GameNPC Dean = null; // Start NPC
 
-		private int OctonidKilled = 0;
+		private bool HasGuardian = false;
+		private bool HasNaturalist = false;
+		private bool HasStalker = false;
+		private bool HasMagicianForester = false;
+
+		private int TeamBuildMobsKilled = 0;
 
 		// Constructors
-		public OctonidKillQuestHib() : base()
+		public TeamBuildingHib() : base() {
+		}
+
+		public TeamBuildingHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public OctonidKillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
+		public TeamBuildingHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public OctonidKillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-		{
-		}
-
-		public OctonidKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TeamBuildingHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		
@@ -115,7 +121,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (OctonidKillQuestHib));
+			Dean.AddQuestToGive(typeof (TeamBuildingHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -135,7 +141,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (OctonidKillQuestHib));
+			Dean.RemoveQuestToGive(typeof (TeamBuildingHib));
 		}
 
 		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
@@ -145,11 +151,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (TeamBuildingHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			OctonidKillQuestHib quest = player.IsDoingQuest(typeof (OctonidKillQuestHib)) as OctonidKillQuestHib;
+			TeamBuildingHib quest = player.IsDoingQuest(typeof (TeamBuildingHib)) as TeamBuildingHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +164,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Dean.SayTo(player, "You will find Octonids in the South East of World\'s End.");
+							Dean.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Dean.SayTo(player, "Hello " + player.Name + ", did you [kill] the Octonids?");
+							Dean.SayTo(player, "Hello " + player.Name + ", did you [forge the bonds of unity]?");
 							break;
 					}
 				}
 				else
 				{
 					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                   "I heard you are strong. Do you think you're strong enough to help me with some Octonids causing trouble in the Shrouded Islands?\n"+
-					                   "\nCan you [support Atlas]?");
+					                       "The king recently implemented a new unity initiative and he wants you to help out.\n"+
+					                       "What do you say, are you [feeling social]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +186,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean "+questTitle+"");
+						case "feeling social":
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(TeamBuildingHib)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -189,10 +195,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "kill":
+						case "forge the bonds of unity":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("I can feel our realm growing more cohesive every day!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -207,7 +213,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (TeamBuildingHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -225,18 +231,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		public override void LoadQuestParameters()
 		{
-			OctonidKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			TeamBuildMobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, OctonidKilled.ToString());
+			SetCustomProperty(QuestPropertyKey, TeamBuildMobsKilled.ToString());
 		}
 
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			OctonidKillQuestHib quest = player.IsDoingQuest(typeof (OctonidKillQuestHib)) as OctonidKillQuestHib;
+			TeamBuildingHib quest = player.IsDoingQuest(typeof (TeamBuildingHib)) as TeamBuildingHib;
 
 			if (quest == null)
 				return;
@@ -258,7 +264,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(TeamBuildingHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -269,23 +275,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
+			if(Dean.CanGiveQuest(typeof (TeamBuildingHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (TeamBuildingHib)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm prosper.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (OctonidKillQuestHib), player, 1))
+				if (!Dean.GiveQuest(typeof (TeamBuildingHib), player, 1))
 					return;
 
-				Dean.SayTo(player, "You will find the Octonids in World\'s End.");
+				Dean.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -304,9 +310,28 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Find Octonids South East in World\'s End. \nKilled: Octonids ("+ OctonidKilled +" | 10)";
+						if (HasGuardian
+						    && HasNaturalist
+						    && HasStalker
+						    && HasMagicianForester)
+						{
+							return "The spirit of unity flows through you. \n" +
+							       "Kill orange con or higher mobs: \n" + 
+							       "Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)";
+						}
+						else
+						{
+							StringBuilder output = new StringBuilder("Kill orange con or higher mobs while in a group containing the following base classes:\n");
+							if (!HasGuardian) output.Append("Guardian required\n");
+							if (!HasNaturalist) output.Append("Naturalist required\n");
+							if (!HasStalker) output.Append("Stalker required\n");
+							if (!HasMagicianForester) output.Append("Magician/Forester required\n");
+							output.Append("Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)");
+							return output.ToString();
+						}
+						
 					case 2:
-						return "Return to Dean for your Reward.";
+						return "Return to Dean in Druim Ligen for your Reward.";
 				}
 				return base.Description;
 			}
@@ -316,34 +341,65 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(OctonidKillQuestHib)) == null)
+			if (player == null || player.IsDoingQuest(typeof(TeamBuildingHib)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
 				return;
+
+			if (player.Group != null)
+			{
+				foreach (var member in player.Group.GetMembersInTheGroup())
+				{
+					//update class counters
+					if (member is GamePlayer gplayer)
+					{
+						if (gplayer.CharacterClass is ClassGuardian)
+							HasGuardian = true;
+						if (gplayer.CharacterClass is ClassNaturalist)
+							HasNaturalist = true;
+						if (gplayer.CharacterClass is ClassStalker)
+							HasStalker = true;
+						if (gplayer.CharacterClass is ClassMagician ||
+						    gplayer.CharacterClass is ClassForester)
+							HasMagicianForester = true;
+					}
+				}
+				player.Out.SendQuestUpdate(this);
+			}
+			else
+			{
+				//if we're ever ungrouped, clear our grouped class counters
+				HasGuardian = false;
+				HasNaturalist = false;
+				HasStalker = false;
+				HasMagicianForester = false;
+			}
 			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name.ToLower() == "octonid") 
+				if (player.GetConLevel(gArgs.Target) >= 1 &&
+				    player.Group != null &&
+				    HasGuardian && HasNaturalist && HasStalker && HasMagicianForester) 
 				{
-					OctonidKilled++;
-					player.Out.SendMessage("[Daily] Octonid Killed: ("+OctonidKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					TeamBuildMobsKilled++;
 					player.Out.SendQuestUpdate(this);
 					
-					if (OctonidKilled >= MAX_KILLED)
+					if (TeamBuildMobsKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to Dean
+						// FinishQuest or go back to npc
 						Step = 2;
 					}
 				}
+				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "OctonidKillQuestHib";
+			get => "TeamBuildingHib";
 			set { ; }
 		}
 
@@ -354,10 +410,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
-			OctonidKilled = 0;
+			TeamBuildMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}

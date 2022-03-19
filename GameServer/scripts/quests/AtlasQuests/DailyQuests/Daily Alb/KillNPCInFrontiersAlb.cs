@@ -11,40 +11,39 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest.Albion
 {
-	public class OctonidKillQuestHib : Quests.DailyQuest
+	public class KillNPCInFrontiersAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Octonid Invasion";
-		protected const int minimumLevel = 40;
+		protected const string questTitle = "[Daily] A Bit of Bravery";
+		protected const int minimumLevel = 10;
 		protected const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 10;
+		protected const int MAX_KILLED = 25;
 		
-		private static GameNPC Dean = null; // Start NPC
+		private static GameNPC Cola = null; // Start NPC
 
-		private int OctonidKilled = 0;
+		private int FrontierMobsKilled = 0;
 
 		// Constructors
-		public OctonidKillQuestHib() : base()
+		public KillNPCInFrontiersAlb() : base() {
+		}
+
+		public KillNPCInFrontiersAlb(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public OctonidKillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
+		public KillNPCInFrontiersAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public OctonidKillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-		{
-		}
-
-		public OctonidKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public KillNPCInFrontiersAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		
@@ -66,37 +65,37 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
+					if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
 					{
-						Dean = npc;
+						Cola = npc;
 						break;
 					}
 
-			if (Dean == null)
+			if (Cola == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Dean , creating it ...");
-				Dean = new GameNPC();
-				Dean.Model = 355;
-				Dean.Name = "Dean";
-				Dean.GuildName = "Atlas Quest";
-				Dean.Realm = eRealm.Hibernia;
-				//Druim Ligen Location
-				Dean.CurrentRegionID = 200;
-				Dean.Size = 50;
-				Dean.Level = 59;
-				Dean.X = 334962;
-				Dean.Y = 420687;
-				Dean.Z = 5184;
-				Dean.Heading = 1571;
-				Dean.AddToWorld();
+					log.Warn("Could not find Cola , creating it ...");
+				Cola = new GameNPC();
+				Cola.Model = 724;
+				Cola.Name = "Cola";
+				Cola.GuildName = "Atlas Quest";
+				Cola.Realm = eRealm.Albion;
+				Cola.CurrentRegionID = 1;
+				Cola.Size = 50;
+				Cola.Level = 59;
+				//Castle Sauvage Location
+				Cola.X = 583860;
+				Cola.Y = 477619;
+				Cola.Z = 2600;
+				Cola.Heading = 3111;
+				Cola.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Dean.SaveIntoDatabase();
+					Cola.SaveIntoDatabase();
 				}
 			}
 
@@ -111,45 +110,45 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (OctonidKillQuestHib));
+			/* Now we bring to Cola the possibility to give this quest to players */
+			Cola.AddQuestToGive(typeof (KillNPCInFrontiersAlb));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
+				log.Info("Quest \"" + questTitle + "\" Alb initialized");
 		}
 
 		[ScriptUnloadedEvent]
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Dean == null)
+			if (Cola == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (OctonidKillQuestHib));
+			/* Now we remove to Cola the possibility to give this quest to players */
+			Cola.RemoveQuestToGive(typeof (KillNPCInFrontiersAlb));
 		}
 
-		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
+			if(Cola.CanGiveQuest(typeof (KillNPCInFrontiersAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			OctonidKillQuestHib quest = player.IsDoingQuest(typeof (OctonidKillQuestHib)) as OctonidKillQuestHib;
+			KillNPCInFrontiersAlb quest = player.IsDoingQuest(typeof (KillNPCInFrontiersAlb)) as KillNPCInFrontiersAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +157,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Dean.SayTo(player, "You will find Octonids in the South East of World\'s End.");
+							Cola.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Dean.SayTo(player, "Hello " + player.Name + ", did you [kill] the Octonids?");
+							Cola.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
 							break;
 					}
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                   "I heard you are strong. Do you think you're strong enough to help me with some Octonids causing trouble in the Shrouded Islands?\n"+
-					                   "\nCan you [support Atlas]?");
+					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having on the border?\n"+
+					                       "\nCan you help me [clear our frontiers]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +179,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean "+questTitle+"");
+						case "clear our frontiers":
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Cola "+questTitle+"");
 							break;
 					}
 				}
@@ -189,7 +188,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "kill":
+						case "tidy the realm":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -207,7 +206,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (KillNPCInFrontiersAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -225,18 +224,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		public override void LoadQuestParameters()
 		{
-			OctonidKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			FrontierMobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, OctonidKilled.ToString());
+			SetCustomProperty(QuestPropertyKey, FrontierMobsKilled.ToString());
 		}
 
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			OctonidKillQuestHib quest = player.IsDoingQuest(typeof (OctonidKillQuestHib)) as OctonidKillQuestHib;
+			KillNPCInFrontiersAlb quest = player.IsDoingQuest(typeof (KillNPCInFrontiersAlb)) as KillNPCInFrontiersAlb;
 
 			if (quest == null)
 				return;
@@ -258,7 +257,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -269,23 +268,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
+			if(Cola.CanGiveQuest(typeof (KillNPCInFrontiersAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (KillNPCInFrontiersAlb)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (OctonidKillQuestHib), player, 1))
+				if (!Cola.GiveQuest(typeof (KillNPCInFrontiersAlb), player, 1))
 					return;
 
-				Dean.SayTo(player, "You will find the Octonids in World\'s End.");
+				Cola.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -304,9 +303,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Find Octonids South East in World\'s End. \nKilled: Octonids ("+ OctonidKilled +" | 10)";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
-						return "Return to Dean for your Reward.";
+						return "Return to Cola in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}
@@ -316,34 +315,36 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(OctonidKillQuestHib)) == null)
+			if (player == null || player.IsDoingQuest(typeof(KillNPCInFrontiersAlb)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
 				return;
 			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name.ToLower() == "octonid") 
+				if (player.GetConLevel(gArgs.Target) >= -1 
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
-					OctonidKilled++;
-					player.Out.SendMessage("[Daily] Octonid Killed: ("+OctonidKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					FrontierMobsKilled++;
+					player.Out.SendMessage("[Daily] Monsters Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (OctonidKilled >= MAX_KILLED)
+					if (FrontierMobsKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to Dean
+						// FinishQuest or go back to npc
 						Step = 2;
 					}
 				}
+				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "OctonidKillQuestHib";
+			get => "KillNPCInFrontiersAlb";
 			set { ; }
 		}
 
@@ -354,10 +355,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
-			OctonidKilled = 0;
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, true);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 2,50,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 500);
+			FrontierMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}

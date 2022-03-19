@@ -25,7 +25,7 @@ namespace DOL.GS.DailyQuest.Albion
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC ReyAlb = null; // Start NPC
+		protected static GameNPC ReyAlb = null; // Start NPC
 
 		private int PlayersKilled = 0;
 		protected const int MAX_KILLED = 10;
@@ -193,7 +193,7 @@ namespace DOL.GS.DailyQuest.Albion
 						case "hit your quota":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Ugh, some of these are still dripping. Well done, he'll be pleased.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -224,7 +224,7 @@ namespace DOL.GS.DailyQuest.Albion
 			return true;
 		}
 
-		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			PlayerKillQuestAlb quest = player.IsDoingQuest(typeof (PlayerKillQuestAlb)) as PlayerKillQuestAlb;
 
@@ -357,7 +357,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 2,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1000);
 			PlayersKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

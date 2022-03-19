@@ -2,49 +2,55 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.API;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Midgard
+namespace DOL.GS.DailyQuest.Albion
 {
-	public class MegalocerosKillQuestMid : Quests.DailyQuest
+	public class TeamBuildingMid : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Megaloceros Invasion";
-		protected const int minimumLevel = 40;
+		protected const string questTitle = "[Daily] A Team Building Exercise";
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 10;
+		protected const int MAX_KILLED = 50;
 		
 		private static GameNPC Isaac = null; // Start NPC
 
-		private int megalocerosKilled = 0;
+		private bool HasViking = false;
+		private bool HasSeer = false;
+		private bool HasRogue = false;
+		private bool HasMystic = false;
+
+		private int TeamBuildMobsKilled = 0;
 
 		// Constructors
-		public MegalocerosKillQuestMid() : base()
+		public TeamBuildingMid() : base() {
+		}
+
+		public TeamBuildingMid(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public MegalocerosKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public TeamBuildingMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public MegalocerosKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-		{
-		}
-
-		public MegalocerosKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TeamBuildingMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		
@@ -111,11 +117,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
+			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we bring to Isaac the possibility to give this quest to players */
-			Isaac.AddQuestToGive(typeof (MegalocerosKillQuestMid));
+			/* Now we bring to Dean the possibility to give this quest to players */
+			Isaac.AddQuestToGive(typeof (TeamBuildingMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -131,25 +137,25 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
+			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we remove to Isaac the possibility to give this quest to players */
-			Isaac.RemoveQuestToGive(typeof (MegalocerosKillQuestMid));
+			/* Now we remove to Dean the possibility to give this quest to players */
+			Isaac.RemoveQuestToGive(typeof (TeamBuildingMid));
 		}
 
-		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Isaac.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
+			if(Isaac.CanGiveQuest(typeof (TeamBuildingMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			MegalocerosKillQuestMid quest = player.IsDoingQuest(typeof (MegalocerosKillQuestMid)) as MegalocerosKillQuestMid;
+			TeamBuildingMid quest = player.IsDoingQuest(typeof (TeamBuildingMid)) as TeamBuildingMid;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +164,18 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Isaac.SayTo(player, "You will find Megaloceros in the South East of Gripklosa Mountains.");
+							Isaac.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Isaac.SayTo(player, "Hello " + player.Name + ", did you [kill] the Megaloceros?");
+							Isaac.SayTo(player, "Hello " + player.Name + ", did you [forge the bonds of unity]?");
 							break;
 					}
 				}
 				else
 				{
-					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Midgard \n\n"+
-					                       "\nCan you [support Atlas]?");
+					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					                       "The king recently implemented a new unity initiative and he wants you to help out.\n"+
+					                       "What do you say, are you [feeling social]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +186,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "support Atlas":
-							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)), "Will you help Isaac "+questTitle+"");
+						case "feeling social":
+							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(TeamBuildingMid)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -189,10 +195,10 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "kill":
+						case "forge the bonds of unity":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("I can feel our realm growing more cohesive every day!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -207,7 +213,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (MegalocerosKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (TeamBuildingMid)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -225,18 +231,18 @@ namespace DOL.GS.DailyQuest.Midgard
 		
 		public override void LoadQuestParameters()
 		{
-			megalocerosKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			TeamBuildMobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, megalocerosKilled.ToString());
+			SetCustomProperty(QuestPropertyKey, TeamBuildMobsKilled.ToString());
 		}
 
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			MegalocerosKillQuestMid quest = player.IsDoingQuest(typeof (MegalocerosKillQuestMid)) as MegalocerosKillQuestMid;
+			TeamBuildingMid quest = player.IsDoingQuest(typeof (TeamBuildingMid)) as TeamBuildingMid;
 
 			if (quest == null)
 				return;
@@ -258,7 +264,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(TeamBuildingMid)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -269,23 +275,23 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Isaac.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
+			if(Isaac.CanGiveQuest(typeof (TeamBuildingMid), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (MegalocerosKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (TeamBuildingMid)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm prosper.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Isaac.GiveQuest(typeof (MegalocerosKillQuestMid), player, 1))
+				if (!Isaac.GiveQuest(typeof (TeamBuildingMid), player, 1))
 					return;
 
-				Isaac.SayTo(player, "You will find the Megaloceros in Gripklosa Mountains.");
+				Isaac.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -304,9 +310,28 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Find Megaloceros in the South East of Gripklosa Mountains. \nKilled: Megaloceros ("+ megalocerosKilled +" | 10)";
+						if (HasViking
+						    && HasSeer
+						    && HasRogue
+						    && HasMystic)
+						{
+							return "The spirit of unity flows through you. \n" +
+							       "Kill orange con or higher mobs: \n" + 
+							       "Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)";
+						}
+						else
+						{
+							StringBuilder output = new StringBuilder("Kill orange con or higher mobs while in a group containing the following base classes:\n");
+							if (!HasViking) output.Append("Viking required\n");
+							if (!HasSeer) output.Append("Seer required\n");
+							if (!HasRogue) output.Append("Rogue required\n");
+							if (!HasMystic) output.Append("Mystic required\n");
+							output.Append("Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)");
+							return output.ToString();
+						}
+						
 					case 2:
-						return "Return to Isaac for your Reward.";
+						return "Return to Cola in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}
@@ -316,34 +341,64 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(MegalocerosKillQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(TeamBuildingMid)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
 				return;
+
+			if (player.Group != null)
+			{
+				foreach (var member in player.Group.GetMembersInTheGroup())
+				{
+					//update class counters
+					if (member is GamePlayer gplayer)
+					{
+						if (gplayer.CharacterClass is ClassViking)
+							HasViking = true;
+						if (gplayer.CharacterClass is ClassSeer)
+							HasSeer = true;
+						if (gplayer.CharacterClass is ClassMidgardRogue)
+							HasRogue = true;
+						if (gplayer.CharacterClass is ClassMystic )
+							HasMystic = true;
+					}
+				}
+				player.Out.SendQuestUpdate(this);
+			}
+			else
+			{
+				//if we're ever ungrouped, clear our grouped class counters
+				HasViking = false;
+				HasSeer = false;
+				HasRogue = false;
+				HasMystic = false;
+			}
 			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name.ToLower() == "megaloceros") 
+				if (player.GetConLevel(gArgs.Target) >= 1 &&
+				    player.Group != null &&
+				    HasViking && HasSeer && HasRogue && HasMystic) 
 				{
-					megalocerosKilled++;
-					player.Out.SendMessage("[Daily] Megaloceros Killed: ("+megalocerosKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					TeamBuildMobsKilled++;
 					player.Out.SendQuestUpdate(this);
 					
-					if (megalocerosKilled >= MAX_KILLED)
+					if (TeamBuildMobsKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to Isaac
+						// FinishQuest or go back to npc
 						Step = 2;
 					}
 				}
+				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "MegalocerosKillQuestMid";
+			get => "TeamBuildingMid";
 			set { ; }
 		}
 
@@ -354,10 +409,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
-			megalocerosKilled = 0;
+			TeamBuildMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}
