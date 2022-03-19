@@ -11,26 +11,159 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-	public class Evern : GameNPC
+	public class Evern : GameEpicBoss
 	{
 		public Evern() : base() { }
-		public static GameNPC SI_Gnat = new GameNPC();
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 90;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 90;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
+				default: return 80;// dmg reduction for rest resists
+			}
+		}
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			return base.AttackDamage(weapon) * Strength / 100;
+		}
+		public override int AttackRange
+		{
+			get { return 350; }
+			set { }
+		}
+		public override bool HasAbility(string keyName)
+		{
+			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+				return true;
+
+			return base.HasAbility(keyName);
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 1000;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.85;
+		}
+		public override int MaxHealth
+		{
+			get { return 20000; }
+		}
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+			if (source is GamePlayer || source is GamePet)
+			{
+				if (this.IsOutOfTetherRange)
+				{
+					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+						|| damageType == eDamageType.Slash)
+					{
+						GamePlayer truc;
+						if (source is GamePlayer)
+							truc = (source as GamePlayer);
+						else
+							truc = ((source as GamePet).Owner as GamePlayer);
+						if (truc != null)
+							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						base.TakeDamage(source, damageType, 0, 0);
+						return;
+					}
+				}
+				else//take dmg
+				{
+					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+				}
+			}
+		}
+		public override void Die(GameObject killer)//on kill generate orbs
+		{
+			// debug
+			log.Debug($"{Name} killed by {killer.Name}");
+
+			GamePlayer playerKiller = killer as GamePlayer;
+
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
+				}
+			}
+			base.Die(killer);
+		}
 		public override bool AddToWorld()
 		{
-			Model = 400;
-			Name = "Evern";
-			Size = 120;
-			Level = (byte)Util.Random(70, 75);
-			Gender = eGender.Neutral;
-			TetherRange = 1700;//important for fairy heals and mechanic
-			Flags = eFlags.GHOST;
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160628);
+			LoadTemplate(npcTemplate);
+			Strength = npcTemplate.Strength;
+			Dexterity = npcTemplate.Dexterity;
+			Constitution = npcTemplate.Constitution;
+			Quickness = npcTemplate.Quickness;
+			Piety = npcTemplate.Piety;
+			Intelligence = npcTemplate.Intelligence;
+			Empathy = npcTemplate.Empathy;
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			EvernBrain.spawnfairy = false;
 
-			EvernBrain sBrain = new EvernBrain();
-			SetOwnBrain(sBrain);
-			sBrain.AggroLevel = 100;
-			sBrain.AggroRange = 500;
+			EvernBrain sbrain = new EvernBrain();
+			SetOwnBrain(sbrain);
+			LoadedFromScript = false;//load from database
+			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
+		}
+		[ScriptLoadedEvent]
+		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		{
+			GameNPC[] npcs;
+
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Evern", 200, (eRealm)0);
+			if (npcs.Length == 0)
+			{
+				log.Warn("Evern not found, creating it...");
+
+				log.Warn("Initializing Evern...");
+				Evern CO = new Evern();
+				CO.Name = "Evern";
+				CO.Model = 400;
+				CO.Realm = 0;
+				CO.Level = 75;
+				CO.Size = 120;
+				CO.CurrentRegionID = 200;//OF breifine
+
+				CO.Strength = 5;
+				CO.Intelligence = 150;
+				CO.Piety = 150;
+				CO.Dexterity = 200;
+				CO.Constitution = 100;
+				CO.Quickness = 125;
+				CO.Empathy = 300;
+				CO.BodyType = (ushort)NpcTemplateMgr.eBodyType.Magical;
+				CO.MeleeDamageType = eDamageType.Slash;
+
+				CO.X = 429840;
+				CO.Y = 380396;
+				CO.Z = 2328;
+				CO.MaxDistance = 3500;
+				CO.TetherRange = 3800;
+				CO.MaxSpeedBase = 250;
+				CO.Heading = 4059;
+
+				EvernBrain ubrain = new EvernBrain();
+				ubrain.AggroLevel = 100;
+				ubrain.AggroRange = 600;
+				CO.SetOwnBrain(ubrain);
+				CO.AddToWorld();
+				CO.Brain.Start();
+				CO.SaveIntoDatabase();
+			}
+			else
+				log.Warn("Evern exist ingame, remove it and restart server if you want to add by script code.");
 		}
 	}
 }
@@ -39,19 +172,46 @@ namespace DOL.AI.Brain
 	public class EvernBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public EvernBrain() : base() { }
-
+		public EvernBrain() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 600;
+			ThinkInterval = 1500;
+		}
+		public static bool spawnfairy = false;
 		public override void Think()
 		{
+			if (!HasAggressionTable())
+			{
+				//set state to RETURN TO SPAWN
+				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				this.Body.Health = this.Body.MaxHealth;
+				spawnfairy = false;
+				foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+				{
+					if (npc == null) break;
+					if (npc.Brain is EvernFairyBrain)
+					{
+						if (npc.RespawnInterval == -1)
+						{
+							npc.Die(npc);//we kill all fairys if boss reset
+						}
+					}
+				}
+			}
 			if (Body.InCombat == true && Body.IsAlive && HasAggro)
 			{
 				if (Body.TargetObject != null)
 				{
 					if(Body.HealthPercent<100)
                     {
-						if(Util.Chance(10))
-                        {
-						  new RegionTimer(Body, new RegionTimerCallback(DoSpawn), 5000);
+						if (spawnfairy == false)
+						{
+							if (Util.Chance(10))
+							{
+								new RegionTimer(Body, new RegionTimerCallback(DoSpawn), Util.Random(5000,15000));
+								spawnfairy = true;
+							}
 						}
                     }
 				}
@@ -72,29 +232,12 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (Body.IsOutOfTetherRange)//important he must be engaged in his "lair" else it will not work, reset method if he is too far
-            {
-				this.Body.Health = this.Body.MaxHealth;
-				Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 200);
-				ClearAggroList();
-
-				foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
-				{
-					if (npc == null) break;
-					if (npc.Brain is EvernFairyBrain)
-					{
-						if (npc.RespawnInterval == -1)
-						{
-							npc.Die(npc);//we kill all fairys if boss reset
-						}
-					}
-				}
-			}
 			base.Think();
 		}
 		private int DoSpawn(RegionTimer timer)
 		{
 			Spawn();
+			spawnfairy = false;
 			return 0;
 		}
 		public void Spawn() // We define here adds
@@ -118,9 +261,19 @@ namespace DOL.GS
 	{
 		public EvernFairy() : base() { }
 		public static GameNPC OF_EvernFairy = new GameNPC();
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 25;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 25;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 25;// dmg reduction for melee dmg
+				default: return 25;// dmg reduction for rest resists
+			}
+		}
 		public override int MaxHealth
 		{
-			get { return 1500 * Constitution / 100; }
+			get { return 2000; }
 		}
 
 		public override bool AddToWorld()
@@ -128,7 +281,6 @@ namespace DOL.GS
 			Model = 603;
 			Name = "Wraith Fairy";
 			MeleeDamageType = eDamageType.Thrust;
-			Constitution = 100;
 			RespawnInterval = -1;
 			Size = 50;
 			Flags = eFlags.FLYING;
