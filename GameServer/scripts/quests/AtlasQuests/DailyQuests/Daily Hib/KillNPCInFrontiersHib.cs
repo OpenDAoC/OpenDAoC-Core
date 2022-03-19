@@ -329,6 +329,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
+					player.Out.SendMessage("[Daily] Monsters Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
 					if (FrontierMobsKilled >= MAX_KILLED)
