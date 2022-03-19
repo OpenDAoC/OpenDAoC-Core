@@ -116,7 +116,7 @@ namespace DOL.GS
                 log.Warn("Initializing Torst...");
                 Torst TG = new Torst();
                 TG.Name = "Torst";
-                TG.Model = 698;
+                TG.Model = 696;
                 TG.Realm = 0;
                 TG.Level = 85;
                 TG.Size = 90;
