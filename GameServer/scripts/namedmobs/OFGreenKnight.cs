@@ -46,6 +46,20 @@ namespace DOL.GS
 		
 		public override bool AddToWorld()
 		{
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161621);
+			LoadTemplate(npcTemplate);
+			Strength = npcTemplate.Strength;
+			Constitution = npcTemplate.Constitution;
+			Dexterity = npcTemplate.Dexterity;
+			Quickness = npcTemplate.Quickness;
+			Empathy = npcTemplate.Empathy;
+			Piety = npcTemplate.Piety;
+			Intelligence = npcTemplate.Intelligence;
+
+			// humanoid
+			BodyType = 6;
+			Race = 2005;
+
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 46, 0, 0, 0); //Slot,model,color,effect,extension
 			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 48, 0);
@@ -58,11 +72,11 @@ namespace DOL.GS
 
 			Model = 334;
 			Name = "Green Knight";
-			Size = 120;
 			Level = 75;
 			Gender = eGender.Male;
 
-			VisibleActiveWeaponSlots = (byte) eActiveWeaponSlot.TwoHanded;
+			// twohanded
+			VisibleActiveWeaponSlots = 34;
 			MeleeDamageType = eDamageType.Slash;
 			
 			//must be peace on start, unless he will be aggresive
@@ -76,39 +90,6 @@ namespace DOL.GS
 
 			return true;
 		}
-		/*
-		private static int TauntID = 103;
-		private static int TauntClassID = 2;
-		Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
-
-		protected override Style GetStyleToUse()
-		{
-			if (this.TargetObject == null)
-			{
-				return base.GetStyleToUse();
-			}
-			if (this.TargetObject is GameLiving) // on definie la position par rapport a la cible
-			{
-				GameLiving living = this.TargetObject as GameLiving;
-
-
-				if (Util.Chance(100)) //100% chances to use this style unless we change it
-				{
-					if (living.IsAlive)
-					{
-						Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID); // taunt
-						if (taunt != null)
-						{
-							this.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-							this.ParryChance = 15;//He parry alot!
-							return taunt;
-						}
-					}
-				}
-			}
-			return base.GetStyleToUse();
-		}
-		*/
 
 		//This function is the callback function that is called when
 		//a player right clicks on the npc
@@ -184,6 +165,18 @@ namespace DOL.GS
 			return true;
 		}
 
+		public override void OnAttackEnemy(AttackData ad)
+		{
+			// 30% chance to proc heat dd
+			if (Util.Chance(30))
+			{
+				//Here boss cast very X s aoe heat dmg, we can adjust it in spellrecast delay
+				CastSpell(GreenKnightHeatDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			}
+			
+			base.OnAttackEnemy(ad);
+		}
+		
 		//This function sends some text to a player and makes it appear
 		//in a popup window. We just define it here so we can use it in
 		//the WhisperToMe function instead of writing the long text
@@ -194,6 +187,42 @@ namespace DOL.GS
 				msg,
 				eChatType.CT_System, eChatLoc.CL_PopupWindow);
 		}
+		
+		#region Heat DD Spell
+		private Spell m_HeatDDSpell;
+		/// <summary>
+		/// Casts Heat dd
+		/// </summary>
+		public Spell GreenKnightHeatDD
+		{
+			get
+			{
+				if (m_HeatDDSpell == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.Power = 0;
+					spell.RecastDelay = 0;
+					spell.ClientEffect = 360;
+					spell.Icon = 360;
+					spell.Damage = 300;
+					spell.DamageType = (int) eDamageType.Heat;
+					spell.Name = "Might of the Forrest";
+					spell.Range = 1000;
+					spell.SpellID = 360;
+					spell.Target = "Enemy";
+					spell.Type = "DirectDamage";
+					spell.Radius = 500;
+					spell.EffectGroup = 0;
+					m_HeatDDSpell= new Spell(spell, 50);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatDDSpell);
+				}
+
+				return m_HeatDDSpell;
+			}
+		}
+		#endregion
 
 	}
 }
@@ -232,85 +261,63 @@ namespace DOL.AI.Brain
 		/// 
 		public void PickHeal()
         {
-			if (Body.InCombat == true && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
 				if (Body.TargetObject != null)
 				{
-					IList pplayer = new ArrayList(); //list of heal player classses
-					if (Body.TargetObject != null)
+					List<GamePlayer> healer = new List<GamePlayer>();
+					
+					foreach (GamePlayer ppl in Body.GetPlayersInRadius(2500))
 					{
-						foreach (GamePlayer ppl in Body.GetPlayersInRadius(2500))
+						if (ppl.IsAlive)
 						{
-							if (ppl.IsAlive)
+							//cleric, bard, healer, warden, friar, druid, mentalist, shaman
+							if (ppl.CharacterClass.ID is 6 or 48 or 26 or 46 or 10 or 47 or 42 or 28) 
 							{
-								if (ppl.CharacterClass.ID == 6     //cleric
-									|| ppl.CharacterClass.ID == 48 //bard
-									|| ppl.CharacterClass.ID == 26 //healer
-									|| ppl.CharacterClass.ID == 46 //warden
-									|| ppl.CharacterClass.ID == 10 //friar
-									|| ppl.CharacterClass.ID == 47 //druid
-									|| ppl.CharacterClass.ID == 42 //mentalist
-									|| ppl.CharacterClass.ID == 28)//shaman
-								{
-									if (pplayer.Contains(ppl))
-									{
-									}
-									else
-									{
-										pplayer.Add(ppl); //adding heal class to  list
-									}
-								}
+								healer.Add(ppl);
 							}
-						}
-						if (pplayer.Count > 0)//player list must be more than 0!
-						{
-							GamePlayer ptarget = (GamePlayer)pplayer[Util.Random(0, pplayer.Count - 1)]; //pick random heal class from list
-							if (Body.AttackState == true)
+							else
 							{
-								ClearAggroList();
-								Body.StopAttack();//boss stop attack
-								Body.TargetObject = ptarget;//boss pick his heal class
-								Body.Follow(ptarget, 50, 4000); //boss follow him
-
-								if (Body.GetDistanceTo(ptarget) < 50)//Boss is away from target
-								{
-									if (AggroTable.Count > 0)
-									{
-										ClearAggroList();
-									}
-
-									Body.CurrentSpeed = 600;
-								}
-								else if (Body.GetDistanceTo(ptarget) > 50)//Boss is close to target
-								{
-									AddToAggroList(ptarget, 100);
-									Body.CurrentSpeed = 300;
-								}
-
-								//ClearAggroList();
-								if (Body.IsWithinRadius(ptarget, 100))
-								{
-									Body.StartAttack(ptarget);//boss attack target
-								}
+								Body.StartAttack(ppl);
+								healer.Clear();
+								break;
 							}
 						}
 					}
+					//pick random heal class from list
+					int ptarget = Util.Random(0, healer.Count - 1); 
+					
+					if (ptarget >= 0)
+					{
+						GamePlayer enemy = healer[ptarget];
+						if (Body.AttackState)
+						{
+							//boss stop attack
+							ClearAggroList();
+							Body.StopAttack();
+							
+							//boss pick his heal class
+							Body.StartAttack(enemy);
+						}
+					}
+					healer.Clear();
+					
 				}
 			}
 		}
-		public IList PlayersToAttack = new ArrayList();
-		public void GKTeleport()
+		public void GkTeleport()
         {
-			if(Util.Chance(10))//teleport chance and heal, modify here to adjust
+	        //teleport chance and heal, modify here to adjust
+			if(Util.Chance(3))
             {
-				int RandPortLoc = Util.Random(1, 4);
-				if (Body.InCombat==true && HasAggro)
+				int randPortLoc = Util.Random(1, 4);
+				if (Body.InCombat && HasAggro)
                 {
-					switch (RandPortLoc)
+					switch (randPortLoc)
 					{
+						//he will teleport away and heal himself(only once), only aggro again if pulled. Can be rupted to avoid being healed
 						case 1:
 							{
-								//he will teleport away and heal himself(only once), only aggro again if pulled. Can be rupted to avoid being healed
 								Body.MoveTo(1, 593193, 416481, 4833, 4029);
 								if (!Body.IsCasting)
 								{
@@ -331,7 +338,6 @@ namespace DOL.AI.Brain
 							break;
 						case 3:
 							{
-
 								Body.MoveTo(1, 596053, 420171, 4918, 1164);
 								if (!Body.IsCasting)
 								{
@@ -342,7 +348,6 @@ namespace DOL.AI.Brain
 							break;
 						case 4:
 							{
-
 								Body.MoveTo(1, 590876, 418052, 4942, 3271);
 								if (!Body.IsCasting)
 								{
@@ -351,151 +356,214 @@ namespace DOL.AI.Brain
 								}
 							}
 							break;
+						default:
+							break;
 					}
-					
                 }
             }
         }
-
+		
 		public override void Think()
 		{
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
 				if (Body.TargetObject != null)
 				{
-
-					Body.CastSpell(GreenKnightHeatDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//Here boss cast very X s aoe heat dmg, we can adjust it in spellrecast delay
-
 					if (Body.HealthPercent < 100)
 					{
-						GKTeleport();//Boss teleport method
+						//Boss teleport method
+						GkTeleport();
 					}
-					if(Body.HealthPercent<=90 && Body.HealthPercent >80)
+					
+					if(Body.HealthPercent <= 90 && Body.HealthPercent > 80)
                     {
-						if (pickheal1 == true)
-						{
-							PickHeal();
-							pickheal1 = false;
-						}
-						else if(spawntree1 == true)
-                        {
-							Spawn();
-							spawntree1 = false;
-                        }
+	                    switch (Util.Random(1,2))
+	                    {
+		                    case 1:
+			                    if (pickheal1)
+			                    {
+				                    PickHeal();
+				                    pickheal1 = false;
+			                    }
+			                    break;
+		                    case 2:
+			                    if (spawntree1)
+			                    {
+				                    Spawn();
+				                    spawntree1 = false;
+			                    }
+			                    break;
+	                    }
                     }
 					if (Body.HealthPercent <= 80 && Body.HealthPercent > 70)
 					{
-						if (pickheal2 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal2 = false;
-						}
-						else if (spawntree2 == true)
-						{
-							Spawn();
-							spawntree2 = false;
+							case 1:
+								if (pickheal2)
+								{
+									PickHeal();
+									pickheal2 = false;
+								}
+								break;
+							case 2:
+								if (spawntree2)
+								{
+									Spawn();
+									spawntree2 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 70 && Body.HealthPercent > 60)
 					{
-						if (pickheal3 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal3 = false;
-						}
-						else if (spawntree3 == true)
-						{
-							Spawn();
-							spawntree3 = false;
+							case 1:
+								if (pickheal3)
+								{
+									PickHeal();
+									pickheal3 = false;
+								}
+								break;
+							case 2:
+								if (spawntree3)
+								{
+									Spawn();
+									spawntree3 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 60 && Body.HealthPercent > 50)
 					{
-						if (pickheal4 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal4 = false;
-						}
-						else if (spawntree4 == true)
-						{
-							Spawn();
-							spawntree4 = false;
+							case 1:
+								if (pickheal4)
+								{
+									PickHeal();
+									pickheal4 = false;
+								}
+								break;
+							case 2:
+								if (spawntree4)
+								{
+									Spawn();
+									spawntree4 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 50 && Body.HealthPercent > 40)
 					{
-						if (pickheal5 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal5 = false;
-						}
-						else if (spawntree5 == true)
-						{
-							Spawn();
-							spawntree5 = false;
+							case 1:
+								if (pickheal5)
+								{
+									PickHeal();
+									pickheal5 = false;
+								}
+								break;
+							case 2:
+								if (spawntree5)
+								{
+									Spawn();
+									spawntree5 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 40 && Body.HealthPercent > 30)
 					{
-						if (pickheal6 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal6 = false;
-						}
-						else if (spawntree6 == true)
-						{
-							Spawn();
-							spawntree6 = false;
+							case 1:
+								if (pickheal6)
+								{
+									PickHeal();
+									pickheal6 = false;
+								}
+								break;
+							case 2:
+								if (spawntree6)
+								{
+									Spawn();
+									spawntree6 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 30 && Body.HealthPercent > 20)
 					{
-						if (pickheal7 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal7 = false;
-						}
-						else if (spawntree7 == true)
-						{
-							Spawn();
-							spawntree7 = false;
+							case 1:
+								if (pickheal7)
+								{
+									PickHeal();
+									pickheal7 = false;
+								}
+								break;
+							case 2:
+								if (spawntree7)
+								{
+									Spawn();
+									spawntree7 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 20 && Body.HealthPercent > 10)
 					{
-						if (pickheal8 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal8 = false;
-						}
-						else if (spawntree8 == true)
-						{
-							Spawn();
-							spawntree8 = false;
+							case 1:
+								if (pickheal8)
+								{
+									PickHeal();
+									pickheal8 = false;
+								}
+								break;
+							case 2:
+								if (spawntree8)
+								{
+									Spawn();
+									spawntree8 = false;
+								}
+								break;
 						}
 					}
 					if (Body.HealthPercent <= 10 && Body.HealthPercent > 1)
 					{
-						if (pickheal9 == true)
+						switch (Util.Random(1,2))
 						{
-							PickHeal();
-							pickheal9 = false;
-						}
-						else if (spawntree9 == true)
-						{
-							Spawn();
-							spawntree9 = false;
+							case 1:
+								if (pickheal9)
+								{
+									PickHeal();
+									pickheal9 = false;
+								}
+								break;
+							case 2:
+								if (spawntree9)
+								{
+									Spawn();
+									spawntree9 = false;
+								}
+								break;
 						}
 					}
 				}
 
 			}
 			//we reset him so he return to his orginal peace flag and max health and reseting pickheal phases
-			if (Body.InCombatInLast(40 * 1000) == false && this.Body.InCombatInLast(45 * 1000))
+			if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
 			{
 				Body.Flags = GameNPC.eFlags.PEACE;
-				this.Body.Health = this.Body.MaxHealth;
-				Body.MoveTo(1, 592882, 418797, 5008, 3406);//move boss back to his spawn point
+				Body.Health = Body.MaxHealth;
+				Body.WalkToSpawn(300);//move boss back to his spawn point
 				pickheal1 = true;
 				pickheal2 = true;
 				pickheal3 = true;
@@ -516,15 +584,12 @@ namespace DOL.AI.Brain
 				spawntree8 = true;
 				spawntree9 = true;
 
-				foreach (GameNPC npc in WorldMgr.GetNPCsByName("rotting downy felwood", eRealm.None))
+				foreach (GameNPC npc in Body.GetNPCsInRadius(6500))
 				{
-					if (npc.RespawnInterval == -1 && npc.PackageID== "GreenKnightAdd")
+					if (npc.Brain is GKTreesBrain)
 					{
-						if (npc.Brain is GKTreesBrain)
-						{
-							//Remove all the minions
-							npc.RemoveFromWorld();
-						}
+						//Remove all the trees
+						npc.RemoveFromWorld();
 					}
 				}
 			}
@@ -533,18 +598,27 @@ namespace DOL.AI.Brain
 			
 		public void Spawn() // We define here adds
 		{
-			foreach (GamePlayer ppl in Body.GetPlayersInRadius(4000))//spawning each tree in radius of 4000 on every player
+			//spawning each tree in radius of 4000 on every player
+			List<GamePlayer> player = new List<GamePlayer>();
+			foreach (GamePlayer ppl in Body.GetPlayersInRadius(4000))
 			{
+				player.Add(ppl);
+				
 				if (ppl.IsAlive)
 				{
-					GKTrees Add = new GKTrees();
-					Add.X = ppl.X;
-					Add.Y = ppl.Y;
-					Add.Z = ppl.Z;
-					Add.CurrentRegion = Body.CurrentRegion;
-					Add.Heading = ppl.Heading;
-					Add.AddToWorld();
+					for (int i = 0; i <= player.Count - 1; i++)
+					{
+						GKTrees add = new GKTrees();
+						add.X = ppl.X;
+						add.Y = ppl.Y;
+						add.Z = ppl.Z;
+						add.CurrentRegion = Body.CurrentRegion;
+						add.Heading = ppl.Heading;
+						add.AddToWorld();
+						add.StartAttack(ppl);
+					}
 				}
+				player.Clear();
 			}
 		}
 		public Spell GreenKnightHeal
@@ -553,42 +627,21 @@ namespace DOL.AI.Brain
 			{
 				DBSpell spell = new DBSpell();
 				spell.AllowAdd = false;
-				spell.CastTime = 8; // 8s cast time to give players chance to rupt him
-				spell.ClientEffect = 1414;
-				spell.RecastDelay = 8;
-				spell.Icon = 1414;
-				spell.Value = Body.MaxHealth / 10; //Modify here if heal is too strong
+				spell.Uninterruptible = true;
+				spell.Power = 0;
+				spell.CastTime = 2;
+				spell.ClientEffect = 4811;
+				spell.RecastDelay = 0;
+				spell.Icon = 4811;
+				spell.Value = (double) Body.MaxHealth / 95; //Modify here if heal is too strong
 				spell.Duration = 0;
 				spell.Name = "Holly Hand";
-				spell.Range = 1650;
-				spell.SpellID = 140004;
+				spell.Range = 0;
+				spell.SpellID = 4811;
 				spell.Target = "Self";
 				spell.Type = "Heal";
 				spell.Radius = 0;
-				spell.EffectGroup = 0;
-				return new Spell(spell, 50);
-			}
-		}
-
-		public Spell GreenKnightHeatDD
-		{
-			get
-			{
-				DBSpell spell = new DBSpell();
-				spell.AllowAdd = false;
-				spell.CastTime = 0;
-				spell.RecastDelay = 20;
-				spell.ClientEffect = 368;
-				spell.Icon = 368;
-				spell.Damage = 100;
-				spell.DamageType = 13;
-				spell.Name = "Might of the Forrest";
-				spell.Range = 1650;
-				spell.SpellID = 140005;
-				spell.Target = "Enemy";
-				spell.Type = "DirectDamage";
-				spell.Radius = 500;
-				spell.EffectGroup = 0;
+				spell.EffectGroup = 4801;
 				return new Spell(spell, 50);
 			}
 		}
@@ -629,7 +682,8 @@ namespace DOL.GS
 	{
 		public override int MaxHealth
 		{
-			get { return 600 * Constitution / 100; } //trees got low hp, because they spawn preaty often. Modify here to adjust hp
+			//trees got low hp, because they spawn preaty often. Modify here to adjust hp
+			get { return 600 * Constitution / 100; } 
 		}
 		public override bool AddToWorld()
 		{
