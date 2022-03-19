@@ -11,7 +11,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-	public class Evern : GameNPC
+	public class Evern : GameEpicBoss
 	{
 		public Evern() : base() { }
 		public override int GetResist(eDamageType damageType)
@@ -53,6 +53,33 @@ namespace DOL.GS
 		{
 			get { return 20000; }
 		}
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+			if (source is GamePlayer || source is GamePet)
+			{
+				if (this.IsOutOfTetherRange)
+				{
+					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+						|| damageType == eDamageType.Slash)
+					{
+						GamePlayer truc;
+						if (source is GamePlayer)
+							truc = (source as GamePlayer);
+						else
+							truc = ((source as GamePet).Owner as GamePlayer);
+						if (truc != null)
+							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						base.TakeDamage(source, damageType, 0, 0);
+						return;
+					}
+				}
+				else//take dmg
+				{
+					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+				}
+			}
+		}
 		public override void Die(GameObject killer)//on kill generate orbs
 		{
 			// debug
@@ -80,24 +107,63 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-
-			Model = 400;
-			Name = "Evern";
-			Size = 120;
-			Level = (byte)Util.Random(75, 78);
-			Gender = eGender.Neutral;
-			TetherRange = 1700;//important for fairy heals and mechanic
-			Flags = eFlags.GHOST;
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			EvernBrain.spawnfairy = false;
 
-			EvernBrain sBrain = new EvernBrain();
-			SetOwnBrain(sBrain);
-			sBrain.AggroLevel = 100;
-			sBrain.AggroRange = 500;
+			EvernBrain sbrain = new EvernBrain();
+			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
+		}
+		[ScriptLoadedEvent]
+		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		{
+			GameNPC[] npcs;
+
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Evern", 200, (eRealm)0);
+			if (npcs.Length == 0)
+			{
+				log.Warn("Evern not found, creating it...");
+
+				log.Warn("Initializing Evern...");
+				Evern CO = new Evern();
+				CO.Name = "Evern";
+				CO.Model = 400;
+				CO.Realm = 0;
+				CO.Level = 75;
+				CO.Size = 120;
+				CO.CurrentRegionID = 200;//OF breifine
+
+				CO.Strength = 5;
+				CO.Intelligence = 150;
+				CO.Piety = 150;
+				CO.Dexterity = 200;
+				CO.Constitution = 100;
+				CO.Quickness = 125;
+				CO.Empathy = 300;
+				CO.BodyType = (ushort)NpcTemplateMgr.eBodyType.Magical;
+				CO.MeleeDamageType = eDamageType.Slash;
+
+				CO.X = 429840;
+				CO.Y = 380396;
+				CO.Z = 2328;
+				CO.MaxDistance = 3500;
+				CO.TetherRange = 3800;
+				CO.MaxSpeedBase = 250;
+				CO.Heading = 4059;
+
+				EvernBrain ubrain = new EvernBrain();
+				ubrain.AggroLevel = 100;
+				ubrain.AggroRange = 600;
+				CO.SetOwnBrain(ubrain);
+				CO.AddToWorld();
+				CO.Brain.Start();
+				CO.SaveIntoDatabase();
+			}
+			else
+				log.Warn("Evern exist ingame, remove it and restart server if you want to add by script code.");
 		}
 	}
 }
@@ -106,11 +172,33 @@ namespace DOL.AI.Brain
 	public class EvernBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public EvernBrain() : base() { }
-
+		public EvernBrain() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 600;
+			ThinkInterval = 1500;
+		}
 		public static bool spawnfairy = false;
 		public override void Think()
 		{
+			if (!HasAggressionTable())
+			{
+				//set state to RETURN TO SPAWN
+				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				this.Body.Health = this.Body.MaxHealth;
+				spawnfairy = false;
+				foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+				{
+					if (npc == null) break;
+					if (npc.Brain is EvernFairyBrain)
+					{
+						if (npc.RespawnInterval == -1)
+						{
+							npc.Die(npc);//we kill all fairys if boss reset
+						}
+					}
+				}
+			}
 			if (Body.InCombat == true && Body.IsAlive && HasAggro)
 			{
 				if (Body.TargetObject != null)
@@ -131,24 +219,6 @@ namespace DOL.AI.Brain
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
 			{
 				this.Body.Health = this.Body.MaxHealth;
-
-				foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
-				{
-					if (npc == null) break;
-					if (npc.Brain is EvernFairyBrain)
-					{
-						if (npc.RespawnInterval == -1)
-						{
-							npc.Die(npc);//we kill all fairys if boss reset
-						}
-					}
-				}
-			}
-			if (Body.IsOutOfTetherRange)//important he must be engaged in his "lair" else it will not work, reset method if he is too far
-            {
-				this.Body.Health = this.Body.MaxHealth;
-				Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 200);
-				ClearAggroList();
 
 				foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
 				{
