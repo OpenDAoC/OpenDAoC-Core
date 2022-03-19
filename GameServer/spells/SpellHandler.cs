@@ -1665,7 +1665,8 @@ namespace DOL.GS.Spells
 						{
 							m_started = GameLoop.GameLoopTime;
 							_castStartTick = currentTick;
-							SendSpellMessages();
+							if (!Spell.IsInstantCast)
+								SendSpellMessages();
 							if (Spell.IsInstantCast)
 							{
 								if (!CheckEndCast(m_spellTarget))
@@ -1943,7 +1944,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void InterruptCasting()
 		{
-			castState = eCastState.Interrupted;
+			//castState = eCastState.Interrupted;
 			if (m_interrupted || !IsCasting)
 				return;
 
@@ -1973,7 +1974,7 @@ namespace DOL.GS.Spells
 					((GamePlayer)m_caster).ClearSpellQueue();
 				}
 			}
-
+			castState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 			OnAfterSpellCastSequence();
 		}

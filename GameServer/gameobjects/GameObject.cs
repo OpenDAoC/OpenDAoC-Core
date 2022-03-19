@@ -712,7 +712,7 @@ namespace DOL.GS
 		{
 			IList list = new ArrayList(4);
 			// Message: You target [{0}].
-			list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Target.YouTarget.Object", GetName(0, false)));
+			list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.GetExamineMessages.YouTarget", GetName(0, false)));
 			return list;
 		}
 

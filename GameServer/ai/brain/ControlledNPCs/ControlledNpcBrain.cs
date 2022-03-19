@@ -980,22 +980,28 @@ namespace DOL.AI.Brain
 				while (aggros.MoveNext())
 				{
 					GameLiving living = (GameLiving)aggros.Key;
+					
+					if(living == null)
+						continue;
 
-					if (living.IsMezzed ||
-					    living.IsAlive == false ||
-					    living.ObjectState != GameObject.eObjectState.Active ||
-					    Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
-					    GameServer.ServerRules.IsAllowedToAttack(this.Body, living, true) == false)
+					if (living != null)
 					{
-						removable.Add(living);
-					}
-					else
-					{
-						//GameSpellEffect root = SpellHandler.FindEffectOnTarget(living, "SpeedDecrease");
-						ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
-						if (root != null && root.SpellHandler.Spell.Value == 99)
+						if (living.IsMezzed ||
+						    living.IsAlive == false ||
+						    living.ObjectState != GameObject.eObjectState.Active ||
+						    Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
+						    GameServer.ServerRules.IsAllowedToAttack(this.Body, living, true) == false)
 						{
 							removable.Add(living);
+						}
+						else
+						{
+							//GameSpellEffect root = SpellHandler.FindEffectOnTarget(living, "SpeedDecrease");
+							ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+							if (root != null && root.SpellHandler.Spell.Value == 99)
+							{
+								removable.Add(living);
+							}
 						}
 					}
 				}

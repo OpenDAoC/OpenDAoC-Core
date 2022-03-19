@@ -286,6 +286,17 @@ namespace DOL.GS
         }
         public override bool AddToWorld()
         {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158075);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Charisma = npcTemplate.Charisma;
+            Empathy = npcTemplate.Empathy;
+
             Aroon_slash = false;
             Aroon_thrust = false;
             Aroon_crush = false;
@@ -305,8 +316,7 @@ namespace DOL.GS
             FuarScaithBrain.switch_target = false;
             TaesScaithBrain.switch_target = false;
             ScorScaithBrain.switch_target = false;
-            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158075);
-            LoadTemplate(npcTemplate);
+
             AroonBrain sBrain = new AroonBrain();
             SetOwnBrain(sBrain);
             AroonBrain.spawn_guardians = false;
@@ -327,7 +337,7 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
                 }
             }
-            DropLoot(killer);
+            
             base.Die(killer);
         }
 

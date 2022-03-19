@@ -192,7 +192,7 @@ namespace DOL.GS
                     }
                 }
             }
-            DropLoot(killer);
+            
             spawn_souls = false;
             base.Die(killer);
         }
@@ -329,14 +329,6 @@ namespace DOL.AI.Brain
                             }
                         }
                     }
-                }
-            }
-            else
-            {
-                if(Spawn_Souls==false && ReckonedSoul.SoulCount==0)//spawn souls again if is out of combat
-                {
-                    SpawnSouls();
-                    Spawn_Souls = true;
                 }
             }
             base.Think();

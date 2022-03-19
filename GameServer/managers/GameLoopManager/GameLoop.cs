@@ -2,6 +2,7 @@ using DOL.GS.Scripts;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using static DOL.GS.WeeklyQuestService;
 
 namespace DOL.GS
 {
@@ -65,6 +66,8 @@ namespace DOL.GS
             CastingService.Tick(GameLoopTime);
             EffectService.Tick(GameLoopTime);
             EffectListService.Tick(GameLoopTime);
+            DailyQuestService.Tick(GameLoopTime);
+            WeeklyQuestService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;
