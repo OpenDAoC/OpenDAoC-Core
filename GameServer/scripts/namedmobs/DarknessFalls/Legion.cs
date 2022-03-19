@@ -4,6 +4,7 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using log4net;
 
@@ -17,7 +18,7 @@ namespace DOL.GS.Scripts
         [ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
-            var radius = 650;
+            const int radius = 650;
             Region region = WorldMgr.GetRegion(249);
             legionArea = region.AddArea(new Area.Circle("Legion's Lair", 45000,51700,15468, radius));
             log.Debug("Legion's Lair created with radius " + radius + " at 45000 51700 15468");
@@ -130,11 +131,9 @@ namespace DOL.GS.Scripts
             {
                 player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
-                if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
-                {
-                    if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
-                        canReportNews = false;
-                }
+                if (!canReportNews || GameServer.ServerRules.CanGenerateNews(player) != false) continue;
+                if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                    canReportNews = false;
 
             }
             
@@ -160,10 +159,16 @@ namespace DOL.GS.Scripts
         {
             AreaEventArgs aargs = args as AreaEventArgs;
             GamePlayer player = aargs?.GameObject as GamePlayer;
+            
+            if (player == null)
+                return;
 
             Console.Write(player?.Name + " entered Legion's Lair");
 
-            var mobsInArea = player?.GetNPCsInRadius(2500);
+            var mobsInArea = player.GetNPCsInRadius(2500);
+            
+            if (mobsInArea == null)
+                return;
             
             foreach (GameNPC mob in mobsInArea)
             {
@@ -173,8 +178,12 @@ namespace DOL.GS.Scripts
                 if (Util.Chance(33))
                 {
                     Console.WriteLine("Whops, we got a hit!");
-                    player?.Out.SendSpellEffectAnimation(mob, player, 5933, 0, false, 1);
-                    player?.Die(mob);
+                    foreach (GamePlayer nearbyPlayer in mob.GetPlayersInRadius(2500))
+                    {
+                        nearbyPlayer.Out.SendMessage("Legion doesn't like enemies in his lair", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                        nearbyPlayer.Out.SendSpellEffectAnimation(mob, player, 5933, 0, false, 1);
+                    }
+                    player.Die(mob);
                 }
                 else
                 {
@@ -185,7 +194,7 @@ namespace DOL.GS.Scripts
                     }
                     player.MoveTo(249, 48117, 49573, 20833, 1006);
                 }
-                player?.BroadcastUpdate();
+                player.BroadcastUpdate();
             }
         }
         private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
@@ -218,7 +227,8 @@ namespace DOL.GS.Scripts
             
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
-        public void SpawnAdds(GamePlayer target, int amount = 1)
+
+        private void SpawnAdds(GamePlayer target, int amount = 1)
         {
             for (int i = 0; i < amount; i++)
             {
@@ -236,24 +246,24 @@ namespace DOL.GS.Scripts
                 add.StartAttack(target);
             }
         }
-        protected void ReportNews(GameObject killer)
+
+        private void ReportNews(GameObject killer)
         {
             int numPlayers = AwardLegionKillPoint();
             String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
             NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
-            if (Properties.GUILD_MERIT_ON_LEGION_KILL > 0)
+            if (Properties.GUILD_MERIT_ON_LEGION_KILL <= 0) return;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                if (player.IsEligibleToGiveMeritPoints)
                 {
-                    if (player.IsEligibleToGiveMeritPoints)
-                    {
-                        GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_LEGION_KILL);
-                    }
+                    GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_LEGION_KILL);
                 }
             }
         }
-        protected int AwardLegionKillPoint()
+
+        private int AwardLegionKillPoint()
         {
             int count = 0;
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
