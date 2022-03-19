@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Albion
                 else
                 {
                     Haszan.SayTo(player, "Hello " + player.Name + ", I am Haszan. " +
-                                         "I heard you are strong enough to help me with Daily Missions of Albion. \n\n" +
-                                         "\nCan you [support Albion]?");
+                                         "A scout reported strange wailings coming from inside Caer Sidi. \n" +
+                                         "Do you think you could [investigate] for us?");
                 }
             }
             // The player whispered to the NPC
@@ -184,10 +184,10 @@ namespace DOL.GS.DailyQuest.Albion
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Albion":
+                        case "investigate":
                             player.Out.SendQuestSubscribeCommand(Haszan,
                                 QuestMgr.GetIDForQuestType(typeof(SidiMobQuestAlb)),
-                                "Will you help Haszan " + questTitle + "");
+                                "Will you help Haszan with " + questTitle + "");
                             break;
                     }
                 }

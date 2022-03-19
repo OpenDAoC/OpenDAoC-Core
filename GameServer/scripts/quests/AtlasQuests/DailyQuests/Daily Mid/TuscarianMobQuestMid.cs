@@ -21,7 +21,7 @@ namespace DOL.GS.DailyQuest.Midgard
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Daily] Too many Monsters";
+        protected const string questTitle = "[Daily] Too Many Monsters";
         protected const int minimumLevel = 45;
         protected const int maximumLevel = 50;
 
@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Midgard
                 else
                 {
                     Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
-                                        "I heard you are strong enough to help me with Daily Missions of Midgard. \n\n" +
-                                        "\nCan you [support Midgard]?");
+                                        "A hunter reported strange wailings coming from inside Tuscaren Glacier. \n" +
+                                        "Do you think you could [investigate] for us?");
                 }
             }
             // The player whispered to the NPC
@@ -184,10 +184,10 @@ namespace DOL.GS.DailyQuest.Midgard
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Midgard":
+                        case "investigate":
                             player.Out.SendQuestSubscribeCommand(Herou,
                                 QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)),
-                                "Will you help Herou " + questTitle + "");
+                                "Will you help Herou with " + questTitle + "");
                             break;
                     }
                 }

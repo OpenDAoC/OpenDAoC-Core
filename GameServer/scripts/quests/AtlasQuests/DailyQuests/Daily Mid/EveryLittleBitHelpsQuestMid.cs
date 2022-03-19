@@ -21,7 +21,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Every little bit helps";
+		protected const string questTitle = "[Daily] Every Little Bit Helps";
 		protected const int minimumLevel = 40;
 		protected const int maximumLevel = 50;
 
@@ -169,9 +169,9 @@ namespace DOL.GS.DailyQuest.Midgard
 				}
 				else
 				{
-					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
-					                     "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
-					                     "\nCan you lend me a hand? A leg could probably work too.");
+					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey.My master, Fen, has a need for some... exotic bones. "+
+					                     "Stuff you can't really get here in Midgard, if you catch my drift.\n"+
+					                     "\nThink you could [take the toeknuckle] off of a firbolg for me? A highlander could probably work too.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "help me out":
+						case "take the toeknuckle":
 							player.Out.SendQuestSubscribeCommand(ReyMid, QuestMgr.GetIDForQuestType(typeof(EveryLittleBitHelpsQuestMid)), "Will you undertake " + questTitle + "?");
 							break;
 					}

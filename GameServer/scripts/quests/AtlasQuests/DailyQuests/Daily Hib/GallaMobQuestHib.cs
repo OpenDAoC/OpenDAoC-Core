@@ -21,7 +21,7 @@ namespace DOL.GS.DailyQuest.Hibernia
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Daily] Too many Monsters";
+        protected const string questTitle = "[Daily] Too Many Monsters";
         protected const int minimumLevel = 45;
         protected const int maximumLevel = 50;
 
@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Hibernia
                 else
                 {
                     Dean.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
-                                       "I heard you are strong enough to help me with Daily Missions of Hibernia. \n\n" +
-                                       "\nCan you [support Hibernia]?");
+                                       "A ranger reported strange wailings coming from inside Galladoria. \n" +
+                                       "Do you think you could [investigate] for us?");
                 }
             }
             // The player whispered to the NPC
@@ -184,10 +184,10 @@ namespace DOL.GS.DailyQuest.Hibernia
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Hibernia":
+                        case "investigate":
                             player.Out.SendQuestSubscribeCommand(Dean,
                                 QuestMgr.GetIDForQuestType(typeof(GallaMobQuestHib)),
-                                "Will you help Dean " + questTitle + "");
+                                "Will you help Dean with " + questTitle + "");
                             break;
                     }
                 }
