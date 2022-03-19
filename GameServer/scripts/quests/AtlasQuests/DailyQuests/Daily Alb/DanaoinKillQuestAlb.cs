@@ -168,8 +168,8 @@ namespace DOL.GS.DailyQuest.Albion
 				else
 				{
 					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola, Drmed\'s friend. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Albion\n"+
-					                       "\nCan you [support Atlas]?");
+					                       "The Danaoin Farmers down in Lyonesse are overfarming the land and destroying Albion's natural resources.\n"+
+					                       "\nCan you [clear the Danaoin] to save Albion?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,7 +180,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "support Atlas":
+						case "clear the Danaoin":
 							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(DanaoinKillQuestAlb)), "Will you help Cola "+questTitle+"");
 							break;
 					}

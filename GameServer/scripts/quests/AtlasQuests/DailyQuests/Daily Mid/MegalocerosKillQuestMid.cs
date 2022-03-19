@@ -168,8 +168,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				else
 				{
 					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. "+
-					                       "I heard you are strong enough to help me with Daily Missions of Midgard \n\n"+
-					                       "\nCan you [support Atlas]?");
+					                    "The Megaloceros out in Gripklosa Mountains are devouring the natural flora and fauna of the Shrouded Isles. They may soon destroy the ecosystem entirely.\n"+
+					                    "\nCan you [clear the Megaloceros] to save the Shrouded Isles?");
 				}
 			}
 				// The player whispered to the NPC
@@ -178,9 +178,9 @@ namespace DOL.GS.DailyQuest.Midgard
 				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
 				if (quest == null)
 				{
-					switch (wArgs.Text)
+					switch (wArgs.Text.ToLower())
 					{
-						case "support Atlas":
+						case "clear the megaloceros":
 							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)), "Will you help Isaac "+questTitle+"");
 							break;
 					}
