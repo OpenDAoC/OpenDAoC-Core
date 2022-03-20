@@ -89,7 +89,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Dean = new GameNPC();
 				Dean.Model = 355;
 				Dean.Name = "Dean";
-				Dean.GuildName = "Atlas Quest";
+				Dean.GuildName = "Advisor to the King";
 				Dean.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
 				Dean.CurrentRegionID = 200;

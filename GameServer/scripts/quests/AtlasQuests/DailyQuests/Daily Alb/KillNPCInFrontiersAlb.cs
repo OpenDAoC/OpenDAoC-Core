@@ -82,7 +82,7 @@ namespace DOL.GS.DailyQuest.Albion
 				Cola = new GameNPC();
 				Cola.Model = 724;
 				Cola.Name = "Cola";
-				Cola.GuildName = "Atlas Quest";
+				Cola.GuildName = "Advisor to the King";
 				Cola.Realm = eRealm.Albion;
 				Cola.CurrentRegionID = 1;
 				Cola.Size = 50;

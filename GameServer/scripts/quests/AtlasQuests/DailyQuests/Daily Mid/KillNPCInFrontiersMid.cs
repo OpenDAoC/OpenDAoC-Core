@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Isaac = new GameNPC();
 				Isaac.Model = 774;
 				Isaac.Name = "Isaac";
-				Isaac.GuildName = "Atlas Quest";
+				Isaac.GuildName = "Advisor to the King";
 				Isaac.Realm = eRealm.Midgard;
 				Isaac.CurrentRegionID = 100;
 				Isaac.Size = 50;
