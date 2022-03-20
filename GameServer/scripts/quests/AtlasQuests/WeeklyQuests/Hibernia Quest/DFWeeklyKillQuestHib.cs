@@ -170,8 +170,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				else
 				{
 					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n"+
-					                       "\nCan you [support Hibernia]?");
+					                   "One of the scouts reported some enemy movement in Darkness Falls.  \n"+
+					                   "We need you to [shut that down] before they get a foothold.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "support Hibernia":
+						case "shut that down":
 							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestHib)), "Will you help Dean "+questTitle+"?");
 							break;
 					}

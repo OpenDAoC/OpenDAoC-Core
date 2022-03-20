@@ -168,8 +168,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				else
 				{
 					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                   "I heard you are strong. Do you think you're strong enough to help me with some Octonids causing trouble in the Shrouded Islands?\n"+
-					                   "\nCan you [support Atlas]?");
+					                   "The Octonids out in World's End are devouring the natural flora and fauna of the Shrouded Isles. They may soon destroy the ecosystem entirely.\n"+
+					                   "\nCan you [clear the Octonids] to save the Shrouded Isles?");
 				}
 			}
 				// The player whispered to the NPC
@@ -178,9 +178,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
 				if (quest == null)
 				{
-					switch (wArgs.Text)
+					switch (wArgs.Text.ToLower())
 					{
-						case "support Atlas":
+						case "clear the octonids":
 							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean "+questTitle+"");
 							break;
 					}

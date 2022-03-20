@@ -169,8 +169,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				else
 				{
 					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
-											"I heard you are strong. Do you think you're strong enough to help me with some real estate matters? \n"+
-					                       "\nCan you [support our Realm]?");
+					                   "I've seen you battling in our frontiers. Do you think you're strong enough to help me with some real estate matters? \n"+
+					                   "\nThe king wants us to [reclaim a keep] that he's particularly fond of.");
 				}
 			}
 				// The player whispered to the NPC
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "support our Realm":
+						case "reclaim a keep":
 							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestHib)), "Will you help Dean "+questTitle+"");
 							break;
 					}
