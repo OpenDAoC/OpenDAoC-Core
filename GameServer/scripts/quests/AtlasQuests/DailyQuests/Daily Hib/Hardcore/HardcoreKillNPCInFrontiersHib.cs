@@ -91,7 +91,7 @@ namespace DOL.GS.DailyQuest
 				SucciHib.X = 335117;
 				SucciHib.Y = 420642;
 				SucciHib.Z = 5195;
-				SucciHib.Heading = 3723;
+				SucciHib.Heading = 1600;
 				SucciHib.Flags |= GameNPC.eFlags.PEACE;
 				SucciHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
