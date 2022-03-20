@@ -72,7 +72,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 100 && npc.X == 766551 && npc.Y == 670398)
+					if (npc.CurrentRegionID == 100 && npc.X == 766491 && npc.Y == 670375)
 					{
 						ReyMid = npc;
 						break;
@@ -87,13 +87,13 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				ReyMid.Model = 26;
 				ReyMid.Name = "Rey";
 				ReyMid.GuildName = "Bone Collector";
-				ReyMid.Realm = eRealm.None;
+				ReyMid.Realm = eRealm.Midgard;
 				//Druim Ligen Location
 				ReyMid.CurrentRegionID = 100;
 				ReyMid.Size = 60;
 				ReyMid.Level = 59;
-				ReyMid.X = 766551;
-				ReyMid.Y = 670398;
+				ReyMid.X = 766491;
+				ReyMid.Y = 670375;
 				ReyMid.Z = 5736;
 				ReyMid.Heading = 2242;
 				ReyMid.Flags |= GameNPC.eFlags.PEACE;
@@ -171,9 +171,9 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				}
 				else
 				{
-					ReyMid.SayTo(player, "Hello "+ player.Name +", I am Rey, Fen's Resource Acquistion Specialist. "+
-					                     "Fen's insatiable desire to kill players is getting out of hand, and he's starting to outsource. \n\n"+
-					                     "\nAre you strong enough to [kill some enemies]?");
+					ReyMid.SayTo(player, "Uh oh, "+ player.Name +". "+
+					                     "Fen put in a bulk order this time. There's no way I can collect this many bones in a week. \n" +
+					                     "I need your help with this, are you up for some [bone harvesting]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -184,7 +184,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "kill some enemies":
+						case "bone harvesting":
 							player.Out.SendQuestSubscribeCommand(ReyMid, QuestMgr.GetIDForQuestType(typeof(PlayerKillWeeklyQuestMid)), "Will you undertake " + questTitle + "?");
 							break;
 					}

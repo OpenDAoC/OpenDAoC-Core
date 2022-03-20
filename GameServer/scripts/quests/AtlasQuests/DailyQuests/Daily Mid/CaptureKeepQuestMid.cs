@@ -71,7 +71,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766332 && npc.Y == 670275)
+					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
 					{
 						Herou = npc;
 						break;
@@ -90,8 +90,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou.CurrentRegionID = 100;
 				Herou.Size = 50;
 				Herou.Level = 59;
-				Herou.X = 766332;
-				Herou.Y = 670275;
+				Herou.X = 766401;
+				Herou.Y = 670349;
 				Herou.Z = 5736;
 				Herou.Heading = 2835;
 				Herou.AddToWorld();
@@ -169,8 +169,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				else
 				{
 					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                    "I heard you are strong. Do you think you're strong enough to help me with some real estate matters? \n"+
-					                    "\nCan you [support our Realm]?");
+					                    "I've seen you battling in our frontiers. Do you think you're strong enough to help me with some real estate matters? \n"+
+					                    "\nThe king wants us to [reclaim a keep] that he's particularly fond of.");
 				}
 			}
 				// The player whispered to the NPC
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "support our Realm":
+						case "reclaim a keep":
 							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestMid)), "Will you help Herou "+questTitle+"");
 							break;
 					}

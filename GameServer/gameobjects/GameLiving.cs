@@ -4143,7 +4143,7 @@ namespace DOL.GS
         /// <summary>
         /// Called on the attacker when attacking an enemy.
         /// </summary>
-        public virtual void OnAttackEnemy(AttackData ad)//adding virtual to this method, it can be now override
+        public void OnAttackEnemy(AttackData ad)
         {
 			//Console.WriteLine(string.Format("OnAttack called on {0}", this.Name));
 

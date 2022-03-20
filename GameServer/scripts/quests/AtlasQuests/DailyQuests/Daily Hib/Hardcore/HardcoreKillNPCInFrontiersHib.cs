@@ -91,7 +91,7 @@ namespace DOL.GS.DailyQuest
 				SucciHib.X = 335117;
 				SucciHib.Y = 420642;
 				SucciHib.Z = 5195;
-				SucciHib.Heading = 3723;
+				SucciHib.Heading = 1600;
 				SucciHib.Flags |= GameNPC.eFlags.PEACE;
 				SucciHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -366,6 +366,7 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 500);
+			FrontierMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}
@@ -373,7 +374,7 @@ namespace DOL.GS.DailyQuest
 		public void FailQuest()
 		{
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
-
+			FrontierMobsKilled = 0;
 			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);

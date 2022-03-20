@@ -11,7 +11,7 @@ using DOL.GS.Effects;
 
 namespace DOL.GS
 {
-    public class MoranTheMighty : GameNPC
+    public class MoranTheMighty : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -19,12 +19,7 @@ namespace DOL.GS
             : base()
         {
         }
-
-        public virtual int MoranTheMightyDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
-
+        
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -34,10 +29,9 @@ namespace DOL.GS
         {
             get
             {
-                return 20000 * MoranTheMightyDifficulty;
+                return 20000;
             }
         }
-
         public override int AttackRange
         {
             get
@@ -57,18 +51,18 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * MoranTheMightyDifficulty;
+            return 1000;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85 * MoranTheMightyDifficulty;
+            return 0.85;
         }
         
         public override bool AddToWorld()
         {
-            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(13082);
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(770024);
             LoadTemplate(npcTemplate);
             
             Strength = npcTemplate.Strength;
@@ -81,10 +75,17 @@ namespace DOL.GS
 
             // giant
             BodyType = 5;
+            Race = 2004;
+            Size = 230;
+
+            MaxDistance = 3000;
+            TetherRange = 4500;
+            
             Faction = FactionMgr.GetFactionByID(31);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(31));
             
             MoranBrain sBrain = new MoranBrain();
+            MoranBrain._aggroStart = true;
             SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
@@ -100,7 +101,7 @@ namespace DOL.GS
             {
                 foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
                 {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,2500);
                 }
             }
             DropLoot(killer);
@@ -116,6 +117,8 @@ namespace DOL.AI.Brain
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public static bool _aggroStart = true;
+        
         public MoranBrain()
             : base()
         {
@@ -141,9 +144,107 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.InCombat)
             {
+                if (Body.TargetObject != null)
+                {
+                    if (_aggroStart)
+                    {
+                        foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+                        {
+                            foreach (GamePlayer player in Body.GetPlayersInRadius(2250))
+                            {
+                                npc.StartAttack(player);
+                            }
+                        }
+
+                        _aggroStart = false;
+                    }
+                    else
+                    {
+                        // chance to teleport a random player to another mob camp 
+                        if (Util.Chance(5) && Body.HealthPercent <= 50)
+                        {
+                            new RegionTimer(Body, new RegionTimerCallback(TeleportPlayerAway), 5000);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                _aggroStart = true;
             }
 
             base.Think();
+        }
+
+        public int TeleportPlayerAway(RegionTimer timer)
+        {
+            string gender;
+            foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
+            {
+                if (player == null)
+                    return 0;
+
+                List<GamePlayer> portPlayer = new List<GamePlayer>();
+                portPlayer.Add(player);
+                int ranPlayer = Util.Random(0, portPlayer.Count - 1);
+                
+                if (player.IsAlive && ranPlayer >= 0)
+                {
+                    switch(portPlayer[ranPlayer].Gender)
+                    {
+                        case eGender.Female:
+                            gender = "her";
+                            break;
+                        case eGender.Male:
+                            gender = "him";
+                            break;
+                        case eGender.Neutral:
+                            gender = "it";
+                            break;
+                        default:
+                            gender = "it";
+                            break;
+                    }
+                    
+                    switch (Util.Random(1, 3))
+                    {
+                        case 1:
+                            BroadcastMessage(String.Format("{0} picked up {1} on gust of winds and tossed {2} away! ", Body.Name, portPlayer[ranPlayer].Name, gender));
+                            portPlayer[ranPlayer].Out.SendSpellEffectAnimation(portPlayer[ranPlayer], portPlayer[ranPlayer], 1735, 0, false, 1);
+                            portPlayer[ranPlayer].MoveTo(1, 400126, 754351, 325, 3120);
+                            foreach (GameNPC npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
+                            {
+                                npc.StartAttack(portPlayer[ranPlayer]);
+                            }
+                            portPlayer.Clear();
+                            break;
+                        case 2:
+                            BroadcastMessage(String.Format("{0} picked up {1} on gust of winds and tossed {2} away! ", Body.Name, portPlayer[ranPlayer].Name, gender));
+                            portPlayer[ranPlayer].Out.SendSpellEffectAnimation(portPlayer[ranPlayer], portPlayer[ranPlayer], 1735, 0, false, 1);
+                            portPlayer[ranPlayer].MoveTo(1, 406118, 744790, 776, 3926);
+                            foreach (GameNPC npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
+                            {
+                                npc.StartAttack(portPlayer[ranPlayer]);
+                            }
+                            portPlayer.Clear();
+                            break;
+                        case 3:
+                            BroadcastMessage(String.Format("{0} picked up {1} on gust of winds and tossed {2} away! ", Body.Name, portPlayer[ranPlayer].Name, gender));
+                            portPlayer[ranPlayer].Out.SendSpellEffectAnimation(portPlayer[ranPlayer], portPlayer[ranPlayer], 1735, 0, false, 1);
+                            portPlayer[ranPlayer].MoveTo(1, 412837, 740266, 242, 473);
+                            foreach (GameNPC npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
+                            {
+                                npc.StartAttack(portPlayer[ranPlayer]);
+                            }
+                            portPlayer.Clear();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                portPlayer.Clear();
+            }
+            return 0;
         }
 
         public override void Notify(DOLEvent e, object sender, EventArgs args)

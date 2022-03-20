@@ -374,6 +374,7 @@ namespace DOL.GS.DailyQuest
 			OrangeConKilled = 0;
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
+			OrangeConKilled = 0;
 			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);

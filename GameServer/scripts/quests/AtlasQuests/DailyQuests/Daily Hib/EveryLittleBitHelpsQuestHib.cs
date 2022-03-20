@@ -21,7 +21,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Every little bit helps";
+		protected const string questTitle = "[Daily] Every Little Bit Helps";
 		protected const int minimumLevel = 40;
 		protected const int maximumLevel = 50;
 
@@ -169,9 +169,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					ReyHib.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
-					                     "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
-					                     "\nCan you lend me a hand? A leg could probably work too.");
+					ReyHib.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has a need for some... exotic bones. "+
+					                     "Stuff you can't really get here in Hibernia, if you catch my drift.\n"+
+					                     "\nThink you could [take the toeknuckle] off of a troll for me? A highlander could probably work too.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "help me out":
+						case "take the toeknuckle":
 							player.Out.SendQuestSubscribeCommand(ReyHib, QuestMgr.GetIDForQuestType(typeof(EveryLittleBitHelpsQuestHib)), "Will you undertake " + questTitle + "?");
 							break;
 					}

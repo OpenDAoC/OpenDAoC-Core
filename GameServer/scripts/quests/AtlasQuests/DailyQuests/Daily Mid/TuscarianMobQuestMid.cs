@@ -21,7 +21,7 @@ namespace DOL.GS.DailyQuest.Midgard
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Daily] Too many Monsters";
+        protected const string questTitle = "[Daily] Too Many Monsters";
         protected const int minimumLevel = 45;
         protected const int maximumLevel = 50;
 
@@ -71,7 +71,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 100 && npc.X == 766332 && npc.Y == 670275)
+                    if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
                     {
                         Herou = npc;
                         break;
@@ -90,8 +90,8 @@ namespace DOL.GS.DailyQuest.Midgard
                 Herou.CurrentRegionID = 100;
                 Herou.Size = 50;
                 Herou.Level = 59;
-                Herou.X = 766332;
-                Herou.Y = 670275;
+                Herou.X = 766401;
+                Herou.Y = 670349;
                 Herou.Z = 5736;
                 Herou.Heading = 2835;
                 Herou.AddToWorld();
@@ -172,8 +172,8 @@ namespace DOL.GS.DailyQuest.Midgard
                 else
                 {
                     Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
-                                        "I heard you are strong enough to help me with Daily Missions of Midgard. \n\n" +
-                                        "\nCan you [support Midgard]?");
+                                        "The king is preparing to send forces into Tuscaren Glacier to clear it out. \n" +
+                                        "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
             }
             // The player whispered to the NPC
@@ -184,10 +184,10 @@ namespace DOL.GS.DailyQuest.Midgard
                 {
                     switch (wArgs.Text)
                     {
-                        case "support Midgard":
+                        case "clearing the way":
                             player.Out.SendQuestSubscribeCommand(Herou,
                                 QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)),
-                                "Will you help Herou " + questTitle + "");
+                                "Will you help Herou with " + questTitle + "");
                             break;
                     }
                 }

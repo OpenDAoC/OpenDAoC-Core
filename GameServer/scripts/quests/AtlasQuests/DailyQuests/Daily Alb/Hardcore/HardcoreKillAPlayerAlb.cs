@@ -364,6 +364,7 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2, true);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 500);
+			PlayerKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}
@@ -372,6 +373,7 @@ namespace DOL.GS.DailyQuest
 		{
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
+			PlayerKilled = 0;
 			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
