@@ -85,7 +85,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				ReyHib.Model = 26;
 				ReyHib.Name = "Rey";
 				ReyHib.GuildName = "Bone Collector";
-				ReyHib.Realm = eRealm.None;
+				ReyHib.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
 				ReyHib.CurrentRegionID = 200;
 				ReyHib.Size = 60;
