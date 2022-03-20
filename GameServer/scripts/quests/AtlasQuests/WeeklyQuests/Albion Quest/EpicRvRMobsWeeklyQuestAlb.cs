@@ -173,10 +173,9 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 				else
 				{
-					Haszan.SayTo(player, "*********************************************************************");
 					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
-					                       "\nCan you support Albion and [kill the epic creatures] in frontiers?");
+					                     "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
+					                     "\nCan you support Albion and [kill the epic creatures] in frontiers?");
 				}
 			}
 				// The player whispered to the NPC

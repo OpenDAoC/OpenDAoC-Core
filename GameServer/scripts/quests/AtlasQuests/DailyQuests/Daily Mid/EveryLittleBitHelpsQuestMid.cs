@@ -70,7 +70,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 100 && npc.X == 766450 && npc.Y == 670339)
+					if (npc.CurrentRegionID == 100 && npc.X == 766491 && npc.Y == 670375)
 					{
 						ReyMid = npc;
 						break;
@@ -90,8 +90,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				ReyMid.CurrentRegionID = 100;
 				ReyMid.Size = 60;
 				ReyMid.Level = 59;
-				ReyMid.X = 766450;
-				ReyMid.Y = 670339;
+				ReyMid.X = 766491;
+				ReyMid.Y = 670375;
 				ReyMid.Z = 5736;
 				ReyMid.Heading = 2358;
 				ReyMid.Flags |= GameNPC.eFlags.PEACE;
