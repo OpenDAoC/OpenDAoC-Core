@@ -83,7 +83,8 @@ public class DailyQuestService
 
             foreach (var existingDailyQuest in existingDailyQuests)
             {
-                GameServer.Database.DeleteObject(existingDailyQuest);
+                if(existingDailyQuest.Step <= -1)
+                    GameServer.Database.DeleteObject(existingDailyQuest);
             }
             
             
