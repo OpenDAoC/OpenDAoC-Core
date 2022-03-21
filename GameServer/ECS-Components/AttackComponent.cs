@@ -2927,8 +2927,7 @@ namespace DOL.GS
                 specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
                 InventoryItem attackWeapon = AttackWeapon;
                 InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                if (specLevel > 0 && owner.ActiveWeaponSlot == eActiveWeaponSlot.Standard
-                    && attackWeapon != null && attackWeapon.Object_Type == (int)eObjectType.HandToHand &&
+                if (specLevel > 0 && attackWeapon != null && attackWeapon.Object_Type == (int)eObjectType.HandToHand &&
                     leftWeapon != null && leftWeapon.Object_Type == (int)eObjectType.HandToHand)
                 {
                     specLevel--;
