@@ -313,6 +313,7 @@ namespace DOL.GS
         MythicalAcuCapBonus = 244,
         MythicalStatCapBonus_Last = 244,
 
+        OffhandDamageAndChance = 245,
 		BountyPoints = 247,
 		XpPoints = 248,
 		Resist_Natural = 249,
