@@ -239,7 +239,7 @@ namespace DOL.GS
 		ArrowRecovery = 189,
 		BuffEffectiveness = 190,
 		CastingSpeed = 191,
-		DeathExpLoss = 192,
+		OffhandDamageAndChance = 192,
 		DebuffEffectivness = 193,
 		Fatigue = 194,
 		HealingEffectiveness = 195,

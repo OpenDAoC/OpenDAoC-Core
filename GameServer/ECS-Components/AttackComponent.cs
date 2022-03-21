@@ -1467,9 +1467,9 @@ namespace DOL.GS
                 int range = upperboundary - lowerboundary;
                 damage *= (lowerboundary + Util.Random(range)) * 0.01;
                 
-                if (ad.IsOffHand && owner.GetModified(eProperty.OffhandDamage) != null)
+                if (ad.IsOffHand)
                 {
-                    damage *= 1 + (owner.GetModified(eProperty.OffhandDamage) * .01);
+                    damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage) + owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
                 }
 
                 ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
@@ -2908,15 +2908,13 @@ namespace DOL.GS
                 specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
 
                 decimal tmpOffhandChance = (25 + (specLevel - 1) * 68 / 100);
-                if (owner.GetModified(eProperty.OffhandChance) != null)
-                {
-                    tmpOffhandChance += owner.GetModified(eProperty.OffhandChance);
-                }
+                tmpOffhandChance += owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+                
                 
                 if (owner is GamePlayer p && p.UseDetailedCombatLog)
                 {
                     p.Out.SendMessage(
-                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance)}% from RAs) \n",
+                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 
