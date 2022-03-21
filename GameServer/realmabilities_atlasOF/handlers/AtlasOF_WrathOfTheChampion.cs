@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Wrath Of The Champion";
-            m_dbspell.Icon = 0;
+            m_dbspell.Icon = 333;
             m_dbspell.ClientEffect = 2797;
             m_dbspell.Damage = m_dmgValue;
 			m_dbspell.DamageType = (int)m_damageType;
@@ -51,6 +51,8 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.EffectGroup = 0;
             m_dbspell.RecastDelay = GetReUseDelay(0); // Spell code is responsible for disabling this ability and will use this value.
             m_dbspell.Range = m_range;
+            m_dbspell.Description = m_dmgValue + " damage blast erupts from the caster, damaging enemies in a " 
+                                               + m_radius + " radius.";
 			m_spell = new Spell(m_dbspell, caster.Level);
             m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
         }
@@ -70,7 +72,6 @@ namespace DOL.GS.RealmAbilities
 
             if (m_spell != null)
             {
-	            Console.WriteLine($"Wrath Convert: {m_spell.Damage} PostScale {m_spell.Damage * m_caster.Level / 50}");
 	            m_spell.Damage = m_spell.Damage * m_caster.Level / 50;
 	            m_caster.castingComponent.StartCastSpell(m_spell, m_spellline, this);
             }
