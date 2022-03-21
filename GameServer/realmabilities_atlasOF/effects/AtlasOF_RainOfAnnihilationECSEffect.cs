@@ -9,7 +9,7 @@ namespace DOL.GS.Effects
         {
         }
         
-        public override ushort Icon { get { return 7023; } }
+        public override ushort Icon { get { return 3011; } }
         public override string Name { get { return "Rain Of Annihilation"; } }
         public override bool HasPositiveEffect { get { return true; } }
     }
