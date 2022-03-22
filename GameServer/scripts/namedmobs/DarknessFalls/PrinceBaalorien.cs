@@ -10,7 +10,7 @@ using log4net;
 
 namespace DOL.GS
 {
-    public class PrinceAsmoien : GameEpicBoss
+    public class PrinceBaalorien : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -18,7 +18,7 @@ namespace DOL.GS
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
             if (log.IsInfoEnabled)
-				log.Info("Prince Asmoien initialized..");
+				log.Info("Prince Ba'alorien initialized..");
 		}
 
 		[ScriptUnloadedEvent]
@@ -27,13 +27,13 @@ namespace DOL.GS
 
         }
         
-        public PrinceAsmoien()
+        public PrinceBaalorien()
             : base()
         {
         }
         public override bool AddToWorld()
         {
-            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165030);
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165031);
             LoadTemplate(npcTemplate);
             
             Strength = npcTemplate.Strength;
@@ -50,7 +50,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
             
-            AsmoienBrain sBrain = new AsmoienBrain();
+            BaalorienBrain sBrain = new BaalorienBrain();
             SetOwnBrain(sBrain);
             
             base.AddToWorld();
@@ -121,11 +121,11 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-    public class AsmoienBrain : StandardMobBrain
+    public class BaalorienBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AsmoienBrain()
+        public BaalorienBrain()
             : base()
         {
             AggroLevel = 100;
@@ -146,7 +146,8 @@ namespace DOL.AI.Brain
                 {
                     if (pet.Brain is not IControlledBrain) continue;
                     Body.Health += pet.MaxHealth;
-                    pet.Emote(eEmote.SpellGoBoom);
+                    foreach (GamePlayer player in pet.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        player.Out.SendSpellEffectAnimation(Body,pet,368,0,false,1);
                     pet.Die(Body);
                 }
             }
