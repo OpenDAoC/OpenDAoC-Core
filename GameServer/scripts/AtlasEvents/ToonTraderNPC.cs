@@ -177,7 +177,7 @@ namespace DOL.GS.Scripts
                     player.Name = "DELETEME" + player.Name;
                     player.Reset();
 
-                    player.MoveTo(249, 47417, 49571, 20832, 3089);
+                    player.MoveTo(249, 47400, 48686, 25000, 2085);
 
                     AtlasROGManager.GenerateOrbAmount(player, orbAmount);
 
