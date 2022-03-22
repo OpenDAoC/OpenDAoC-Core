@@ -213,7 +213,7 @@ namespace DOL.AI.Brain
 								spawnfairy = true;
 							}
 						}
-					}
+                    }
 				}
 			}
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
