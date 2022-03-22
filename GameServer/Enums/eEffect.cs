@@ -142,6 +142,7 @@ namespace DOL.GS
         AmelioratingMelodies,
         SoldiersBarricade,
         ReflexAttack,
+        WhirlingDervish,
         MasteryOfConcentration,
     }
 }

@@ -3845,6 +3845,9 @@ namespace DOL.GS
             if (keyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
                 return 50;
 
+            if (keyName.StartsWith(GlobalSpellsLines.Realm_Spells))
+                return this.Level;
+
             Specialization spec = null;
             int level = 0;
             lock (((ICollection)m_specialization).SyncRoot)

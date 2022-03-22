@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou = new GameNPC();
 				Herou.Model = 142;
 				Herou.Name = "Herou";
-				Herou.GuildName = "Atlas Quest";
+				Herou.GuildName = "Realm Logistics";
 				Herou.Realm = eRealm.Midgard;
 				//Svasud Faste Location
 				Herou.CurrentRegionID = 100;
@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249) 
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249  && player.GetConLevel(gArgs.Target) > -3) 
 				{
 					_mobsKilled++;
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);

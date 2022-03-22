@@ -118,7 +118,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Dean.AddQuestToGive(typeof (KillNPCInFrontiersHib));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" Hib initialized");
+				log.Info("Quest \"" + questTitle + "\" initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
 						return "Return to Dean in Druim Ligen for your Reward.";
 				}
@@ -325,14 +325,13 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) >= -1 
+				if (player.GetConLevel(gArgs.Target) >= 0 
 				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
-					player.Out.SendMessage("[Daily] Monsters Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KILLED)
+					if (FrontierMobsKilled >= 25)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;
