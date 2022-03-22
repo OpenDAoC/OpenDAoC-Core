@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249) 
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249  && gArgs.Target.GetConLevel(player) > -3) 
 				{
 					_mobsKilled++;
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
