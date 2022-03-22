@@ -17,6 +17,8 @@ namespace DOL.GS.RealmAbilities
         public const int duration = 60000; // 60 seconds
         public override int MaxLevel { get { return 3; } }
         public override int GetReUseDelay(int level) { return 900; } // 15 mins
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 3); }
+        
         public override int CostForUpgrade(int level) {
             switch (level)
             {
