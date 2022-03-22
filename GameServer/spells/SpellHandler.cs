@@ -892,6 +892,8 @@ namespace DOL.GS.Spells
 					                                                   eChatType.CT_SpellResisted);
 					Caster.Notify(GameLivingEvent.CastFailed,
 					              new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
+					if (Caster is GameNPC npc)
+						npc.Follow(selectedTarget, Spell.Range - 100, GameNPC.STICKMAXIMUMRANGE);
 					return false;
 				}
 
