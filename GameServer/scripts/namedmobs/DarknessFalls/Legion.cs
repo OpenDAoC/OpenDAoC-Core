@@ -189,10 +189,10 @@ namespace DOL.GS.Scripts
                 {
                     foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
                     {
-                        playerNearby.MoveTo(249, 48117, 49573, 20833, 1006);
+                        playerNearby.MoveTo(249, 48200, 49566, 20833, 1028);
                         playerNearby.BroadcastUpdate();
                     }
-                    player.MoveTo(249, 48117, 49573, 20833, 1006);
+                    player.MoveTo(249, 48200, 49566, 20833, 1028);
                 }
                 player.BroadcastUpdate();
             }
@@ -218,7 +218,7 @@ namespace DOL.GS.Scripts
             
             foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
             {
-                playerNearby.MoveTo(249, 48117, 49573, 20833, 1006);
+                playerNearby.MoveTo(249, 48200, 49566, 20833, 1028);
                 playerNearby.BroadcastUpdate();
             }
         }
