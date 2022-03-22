@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.GS.Styles;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -360,6 +361,40 @@ namespace DOL.GS.RealmAbilities
 		public const long NOTINGROUP = 0x00000040;
 		public const long STEALTHED = 0x000000080;
 		public const long TARGET = 0x000000100;
+	}
+
+	public abstract class StyleRealmAbility : TimedRealmAbility
+	{
+		public Style StyleToUse;
+
+		public StyleRealmAbility(DBAbility ability, int level) : base(ability, level)
+		{
+			StyleToUse = CreateStyle();
+		}
+
+		public override int MaxLevel
+		{
+			get { return 1; }
+		}
+
+		public override int CostForUpgrade(int currentLevel)
+		{
+			return 10;
+		}
+		
+		public override int GetReUseDelay(int level) { return 600; } // 10 mins
+
+		protected abstract Style CreateStyle();
+
+		public override void Execute(GameLiving living)
+		{
+			if (StyleToUse != null)
+			{
+				StyleProcessor.TryToUseStyle(living, StyleToUse);
+				DisableSkill(living);
+			}
+			base.Execute(living);
+		}
 	}
 
 
