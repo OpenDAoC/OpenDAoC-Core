@@ -209,7 +209,7 @@ namespace DOL.GS.Scripts
             if (eArgs?.Killer.Name != "Legion")
                 return;
             
-            foreach (GameNPC mob in player.GetNPCsInRadius(2500))
+            foreach (GameNPC mob in player.GetNPCsInRadius(2000))
             {
                 if (mob is not Legion) continue;
                 mob.Health += player.MaxHealth;

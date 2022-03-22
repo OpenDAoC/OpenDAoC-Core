@@ -150,6 +150,11 @@ namespace DOL.GS
         {
             return 1000;
         }
+        
+        public override int AttackSpeed(params InventoryItem[] weapon)
+        {
+            return base.AttackSpeed(weapon) * 2;
+        }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
