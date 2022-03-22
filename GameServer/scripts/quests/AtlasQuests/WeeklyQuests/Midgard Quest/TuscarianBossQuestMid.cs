@@ -71,7 +71,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 100 && npc.X == 766332 && npc.Y == 670275)
+                    if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
                     {
                         Herou = npc;
                         break;
@@ -84,14 +84,14 @@ namespace DOL.GS.DailyQuest.Midgard
                 Herou = new GameNPC();
                 Herou.Model = 142;
                 Herou.Name = "Herou";
-                Herou.GuildName = "Atlas Quest";
+                Herou.GuildName = "Realm Logistics";
                 Herou.Realm = eRealm.Midgard;
                 //Svasud Faste Location
                 Herou.CurrentRegionID = 100;
                 Herou.Size = 50;
                 Herou.Level = 59;
-                Herou.X = 766332;
-                Herou.Y = 670275;
+                Herou.X = 766401;
+                Herou.Y = 670349;
                 Herou.Z = 5736;
                 Herou.Heading = 2835;
                 Herou.AddToWorld();
@@ -367,7 +367,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
         public override void FinishQuest()
         {
-            m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
+            m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, false);
             m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 5, 0, Util.Random(50)), "You receive {0} as a reward.");
             AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
             _deadTuscaBossMob = 0;

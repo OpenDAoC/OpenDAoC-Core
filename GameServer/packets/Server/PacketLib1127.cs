@@ -64,20 +64,20 @@ namespace DOL.GS.PacketHandler
 			}
 
 			//rate limit spell and damage messages
-			if (type == eChatType.CT_Spell || type == eChatType.CT_Damaged)
-			{
-				if (m_numPacketsSent < m_packetCap)
-				{
-					pak.WriteString(str + msg);
-					SendTCP(pak);
-					m_numPacketsSent++;
-					m_lastPacketSendTick = GameLoop.GameLoopTime;
-				}				
-			} else
-            {
+			//if (type == eChatType.CT_Spell || type == eChatType.CT_Damaged)
+			//{
+			//	if (m_numPacketsSent < m_packetCap)
+			//	{
+			//		pak.WriteString(str + msg);
+			//		SendTCP(pak);
+			//		m_numPacketsSent++;
+			//		m_lastPacketSendTick = GameLoop.GameLoopTime;
+			//	}				
+			//} else
+   //         {
 				pak.WriteString(str + msg);
 				SendTCP(pak);
-			}
+			//}
 			
 		}
 	}

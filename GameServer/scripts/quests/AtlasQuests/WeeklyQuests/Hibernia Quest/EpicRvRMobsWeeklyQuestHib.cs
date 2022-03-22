@@ -89,7 +89,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Dean = new GameNPC();
 				Dean.Model = 355;
 				Dean.Name = "Dean";
-				Dean.GuildName = "Atlas Quest";
+				Dean.GuildName = "Advisor to the King";
 				Dean.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
 				Dean.CurrentRegionID = 200;
@@ -173,7 +173,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					Dean.SayTo(player, "*********************************************************************");
 					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, do you need a task? "+
 					                   "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n"+
 					                   "\nCan you support Hibernia and [kill the epic creatures] in frontiers?");

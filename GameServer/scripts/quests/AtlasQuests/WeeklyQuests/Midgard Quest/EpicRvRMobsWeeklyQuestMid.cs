@@ -89,7 +89,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou = new GameNPC();
 				Herou.Model = 142;
 				Herou.Name = "Herou";
-				Herou.GuildName = "Atlas Quest";
+				Herou.GuildName = "Realm Logistics";
 				Herou.Realm = eRealm.Midgard;
 				//Svasud Faste Location
 				Herou.CurrentRegionID = 100;
@@ -173,7 +173,6 @@ namespace DOL.GS.DailyQuest.Midgard
 				}
 				else
 				{
-					Herou.SayTo(player, "*********************************************************************");
 					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, do you need a task? "+
 					                    "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n"+
 					                    "\nCan you support Midgard and [kill the epic creatures] in frontiers?");

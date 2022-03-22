@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Albion
 				Cola = new GameNPC();
 				Cola.Model = 724;
 				Cola.Name = "Cola";
-				Cola.GuildName = "Atlas Quest";
+				Cola.GuildName = "Advisor to the King";
 				Cola.Realm = eRealm.Albion;
 				Cola.CurrentRegionID = 1;
 				Cola.Size = 50;
@@ -354,7 +354,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
 			danaoinKilled = 0;

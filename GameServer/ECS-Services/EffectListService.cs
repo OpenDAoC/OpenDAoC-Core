@@ -178,18 +178,21 @@ namespace DOL.GS
                                     isBest = true;
                                 else if (concEffects.Count > 1)
                                 {
-                                    foreach (ECSGameSpellEffect eff in effects)
+                                    foreach (var tmpEff in effects)
                                     {
-                                        if (!eff.IsDisabled)
-                                            enabled = eff;
-                                        if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                        if (tmpEff is ECSGameSpellEffect eff)
                                         {
-                                            isBest = true;
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            isBest = false;
+                                            if (!eff.IsDisabled)
+                                                enabled = eff;
+                                            if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                            {
+                                                isBest = true;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                isBest = false;
+                                            }
                                         }
                                     }
                                 }

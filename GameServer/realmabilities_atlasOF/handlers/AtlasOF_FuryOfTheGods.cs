@@ -30,5 +30,5 @@ namespace DOL.GS.RealmAbilities
         }
 
         protected override double GetDamageAddAmount() { return 7.0; }
-    }
+	}
 }

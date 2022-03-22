@@ -70,7 +70,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 100 && npc.X == 766551 && npc.Y == 670398)
+					if (npc.CurrentRegionID == 100 && npc.X == 766491 && npc.Y == 670375)
 					{
 						ReyMid = npc;
 						break;
@@ -85,13 +85,13 @@ namespace DOL.GS.DailyQuest.Midgard
 				ReyMid.Model = 26;
 				ReyMid.Name = "Rey";
 				ReyMid.GuildName = "Bone Collector";
-				ReyMid.Realm = eRealm.None;
+				ReyMid.Realm = eRealm.Midgard;
 				//Svasud Faste Location
 				ReyMid.CurrentRegionID = 100;
 				ReyMid.Size = 60;
 				ReyMid.Level = 59;
-				ReyMid.X = 766551;
-				ReyMid.Y = 670398;
+				ReyMid.X = 766491;
+				ReyMid.Y = 670375;
 				ReyMid.Z = 5736;
 				ReyMid.Heading = 2242;
 				ReyMid.Flags |= GameNPC.eFlags.PEACE;
@@ -367,7 +367,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1000);
 			_playersKilledAlb = 0;

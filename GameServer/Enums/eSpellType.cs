@@ -202,11 +202,8 @@ namespace DOL.GS
         SummonMerchant = 196,
         BeadRegen = 197,
         SummonVaultkeeper = 198,
-        Null = 200
-
-
-
-
-
+        OffhandDamage = 199,
+        OffhandChance = 200,
+        Null = 201
     }
 }
