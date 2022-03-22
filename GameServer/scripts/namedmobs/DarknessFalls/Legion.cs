@@ -203,6 +203,11 @@ namespace DOL.GS.Scripts
             
             if (player == null)
                 return;
+
+            DyingEventArgs eArgs = args as DyingEventArgs;
+            
+            if (eArgs?.Killer.Name != "Legion")
+                return;
             
             foreach (GameNPC mob in player.GetNPCsInRadius(2500))
             {
