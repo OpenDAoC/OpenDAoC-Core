@@ -321,17 +321,7 @@ namespace DOL.GS.DailyQuest
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				
-				lock (gArgs.Target.XPGainers.SyncRoot)
-				{
-					//dont count kills for anything that another player has tagged
-					foreach (var xpGainer in gArgs.Target.XPGainers)
-					{
-						if(xpGainer is GamePlayer && xpGainer != player)
-							return;
-					}
-				}
-				
+
 				if (player.GetConLevel(gArgs.Target) > 0) 
 				{
 					OrangeConKilled++;
