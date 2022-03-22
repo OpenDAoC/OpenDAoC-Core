@@ -34,31 +34,83 @@ using log4net;
 
 namespace DOL.GS
 {
-	public class OFGreenKnight : GameNPC
+	public class OFGreenKnight : GameEpicBoss
 	{
 		public OFGreenKnight() : base() { }
-		public static GameNPC greenKnight = new GameNPC();
 
+		public static int TauntID = 103;
+		public static int TauntClassID = 2;//armsman
+		public static Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 70;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 70;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 70;// dmg reduction for melee dmg
+				default: return 50;// dmg reduction for rest resists
+			}
+		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100; //more str more dmg will he deal, modify ingame for easier adjust
 		}
-		
+		public override int AttackRange
+		{
+			get { return 350; }
+			set { }
+		}
+		public override bool HasAbility(string keyName)
+		{
+			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+				return true;
+
+			return base.HasAbility(keyName);
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 1000;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.85;
+		}
+		public override int MaxHealth
+		{
+			get { return 20000; }
+		}
+		public override void Die(GameObject killer)//on kill generate orbs
+		{
+			// debug
+			log.Debug($"{Name} killed by {killer.Name}");
+
+			GamePlayer playerKiller = killer as GamePlayer;
+
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
+				}
+			}
+			base.Die(killer);
+		}
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161621);
 			LoadTemplate(npcTemplate);
 			Strength = npcTemplate.Strength;
-			Constitution = npcTemplate.Constitution;
 			Dexterity = npcTemplate.Dexterity;
+			Constitution = npcTemplate.Constitution;
 			Quickness = npcTemplate.Quickness;
-			Empathy = npcTemplate.Empathy;
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
-
-			// humanoid
+			Empathy = npcTemplate.Empathy;
+			Faction = FactionMgr.GetFactionByID(236);// fellwoods
+			Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			BodyType = 6;
-			Race = 2005;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 46, 0, 0, 0); //Slot,model,color,effect,extension
@@ -69,28 +121,67 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 32, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 32, 0, 0);
 			Inventory = template.CloseTemplate();
+			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			Styles.Add(taunt);
+			MaxSpeedBase = 400;
 
-			Model = 334;
-			Name = "Green Knight";
-			Level = 75;
-			Gender = eGender.Male;
+			OFGreenKnightBrain.walk1 = false; OFGreenKnightBrain.atpoint1 = false;
+			OFGreenKnightBrain.walk2 = false; OFGreenKnightBrain.atpoint2 = false;
+			OFGreenKnightBrain.walk3 = false; OFGreenKnightBrain.atpoint3 = false;
+			OFGreenKnightBrain.walk4 = false; OFGreenKnightBrain.atpoint4 = false;
+			OFGreenKnightBrain.walk5 = false; OFGreenKnightBrain.Pick_healer = false;
+			OFGreenKnightBrain.walk6 = false; OFGreenKnightBrain.IsSpawningTrees = false;
+			OFGreenKnightBrain.walk7 = false; OFGreenKnightBrain.IsWalking = false;
+			OFGreenKnightBrain.walk8 = false;
+			OFGreenKnightBrain.walk9 = false;
 
-			// twohanded
+			Flags = eFlags.PEACE;
 			VisibleActiveWeaponSlots = 34;
 			MeleeDamageType = eDamageType.Slash;
-			
-			//must be peace on start, unless he will be aggresive
-			Flags = eFlags.PEACE;
-
-			OFGreenKnightBrain sBrain = new OFGreenKnightBrain();
-			SetOwnBrain(sBrain);
-			sBrain.AggroLevel = 100;
-			sBrain.AggroRange = 800;
+			OFGreenKnightBrain sbrain = new OFGreenKnightBrain();
+			SetOwnBrain(sbrain);
+			LoadedFromScript = false;//load from database
+			SaveIntoDatabase();
 			base.AddToWorld();
-
 			return true;
 		}
+		[ScriptLoadedEvent]
+		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		{
+			GameNPC[] npcs;
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Green Knight", 1, (eRealm)0);
+			if (npcs.Length == 0)
+			{
+				log.Warn("Green Knight not found, creating it...");
 
+				log.Warn("Initializing Green Knight ...");
+				OFGreenKnight OF = new OFGreenKnight();
+				OF.Name = "Green Knight";
+				OF.Model = 334;
+				OF.Realm = 0;
+				OF.Level = 79;
+				OF.Size = 120;
+				OF.CurrentRegionID = 1;//albion Forest sauvage
+				OF.MeleeDamageType = eDamageType.Slash;
+				OF.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+				OF.Faction = FactionMgr.GetFactionByID(236);
+				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
+				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+				OF.MaxSpeedBase = 300;
+
+				OF.X = 592990;
+				OF.Y = 418687;
+				OF.Z = 5012;
+				OF.Heading = 3331;
+				OFGreenKnightBrain ubrain = new OFGreenKnightBrain();
+				OF.SetOwnBrain(ubrain);
+				OF.AddToWorld();
+				OF.SaveIntoDatabase();
+				OF.Brain.Start();
+			}
+			else
+				log.Warn("Green Knight exist ingame, remove it and restart server if you want to add by script code.");
+		}
 		//This function is the callback function that is called when
 		//a player right clicks on the npc
 		public override bool Interact(GamePlayer player)
@@ -164,7 +255,6 @@ namespace DOL.GS
 			}
 			return true;
 		}
-
 		public override void OnAttackEnemy(AttackData ad)
 		{
 			// 30% chance to proc heat dd
@@ -172,11 +262,9 @@ namespace DOL.GS
 			{
 				//Here boss cast very X s aoe heat dmg, we can adjust it in spellrecast delay
 				CastSpell(GreenKnightHeatDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
-			
+			}			
 			base.OnAttackEnemy(ad);
-		}
-		
+		}		
 		//This function sends some text to a player and makes it appear
 		//in a popup window. We just define it here so we can use it in
 		//the WhisperToMe function instead of writing the long text
@@ -203,27 +291,26 @@ namespace DOL.GS
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;
-					spell.RecastDelay = 0;
+					spell.RecastDelay = 2;
 					spell.ClientEffect = 360;
 					spell.Icon = 360;
-					spell.Damage = 300;
+					spell.Damage = 250;
 					spell.DamageType = (int) eDamageType.Heat;
 					spell.Name = "Might of the Forrest";
-					spell.Range = 1000;
-					spell.SpellID = 360;
+					spell.Range = 0;
+					spell.Radius = 350;
+					spell.SpellID = 11755;
 					spell.Target = "Enemy";
-					spell.Type = "DirectDamage";
+					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Radius = 500;
 					spell.EffectGroup = 0;
 					m_HeatDDSpell= new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatDDSpell);
 				}
-
 				return m_HeatDDSpell;
 			}
 		}
 		#endregion
-
 	}
 }
 namespace DOL.AI.Brain
@@ -231,359 +318,329 @@ namespace DOL.AI.Brain
 	public class OFGreenKnightBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public OFGreenKnightBrain() : base() { }
-
-		/// <summary>
-		/// Picking random healer bools check
-		/// </summary>
-		public static bool pickheal1 = true;
-		public static bool pickheal2 = true;
-		public static bool pickheal3 = true;
-		public static bool pickheal4 = true;
-		public static bool pickheal5 = true;
-		public static bool pickheal6 = true;
-		public static bool pickheal7 = true;
-		public static bool pickheal8 = true;
-		public static bool pickheal9 = true;
-		/// /////////////////
-		/// Spawnning trees at health stages////
-
-		public static bool spawntree1 = true;
-		public static bool spawntree2 = true;
-		public static bool spawntree3 = true;
-		public static bool spawntree4 = true;
-		public static bool spawntree5 = true;
-		public static bool spawntree6 = true;
-		public static bool spawntree7 = true;
-		public static bool spawntree8 = true;
-		public static bool spawntree9 = true;
-		/// /////////////////
-		/// 
-		public void PickHeal()
-        {
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+		public OFGreenKnightBrain() : base() 
+		{
+			AggroLevel = 100;
+			AggroRange = 600;
+		}
+		public override void AttackMostWanted()// mob doesnt attack
+		{
+			if (IsWalking == true)
+				return;
+			else
 			{
-				if (Body.TargetObject != null)
-				{
-					List<GamePlayer> healer = new List<GamePlayer>();
-					
-					foreach (GamePlayer ppl in Body.GetPlayersInRadius(2500))
-					{
-						if (ppl.IsAlive)
-						{
-							//cleric, bard, healer, warden, friar, druid, mentalist, shaman
-							if (ppl.CharacterClass.ID is 6 or 48 or 26 or 46 or 10 or 47 or 42 or 28) 
-							{
-								healer.Add(ppl);
-							}
-							else
-							{
-								Body.StartAttack(ppl);
-								healer.Clear();
-								break;
-							}
-						}
-					}
-					//pick random heal class from list
-					int ptarget = Util.Random(0, healer.Count - 1); 
-					
-					if (ptarget >= 0)
-					{
-						GamePlayer enemy = healer[ptarget];
-						if (Body.AttackState)
-						{
-							//boss stop attack
-							ClearAggroList();
-							Body.StopAttack();
-							
-							//boss pick his heal class
-							Body.StartAttack(enemy);
-						}
-					}
-					healer.Clear();
-					
-				}
+				base.AttackMostWanted();
 			}
 		}
-		public void GkTeleport()
-        {
-	        //teleport chance and heal, modify here to adjust
-			if(Util.Chance(3))
-            {
-				int randPortLoc = Util.Random(1, 4);
-				if (Body.InCombat && HasAggro)
-                {
-					switch (randPortLoc)
-					{
-						//he will teleport away and heal himself(only once), only aggro again if pulled. Can be rupted to avoid being healed
-						case 1:
-							{
-								Body.MoveTo(1, 593193, 416481, 4833, 4029);
-								if (!Body.IsCasting)
-								{
-									Body.Flags = 0;
-									Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-								}
-							}
-							break;
-						case 2:
-							{
-								Body.MoveTo(1, 593256, 420780, 5050, 2005);
-								if (!Body.IsCasting)
-								{
-									Body.Flags = 0;
-									Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-								}
-							}
-							break;
-						case 3:
-							{
-								Body.MoveTo(1, 596053, 420171, 4918, 1164);
-								if (!Body.IsCasting)
-								{
-									Body.Flags = 0;
-									Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-								}
-							}
-							break;
-						case 4:
-							{
-								Body.MoveTo(1, 590876, 418052, 4942, 3271);
-								if (!Body.IsCasting)
-								{
-									Body.Flags = 0;
-									Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-								}
-							}
-							break;
-						default:
-							break;
-					}
-                }
-            }
-        }
-		
-		public override void Think()
+		public override void OnAttackedByEnemy(AttackData ad)//another check to not attack enemys
 		{
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (IsWalking == true)
+				return;
+			else
 			{
-				if (Body.TargetObject != null)
+				base.OnAttackedByEnemy(ad);
+			}
+		}
+        #region GK pick random healer
+        public static GamePlayer randomtarget = null;
+		public static GamePlayer RandomTarget
+		{
+			get { return randomtarget; }
+			set { randomtarget = value; }
+		}
+		List<GamePlayer> healer = new List<GamePlayer>();
+		public int PickHeal(RegionTimer timer)
+        {
+			if (Body.IsAlive)
+			{
+				if (Body.InCombat && Body.IsAlive && HasAggro)
 				{
-					if (Body.HealthPercent < 100)
+					if (Body.TargetObject != null)
 					{
-						//Boss teleport method
-						GkTeleport();
-					}
-					
-					if(Body.HealthPercent <= 90 && Body.HealthPercent > 80)
-                    {
-	                    switch (Util.Random(1,2))
-	                    {
-		                    case 1:
-			                    if (pickheal1)
-			                    {
-				                    PickHeal();
-				                    pickheal1 = false;
-			                    }
-			                    break;
-		                    case 2:
-			                    if (spawntree1)
-			                    {
-				                    Spawn();
-				                    spawntree1 = false;
-			                    }
-			                    break;
-	                    }
-                    }
-					if (Body.HealthPercent <= 80 && Body.HealthPercent > 70)
-					{
-						switch (Util.Random(1,2))
+						foreach (GamePlayer ppl in Body.GetPlayersInRadius(2500))
 						{
-							case 1:
-								if (pickheal2)
+							if (ppl != null)
+							{
+								if (ppl.IsAlive && ppl.Client.Account.PrivLevel == 1)
 								{
-									PickHeal();
-									pickheal2 = false;
+									//cleric, bard, healer, warden, friar, druid, mentalist, shaman
+									if (ppl.CharacterClass.ID is 6 or 48 or 26 or 46 or 10 or 47 or 42 or 28)
+									{
+										if (!healer.Contains(ppl))
+										{
+											healer.Add(ppl);
+										}
+									}
 								}
-								break;
-							case 2:
-								if (spawntree2)
-								{
-									Spawn();
-									spawntree2 = false;
-								}
-								break;
+							}
+						}
+						if (healer.Count > 0)
+						{
+							GamePlayer Target = (GamePlayer)healer[Util.Random(0, healer.Count - 1)];//pick random target from list
+							RandomTarget = Target;//set random target to static RandomTarget
+							if (RandomTarget != null)//check if it's not null
+							{
+								ClearAggroList();//clear aggro list or it may still stick to current target
+								AddToAggroList(RandomTarget, 150);//set that target big aggro so boss will attack him
+								Body.StartAttack(RandomTarget);//attack target
+							}
+							RandomTarget = null;//reset static ranmdomtarget to null
+							Pick_healer = false;//reset flag
 						}
 					}
-					if (Body.HealthPercent <= 70 && Body.HealthPercent > 60)
+				}
+			}
+			return 0;
+		}
+        #endregion
+
+        #region GK check flags & strings & PortPoints list
+        public static bool Pick_healer = false;
+		public static bool IsSpawningTrees = false;
+		public static bool walk1 = false; public static bool atpoint1 = false;
+		public static bool walk2 = false; public static bool atpoint2 = false;
+		public static bool walk3 = false; public static bool atpoint3 = false;
+		public static bool walk4 = false; public static bool atpoint4 = false;
+		public static bool walk5 = false;
+		public static bool walk6 = false;
+		public static bool walk7 = false;
+		public static bool walk8 = false;
+		public static bool walk9 = false;
+		
+		public static bool IsWalking = false;
+		public static bool IsAtPoint1 = false;
+		public static bool IsAtPoint2 = false;
+		public static bool IsAtPoint3 = false;
+		public static bool IsAtPoint4 = false;
+		public List<string> PortPoints = new List<string>();
+		public static string string1 = "point1";
+		public static string string2 = "point2";
+		public static string string3 = "point3";
+		public static string string4 = "point4";
+        #endregion
+
+        #region GK Teleport/Walk method
+        public int GkTeleport(RegionTimer timer)
+		{
+			if (Body.IsAlive)
+			{				
+				Point3D point1 = new Point3D();
+				point1.X = 593193; point1.Y = 416481; point1.Z = 4833;
+				Point3D point2 = new Point3D();
+				point2.X = 593256; point2.Y = 420780; point2.Z = 5050;
+				Point3D point3 = new Point3D();
+				point3.X = 596053; point3.Y = 420171; point3.Z = 4918;
+				Point3D point4 = new Point3D();
+				point4.X = 590876; point4.Y = 418052; point4.Z = 4942;
+				if(!PortPoints.Contains(string1) && !PortPoints.Contains(string2) && !PortPoints.Contains(string3) && !PortPoints.Contains(string4))
+                {
+					if (atpoint1 == false)
 					{
-						switch (Util.Random(1,2))
-						{
-							case 1:
-								if (pickheal3)
-								{
-									PickHeal();
-									pickheal3 = false;
-								}
-								break;
-							case 2:
-								if (spawntree3)
-								{
-									Spawn();
-									spawntree3 = false;
-								}
-								break;
-						}
+						PortPoints.Add(string1);
 					}
-					if (Body.HealthPercent <= 60 && Body.HealthPercent > 50)
+					if (atpoint2 == false)
 					{
-						switch (Util.Random(1,2))
-						{
-							case 1:
-								if (pickheal4)
-								{
-									PickHeal();
-									pickheal4 = false;
-								}
-								break;
-							case 2:
-								if (spawntree4)
-								{
-									Spawn();
-									spawntree4 = false;
-								}
-								break;
-						}
+						PortPoints.Add(string2);
 					}
-					if (Body.HealthPercent <= 50 && Body.HealthPercent > 40)
+					if (atpoint3 == false)
 					{
-						switch (Util.Random(1,2))
-						{
-							case 1:
-								if (pickheal5)
-								{
-									PickHeal();
-									pickheal5 = false;
-								}
-								break;
-							case 2:
-								if (spawntree5)
-								{
-									Spawn();
-									spawntree5 = false;
-								}
-								break;
-						}
+						PortPoints.Add(string3);
 					}
-					if (Body.HealthPercent <= 40 && Body.HealthPercent > 30)
+					if (atpoint4 == false)
 					{
-						switch (Util.Random(1,2))
-						{
-							case 1:
-								if (pickheal6)
-								{
-									PickHeal();
-									pickheal6 = false;
-								}
-								break;
-							case 2:
-								if (spawntree6)
-								{
-									Spawn();
-									spawntree6 = false;
-								}
-								break;
-						}
+						PortPoints.Add(string4);
 					}
-					if (Body.HealthPercent <= 30 && Body.HealthPercent > 20)
+				}
+				if (PortPoints.Count > 0)
+				{
+					foreach (string stg in PortPoints)
 					{
-						switch (Util.Random(1,2))
+						switch (stg)
 						{
-							case 1:
-								if (pickheal7)
+							//he will teleport away and heal himself(only once), only aggro again if pulled. Can be rupted to avoid being healed
+							case "point1":
 								{
-									PickHeal();
-									pickheal7 = false;
+									if (!Body.IsWithinRadius(point1, 50))
+									{
+										Body.StopAttack();
+										Body.WalkTo(point1, 400);
+										IsWalking = true;
+									}
 								}
 								break;
-							case 2:
-								if (spawntree7)
+							case "point2":
 								{
-									Spawn();
-									spawntree7 = false;
+									if (!Body.IsWithinRadius(point2, 50))
+									{
+										Body.StopAttack();
+										Body.WalkTo(point2, 400);
+										IsWalking = true;
+									}
 								}
 								break;
-						}
-					}
-					if (Body.HealthPercent <= 20 && Body.HealthPercent > 10)
-					{
-						switch (Util.Random(1,2))
-						{
-							case 1:
-								if (pickheal8)
+							case "point3":
 								{
-									PickHeal();
-									pickheal8 = false;
+									if (!Body.IsWithinRadius(point3, 50))
+									{
+										Body.StopAttack();
+										Body.WalkTo(point3, 400);
+										IsWalking = true;
+									}
 								}
 								break;
-							case 2:
-								if (spawntree8)
+							case "point4":
 								{
-									Spawn();
-									spawntree8 = false;
-								}
-								break;
-						}
-					}
-					if (Body.HealthPercent <= 10 && Body.HealthPercent > 1)
-					{
-						switch (Util.Random(1,2))
-						{
-							case 1:
-								if (pickheal9)
-								{
-									PickHeal();
-									pickheal9 = false;
-								}
-								break;
-							case 2:
-								if (spawntree9)
-								{
-									Spawn();
-									spawntree9 = false;
+									if (!Body.IsWithinRadius(point4, 50))
+									{
+										Body.StopAttack();
+										Body.WalkTo(point4, 400);
+										IsWalking = true;
+									}
 								}
 								break;
 						}
 					}
 				}
-
+			}
+			return 0;
+		}
+        #endregion
+        public override void Think()
+		{
+			Point3D point1 = new Point3D();
+			point1.X = 593193; point1.Y = 416481; point1.Z = 4833;
+			Point3D point2 = new Point3D();
+			point2.X = 593256; point2.Y = 420780; point2.Z = 5050;
+			Point3D point3 = new Point3D();
+			point3.X = 596053; point3.Y = 420171; point3.Z = 4918;
+			Point3D point4 = new Point3D();
+			point4.X = 590876; point4.Y = 418052; point4.Z = 4942;
+			if (Body.IsAlive && Body.HealthPercent < 25)//mobs slow down when they got low hp
+			{
+				Body.CurrentSpeed = 300;
+			}
+			if (Body.InCombat && Body.IsAlive && HasAggro)
+			{
+                #region GK walking and healing
+                if (Body.IsWithinRadius(point1,40) && atpoint1==false)
+                {
+					IsWalking = false;
+					Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+					if(PortPoints.Contains(string1))
+                    {
+						PortPoints.Remove(string1);
+                    }
+					atpoint1 = true;
+					atpoint2 = false;
+					atpoint3 = false;
+					atpoint4 = false;
+				}
+				else if (Body.IsWithinRadius(point2, 40) && atpoint2 == false)
+				{
+					IsWalking = false;
+					Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+					if (PortPoints.Contains(string2))
+					{
+						PortPoints.Remove(string2);
+					}
+					atpoint2 = true;
+					atpoint1 = false;
+					atpoint3 = false;
+					atpoint4 = false;
+				}
+				if (Body.IsWithinRadius(point3, 40) && atpoint3 == false)
+				{
+					IsWalking = false;
+					Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+					if (PortPoints.Contains(string3))
+					{
+						PortPoints.Remove(string3);
+					}
+					atpoint3 = true;
+					atpoint2 = false;
+					atpoint1 = false;
+					atpoint4 = false;
+				}
+				if (Body.IsWithinRadius(point4, 40) && atpoint4 == false)
+				{
+					IsWalking = false;
+					Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+					if (PortPoints.Contains(string4))
+					{
+						PortPoints.Remove(string4);
+					}
+					atpoint4 = true;
+					atpoint2 = false;
+					atpoint3 = false;
+					atpoint1 = false;
+				}
+				if (Body.HealthPercent <= 90 && walk1==false)
+                {
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk1 = true;
+                }
+				else if((Body.HealthPercent <= 80 && walk2 == false))
+                {
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk2 = true;
+				}
+				else if ((Body.HealthPercent <= 70 && walk3 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk3 = true;
+				}
+				else if ((Body.HealthPercent <= 60 && walk4 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk4 = true;
+				}
+				else if ((Body.HealthPercent <= 50 && walk5 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk5 = true;
+				}
+				else if ((Body.HealthPercent <= 40 && walk6 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk6 = true;
+				}
+				else if ((Body.HealthPercent <= 30 && walk7 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk7 = true;
+				}
+				else if ((Body.HealthPercent <= 20 && walk8 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk8 = true;
+				}
+				else if ((Body.HealthPercent <= 10 && walk9 == false))
+				{
+					new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+					walk9 = true;
+				}
+                #endregion
+                if (Pick_healer==false)
+                {
+					new RegionTimer(Body, new RegionTimerCallback(PickHeal), Util.Random(40000, 60000));//40s-60s will try pick heal class
+					Pick_healer=true;
+				}
+				if (IsSpawningTrees == false)
+				{
+					new RegionTimer(Body, new RegionTimerCallback(SpawnTrees), Util.Random(25000, 35000));//25s-35s will spawn trees
+					IsSpawningTrees = true;
+				}
+				if(Body.TargetObject != null)
+                {
+					Body.styleComponent.NextCombatStyle = OFGreenKnight.taunt;
+				}
 			}
 			//we reset him so he return to his orginal peace flag and max health and reseting pickheal phases
 			if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
 			{
 				Body.Flags = GameNPC.eFlags.PEACE;
 				Body.Health = Body.MaxHealth;
-				Body.WalkToSpawn(300);//move boss back to his spawn point
-				pickheal1 = true;
-				pickheal2 = true;
-				pickheal3 = true;
-				pickheal4 = true;
-				pickheal5 = true;
-				pickheal6 = true;
-				pickheal7 = true;
-				pickheal8 = true;
-				pickheal9 = true;
-
-				spawntree1 = true;
-				spawntree2 = true;
-				spawntree3 = true;
-				spawntree4 = true;
-				spawntree5 = true;
-				spawntree6 = true;
-				spawntree7 = true;
-				spawntree8 = true;
-				spawntree9 = true;
-
+				Body.WalkToSpawn(400);//move boss back to his spawn point
 				foreach (GameNPC npc in Body.GetNPCsInRadius(6500))
 				{
 					if (npc.Brain is GKTreesBrain)
@@ -592,34 +649,47 @@ namespace DOL.AI.Brain
 						npc.RemoveFromWorld();
 					}
 				}
+				walk1 = false; atpoint1 = false;
+				walk2 = false; atpoint2 = false;
+				walk3 = false; atpoint3 = false;
+				walk4 = false; atpoint4 = false;
+				walk5 = false; Pick_healer = false;
+				walk6 = false; IsSpawningTrees = false;
+				walk7 = false; IsWalking = false;
+				walk8 = false;
+				walk9 = false;
 			}
 			base.Think();
-		}
-			
-		public void Spawn() // We define here adds
+		}		
+		public int SpawnTrees(RegionTimer timer) // We define here adds
 		{
-			//spawning each tree in radius of 4000 on every player
-			List<GamePlayer> player = new List<GamePlayer>();
-			foreach (GamePlayer ppl in Body.GetPlayersInRadius(4000))
+			if (Body.IsAlive && Body.InCombat && HasAggro)
 			{
-				player.Add(ppl);
-				
-				if (ppl.IsAlive)
+				//spawning each tree in radius of 4000 on every player
+				List<GamePlayer> player = new List<GamePlayer>();
+				foreach (GamePlayer ppl in Body.GetPlayersInRadius(4000))
 				{
-					for (int i = 0; i <= player.Count - 1; i++)
+					player.Add(ppl);
+
+					if (ppl.IsAlive)
 					{
-						GKTrees add = new GKTrees();
-						add.X = ppl.X;
-						add.Y = ppl.Y;
-						add.Z = ppl.Z;
-						add.CurrentRegion = Body.CurrentRegion;
-						add.Heading = ppl.Heading;
-						add.AddToWorld();
-						add.StartAttack(ppl);
+						for (int i = 0; i <= player.Count - 1; i++)
+						{
+							GKTrees add = new GKTrees();
+							add.X = ppl.X;
+							add.Y = ppl.Y;
+							add.Z = ppl.Z;
+							add.CurrentRegion = Body.CurrentRegion;
+							add.Heading = ppl.Heading;
+							add.AddToWorld();
+							add.StartAttack(ppl);
+						}
 					}
+					player.Clear();
 				}
-				player.Clear();
+				IsSpawningTrees = false;
 			}
+			return 0;
 		}
 		public Spell GreenKnightHeal
 		{
@@ -627,13 +697,13 @@ namespace DOL.AI.Brain
 			{
 				DBSpell spell = new DBSpell();
 				spell.AllowAdd = false;
-				spell.Uninterruptible = true;
+				spell.Uninterruptible = false;
 				spell.Power = 0;
-				spell.CastTime = 2;
+				spell.CastTime = 5;
 				spell.ClientEffect = 4811;
-				spell.RecastDelay = 0;
+				spell.RecastDelay = 5;
 				spell.Icon = 4811;
-				spell.Value = (double) Body.MaxHealth / 95; //Modify here if heal is too strong
+				spell.Value = Body.MaxHealth / 10; //Modify here if heal is too strong
 				spell.Duration = 0;
 				spell.Name = "Holly Hand";
 				spell.Range = 0;
@@ -651,31 +721,22 @@ namespace DOL.AI.Brain
 {
 	public class GKTreesBrain : StandardMobBrain
 	{
-
 		public GKTreesBrain()
 			: base()
 		{
 			AggroLevel = 100;
-			AggroRange = 500;
+			AggroRange = 800;
 		}
-
-		//remove minions if they were last in combat and they have no aggro anymore
-		public override void Think()
-		{
-			if (!HasAggro && Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-			{
-				Body.RemoveFromWorld();
-			}
-			base.Think();
-		}
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
-		{
-			base.Notify(e, sender, args);
-		}
-	}
+        public override void Think()
+        {
+			if(!HasAggressionTable())
+            {
+				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            }
+            base.Think();
+        }
+    }
 }
-
-
 namespace DOL.GS
 {
 	public class GKTrees : GameNPC
@@ -683,17 +744,20 @@ namespace DOL.GS
 		public override int MaxHealth
 		{
 			//trees got low hp, because they spawn preaty often. Modify here to adjust hp
-			get { return 600 * Constitution / 100; } 
+			get { return 800 * Constitution / 100; } 
 		}
 		public override bool AddToWorld()
 		{
 			Model = 97;
 			RoamingRange = 250;
+			Strength = 150;
 			Constitution = 100;
 			RespawnInterval = -1;
 			Size = (byte)Util.Random(90, 135);
 			Level = (byte)Util.Random(47, 49); // Trees level
 			Name = "rotting downy felwood";
+			Faction = FactionMgr.GetFactionByID(236);// fellwoods
+			Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
 			PackageID = "GreenKnightAdd";
 			GKTreesBrain treesbrain = new GKTreesBrain();
 			SetOwnBrain(treesbrain);
