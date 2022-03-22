@@ -374,6 +374,7 @@ namespace DOL.GS.DailyQuest.Albion
 				HasNaturalist = false;
 				HasStalker = false;
 				HasMagicianForester = false;
+				player.Out.SendQuestUpdate(this);
 			}
 			
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
