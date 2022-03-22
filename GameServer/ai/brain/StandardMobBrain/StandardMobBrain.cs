@@ -990,10 +990,6 @@ namespace DOL.AI.Brain
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)) { return; }
 
-            if (Body.castingComponent.IsCasting)
-            {
-                Body.StopCurrentSpellcast();
-            }
 
             if (!Body.attackComponent.AttackState
                 && Body.IsAlive
