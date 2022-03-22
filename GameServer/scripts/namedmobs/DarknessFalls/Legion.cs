@@ -201,6 +201,9 @@ namespace DOL.GS.Scripts
         {
             GamePlayer player = sender as GamePlayer;
             
+            if (player == null)
+                return;
+            
             foreach (GameNPC mob in player.GetNPCsInRadius(2500))
             {
                 if (mob is not Legion) continue;
