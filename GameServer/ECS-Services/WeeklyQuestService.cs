@@ -81,7 +81,8 @@ public class WeeklyQuestService
 
             foreach (var existingWeeklyQuest in existingWeeklyQuests)
             {
-                GameServer.Database.DeleteObject(existingWeeklyQuest);
+                if(existingWeeklyQuest.Step <= -1)
+                    GameServer.Database.DeleteObject(existingWeeklyQuest);
             }
         }
 

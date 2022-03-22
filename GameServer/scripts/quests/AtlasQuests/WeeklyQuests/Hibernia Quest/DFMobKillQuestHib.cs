@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Dean = new GameNPC();
 				Dean.Model = 355;
 				Dean.Name = "Dean";
-				Dean.GuildName = "Atlas Quest";
+				Dean.GuildName = "Advisor to the King";
 				Dean.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
 				Dean.CurrentRegionID = 200;
@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249) 
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && gArgs.Target.GetConLevel(player) > -3) 
 				{
 					_mobsKilled++;
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -354,7 +354,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			_mobsKilled = 0;

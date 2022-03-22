@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Isaac = new GameNPC();
 				Isaac.Model = 774;
 				Isaac.Name = "Isaac";
-				Isaac.GuildName = "Atlas Quest";
+				Isaac.GuildName = "Advisor to the King";
 				Isaac.Realm = eRealm.Midgard;
 				Isaac.CurrentRegionID = 100;
 				Isaac.Size = 50;
@@ -114,11 +114,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
 			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we bring to Isaac the possibility to give this quest to players */
+			/* Now we bring to Dean the possibility to give this quest to players */
 			Isaac.AddQuestToGive(typeof (KillNPCInFrontiersMid));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" Mid initialized");
+				log.Info("Quest \"" + questTitle + "\" initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -134,7 +134,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
 			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we remove to Isaac the possibility to give this quest to players */
+			/* Now we remove to Dean the possibility to give this quest to players */
 			Isaac.RemoveQuestToGive(typeof (KillNPCInFrontiersMid));
 		}
 
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "clear our frontiers":
-							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Isaac "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
 						return "Return to Isaac in Svasud Faste for your Reward.";
 				}
@@ -325,14 +325,13 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) >= -1 
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
+				if (player.GetConLevel(gArgs.Target) >= 0 
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentRegion.IsRvR) 
 				{
 					FrontierMobsKilled++;
-					player.Out.SendMessage("[Daily] Monsters Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KILLED)
+					if (FrontierMobsKilled >= 25)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;
@@ -356,7 +355,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
 			FrontierMobsKilled = 0;

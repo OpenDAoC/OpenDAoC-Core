@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Dean = new GameNPC();
 				Dean.Model = 355;
 				Dean.Name = "Dean";
-				Dean.GuildName = "Atlas Quest";
+				Dean.GuildName = "Advisor to the King";
 				Dean.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
 				Dean.CurrentRegionID = 200;
@@ -118,7 +118,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Dean.AddQuestToGive(typeof (KillNPCInFrontiersHib));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" Hib initialized");
+				log.Info("Quest \"" + questTitle + "\" initialized");
 		}
 
 		[ScriptUnloadedEvent]
@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
 						return "Return to Dean in Druim Ligen for your Reward.";
 				}
@@ -325,14 +325,13 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) >= -1 
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
+				if (player.GetConLevel(gArgs.Target) >= 0 
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentRegion.IsRvR) 
 				{
 					FrontierMobsKilled++;
-					player.Out.SendMessage("[Daily] Monsters Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KILLED)
+					if (FrontierMobsKilled >= 25)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;
@@ -356,7 +355,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
 			FrontierMobsKilled = 0;

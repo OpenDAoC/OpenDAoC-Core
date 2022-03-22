@@ -102,7 +102,7 @@ namespace DOL.GS
                 leftHandSwingCount = owner.attackComponent.CalculateLeftHandSwingCount();
             }
             else if (owner.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield
-                && mainWeapon != null && (mainWeapon.Item_Type == Slot.RIGHTHAND || mainWeapon.Item_Type == Slot.LEFTHAND))
+                && mainWeapon != null && mainWeapon.Hand != 1)
             {
                 leftHandSwingCount = owner.attackComponent.CalculateLeftHandSwingCount();
             }

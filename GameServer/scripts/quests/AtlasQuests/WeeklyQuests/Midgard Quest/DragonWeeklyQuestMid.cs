@@ -85,7 +85,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou = new GameNPC();
 				Herou.Model = 142;
 				Herou.Name = "Herou";
-				Herou.GuildName = "Atlas Quest";
+				Herou.GuildName = "Realm Logistics";
 				Herou.Realm = eRealm.Midgard;
 				//Svasud Faste Location
 				Herou.CurrentRegionID = 100;

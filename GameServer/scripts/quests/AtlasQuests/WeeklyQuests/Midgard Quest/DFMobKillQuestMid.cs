@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou = new GameNPC();
 				Herou.Model = 142;
 				Herou.Name = "Herou";
-				Herou.GuildName = "Atlas Quest";
+				Herou.GuildName = "Realm Logistics";
 				Herou.Realm = eRealm.Midgard;
 				//Svasud Faste Location
 				Herou.CurrentRegionID = 100;
@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249) 
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249  && gArgs.Target.GetConLevel(player) > -3) 
 				{
 					_mobsKilled++;
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -354,7 +354,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			_mobsKilled = 0;

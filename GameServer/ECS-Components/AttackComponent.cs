@@ -1371,6 +1371,7 @@ namespace DOL.GS
                 || ad.AttackResult == eAttackResult.HitStyle)
             {
                 double damage = AttackDamage(weapon) * effectiveness;
+                //Console.WriteLine($"Base damage {damage}");
 
                 if (owner.Level > ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL &&
                     ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL > 0 &&
@@ -1443,7 +1444,7 @@ namespace DOL.GS
                 double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
                 //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
                 damage *= (owner.GetWeaponSkill(weapon) + 90.68) * specModifier/ (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
-                
+
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
                     weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)* specModifier} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -1465,6 +1466,11 @@ namespace DOL.GS
                 // Added to ensure damage variance never exceeds 150%
                 int range = upperboundary - lowerboundary;
                 damage *= (lowerboundary + Util.Random(range)) * 0.01;
+                
+                if (ad.IsOffHand)
+                {
+                    damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage) + owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
+                }
 
                 ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
                 //damage += ad.Modifier;
@@ -1484,6 +1490,7 @@ namespace DOL.GS
 
                 // apply total damage cap
                 ad.UncappedDamage = ad.Damage;
+               // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
                 if(owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon) * 2));
                 else 
@@ -1498,7 +1505,7 @@ namespace DOL.GS
                     ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVE_MELEE_DAMAGE);
                 }
                 
-                ad.UncappedDamage = ad.Damage;
+                //ad.UncappedDamage = ad.Damage;
 
                 //Eden - Conversion Bonus (Crocodile Ring)  - tolakram - critical damage is always 0 here, needs to be moved
                 if (ad.Target is GamePlayer && ad.Target.GetModified(eProperty.Conversion) > 0)
@@ -2901,10 +2908,13 @@ namespace DOL.GS
                 specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
 
                 decimal tmpOffhandChance = (25 + (specLevel - 1) * 68 / 100);
+                tmpOffhandChance += owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+                
+                
                 if (owner is GamePlayer p && p.UseDetailedCombatLog)
                 {
                     p.Out.SendMessage(
-                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} \n",
+                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 
@@ -2917,8 +2927,7 @@ namespace DOL.GS
                 specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
                 InventoryItem attackWeapon = AttackWeapon;
                 InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                if (specLevel > 0 && owner.ActiveWeaponSlot == eActiveWeaponSlot.Standard
-                    && attackWeapon != null && attackWeapon.Object_Type == (int)eObjectType.HandToHand &&
+                if (specLevel > 0 && attackWeapon != null && attackWeapon.Object_Type == (int)eObjectType.HandToHand &&
                     leftWeapon != null && leftWeapon.Object_Type == (int)eObjectType.HandToHand)
                 {
                     specLevel--;
