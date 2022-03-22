@@ -141,4 +141,17 @@ namespace DOL.GS.RealmAbilities
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
     }
+    
+    public class AtlasOF_DualistsReflexes : RAPropertyEnhancer
+    {
+        public AtlasOF_DualistsReflexes(DBAbility dba, int level) : base(dba, level, eProperty.OffhandDamageAndChance)
+        {
+            
+        }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+
+    }
 }

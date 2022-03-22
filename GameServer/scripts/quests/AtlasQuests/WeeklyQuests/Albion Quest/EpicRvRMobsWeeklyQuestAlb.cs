@@ -89,7 +89,7 @@ namespace DOL.GS.DailyQuest.Albion
 				Haszan = new GameNPC();
 				Haszan.Model = 51;
 				Haszan.Name = "Haszan";
-				Haszan.GuildName = "Atlas Quest";
+				Haszan.GuildName = "Realm Logistics";
 				Haszan.Realm = eRealm.Albion;
 				//Castle Sauvage Location
 				Haszan.CurrentRegionID = 1;

@@ -83,7 +83,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Isaac = new GameNPC();
 				Isaac.Model = 774;
 				Isaac.Name = "Isaac";
-				Isaac.GuildName = "Atlas Quest";
+				Isaac.GuildName = "Advisor to the King";
 				Isaac.Realm = eRealm.Midgard;
 				Isaac.CurrentRegionID = 100;
 				Isaac.Size = 50;
@@ -354,7 +354,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
 			megalocerosKilled = 0;

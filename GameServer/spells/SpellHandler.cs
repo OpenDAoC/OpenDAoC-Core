@@ -1772,6 +1772,7 @@ namespace DOL.GS.Spells
 					else
 					{
 						p.castingComponent.spellHandler = null;
+						p.CurrentSpellHandler = null;
 					}
 				}
 				else
@@ -1797,6 +1798,7 @@ namespace DOL.GS.Spells
 						else
 						{
 							Caster.castingComponent.spellHandler = null;
+							Caster.CurrentSpellHandler = null;
 						}
 
 						if (necroBrain.SpellsQueued)
@@ -1821,6 +1823,7 @@ namespace DOL.GS.Spells
 				else
 				{
 					Caster.castingComponent.spellHandler = null;
+					Caster.CurrentSpellHandler = null;
 				}
 			}
 			Caster.CurrentSpellHandler = Caster.castingComponent.spellHandler;
@@ -1962,6 +1965,7 @@ namespace DOL.GS.Spells
             {
 				p.castingComponent.spellHandler = null;
 				p.castingComponent.queuedSpellHandler = null;
+				p.CurrentSpellHandler = null;
             }
 
 			if (m_castTimer != null)

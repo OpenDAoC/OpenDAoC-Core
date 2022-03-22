@@ -68,7 +68,7 @@ namespace DOL.GS.DailyQuest
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 200 && npc.X == 334908 && npc.Y == 419949)
+					if (npc.CurrentRegionID == 200 && npc.X == 335117 && npc.Y == 420642)
 					{
 						SucciHib = npc;
 						break;
@@ -88,8 +88,8 @@ namespace DOL.GS.DailyQuest
 				SucciHib.CurrentRegionID = 200;
 				SucciHib.Size = 60;
 				SucciHib.Level = 59;
-				SucciHib.X = 334908;
-				SucciHib.Y = 419949;
+				SucciHib.X = 335117;
+				SucciHib.Y = 420642;
 				SucciHib.Z = 5195;
 				SucciHib.Heading = 3723;
 				SucciHib.Flags |= GameNPC.eFlags.PEACE;
@@ -321,6 +321,7 @@ namespace DOL.GS.DailyQuest
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+
 				if (player.GetConLevel(gArgs.Target) > 0) 
 				{
 					OrangeConKilled++;
@@ -361,7 +362,7 @@ namespace DOL.GS.DailyQuest
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 500);
 			OrangeConKilled = 0;

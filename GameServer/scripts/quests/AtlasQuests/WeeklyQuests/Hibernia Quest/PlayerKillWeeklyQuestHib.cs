@@ -87,7 +87,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 				ReyHib.Model = 26;
 				ReyHib.Name = "Rey";
 				ReyHib.GuildName = "Bone Collector";
-				ReyHib.Realm = eRealm.None;
+				ReyHib.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
 				ReyHib.CurrentRegionID = 200;
 				ReyHib.Size = 60;
@@ -358,7 +358,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			PlayersKilled = 0;

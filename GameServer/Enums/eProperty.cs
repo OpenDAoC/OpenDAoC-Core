@@ -239,7 +239,7 @@ namespace DOL.GS
 		ArrowRecovery = 189,
 		BuffEffectiveness = 190,
 		CastingSpeed = 191,
-		DeathExpLoss = 192,
+		OffhandDamageAndChance = 192,
 		DebuffEffectivness = 193,
 		Fatigue = 194,
 		HealingEffectiveness = 195,
@@ -313,6 +313,8 @@ namespace DOL.GS
         MythicalAcuCapBonus = 244,
         MythicalStatCapBonus_Last = 244,
 
+        OffhandDamage = 245,
+        OffhandChance = 246,
 		BountyPoints = 247,
 		XpPoints = 248,
 		Resist_Natural = 249,
