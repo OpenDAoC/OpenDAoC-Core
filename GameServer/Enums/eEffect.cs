@@ -143,6 +143,7 @@ namespace DOL.GS
         SoldiersBarricade,
         ReflexAttack,
         WhirlingDervish,
+        Viper,
         MasteryOfConcentration,
     }
 }
