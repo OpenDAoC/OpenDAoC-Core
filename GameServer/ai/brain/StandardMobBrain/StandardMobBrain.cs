@@ -328,6 +328,17 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi || npc is GameTrainingDummy)
                     continue; //do not attack horses
 
+                if (Body.Faction != null)
+                {
+                    int aggrolevel = 0;
+                    if (Body.Faction != null)
+                    {
+                        aggrolevel = CalculateAggroLevelToTarget(npc);
+                        if (aggrolevel < 75)
+                            return;
+                    }
+                }
+
                 if (CalculateAggroLevelToTarget(npc) > 0)
                 {
                     if (npc.Brain is ControlledNpcBrain) // This is a pet or charmed creature, checkLOS
@@ -830,16 +841,14 @@ namespace DOL.AI.Brain
             if (GameServer.ServerRules.IsAllowedToAttack(Body, target, true) == false)
                 return 0;
 
-            // Get owner if target is pet
+            // Get owner if target is pet or subpet
             GameLiving realTarget = target;
-            if (target is GameNPC)
+            if (target is GamePet pet && (pet.Owner is GamePlayer || pet.Owner is GamePet))
             {
-                if (((GameNPC)target).Brain is IControlledBrain)
-                {
-                    GameLiving owner = (((GameNPC)target).Brain as IControlledBrain).GetLivingOwner();
-                    if (owner != null)
-                        realTarget = owner;
-                }
+                if (pet.Owner is GamePet mainpet && mainpet.Owner is GamePlayer)
+                    realTarget = mainpet.Owner;
+                else
+                    realTarget = pet.Owner;
             }
 
             // only attack if green+ to target
