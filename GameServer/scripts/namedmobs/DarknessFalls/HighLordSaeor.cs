@@ -64,11 +64,6 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * Strength / 100;
         }
 
-        public override int AttackSpeed(params InventoryItem[] weapon)
-        {
-            return base.AttackSpeed(weapon) * 3;
-        }
-
         public override int MaxHealth
         {
             get { return 20000; }
