@@ -56,7 +56,8 @@ namespace DOL.GS.RealmAbilities
             get
             {
                 var delveInfoList = new List<string>();
-                delveInfoList.Add("Atlas Viper Effect");
+                delveInfoList.Add("Damage-Over-Time effects will deal double damage for 30 seconds");
+                delveInfoList.Add("Casting time: instant");
 
                 return delveInfoList;
             }
@@ -65,7 +66,6 @@ namespace DOL.GS.RealmAbilities
         public override void AddEffectsInfo(IList<string> list)
         {
             list.Add("Damage-Over-Time effects will deal double damage for 30 seconds");
-            list.Add("Target: ");
             list.Add("Casting time: instant");
         }
     }
