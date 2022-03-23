@@ -130,7 +130,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class Beliathan : GameNPC
+    public class Beliathan : GameEpicBoss
     {
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)

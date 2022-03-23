@@ -6,7 +6,7 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-    public class PrincessNahemah : GameNPC
+    public class PrincessNahemah : GameEpicBoss
     {
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
