@@ -14194,6 +14194,9 @@ namespace DOL.GS
             if (enemy.Client.Account.PrivLevel > 1)
                 return false;
 
+            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
+                return true;
+
             /*
              * http://www.critshot.com/forums/showthread.php?threadid=3142
              * The person doing the looking has a chance to find them based on their level, minus the stealthed person's stealth spec.
