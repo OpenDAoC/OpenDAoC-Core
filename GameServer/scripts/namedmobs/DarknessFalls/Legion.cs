@@ -146,7 +146,6 @@ namespace DOL.GS.Scripts
                     AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
                 }
             }
-            DropLoot(killer);
             base.Die(killer);
             
             if (canReportNews)

@@ -107,8 +107,7 @@ namespace DOL.GS
                     AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);
                 }
             }
-
-            DropLoot(killer);
+            
             base.Die(killer);
         }
 
