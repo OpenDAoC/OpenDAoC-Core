@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) >= 0 
+				if (player.GetConLevel(gArgs.Target) > -1
 				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
