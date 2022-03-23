@@ -14225,11 +14225,13 @@ namespace DOL.GS
             }
 
             // Mastery of Stealth Bonus
+            /*
+             //removed, this is NF MoStealth. OF Version does not add range, only movespeed
             RAPropertyEnhancer mos = GetAbility<MasteryOfStealthAbility>();
             if (mos != null && !enemyHasCamouflage)
                 if (!HasAbility(Abilities.DetectHidden) || !enemy.HasAbility(Abilities.DetectHidden))
                     range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
-			
+			*/
             range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
 
             //Buff (Stealth Detection)

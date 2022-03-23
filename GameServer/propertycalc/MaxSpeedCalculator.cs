@@ -92,19 +92,21 @@ namespace DOL.GS.PropertyCalc
 				{
 					MasteryOfStealthAbility mos = player.GetAbility<MasteryOfStealthAbility>();
 					//GameSpellEffect bloodrage = SpellHandler.FindEffectOnTarget(player, "BloodRage");
-					VanishEffect vanish = player.EffectList.GetOfType<VanishEffect>();
+					//VanishEffect vanish = player.EffectList.GetOfType<VanishEffect>();
 
 					double stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
 					if (stealthSpec > player.Level)
 						stealthSpec = player.Level;
 					speed *= 0.3 + (stealthSpec + 10) * 0.3 / (player.Level + 10);
-					if (vanish != null)
-						speed *= vanish.SpeedBonus;
+					//if (vanish != null)
+						//speed *= vanish.SpeedBonus;
 					if (mos != null)
 						speed *= 1 + MasteryOfStealthAbility.GetSpeedBonusForLevel(mos.Level);
 					//if (bloodrage != null)
-						//speed *= 1 + (bloodrage.Spell.Value * 0.01); // 25 * 0.01 = 0.25 (a.k 25%) value should be 25.
-					
+						//speed *= 1 + (bloodrage.Spell.Value * 0.01); // 25 * 0.01 = 0.25 (a.k 25%) value should be 25.5
+					if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ShadowRun)) //double stealthed movement with ShadowRun
+						speed *= 2;
+
 				}
 
 				if (GameRelic.IsPlayerCarryingRelic(player))

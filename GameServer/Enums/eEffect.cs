@@ -146,6 +146,7 @@ namespace DOL.GS
         Viper,
         MajesticWill,
         TrueSight,
+        ShadowRun,
         MasteryOfConcentration,
     }
 }
