@@ -27,14 +27,11 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * Strength / 100;
         }
 
-        public override int MaxHealth
-        {
-            get { return 20000 * MaldaharTheGlimmerPrinceDifficulty; }
-        }
+        public override int MaxHealth => 20000;
 
         public override int AttackRange
         {
-            get { return 450; }
+            get => 450;
             set { }
         }
 
@@ -48,13 +45,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * MaldaharTheGlimmerPrinceDifficulty;
+            return 1000;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85 * MaldaharTheGlimmerPrinceDifficulty;
+            return 0.85;
         }
 
         public override bool AddToWorld()
