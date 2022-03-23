@@ -5602,7 +5602,8 @@ namespace DOL.GS
 						}
 					}
 				}
-
+				if (!IsWithinRadius(TargetObject, spellToCast.Range))
+					return false;
 				if (LOSChecker == null)
 				{
 					TempProperties.setProperty(LOSTEMPCHECKER, 0);
