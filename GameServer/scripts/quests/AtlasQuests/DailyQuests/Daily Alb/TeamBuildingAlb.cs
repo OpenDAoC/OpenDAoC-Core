@@ -375,6 +375,7 @@ namespace DOL.GS.DailyQuest.Albion
 				HasAcolyte = false;
 				HasRogue = false;
 				HasMageElemDisc = false;
+				player.Out.SendQuestUpdate(this);
 			}
 			
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
