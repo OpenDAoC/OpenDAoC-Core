@@ -202,13 +202,13 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 2;
+                    spell.CastTime = 0;
                     spell.ClientEffect = 710;
                     spell.RecastDelay = 10;
                     spell.Icon = 710;
                     spell.TooltipId = 710;
-                    spell.Value -= 200;
-                    spell.LifeDrainReturn = 200;
+                    spell.Value = -100;
+                    spell.LifeDrainReturn = 100;
                     spell.Damage = 1150;
                     spell.Range = 2500;
                     spell.Radius = 250;
@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 2;
+                    spell.CastTime = 0;
                     spell.ClientEffect = 4204;
                     spell.Power = 0;
                     spell.RecastDelay = 10;
