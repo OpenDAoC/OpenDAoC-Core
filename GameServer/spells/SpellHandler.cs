@@ -3104,6 +3104,7 @@ namespace DOL.GS.Spells
 						case (byte)eSpellType.DirectDamage:
 						case (byte)eSpellType.MagicalStrike:
 						case (byte)eSpellType.SiegeArrow:
+						case (byte)eSpellType.SiegeDirectDamage:
 						case (byte)eSpellType.SummonTheurgistPet:
 						case (byte)eSpellType.DirectDamageWithDebuff:
 							isAllowed = true;
@@ -4301,6 +4302,17 @@ namespace DOL.GS.Spells
             {
 				hitchance = (int)(87.5 - (target.Level - Caster.Level));
             }
+
+			//check for active RAs
+			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
+			{
+				var effect = Caster.effectListComponent
+					.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
+				if (effect != null)
+				{
+					hitchance += (int)effect.Effectiveness * 5;
+				}
+			}
 
 			return hitchance;
 		}

@@ -56,7 +56,12 @@ namespace DOL.GS
                         // "{0} is wracked with pain!"
                         OnEffectStartsMsg(Owner, true, false, true);
                     }
-                    handler.OnDirectEffect(Owner, Effectiveness);
+
+                    double postRAEffectiveness = Effectiveness;
+                    if (handler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper))
+                        postRAEffectiveness *= 2;
+                    
+                    handler.OnDirectEffect(Owner, postRAEffectiveness);
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {

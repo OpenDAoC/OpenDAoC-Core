@@ -373,6 +373,7 @@ namespace DOL.GS.DailyQuest.Albion
 				HasSeer = false;
 				HasRogue = false;
 				HasMystic = false;
+				player.Out.SendQuestUpdate(this);
 			}
 			
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
