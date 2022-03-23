@@ -4303,6 +4303,17 @@ namespace DOL.GS.Spells
 				hitchance = (int)(87.5 - (target.Level - Caster.Level));
             }
 
+			//check for active RAs
+			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
+			{
+				var effect = Caster.effectListComponent
+					.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
+				if (effect != null)
+				{
+					hitchance += (int)effect.Effectiveness * 5;
+				}
+			}
+
 			return hitchance;
 		}
 
