@@ -17,6 +17,7 @@
  *
  */
 
+using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -39,8 +40,13 @@ namespace DOL.GS.Spells
                 {
 					double rezSickEffectiveness = targetPlayer.TempProperties.getProperty<double>(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
                     targetPlayer.TempProperties.removeProperty(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
-					initParams.Duration = (int)(initParams.Duration * rezSickEffectiveness);
-				}
+                    initParams.Duration = (int)(initParams.Duration * rezSickEffectiveness);
+                }
+                
+                if (targetPlayer.GetModified(eProperty.ResIllnessReduction) > 0)
+                {
+	                initParams.Duration = initParams.Duration * (100-targetPlayer.GetModified(eProperty.ResIllnessReduction))/100;
+                }
             }
 
 			new ResurrectionIllnessECSGameEffect(initParams);
