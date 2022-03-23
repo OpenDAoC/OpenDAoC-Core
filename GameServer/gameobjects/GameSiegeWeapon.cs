@@ -29,7 +29,7 @@ namespace DOL.GS
 {
 	#region GameSiegeweapon
 	/// <summary>
-	/// Description résumée de GameSiegeWeapon.
+	/// Description resumee de GameSiegeWeapon.
 	/// </summary>
 	public class GameSiegeWeapon : GameMovingObject
 	{
