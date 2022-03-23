@@ -71,22 +71,6 @@ namespace DOL.GS.RealmAbilities
 			
 			if(didHeal) DisableSkill(living);
 			
-	/*
-			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
-
-			SendCasterSpellEffectAndCastMessage(living, 7001, healed > 0);
-
-			GamePlayer player = living as GamePlayer;
-			if (player != null)
-			{
-				if (healed > 0) player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.HealYourself", healed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-				if (healAmount > healed)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.FullyHealed"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-				}
-			}
-			if (healed > 0) DisableSkill(living);
-			*/
 		}
 
 		public override int GetReUseDelay(int level)
