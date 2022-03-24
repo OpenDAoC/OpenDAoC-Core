@@ -135,6 +135,19 @@ namespace DOL.GS.Scripts
                 log.Debug("Aros The Spiritmaster Killed: killer is " + killer.Name + ", attackers:");
             base.StopCurrentSpellcast();
             base.Die(killer);
+            
+            // debug
+            log.Debug($"{Name} killed by {killer.Name}");
+
+            GamePlayer playerKiller = killer as GamePlayer;
+
+            if (playerKiller?.Group != null)
+            {
+                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                {
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,ServerProperties.Properties.EPIC_ORBS);
+                }
+            }
 
             foreach (String message in m_DeathAnnounce)
             {

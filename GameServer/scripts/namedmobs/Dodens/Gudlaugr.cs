@@ -109,6 +109,8 @@ namespace DOL.GS.Scripts
 			}
 			base.OnAttackEnemy(ad);
 		}
+		
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{

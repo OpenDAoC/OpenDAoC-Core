@@ -152,10 +152,22 @@ namespace DOL.GS.Scripts
 				log.Debug("Mistress of Runes Killed: killer is " + killer.Name + ", attackers:");
 			base.StopCurrentSpellcast();
 			base.Die(killer);
+			
+			log.Debug($"{Name} killed by {killer.Name}");
+
+			GamePlayer playerKiller = killer as GamePlayer;
+
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer,ServerProperties.Properties.EPIC_ORBS);
+				}
+			}
 
 			BroadcastMessage(String.Format(m_DeathAnnounce, Name));
 		}
-		
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
