@@ -6654,6 +6654,18 @@ namespace DOL.GS
 			return hasit;
 		}
 
+		public bool HasAbilityType(Type type)
+		{
+			bool hasit = false;
+			
+			lock (m_lockAbilities)
+			{
+				hasit = (m_abilities.Values.Count(x => x.GetType() == type) > 0 ? true : false);
+			}
+			
+			return hasit;
+		}
+
 		/// <summary>
 		/// Add a new ability to a living
 		/// </summary>
@@ -7068,15 +7080,15 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the currently running spell handler
 		/// </summary>
-		protected ISpellHandler m_runningSpellHandler;
+		//protected ISpellHandler CurrentSpellHandler;
 		/// <summary>
 		/// active spellhandler (casting phase) or null
 		/// </summary>
 		public ISpellHandler CurrentSpellHandler
 		{
 			// change for warlock
-			get { return m_runningSpellHandler; }
-			set { m_runningSpellHandler = value; }
+			get { return castingComponent.spellHandler; }
+			//set { CurrentSpellHandler = value; }
 		}
 
 		/// <summary>
@@ -7085,8 +7097,7 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public virtual void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
-			m_runningSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
-			m_runningSpellHandler = null;
+			CurrentSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
 		}
 
 		/// <summary>
@@ -7094,8 +7105,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
 		{
-			if (m_runningSpellHandler != null)
-				m_runningSpellHandler.InterruptCasting();
+			if (CurrentSpellHandler != null)
+				CurrentSpellHandler.InterruptCasting();
 		}
 
 
@@ -7114,7 +7125,7 @@ namespace DOL.GS
 			}
 
 			/*
-			if ((m_runningSpellHandler != null && spell.CastTime > 0))
+			if ((CurrentSpellHandler != null && spell.CastTime > 0))
 			{
 				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.AlreadyCasting));
 				return false;
@@ -7127,7 +7138,7 @@ namespace DOL.GS
 			//{
 			//	if (spell.CastTime > 0)
 			//	{
-			//		m_runningSpellHandler = spellhandler;
+			//		CurrentSpellHandler = spellhandler;
 			//		spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
 			//	}
 			//	return spellhandler.CastSpell();
@@ -7150,8 +7161,7 @@ namespace DOL.GS
 				// Instant cast abilities should not interfere with the spell queue
 				if (spellhandler.Spell.CastTime > 0)
 				{
-					m_runningSpellHandler = spellhandler;
-					m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+					CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
 				}
 
 				spellhandler.Ability = ab;

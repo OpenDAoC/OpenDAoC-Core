@@ -22,6 +22,7 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
+using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
 
 namespace DOL.GS.Spells
@@ -42,7 +43,7 @@ namespace DOL.GS.Spells
         public override void FinishSpellCast(GameLiving target)
 		{
 			m_caster.Mana -= PowerCost(target);
-			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent) && Spell.SpellType != (byte)eSpellType.SiegeArrow)
+			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent) && Spell.SpellType != (byte)eSpellType.SiegeArrow && Spell.SpellType != (byte)eSpellType.SiegeDirectDamage)
 			{
 				MessageToCaster(String.Format("Your spell has no effect on the {0}!", target.Name), eChatType.CT_SpellResisted);
 				return;

@@ -17,7 +17,7 @@ using DOL.GS.Scripts.DOL.AI.Brain;
 namespace DOL.GS.Scripts
 {
 
-	public class Gudlaugr : GameEpicBoss
+	public class Gudlaugr : GameEpicNPC
 	{
 		/// <summary>
 		/// Add Gudlaugr to World
@@ -109,27 +109,13 @@ namespace DOL.GS.Scripts
 			}
 			base.OnAttackEnemy(ad);
 		}
+		
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Gudlaugr NPC Initializing...");
-		}
-		public override void Die(GameObject killer)//on kill generate orbs
-		{
-			// debug
-			log.Debug($"{Name} killed by {killer.Name}");
-
-			GamePlayer playerKiller = killer as GamePlayer;
-
-			if (playerKiller?.Group != null)
-			{
-				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-				{
-					AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-				}
-			}
-			base.Die(killer);
 		}
 	}
 

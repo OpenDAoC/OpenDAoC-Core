@@ -325,8 +325,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) >= 0 
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentRegion.IsRvR) 
+				if (player.GetConLevel(gArgs.Target) > -1
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
 					player.Out.SendQuestUpdate(this);
@@ -357,7 +357,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 150);
 			FrontierMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}

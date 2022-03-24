@@ -374,6 +374,7 @@ namespace DOL.GS.DailyQuest.Albion
 				HasNaturalist = false;
 				HasStalker = false;
 				HasMagicianForester = false;
+				player.Out.SendQuestUpdate(this);
 			}
 			
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
@@ -412,7 +413,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 100);
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 300);
 			TeamBuildMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}

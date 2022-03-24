@@ -12,14 +12,16 @@ using System.Timers;
 
 namespace DOL.GS
 {
-    public class OrganicEnergyMechanism : GameNPC
+    public class OrganicEnergyMechanism : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public OrganicEnergyMechanism()
             : base()
         {
         }
+
         public virtual int OEMDifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -32,31 +34,26 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -64,6 +61,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public void StartTimer()
         {
             Timer myTimer = new Timer();
@@ -71,21 +69,25 @@ namespace DOL.GS
             myTimer.Interval = 4000; // 1000 ms is one second
             myTimer.Start();
         }
+
         public void DisplayTimeEvent(object source, ElapsedEventArgs e)
         {
             ShowEffect();
         }
+
         public void ShowEffect()
         {
             if (this.IsAlive)
             {
                 foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
-                    player.Out.SendSpellEffectAnimation(this, this, 509, 0, false, 0x01);//finished heal effect
+                    player.Out.SendSpellEffectAnimation(this, this, 509, 0, false, 0x01); //finished heal effect
                 }
             }
         }
+
         public static bool addeffect = true;
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
@@ -100,7 +102,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
             SetOwnBrain(sBrain);
-            
+
             bool success = base.AddToWorld();
             if (success)
             {
@@ -110,25 +112,8 @@ namespace DOL.GS
                     addeffect = false;
                 }
             }
-            return success;
-        }
-        
-        public override void Die(GameObject killer)
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
 
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                }
-            }
-            
-            base.Die(killer);
+            return success;
         }
 
         [ScriptLoadedEvent]
@@ -136,7 +121,7 @@ namespace DOL.GS
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Organic-Energy Mechanism", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Organic-Energy Mechanism", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Organic-Energy Mechanism not found, creating it...");
@@ -148,7 +133,7 @@ namespace DOL.GS
                 OEM.Realm = 0;
                 OEM.Level = 79;
                 OEM.Size = 200;
-                OEM.CurrentRegionID = 191;//galladoria
+                OEM.CurrentRegionID = 191; //galladoria
 
                 OEM.Strength = 500;
                 OEM.Intelligence = 220;
@@ -163,7 +148,7 @@ namespace DOL.GS
                 OEM.Y = 31267;
                 OEM.Z = 14388;
                 OEM.MaxDistance = 2000;
-                OEM.MaxSpeedBase = 0;//mob doesnt move
+                OEM.MaxSpeedBase = 0; //mob doesnt move
                 OEM.Heading = 193;
 
                 OrganicEnergyMechanismBrain ubrain = new OrganicEnergyMechanismBrain();
@@ -177,7 +162,8 @@ namespace DOL.GS
                 OEM.SaveIntoDatabase();
             }
             else
-                log.Warn("Organic-Energy Mechanism exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Organic-Energy Mechanism exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -186,7 +172,9 @@ namespace DOL.AI.Brain
 {
     public class OrganicEnergyMechanismBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public OrganicEnergyMechanismBrain()
             : base()
         {
@@ -194,14 +182,16 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             m_AOE_POison_Announce = "{0} looks sickly";
         }
+
         protected String m_AOE_POison_Announce;
 
-        public override void AttackMostWanted()// mob doesnt attack
+        public override void AttackMostWanted() // mob doesnt attack
         {
             if (Body.IsAlive)
                 return;
             base.AttackMostWanted();
         }
+
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -209,6 +199,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
+
         private int CastPoison(RegionTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
@@ -217,47 +208,56 @@ namespace DOL.AI.Brain
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(OEMpoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                spambroad = false;//to avoid spamming
+                spambroad = false; //to avoid spamming
             }
+
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
+
         public static bool spambroad = false;
+
         private void PrepareToPoison()
         {
             if (spambroad == false)
             {
-                BroadcastMessage(String.Format(m_AOE_POison_Announce + " and powerfull magic essense will errupt on " + RandomTarget.Name + "!", Body.Name));
+                BroadcastMessage(String.Format(
+                    m_AOE_POison_Announce + " and powerfull magic essense will errupt on " + RandomTarget.Name + "!",
+                    Body.Name));
                 new RegionTimer(Body, new RegionTimerCallback(CastPoison), 5000);
                 spambroad = true;
             }
         }
+
         private GameLiving randomtarget;
+
         private GameLiving RandomTarget
         {
             get { return randomtarget; }
-            set { randomtarget = value;}
+            set { randomtarget = value; }
         }
+
         public void PickRandomTarget()
         {
             ArrayList inRangeLiving = new ArrayList();
             foreach (GameLiving living in Body.GetPlayersInRadius(2000))
-            {               
+            {
                 if (living.IsAlive)
                 {
                     if (living is GamePlayer || living is GamePet)
                     {
-                        if (!inRangeLiving.Contains(living) || inRangeLiving.Contains(living) == false )
+                        if (!inRangeLiving.Contains(living) || inRangeLiving.Contains(living) == false)
                         {
                             inRangeLiving.Add(living);
                         }
                     }
                 }
-            }                 
+            }
+
             if (inRangeLiving.Count > 0)
             {
-                GameLiving ptarget = ((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                GameLiving ptarget = ((GameLiving) (inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                 RandomTarget = ptarget;
                 if (OEMpoison.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body))
                 {
@@ -268,16 +268,16 @@ namespace DOL.AI.Brain
 
         public void CastDMGShield()
         {
-            if(OEMDamageShield.TargetHasEffect(Body)==false)
+            if (OEMDamageShield.TargetHasEffect(Body) == false)
             {
                 Body.CastSpell(OEMDamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
         }
 
         public static bool spawnadds = true;
+
         public override void Think()
         {
-
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
@@ -293,24 +293,28 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.InCombat)
             {
-                if(Body.HealthPercent<100)
+                if (Body.HealthPercent < 100)
                 {
                     if (Util.Chance(15))
                     {
                         PickRandomTarget();
                     }
-                    if(Util.Chance(15))
+
+                    if (Util.Chance(15))
                     {
                         CastDMGShield();
-                    }  
-                    if(Util.Chance(5))
+                    }
+
+                    if (Util.Chance(5))
                     {
-                            Spawn(); // spawn images
+                        Spawn(); // spawn images
                     }
                 }
             }
+
             base.Think();
         }
+
         public void Spawn() // We define here adds
         {
             foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
@@ -320,7 +324,8 @@ namespace DOL.AI.Brain
                     return;
                 }
             }
-            for (int i = 0; i < Util.Random(4, 6); i++)//Spawn 4 or 6 adds
+
+            for (int i = 0; i < Util.Random(4, 6); i++) //Spawn 4 or 6 adds
             {
                 OEMAdd Add = new OEMAdd();
                 Add.X = Body.X + Util.Random(-50, 80);
@@ -349,7 +354,8 @@ namespace DOL.AI.Brain
                     spell.Icon = 4445;
                     spell.Damage = 350;
                     spell.Name = "Essense of World Soul";
-                    spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
+                    spell.Description =
+                        "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
                     spell.Message1 = "You are wracked with pain!";
                     spell.Message2 = "{0} is wracked with pain!";
                     spell.Message3 = "You look healthy again.";
@@ -363,10 +369,11 @@ namespace DOL.AI.Brain
                     spell.Target = "Enemy";
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
-                    spell.DamageType = (int)eDamageType.Matter; //Spirit DMG Type
+                    spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
                     m_AOE_Poison = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AOE_Poison);
                 }
+
                 return m_AOE_Poison;
             }
         }
@@ -381,7 +388,7 @@ namespace DOL.AI.Brain
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 35;
-                    spell.ClientEffect = 4317;//509
+                    spell.ClientEffect = 4317; //509
                     spell.Icon = 4317;
                     spell.Damage = 150;
                     spell.Name = "Shield of World Soul";
@@ -394,10 +401,11 @@ namespace DOL.AI.Brain
                     spell.Target = "Self";
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
-                    spell.DamageType = (int)eDamageType.Matter; //Spirit DMG Type
+                    spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
                     m_DamageShield = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageShield);
                 }
+
                 return m_DamageShield;
             }
         }
@@ -409,7 +417,8 @@ namespace DOL.GS
 {
     public class OEMAdd : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public OEMAdd()
             : base()
@@ -423,28 +432,22 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 1500;
-            }
+            get { return 1500; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
-            base.Die(null);//null to not gain experience
+            base.Die(null); //null to not gain experience
         }
 
         public override bool AddToWorld()
@@ -452,9 +455,9 @@ namespace DOL.GS
             Model = 905;
             Name = "bottom feeder";
             Size = 32;
-            Level = (byte)Util.Random(50, 55);
+            Level = (byte) Util.Random(50, 55);
             Realm = 0;
-            CurrentRegionID = 191;//galladoria
+            CurrentRegionID = 191; //galladoria
 
             Strength = 150;
             Intelligence = 150;
@@ -467,7 +470,7 @@ namespace DOL.GS
             MeleeDamageType = eDamageType.Slash;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            IsWorthReward = false;//worth no reward
+            IsWorthReward = false; //worth no reward
 
             BodyType = 1;
             OEMAddBrain sBrain = new OEMAddBrain();
@@ -479,11 +482,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class OEMAddBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public OEMAddBrain()
             : base()
         {
@@ -493,58 +499,72 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            Body.IsWorthReward = false;//worth no reward
+            Body.IsWorthReward = false; //worth no reward
             if (Body.InCombat && HasAggro)
             {
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (FeederSCDebuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+                    if (FeederSCDebuff.TargetHasEffect(Body.TargetObject) == false &&
+                        Body.TargetObject.IsVisibleTo(Body))
                     {
                         new RegionTimer(Body, new RegionTimerCallback(CastSCDebuff), 3000);
                     }
                 }
+
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (FeederDQDebuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+                    if (FeederDQDebuff.TargetHasEffect(Body.TargetObject) == false &&
+                        Body.TargetObject.IsVisibleTo(Body))
                     {
                         new RegionTimer(Body, new RegionTimerCallback(CastDQDebuff), 3000);
                     }
                 }
+
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (FeederHasteDebuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+                    if (FeederHasteDebuff.TargetHasEffect(Body.TargetObject) == false &&
+                        Body.TargetObject.IsVisibleTo(Body))
                     {
                         new RegionTimer(Body, new RegionTimerCallback(CastHasteDebuff), 3000);
                     }
                 }
             }
+
             base.Think();
         }
+
         public int CastSCDebuff(RegionTimer timer)
         {
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(FeederSCDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
+
             return 0;
         }
+
         public int CastDQDebuff(RegionTimer timer)
         {
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(FeederDQDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
+
             return 0;
         }
+
         public int CastHasteDebuff(RegionTimer timer)
         {
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(FeederHasteDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
+
             return 0;
         }
+
         private Spell m_FeederSCDebuff;
+
         private Spell FeederSCDebuff
         {
             get
@@ -567,15 +587,17 @@ namespace DOL.AI.Brain
                     spell.Type = "StrengthConstitutionDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int) eDamageType.Energy;
                     m_FeederSCDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederSCDebuff);
                 }
+
                 return m_FeederSCDebuff;
             }
         }
 
         private Spell m_FeederDQDebuff;
+
         private Spell FeederDQDebuff
         {
             get
@@ -598,15 +620,17 @@ namespace DOL.AI.Brain
                     spell.Type = "DexterityQuicknessDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int) eDamageType.Energy;
                     m_FeederDQDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederDQDebuff);
                 }
+
                 return m_FeederDQDebuff;
             }
         }
 
         private Spell m_FeederHasteDebuff;
+
         private Spell FeederHasteDebuff
         {
             get
@@ -629,10 +653,11 @@ namespace DOL.AI.Brain
                     spell.Type = "CombatSpeedDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int) eDamageType.Energy;
                     m_FeederHasteDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederHasteDebuff);
                 }
+
                 return m_FeederHasteDebuff;
             }
         }
