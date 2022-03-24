@@ -128,6 +128,7 @@ namespace DOL.GS
             {
                 TargetObject = player;
                 UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+                m_runningSpellHandler = portalHandler;
                 portalHandler.CastSpell();
                 return;
             }

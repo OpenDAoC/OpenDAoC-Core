@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
 		public object _stateLock = new object();
 
 		//GameLoop Methods
-		public eCastState castState { get; set; }
+		private eCastState castState;
 		private double _castFinishedTickTime;
 		//todo create this list when loading spell
 		private List<IEffectComponent> _spellEffectComponents = new List<IEffectComponent>();
@@ -1682,6 +1682,7 @@ namespace DOL.GS.Spells
 							{
 								SendCastAnimation();
 								castState = eCastState.Casting;
+								Caster.CurrentSpellHandler = this;
 							}
 						}
 						else
@@ -1772,6 +1773,7 @@ namespace DOL.GS.Spells
 					else
 					{
 						p.castingComponent.spellHandler = null;
+						p.CurrentSpellHandler = null;
 					}
 				}
 				else
@@ -1797,6 +1799,7 @@ namespace DOL.GS.Spells
 						else
 						{
 							Caster.castingComponent.spellHandler = null;
+							Caster.CurrentSpellHandler = null;
 						}
 
 						if (necroBrain.SpellsQueued)
@@ -1821,8 +1824,10 @@ namespace DOL.GS.Spells
 				else
 				{
 					Caster.castingComponent.spellHandler = null;
+					Caster.CurrentSpellHandler = null;
 				}
 			}
+			Caster.CurrentSpellHandler = Caster.castingComponent.spellHandler;
 		}
 
 		
@@ -1961,6 +1966,7 @@ namespace DOL.GS.Spells
             {
 				p.castingComponent.spellHandler = null;
 				p.castingComponent.queuedSpellHandler = null;
+				p.CurrentSpellHandler = null;
             }
 
 			if (m_castTimer != null)

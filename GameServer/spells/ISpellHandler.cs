@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
 	public interface ISpellHandler
 	{
 		GameLiving GetTarget();
-		eCastState castState { get; }
+		
 		void CreateECSEffect(ECSGameEffectInitParams initParams);
 		/// <summary>
 		/// Called when a spell is casted

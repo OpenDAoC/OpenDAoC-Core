@@ -7080,15 +7080,15 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the currently running spell handler
 		/// </summary>
-		//protected ISpellHandler CurrentSpellHandler;
+		protected ISpellHandler m_runningSpellHandler;
 		/// <summary>
 		/// active spellhandler (casting phase) or null
 		/// </summary>
 		public ISpellHandler CurrentSpellHandler
 		{
 			// change for warlock
-			get { return castingComponent.spellHandler; }
-			//set { CurrentSpellHandler = value; }
+			get { return m_runningSpellHandler; }
+			set { m_runningSpellHandler = value; }
 		}
 
 		/// <summary>
@@ -7097,7 +7097,8 @@ namespace DOL.GS
 		/// <param name="handler"></param>
 		public virtual void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
-			CurrentSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
+			m_runningSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
+			m_runningSpellHandler = null;
 		}
 
 		/// <summary>
@@ -7105,8 +7106,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
 		{
-			if (CurrentSpellHandler != null)
-				CurrentSpellHandler.InterruptCasting();
+			if (m_runningSpellHandler != null)
+				m_runningSpellHandler.InterruptCasting();
 		}
 
 
@@ -7125,7 +7126,7 @@ namespace DOL.GS
 			}
 
 			/*
-			if ((CurrentSpellHandler != null && spell.CastTime > 0))
+			if ((m_runningSpellHandler != null && spell.CastTime > 0))
 			{
 				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.AlreadyCasting));
 				return false;
@@ -7138,7 +7139,7 @@ namespace DOL.GS
 			//{
 			//	if (spell.CastTime > 0)
 			//	{
-			//		CurrentSpellHandler = spellhandler;
+			//		m_runningSpellHandler = spellhandler;
 			//		spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
 			//	}
 			//	return spellhandler.CastSpell();
@@ -7161,7 +7162,8 @@ namespace DOL.GS
 				// Instant cast abilities should not interfere with the spell queue
 				if (spellhandler.Spell.CastTime > 0)
 				{
-					CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+					m_runningSpellHandler = spellhandler;
+					m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
 				}
 
 				spellhandler.Ability = ab;

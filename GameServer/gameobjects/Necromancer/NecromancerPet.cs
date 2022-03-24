@@ -460,7 +460,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if ((CurrentSpellHandler != null && spell.CastTime > 0))
+			if ((m_runningSpellHandler != null && spell.CastTime > 0))
 			{
 				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.AlreadyCasting));
 				return false;
@@ -488,6 +488,7 @@ namespace DOL.GS
 				
 				if (!handler.Spell.IsInstantCast)
                 {
+					m_runningSpellHandler = handler;
 					handler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
 				}
 			}
@@ -513,10 +514,11 @@ namespace DOL.GS
 				else
 					SpellTimer.Start(1);
 			}
-			if (CurrentSpellHandler != null)
+			if (m_runningSpellHandler != null)
 			{
 				//prevent from relaunch
-				CurrentSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
+				m_runningSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
+				m_runningSpellHandler = null;
 			}
 
 			Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));

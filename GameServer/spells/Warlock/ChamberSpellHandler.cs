@@ -100,6 +100,7 @@ namespace DOL.GS.Spells
 		public override void InterruptCasting()
 		{
 			base.InterruptCasting();
+			Caster.CurrentSpellHandler = null;
 		}
 		public override bool CastSpell()
 		{
