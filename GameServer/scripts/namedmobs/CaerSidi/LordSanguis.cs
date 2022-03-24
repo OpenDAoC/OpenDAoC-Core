@@ -327,7 +327,7 @@ namespace DOL.GS
             {
                 foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
                 {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,ServerProperties.Properties.EPIC_ORBS);//5k orbs for every player in group
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
                 }
             }
             

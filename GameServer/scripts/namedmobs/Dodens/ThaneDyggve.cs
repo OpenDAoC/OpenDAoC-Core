@@ -133,7 +133,7 @@ namespace DOL.GS.Scripts
 			{
 				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
 				{
-					AtlasROGManager.GenerateOrbAmount(groupPlayer,ServerProperties.Properties.EPIC_ORBS);
+					AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
 				}
 			}
 
