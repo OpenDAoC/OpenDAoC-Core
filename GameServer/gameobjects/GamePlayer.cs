@@ -14186,6 +14186,9 @@ namespace DOL.GS
             if (enemy.Client.Account.PrivLevel > 1)
                 return false;
 
+            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
+                return true;
+
             /*
              * http://www.critshot.com/forums/showthread.php?threadid=3142
              * The person doing the looking has a chance to find them based on their level, minus the stealthed person's stealth spec.
@@ -14214,11 +14217,13 @@ namespace DOL.GS
             }
 
             // Mastery of Stealth Bonus
+            /*
+             //removed, this is NF MoStealth. OF Version does not add range, only movespeed
             RAPropertyEnhancer mos = GetAbility<MasteryOfStealthAbility>();
             if (mos != null && !enemyHasCamouflage)
                 if (!HasAbility(Abilities.DetectHidden) || !enemy.HasAbility(Abilities.DetectHidden))
                     range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
-			
+			*/
             range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
 
             //Buff (Stealth Detection)

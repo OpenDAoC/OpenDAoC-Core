@@ -6654,6 +6654,18 @@ namespace DOL.GS
 			return hasit;
 		}
 
+		public bool HasAbilityType(Type type)
+		{
+			bool hasit = false;
+			
+			lock (m_lockAbilities)
+			{
+				hasit = (m_abilities.Values.Count(x => x.GetType() == type) > 0 ? true : false);
+			}
+			
+			return hasit;
+		}
+
 		/// <summary>
 		/// Add a new ability to a living
 		/// </summary>

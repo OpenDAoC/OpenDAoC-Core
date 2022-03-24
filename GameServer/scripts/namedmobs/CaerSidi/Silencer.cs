@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 namespace DOL.GS
 {
-    public class Silencer : GameNPC
+    public class Silencer : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Silencer()
             : base()
         {
         }
+
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -26,6 +25,7 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
+
         public virtual int COifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -38,22 +38,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -61,6 +54,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -71,10 +65,12 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public List<GamePlayer> attackers = new List<GamePlayer>();
         public static int attackers_count = 0;
 
         public static eDamageType dmg_type = eDamageType.Natural;
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -86,14 +82,17 @@ namespace DOL.GS
                 {
                     if (resist_timer == false)
                     {
-                        BroadcastMessage(String.Format(this.Name + " becomes almost immune to any damage for short time!"));
+                        BroadcastMessage(
+                            String.Format(this.Name + " becomes almost immune to any damage for short time!"));
                         new RegionTimer(this, new RegionTimerCallback(ResistTime), 2000);
                         resist_timer = true;
                     }
                 }
             }
+
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
+
         public override int GetResist(eDamageType damageType)
         {
             if (get_resist == true)
@@ -102,16 +101,19 @@ namespace DOL.GS
                 {
                     case eDamageType.Slash:
                     case eDamageType.Crush:
-                    case eDamageType.Thrust: return 99;//99% dmg reduction for melee dmg
-                    default: return 99;// 99% reduction for rest resists
+                    case eDamageType.Thrust: return 99; //99% dmg reduction for melee dmg
+                    default: return 99; // 99% reduction for rest resists
                 }
             }
-            return 0;//without resists
+
+            return 0; //without resists
         }
-        public static bool get_resist = false;//set resists
+
+        public static bool get_resist = false; //set resists
         public static bool resist_timer = false;
         public static bool resist_timer_end = false;
         public static bool spam1 = false;
+
         public int ResistTime(RegionTimer timer)
         {
             get_resist = true;
@@ -122,11 +124,14 @@ namespace DOL.GS
                 {
                     player.Out.SendSpellEffectAnimation(this, this, 9103, 0, false, 0x01);
                 }
-                new RegionTimer(this, new RegionTimerCallback(ResistTimeEnd), 20000);//20s resist 99%
+
+                new RegionTimer(this, new RegionTimerCallback(ResistTimeEnd), 20000); //20s resist 99%
                 resist_timer_end = true;
             }
+
             return 0;
         }
+
         public int ResistTimeEnd(RegionTimer timer)
         {
             get_resist = false;
@@ -139,6 +144,7 @@ namespace DOL.GS
                 BroadcastMessage(String.Format(this.Name + " resists fades away!"));
                 spam1 = true;
             }
+
             return 0;
         }
 
@@ -159,8 +165,8 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        
-        public override void Die(GameObject killer)//on kill generate orbs
+
+        public override void Die(GameObject killer) //on kill generate orbs
         {
             // debug
             log.Debug($"{Name} killed by {killer.Name}");
@@ -171,19 +177,19 @@ namespace DOL.GS
             {
                 foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
                 {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
+                    AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
                 }
             }
-            
+
             base.Die(killer);
         }
-        
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Silencer", 60, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Silencer", 60, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Silencer  not found, creating it...");
@@ -195,7 +201,7 @@ namespace DOL.GS
                 CO.Realm = 0;
                 CO.Level = 81;
                 CO.Size = 220;
-                CO.CurrentRegionID = 60;//caer sidi
+                CO.CurrentRegionID = 60; //caer sidi
 
                 CO.Strength = 500;
                 CO.Intelligence = 220;
@@ -229,11 +235,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class SilencerBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SilencerBrain()
             : base()
         {
@@ -241,6 +250,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 5000;
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -252,6 +262,7 @@ namespace DOL.AI.Brain
                 Silencer silencer = new Silencer();
                 silencer.attackers.Clear();
             }
+
             if (Body.IsOutOfTetherRange)
             {
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
@@ -264,9 +275,11 @@ namespace DOL.AI.Brain
                 this.Body.Health = this.Body.MaxHealth;
                 Body.Model = 934;
             }
-            if(Body.InCombat && HasAggro)
+
+            if (Body.InCombat && HasAggro)
             {
             }
+
             base.Think();
         }
     }

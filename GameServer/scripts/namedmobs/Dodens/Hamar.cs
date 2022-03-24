@@ -16,7 +16,7 @@ using DOL.GS.Scripts.DOL.AI.Brain;
 
 namespace DOL.GS.Scripts
 {
-	public class Hamar : GameNPC
+	public class Hamar : GameEpicNPC
 	{
 		public Hamar() : base()
 		{ }

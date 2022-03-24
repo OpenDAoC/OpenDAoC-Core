@@ -11,9 +11,10 @@ using DOL.GS.Effects;
 
 namespace DOL.GS
 {
-    public class Easmarach : GameNPC
+    public class Easmarach : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Easmarach()
             : base()
@@ -32,22 +33,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -55,6 +49,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -65,7 +60,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-        
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
@@ -84,6 +79,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
+
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in this.GetNPCsInRadius(4000))
@@ -93,20 +89,7 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
-            
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
 
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                }
-            }
-            
             base.Die(killer);
         }
 
@@ -115,7 +98,7 @@ namespace DOL.GS
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Easmarach", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Easmarach", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Easmarach not found, creating it...");
@@ -127,7 +110,7 @@ namespace DOL.GS
                 CO.Realm = 0;
                 CO.Level = 81;
                 CO.Size = 250;
-                CO.CurrentRegionID = 191;//galladoria
+                CO.CurrentRegionID = 191; //galladoria
 
                 CO.Strength = 500;
                 CO.Intelligence = 150;
@@ -168,13 +151,16 @@ namespace DOL.AI.Brain
 {
     public class EasmarachBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public EasmarachBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 500;
         }
+
         private int m_stage = 10;
 
         /// <summary>
@@ -183,11 +169,16 @@ namespace DOL.AI.Brain
         public int Stage
         {
             get { return m_stage; }
-            set { if (value >= 0 && value <= 10) m_stage = value; }
+            set
+            {
+                if (value >= 0 && value <= 10) m_stage = value;
+            }
         }
+
         public static bool restphase = false;
         public static bool dontattack = false;
         public static bool message = false;
+
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -195,6 +186,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
+
         public override void AttackMostWanted()
         {
             if (dontattack == true)
@@ -216,13 +208,16 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.AttackMostWanted();
         }
 
         public void ReturnToWaterfall()
         {
             Point3D point1 = new Point3D();
-            point1.X = 37811; point1.Y = 50342; point1.Z = 10758;
+            point1.X = 37811;
+            point1.Y = 50342;
+            point1.Z = 10758;
 
             if (Body.HealthPercent <= 50 && restphase == false)
             {
@@ -244,7 +239,7 @@ namespace DOL.AI.Brain
                     {
                         Body.WalkTo(point1, 200);
                         dontattack = true;
-                        if(message==false)
+                        if (message == false)
                         {
                             BroadcastMessage(String.Format(Body.Name + " is retreating to waterfall!"));
                             message = true;
@@ -253,7 +248,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        
+
         public override void Think()
         {
             ReturnToWaterfall();
@@ -279,7 +274,6 @@ namespace DOL.AI.Brain
                 int health = Body.HealthPercent / 10;
                 if (Body.TargetObject != null && health < Stage)
                 {
-
                     switch (health)
                     {
                         case 1:
@@ -290,20 +284,22 @@ namespace DOL.AI.Brain
                         case 6:
                         case 7:
                         case 8:
-                            {
-                                Spawn();
-                            }
+                        {
+                            Spawn();
+                        }
                             break;
                     }
+
                     Stage = health;
                 }
             }
+
             base.Think();
         }
 
         public void Spawn() // We define here adds
         {
-            for (int i = 0; i < Util.Random(2, 3); i++)//Spawn 2 or 3 adds
+            for (int i = 0; i < Util.Random(2, 3); i++) //Spawn 2 or 3 adds
             {
                 EasmarachAdd Add = new EasmarachAdd();
                 Add.X = Body.X + Util.Random(-50, 80);
@@ -314,7 +310,6 @@ namespace DOL.AI.Brain
                 Add.AddToWorld();
             }
         }
-
     }
 }
 
@@ -323,7 +318,8 @@ namespace DOL.GS
 {
     public class EasmarachAdd : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public EasmarachAdd()
             : base()
@@ -337,22 +333,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 7000;
-            }
+            get { return 7000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -363,6 +352,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override bool AddToWorld()
         {
             Model = 816;
@@ -370,7 +360,7 @@ namespace DOL.GS
             Size = 80;
             Level = 77;
             Realm = 0;
-            CurrentRegionID = 191;//galladoria
+            CurrentRegionID = 191; //galladoria
 
             Strength = 180;
             Intelligence = 150;
@@ -395,11 +385,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class EasmarachAddBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public EasmarachAddBrain()
             : base()
         {
@@ -419,14 +412,18 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
+
         public int CastAOEDD(RegionTimer timer)
         {
             Body.CastSpell(LurkerStun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
+
         private Spell m_LurkerStun;
+
         private Spell LurkerStun
         {
             get
@@ -447,10 +444,11 @@ namespace DOL.AI.Brain
                     spell.Type = "Stun";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int) eDamageType.Energy;
                     m_LurkerStun = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LurkerStun);
                 }
+
                 return m_LurkerStun;
             }
         }

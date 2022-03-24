@@ -17,7 +17,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledBySaeor));
-            
+
             if (log.IsInfoEnabled)
                 log.Info("High Lord Saeor initialized..");
         }
@@ -94,37 +94,19 @@ namespace DOL.GS
             return 0.85;
         }
 
-        public override void Die(GameObject killer)
-        {
 
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);
-                }
-            }
-            
-            base.Die(killer);
-        }
-        
         private static void PlayerKilledBySaeor(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
-            
+
             if (player == null)
                 return;
 
             DyingEventArgs eArgs = args as DyingEventArgs;
-            
+
             if (eArgs?.Killer.Name != "High Lord Saeor")
                 return;
-            
+
             foreach (GameNPC mob in player.GetNPCsInRadius(1000))
             {
                 if (mob is not HighLordSaeor) continue;
@@ -132,7 +114,6 @@ namespace DOL.GS
                 mob.UpdateHealthManaEndu();
             }
         }
-        
     }
 }
 
@@ -141,12 +122,14 @@ namespace DOL.AI.Brain
     public class SaeorBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public SaeorBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 850;
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -155,6 +138,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
+
             base.Think();
         }
     }

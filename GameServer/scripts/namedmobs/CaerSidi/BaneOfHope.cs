@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Scripts
 {
-    public class BaneOfHope : GameNPC
+    public class BaneOfHope : GameEpicBoss
     {
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -19,13 +19,14 @@ namespace DOL.GS.Scripts
         {
             return base.AttackDamage(weapon) * 30;
         }
-        
+
 
         public override short MaxSpeedBase
         {
-            get => (short)(191 + (Level * 2));
+            get => (short) (191 + (Level * 2));
             set => m_maxSpeedBase = value;
         }
+
         public override int MaxHealth => 20000;
 
         public override int AttackRange
@@ -42,26 +43,13 @@ namespace DOL.GS.Scripts
             base.AddToWorld();
             return true;
         }
-        
+
         public override void Die(GameObject killer)
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                }
-            }
-            
-            MoveTo(CurrentRegionID,31154,30913,13950,3043);
+            MoveTo(CurrentRegionID, 31154, 30913, 13950, 3043);
             base.Die(killer);
         }
-        
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
@@ -72,20 +60,20 @@ namespace DOL.GS.Scripts
 
                     if (location <= 33)
                     {
-                        MoveTo(CurrentRegionID,34496,30879,14551,1045);
+                        MoveTo(CurrentRegionID, 34496, 30879, 14551, 1045);
                     }
-                    else if (location is > 33 and <= 66){
-                        MoveTo(CurrentRegionID,37377,30154,13973,978);
+                    else if (location is > 33 and <= 66)
+                    {
+                        MoveTo(CurrentRegionID, 37377, 30154, 13973, 978);
                     }
                     else
                     {
-                        MoveTo(CurrentRegionID,38292,31794,13940,986);
+                        MoveTo(CurrentRegionID, 38292, 31794, 13940, 986);
                     }
                 }
             }
-            
+
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
-        
     }
 }

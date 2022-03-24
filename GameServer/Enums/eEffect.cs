@@ -145,6 +145,8 @@ namespace DOL.GS
         WhirlingDervish,
         Viper,
         MajesticWill,
+        TrueSight,
+        ShadowRun,
         MasteryOfConcentration,
     }
 }

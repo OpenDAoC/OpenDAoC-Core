@@ -12,37 +12,40 @@ namespace DOL.GS.Scripts
 {
     public class Legion : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private static IArea legionArea = null;
-        
+
         [ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-		{
+        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        {
             const int radius = 650;
             Region region = WorldMgr.GetRegion(249);
-            legionArea = region.AddArea(new Area.Circle("Legion's Lair", 45000,51700,15468, radius));
+            legionArea = region.AddArea(new Area.Circle("Legion's Lair", 45000, 51700, 15468, radius));
             log.Debug("Legion's Lair created with radius " + radius + " at 45000 51700 15468");
             legionArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
-            
-            GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
-            
-			if (log.IsInfoEnabled)
-				log.Info("Legion initialized..");
-		}
 
-		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
-		{
+            GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
+
+            if (log.IsInfoEnabled)
+                log.Info("Legion initialized..");
+        }
+
+        [ScriptUnloadedEvent]
+        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        {
             legionArea.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
-			WorldMgr.GetRegion(249).RemoveArea(legionArea);
-            
+            WorldMgr.GetRegion(249).RemoveArea(legionArea);
+
             GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
         }
-        
+
         public Legion()
             : base()
         {
         }
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(13333);
@@ -63,10 +66,10 @@ namespace DOL.GS.Scripts
 
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
-            
+
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
-            
+
             base.AddToWorld();
             return true;
         }
@@ -78,22 +81,15 @@ namespace DOL.GS.Scripts
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -101,6 +97,7 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -111,6 +108,7 @@ namespace DOL.GS.Scripts
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(5000))
@@ -120,10 +118,7 @@ namespace DOL.GS.Scripts
                     npc.RemoveFromWorld();
                 }
             }
-            
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
+
             bool canReportNews = true;
 
             // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
@@ -132,43 +127,33 @@ namespace DOL.GS.Scripts
                 player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
                 if (!canReportNews || GameServer.ServerRules.CanGenerateNews(player) != false) continue;
-                if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                if (player.Client.Account.PrivLevel == (int) ePrivLevel.Player)
                     canReportNews = false;
-
             }
-            
-            GamePlayer playerKiller = killer as GamePlayer;
 
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                }
-            }
             base.Die(killer);
-            
+
             if (canReportNews)
             {
                 ReportNews(killer);
             }
         }
-        
+
         private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
         {
             AreaEventArgs aargs = args as AreaEventArgs;
             GamePlayer player = aargs?.GameObject as GamePlayer;
-            
+
             if (player == null)
                 return;
 
             Console.Write(player?.Name + " entered Legion's Lair");
 
             var mobsInArea = player.GetNPCsInRadius(2500);
-            
+
             if (mobsInArea == null)
                 return;
-            
+
             foreach (GameNPC mob in mobsInArea)
             {
                 if (mob is not Legion || !mob.InCombat) continue;
@@ -179,9 +164,11 @@ namespace DOL.GS.Scripts
                     Console.WriteLine("Whops, we got a hit!");
                     foreach (GamePlayer nearbyPlayer in mob.GetPlayersInRadius(2500))
                     {
-                        nearbyPlayer.Out.SendMessage("Legion doesn't like enemies in his lair", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                        nearbyPlayer.Out.SendMessage("Legion doesn't like enemies in his lair", eChatType.CT_Broadcast,
+                            eChatLoc.CL_ChatWindow);
                         nearbyPlayer.Out.SendSpellEffectAnimation(mob, player, 5933, 0, false, 1);
                     }
+
                     player.Die(mob);
                 }
                 else
@@ -191,36 +178,40 @@ namespace DOL.GS.Scripts
                         playerNearby.MoveTo(249, 48200, 49566, 20833, 1028);
                         playerNearby.BroadcastUpdate();
                     }
+
                     player.MoveTo(249, 48200, 49566, 20833, 1028);
                 }
+
                 player.BroadcastUpdate();
             }
         }
+
         private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
-            
+
             if (player == null)
                 return;
 
             DyingEventArgs eArgs = args as DyingEventArgs;
-            
+
             if (eArgs?.Killer.Name != "Legion")
                 return;
-            
+
             foreach (GameNPC mob in player.GetNPCsInRadius(2000))
             {
                 if (mob is not Legion) continue;
                 mob.Health += player.MaxHealth;
                 mob.UpdateHealthManaEndu();
             }
-            
+
             foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
             {
                 playerNearby.MoveTo(249, 48200, 49566, 20833, 1028);
                 playerNearby.BroadcastUpdate();
             }
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
@@ -231,7 +222,7 @@ namespace DOL.GS.Scripts
                     SpawnAdds((GamePlayer) source, spawnAmount);
                 }
             }
-            
+
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
 
@@ -241,7 +232,7 @@ namespace DOL.GS.Scripts
             {
                 var distanceDelta = Util.Random(0, 300);
                 var level = Util.Random(52, 58);
-                
+
                 LegionAdd add = new LegionAdd();
                 add.X = target.X + distanceDelta;
                 add.Y = target.Y + distanceDelta;
@@ -279,9 +270,9 @@ namespace DOL.GS.Scripts
                 player.RaiseRealmLoyaltyFloor(2);
                 count++;
             }
+
             return count;
         }
-        
     }
 }
 
@@ -311,7 +302,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            
+
             base.Think();
         }
     }
@@ -321,7 +312,8 @@ namespace DOL.GS
 {
     public class LegionAdd : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public LegionAdd()
             : base()
@@ -335,22 +327,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 1500;
-            }
+            get { return 1500; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 150;
@@ -361,6 +346,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.50;
         }
+
         public override bool AddToWorld()
         {
             Model = 660;
@@ -394,7 +380,9 @@ namespace DOL.AI.Brain
 {
     public class LegionAddBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public LegionAddBrain()
             : base()
         {

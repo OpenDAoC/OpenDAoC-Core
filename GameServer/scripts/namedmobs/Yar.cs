@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
+
 
 namespace DOL.GS
 {
@@ -94,19 +91,6 @@ namespace DOL.GS
                 if (npc.Brain is YarAddBrain)
                 {
                     npc.RemoveFromWorld();
-                }
-            }
-            
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
                 }
             }
             base.Die(killer);

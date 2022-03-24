@@ -12,17 +12,20 @@ using DOL.GS.Effects;
 
 namespace DOL.GS
 {
-    public class GiantSporiteCluster : GameNPC
+    public class GiantSporiteCluster : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public bool Master = true;
         public GameNPC Master_NPC;
         public List<GameNPC> CopyNPC;
+
         public GiantSporiteCluster()
             : base()
         {
         }
+
         public GiantSporiteCluster(bool master)
         {
             Master = master;
@@ -40,22 +43,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 250;
-            }
-            set
-            {
-            }
+            get { return 250; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -63,6 +59,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -73,9 +70,9 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-
             if (!Master && Master_NPC != null)
                 Master_NPC.TakeDamage(source, damageType, damageAmount, criticalAmount);
             else
@@ -90,19 +87,19 @@ namespace DOL.GS
                         foreach (GameNPC npc in CopyNPC)
                         {
                             if (npc == null) break;
-                            npc.Health = Health;//they share same healthpool
+                            npc.Health = Health; //they share same healthpool
                         }
                     }
                 }
             }
         }
+
         public override void Die(GameObject killer)
         {
             if (!(killer is GiantSporiteCluster) && !Master && Master_NPC != null)
                 Master_NPC.Die(killer);
             else
             {
-
                 if (CopyNPC != null && CopyNPC.Count > 0)
                 {
                     lock (CopyNPC)
@@ -110,30 +107,18 @@ namespace DOL.GS
                         foreach (GameNPC npc in CopyNPC)
                         {
                             if (npc.IsAlive)
-                                npc.Die(this);//if one die all others aswell
+                                npc.Die(this); //if one die all others aswell
                         }
                     }
                 }
+
                 CopyNPC = new List<GameNPC>();
                 GiantSporiteClusterBrain.spawn3 = true;
-                
-                // debug
-                log.Debug($"{Name} killed by {killer.Name}");
-            
-                GamePlayer playerKiller = killer as GamePlayer;
 
-                if (playerKiller?.Group != null)
-                {
-                    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                    {
-                        AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                    }
-                }
-                
                 base.Die(killer);
             }
         }
-        
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161336);
@@ -143,13 +128,13 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Giant Sporite Cluster", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Giant Sporite Cluster", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Giant Sporite Cluster not found, creating it...");
@@ -161,7 +146,7 @@ namespace DOL.GS
                 SB.Realm = 0;
                 SB.Level = 79;
                 SB.Size = 200;
-                SB.CurrentRegionID = 191;//galladoria
+                SB.CurrentRegionID = 191; //galladoria
 
                 SB.Strength = 160;
                 SB.Intelligence = 150;
@@ -179,7 +164,7 @@ namespace DOL.GS
                 SB.Z = 10846;
                 SB.MaxDistance = 2000;
                 SB.TetherRange = 2500;
-                SB.MaxSpeedBase = 200;//is slow to ppls may try kite it
+                SB.MaxSpeedBase = 200; //is slow to ppls may try kite it
                 SB.Heading = 2764;
 
                 GiantSporiteClusterBrain ubrain = new GiantSporiteClusterBrain();
@@ -193,44 +178,52 @@ namespace DOL.GS
                 SB.SaveIntoDatabase();
             }
             else
-                log.Warn("Giant Sporite Cluster exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Giant Sporite Cluster exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
 
 public class GiantSporiteClusterBrain : StandardMobBrain
 {
-    private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    private static readonly log4net.ILog log =
+        log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
     public GiantSporiteClusterBrain()
         : base()
     {
         AggroLevel = 100;
         AggroRange = 500;
     }
+
     public static bool spawn1 = true;
     public static bool spawn3 = true;
     public static bool spawn5 = true;
     public static bool spawn7 = true;
     public static bool spawn9 = true;
+
     public override void OnAttackedByEnemy(AttackData ad)
     {
         if (Body.IsAlive)
         {
-            if(spawn3==true)
+            if (spawn3 == true)
             {
                 Spawn();
                 spawn3 = false;
             }
         }
+
         base.OnAttackedByEnemy(ad);
     }
+
     public override void Think()
     {
-       if (!(Body is GiantSporiteCluster))
+        if (!(Body is GiantSporiteCluster))
         {
             base.Think();
             return;
         }
+
         GiantSporiteCluster sg = Body as GiantSporiteCluster;
 
         if (sg.CopyNPC == null || sg.CopyNPC.Count == 0)
@@ -258,6 +251,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
                 }
             }
         }
+
         if (Body.IsOutOfTetherRange)
         {
             if (Body.PackageID != "GSCCopy")
@@ -300,6 +294,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             {
                 new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
             }
+
             if (Body.PackageID != "GSCCopy")
             {
                 if (Body.HealthPercent < 91 && Body.HealthPercent >= 90 && spawn1 == true)
@@ -307,11 +302,13 @@ public class GiantSporiteClusterBrain : StandardMobBrain
                     PrepareMezz();
                     spawn1 = false;
                 }
+
                 if (Body.HealthPercent < 51 && Body.HealthPercent >= 50 && spawn5 == true)
                 {
                     PrepareMezz();
                     spawn5 = false;
                 }
+
                 if (Body.HealthPercent < 11 && Body.HealthPercent >= 10 && spawn9 == true)
                 {
                     PrepareMezz();
@@ -319,18 +316,20 @@ public class GiantSporiteClusterBrain : StandardMobBrain
                 }
             }
         }
+
         base.Think();
     }
+
     public void Spawn() // We define here adds
     {
-        for (int i = 0; i < Util.Random(2,3); i++)//Spawn 2 or 3 adds
+        for (int i = 0; i < Util.Random(2, 3); i++) //Spawn 2 or 3 adds
         {
             GameLiving ptarget = CalculateNextAttackTarget();
             GiantSporiteCluster Add = new GiantSporiteCluster();
             Add.X = Body.X + Util.Random(-50, 80);
             Add.Y = Body.Y + Util.Random(-50, 80);
             Add.Z = Body.Z;
-            Add.Model = Body.Model; 
+            Add.Model = Body.Model;
             Add.Name = Body.Name;
             Add.Size = 120;
             Add.Level = Body.Level;
@@ -345,14 +344,14 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             Add.Quickness = 55;
             Add.RespawnInterval = -1;
             Add.CurrentRegion = Body.CurrentRegion;
-            Add.MaxSpeedBase = 185;//slow so players can kite
+            Add.MaxSpeedBase = 185; //slow so players can kite
             Add.Heading = Body.Heading;
             GiantSporiteClusterBrain smb = new GiantSporiteClusterBrain();
             smb.AggroLevel = 100;
             smb.AggroRange = 1000;
             Add.AddBrain(smb);
             Add.AddToWorld();
-            GiantSporiteClusterBrain brain = (GiantSporiteClusterBrain)Add.Brain;
+            GiantSporiteClusterBrain brain = (GiantSporiteClusterBrain) Add.Brain;
             brain.AddToAggroList(ptarget, 1);
             Add.StartAttack(ptarget);
 
@@ -365,6 +364,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             }
         }
     }
+
     public void PrepareMezz()
     {
         if (Mezz.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
@@ -372,6 +372,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             new RegionTimer(Body, new RegionTimerCallback(CastMezz), 5000);
         }
     }
+
     protected virtual int CastMezz(RegionTimer timer)
     {
         Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -383,7 +384,9 @@ public class GiantSporiteClusterBrain : StandardMobBrain
         Body.CastSpell(GSCAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
         return 0;
     }
+
     private Spell m_GSCAoe;
+
     private Spell GSCAoe
     {
         get
@@ -406,10 +409,11 @@ public class GiantSporiteClusterBrain : StandardMobBrain
                 spell.Type = "DirectDamage";
                 spell.Uninterruptible = true;
                 spell.MoveCast = true;
-                spell.DamageType = (int)eDamageType.Cold;
+                spell.DamageType = (int) eDamageType.Cold;
                 m_GSCAoe = new Spell(spell, 70);
                 SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GSCAoe);
             }
+
             return m_GSCAoe;
         }
     }
@@ -441,10 +445,11 @@ public class GiantSporiteClusterBrain : StandardMobBrain
                 spell.Type = "Mesmerize";
                 spell.Uninterruptible = true;
                 spell.MoveCast = true;
-                spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+                spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                 m_mezSpell = new Spell(spell, 70);
                 SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
             }
+
             return m_mezSpell;
         }
     }

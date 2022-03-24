@@ -54,7 +54,7 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-        
+
         public override int MaxHealth
         {
             get { return 20000; }
@@ -87,27 +87,11 @@ namespace DOL.GS
 
         public virtual byte HealthPercent
         {
-            get
-            {
-                return (byte)(MaxHealth <= 0 ? 0 : Health * 100 / MaxHealth);
-            }
+            get { return (byte) (MaxHealth <= 0 ? 0 : Health * 100 / MaxHealth); }
         }
+
         public override void Die(GameObject killer)
         {
-
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);
-                }
-            }
-            
             base.Die(killer);
         }
 
@@ -117,9 +101,10 @@ namespace DOL.GS
             {
                 CastSpell(AbsDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
+
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
-        
+
         #region pbaoe abs debuff
 
         /// <summary>
@@ -173,12 +158,14 @@ namespace DOL.AI.Brain
     public class BaelerdothBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public BaelerdothBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 850;
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -187,6 +174,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
+
             base.Think();
         }
     }
