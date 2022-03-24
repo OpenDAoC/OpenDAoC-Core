@@ -54,7 +54,7 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-        
+
         public override int MaxHealth
         {
             get { return 20000; }
@@ -84,24 +84,6 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-        public override void Die(GameObject killer)
-        {
-
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
-            
-            base.Die(killer);
-        }
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
@@ -116,6 +98,7 @@ namespace DOL.GS
                     }
                 }
             }
+
             base.OnAttackedByEnemy(ad);
         }
 
@@ -146,12 +129,14 @@ namespace DOL.AI.Brain
     public class BalnBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public BalnBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 850;
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -160,6 +145,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
+
             base.Think();
         }
     }
@@ -210,7 +196,6 @@ namespace DOL.GS
         {
             base.Die(null); // null to not gain experience
         }
-        
     }
 }
 

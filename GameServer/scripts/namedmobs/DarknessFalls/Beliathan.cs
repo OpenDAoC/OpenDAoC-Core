@@ -7,12 +7,15 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 
 #region Beliathan Inizializator
+
 namespace DOL.GS
 {
     public class BeliathanInit : GameNPC
     {
-        public BeliathanInit() : base() { }
-        
+        public BeliathanInit() : base()
+        {
+        }
+
         public override bool AddToWorld()
         {
             BeliathanInitBrain hi = new BeliathanInitBrain();
@@ -20,11 +23,12 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Beliathan Initializator", 249, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Beliathan Initializator", 249, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Beliathan Initializator not found, creating it...");
@@ -55,17 +59,21 @@ namespace DOL.GS
                 CO.Brain.Start();
             }
             else
-                log.Warn("Beliathan Initializator exists in game, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Beliathan Initializator exists in game, remove it and restart server if you want to add by script code.");
         }
-
     }
 }
+
 #region Initializator Brain
+
 namespace DOL.AI.Brain
 {
     public class BeliathanInitBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public BeliathanInitBrain()
             : base()
         {
@@ -77,17 +85,18 @@ namespace DOL.AI.Brain
         {
             var princeStatus = WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID);
             var princeCount = 0;
-            var beliathan = WorldMgr.GetNPCsByNameFromRegion("Beliathan", 249, (eRealm)0);
+            var beliathan = WorldMgr.GetNPCsByNameFromRegion("Beliathan", 249, (eRealm) 0);
             bool beliSpawned;
-            
+
             if (beliathan.Length == 0)
             {
                 beliSpawned = false;
-            } else
+            }
+            else
             {
                 beliSpawned = true;
             }
-            
+
             if (!beliSpawned)
             {
                 foreach (GameNPC npc in princeStatus)
@@ -95,6 +104,7 @@ namespace DOL.AI.Brain
                     if (!npc.Name.ToLower().Contains("prince")) continue;
                     princeCount++;
                 }
+
                 if (princeCount == 0)
                 {
                     SpawnBeliathan();
@@ -103,7 +113,7 @@ namespace DOL.AI.Brain
 
             base.Think();
         }
-        
+
         public void SpawnBeliathan()
         {
             BroadcastMessage("The tunnels rumble and shake..");
@@ -115,7 +125,7 @@ namespace DOL.AI.Brain
             Add.Heading = 4072;
             Add.AddToWorld();
         }
-        
+
         public void BroadcastMessage(String message)
         {
             foreach (GameClient client in WorldMgr.GetClientsOfRegion(Body.CurrentRegionID))
@@ -125,7 +135,9 @@ namespace DOL.AI.Brain
         }
     }
 }
+
 #endregion
+
 #endregion
 
 namespace DOL.GS
@@ -135,7 +147,6 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            
             GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByBeliathan));
             if (log.IsInfoEnabled)
                 log.Info("Beliathan initialized..");
@@ -150,7 +161,7 @@ namespace DOL.GS
         {
             return 1000;
         }
-        
+
         public override int AttackSpeed(params InventoryItem[] weapon)
         {
             return base.AttackSpeed(weapon) * 2;
@@ -208,19 +219,6 @@ namespace DOL.GS
 
         public override void Die(GameObject killer)
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
-
             base.Die(killer);
 
             foreach (GameNPC npc in GetNPCsInRadius(4000))
@@ -231,24 +229,24 @@ namespace DOL.GS
                 }
             }
         }
-        
+
         private static void PlayerKilledByBeliathan(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
-            
+
             if (player == null)
                 return;
 
             DyingEventArgs eArgs = args as DyingEventArgs;
-            
+
             if (eArgs?.Killer.Name != "Beliathan")
                 return;
-            
+
             GameNPC beliathan = eArgs.Killer as GameNPC;
-            
+
             if (beliathan == null)
                 return;
-            
+
             BeliathanMinion sMinion = new BeliathanMinion();
             sMinion.X = player.X;
             sMinion.Y = player.Y;
@@ -257,10 +255,7 @@ namespace DOL.GS
             sMinion.Heading = player.Heading;
             sMinion.AddToWorld();
             sMinion.StartAttack(beliathan.TargetObject);
-
         }
-        
-        
     }
 }
 
@@ -270,7 +265,7 @@ namespace DOL.AI.Brain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
 
         public override void Think()
         {
@@ -289,7 +284,6 @@ namespace DOL.AI.Brain
 
             base.Think();
         }
-        
     }
 }
 
@@ -338,7 +332,6 @@ namespace DOL.GS
         {
             base.Die(null); // null to not gain experience
         }
-        
     }
 }
 

@@ -1,24 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
+
 
 namespace DOL.GS
 {
-    public class Aroon : GameNPC
+    public class Aroon : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Aroon()
             : base()
         {
         }
+
         public static bool Aroon_slash = false;
         public static bool Aroon_crush = false;
         public static bool Aroon_thrust = false;
@@ -30,15 +30,19 @@ namespace DOL.GS
         public static bool Aroon_spirit = false;
 
         #region Aroon resist damage checks
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon_slash == false && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false && Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
+                if (Aroon_slash == false && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
+                    Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
                     && Aroon_matter == false && Aroon_spirit == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -47,7 +51,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -57,11 +62,15 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false && Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
+
+                if (Aroon_slash == true && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
+                    Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
                     && Aroon_matter == false && Aroon_spirit == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust)
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -69,7 +78,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -79,11 +89,15 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == false && Aroon_body == false && Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == false && Aroon_body == false &&
+                    Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
                     && Aroon_matter == false && Aroon_spirit == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush)
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -91,7 +105,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -101,10 +116,13 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == false && Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
-                     && Aroon_matter == false && Aroon_spirit == false)
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == false &&
+                    Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
+                    && Aroon_matter == false && Aroon_spirit == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
                         || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
                     {
                         GamePlayer truc;
@@ -113,7 +131,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -123,10 +142,13 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true && Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                    Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
                     && Aroon_matter == false && Aroon_spirit == false)
                 {
-                    if (damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                    if (damageType == eDamageType.Cold || damageType == eDamageType.Energy ||
+                        damageType == eDamageType.Heat
                         || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
                     {
                         GamePlayer truc;
@@ -135,7 +157,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -145,11 +168,14 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true && Aroon_cold == true && Aroon_energy == false && Aroon_heat == false
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                    Aroon_cold == true && Aroon_energy == false && Aroon_heat == false
                     && Aroon_matter == false && Aroon_spirit == false)
                 {
                     if (damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
+                                                         || damageType == eDamageType.Matter ||
+                                                         damageType == eDamageType.Spirit)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -157,7 +183,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -167,10 +194,13 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true && Aroon_cold == true && Aroon_energy == true && Aroon_heat == false
-                     && Aroon_matter == false && Aroon_spirit == false)
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                    Aroon_cold == true && Aroon_energy == true && Aroon_heat == false
+                    && Aroon_matter == false && Aroon_spirit == false)
                 {
-                    if (damageType == eDamageType.Heat || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
+                    if (damageType == eDamageType.Heat || damageType == eDamageType.Matter ||
+                        damageType == eDamageType.Spirit)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -178,7 +208,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -188,7 +219,9 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true && Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                    Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
                     && Aroon_matter == false && Aroon_spirit == false)
                 {
                     if (damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
@@ -199,7 +232,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -209,8 +243,10 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true && Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
-                     && Aroon_matter == true && Aroon_spirit == false)
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                    Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
+                    && Aroon_matter == true && Aroon_spirit == false)
                 {
                     if (damageType == eDamageType.Spirit)
                     {
@@ -220,7 +256,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -230,13 +267,16 @@ namespace DOL.GS
                         base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                     }
                 }
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true && Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
+
+                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                    Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
                     && Aroon_matter == true && Aroon_spirit == true)
                 {
-                        base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
             }
         }
+
         #endregion Aroon resist damage checks
 
         public virtual int COifficulty
@@ -251,22 +291,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -274,6 +307,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -284,6 +318,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158075);
@@ -322,31 +357,14 @@ namespace DOL.GS
             AroonBrain.spawn_guardians = false;
             return base.AddToWorld();
         }
-        
-        public override void Die(GameObject killer)
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
 
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
-            
-            base.Die(killer);
-        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Aroon the Urlamhai", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Aroon the Urlamhai", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Aroon not found, creating it...");
@@ -358,7 +376,7 @@ namespace DOL.GS
                 CO.Realm = 0;
                 CO.Level = 81;
                 CO.Size = 175;
-                CO.CurrentRegionID = 191;//galladoria
+                CO.CurrentRegionID = 191; //galladoria
 
                 CO.Strength = 500;
                 CO.Intelligence = 220;
@@ -388,21 +406,26 @@ namespace DOL.GS
                 CO.SaveIntoDatabase();
             }
             else
-                log.Warn("Aroon the Urlamhai exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Aroon the Urlamhai exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class AroonBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public AroonBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 600;
         }
+
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -441,14 +464,17 @@ namespace DOL.AI.Brain
                 spawn_guardians = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
-                    if (npc.Brain is CorpScaithBrain || npc.Brain is SpioradScaithBrain || npc.Brain is RopadhScaithBrain || npc.Brain is DamhnaScaithBrain
-                        || npc.Brain is FuinneamgScaithBrain || npc.Brain is BruScaithBrain || npc.Brain is FuarScaithBrain || npc.Brain is TaesScaithBrain
+                    if (npc.Brain is CorpScaithBrain || npc.Brain is SpioradScaithBrain ||
+                        npc.Brain is RopadhScaithBrain || npc.Brain is DamhnaScaithBrain
+                        || npc.Brain is FuinneamgScaithBrain || npc.Brain is BruScaithBrain ||
+                        npc.Brain is FuarScaithBrain || npc.Brain is TaesScaithBrain
                         || npc.Brain is ScorScaithBrain)
                     {
-                            npc.RemoveFromWorld();
+                        npc.RemoveFromWorld();
                     }
                 }
             }
+
             if (Body.IsOutOfTetherRange)
             {
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 11);
@@ -460,14 +486,15 @@ namespace DOL.AI.Brain
                 this.Body.Health = this.Body.MaxHealth;
             }
 
-            if(Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro)
             {
-                if(spawn_guardians==false)
+                if (spawn_guardians == false)
                 {
                     SpawnGuardians();
                     spawn_guardians = true;
                 }
-                if(Util.Chance(10))
+
+                if (Util.Chance(10))
                 {
                     Body.CastSpell(AroonRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
@@ -477,6 +504,7 @@ namespace DOL.AI.Brain
         }
 
         public static bool spawn_guardians = false;
+
         public void SpawnGuardians()
         {
             CorpScaith Add = new CorpScaith();
@@ -553,6 +581,7 @@ namespace DOL.AI.Brain
         }
 
         private Spell m_AroonRoot;
+
         private Spell AroonRoot
         {
             get
@@ -576,10 +605,11 @@ namespace DOL.AI.Brain
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Matter;
+                    spell.DamageType = (int) eDamageType.Matter;
                     m_AroonRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AroonRoot);
                 }
+
                 return m_AroonRoot;
             }
         }
@@ -588,6 +618,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////Guardians/////////////////////
 
 #region Slash Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Slash guardian
 /// </summary>
@@ -595,46 +626,50 @@ namespace DOL.GS
 {
     public class CorpScaith : GameNPC
     {
-        public CorpScaith() : base() { }
+        public CorpScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
-        public override void Die(GameObject killer)//slash resist
+
+        public override void Die(GameObject killer) //slash resist
         {
             Aroon.Aroon_slash = true;
             base.Die(null); // null to not gain experience
         }
-        
+
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Corp Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -656,11 +691,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class CorpScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public CorpScaithBrain()
             : base()
         {
@@ -668,20 +706,23 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
-            { 
+            {
                 //do nothing
             }
             else
@@ -699,7 +740,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -712,6 +753,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -721,64 +763,74 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Thrust Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Thrust guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class SpioradScaith : GameNPC//thrust resist
+    public class SpioradScaith : GameNPC //thrust resist
     {
-        public SpioradScaith() : base() { }
+        public SpioradScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_thrust = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
                 if (Aroon.Aroon_slash == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -787,7 +839,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -802,7 +855,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Spiorad Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -824,11 +877,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class SpioradScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SpioradScaithBrain()
             : base()
         {
@@ -836,13 +892,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -867,7 +926,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -880,6 +939,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -889,64 +949,74 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Crush Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Crush guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class RopadhScaith : GameNPC//crush resist
+    public class RopadhScaith : GameNPC //crush resist
     {
-        public RopadhScaith() : base() { }
+        public RopadhScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_crush = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -955,7 +1025,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -970,7 +1041,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Ropadh Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -992,11 +1063,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class RopadhScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public RopadhScaithBrain()
             : base()
         {
@@ -1004,13 +1078,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -1035,7 +1112,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -1048,6 +1125,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -1057,64 +1135,74 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Body Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Body guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class DamhnaScaith : GameNPC//Body resist
+    public class DamhnaScaith : GameNPC //Body resist
     {
-        public DamhnaScaith() : base() { }
+        public DamhnaScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_body = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -1123,7 +1211,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1138,7 +1227,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Damhna Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -1160,11 +1249,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class DamhnaScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public DamhnaScaithBrain()
             : base()
         {
@@ -1172,13 +1264,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -1203,7 +1298,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -1216,6 +1311,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -1225,64 +1321,75 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Cold Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Cold guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class FuinneamgScaith : GameNPC//Cold resist
+    public class FuinneamgScaith : GameNPC //Cold resist
     {
-        public FuinneamgScaith() : base() { }
+        public FuinneamgScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_cold = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false && Aroon.Aroon_body==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
+                    Aroon.Aroon_body == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -1291,7 +1398,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1306,7 +1414,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Fuinneamg Scaith";
             Strength = 350;
             Dexterity = 200;
@@ -1328,11 +1436,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class FuinneamgScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public FuinneamgScaithBrain()
             : base()
         {
@@ -1340,13 +1451,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -1371,7 +1485,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -1384,6 +1498,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -1393,64 +1508,75 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Energy Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Energy guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class BruScaith : GameNPC//Energy resist
+    public class BruScaith : GameNPC //Energy resist
     {
-        public BruScaith() : base() { }
+        public BruScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_energy = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false && Aroon.Aroon_body == false && Aroon.Aroon_cold==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
+                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -1459,7 +1585,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1474,7 +1601,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Bru Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -1496,11 +1623,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class BruScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public BruScaithBrain()
             : base()
         {
@@ -1508,13 +1638,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -1539,7 +1672,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -1552,73 +1685,85 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000,20000));
+                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Heat Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Heat guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class FuarScaith : GameNPC//Heat resist
+    public class FuarScaith : GameNPC //Heat resist
     {
-        public FuarScaith() : base() { }
+        public FuarScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_heat = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false && Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
+                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -1627,7 +1772,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1642,7 +1788,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Fuar Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -1664,11 +1810,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class FuarScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public FuarScaithBrain()
             : base()
         {
@@ -1676,13 +1825,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -1707,7 +1859,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -1720,6 +1872,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -1729,65 +1882,76 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Matter Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Matter guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class TaesScaith : GameNPC//Matter resist
+    public class TaesScaith : GameNPC //Matter resist
     {
-        public TaesScaith() : base() { }
+        public TaesScaith() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_matter = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false && Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
-                    && Aroon.Aroon_heat==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
+                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
+                    && Aroon.Aroon_heat == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -1796,7 +1960,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1811,7 +1976,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Taes Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -1833,11 +1998,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class TaesScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public TaesScaithBrain()
             : base()
         {
@@ -1845,13 +2013,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -1876,7 +2047,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -1889,6 +2060,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -1898,66 +2070,76 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion
 
 #region Spirit Guardian
+
 /// <summary>
 /// ////////////////////////////////////////////////////////////////Spirit guardian
 /// </summary>
 namespace DOL.GS
 {
-    public class ScorScaith : GameNPC//Spirit resist
+    public class ScorScaith : GameNPC //Spirit resist
     {
-        public ScorScaith() : base() { }
+        public ScorScaith() : base()
+        {
+        }
 
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 15000; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             Aroon.Aroon_spirit = true;
             base.Die(null); // null to not gain experience
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false && Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
-                    && Aroon.Aroon_heat == false && Aroon.Aroon_matter==false)
+                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
+                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
+                    && Aroon.Aroon_heat == false && Aroon.Aroon_matter == false)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                         || damageType == eDamageType.Slash)
                     {
                         GamePlayer truc;
@@ -1966,7 +2148,8 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                                eChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1981,7 +2164,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = (ushort)Util.Random(889, 890);
+            Model = (ushort) Util.Random(889, 890);
             Name = "Scor Scaith";
             RespawnInterval = -1;
             Strength = 350;
@@ -2003,11 +2186,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class ScorScaithBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public ScorScaithBrain()
             : base()
         {
@@ -2015,13 +2201,16 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
+
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
+
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
         public int RandomAttackTarget(RegionTimer timer)
@@ -2046,7 +2235,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombat)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (player != null)
                     {
@@ -2059,6 +2248,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -2068,8 +2258,10 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
 }
+
 #endregion

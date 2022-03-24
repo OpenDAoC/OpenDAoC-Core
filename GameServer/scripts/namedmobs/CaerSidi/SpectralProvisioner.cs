@@ -6,7 +6,7 @@ using DOL.GS;
 
 namespace DOL.GS.Scripts
 {
-    public class SpectralProvisioner : GameNPC
+    public class SpectralProvisioner : GameEpicBoss
     {
 	    public override double GetArmorAF(eArmorSlot slot)
 	    {
@@ -50,18 +50,7 @@ namespace DOL.GS.Scripts
 	    
 	    public override void Die(GameObject killer)
 	    {
-		    // debug
-		    log.Debug($"{Name} killed by {killer.Name}");
-            
-		    GamePlayer playerKiller = killer as GamePlayer;
 
-		    if (playerKiller?.Group != null)
-		    {
-			    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-			    {
-				    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-			    }
-		    }
 		    
 		    base.Die(killer);
 	    }

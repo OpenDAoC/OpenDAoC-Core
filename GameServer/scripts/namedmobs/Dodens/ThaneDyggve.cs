@@ -18,7 +18,7 @@ using DOL.GS.Scripts.DOL.AI.Brain;
 namespace DOL.GS.Scripts
 {
 
-	public class ThaneDyggve : GameNPC
+	public class ThaneDyggve : GameEpicNPC
 	{
 
 		public ThaneDyggve() : base()
@@ -120,24 +120,6 @@ namespace DOL.GS.Scripts
 
 			if (e == GameNPCEvent.ArriveAtTarget)
 				EvadeChance = 0;
-		}
-		
-		public override void Die(GameObject killer)
-		{
-			// debug
-			log.Debug($"{Name} killed by {killer.Name}");
-
-			GamePlayer playerKiller = killer as GamePlayer;
-
-			if (playerKiller?.Group != null)
-			{
-				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-				{
-					AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-				}
-			}
-
-			base.Die(killer);
 		}
 
 		[ScriptLoadedEvent]

@@ -13,9 +13,10 @@ using System.Timers;
 
 namespace DOL.GS
 {
-    public class Xaga : GameNPC
+    public class Xaga : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Xaga()
             : base()
@@ -34,22 +35,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -57,6 +51,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -67,7 +62,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-        
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
@@ -82,27 +77,9 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             XagaBrain sBrain = new XagaBrain();
             SetOwnBrain(sBrain);
-            
+
             base.AddToWorld();
             return true;
-        }
-        
-        public override void Die(GameObject killer)
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
-            
-            base.Die(killer);
         }
 
 
@@ -111,7 +88,7 @@ namespace DOL.GS
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Xaga", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Xaga", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Xaga not found, creating it...");
@@ -123,7 +100,7 @@ namespace DOL.GS
                 SB.Realm = 0;
                 SB.Level = 81;
                 SB.Size = 250;
-                SB.CurrentRegionID = 191;//galladoria
+                SB.CurrentRegionID = 191; //galladoria
 
                 SB.Strength = 260;
                 SB.Intelligence = 220;
@@ -143,7 +120,7 @@ namespace DOL.GS
                 SB.TetherRange = 2500;
                 SB.MaxSpeedBase = 300;
                 SB.Heading = 2013;
-                
+
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
                 SB.LoadTemplate(npcTemplate);
 
@@ -166,13 +143,16 @@ namespace DOL.AI.Brain
 {
     public class XagaBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public XagaBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 500;
         }
+
         public static bool spawstaffs1 = true;
         public static bool spawstaffs2 = true;
         public static bool spawstaffs3 = true;
@@ -182,6 +162,7 @@ namespace DOL.AI.Brain
         public static bool spawstaffs7 = true;
         public static bool spawstaffs8 = true;
         public static bool spawstaffs9 = true;
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -205,6 +186,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (Body.IsOutOfTetherRange)
             {
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
@@ -226,48 +208,56 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.InCombat)
             {
-                if (Body.HealthPercent < 92 && Body.HealthPercent>=90 && spawstaffs1==true)
+                if (Body.HealthPercent < 92 && Body.HealthPercent >= 90 && spawstaffs1 == true)
                 {
                     Spawn();
                     PrepareMezz();
                     spawstaffs1 = false;
                 }
+
                 if (Body.HealthPercent < 82 && Body.HealthPercent >= 80 && spawstaffs2 == true)
                 {
                     Spawn();
                     spawstaffs2 = false;
                 }
+
                 if (Body.HealthPercent < 72 && Body.HealthPercent >= 70 && spawstaffs3 == true)
                 {
                     Spawn();
                     spawstaffs3 = false;
                 }
+
                 if (Body.HealthPercent < 62 && Body.HealthPercent >= 60 && spawstaffs4 == true)
                 {
                     Spawn();
                     spawstaffs4 = false;
                 }
+
                 if (Body.HealthPercent < 52 && Body.HealthPercent >= 50 && spawstaffs5 == true)
                 {
                     Spawn();
                     PrepareMezz();
                     spawstaffs5 = false;
                 }
+
                 if (Body.HealthPercent < 42 && Body.HealthPercent >= 40 && spawstaffs6 == true)
                 {
                     Spawn();
                     spawstaffs6 = false;
                 }
+
                 if (Body.HealthPercent < 32 && Body.HealthPercent >= 30 && spawstaffs7 == true)
                 {
                     Spawn();
                     spawstaffs7 = false;
                 }
+
                 if (Body.HealthPercent < 22 && Body.HealthPercent >= 20 && spawstaffs8 == true)
                 {
                     Spawn();
                     spawstaffs8 = false;
                 }
+
                 if (Body.HealthPercent < 12 && Body.HealthPercent >= 10 && spawstaffs9 == true)
                 {
                     Spawn();
@@ -275,20 +265,24 @@ namespace DOL.AI.Brain
                     spawstaffs9 = false;
                 }
             }
+
             base.Think();
         }
+
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (Body.IsAlive)
             {
                 foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
                 {
-                    if ((mob_c?.Brain is BeathaBrain || mob_c?.Brain is TineBrain) && mob_c.IsAlive && mob_c.IsAvailable)
+                    if ((mob_c?.Brain is BeathaBrain || mob_c?.Brain is TineBrain) && mob_c.IsAlive &&
+                        mob_c.IsAvailable)
                     {
                         AddAggroListTo(mob_c.Brain as StandardMobBrain);
                     }
                 }
             }
+
             base.OnAttackedByEnemy(ad);
         }
 
@@ -298,16 +292,17 @@ namespace DOL.AI.Brain
             {
                 if (ppl.IsAlive)
                 {
-                        XagaStaff Add = new XagaStaff();
-                        Add.X = ppl.X;
-                        Add.Y = ppl.Y;
-                        Add.Z = ppl.Z;
-                        Add.CurrentRegion = Body.CurrentRegion;
-                        Add.Heading = ppl.Heading;
-                        Add.AddToWorld();
+                    XagaStaff Add = new XagaStaff();
+                    Add.X = ppl.X;
+                    Add.Y = ppl.Y;
+                    Add.Z = ppl.Z;
+                    Add.CurrentRegion = Body.CurrentRegion;
+                    Add.Heading = ppl.Heading;
+                    Add.AddToWorld();
                 }
             }
         }
+
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -315,14 +310,17 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
+
         public void PrepareMezz()
         {
             if (Mezz.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
             {
-                BroadcastMessage(String.Format(Body.Name + " look at " + Body.TargetObject.Name + " angrly!", Body.Name));
+                BroadcastMessage(
+                    String.Format(Body.Name + " look at " + Body.TargetObject.Name + " angrly!", Body.Name));
                 new RegionTimer(Body, new RegionTimerCallback(CastMezz), 5000);
             }
         }
+
         protected virtual int CastMezz(RegionTimer timer)
         {
             Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -356,14 +354,14 @@ namespace DOL.AI.Brain
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+                    spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
+
                 return m_mezSpell;
             }
         }
-
     }
 }
 
@@ -371,8 +369,12 @@ namespace DOL.GS
 {
     public class XagaStaff : GameNPC
     {
-        public XagaStaff() : base() { }
+        public XagaStaff() : base()
+        {
+        }
+
         public static GameNPC m_XagaStaff = new GameNPC();
+
         public override int MaxHealth
         {
             get { return 650 * Constitution / 100; }
@@ -381,7 +383,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468,0,91);
+            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 0, 91);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             Model = 665;
@@ -391,9 +393,9 @@ namespace DOL.GS
             MaxSpeedBase = 0;
             Intelligence = 250;
             Piety = 250;
-            IsWorthReward = false;//worth no reward
-            Size = (byte)Util.Random(50, 55);
-            Level = (byte)Util.Random(55, 58);
+            IsWorthReward = false; //worth no reward
+            Size = (byte) Util.Random(50, 55);
+            Level = (byte) Util.Random(55, 58);
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             Realm = eRealm.None;
@@ -403,20 +405,25 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
-            base.Die(null);//null to not gain experience
+            base.Die(null); //null to not gain experience
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class XagaStaffBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public XagaStaffBrain()
             : base()
         {
@@ -424,11 +431,13 @@ namespace DOL.AI.Brain
             AggroRange = 450;
             ThinkInterval = 4000;
         }
+
         public int SpamPBAOE(RegionTimer timer)
         {
             Body.CastSpell(XagaStaffPBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
+
         public override void Think()
         {
             Body.IsWorthReward = false;
@@ -436,9 +445,12 @@ namespace DOL.AI.Brain
             {
                 new RegionTimer(Body, new RegionTimerCallback(SpamPBAOE), 4000);
             }
+
             base.Think();
         }
+
         private Spell m_XagaStaffPBAOE;
+
         private Spell XagaStaffPBAOE
         {
             get
@@ -460,10 +472,11 @@ namespace DOL.AI.Brain
                     spell.Type = "DirectDamage";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int) eDamageType.Heat;
                     m_XagaStaffPBAOE = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_XagaStaffPBAOE);
                 }
+
                 return m_XagaStaffPBAOE;
             }
         }
@@ -474,9 +487,10 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class Beatha : GameNPC
+    public class Beatha : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Beatha()
             : base()
@@ -495,22 +509,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 10000;
-            }
+            get { return 10000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -518,6 +525,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -528,6 +536,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -540,7 +549,8 @@ namespace DOL.GS
                     else
                         truc = ((source as GamePet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to cold damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is immune to cold damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -551,6 +561,7 @@ namespace DOL.GS
                 }
             }
         }
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158330);
@@ -569,12 +580,13 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Beatha", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Beatha", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Beatha not found, creating it...");
@@ -586,7 +598,7 @@ namespace DOL.GS
                 SB.Realm = 0;
                 SB.Level = 65;
                 SB.Size = 80;
-                SB.CurrentRegionID = 191;//galladoria
+                SB.CurrentRegionID = 191; //galladoria
 
                 SB.Strength = 250;
                 SB.Intelligence = 150;
@@ -620,11 +632,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class BeathaBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public BeathaBrain()
             : base()
         {
@@ -634,21 +649,25 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if(Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro)
             {
-                if(Util.Chance(10) && Body.TargetObject != null)
+                if (Util.Chance(10) && Body.TargetObject != null)
                 {
                     new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
                 }
             }
+
             base.Think();
         }
+
         public int CastAOEDD(RegionTimer timer)
         {
             Body.CastSpell(BeathaAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
+
         private Spell m_BeathaAoe;
+
         private Spell BeathaAoe
         {
             get
@@ -670,10 +689,11 @@ namespace DOL.AI.Brain
                     spell.Type = "DirectDamage";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int) eDamageType.Cold;
                     m_BeathaAoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BeathaAoe);
                 }
+
                 return m_BeathaAoe;
             }
         }
@@ -684,9 +704,10 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class Tine : GameNPC
+    public class Tine : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Tine()
             : base()
@@ -705,22 +726,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 10000;
-            }
+            get { return 10000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -728,6 +742,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -738,6 +753,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -750,7 +766,8 @@ namespace DOL.GS
                     else
                         truc = ((source as GamePet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to heat damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is immune to heat damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -761,6 +778,7 @@ namespace DOL.GS
                 }
             }
         }
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167084);
@@ -779,12 +797,13 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Tine", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Tine", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Tine not found, creating it...");
@@ -796,7 +815,7 @@ namespace DOL.GS
                 SB.Realm = 0;
                 SB.Level = 67;
                 SB.Size = 80;
-                SB.CurrentRegionID = 191;//galladoria
+                SB.CurrentRegionID = 191; //galladoria
 
                 SB.Strength = 250;
                 SB.Intelligence = 150;
@@ -830,11 +849,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class TineBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public TineBrain()
             : base()
         {
@@ -851,14 +873,18 @@ namespace DOL.AI.Brain
                     new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
                 }
             }
+
             base.Think();
         }
+
         public int CastAOEDD(RegionTimer timer)
         {
             Body.CastSpell(TineAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
+
         private Spell m_TineAoe;
+
         private Spell TineAoe
         {
             get
@@ -880,10 +906,11 @@ namespace DOL.AI.Brain
                     spell.Type = "DirectDamage";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int) eDamageType.Heat;
                     m_TineAoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TineAoe);
                 }
+
                 return m_TineAoe;
             }
         }

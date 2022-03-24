@@ -11,9 +11,10 @@ using DOL.GS.Effects;
 
 namespace DOL.GS
 {
-    public class OlcasarGeomancer : GameNPC
+    public class OlcasarGeomancer : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public OlcasarGeomancer()
             : base()
@@ -32,22 +33,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -58,6 +52,7 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -65,7 +60,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164613);
@@ -83,31 +78,13 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        
-        public override void Die(GameObject killer)
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
-            
-            base.Die(killer);
-        }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Olcasar Geomancer", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Olcasar Geomancer", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Olcasar Geomancer not found, creating it...");
@@ -119,7 +96,7 @@ namespace DOL.GS
                 OG.Realm = 0;
                 OG.Level = 77;
                 OG.Size = 170;
-                OG.CurrentRegionID = 191;//galladoria
+                OG.CurrentRegionID = 191; //galladoria
 
                 OG.Strength = 500;
                 OG.Intelligence = 220;
@@ -127,7 +104,7 @@ namespace DOL.GS
                 OG.Dexterity = 200;
                 OG.Constitution = 200;
                 OG.Quickness = 125;
-                OG.BodyType = 8;//magician
+                OG.BodyType = 8; //magician
                 OG.MeleeDamageType = eDamageType.Slash;
                 OG.Faction = FactionMgr.GetFactionByID(96);
                 OG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -150,7 +127,8 @@ namespace DOL.GS
                 OG.SaveIntoDatabase();
             }
             else
-                log.Warn("Olcasar Geomancer exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Olcasar Geomancer exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -159,13 +137,16 @@ namespace DOL.AI.Brain
 {
     public class OlcasarGeomancerBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public OlcasarGeomancerBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 500;
         }
+
         private int m_stage = 10;
 
         /// <summary>
@@ -174,7 +155,10 @@ namespace DOL.AI.Brain
         public int Stage
         {
             get { return m_stage; }
-            set { if (value >= 0 && value <= 10) m_stage = value; }
+            set
+            {
+                if (value >= 0 && value <= 10) m_stage = value;
+            }
         }
 
         public void BroadcastMessage(String message)
@@ -184,15 +168,18 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public  int BombTimer(RegionTimer timer)
-        {           
+
+        public int BombTimer(RegionTimer timer)
+        {
             Body.CastSpell(OGBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                Spawn(); // spawn adds
+            Spawn(); // spawn adds
             Body.MaxSpeedBase = 300;
             spawnadds = true;
-            return 0; 
+            return 0;
         }
+
         public static bool spawnadds = true;
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -227,12 +214,13 @@ namespace DOL.AI.Brain
 
             int health = Body.HealthPercent / 10;
 
-            if(Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro)
             {
                 if (Util.Chance(15))
                 {
                     PickRandomTarget();
                 }
+
                 if (Util.Chance(15))
                 {
                     if (OGDS.TargetHasEffect(Body) == false)
@@ -241,58 +229,66 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (Body.TargetObject != null && health < Stage && Body.InCombat)
             {
                 switch (health)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
                     {
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
+                        if (!Body.IsCasting)
                         {
-                            if (!Body.IsCasting)
+                            Body.TurnTo(Body.TargetObject);
+
+                            foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             {
-                                Body.TurnTo(Body.TargetObject);
-                                
-                                foreach(GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                if (Body.AttackState)
                                 {
-                                    if (Body.AttackState)
-                                    {
-                                        Body.StopAttack();
-                                        Body.StopFollowing();
-                                    }
-                                    if (Body.IsMoving)
-                                    {
-                                        Body.StopMoving();
-                                    }
-                                    Body.MaxSpeedBase = 0;
-                                    
-                                    if (spawnadds == true)
-                                    {
-                                        BroadcastMessage(String.Format(Body.Name + " calling ice magic to aid him in battle!"));
-                                        new RegionTimer(Body, new RegionTimerCallback(BombTimer), 5000);
-                                        spawnadds = false;
-                                    }
+                                    Body.StopAttack();
+                                    Body.StopFollowing();
+                                }
+
+                                if (Body.IsMoving)
+                                {
+                                    Body.StopMoving();
+                                }
+
+                                Body.MaxSpeedBase = 0;
+
+                                if (spawnadds == true)
+                                {
+                                    BroadcastMessage(
+                                        String.Format(Body.Name + " calling ice magic to aid him in battle!"));
+                                    new RegionTimer(Body, new RegionTimerCallback(BombTimer), 5000);
+                                    spawnadds = false;
                                 }
                             }
                         }
-                        break;
                     }
+                        break;
+                }
+
                 Stage = health;
             }
+
             base.Think();
         }
 
         private GameLiving randomtarget;
+
         private GameLiving RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public void PickRandomTarget()
         {
             ArrayList inRangeLiving = new ArrayList();
@@ -309,9 +305,10 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (inRangeLiving.Count > 0)
             {
-                GameLiving ptarget = ((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                GameLiving ptarget = ((GameLiving) (inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                 RandomTarget = ptarget;
                 if (OGRoot.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body))
                 {
@@ -319,6 +316,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
+
         private int CastRoot(RegionTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
@@ -327,13 +325,16 @@ namespace DOL.AI.Brain
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(OGRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                spambroad = false;//to avoid spamming
+                spambroad = false; //to avoid spamming
             }
+
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
+
         public static bool spambroad = false;
+
         private void PrepareToRoot()
         {
             if (spambroad == false)
@@ -345,7 +346,7 @@ namespace DOL.AI.Brain
 
         public void Spawn()
         {
-            for (int i = 0; i < Util.Random(4,8); i++) // Spawn 4-8 adds
+            for (int i = 0; i < Util.Random(4, 8); i++) // Spawn 4-8 adds
             {
                 OGAdds Add = new OGAdds();
                 Add.X = Body.X + Util.Random(50, 80);
@@ -356,10 +357,12 @@ namespace DOL.AI.Brain
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
             }
+
             BroadcastMessage(String.Format("...a piece of Olcasar Geomancer falls from its body, and attacks!"));
         }
 
         private Spell m_OGBomb;
+
         private Spell OGBomb
         {
             get
@@ -382,15 +385,17 @@ namespace DOL.AI.Brain
                     spell.Type = "DamageSpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold; 
+                    spell.DamageType = (int) eDamageType.Cold;
                     m_OGBomb = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGBomb);
                 }
+
                 return m_OGBomb;
             }
         }
 
         private Spell m_OGDS;
+
         private Spell OGDS
         {
             get
@@ -412,15 +417,17 @@ namespace DOL.AI.Brain
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int) eDamageType.Heat;
                     m_OGDS = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGDS);
                 }
+
                 return m_OGDS;
             }
         }
 
         private Spell m_OGRoot;
+
         private Spell OGRoot
         {
             get
@@ -442,10 +449,11 @@ namespace DOL.AI.Brain
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Matter;
+                    spell.DamageType = (int) eDamageType.Matter;
                     m_OGRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGRoot);
                 }
+
                 return m_OGRoot;
             }
         }
@@ -458,15 +466,21 @@ namespace DOL.GS
 {
     public class OGAdds : GameNPC
     {
-        public OGAdds() : base() { }
+        public OGAdds() : base()
+        {
+        }
+
         public static GameNPC og_adds = new GameNPC();
+
         public override int MaxHealth
         {
             get { return 1200; }
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
             base.Die(null); // null to not gain experience
@@ -479,8 +493,8 @@ namespace DOL.GS
             RespawnInterval = -1;
             MaxDistance = 2500;
             TetherRange = 3000;
-            Size = (byte)Util.Random(45, 55);
-            Level = (byte)Util.Random(60, 65);
+            Size = (byte) Util.Random(45, 55);
+            Level = (byte) Util.Random(60, 65);
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
@@ -493,11 +507,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class OGAddsBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public OGAddsBrain()
             : base()
         {
@@ -507,11 +524,11 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            foreach(GamePlayer player in Body.GetPlayersInRadius(2000))
+            foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
             {
-                if(player != null && player.IsAlive)
+                if (player != null && player.IsAlive)
                 {
-                    if (player.CharacterClass.ID is 48 or 47 or 42 or 46)//bard,druid,menta,warden
+                    if (player.CharacterClass.ID is 48 or 47 or 42 or 46) //bard,druid,menta,warden
                     {
                         if (Body.TargetObject != player)
                         {
@@ -526,6 +543,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }

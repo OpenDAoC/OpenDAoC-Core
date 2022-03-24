@@ -1,6 +1,7 @@
 /*
 <author>Kelt</author>
  */
+
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -12,10 +13,10 @@ using System.Reflection;
 
 namespace DOL.GS.Scripts
 {
-
     public abstract class GameEpicAros : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Set Aros the Spiritmaster difficulty in percent of its max abilities
@@ -30,32 +31,39 @@ namespace DOL.GS.Scripts
         /// Announcements for Bomb, BigBomb, Debuff and Death.
         /// </summary>
         protected String[] m_BombAnnounce;
+
         protected String m_BigBombAnnounce;
         protected String m_DebuffAnnounce;
         protected String m_SummonAnnounce;
         protected String[] m_DeathAnnounce;
-        
+
         //check if he is doing spells
         private bool isBombing = true;
         private bool isBigBombing = true;
         private bool isSummoning = true;
         private bool isDebuffing = true;
-        
+
         /// <summary>
         /// Creates a new instance of GameEpicAros.
         /// </summary>
         public GameEpicAros()
             : base()
         {
-            m_BombAnnounce = new String[] { "{0} begins to perform a ritual!",
+            m_BombAnnounce = new String[]
+            {
+                "{0} begins to perform a ritual!",
                 "{0} is powerful and begins a threatening attack!",
                 "Feeling strong and powerful, {0} prepares a deadly spell.",
-                "{0} begins a magic of mental destruction!" };
+                "{0} begins a magic of mental destruction!"
+            };
             m_BigBombAnnounce = "{0} withdraws all souls around him in order to cast a powerful spell.";
             m_DebuffAnnounce = "{0} weakens {1} and everyone around!";
             m_SummonAnnounce = "{0} uses his power to summon a protective spirit!";
-            m_DeathAnnounce = new String[] { "{0} trips and falls on the hard stone floor.",
-                "'You will remember my name! {0}!'" };
+            m_DeathAnnounce = new String[]
+            {
+                "{0} trips and falls on the hard stone floor.",
+                "'You will remember my name! {0}!'"
+            };
             MaxDistance = 2500;
             TetherRange = 3500;
             SetOwnBrain(new ArosBrain());
@@ -75,23 +83,18 @@ namespace DOL.GS.Scripts
 
         public override short MaxSpeedBase
         {
-            get { return (short)(191 + (Level * 2)); }
+            get { return (short) (191 + (Level * 2)); }
             set { m_maxSpeedBase = value; }
         }
+
         public override int MaxHealth
         {
-            get
-            {
-                return 20000 * ArosDifficulty / 100;
-            }
+            get { return 20000 * ArosDifficulty / 100; }
         }
 
         public override short Strength
         {
-            get
-            {
-                return (short)(base.Strength * ArosDifficulty / 100);
-            }
+            get { return (short) (base.Strength * ArosDifficulty / 100); }
         }
 
         public override int AttackRange
@@ -135,30 +138,20 @@ namespace DOL.GS.Scripts
                 log.Debug("Aros The Spiritmaster Killed: killer is " + killer.Name + ", attackers:");
             base.StopCurrentSpellcast();
             base.Die(killer);
-            
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
 
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
 
             foreach (String message in m_DeathAnnounce)
             {
                 BroadcastMessage(String.Format(message, Name));
             }
+
             foreach (GameNPC npc in this.GetNPCsInRadius(4000))
             {
                 if (npc.Name.Contains("Guardian of Aros"))
                 {
                     npc.Die(killer);
                 }
+
                 if (npc.Name.Contains("Summoned Guardian"))
                 {
                     npc.Die(killer);
@@ -190,7 +183,8 @@ namespace DOL.GS.Scripts
         /// <param name="healSource">The source of the heal.</param>
         /// <param name="changeType">The way the living was healed.</param>
         /// <param name="healAmount">The amount that was healed.</param>
-        public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType, int healAmount)
+        public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType,
+            int healAmount)
         {
             base.EnemyHealed(enemy, healSource, changeType, healAmount);
             Brain.Notify(GameLivingEvent.EnemyHealed, this,
@@ -217,7 +211,7 @@ namespace DOL.GS.Scripts
 
             base.OnAttackedByEnemy(ad);
         }
-        
+
         /// <summary>
         /// Handle event notifications.
         /// </summary>
@@ -274,7 +268,6 @@ namespace DOL.GS.Scripts
                         CheckDebuff(player);
                         CheckChanceBomb(player);
                     }
-                    
                 }
             }
         }
@@ -288,6 +281,7 @@ namespace DOL.GS.Scripts
             summonedGuard.AddToWorld();
             summonedGuard.StartAttack(enemy);
         }
+
         public void SetVariables(GameNPC summonedGuardian)
         {
             summonedGuardian.LoadEquipmentTemplateFromDatabase("Summoned_Guardian");
@@ -330,18 +324,19 @@ namespace DOL.GS.Scripts
             ABrain mobBrain = null;
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                mobBrain = (ABrain)assembly.CreateInstance(this.Brain.GetType().FullName, true);
+                mobBrain = (ABrain) assembly.CreateInstance(this.Brain.GetType().FullName, true);
                 if (mobBrain != null)
                     break;
             }
+
             if (mobBrain == null)
             {
                 summonedGuardian.SetOwnBrain(new StandardMobBrain());
             }
             else if (mobBrain is StandardMobBrain)
             {
-                StandardMobBrain sbrain = (StandardMobBrain)mobBrain;
-                StandardMobBrain tbrain = (StandardMobBrain)Brain;
+                StandardMobBrain sbrain = (StandardMobBrain) mobBrain;
+                StandardMobBrain tbrain = (StandardMobBrain) Brain;
                 sbrain.AggroLevel = tbrain.AggroLevel;
                 sbrain.AggroRange = tbrain.AggroRange;
                 summonedGuardian.SetOwnBrain(sbrain);
@@ -357,23 +352,17 @@ namespace DOL.GS.Scripts
         /// The Bomb spell. Override this property in your Aros Epic summonedGuard implementation
         /// and assign the spell to m_breathSpell.
         /// </summary>
-        protected abstract Spell Bomb
-        {
-            get;
-        }
+        protected abstract Spell Bomb { get; }
 
         /// <summary>
         /// The Bomb spell. Override this property in your Aros Epic summonedGuard implementation
         /// and assign the spell to m_breathSpell.
         /// </summary>
-        protected abstract Spell BigBomb
-        {
-            get;
-        }
+        protected abstract Spell BigBomb { get; }
 
         private const int m_BombChance = 3;
         private GameLiving m_BombTarget;
-        
+
         /// <summary>
         /// Chance to cast Summon when a potential target has been detected.
         /// </summary>
@@ -388,10 +377,14 @@ namespace DOL.GS.Scripts
         private GameLiving BombTarget
         {
             get { return m_BombTarget; }
-            set { m_BombTarget = value; PrepareToBombChance(); }
+            set
+            {
+                m_BombTarget = value;
+                PrepareToBombChance();
+            }
         }
 
-        
+
         /// <summary>
         /// Check whether or not to cast Bomb.
         /// </summary>
@@ -401,9 +394,9 @@ namespace DOL.GS.Scripts
             bool success = Util.Chance(BombChance);
             if (success)
                 BombTarget = target;
-            return success;   // Has a 3% chance to cast.
+            return success; // Has a 3% chance to cast.
         }
-        
+
         /// <summary>
         /// Announce the Debuff and start the 1 second timer.
         /// </summary>
@@ -416,13 +409,13 @@ namespace DOL.GS.Scripts
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
             new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
         }
-        
+
         /// <summary>
         /// Check whether or not to cast Bomb.
         /// </summary>
         public bool CheckBomb()
         {
-            PrepareToBomb();    // Has a 100% chance to cast.
+            PrepareToBomb(); // Has a 100% chance to cast.
             return true;
         }
 
@@ -490,10 +483,7 @@ namespace DOL.GS.Scripts
         /// The Debuff spell. Override this property in your Aros the Spiritmaster implementation
         /// and assign the spell to m_DebuffSpell.
         /// </summary>
-        protected abstract Spell Debuff
-        {
-            get;
-        }
+        protected abstract Spell Debuff { get; }
 
         private const int m_DebuffChance = 3;
 
@@ -513,7 +503,11 @@ namespace DOL.GS.Scripts
         private GameLiving DebuffTarget
         {
             get { return m_DebuffTarget; }
-            set { m_DebuffTarget = value; PrepareToDebuff(); }
+            set
+            {
+                m_DebuffTarget = value;
+                PrepareToDebuff();
+            }
         }
 
         /// <summary>
@@ -571,10 +565,7 @@ namespace DOL.GS.Scripts
         /// The Debuff spell. Override this property in your Aros the Spiritmaster implementation
         /// and assign the spell to m_SummonSpell.
         /// </summary>
-        protected abstract Spell Summon
-        {
-            get;
-        }
+        protected abstract Spell Summon { get; }
 
         private const int m_SummonChance = 100;
 
@@ -594,7 +585,11 @@ namespace DOL.GS.Scripts
         private GameLiving SummonTarget
         {
             get { return m_SummonTarget; }
-            set { m_SummonTarget = value; PrepareToSummon(); }
+            set
+            {
+                m_SummonTarget = value;
+                PrepareToSummon();
+            }
         }
 
         /// <summary>
@@ -641,21 +636,22 @@ namespace DOL.GS.Scripts
                             target = player;
                             break;
                         }
+
                         isSummoning = false;
                     }
                     else
                     {
                         isSummoning = true;
                     }
-                   
                 }
+
                 if (target == null || Summon == null)
                     return 1;
             }
+
             return 0;
         }
+
         #endregion
     }
 }
-
-

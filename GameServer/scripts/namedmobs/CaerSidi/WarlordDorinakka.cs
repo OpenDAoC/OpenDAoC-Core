@@ -1,6 +1,6 @@
 ﻿namespace DOL.GS.Scripts
 {
-	public class WarlordDorinakka : GameNPC
+	public class WarlordDorinakka : GameEpicBoss
 	{
 		public override double GetArmorAF(eArmorSlot slot)
 		{

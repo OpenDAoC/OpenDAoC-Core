@@ -5,37 +5,38 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.ServerRules;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
-using Timer = System.Timers.Timer;
-using System.Timers;
+
 
 namespace DOL.GS
 {
     public class Jailer : GameEpicBoss
     {
-        public Jailer() : base() { }
+        public Jailer() : base()
+        {
+        }
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 90;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 90;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 90; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 90; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 90; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
             }
         }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -43,35 +44,23 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 20000; }
         }
-        public override void Die(GameObject killer)//on kill generate orbs
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
 
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
-            base.Die(killer);
-        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162583);
@@ -85,20 +74,22 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+            RespawnInterval =
+                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             JailerBrain sbrain = new JailerBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = false;//load from database
+            LoadedFromScript = false; //load from database
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Jailer Vifil", 160, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Jailer Vifil", 160, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Jailer Vifil not found, creating it...");
@@ -110,9 +101,11 @@ namespace DOL.GS
                 TG.Realm = 0;
                 TG.Level = 82;
                 TG.Size = 70;
-                TG.CurrentRegionID = 160;//tuscaran glacier
+                TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+                TG.RespawnInterval =
+                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
+                    60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
@@ -131,11 +124,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class JailerBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public JailerBrain()
             : base()
         {
@@ -143,7 +139,9 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
+
         public static bool IsPulled = false;
+
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -151,8 +149,10 @@ namespace DOL.AI.Brain
                 SpawnTunnelGuardians();
                 IsPulled = true;
             }
+
             base.OnAttackedByEnemy(ad);
         }
+
         public void TeleportPlayer()
         {
             IList enemies = new ArrayList(m_aggroTable.Keys);
@@ -169,6 +169,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (enemies.Count == 0)
                 return;
             else
@@ -192,7 +193,7 @@ namespace DOL.AI.Brain
 
                 if (damage_enemies.Count > 0)
                 {
-                    GamePlayer PortTarget = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
+                    GamePlayer PortTarget = (GamePlayer) damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                     if (PortTarget.IsVisibleTo(Body) && Body.TargetInView)
                     {
                         AggroTable.Remove(PortTarget);
@@ -203,18 +204,22 @@ namespace DOL.AI.Brain
                 }
             }
         }
+
         public int PortTimer(RegionTimer timer)
         {
             new RegionTimer(Body, new RegionTimerCallback(DoPortTimer), 5000);
             return 0;
         }
+
         public int DoPortTimer(RegionTimer timer)
         {
             TeleportPlayer();
             spam_teleport = false;
             return 0;
         }
+
         public static bool spam_teleport = false;
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -223,6 +228,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
             }
+
             if (Body.IsOutOfTetherRange)
             {
                 this.Body.Health = this.Body.MaxHealth;
@@ -246,17 +252,20 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (Body.InCombat || HasAggro || Body.AttackState == true)
             {
                 if (spam_teleport == false && Body.TargetObject != null)
                 {
                     int rand = Util.Random(25000, 45000);
                     new RegionTimer(Body, new RegionTimerCallback(PortTimer), rand);
-                    spam_teleport = true;                 
+                    spam_teleport = true;
                 }
             }
+
             base.Think();
         }
+
         public void SpawnTunnelGuardians()
         {
             JailerAdd Add1 = new JailerAdd();
@@ -277,39 +286,43 @@ namespace DOL.AI.Brain
         }
     }
 }
+
 ////////////////////////////////////////////////////////////////////Spawn Adds on tunnel entrance////////////////////////////////////////////
 namespace DOL.GS
 {
     public class JailerAdd : GameNPC
     {
-        public JailerAdd() : base() { }
+        public JailerAdd() : base()
+        {
+        }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 800;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.65;
         }
+
         public override int MaxHealth
         {
             get { return 10000; }
         }
+
         public override bool AddToWorld()
         {
             Model = 918;
@@ -348,18 +361,22 @@ namespace DOL.AI.Brain
 {
     public class JailerAddBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public JailerAddBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 800;
         }
+
         public override void Think()
         {
             if (Body.InCombat || HasAggro)
             {
             }
+
             base.Think();
         }
     }

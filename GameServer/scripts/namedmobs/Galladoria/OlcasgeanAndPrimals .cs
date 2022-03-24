@@ -309,7 +309,7 @@ namespace DOL.AI.Brain
 #region Olcasgean
 namespace DOL.GS
 {
-    public class Olcasgean : GameNPC
+    public class Olcasgean : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public bool Master = true;
@@ -436,19 +436,6 @@ namespace DOL.GS
                 CopyNPC = new List<GameNPC>();
                 OlcasgeanBrain.spawn3 = true;
                 AirPrimal.DeadPrimalsCount = 0;
-                
-                // debug
-                log.Debug($"{Name} killed by {killer.Name}");
-            
-                GamePlayer playerKiller = killer as GamePlayer;
-
-                if (playerKiller?.Group != null)
-                {
-                    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                    {
-                        AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                    }
-                }
 
                 base.Die(killer);
             }

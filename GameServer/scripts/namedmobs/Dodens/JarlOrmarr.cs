@@ -16,7 +16,7 @@ using DOL.GS.Scripts.DOL.AI.Brain;
 
 namespace DOL.GS.Scripts
 {
-	public class JarlOrmarr : GameNPC
+	public class JarlOrmarr : GameEpicNPC
 	{
 
 		public JarlOrmarr() : base()

@@ -11,9 +11,10 @@ using DOL.GS.Effects;
 
 namespace DOL.GS
 {
-    public class SpindlerBroodmother : GameNPC
+    public class SpindlerBroodmother : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public SpindlerBroodmother()
             : base()
@@ -32,22 +33,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -55,6 +49,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -65,34 +60,23 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override void Die(GameObject killer)
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-                }
-            }
             SpawnAfterDead();
-            
             base.Die(killer);
         }
+
         public override bool AddToWorld()
         {
-            foreach(GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
-                if(npc.RespawnInterval == -1 && npc.Brain is SBDeadAddsBrain)
+                if (npc.RespawnInterval == -1 && npc.Brain is SBDeadAddsBrain)
                 {
                     npc.RemoveFromWorld();
                 }
             }
-            
+
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166449);
             LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;
@@ -108,6 +92,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
+
         public void SpawnAfterDead()
         {
             for (int i = 0; i < Util.Random(20, 25); i++) // Spawn 20-25 adds
@@ -127,7 +112,7 @@ namespace DOL.GS
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Spindler Broodmother", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Spindler Broodmother", 191, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Spindler Broodmother not found, creating it...");
@@ -139,7 +124,7 @@ namespace DOL.GS
                 SB.Realm = 0;
                 SB.Level = 81;
                 SB.Size = 125;
-                SB.CurrentRegionID = 191;//galladoria
+                SB.CurrentRegionID = 191; //galladoria
 
                 SB.Strength = 500;
                 SB.Intelligence = 220;
@@ -171,7 +156,8 @@ namespace DOL.GS
                 SB.SaveIntoDatabase();
             }
             else
-                log.Warn("Spindler Broodmother exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Spindler Broodmother exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -180,13 +166,16 @@ namespace DOL.AI.Brain
 {
     public class SpindlerBroodmotherBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SpindlerBroodmotherBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 500;
         }
+
         private int m_stage = 10;
 
         /// <summary>
@@ -195,9 +184,14 @@ namespace DOL.AI.Brain
         public int Stage
         {
             get { return m_stage; }
-            set { if (value >= 0 && value <= 10) m_stage = value; }
+            set
+            {
+                if (value >= 0 && value <= 10) m_stage = value;
+            }
         }
+
         #region spawnadds checks
+
         public static bool spawnadds1 = true;
         public static bool spawnadds2 = true;
         public static bool spawnadds3 = true;
@@ -217,9 +211,11 @@ namespace DOL.AI.Brain
         public static bool spawnadds17 = true;
         public static bool spawnadds18 = true;
         public static bool spawnadds19 = true;
+
         #endregion spawnadds checks
 
         #region reset checks
+
         public void ResetChecks()
         {
             spawnadds1 = true;
@@ -242,7 +238,9 @@ namespace DOL.AI.Brain
             spawnadds18 = true;
             spawnadds19 = true;
         }
+
         #endregion reset checks
+
         public override void Think()
         {
             if (Body.IsOutOfTetherRange)
@@ -271,113 +269,136 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             int health = Body.HealthPercent / Body.Charisma;
             if (Body.TargetObject != null && Body.InCombat)
             {
                 GameLiving target;
-                target= Body.TargetObject as GameLiving;
+                target = Body.TargetObject as GameLiving;
                 if (Util.Chance(15))
                 {
                     PickRandomTarget();
                 }
+
                 #region check boss health and spawn adds
-                if (Body.HealthPercent <= 95 && Body.HealthPercent > 90 && spawnadds1==true)
+
+                if (Body.HealthPercent <= 95 && Body.HealthPercent > 90 && spawnadds1 == true)
                 {
                     Spawn();
                     spawnadds1 = false;
                 }
+
                 if (Body.HealthPercent <= 90 && Body.HealthPercent > 85 && spawnadds2 == true)
                 {
                     Spawn();
                     spawnadds2 = false;
                 }
+
                 if (Body.HealthPercent <= 85 && Body.HealthPercent > 80 && spawnadds3 == true)
                 {
                     Spawn();
                     spawnadds3 = false;
                 }
+
                 if (Body.HealthPercent <= 80 && Body.HealthPercent > 75 && spawnadds4 == true)
                 {
                     Spawn();
                     spawnadds4 = false;
                 }
+
                 if (Body.HealthPercent <= 75 && Body.HealthPercent > 70 && spawnadds5 == true)
                 {
                     Spawn();
                     spawnadds5 = false;
                 }
+
                 if (Body.HealthPercent <= 70 && Body.HealthPercent > 65 && spawnadds6 == true)
                 {
                     Spawn();
                     spawnadds6 = false;
                 }
+
                 if (Body.HealthPercent <= 65 && Body.HealthPercent > 60 && spawnadds7 == true)
                 {
                     Spawn();
                     spawnadds7 = false;
                 }
+
                 if (Body.HealthPercent <= 60 && Body.HealthPercent > 55 && spawnadds8 == true)
                 {
                     Spawn();
                     spawnadds8 = false;
                 }
+
                 if (Body.HealthPercent <= 55 && Body.HealthPercent > 50 && spawnadds9 == true)
                 {
                     Spawn();
                     spawnadds9 = false;
                 }
+
                 if (Body.HealthPercent <= 50 && Body.HealthPercent > 45 && spawnadds10 == true)
                 {
                     Spawn();
                     spawnadds10 = false;
                 }
+
                 if (Body.HealthPercent <= 45 && Body.HealthPercent > 40 && spawnadds11 == true)
                 {
                     Spawn();
                     spawnadds11 = false;
                 }
+
                 if (Body.HealthPercent <= 40 && Body.HealthPercent > 35 && spawnadds12 == true)
                 {
                     Spawn();
                     spawnadds12 = false;
                 }
+
                 if (Body.HealthPercent <= 35 && Body.HealthPercent > 30 && spawnadds13 == true)
                 {
                     Spawn();
                     spawnadds13 = false;
                 }
+
                 if (Body.HealthPercent <= 30 && Body.HealthPercent > 25 && spawnadds14 == true)
                 {
                     Spawn();
                     spawnadds14 = false;
                 }
+
                 if (Body.HealthPercent <= 25 && Body.HealthPercent > 20 && spawnadds15 == true)
                 {
                     Spawn();
                     spawnadds15 = false;
                 }
+
                 if (Body.HealthPercent <= 20 && Body.HealthPercent > 15 && spawnadds16 == true)
                 {
                     Spawn();
                     spawnadds16 = false;
                 }
+
                 if (Body.HealthPercent <= 15 && Body.HealthPercent > 10 && spawnadds17 == true)
                 {
                     Spawn();
                     spawnadds17 = false;
                 }
+
                 if (Body.HealthPercent <= 10 && Body.HealthPercent > 5 && spawnadds18 == true)
                 {
                     Spawn();
                     spawnadds18 = false;
                 }
+
                 if (Body.HealthPercent <= 5 && Body.HealthPercent > 1 && spawnadds19 == true)
                 {
                     Spawn();
                     spawnadds19 = false;
                 }
+
                 #endregion check boss health and spawn adds
             }
+
             base.Think();
         }
 
@@ -395,6 +416,7 @@ namespace DOL.AI.Brain
                 Add.AddToWorld();
             }
         }
+
         public void PickRandomTarget()
         {
             ArrayList inRangeLiving = new ArrayList();
@@ -411,40 +433,53 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (inRangeLiving.Count > 0)
             {
-                GameLiving ptarget = ((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                GameLiving ptarget = ((GameLiving) (inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                 RandomTarget = ptarget;
-                if (Mezz.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body) && (randomtarget.HasAbility(Abilities.MezzImmunity)==false || randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity)==false))
+                if (Mezz.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body) &&
+                    (randomtarget.HasAbility(Abilities.MezzImmunity) == false ||
+                     randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) == false))
                 {
                     PrepareToMezz();
                 }
             }
         }
+
         private GameLiving randomtarget;
+
         private GameLiving RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         private int CastMezz(RegionTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = RandomTarget;
             Body.TurnTo(RandomTarget);
-            if (Body.TargetObject != null && (randomtarget.HasAbility(Abilities.MezzImmunity)==false || randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity)==false))
+            if (Body.TargetObject != null && (randomtarget.HasAbility(Abilities.MezzImmunity) == false ||
+                                              randomtarget.effectListComponent.Effects
+                                                  .ContainsKey(eEffect.MezImmunity) == false))
             {
                 Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                spambroad = false;//to avoid spamming
+                spambroad = false; //to avoid spamming
             }
+
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
+
         public static bool spambroad = false;
+
         private void PrepareToMezz()
         {
-            if (spambroad == false && (randomtarget.HasAbility(Abilities.MezzImmunity)==false || randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity)==false))
+            if (spambroad == false && (randomtarget.HasAbility(Abilities.MezzImmunity) == false ||
+                                       randomtarget.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) ==
+                                       false))
             {
                 new RegionTimer(Body, new RegionTimerCallback(CastMezz), 5000);
                 spambroad = true;
@@ -452,6 +487,7 @@ namespace DOL.AI.Brain
         }
 
         protected Spell m_mezSpell;
+
         /// <summary>
         /// The Mezz spell.
         /// </summary>
@@ -477,10 +513,11 @@ namespace DOL.AI.Brain
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+                    spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
+
                 return m_mezSpell;
             }
         }
@@ -492,12 +529,17 @@ namespace DOL.GS
 {
     public class SBAdds : GameNPC
     {
-        public SBAdds() : base() { }
+        public SBAdds() : base()
+        {
+        }
+
         public static GameNPC SI_Gnatants = new GameNPC();
+
         public override int MaxHealth
         {
             get { return 800; }
         }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -512,9 +554,9 @@ namespace DOL.GS
             MaxDistance = 2500;
             TetherRange = 2000;
             Strength = 100;
-            IsWorthReward = false;//worth no reward
-            Size = (byte)Util.Random(50, 60);
-            Level = (byte)Util.Random(56, 59);
+            IsWorthReward = false; //worth no reward
+            Size = (byte) Util.Random(50, 60);
+            Level = (byte) Util.Random(56, 59);
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             Realm = 0;
@@ -524,20 +566,25 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void DropLoot(GameObject killer)//no loot
+
+        public override void DropLoot(GameObject killer) //no loot
         {
         }
+
         public override void Die(GameObject killer)
         {
-            base.Die(null);//null to not gain experience
+            base.Die(null); //null to not gain experience
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class SBAddsBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SBAddsBrain()
             : base()
         {
@@ -552,7 +599,7 @@ namespace DOL.AI.Brain
             {
                 if (player != null && player.IsAlive)
                 {
-                    if (player.CharacterClass.ID is 48 or 47 or 42 or 46)//bard,druid,menta,warden
+                    if (player.CharacterClass.ID is 48 or 47 or 42 or 46) //bard,druid,menta,warden
                     {
                         if (Body.TargetObject != player)
                         {
@@ -567,6 +614,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.Think();
         }
     }
@@ -576,47 +624,54 @@ namespace DOL.AI.Brain
 namespace DOL.GS
 {
     public class SBDeadAdds : GameNPC
-{
-    public SBDeadAdds() : base() { }
-    public static GameNPC SI_Gnatants = new GameNPC();
-    public override int MaxHealth
     {
-        get { return 800; }
-    }
-    public override double AttackDamage(InventoryItem weapon)
-    {
-        return base.AttackDamage(weapon) * Strength / 100;
-    }
+        public SBDeadAdds() : base()
+        {
+        }
 
-    public override bool AddToWorld()
-    {
-        Model = 904;
-        Name = "underdeveloped spindler";
-        MeleeDamageType = eDamageType.Slash;
-        RespawnInterval = -1;
-        MaxDistance = 2500;
-        TetherRange = 2000;
-        Strength = 100;
-        IsWorthReward = false;//worth no reward
-        Size = (byte)Util.Random(30, 40);
-        Level = 50;
-        Faction = FactionMgr.GetFactionByID(96);
-        Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-        Realm = 0;
-        SBDeadAddsBrain adds = new SBDeadAddsBrain();
-        LoadedFromScript = true;
-        SetOwnBrain(adds);
-        base.AddToWorld();
-        return true;
-    }
+        public static GameNPC SI_Gnatants = new GameNPC();
 
+        public override int MaxHealth
+        {
+            get { return 800; }
+        }
+
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * Strength / 100;
+        }
+
+        public override bool AddToWorld()
+        {
+            Model = 904;
+            Name = "underdeveloped spindler";
+            MeleeDamageType = eDamageType.Slash;
+            RespawnInterval = -1;
+            MaxDistance = 2500;
+            TetherRange = 2000;
+            Strength = 100;
+            IsWorthReward = false; //worth no reward
+            Size = (byte) Util.Random(30, 40);
+            Level = 50;
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            Realm = 0;
+            SBDeadAddsBrain adds = new SBDeadAddsBrain();
+            LoadedFromScript = true;
+            SetOwnBrain(adds);
+            base.AddToWorld();
+            return true;
+        }
+    }
 }
-}
+
 namespace DOL.AI.Brain
 {
     public class SBDeadAddsBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SBDeadAddsBrain()
             : base()
         {
