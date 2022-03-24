@@ -436,6 +436,20 @@ namespace DOL.GS
                 CopyNPC = new List<GameNPC>();
                 OlcasgeanBrain.spawn3 = true;
                 AirPrimal.DeadPrimalsCount = 0;
+                
+                // debug
+                log.Debug($"{Name} killed by {killer.Name}");
+            
+                GamePlayer playerKiller = killer as GamePlayer;
+
+                if (playerKiller?.Group != null)
+                {
+                    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                    {
+                        AtlasROGManager.GenerateOrbAmount(groupPlayer,ServerProperties.Properties.EPIC_ORBS);
+                    }
+                }
+
                 base.Die(killer);
             }
         }
