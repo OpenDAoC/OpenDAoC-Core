@@ -322,7 +322,7 @@ namespace DOL.GS.DailyQuest
 			if (e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) > -3 
+				if (player.GetConLevel(gArgs.Target) > -1 
 				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
