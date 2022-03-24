@@ -9,7 +9,7 @@ using DOL.GS.Styles;
 
 namespace DOL.GS.Scripts
 {
-    public class Gnat : GameNPC
+    public class Gnat : GameEpicBoss
     {
 		public Gnat() : base() { }
 		public static GameNPC SI_Gnat = new GameNPC();
@@ -32,6 +32,24 @@ namespace DOL.GS.Scripts
 			GnatBrain.spawnants = true;
 			base.AddToWorld();
 			return true;
+		}
+		
+		public override void Die(GameObject killer)
+		{
+			// debug
+			log.Debug($"{Name} killed by {killer.Name}");
+
+			GamePlayer playerKiller = killer as GamePlayer;
+
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer,ServerProperties.Properties.EPIC_ORBS);
+				}
+			}
+
+			base.Die(killer);
 		}
 	}
 }
@@ -95,6 +113,8 @@ namespace DOL.AI.Brain
 				Add.AddToWorld();
 			}
 		}
+		
+		
 		
 	}
 }
