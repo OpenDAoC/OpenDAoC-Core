@@ -5,11 +5,11 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-    public class NightSpawn : GameNPC
+    public class DaySpawn : GameNPC
     {
         public override bool AddToWorld()
         {
-            NightSpawnBrain sBrain = new NightSpawnBrain();
+            DaySpawnBrain sBrain = new DaySpawnBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
@@ -19,14 +19,14 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             if (log.IsInfoEnabled)
-                log.Info("Night mobs initialising...");
+                log.Info("Day mobs initialising...");
         }
     }
 }
 
 namespace DOL.AI.Brain
 {
-    public class NightSpawnBrain : StandardMobBrain
+    public class DaySpawnBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -37,7 +37,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (!Body.CurrentRegion.IsNightTime)
+            if (Body.CurrentRegion.IsNightTime)
             {
                 if (!changed)
                 {
