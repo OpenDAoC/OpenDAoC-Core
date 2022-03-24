@@ -2609,8 +2609,14 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Atlas Orbs reward for epic boss kills
 		/// </summary>
-		[ServerProperty("atlas", "atlas_epic_orbs", "Atlas Orbs reward for epic boss kills", 5000)]
-		public static int EPIC_ORBS;
+		[ServerProperty("atlas", "atlas_epicboss_orbs", "Atlas Orbs reward for epic boss kills", 3000)]
+		public static int EPICBOSS_ORBS;
+		
+		/// <summary>
+		/// Atlas Orbs reward for epic boss kills
+		/// </summary>
+		[ServerProperty("atlas", "atlas_epicnpc_orbs", "Atlas Orbs reward for epic npc kills", 1500)]
+		public static int EPICNPC_ORBS;
 		
 		/// <summary>
 		/// Enables the API endpoints on the port :5000
