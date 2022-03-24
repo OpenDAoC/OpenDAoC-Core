@@ -31,9 +31,9 @@ namespace DOL.AI.Brain
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static ushort oldModel = 0;
-        public static GameNPC.eFlags oldFlags = 0;
-        private bool changed;
+        ushort oldModel;
+        GameNPC.eFlags oldFlags;
+        bool changed;
 
         public override void Think()
         {
@@ -45,11 +45,12 @@ namespace DOL.AI.Brain
                     Body.Flags ^= GameNPC.eFlags.CANTTARGET;
                     Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
                     Body.Flags ^= GameNPC.eFlags.PEACE;
-                    
+
                     if (oldModel == 0)
                     {
                         oldModel = Body.Model;
                     }
+
                     Body.Model = 1;
 
                     changed = true;
@@ -59,8 +60,8 @@ namespace DOL.AI.Brain
             {
                 if (changed)
                 {
-                    Body.Model = oldModel;
                     Body.Flags = oldFlags;
+                    Body.Model = oldModel;
                     changed = false;
                 }
             }
