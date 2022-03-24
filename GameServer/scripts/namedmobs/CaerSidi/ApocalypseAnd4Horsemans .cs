@@ -467,18 +467,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
 
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             --ApocInitializator.HorsemanCount;
             FamesBrain.StartedFames = false;
             base.Die(killer);
@@ -650,18 +639,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
 
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             foreach(GameNPC npc in GetNPCsInRadius(4000))
             {
                 if(npc != null)
@@ -1643,18 +1621,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
 
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             
             --ApocInitializator.HorsemanCount;
             MorbusBrain.StartedMorbus = false;
@@ -2172,18 +2139,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
 
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             
             --ApocInitializator.HorsemanCount;
             spawn_fate4 = false;

@@ -118,6 +118,7 @@ namespace DOL.GS.Scripts
 
 		public override void Die(GameObject killer)
 		{
+			
 			this.Level = 60;
 			this.Size = 100;
 			base.Die(killer);

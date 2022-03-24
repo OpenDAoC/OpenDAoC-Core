@@ -2607,6 +2607,18 @@ namespace DOL.GS.ServerProperties
 		public static string BREAD;
 		
 		/// <summary>
+		/// Atlas Orbs reward for epic boss kills
+		/// </summary>
+		[ServerProperty("atlas", "atlas_epicboss_orbs", "Atlas Orbs reward for epic boss kills", 3000)]
+		public static int EPICBOSS_ORBS;
+		
+		/// <summary>
+		/// Atlas Orbs reward for epic boss kills
+		/// </summary>
+		[ServerProperty("atlas", "atlas_epicnpc_orbs", "Atlas Orbs reward for epic npc kills", 1500)]
+		public static int EPICNPC_ORBS;
+		
+		/// <summary>
 		/// Enables the API endpoints on the port :5000
 		/// </summary>
 		[ServerProperty("atlas", "atlas_api", "Enables the API endpoints on the port :5000", false)]
@@ -2617,6 +2629,7 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
 		public static int MAX_ENTITIES;
+		
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

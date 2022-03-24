@@ -82,6 +82,8 @@ namespace DOL.GS.Commands
 
 				client.Out.SendMessage("It is " + hour.ToString() + ":" + minute.ToString("00") + ":" + seconds.ToString("00") + (pm ? " pm" : ""),
 									   eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Night time: " + client.Player.CurrentRegion.IsNightTime,
+					eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 		}
 	}

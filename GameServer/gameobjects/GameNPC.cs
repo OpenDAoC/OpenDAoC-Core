@@ -4001,6 +4001,8 @@ namespace DOL.GS
 		//}
 
 		private int scalingFactor = 23;
+
+		private int orbsReward = 0;
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
@@ -6118,5 +6120,7 @@ namespace DOL.GS
 		}
 
         public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
+        
+        public int OrbsReward { get => orbsReward; set => orbsReward = value; }
     }
 }

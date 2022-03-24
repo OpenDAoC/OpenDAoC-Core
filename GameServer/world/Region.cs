@@ -706,6 +706,9 @@ namespace DOL.GS
                 if (pm && hour >= 6)
                     m_isNightTime = true;
 
+                if (pm && hour == 12) //Special Handling for Noon.
+                    m_isNightTime = false;
+
                 if (!pm && hour <= 5)
                     m_isNightTime = true;
 

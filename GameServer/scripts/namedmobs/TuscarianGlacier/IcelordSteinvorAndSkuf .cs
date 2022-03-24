@@ -5,37 +5,39 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.ServerRules;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
-using Timer = System.Timers.Timer;
-using System.Timers;
+
 
 namespace DOL.GS
 {
     public class Steinvor : GameEpicBoss
     {
-        public Steinvor() : base() { }
+        public Steinvor() : base()
+        {
+        }
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 90;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 90;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 90; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 90; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 90; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
             }
         }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -43,36 +45,29 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 20000; }
         }
-        public override void Die(GameObject killer)//on kill generate orbs
+
+        public override void Die(GameObject killer) //on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             SpawnSeers();
             base.Die(killer);
         }
+
         public void SpawnSeers()
         {
             for (int i = 0; i < 2; i++)
@@ -85,9 +80,10 @@ namespace DOL.GS
                 Add1.Heading = 2032;
                 Add1.PackageID = "SteinvorDeathAdds";
                 Add1.RespawnInterval = -1;
-                Add1.AddToWorld();              
+                Add1.AddToWorld();
             }
         }
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162350);
@@ -101,26 +97,29 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            RespawnInterval =
+                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
             SteinvorBrain.PlayerX = 0;
             SteinvorBrain.PlayerY = 0;
             SteinvorBrain.PlayerZ = 0;
-            SteinvorBrain.RandomTarget=null;
-            SteinvorBrain.PickedTarget = false; ;
+            SteinvorBrain.RandomTarget = null;
+            SteinvorBrain.PickedTarget = false;
+            ;
 
             SteinvorBrain sbrain = new SteinvorBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = false;//load from database
+            LoadedFromScript = false; //load from database
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Steinvor", 160, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Steinvor", 160, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Icelord Steinvor not found, creating it...");
@@ -132,12 +131,14 @@ namespace DOL.GS
                 TG.Realm = 0;
                 TG.Level = 80;
                 TG.Size = 70;
-                TG.CurrentRegionID = 160;//tuscaran glacier
+                TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+                TG.RespawnInterval =
+                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
+                    60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 25405;
                 TG.Y = 57241;
@@ -150,15 +151,19 @@ namespace DOL.GS
                 TG.Brain.Start();
             }
             else
-                log.Warn("Icelord Steinvor exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn(
+                    "Icelord Steinvor exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class SteinvorBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SteinvorBrain()
             : base()
         {
@@ -166,7 +171,9 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
+
         public static bool IsPulled = false;
+
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -183,8 +190,10 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.OnAttackedByEnemy(ad);
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -193,8 +202,9 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
                 IsPulled = false;
-                PickedTarget = false;               
+                PickedTarget = false;
             }
+
             if (Body.IsOutOfTetherRange)
             {
                 this.Body.Health = this.Body.MaxHealth;
@@ -203,13 +213,13 @@ namespace DOL.AI.Brain
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
                 this.Body.Health = this.Body.MaxHealth;
-                foreach(GameNPC mob in Body.GetNPCsInRadius(5000))
+                foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
                 {
-                    if(mob != null)
+                    if (mob != null)
                     {
-                        if(mob.IsAlive)
+                        if (mob.IsAlive)
                         {
-                            if(mob.Brain is EffectMobBrain)
+                            if (mob.Brain is EffectMobBrain)
                             {
                                 mob.RemoveFromWorld();
                             }
@@ -217,26 +227,32 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             if (Body.InCombat || HasAggro || Body.AttackState == true)
             {
-                if(PickedTarget==false)
+                if (PickedTarget == false)
                 {
                     new RegionTimer(Body, new RegionTimerCallback(PickPlayer), 1000);
                     PickedTarget = true;
                 }
             }
+
             base.Think();
         }
+
         public static GamePlayer randomtarget = null;
+
         public static GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+
         public static bool PickedTarget = false;
         public static int PlayerX = 0;
         public static int PlayerY = 0;
         public static int PlayerZ = 0;
+
         public int PickPlayer(RegionTimer timer)
         {
             if (Body.IsAlive)
@@ -255,8 +271,10 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 if (enemies.Count == 0)
-                { }
+                {
+                }
                 else
                 {
                     List<GameLiving> damage_enemies = new List<GameLiving>();
@@ -275,21 +293,25 @@ namespace DOL.AI.Brain
                             damage_enemies.Add(enemies[i] as GameLiving);
                         }
                     }
+
                     if (damage_enemies.Count > 0)
                     {
-                        GamePlayer PortTarget = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
+                        GamePlayer PortTarget = (GamePlayer) damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                         RandomTarget = PortTarget;
                         PlayerX = RandomTarget.X;
                         PlayerY = RandomTarget.Y;
                         PlayerZ = RandomTarget.Z;
                         SpawnEffectMob();
-                        BroadcastMessage(String.Format(Body.Name + " says, '" + RandomTarget.Name + " you are not going anywhere'"));
+                        BroadcastMessage(String.Format(Body.Name + " says, '" + RandomTarget.Name +
+                                                       " you are not going anywhere'"));
                         new RegionTimer(Body, new RegionTimerCallback(EffectTimer), 8000);
                     }
                 }
             }
+
             return 0;
         }
+
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -297,7 +319,8 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public int EffectTimer(RegionTimer timer)//pick and remove effect mob
+
+        public int EffectTimer(RegionTimer timer) //pick and remove effect mob
         {
             if (Body.IsAlive)
             {
@@ -311,11 +334,14 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+
                 new RegionTimer(Body, new RegionTimerCallback(RestartEffectTimer), Util.Random(10000, 15000));
             }
+
             return 0;
         }
-        public int RestartEffectTimer(RegionTimer timer)//reset timer so boss can repeat it again
+
+        public int RestartEffectTimer(RegionTimer timer) //reset timer so boss can repeat it again
         {
             if (Body.IsAlive)
             {
@@ -325,47 +351,55 @@ namespace DOL.AI.Brain
                 RandomTarget = null;
                 PickedTarget = false;
             }
+
             return 0;
         }
-        public void SpawnEffectMob()//spawn mob to show effect on ground
+
+        public void SpawnEffectMob() //spawn mob to show effect on ground
         {
             EffectMob npc = new EffectMob();
             npc.X = PlayerX;
             npc.Y = PlayerY;
             npc.Z = PlayerZ;
-            npc.RespawnInterval = - 1;
+            npc.RespawnInterval = -1;
             npc.Heading = Body.Heading;
             npc.CurrentRegion = Body.CurrentRegion;
             npc.AddToWorld();
         }
-
     }
 }
+
 ////////////////////////////////////////////////////////////////////Icelord Skuf////////////////////////////////////////////
 namespace DOL.GS
 {
     public class Skuf : GameEpicBoss
     {
-        public Skuf() : base() { }
+        public Skuf() : base()
+        {
+        }
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 90;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 90;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 90; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 90; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 90; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
             }
         }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -373,36 +407,30 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
+
         public override int MaxHealth
         {
             get { return 20000; }
         }
-        public override void Die(GameObject killer)//on kill generate orbs
+
+        public override void Die(GameObject killer) //on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             base.Die(killer);
         }
+
         public static bool Spawn_Snakes = false;
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162349);
@@ -416,21 +444,23 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            RespawnInterval =
+                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
 
             SkufBrain sbrain = new SkufBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = false;//load from database
+            LoadedFromScript = false; //load from database
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
+
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Skuf", 160, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Skuf", 160, (eRealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Icelord Skuf not found, creating it...");
@@ -442,12 +472,14 @@ namespace DOL.GS
                 TG.Realm = 0;
                 TG.Level = 80;
                 TG.Size = 70;
-                TG.CurrentRegionID = 160;//tuscaran glacier
+                TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+                TG.RespawnInterval =
+                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
+                    60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 25405;
                 TG.Y = 57241;
@@ -464,11 +496,14 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class SkufBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public SkufBrain()
             : base()
         {
@@ -476,7 +511,9 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
+
         public static bool IsPulled2 = false;
+
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled2 == false)
@@ -493,8 +530,10 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+
             base.OnAttackedByEnemy(ad);
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -504,6 +543,7 @@ namespace DOL.AI.Brain
                 this.Body.Health = this.Body.MaxHealth;
                 IsPulled2 = false;
             }
+
             if (Body.IsOutOfTetherRange)
             {
                 this.Body.Health = this.Body.MaxHealth;
@@ -513,69 +553,79 @@ namespace DOL.AI.Brain
             {
                 this.Body.Health = this.Body.MaxHealth;
             }
+
             if (Body.InCombat || HasAggro || Body.AttackState == true)
             {
             }
+
             base.Think();
         }
     }
 }
+
 ///////////////////////////////////////////////////////Spawn Adds////////////////////////////////////////////
 namespace DOL.GS
 {
     public class HrimthursaSeer : GameEpicNPC
     {
-        public HrimthursaSeer() : base() { }
+        public HrimthursaSeer() : base()
+        {
+        }
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 35;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
-                default: return 35;// dmg reduction for rest resists
+                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                default: return 35; // dmg reduction for rest resists
             }
         }
+
         public override void WalkToSpawn()
         {
-            if (this.CurrentRegionID == 160)//if region is caer sidi
+            if (this.CurrentRegionID == 160) //if region is caer sidi
             {
                 if (IsAlive)
                     return;
             }
+
             base.WalkToSpawn();
         }
+
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
+
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get { return 350; }
+            set { }
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 800;
         }
+
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.65;
         }
+
         public override int MaxHealth
         {
             get { return 10000; }
         }
+
         public override void Die(GameObject killer)
         {
             base.Die(killer);
         }
+
         public override bool AddToWorld()
         {
             Model = 918;
@@ -584,12 +634,12 @@ namespace DOL.GS
             MaxDistance = 3500;
             TetherRange = 3800;
             Size = 60;
-            Level = (byte)Util.Random(73,75);
+            Level = (byte) Util.Random(73, 75);
             MaxSpeedBase = 270;
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
             Realm = eRealm.None;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
 
@@ -600,7 +650,7 @@ namespace DOL.GS
             Piety = 150;
             Intelligence = 150;
             HrimthursaSeerBrain.walkto_point = false;
-            HrimthursaSeerBrain adds = new HrimthursaSeerBrain();          
+            HrimthursaSeerBrain adds = new HrimthursaSeerBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
             base.AddToWorld();
@@ -613,7 +663,9 @@ namespace DOL.AI.Brain
 {
     public class HrimthursaSeerBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public HrimthursaSeerBrain()
             : base()
         {
@@ -621,15 +673,19 @@ namespace DOL.AI.Brain
             AggroRange = 800;
             ThinkInterval = 1000;
         }
+
         public static bool walkto_point = false;
+
         public void Walk_To_Room()
         {
             Point3D point1 = new Point3D();
-            point1.X = 29986; point1.Y = 50345; point1.Z = 11377;
+            point1.X = 29986;
+            point1.Y = 50345;
+            point1.Z = 11377;
 
             if (!Body.InCombat && !HasAggro)
             {
-                if (Body.CurrentRegionID == 160)//TG
+                if (Body.CurrentRegionID == 160) //TG
                 {
                     if (!Body.IsWithinRadius(point1, 30) && walkto_point == false)
                     {
@@ -642,26 +698,33 @@ namespace DOL.AI.Brain
                 }
             }
         }
+
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
             }
+
             if (Body.InCombat || HasAggro)
             {
             }
+
             Walk_To_Room();
             base.Think();
         }
     }
 }
+
 /////////////////////////////////////////////////////////effect mob/////////////////////
 namespace DOL.GS
 {
     public class EffectMob : GameEpicNPC
     {
-        public EffectMob() : base() { }
+        public EffectMob() : base()
+        {
+        }
+
         public int Show_Effect(RegionTimer timer)
         {
             if (this.IsAlive)
@@ -673,10 +736,13 @@ namespace DOL.GS
                         player.Out.SendSpellEffectAnimation(this, this, 177, 0, false, 0x01);
                     }
                 }
+
                 new RegionTimer(this, new RegionTimerCallback(DoCast), 500);
             }
+
             return 0;
         }
+
         public int DoCast(RegionTimer timer)
         {
             if (IsAlive)
@@ -686,8 +752,10 @@ namespace DOL.GS
                 this.GroundTarget.Z = this.Z;
                 this.CastSpell(Icelord_Gtaoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
+
             return 0;
         }
+
         public override bool AddToWorld()
         {
             Model = 665;
@@ -712,9 +780,12 @@ namespace DOL.GS
             {
                 new RegionTimer(this, new RegionTimerCallback(Show_Effect), 3000);
             }
+
             return success;
         }
+
         private Spell m_Icelord_Gtaoe;
+
         private Spell Icelord_Gtaoe
         {
             get
@@ -737,10 +808,11 @@ namespace DOL.GS
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int) eDamageType.Cold;
                     m_Icelord_Gtaoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_Gtaoe);
                 }
+
                 return m_Icelord_Gtaoe;
             }
         }
@@ -751,7 +823,9 @@ namespace DOL.AI.Brain
 {
     public class EffectMobBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public EffectMobBrain()
             : base()
         {
@@ -759,6 +833,7 @@ namespace DOL.AI.Brain
             AggroRange = 0;
             ThinkInterval = 1500;
         }
+
         public override void Think()
         {
             base.Think();
