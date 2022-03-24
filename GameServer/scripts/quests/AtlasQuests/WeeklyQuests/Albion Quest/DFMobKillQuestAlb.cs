@@ -25,7 +25,7 @@ namespace DOL.GS.DailyQuest.Albion
 		protected const int maximumLevel = 50;
 		
 		// Kill Goal
-		protected const int MAX_KILLED = 150;
+		protected const int MAX_KILLED = 200;
 
 		private static GameNPC Haszan = null; // Start NPC
 
@@ -325,9 +325,23 @@ namespace DOL.GS.DailyQuest.Albion
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && player.GetConLevel(gArgs.Target) > -3) 
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && player.GetConLevel(gArgs.Target) > -2) 
 				{
-					_mobsKilled++;
+					if (player.Group != null)
+					{
+						double minRequiredCon = (double) player.Group.MemberCount / 2;
+						if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
+							_mobsKilled++;
+						else
+						{
+							player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);		
+						}
+					}
+					else
+					{
+						_mobsKilled++;	
+					}
+					
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
