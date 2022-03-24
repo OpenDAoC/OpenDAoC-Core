@@ -42,9 +42,8 @@ namespace DOL.GS
                 return;
 
             var handler = p.castingComponent.spellHandler;
-            
-            if (handler.castState == eCastState.Precast)
-                handler.Tick(tick);
+
+            handler.Tick(tick);
         }
     }
 }
