@@ -334,6 +334,7 @@ namespace DOL.AI.Brain
 			{
 				Body.TargetObject = RandomTarget;
 				Body.TurnTo(RandomTarget);
+				Body.StopFollowing();
 				Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
@@ -357,8 +358,8 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.RecastDelay = 0;
+					spell.CastTime = 3;
+					spell.RecastDelay = 10;
 					spell.ClientEffect = 585;
 					spell.Icon = 585;
 					spell.TooltipId = 585;
@@ -376,6 +377,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 1000;
 					spell.SpellID = 11756;
 					spell.Target = "Enemy";
+					spell.Uninterruptible = true;
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					m_RoesiaDot = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RoesiaDot);
@@ -392,7 +394,7 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 0;
+					spell.CastTime = 3;
 					spell.RecastDelay = 45;
 					spell.ClientEffect = 4414;
 					spell.Icon = 4414;
@@ -408,7 +410,6 @@ namespace DOL.AI.Brain
 					spell.SpellID = 11757;
 					spell.Target = "Self";
 					spell.Uninterruptible = true;
-					spell.MoveCast = true;
 					spell.Type = eSpellType.HealOverTime.ToString();
 					m_RoesiaHOT = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RoesiaHOT);
@@ -426,11 +427,11 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
-					spell.RecastDelay = 40;
+					spell.RecastDelay = 70;
 					spell.ClientEffect = 57;
 					spell.Icon = 57;
 					spell.Damage = 80;
-					spell.Duration = 30;
+					spell.Duration = 60;
 					spell.Name = "Roesia Damage Shield";
 					spell.TooltipId = 57;
 					spell.SpellID = 11758;
