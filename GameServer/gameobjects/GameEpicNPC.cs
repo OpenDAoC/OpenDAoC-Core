@@ -44,9 +44,6 @@ namespace DOL.GS {
                 {
                     AtlasROGManager.GenerateOrbAmount(playerKiller,amount);
                 }
-                {
-                    AtlasROGManager.GenerateOrbAmount(playerKiller,amount);
-                }
             }
             base.Die(killer);
         }
