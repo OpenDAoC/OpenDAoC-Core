@@ -58,8 +58,7 @@ namespace DOL.GS
                         truc = (source as GamePlayer);
                     else
                         truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage("Your damage is healing King Tuscar!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+
 
                     foreach (GameNPC npc in this.GetNPCsInRadius(5000))
                     {
@@ -70,6 +69,8 @@ namespace DOL.GS
                                 if (npc.Brain is KingTuscarBrain && npc.HealthPercent < 100)
                                 {
                                     npc.Health += damageAmount + criticalAmount;
+                                    if (truc != null)
+                                        truc.Out.SendMessage("Your damage is healing King Tuscar!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                                 }
                             }
                         }
@@ -525,9 +526,7 @@ namespace DOL.GS
                         truc = (source as GamePlayer);
                     else
                         truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage("Your damage is healing Queen Kula!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-
+                    
                     foreach (GameNPC npc in this.GetNPCsInRadius(5000))
                     {
                         if (npc != null)
@@ -537,6 +536,8 @@ namespace DOL.GS
                                 if (npc.Brain is QueenKulaBrain && npc.HealthPercent < 100)
                                 {
                                     npc.Health += damageAmount + criticalAmount;
+                                    if (truc != null)
+                                        truc.Out.SendMessage("Your damage is healing Queen Kula!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                                 }
                             }
                         }
@@ -724,7 +725,7 @@ namespace DOL.GS
                     spell.Damage = 600;
                     spell.Name = "Mjolnir's Fury";
                     spell.Radius = 500;
-                    spell.Range = 0;
+                    spell.Range = 350;
                     spell.SpellID = 11752;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -754,7 +755,7 @@ namespace DOL.GS
                     spell.Damage = 350;
                     spell.Name = "Thor's Might";
                     spell.Radius = 500;
-                    spell.Range = 0;
+                    spell.Range = 350;
                     spell.SpellID = 11753;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
