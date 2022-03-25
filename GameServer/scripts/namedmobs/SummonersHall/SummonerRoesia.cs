@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.ServerRules;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
-using Timer = System.Timers.Timer;
-using System.Timers;
-
 
 namespace DOL.GS
 {
@@ -83,22 +76,6 @@ namespace DOL.GS
 		public override int MaxHealth
 		{
 			get { return 20000; }
-		}
-        public override void Die(GameObject killer)//on kill generate orbs
-		{
-			// debug
-			log.Debug($"{Name} killed by {killer.Name}");
-
-			GamePlayer playerKiller = killer as GamePlayer;
-
-			if (playerKiller?.Group != null)
-			{
-				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-				{
-					AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-				}
-			}
-			base.Die(killer);
 		}
 		public override bool AddToWorld()
 		{
