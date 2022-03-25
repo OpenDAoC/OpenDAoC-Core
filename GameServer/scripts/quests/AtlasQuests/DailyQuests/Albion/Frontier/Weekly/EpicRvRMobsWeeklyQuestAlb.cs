@@ -173,9 +173,9 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 				else
 				{
-					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                     "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
-					                     "\nCan you support Albion and [kill the epic creatures] in frontiers?");
+					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan. Some large monsters have blocked the supply lines in our frontier, and I could use your help in getting rid of them.\n"+
+					                     "You'll probably need to gather some friends for this one. We've lost a lot of good soldiers already. \n\n"+
+					                     "Can you support Albion and [kill the epic creatures] in frontiers?");
 				}
 			}
 				// The player whispered to the NPC
@@ -292,7 +292,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Albion.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{

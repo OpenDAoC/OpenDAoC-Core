@@ -183,7 +183,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "kill the dragon":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestHib)), "Will you help Dean "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestHib)), "Will you help Dean with "+questTitle+"?");
 							break;
 					}
 				}

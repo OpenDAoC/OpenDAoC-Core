@@ -167,9 +167,9 @@ namespace DOL.GS.DailyQuest.Albion
 				}
 				else
 				{
-					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Albion. \n\n"+
-					                       "\nCan you [support Albion]?");
+					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan. I have received word from a scout that forces are building in Darkness Falls. "+
+					                     "Clear out as many demons as you can find, and come back to me only when the halls of the dungeon are purged of their influence. \n\n"+
+					                     "Can you [stop the invasion]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,7 +180,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "support Albion":
+						case "stop the invasion":
 							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestAlb)), "Will you help Haszan "+questTitle+"?");
 							break;
 					}
@@ -276,7 +276,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Albion.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{

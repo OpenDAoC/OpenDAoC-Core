@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Kill Goal
 		protected const int MAX_KILLED = 25;
 		
-		private static GameNPC Cola = null; // Start NPC
+		private static GameNPC Haszan = null; // Start NPC
 
 		private int FrontierMobsKilled = 0;
 
@@ -65,37 +65,37 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
+					if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
 					{
-						Cola = npc;
+						Haszan = npc;
 						break;
 					}
 
-			if (Cola == null)
+			if (Haszan == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Cola , creating it ...");
-				Cola = new GameNPC();
-				Cola.Model = 724;
-				Cola.Name = "Cola";
-				Cola.GuildName = "Advisor to the King";
-				Cola.Realm = eRealm.Albion;
-				Cola.CurrentRegionID = 1;
-				Cola.Size = 50;
-				Cola.Level = 59;
+					log.Warn("Could not find Haszan , creating it ...");
+				Haszan = new GameNPC();
+				Haszan.Model = 51;
+				Haszan.Name = "Haszan";
+				Haszan.GuildName = "Realm Logistics";
+				Haszan.Realm = eRealm.Albion;
 				//Castle Sauvage Location
-				Cola.X = 583860;
-				Cola.Y = 477619;
-				Cola.Z = 2600;
-				Cola.Heading = 3111;
-				Cola.AddToWorld();
+				Haszan.CurrentRegionID = 1;
+				Haszan.Size = 50;
+				Haszan.Level = 59;
+				Haszan.X = 583866;
+				Haszan.Y = 477497;
+				Haszan.Z = 2600;
+				Haszan.Heading = 3111;
+				Haszan.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Cola.SaveIntoDatabase();
+					Haszan.SaveIntoDatabase();
 				}
 			}
 
@@ -110,11 +110,11 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
 			/* Now we bring to Cola the possibility to give this quest to players */
-			Cola.AddQuestToGive(typeof (KillNPCInFrontiersAlb));
+			Haszan.AddQuestToGive(typeof (KillNPCInFrontiersAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" Alb initialized");
@@ -124,27 +124,27 @@ namespace DOL.GS.DailyQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Cola == null)
+			if (Haszan == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
 			/* Now we remove to Cola the possibility to give this quest to players */
-			Cola.RemoveQuestToGive(typeof (KillNPCInFrontiersAlb));
+			Haszan.RemoveQuestToGive(typeof (KillNPCInFrontiersAlb));
 		}
 
-		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Cola.CanGiveQuest(typeof (KillNPCInFrontiersAlb), player)  <= 0)
+			if(Haszan.CanGiveQuest(typeof (KillNPCInFrontiersAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -157,18 +157,18 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Cola.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
+							Haszan.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Cola.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
+							Haszan.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
 							break;
 					}
 				}
 				else
 				{
-					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having on the border?\n"+
-					                       "\nCan you help me [clear our frontiers]?");
+					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan. I serve the realm and ensure its borders are always protected. "+
+					                     "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having? \n\n"+
+					                     "I need an adventurer to help me [clear the frontiers].");
 				}
 			}
 				// The player whispered to the NPC
@@ -179,8 +179,8 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "clear our frontiers":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Cola "+questTitle+"");
+						case "clear the frontiers":
+							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Cola "+questTitle+"");
 							break;
 					}
 				}
@@ -268,7 +268,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Cola.CanGiveQuest(typeof (KillNPCInFrontiersAlb), player)  <= 0)
+			if(Haszan.CanGiveQuest(typeof (KillNPCInFrontiersAlb), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (KillNPCInFrontiersAlb)) != null)
@@ -281,10 +281,10 @@ namespace DOL.GS.DailyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Cola.GiveQuest(typeof (KillNPCInFrontiersAlb), player, 1))
+				if (!Haszan.GiveQuest(typeof (KillNPCInFrontiersAlb), player, 1))
 					return;
 
-				Cola.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
+				Haszan.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -305,7 +305,7 @@ namespace DOL.GS.DailyQuest.Albion
 					case 1:
 						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
-						return "Return to Cola in Castle Sauvage for your Reward.";
+						return "Return to Haszan in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}

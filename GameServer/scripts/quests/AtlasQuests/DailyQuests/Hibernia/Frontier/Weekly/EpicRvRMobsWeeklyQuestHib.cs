@@ -87,7 +87,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hector , creating it ...");
 				Hector = new GameNPC();
-				Hector.Model = 355;
+				Hector.Model = 583;
 				Hector.Name = "Hector";
 				Hector.GuildName = "Realm Logistics";
 				Hector.Realm = eRealm.Hibernia;

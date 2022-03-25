@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Albion
         private int _deadSidiMob = 0;
         protected const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Haszan = null; // Start NPC
+        private static GameNPC Cola = null; // Start NPC
 
 
         // Constructors
@@ -67,37 +67,37 @@ namespace DOL.GS.DailyQuest.Albion
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Albion);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
+                    if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
                     {
-                        Haszan = npc;
+                        Cola = npc;
                         break;
                     }
 
-            if (Haszan == null)
+            if (Cola == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Haszan , creating it ...");
-                Haszan = new GameNPC();
-                Haszan.Model = 51;
-                Haszan.Name = "Haszan";
-                Haszan.GuildName = "Realm Logistics";
-                Haszan.Realm = eRealm.Albion;
+                    log.Warn("Could not find Cola , creating it ...");
+                Cola = new GameNPC();
+                Cola.Model = 724;
+                Cola.Name = "Cola";
+                Cola.GuildName = "Advisor to the King";
+                Cola.Realm = eRealm.Albion;
+                Cola.CurrentRegionID = 1;
+                Cola.Size = 50;
+                Cola.Level = 59;
                 //Castle Sauvage Location
-                Haszan.CurrentRegionID = 1;
-                Haszan.Size = 50;
-                Haszan.Level = 59;
-                Haszan.X = 583866;
-                Haszan.Y = 477497;
-                Haszan.Z = 2600;
-                Haszan.Heading = 3111;
-                Haszan.AddToWorld();
+                Cola.X = 583860;
+                Cola.Y = 477619;
+                Cola.Z = 2600;
+                Cola.Heading = 3111;
+                Cola.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Haszan.SaveIntoDatabase();
+                    Cola.SaveIntoDatabase();
                 }
             }
 
@@ -114,11 +114,11 @@ namespace DOL.GS.DailyQuest.Albion
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-            GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+            GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+            GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
             /* Now we bring to Haszan the possibility to give this quest to players */
-            Haszan.AddQuestToGive(typeof(SidiMobQuestAlb));
+            Cola.AddQuestToGive(typeof(SidiMobQuestAlb));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Alb initialized");
@@ -128,27 +128,27 @@ namespace DOL.GS.DailyQuest.Albion
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Haszan == null)
+            if (Cola == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-            GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+            GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+            GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
             /* Now we remove to Haszan the possibility to give this quest to players */
-            Haszan.RemoveQuestToGive(typeof(SidiMobQuestAlb));
+            Cola.RemoveQuestToGive(typeof(SidiMobQuestAlb));
         }
 
-        protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Haszan.CanGiveQuest(typeof(SidiMobQuestAlb), player) <= 0)
+            if (Cola.CanGiveQuest(typeof(SidiMobQuestAlb), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
@@ -161,17 +161,17 @@ namespace DOL.GS.DailyQuest.Albion
                     switch (quest.Step)
                     {
                         case 1:
-                            Haszan.SayTo(player,
+                            Cola.SayTo(player,
                                 "Please, enter Caer Sidi and slay some monsters. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Haszan.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            Cola.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Haszan.SayTo(player, "Hello " + player.Name + ", I am Haszan. " +
+                    Cola.SayTo(player, "Hello " + player.Name + ", I am Cola. " +
                                          "The king is preparing to send forces into Caer Sidi to clear it out. \n" +
                                          "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
@@ -185,7 +185,7 @@ namespace DOL.GS.DailyQuest.Albion
                     switch (wArgs.Text)
                     {
                         case "clearing the way":
-                            player.Out.SendQuestSubscribeCommand(Haszan,
+                            player.Out.SendQuestSubscribeCommand(Cola,
                                 QuestMgr.GetIDForQuestType(typeof(SidiMobQuestAlb)),
                                 "Will you help Haszan with " + questTitle + "");
                             break;
@@ -268,7 +268,7 @@ namespace DOL.GS.DailyQuest.Albion
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Haszan.CanGiveQuest(typeof(SidiMobQuestAlb), player) <= 0)
+            if (Cola.CanGiveQuest(typeof(SidiMobQuestAlb), player) <= 0)
                 return;
 
             if (player.IsDoingQuest(typeof(SidiMobQuestAlb)) != null)
@@ -276,15 +276,15 @@ namespace DOL.GS.DailyQuest.Albion
 
             if (response == 0x00)
             {
-                player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("Thank you for helping Albion.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             }
             else
             {
                 //Check if we can add the quest!
-                if (!Haszan.GiveQuest(typeof(SidiMobQuestAlb), player, 1))
+                if (!Cola.GiveQuest(typeof(SidiMobQuestAlb), player, 1))
                     return;
 
-                Haszan.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                Cola.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -305,7 +305,7 @@ namespace DOL.GS.DailyQuest.Albion
                         return "Find a way to Caer Sidi and kill some monsters. \nKilled: Monsters in Caer Sidi (" +
                                _deadSidiMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Haszan for your Reward.";
+                        return "Return to Cola for your Reward.";
                 }
 
                 return base.Description;

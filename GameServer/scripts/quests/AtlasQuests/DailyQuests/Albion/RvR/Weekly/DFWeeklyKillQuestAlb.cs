@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Kill Goal
 		protected const int MAX_KILLED = 50;
 
-		private static GameNPC Haszan = null; // Start NPC
+		private static GameNPC ReyAlb = null; // Start NPC
 
 		private int EnemiesKilled = 0;
 
@@ -68,37 +68,40 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
+				{
+					if (npc.CurrentRegionID == 1 && npc.X == 583867 && npc.Y == 477355)
 					{
-						Haszan = npc;
+						ReyAlb = npc;
 						break;
 					}
+				}
 
-			if (Haszan == null)
+			if (ReyAlb == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Haszan , creating it ...");
-				Haszan = new GameNPC();
-				Haszan.Model = 51;
-				Haszan.Name = "Haszan";
-				Haszan.GuildName = "Realm Logistics";
-				Haszan.Realm = eRealm.Albion;
-				//Castle Sauvage Location
-				Haszan.CurrentRegionID = 1;
-				Haszan.Size = 50;
-				Haszan.Level = 59;
-				Haszan.X = 583866;
-				Haszan.Y = 477497;
-				Haszan.Z = 2600;
-				Haszan.Heading = 3111;
-				Haszan.AddToWorld();
+					log.Warn("Could not find Rey , creating it ...");
+				ReyAlb = new GameNPC();
+				ReyAlb.Model = 26;
+				ReyAlb.Name = "Rey";
+				ReyAlb.GuildName = "Bone Collector";
+				ReyAlb.Realm = eRealm.Albion;
+				//Druim Ligen Location
+				ReyAlb.CurrentRegionID = 1;
+				ReyAlb.Size = 60;
+				ReyAlb.Level = 59;
+				ReyAlb.X = 583867;
+				ReyAlb.Y = 477355;
+				ReyAlb.Z = 2600;
+				ReyAlb.Heading = 3054;
+				ReyAlb.Flags |= GameNPC.eFlags.PEACE;
+				ReyAlb.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Haszan.SaveIntoDatabase();
+					ReyAlb.SaveIntoDatabase();
 				}
 			}
 
@@ -113,11 +116,11 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-			GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.AddHandler(ReyAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
 			/* Now we bring to Haszan the possibility to give this quest to players */
-			Haszan.AddQuestToGive(typeof (DFWeeklyKillQuestAlb));
+			ReyAlb.AddQuestToGive(typeof (DFWeeklyKillQuestAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -127,27 +130,27 @@ namespace DOL.GS.DailyQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Haszan == null)
+			if (ReyAlb == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
-			GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.RemoveHandler(ReyAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
 			/* Now we remove to Haszan the possibility to give this quest to players */
-			Haszan.RemoveQuestToGive(typeof (DFWeeklyKillQuestAlb));
+			ReyAlb.RemoveQuestToGive(typeof (DFWeeklyKillQuestAlb));
 		}
 
-		protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Haszan.CanGiveQuest(typeof (DFWeeklyKillQuestAlb), player)  <= 0)
+			if(ReyAlb.CanGiveQuest(typeof (DFWeeklyKillQuestAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -160,18 +163,17 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Haszan.SayTo(player, "Please enter Darkness Falls and defend Albion from enemies!");
+							ReyAlb.SayTo(player, "Please enter Darkness Falls and defend Albion from enemies!");
 							break;
 						case 2:
-							Haszan.SayTo(player, "Hello " + player.Name + ", did you [defend Darkness Falls] for your reward?");
+							ReyAlb.SayTo(player, "Hello " + player.Name + ", did you [find the bones] we needed?");
 							break;
 					}
 				}
 				else
 				{
-					Haszan.SayTo(player, "Hello "+ player.Name +", I am Haszan, do you need a task? "+
-					                       "One of the scouts reported some enemy movement in Darkness Falls.  \n"+
-					                       "We need you to [shut that down] before they get a foothold.");
+					ReyAlb.SayTo(player, "Oh, "+ player.Name +", glad you finally returned. Boss has a new recipe that requires bones that have been steeped in a [demonic aura]. \n"+
+					                     "Sure hope you know what that means, because I sure don't. My best guess is to try looking in Darkness Falls.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,8 +184,8 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "shut that down":
-							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestAlb)), "Will you help Haszan "+questTitle+"?");
+						case "demonic aura":
+							player.Out.SendQuestSubscribeCommand(ReyAlb, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestAlb)), "Will you help Haszan "+questTitle+"?");
 							break;
 					}
 				}
@@ -191,7 +193,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "defend Darkness Falls":
+						case "find the bones":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -270,7 +272,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Haszan.CanGiveQuest(typeof (DFWeeklyKillQuestAlb), player)  <= 0)
+			if(ReyAlb.CanGiveQuest(typeof (DFWeeklyKillQuestAlb), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestAlb)) != null)
@@ -278,15 +280,15 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping me out.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Haszan.GiveQuest(typeof (DFWeeklyKillQuestAlb), player, 1))
+				if (!ReyAlb.GiveQuest(typeof (DFWeeklyKillQuestAlb), player, 1))
 					return;
 
-				Haszan.SayTo(player, "Defend your realm in Darkness Falls and kill them for your reward.");
+				ReyAlb.SayTo(player, "Find your realm's enemies in Darkness Falls and kill them for your reward.");
 
 			}
 		}
@@ -307,7 +309,7 @@ namespace DOL.GS.DailyQuest.Albion
 					case 1:
 						return "Defend Albion in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
 					case 2:
-						return "Return to Haszan for your Reward.";
+						return "Return to Rey for your Reward.";
 				}
 				return base.Description;
 			}
