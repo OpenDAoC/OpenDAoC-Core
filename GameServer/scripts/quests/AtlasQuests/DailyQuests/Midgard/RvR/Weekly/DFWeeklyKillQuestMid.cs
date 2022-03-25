@@ -13,40 +13,40 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Midgard
 {
-	public class DragonWeeklyQuestMid : Quests.WeeklyQuest
+	public class DFWeeklyKillQuestMid : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string DRAGON_NAME = "Gjalpinulva";
-		
-		protected const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
-		protected const int minimumLevel = 45;
+		protected const string questTitle = "[Weekly] Vacuum Darkness Falls";
+		protected const int minimumLevel = 15;
 		protected const int maximumLevel = 50;
 		
+		// prevent grey killing
+		protected const int MIN_PLAYER_CON = -3;
 		// Kill Goal
-		protected const int MAX_KILLED = 1;
-		// Quest Counter
-		private int DragonKilled = 0;
-		
-		private static GameNPC Herou = null; // Start NPC
+		protected const int MAX_KILLED = 50;
+
+		private static GameNPC ReyMid = null; // Start NPC
+
+		private int EnemiesKilled = 0;
 
 		// Constructors
-		public DragonWeeklyQuestMid() : base()
+		public DFWeeklyKillQuestMid() : base()
 		{
 		}
 
-		public DragonWeeklyQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public DFWeeklyKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public DragonWeeklyQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DFWeeklyKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public DragonWeeklyQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFWeeklyKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -67,38 +67,41 @@ namespace DOL.GS.DailyQuest.Midgard
 			
 
 			#region defineNPCs
-
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
+			
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
+				{
+					if (npc.CurrentRegionID == 100 && npc.X == 766491 && npc.Y == 670375)
 					{
-						Herou = npc;
+						ReyMid = npc;
 						break;
 					}
+				}
 
-			if (Herou == null)
+			if (ReyMid == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Herou , creating it ...");
-				Herou = new GameNPC();
-				Herou.Model = 142;
-				Herou.Name = "Herou";
-				Herou.GuildName = "Realm Logistics";
-				Herou.Realm = eRealm.Midgard;
+					log.Warn("Could not find Rey , creating it ...");
+				ReyMid = new GameNPC();
+				ReyMid.Model = 26;
+				ReyMid.Name = "Rey";
+				ReyMid.GuildName = "Bone Collector";
+				ReyMid.Realm = eRealm.Midgard;
 				//Svasud Faste Location
-				Herou.CurrentRegionID = 100;
-				Herou.Size = 50;
-				Herou.Level = 59;
-				Herou.X = 766401;
-				Herou.Y = 670349;
-				Herou.Z = 5736;
-				Herou.Heading = 2284;
-				Herou.AddToWorld();
+				ReyMid.CurrentRegionID = 100;
+				ReyMid.Size = 60;
+				ReyMid.Level = 59;
+				ReyMid.X = 766491;
+				ReyMid.Y = 670375;
+				ReyMid.Z = 5736;
+				ReyMid.Heading = 2358;
+				ReyMid.Flags |= GameNPC.eFlags.PEACE;
+				ReyMid.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Herou.SaveIntoDatabase();
+					ReyMid.SaveIntoDatabase();
 				}
 			}
 
@@ -113,11 +116,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.AddHandler(ReyMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
 			/* Now we bring to Herou the possibility to give this quest to players */
-			Herou.AddQuestToGive(typeof (DragonWeeklyQuestMid));
+			ReyMid.AddQuestToGive(typeof (DFWeeklyKillQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -127,31 +130,31 @@ namespace DOL.GS.DailyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Herou == null)
+			if (ReyMid == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.RemoveHandler(ReyMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
 			/* Now we remove to Herou the possibility to give this quest to players */
-			Herou.RemoveQuestToGive(typeof (DragonWeeklyQuestMid));
+			ReyMid.RemoveQuestToGive(typeof (DFWeeklyKillQuestMid));
 		}
 
-		protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Herou.CanGiveQuest(typeof (DragonWeeklyQuestMid), player)  <= 0)
+			if(ReyMid.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			DragonWeeklyQuestMid quest = player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) as DragonWeeklyQuestMid;
+			DFWeeklyKillQuestMid quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) as DFWeeklyKillQuestMid;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -160,18 +163,17 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Herou.SayTo(player, player.Name + ", please travel to Malmohus and kill the dragon for Midgard!");
+							ReyMid.SayTo(player, "Please enter Darkness Falls and harvest parts from Hibernia's enemies!");
 							break;
 						case 2:
-							Herou.SayTo(player, "Hello " + player.Name + ", did you [slay the dragon] and return for your reward?");
+							ReyMid.SayTo(player, "Hello " + player.Name + ", did you [find the bones] we needed?");
 							break;
 					}
 				}
 				else
 				{
-					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, do you need a task? "+
-					                    "I heard you are strong enough to help me with Weekly Missions of Midgard. \n\n"+
-					                    "\nCan you support Midgard and [kill the dragon]?");
+					ReyMid.SayTo(player, "Oh, "+ player.Name +", glad you finally returned. Boss has a new recipe that requires bones that have been steeped in a [demonic aura]. \n"+
+					                     "Sure hope you know what that means, because I sure don't. My best guess is to try looking in Darkness Falls.");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,8 +184,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "kill the dragon":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestMid)), "Will you help Herou "+questTitle+"?");
+						case "demonic aura":
+							player.Out.SendQuestSubscribeCommand(ReyMid, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Herou "+questTitle+"?");
 							break;
 					}
 				}
@@ -191,7 +193,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "slay the dragon":
+						case "find the bones":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -209,7 +211,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -227,14 +229,14 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			DragonWeeklyQuestMid quest = player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) as DragonWeeklyQuestMid;
+			DFWeeklyKillQuestMid quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) as DFWeeklyKillQuestMid;
 
 			if (quest == null)
 				return;
 
 			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, now go out there and scout the dragon!");
+				SendSystemMessage(player, "Good, now go out there and finish your work!");
 			}
 			else
 			{
@@ -249,7 +251,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -260,23 +262,23 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Herou.CanGiveQuest(typeof (DragonWeeklyQuestMid), player)  <= 0)
+			if(ReyMid.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Midgard.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Herou.GiveQuest(typeof (DragonWeeklyQuestMid), player, 1))
+				if (!ReyMid.GiveQuest(typeof (DFWeeklyKillQuestMid), player, 1))
 					return;
 
-				Herou.SayTo(player, "Please, find the dragon in Malmohus and defend our realm.");
+				ReyMid.SayTo(player, "Find your realm's enemies in Darkness Falls and kill them for your reward.");
 
 			}
 		}
@@ -295,9 +297,9 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Travel to Malmohus and slay " + DRAGON_NAME + " for Midgard. \nKilled: " + DRAGON_NAME + " ("+ DragonKilled +" | " + MAX_KILLED + ")";
+						return "Defend Midgard in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
 					case 2:
-						return "Return to Herou for your Reward.";
+						return "Return to Rey for your Reward.";
 				}
 				return base.Description;
 			}
@@ -307,7 +309,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DFWeeklyKillQuestMid)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -316,14 +318,16 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-
-				if (gArgs.Target.Name.ToLower() == DRAGON_NAME.ToLower()) 
+				//prevent grey killing
+				
+				
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && gArgs.Target.CurrentRegionID == 249) 
 				{
-					DragonKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					EnemiesKilled++;
+					player.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (DragonKilled >= MAX_KILLED)
+					if (EnemiesKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to Herou
 						Step = 2;
@@ -335,16 +339,18 @@ namespace DOL.GS.DailyQuest.Midgard
 		
 		public override string QuestPropertyKey
 		{
-			get => "DragonWeeklyQuestMid";
+			get => "DFWeeklyKillQuestMid";
 			set { ; }
 		}
 		
 		public override void LoadQuestParameters()
 		{
+			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
+			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
 		}
 
 		public override void AbortQuest()
@@ -354,11 +360,12 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			//m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel), false);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
-			DragonKilled = 0;
+			EnemiesKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			
 		}
 	}
 }

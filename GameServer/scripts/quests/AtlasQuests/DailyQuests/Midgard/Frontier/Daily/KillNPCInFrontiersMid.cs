@@ -11,45 +11,43 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Midgard
+namespace DOL.GS.DailyQuest.Hibernia
 {
-	public class DFWeeklyKillQuestMid : Quests.WeeklyQuest
+	public class KillNPCInFrontiersMid : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Vacuum Darkness Falls";
-		protected const int minimumLevel = 15;
+		protected const string questTitle = "[Daily] A Bit of Bravery";
+		protected const int minimumLevel = 10;
 		protected const int maximumLevel = 50;
-		
-		// prevent grey killing
-		protected const int MIN_PLAYER_CON = -3;
-		// Kill Goal
-		protected const int MAX_KILLED = 50;
 
+		// Kill Goal
+		protected const int MAX_KILLED = 25;
+		
 		private static GameNPC Herou = null; // Start NPC
 
-		private int EnemiesKilled = 0;
+		private int FrontierMobsKilled = 0;
 
 		// Constructors
-		public DFWeeklyKillQuestMid() : base()
+		public KillNPCInFrontiersMid() : base()
 		{
 		}
 
-		public DFWeeklyKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public KillNPCInFrontiersMid(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public DFWeeklyKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public KillNPCInFrontiersMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public DFWeeklyKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public KillNPCInFrontiersMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
-
+		
 		public override int Level
 		{
 			get
@@ -58,7 +56,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				return minimumLevel;
 			}
 		}
-		
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -94,7 +92,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Herou.X = 766401;
 				Herou.Y = 670349;
 				Herou.Z = 5736;
-				Herou.Heading = 2284;
+				Herou.Heading = 2835;
 				Herou.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
@@ -116,8 +114,8 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
 			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
-			/* Now we bring to Herou the possibility to give this quest to players */
-			Herou.AddQuestToGive(typeof (DFWeeklyKillQuestMid));
+			/* Now we bring to Dean the possibility to give this quest to players */
+			Herou.AddQuestToGive(typeof (KillNPCInFrontiersMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -136,8 +134,8 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
 			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
-			/* Now we remove to Herou the possibility to give this quest to players */
-			Herou.RemoveQuestToGive(typeof (DFWeeklyKillQuestMid));
+			/* Now we remove to Dean the possibility to give this quest to players */
+			Herou.RemoveQuestToGive(typeof (KillNPCInFrontiersMid));
 		}
 
 		protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
@@ -147,11 +145,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (player == null)
 				return;
 
-			if(Herou.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
+			if(Herou.CanGiveQuest(typeof (KillNPCInFrontiersMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			DFWeeklyKillQuestMid quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) as DFWeeklyKillQuestMid;
+			KillNPCInFrontiersMid quest = player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) as KillNPCInFrontiersMid;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -160,18 +158,18 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Herou.SayTo(player, "Please enter Darkness Falls and defend Midgard from enemies!");
+							Herou.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Herou.SayTo(player, "Hello " + player.Name + ", did you [defend Darkness Falls] for your reward?");
+							Herou.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
 							break;
 					}
 				}
 				else
 				{
-					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, do you need a task? "+
-					                    "One of the scouts reported some enemy movement in Darkness Falls.  \n"+
-					                    "We need you to [shut that down] before they get a foothold.");
+					Herou.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. I serve the realm and ensure its borders are always protected. "+
+					                    "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having? \n\n"+
+					                    "I need an adventurer to help me [clear the frontiers].");
 				}
 			}
 				// The player whispered to the NPC
@@ -182,8 +180,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "shut that down":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Herou "+questTitle+"?");
+						case "clear the frontiers":
+							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -191,7 +189,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "defend Darkness Falls":
+						case "tidy the realm":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -209,7 +207,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -224,10 +222,21 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			return true;
 		}
+		
+		public override void LoadQuestParameters()
+		{
+			FrontierMobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, FrontierMobsKilled.ToString());
+		}
+
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			DFWeeklyKillQuestMid quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) as DFWeeklyKillQuestMid;
+			KillNPCInFrontiersMid quest = player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) as KillNPCInFrontiersMid;
 
 			if (quest == null)
 				return;
@@ -249,7 +258,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -260,23 +269,23 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Herou.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
+			if(Herou.CanGiveQuest(typeof (KillNPCInFrontiersMid), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Herou.GiveQuest(typeof (DFWeeklyKillQuestMid), player, 1))
+				if (!Herou.GiveQuest(typeof (KillNPCInFrontiersMid), player, 1))
 					return;
 
-				Herou.SayTo(player, "Defend your realm in Darkness Falls and kill them for your reward.");
+				Herou.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -295,9 +304,9 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Defend Midgard in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
-						return "Return to Herou for your Reward.";
+						return "Return to Herou in Svasud Faste for your Reward.";
 				}
 				return base.Description;
 			}
@@ -307,48 +316,36 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DFWeeklyKillQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(KillNPCInFrontiersMid)) == null)
 				return;
-
+			
 			if (sender != m_questPlayer)
 				return;
 			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				//prevent grey killing
-				
-				
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && gArgs.Target.CurrentRegionID == 249) 
+				if (player.GetConLevel(gArgs.Target) > -1
+				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
-					EnemiesKilled++;
-					player.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					FrontierMobsKilled++;
 					player.Out.SendQuestUpdate(this);
 					
-					if (EnemiesKilled >= MAX_KILLED)
+					if (FrontierMobsKilled >= 25)
 					{
-						// FinishQuest or go back to Herou
+						// FinishQuest or go back to npc
 						Step = 2;
 					}
 				}
+				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "DFWeeklyKillQuestMid";
+			get => "KillNPCInFrontiersMid";
 			set { ; }
-		}
-		
-		public override void LoadQuestParameters()
-		{
-			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
-		}
-
-		public override void SaveQuestParameters()
-		{
-			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
 		}
 
 		public override void AbortQuest()
@@ -358,12 +355,11 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel), false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
-			EnemiesKilled = 0;
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 150);
+			FrontierMobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			
 		}
 	}
 }

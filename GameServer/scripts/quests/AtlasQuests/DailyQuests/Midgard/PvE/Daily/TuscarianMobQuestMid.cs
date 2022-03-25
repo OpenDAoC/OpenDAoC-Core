@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Midgard
         private int _deadTuscaMob = 0;
         protected const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Herou = null; // Start NPC
+        private static GameNPC Isaac = null; // Start NPC
 
 
         // Constructors
@@ -67,37 +67,37 @@ namespace DOL.GS.DailyQuest.Midgard
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", eRealm.Midgard);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
+                    if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
                     {
-                        Herou = npc;
+                        Isaac = npc;
                         break;
                     }
 
-            if (Herou == null)
+            if (Isaac == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Herou , creating it ...");
-                Herou = new GameNPC();
-                Herou.Model = 142;
-                Herou.Name = "Herou";
-                Herou.GuildName = "Realm Logistics";
-                Herou.Realm = eRealm.Midgard;
-                //Svasud Faste Location
-                Herou.CurrentRegionID = 100;
-                Herou.Size = 50;
-                Herou.Level = 59;
-                Herou.X = 766401;
-                Herou.Y = 670349;
-                Herou.Z = 5736;
-                Herou.Heading = 2835;
-                Herou.AddToWorld();
+                    log.Warn("Could not find Isaac , creating it ...");
+                Isaac = new GameNPC();
+                Isaac.Model = 774;
+                Isaac.Name = "Isaac";
+                Isaac.GuildName = "Advisor to the King";
+                Isaac.Realm = eRealm.Midgard;
+                Isaac.CurrentRegionID = 100;
+                Isaac.Size = 50;
+                Isaac.Level = 59;
+                //Castle Sauvage Location
+                Isaac.X = 766590;
+                Isaac.Y = 670407;
+                Isaac.Z = 5736;
+                Isaac.Heading = 2358;
+                Isaac.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Herou.SaveIntoDatabase();
+                    Isaac.SaveIntoDatabase();
                 }
             }
 
@@ -114,11 +114,11 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-            GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+            GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
+            GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
             /* Now we bring to Herou the possibility to give this quest to players */
-            Herou.AddQuestToGive(typeof(TuscarianMobQuestMid));
+            Isaac.AddQuestToGive(typeof(TuscarianMobQuestMid));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Mid initialized");
@@ -128,27 +128,27 @@ namespace DOL.GS.DailyQuest.Midgard
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Herou == null)
+            if (Isaac == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-            GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+            GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
+            GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
             /* Now we remove to Herou the possibility to give this quest to players */
-            Herou.RemoveQuestToGive(typeof(TuscarianMobQuestMid));
+            Isaac.RemoveQuestToGive(typeof(TuscarianMobQuestMid));
         }
 
-        protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Herou.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
+            if (Isaac.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
@@ -161,17 +161,17 @@ namespace DOL.GS.DailyQuest.Midgard
                     switch (quest.Step)
                     {
                         case 1:
-                            Herou.SayTo(player,
+                            Isaac.SayTo(player,
                                 "Please, enter Tuscaran Glacier and slay some monsters. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Herou.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            Isaac.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Herou.SayTo(player, "Hello " + player.Name + ", I am Herou. " +
+                    Isaac.SayTo(player, "Hello " + player.Name + ", I am Isaac. " +
                                         "The king is preparing to send forces into Tuscaren Glacier to clear it out. \n" +
                                         "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
@@ -185,9 +185,9 @@ namespace DOL.GS.DailyQuest.Midgard
                     switch (wArgs.Text)
                     {
                         case "clearing the way":
-                            player.Out.SendQuestSubscribeCommand(Herou,
+                            player.Out.SendQuestSubscribeCommand(Isaac,
                                 QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)),
-                                "Will you help Herou with " + questTitle + "");
+                                "Will you help Isaac with " + questTitle + "");
                             break;
                     }
                 }
@@ -268,7 +268,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Herou.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
+            if (Isaac.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
                 return;
 
             if (player.IsDoingQuest(typeof(TuscarianMobQuestMid)) != null)
@@ -276,15 +276,15 @@ namespace DOL.GS.DailyQuest.Midgard
 
             if (response == 0x00)
             {
-                player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("Thank you for helping the king.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             }
             else
             {
                 //Check if we can add the quest!
-                if (!Herou.GiveQuest(typeof(TuscarianMobQuestMid), player, 1))
+                if (!Isaac.GiveQuest(typeof(TuscarianMobQuestMid), player, 1))
                     return;
 
-                Herou.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                Isaac.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -305,7 +305,7 @@ namespace DOL.GS.DailyQuest.Midgard
                         return "Find a way to Tuscaran Glacier and kill some monsters. \nKilled: Monsters in Tuscaran Glacier (" +
                                _deadTuscaMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Herou for your Reward.";
+                        return "Return to Isaac for your Reward.";
                 }
 
                 return base.Description;

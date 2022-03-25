@@ -11,43 +11,43 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest.Midgard
 {
-	public class KillNPCInFrontiersMid : Quests.DailyQuest
+	public class DFMobKillQuestMid : WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] A Bit of Bravery";
-		protected const int minimumLevel = 10;
+		protected const string questTitle = "[Weekly] Darkness Falls Invasion";
+		protected const int minimumLevel = 30;
 		protected const int maximumLevel = 50;
-
-		// Kill Goal
-		protected const int MAX_KILLED = 25;
 		
-		private static GameNPC Isaac = null; // Start NPC
+		// Kill Goal
+		protected const int MAX_KILLED = 200;
 
-		private int FrontierMobsKilled = 0;
+		private static GameNPC Herou = null; // Start NPC
+
+		private int _mobsKilled = 0;
 
 		// Constructors
-		public KillNPCInFrontiersMid() : base()
+		public DFMobKillQuestMid() : base()
 		{
 		}
 
-		public KillNPCInFrontiersMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public DFMobKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public KillNPCInFrontiersMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DFMobKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public KillNPCInFrontiersMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFMobKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
-		
+
 		public override int Level
 		{
 			get
@@ -56,7 +56,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				return minimumLevel;
 			}
 		}
-
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -66,37 +66,37 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
+					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
 					{
-						Isaac = npc;
+						Herou = npc;
 						break;
 					}
 
-			if (Isaac == null)
+			if (Herou == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Isaac , creating it ...");
-				Isaac = new GameNPC();
-				Isaac.Model = 774;
-				Isaac.Name = "Isaac";
-				Isaac.GuildName = "Advisor to the King";
-				Isaac.Realm = eRealm.Midgard;
-				Isaac.CurrentRegionID = 100;
-				Isaac.Size = 50;
-				Isaac.Level = 59;
-				//Castle Sauvage Location
-				Isaac.X = 766590;
-				Isaac.Y = 670407;
-				Isaac.Z = 5736;
-				Isaac.Heading = 2358;
-				Isaac.AddToWorld();
+					log.Warn("Could not find Herou , creating it ...");
+				Herou = new GameNPC();
+				Herou.Model = 142;
+				Herou.Name = "Herou";
+				Herou.GuildName = "Realm Logistics";
+				Herou.Realm = eRealm.Midgard;
+				//Svasud Faste Location
+				Herou.CurrentRegionID = 100;
+				Herou.Size = 50;
+				Herou.Level = 59;
+				Herou.X = 766401;
+				Herou.Y = 670349;
+				Herou.Z = 5736;
+				Herou.Heading = 2284;
+				Herou.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Isaac.SaveIntoDatabase();
+					Herou.SaveIntoDatabase();
 				}
 			}
 
@@ -111,45 +111,45 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
-			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
+			GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
-			Isaac.AddQuestToGive(typeof (KillNPCInFrontiersMid));
+			/* Now we bring to Herou the possibility to give this quest to players */
+			Herou.AddQuestToGive(typeof (DFMobKillQuestMid));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
+				log.Info("Quest \"" + questTitle + "\" Mid initialized");
 		}
 
 		[ScriptUnloadedEvent]
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Isaac == null)
+			if (Herou == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
-			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
+			GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
-			Isaac.RemoveQuestToGive(typeof (KillNPCInFrontiersMid));
+			/* Now we remove to Herou the possibility to give this quest to players */
+			Herou.RemoveQuestToGive(typeof (DFMobKillQuestMid));
 		}
 
-		protected static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Isaac.CanGiveQuest(typeof (KillNPCInFrontiersMid), player)  <= 0)
+			if(Herou.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			KillNPCInFrontiersMid quest = player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) as KillNPCInFrontiersMid;
+			DFMobKillQuestMid quest = player.IsDoingQuest(typeof (DFMobKillQuestMid)) as DFMobKillQuestMid;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +158,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Isaac.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
+							Herou.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
 							break;
 						case 2:
-							Isaac.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
+							Herou.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having on the border? \n\n"+
-					                       "\nCan you help me [clear our frontiers]?");
+					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou. I have received word from a hunter that forces are building in Darkness Falls. "+
+					                    "Clear out as many demons as you can find, and come back to me only when the halls of the dungeon are purged of their influence. \n\n"+
+					                    "Can you [stop the invasion]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +180,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "clear our frontiers":
-							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Dean "+questTitle+"");
+						case "stop the invasion":
+							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestMid)), "Will you help Herou "+questTitle+"?");
 							break;
 					}
 				}
@@ -189,7 +189,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "tidy the realm":
+						case "slay monsters":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -207,7 +207,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) != null)
+			if (player.IsDoingQuest(typeof (DFMobKillQuestMid)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -222,21 +222,20 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			return true;
 		}
-		
+
 		public override void LoadQuestParameters()
 		{
-			FrontierMobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			_mobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, FrontierMobsKilled.ToString());
+			SetCustomProperty(QuestPropertyKey, _mobsKilled.ToString());
 		}
-
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			KillNPCInFrontiersMid quest = player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) as KillNPCInFrontiersMid;
+			DFMobKillQuestMid quest = player.IsDoingQuest(typeof (DFMobKillQuestMid)) as DFMobKillQuestMid;
 
 			if (quest == null)
 				return;
@@ -258,7 +257,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestMid)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -269,23 +268,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Isaac.CanGiveQuest(typeof (KillNPCInFrontiersMid), player)  <= 0)
+			if(Herou.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (KillNPCInFrontiersMid)) != null)
+			if (player.IsDoingQuest(typeof (DFMobKillQuestMid)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping our realm.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Midgard.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Isaac.GiveQuest(typeof (KillNPCInFrontiersMid), player, 1))
+				if (!Herou.GiveQuest(typeof (DFMobKillQuestMid), player, 1))
 					return;
 
-				Isaac.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
+				Herou.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
 
 			}
 		}
@@ -304,9 +303,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
+						return "Enter Darkness Falls and kill monsters for Midgard. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
-						return "Return to Isaac in Svasud Faste for your Reward.";
+						return "Return to Herou for your Reward.";
 				}
 				return base.Description;
 			}
@@ -316,35 +315,48 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(KillNPCInFrontiersMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestMid)) == null)
 				return;
-			
+
 			if (sender != m_questPlayer)
 				return;
-			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
+
+			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) > -1
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
+
+				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && player.GetConLevel(gArgs.Target) > -2) 
 				{
-					FrontierMobsKilled++;
+					if (player.Group != null)
+					{
+						double minRequiredCon = (double) (player.Group.MemberCount / 2);
+						if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
+							_mobsKilled++;
+						else
+						{
+							player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);		
+						}
+					}
+					else
+					{
+						_mobsKilled++;	
+					}
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= 25)
+					if (_mobsKilled >= MAX_KILLED)
 					{
-						// FinishQuest or go back to npc
+						// FinishQuest or go back to Herou
 						Step = 2;
 					}
 				}
-				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "KillNPCInFrontiersMid";
+			get => "DFMobKillQuestMid";
 			set { ; }
 		}
 
@@ -355,10 +367,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,50,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 150);
-			FrontierMobsKilled = 0;
+			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, false);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
+			_mobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}

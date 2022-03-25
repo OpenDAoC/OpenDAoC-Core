@@ -6,7 +6,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.API;
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
@@ -14,41 +13,43 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Midgard
 {
-	public class CaptureKeepQuestMid : Quests.DailyQuest
+	public class DragonWeeklyQuestMid : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Frontier Conquerer";
-		protected const int minimumLevel = 50;
-		protected const int maximumLevel = 50;
-
-		// Capture Goal
-		protected const int MAX_CAPTURED = 1;
+		protected const string DRAGON_NAME = "Gjalpinulva";
 		
-		private static GameNPC Herou = null; // Start NPC
-
-		private int _isCaptured = 0;
+		protected const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
+		protected const int minimumLevel = 45;
+		protected const int maximumLevel = 50;
+		
+		// Kill Goal
+		protected const int MAX_KILLED = 1;
+		// Quest Counter
+		private int DragonKilled = 0;
+		
+		private static GameNPC Isaac = null; // Start NPC
 
 		// Constructors
-		public CaptureKeepQuestMid() : base()
+		public DragonWeeklyQuestMid() : base()
 		{
 		}
 
-		public CaptureKeepQuestMid(GamePlayer questingPlayer) : base(questingPlayer, 1)
+		public DragonWeeklyQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public CaptureKeepQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DragonWeeklyQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public CaptureKeepQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DragonWeeklyQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
-		
+
 		public override int Level
 		{
 			get
@@ -57,7 +58,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				return minimumLevel;
 			}
 		}
-
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -67,37 +68,37 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
+					if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
 					{
-						Herou = npc;
+						Isaac = npc;
 						break;
 					}
 
-			if (Herou == null)
+			if (Isaac == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Herou , creating it ...");
-				Herou = new GameNPC();
-				Herou.Model = 142;
-				Herou.Name = "Herou";
-				Herou.GuildName = "Realm Logistics";
-				Herou.Realm = eRealm.Midgard;
-				//Svasud Faste Location
-				Herou.CurrentRegionID = 100;
-				Herou.Size = 50;
-				Herou.Level = 59;
-				Herou.X = 766401;
-				Herou.Y = 670349;
-				Herou.Z = 5736;
-				Herou.Heading = 2835;
-				Herou.AddToWorld();
+					log.Warn("Could not find Isaac , creating it ...");
+				Isaac = new GameNPC();
+				Isaac.Model = 774;
+				Isaac.Name = "Isaac";
+				Isaac.GuildName = "Advisor to the King";
+				Isaac.Realm = eRealm.Midgard;
+				Isaac.CurrentRegionID = 100;
+				Isaac.Size = 50;
+				Isaac.Level = 59;
+				//Castle Sauvage Location
+				Isaac.X = 766590;
+				Isaac.Y = 670407;
+				Isaac.Z = 5736;
+				Isaac.Heading = 2358;
+				Isaac.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Herou.SaveIntoDatabase();
+					Isaac.SaveIntoDatabase();
 				}
 			}
 
@@ -112,11 +113,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
+			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
 			/* Now we bring to Herou the possibility to give this quest to players */
-			Herou.AddQuestToGive(typeof (CaptureKeepQuestMid));
+			Isaac.AddQuestToGive(typeof (DragonWeeklyQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -126,31 +127,31 @@ namespace DOL.GS.DailyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Herou == null)
+			if (Isaac == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
+			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
 			/* Now we remove to Herou the possibility to give this quest to players */
-			Herou.RemoveQuestToGive(typeof (CaptureKeepQuestMid));
+			Isaac.RemoveQuestToGive(typeof (DragonWeeklyQuestMid));
 		}
 
-		protected static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Herou.CanGiveQuest(typeof (CaptureKeepQuestMid), player)  <= 0)
+			if(Isaac.CanGiveQuest(typeof (DragonWeeklyQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			CaptureKeepQuestMid quest = player.IsDoingQuest(typeof (CaptureKeepQuestMid)) as CaptureKeepQuestMid;
+			DragonWeeklyQuestMid quest = player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) as DragonWeeklyQuestMid;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -159,18 +160,18 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Herou.SayTo(player, "Find an enemy occupied keep and capture it. If you succeed come back for your reward.");
+							Isaac.SayTo(player, player.Name + ", please travel to Malmohus and kill the dragon for Midgard!");
 							break;
 						case 2:
-							Herou.SayTo(player, "Hello " + player.Name + ", did you [capture] a keep?");
+							Isaac.SayTo(player, "Hello " + player.Name + ", did you [slay the dragon] and return for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                    "I've seen you battling in our frontiers. Do you think you're strong enough to help me with some real estate matters? \n"+
-					                    "\nThe king wants us to [reclaim a keep] that he's particularly fond of.");
+					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac. I bring sad news today. " + DRAGON_NAME + " razed a small settlement in Malmohus last night. \n" +
+					                    "Please, help the king avenge their deaths and keep Midgard safe from " + DRAGON_NAME +  "\'s influence. \n\n"+
+					                    "Can you support Midgard and [kill the dragon]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -181,8 +182,8 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "reclaim a keep":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestMid)), "Will you help Herou "+questTitle+"");
+						case "kill the dragon":
+							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestMid)), "Will you help Herou "+questTitle+"?");
 							break;
 					}
 				}
@@ -190,7 +191,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "capture":
+						case "slay the dragon":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -208,7 +209,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (CaptureKeepQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -226,14 +227,14 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			CaptureKeepQuestMid quest = player.IsDoingQuest(typeof (CaptureKeepQuestMid)) as CaptureKeepQuestMid;
+			DragonWeeklyQuestMid quest = player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) as DragonWeeklyQuestMid;
 
 			if (quest == null)
 				return;
 
 			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, now go out there and finish your work!");
+				SendSystemMessage(player, "Good, now go out there and scout the dragon!");
 			}
 			else
 			{
@@ -248,7 +249,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestMid)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -259,10 +260,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Herou.CanGiveQuest(typeof (CaptureKeepQuestMid), player)  <= 0)
+			if(Isaac.CanGiveQuest(typeof (DragonWeeklyQuestMid), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (CaptureKeepQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (DragonWeeklyQuestMid)) != null)
 				return;
 
 			if (response == 0x00)
@@ -272,10 +273,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Herou.GiveQuest(typeof (CaptureKeepQuestMid), player, 1))
+				if (!Isaac.GiveQuest(typeof (DragonWeeklyQuestMid), player, 1))
 					return;
 
-				Herou.SayTo(player, "Thank you "+player.Name+", be an enrichment for our realm!");
+				Isaac.SayTo(player, "Please, find the dragon in Malmohus and defend our realm.");
 
 			}
 		}
@@ -294,7 +295,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Go to the battlefield and conquer a keep. \nCaptured: Keep ("+ _isCaptured +" | 1)";
+						return "Travel to Malmohus and slay " + DRAGON_NAME + " for Midgard. \nKilled: " + DRAGON_NAME + " ("+ DragonKilled +" | " + MAX_KILLED + ")";
 					case 2:
 						return "Return to Herou for your Reward.";
 				}
@@ -306,42 +307,44 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(CaptureKeepQuestMid)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestMid)) == null)
 				return;
-			
+
 			if (sender != m_questPlayer)
 				return;
 			
-			if (Step == 1 && e == GamePlayerEvent.CapturedKeepsChanged)
+			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
-				_isCaptured = 1;
-				player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				player.Out.SendQuestUpdate(this);
-					
-				if (_isCaptured >= MAX_CAPTURED)
+				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+
+				if (gArgs.Target.Name.ToLower() == DRAGON_NAME.ToLower()) 
 				{
-					// FinishQuest or go back to Dean
-					Step = 2;
+					DragonKilled = 1;
+					player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendQuestUpdate(this);
+					
+					if (DragonKilled >= MAX_KILLED)
+					{
+						// FinishQuest or go back to Herou
+						Step = 2;
+					}
 				}
-				
 			}
 			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "CaptureKeepQuestMid";
+			get => "DragonWeeklyQuestMid";
 			set { ; }
 		}
 		
 		public override void LoadQuestParameters()
 		{
-			
 		}
 
 		public override void SaveQuestParameters()
 		{
-			
 		}
 
 		public override void AbortQuest()
@@ -351,10 +354,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,0,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 250);
-			_isCaptured = 0;
+			//m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
+			DragonKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 	}
