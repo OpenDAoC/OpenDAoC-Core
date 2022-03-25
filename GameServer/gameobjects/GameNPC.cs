@@ -5432,7 +5432,7 @@ namespace DOL.GS
 			*/
 			
 
-			if (m_runningSpellHandler != null)
+			if (CurrentSpellHandler != null)
 			{
 				//prevent from relaunch
 				base.OnAfterSpellCastSequence(handler);
