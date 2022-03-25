@@ -113,6 +113,9 @@ namespace DOL.GS.API
                 return Results.Ok(guildMembers);
                 
             });
+            api.MapGet("/guild/getAll", async c => await c.Response.WriteAsJsonAsync(_guild.GetAllGuilds()));
+            api.MapGet("/guild/topRP", async c => await c.Response.WriteAsJsonAsync(_guild.GetTopRPGuilds()));
+
 
             // REALM
             api.MapGet("/realm", () => "Usage /realm/{realmName}");

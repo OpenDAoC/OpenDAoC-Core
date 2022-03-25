@@ -42,7 +42,7 @@ namespace DOL.GS
                 return;
 
             var handler = p.castingComponent.spellHandler;
-                
+
             handler.Tick(tick);
         }
     }
