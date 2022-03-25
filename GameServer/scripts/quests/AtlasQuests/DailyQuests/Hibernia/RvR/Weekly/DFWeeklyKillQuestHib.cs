@@ -13,38 +13,40 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Hibernia
 {
-	public class DFMobKillQuestHib : WeeklyQuest
+	public class DFWeeklyKillQuestHib : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Darkness Falls Invasion";
-		protected const int minimumLevel = 30;
+		protected const string questTitle = "[Weekly] Femurs From Darkness Falls";
+		protected const int minimumLevel = 15;
 		protected const int maximumLevel = 50;
 		
+		// prevent grey killing
+		protected const int MIN_PLAYER_CON = -3;
 		// Kill Goal
-		protected const int MAX_KILLED = 200;
+		protected const int MAX_KILLED = 50;
 
-		private static GameNPC Dean = null; // Start NPC
+		private static GameNPC ReyHib = null; // Start NPC
 
-		private int _mobsKilled = 0;
+		private int EnemiesKilled = 0;
 
 		// Constructors
-		public DFMobKillQuestHib() : base()
+		public DFWeeklyKillQuestHib() : base()
 		{
 		}
 
-		public DFMobKillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
+		public DFWeeklyKillQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public DFMobKillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public DFWeeklyKillQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public DFMobKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFWeeklyKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -66,37 +68,40 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
+				{
+					if (npc.CurrentRegionID == 200 && npc.X == 334866 && npc.Y == 420749)
 					{
-						Dean = npc;
+						ReyHib = npc;
 						break;
 					}
+				}
 
-			if (Dean == null)
+			if (ReyHib == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Dean , creating it ...");
-				Dean = new GameNPC();
-				Dean.Model = 355;
-				Dean.Name = "Dean";
-				Dean.GuildName = "Advisor to the King";
-				Dean.Realm = eRealm.Hibernia;
+					log.Warn("Could not find Rey , creating it ...");
+				ReyHib = new GameNPC();
+				ReyHib.Model = 26;
+				ReyHib.Name = "Rey";
+				ReyHib.GuildName = "Bone Collector";
+				ReyHib.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
-				Dean.CurrentRegionID = 200;
-				Dean.Size = 50;
-				Dean.Level = 59;
-				Dean.X = 334962;
-				Dean.Y = 420687;
-				Dean.Z = 5184;
-				Dean.Heading = 1571;
-				Dean.AddToWorld();
+				ReyHib.CurrentRegionID = 200;
+				ReyHib.Size = 60;
+				ReyHib.Level = 59;
+				ReyHib.X = 334866;
+				ReyHib.Y = 420749;
+				ReyHib.Z = 5184;
+				ReyHib.Heading = 1640;
+				ReyHib.Flags |= GameNPC.eFlags.PEACE;
+				ReyHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Dean.SaveIntoDatabase();
+					ReyHib.SaveIntoDatabase();
 				}
 			}
 
@@ -111,31 +116,31 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(ReyHib, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(ReyHib, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (DFMobKillQuestHib));
+			ReyHib.AddQuestToGive(typeof (DFWeeklyKillQuestHib));
 
 			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" Hib initialized");
+				log.Info("Quest \"" + questTitle + "\" initialized");
 		}
 
 		[ScriptUnloadedEvent]
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Dean == null)
+			if (ReyHib == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(ReyHib, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(ReyHib, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (DFMobKillQuestHib));
+			ReyHib.RemoveQuestToGive(typeof (DFWeeklyKillQuestHib));
 		}
 
 		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
@@ -145,11 +150,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
+			if(ReyHib.CanGiveQuest(typeof (DFWeeklyKillQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			DFMobKillQuestHib quest = player.IsDoingQuest(typeof (DFMobKillQuestHib)) as DFMobKillQuestHib;
+			DFWeeklyKillQuestHib quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestHib)) as DFWeeklyKillQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -158,18 +163,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Dean.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
+							ReyHib.SayTo(player, "Please enter Darkness Falls and harvest parts from Hibernia's enemies!");
 							break;
 						case 2:
-							Dean.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
+							ReyHib.SayTo(player, "Hello " + player.Name + ", did you [find the bones] we needed?");
 							break;
 					}
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean, do you need a task? "+
-					                       "I heard you are strong enough to help me with Weekly Missions of Hibernia. \n\n"+
-					                       "\nCan you [support Hibernia]?");
+					ReyHib.SayTo(player, "Oh, "+ player.Name +", glad you finally returned. Boss has a new recipe that requires bones that have been steeped in a [demonic aura]. \n"+
+					                   "Sure hope you know what that means, because I sure don't. My best guess is to try looking in Darkness Falls.");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +184,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "support Hibernia":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)), "Will you help Dean "+questTitle+"?");
+						case "demonic aura":
+							player.Out.SendQuestSubscribeCommand(ReyHib, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestHib)), "Will you help Rey with "+questTitle+"?");
 							break;
 					}
 				}
@@ -189,7 +193,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "slay monsters":
+						case "find the bones":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -207,7 +211,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (DFMobKillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -223,19 +227,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 			return true;
 		}
 
-		public override void LoadQuestParameters()
-		{
-			_mobsKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
-		}
-
-		public override void SaveQuestParameters()
-		{
-			SetCustomProperty(QuestPropertyKey, _mobsKilled.ToString());
-		}
-
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			DFMobKillQuestHib quest = player.IsDoingQuest(typeof (DFMobKillQuestHib)) as DFMobKillQuestHib;
+			DFWeeklyKillQuestHib quest = player.IsDoingQuest(typeof (DFWeeklyKillQuestHib)) as DFWeeklyKillQuestHib;
 
 			if (quest == null)
 				return;
@@ -257,7 +251,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -268,23 +262,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
+			if(ReyHib.CanGiveQuest(typeof (DFWeeklyKillQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (DFMobKillQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping me out.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (DFMobKillQuestHib), player, 1))
+				if (!ReyHib.GiveQuest(typeof (DFWeeklyKillQuestHib), player, 1))
 					return;
 
-				Dean.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
+				ReyHib.SayTo(player, "Find your realm's enemies in Darkness Falls and kill them for your reward.");
 
 			}
 		}
@@ -303,9 +297,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Enter Darkness Falls and kill monsters for Hibernia. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
+						return "Kill Hibernia's enemies in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
 					case 2:
-						return "Return to Dean for your Reward.";
+						return "Return to Rey for your Reward.";
 				}
 				return base.Description;
 			}
@@ -315,37 +309,24 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestHib)) == null)
+			if (player == null || player.IsDoingQuest(typeof(DFWeeklyKillQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
-
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && player.GetConLevel(gArgs.Target) > -2) 
+				
+				//prevent grey killing
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && gArgs.Target.CurrentRegionID == 249) 
 				{
-					if (player.Group != null)
-					{
-						double minRequiredCon =(double) (player.Group.MemberCount / 2);
-						if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
-							_mobsKilled++;
-						else
-						{
-							player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);		
-						}
-					}
-					else
-					{
-						_mobsKilled++;	
-					}
-					
-					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					EnemiesKilled++;
+					player.Out.SendMessage("[Weekly] Enemy Killed: ("+EnemiesKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (_mobsKilled >= MAX_KILLED)
+					if (EnemiesKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to Dean
 						Step = 2;
@@ -357,8 +338,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		public override string QuestPropertyKey
 		{
-			get => "DFMobKillQuestHib";
+			get => "DFWeeklyKillQuestHib";
 			set { ; }
+		}
+		
+		public override void LoadQuestParameters()
+		{
+			EnemiesKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+		}
+
+		public override void SaveQuestParameters()
+		{
+			SetCustomProperty(QuestPropertyKey, EnemiesKilled.ToString());
 		}
 
 		public override void AbortQuest()
@@ -368,11 +359,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, m_questPlayer.ExperienceForNextLevel, false);
+			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel), false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
-			_mobsKilled = 0;
+			EnemiesKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			
 		}
 	}
 }

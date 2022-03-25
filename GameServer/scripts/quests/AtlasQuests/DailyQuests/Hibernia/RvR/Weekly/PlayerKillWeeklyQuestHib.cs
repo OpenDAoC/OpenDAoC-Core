@@ -6,49 +6,50 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.API;
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.WeeklyQuests.Hibernia
 {
-	public class CaptureKeepQuestHib : Quests.DailyQuest
+	public class PlayerKillWeeklyQuestHib : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Frontier Conquerer";
-		protected const int minimumLevel = 50;
+		protected const string questTitle = "[Weekly] Slay The Enemies";
+		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
-		// Capture Goal
-		protected const int MAX_CAPTURED = 1;
-		
-		private static GameNPC Dean = null; // Start NPC
+		private static GameNPC ReyHib = null; // Start NPC
 
-		private int _isCaptured = 0;
+		private int PlayersKilled = 0;
+		
+		// Kill Goal
+		private static int MAX_KILLING_GOAL = 100;
+		// Prevent Grey Killing
+		private static int MIN_LEVEL = 35;
 
 		// Constructors
-		public CaptureKeepQuestHib() : base()
+		public PlayerKillWeeklyQuestHib() : base()
 		{
 		}
 
-		public CaptureKeepQuestHib(GamePlayer questingPlayer) : base(questingPlayer, 1)
+		public PlayerKillWeeklyQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public CaptureKeepQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public PlayerKillWeeklyQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public CaptureKeepQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public PlayerKillWeeklyQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
-		
+
 		public override int Level
 		{
 			get
@@ -57,47 +58,49 @@ namespace DOL.GS.DailyQuest.Hibernia
 				return minimumLevel;
 			}
 		}
-
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
-			
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
+				{
+					if (npc.CurrentRegionID == 200 && npc.X == 334866 && npc.Y == 420749)
 					{
-						Dean = npc;
+						ReyHib = npc;
 						break;
 					}
+				}
 
-			if (Dean == null)
+			if (ReyHib == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Dean , creating it ...");
-				Dean = new GameNPC();
-				Dean.Model = 355;
-				Dean.Name = "Dean";
-				Dean.GuildName = "Advisor to the King";
-				Dean.Realm = eRealm.Hibernia;
+					log.Warn("Could not find Rey , creating it ...");
+				ReyHib = new GameNPC();
+				ReyHib.Model = 26;
+				ReyHib.Name = "Rey";
+				ReyHib.GuildName = "Bone Collector";
+				ReyHib.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
-				Dean.CurrentRegionID = 200;
-				Dean.Size = 50;
-				Dean.Level = 59;
-				Dean.X = 334962;
-				Dean.Y = 420687;
-				Dean.Z = 5184;
-				Dean.Heading = 1571;
-				Dean.AddToWorld();
+				ReyHib.CurrentRegionID = 200;
+				ReyHib.Size = 60;
+				ReyHib.Level = 59;
+				ReyHib.X = 334866;
+				ReyHib.Y = 420749;
+				ReyHib.Z = 5184;
+				ReyHib.Heading = 1640;
+				ReyHib.Flags |= GameNPC.eFlags.PEACE;
+				ReyHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Dean.SaveIntoDatabase();
+					ReyHib.SaveIntoDatabase();
 				}
 			}
 
@@ -112,11 +115,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(ReyHib, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyHib, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (CaptureKeepQuestHib));
+			/* Now we bring to Rey the possibility to give this quest to players */
+			ReyHib.AddQuestToGive(typeof (PlayerKillWeeklyQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -126,31 +129,31 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Dean == null)
+			if (ReyHib == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(ReyHib, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyHib, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (CaptureKeepQuestHib));
+			/* Now we remove to Rey the possibility to give this quest to players */
+			ReyHib.RemoveQuestToGive(typeof (PlayerKillWeeklyQuestHib));
 		}
 
-		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (CaptureKeepQuestHib), player)  <= 0)
+			if(ReyHib.CanGiveQuest(typeof (PlayerKillWeeklyQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			CaptureKeepQuestHib quest = player.IsDoingQuest(typeof (CaptureKeepQuestHib)) as CaptureKeepQuestHib;
+			PlayerKillWeeklyQuestHib quest = player.IsDoingQuest(typeof (PlayerKillWeeklyQuestHib)) as PlayerKillWeeklyQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -159,18 +162,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Dean.SayTo(player, "Find an enemy occupied keep and capture it. If you succeed come back for your reward.");
+							ReyHib.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 							break;
 						case 2:
-							Dean.SayTo(player, "Hello " + player.Name + ", did you [capture] a keep?");
+							ReyHib.SayTo(player, "Hello " + player.Name + ", did you [demolish some skulls]?");
 							break;
 					}
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                   "I've seen you battling in our frontiers. Do you think you're strong enough to help me with some real estate matters? \n"+
-					                   "\nThe king wants us to [reclaim a keep] that he's particularly fond of.");
+					ReyHib.SayTo(player, "Uh oh, "+ player.Name +". "+
+					                     "Fen put in a bulk order this time. There's no way I can collect this many bones in a week. \n" +
+					                     "I need your help with this, are you up for some [bone harvesting]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -181,8 +184,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "reclaim a keep":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestHib)), "Will you help Dean "+questTitle+"");
+						case "bone harvesting":
+							player.Out.SendQuestSubscribeCommand(ReyHib, QuestMgr.GetIDForQuestType(typeof(PlayerKillWeeklyQuestHib)), "Will you undertake " + questTitle + "?");
 							break;
 					}
 				}
@@ -190,7 +193,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "capture":
+						case "demolish some skulls":
 							if (quest.Step == 2)
 							{
 								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
@@ -208,7 +211,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (CaptureKeepQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (PlayerKillWeeklyQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -226,14 +229,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			CaptureKeepQuestHib quest = player.IsDoingQuest(typeof (CaptureKeepQuestHib)) as CaptureKeepQuestHib;
+			PlayerKillWeeklyQuestHib quest = player.IsDoingQuest(typeof (PlayerKillWeeklyQuestHib)) as PlayerKillWeeklyQuestHib;
 
 			if (quest == null)
 				return;
 
 			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, now go out there and finish your work!");
+				SendSystemMessage(player, "Good, now go out there and shed some blood!");
 			}
 			else
 			{
@@ -248,7 +251,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestHib)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(PlayerKillWeeklyQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -259,23 +262,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (CaptureKeepQuestHib), player)  <= 0)
+			if(ReyHib.CanGiveQuest(typeof (PlayerKillWeeklyQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (CaptureKeepQuestHib)) != null)
+			if (player.IsDoingQuest(typeof (PlayerKillWeeklyQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Atlas.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping me.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (CaptureKeepQuestHib), player, 1))
+				if (!ReyHib.GiveQuest(typeof (PlayerKillWeeklyQuestHib), player, 1))
 					return;
 
-				Dean.SayTo(player, "Thank you "+player.Name+", be an enrichment for our realm!");
+				ReyHib.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 
 			}
 		}
@@ -294,9 +297,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Go to the battlefield and conquer a keep. \nCaptured: Keep ("+ _isCaptured +" | 1)";
+						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+ MAX_KILLING_GOAL +")";
 					case 2:
-						return "Return to Dean for your Reward.";
+						return "Return to Rey in Druim Ligen for your Reward.";
 				}
 				return base.Description;
 			}
@@ -306,41 +309,46 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(CaptureKeepQuestHib)) == null)
+			if (player == null || player.IsDoingQuest(typeof(PlayerKillWeeklyQuestHib)) == null)
 				return;
-			
+
 			if (sender != m_questPlayer)
 				return;
 			
-			if (Step == 1 && e == GamePlayerEvent.CapturedKeepsChanged)
+			if (e == GameLivingEvent.EnemyKilled)
 			{
-				_isCaptured = 1;
-				player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				player.Out.SendQuestUpdate(this);
-					
-				if (_isCaptured >= MAX_CAPTURED)
+				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_LEVEL) 
 				{
-					// FinishQuest or go back to Dean
-					Step = 2;
+					PlayersKilled++;
+					player.Out.SendMessage("[Weekly] Enemy Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendQuestUpdate(this);
+					
+					if (PlayersKilled >= MAX_KILLING_GOAL)
+					{
+						// FinishQuest or go back to Rey
+						Step = 2;
+					}
 				}
 				
 			}
-			
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "CaptureKeepQuestHib";
+			get => "PlayerKillWeeklyQuestHib";
 			set { ; }
 		}
+		
 		public override void LoadQuestParameters()
 		{
-			
+			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			
+			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
 		}
 
 		public override void AbortQuest()
@@ -351,10 +359,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,0,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 250);
-			_isCaptured = 0;
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 10,32,Util.Random(50)), "You receive {0} as a reward.");
+			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
+			PlayersKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			
 		}
 	}
 }

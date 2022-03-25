@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		// Kill Goal
 		protected const int MAX_KILLED = 25;
 		
-		private static GameNPC Dean = null; // Start NPC
+		private static GameNPC Hector = null; // Start NPC
 
 		private int FrontierMobsKilled = 0;
 
@@ -66,37 +66,37 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
+					if (npc.CurrentRegionID == 200 && npc.X == 334793 && npc.Y == 420805)
 					{
-						Dean = npc;
+						Hector = npc;
 						break;
 					}
 
-			if (Dean == null)
+			if (Hector == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Dean , creating it ...");
-				Dean = new GameNPC();
-				Dean.Model = 355;
-				Dean.Name = "Dean";
-				Dean.GuildName = "Advisor to the King";
-				Dean.Realm = eRealm.Hibernia;
+					log.Warn("Could not find Hector , creating it ...");
+				Hector = new GameNPC();
+				Hector.Model = 355;
+				Hector.Name = "Hector";
+				Hector.GuildName = "Realm Logistics";
+				Hector.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
-				Dean.CurrentRegionID = 200;
-				Dean.Size = 50;
-				Dean.Level = 59;
-				Dean.X = 334962;
-				Dean.Y = 420687;
-				Dean.Z = 5184;
-				Dean.Heading = 1571;
-				Dean.AddToWorld();
+				Hector.CurrentRegionID = 200;
+				Hector.Size = 50;
+				Hector.Level = 59;
+				Hector.X = 334793;
+				Hector.Y = 420805;
+				Hector.Z = 5184;
+				Hector.Heading = 1586;
+				Hector.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Dean.SaveIntoDatabase();
+					Hector.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +111,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
+			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (KillNPCInFrontiersHib));
+			Hector.AddQuestToGive(typeof (KillNPCInFrontiersHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -125,27 +125,27 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Dean == null)
+			if (Hector == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
+			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (KillNPCInFrontiersHib));
+			Hector.RemoveQuestToGive(typeof (KillNPCInFrontiersHib));
 		}
 
-		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (KillNPCInFrontiersHib), player)  <= 0)
+			if(Hector.CanGiveQuest(typeof (KillNPCInFrontiersHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -158,18 +158,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Dean.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
+							Hector.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Dean.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
+							Hector.SayTo(player, "Hello " + player.Name + ", did you [tidy the realm]?");
 							break;
 					}
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
-					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having on the border? \n\n"+
-					                       "\nCan you help me [clear our frontiers]?");
+					Hector.SayTo(player, "Hello "+ player.Name +", I am Hector. I serve the realm and ensure its borders are always protected. "+
+					                       "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having? \n\n"+
+					                       "I need an adventurer to help me [clear the frontiers].");
 				}
 			}
 				// The player whispered to the NPC
@@ -180,8 +180,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "clear our frontiers":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersHib)), "Will you help Dean "+questTitle+"");
+						case "clear the frontiers":
+							player.Out.SendQuestSubscribeCommand(Hector, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersHib)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -269,7 +269,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (KillNPCInFrontiersHib), player)  <= 0)
+			if(Hector.CanGiveQuest(typeof (KillNPCInFrontiersHib), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (KillNPCInFrontiersHib)) != null)
@@ -282,10 +282,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (KillNPCInFrontiersHib), player, 1))
+				if (!Hector.GiveQuest(typeof (KillNPCInFrontiersHib), player, 1))
 					return;
 
-				Dean.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
+				Hector.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -306,7 +306,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					case 1:
 						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
 					case 2:
-						return "Return to Dean in Druim Ligen for your Reward.";
+						return "Return to Hector in Druim Ligen for your Reward.";
 				}
 				return base.Description;
 			}
