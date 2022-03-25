@@ -21,7 +21,7 @@ using DOL.GS.Scripts.DOL.AI.Brain;
 namespace DOL.GS.Scripts
 {
 
-	public class MistressOfRunes : GameNPC
+	public class MistressOfRunes : GameEpicNPC
 	{
 		protected String m_DeathAnnounce;
 		
@@ -146,16 +146,11 @@ namespace DOL.GS.Scripts
 		/// <param name="killer">The living that got the killing blow.</param>
 		public override void Die(GameObject killer)
 		{
-			if (killer == null)
-				log.Error("Mistress of Runes Killed: killer is null!");
-			else
-				log.Debug("Mistress of Runes Killed: killer is " + killer.Name + ", attackers:");
+			BroadcastMessage(String.Format(m_DeathAnnounce, Name));
 			base.StopCurrentSpellcast();
 			base.Die(killer);
-
-			BroadcastMessage(String.Format(m_DeathAnnounce, Name));
 		}
-		
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{

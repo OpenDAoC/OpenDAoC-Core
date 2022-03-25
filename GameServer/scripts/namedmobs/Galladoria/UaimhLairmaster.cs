@@ -18,7 +18,7 @@ using FiniteStateMachine;
 
 namespace DOL.GS.Scripts
 {
-    public class UaimhLairmaster : GameNPC
+    public class UaimhLairmaster : GameEpicBoss
     {
         protected String m_FleeingAnnounce;
         public static bool IsFleeing = true;
@@ -39,7 +39,7 @@ namespace DOL.GS.Scripts
             BodyType = 6; // Humanoid
             RoamingRange = 0;
             MaxSpeedBase = 300;
-            
+
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
@@ -56,23 +56,15 @@ namespace DOL.GS.Scripts
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
-        
+
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -80,7 +72,7 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-        
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -91,7 +83,7 @@ namespace DOL.GS.Scripts
             // 85% ABS is cap.
             return 0.85;
         }
-        
+
         /// <summary>
         /// Take some amount of damage inflicted by another GameObject.
         /// </summary>
@@ -172,7 +164,6 @@ namespace DOL.GS.Scripts
 
             if (e == GameNPCEvent.ArriveAtTarget)
                 EvadeChance = 0;
-            
         }
 
         #endregion
@@ -197,22 +188,9 @@ namespace DOL.GS.Scripts
         }
 
         #endregion
-        
+
         public override void Die(GameObject killer)
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                }
-            }
-            
             IsFleeing = true;
             base.Die(killer);
         }
@@ -235,7 +213,7 @@ namespace DOL.GS.Scripts
             {
                 m_AggroAnnounce = "{0} feels threatened and appears more menacing!";
             }
-            
+
             public override void Think()
             {
                 if (Body.InCombat && Body.IsAlive && HasAggro)

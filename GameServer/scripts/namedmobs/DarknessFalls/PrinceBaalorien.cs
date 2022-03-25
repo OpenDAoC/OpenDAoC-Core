@@ -12,30 +12,31 @@ namespace DOL.GS
 {
     public class PrinceBaalorien : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-		{
+        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        {
             if (log.IsInfoEnabled)
-				log.Info("Prince Ba'alorien initialized..");
-		}
-
-		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
-		{
-
+                log.Info("Prince Ba'alorien initialized..");
         }
-        
+
+        [ScriptUnloadedEvent]
+        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        {
+        }
+
         public PrinceBaalorien()
             : base()
         {
         }
+
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165031);
             LoadTemplate(npcTemplate);
-            
+
             Strength = npcTemplate.Strength;
             Constitution = npcTemplate.Constitution;
             Dexterity = npcTemplate.Dexterity;
@@ -49,10 +50,10 @@ namespace DOL.GS
 
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
-            
+
             BaalorienBrain sBrain = new BaalorienBrain();
             SetOwnBrain(sBrain);
-            
+
             base.AddToWorld();
             return true;
         }
@@ -64,22 +65,15 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get { return 20000; }
         }
 
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get { return 450; }
+            set { }
         }
+
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -87,6 +81,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -97,24 +92,6 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-        public override void Die(GameObject killer)
-        {
-            
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-                }
-            }
-            base.Die(killer);
-        }
-        
     }
 }
 
@@ -130,7 +107,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 850;
         }
-        
+
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -146,10 +123,11 @@ namespace DOL.AI.Brain
                     if (pet.Brain is not IControlledBrain) continue;
                     Body.Health += pet.MaxHealth;
                     foreach (GamePlayer player in pet.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                        player.Out.SendSpellEffectAnimation(Body,pet,368,0,false,1);
+                        player.Out.SendSpellEffectAnimation(Body, pet, 368, 0, false, 1);
                     pet.Die(Body);
                 }
             }
+
             base.Think();
         }
     }

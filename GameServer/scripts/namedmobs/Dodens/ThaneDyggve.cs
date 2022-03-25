@@ -18,7 +18,7 @@ using DOL.GS.Scripts.DOL.AI.Brain;
 namespace DOL.GS.Scripts
 {
 
-	public class ThaneDyggve : GameNPC
+	public class ThaneDyggve : GameEpicNPC
 	{
 
 		public ThaneDyggve() : base()

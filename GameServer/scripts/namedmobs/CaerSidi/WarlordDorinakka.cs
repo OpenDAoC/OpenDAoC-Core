@@ -1,6 +1,6 @@
 ﻿namespace DOL.GS.Scripts
 {
-	public class WarlordDorinakka : GameNPC
+	public class WarlordDorinakka : GameEpicBoss
 	{
 		public override double GetArmorAF(eArmorSlot slot)
 		{
@@ -55,7 +55,7 @@
 			{
 				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
 				{
-					AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
+					AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
 				}
 			}
 			
