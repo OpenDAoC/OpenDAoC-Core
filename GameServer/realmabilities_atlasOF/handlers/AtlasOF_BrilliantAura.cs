@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DOL.Database;
 using DOL.GS.Spells;
@@ -23,12 +24,12 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
     public override void Execute(GameLiving living)
     {
         if (CheckPreconditions(living, DEAD | SITTING)) return;
-        if (m_handler == null) m_handler = CreateSpell(0);
 
         GamePlayer player = living as GamePlayer;
 
         if (player == null)
             return;
+        if (m_handler == null) m_handler = CreateSpell(player);
 
         ArrayList targets = new ArrayList();
         if (player.Group == null)
@@ -37,7 +38,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         {
             foreach (GamePlayer grpplayer in player.Group.GetPlayersInTheGroup())
             {
-                if (player.IsWithinRadius(grpplayer, m_range) && grpplayer.IsAlive)
+                if (player.IsWithinRadius(grpplayer, m_range, true) && grpplayer.IsAlive)
                     targets.Add(grpplayer);
             }
         }
@@ -47,29 +48,21 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         bool AtLeastOneEffectRemoved = false;
         foreach (GamePlayer target in targets)
         {
-            AtLeastOneEffectRemoved |= m_handler.StartSpell(target);
+            new StatBuffECSEffect(new ECSGameEffectInitParams(target, 30000, 1, m_handler));
         }
 
-        if (AtLeastOneEffectRemoved)
-        {
-            DisableSkill(living);
-        }
+        DisableSkill(living);
     }
 
-    private bool CastSpell(GameLiving living)
-    {
-        return true;
-    }
-    
-    public virtual SpellHandler CreateSpell(double damage)
+    public virtual SpellHandler CreateSpell(GameLiving caster)
     {
         m_dbspell = new DBSpell();
         m_dbspell.Name = "Brilliant Aura of Deflection";
-        m_dbspell.Icon = 14167;
-        m_dbspell.ClientEffect = 14167;
+        m_dbspell.Icon = 3080;
+        m_dbspell.ClientEffect = 1470;
         m_dbspell.Damage = 0;
         m_dbspell.DamageType = 0;
-        m_dbspell.Target = "Group";
+        m_dbspell.Target = "Realm";
         m_dbspell.Radius = 0;
         m_dbspell.Type = eSpellType.AllMagicResistBuff.ToString();
         m_dbspell.Value = 36;
@@ -78,11 +71,12 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         m_dbspell.PulsePower = 0;
         m_dbspell.Power = 0;
         m_dbspell.CastTime = 0;
-        m_dbspell.EffectGroup = 0; // stacks with other damage adds
+        m_dbspell.EffectGroup = 0;
+        m_dbspell.Frequency = 0;
         m_dbspell.Range = 1500;
         m_spell = new Spell(m_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
         m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
-        return new SpellHandler(this.m_activeLiving, m_spell, m_spellline);
+        return new SpellHandler(caster, m_spell, m_spellline);
     }
     
     private DBSpell m_dbspell;
