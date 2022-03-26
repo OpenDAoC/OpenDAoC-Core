@@ -20,7 +20,7 @@ namespace DOL.GS
         {
             // Remove stealth on first application since the code that normally handles removing stealth on
             // attack ignores DoT damage, since only the first tick of a DoT should remove stealth.            
-            if (OwnerPlayer != null)
+            if (OwnerPlayer != null && !OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                 OwnerPlayer.Stealth(false);
             
             // "Searing pain fills your mind!"

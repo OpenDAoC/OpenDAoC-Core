@@ -7238,7 +7238,7 @@ namespace DOL.GS
                     if (ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
                         break;
 
-                    if (IsStealthed)
+                    if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                     {
                         if (!(ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell.SpellType == (byte)eSpellType.DamageOverTime))
                             Stealth(false);
@@ -14010,6 +14010,8 @@ namespace DOL.GS
                 {
                     EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
                 }
+                if(effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
             }
         }
 
