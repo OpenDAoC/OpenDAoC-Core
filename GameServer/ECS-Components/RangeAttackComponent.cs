@@ -377,7 +377,13 @@ namespace DOL.GS
                 case eAttackResult.Fumbled:
                     // remove an arrow and endurance
                     InventoryItem ammo = RangeAttackAmmo;
-                    owner.Inventory.RemoveCountFromStack(ammo, 1);
+                    if (owner.GetModified(eProperty.ArrowRecovery) > 0 &&
+                        Util.Chance(100 - owner.GetModified(eProperty.ArrowRecovery)))
+                    {
+                        //do not remove an arrow
+                    }
+                    else
+                        owner.Inventory.RemoveCountFromStack(ammo, 1); //remove arrow
 
                     if (RangedAttackType == eRangedAttackType.Critical)
                         owner.Endurance -= CRITICAL_SHOT_ENDURANCE;

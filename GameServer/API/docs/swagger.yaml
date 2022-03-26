@@ -7,6 +7,10 @@ info:
     Use this documentation to navigate the available Atlas APIs
     <br><br>
     <h2>Changes</h2>
+    <h3>0.1.7</h3>
+    Added `/guild/getAll` endpoint<br>
+    Added `/guild/topRP` endpoint<br>
+    Added `members` to `guild` schema<br>
     <h3>0.1.6</h3>
     Added `/realm/realmName` to return the Realm keep statuses<br>
     Added `/realm/df` to return the name of the Realm currently owning Darkness Fall<br>
@@ -25,7 +29,7 @@ info:
     Added `/player/getAll` endpoint<br>
     <h3>0.1.1</h3>
     Initial release<br><br>
-  version: 0.1.6
+  version: 0.1.7
   title: AtlasAPI
   termsOfService: https://www.atlasfreeshard.com
   license:
@@ -133,6 +137,34 @@ paths:
                 $ref: '#/components/schemas/allPlayers'
         '404':
           description: $guildName not found
+  /guild/getAll:
+    get:
+      tags:
+        - guild
+      summary: /guild/getAll
+      description: Returns all guilds<br><br>[cache 120 min]
+      operationId: getAllGuilds
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allGuilds'
+  /guild/topRP:
+    get:
+      tags:
+        - guild
+      summary: /guild/topRP
+      description: Returns Top 10 RP holders Guilds<br><br>[cache 120 min]
+      operationId: getTopGuilds
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allGuilds'
   /player/{playerName}:
     get:
       tags:
@@ -201,7 +233,7 @@ paths:
         - realm
       summary: /realm/df
       description: Returns the name of the Realm currently owning Darkness Falls access <br><br>[cache 1 min]
-      operationId: getRealmStatus
+      operationId: getDFStatus
       responses:
         '200':
           description: successful operation
@@ -219,6 +251,10 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/player'
+    allGuilds:
+      type: array
+      items:
+        $ref: '#/components/schemas/guild'
     guild:
       type: object
       required:
@@ -242,6 +278,9 @@ components:
         bountyPoints:
           type: integer
           example: 24669
+        members:
+          type: integer
+          example: 123
     player:
       type: object
       required:

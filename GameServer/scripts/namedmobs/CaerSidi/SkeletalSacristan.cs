@@ -5,7 +5,7 @@ using DOL.GS;
 
 namespace DOL.GS.Scripts
 {
-    public class SkeletalSacristan : GameNPC
+    public class SkeletalSacristan : GameEpicBoss
     {
 	    public override bool AddToWorld()
 		{
@@ -25,26 +25,7 @@ namespace DOL.GS.Scripts
 			base.AddToWorld();
 			return true;
 		}
-	    
-	    public override void Die(GameObject killer)
-	    {
-		    // debug
-		    log.Debug($"{Name} killed by {killer.Name}");
-            
-		    GamePlayer playerKiller = killer as GamePlayer;
-
-		    if (playerKiller?.Group != null)
-		    {
-			    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-			    {
-				    AtlasROGManager.GenerateOrbAmount(groupPlayer,5000);
-			    }
-		    }
-		    
-		    base.Die(killer);
-	    }
-		
-		[ScriptLoadedEvent]
+	    [ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)

@@ -6476,7 +6476,7 @@ namespace DOL.GS
         //	}
         //	base.StartAttack(attackTarget);
 
-        //	if (IsCasting && !m_runningSpellHandler.Spell.Uninterruptible)
+        //	if (IsCasting && !CurrentSpellHandler.Spell.Uninterruptible)
         //	{
         //		StopCurrentSpellcast();
         //		Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
@@ -8753,21 +8753,17 @@ namespace DOL.GS
                     }
 
                 }
-                m_runningSpellHandler = null;
                 m_nextSpell = null;			// avoid restarting nextspell by reentrance from spellhandler
                 m_nextSpellLine = null;
                 m_nextSpellTarget = null;
-
-                if (nextSpell != null)
-                    m_runningSpellHandler = ScriptMgr.CreateSpellHandler(this, nextSpell, nextSpellLine);
             }
-            if (m_runningSpellHandler != null)
+            if (CurrentSpellHandler != null)
             {
-                m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
                 if(m_nextSpellTarget!=null)
-                    m_runningSpellHandler.CastSpell(m_nextSpellTarget);
+                    CurrentSpellHandler.CastSpell(m_nextSpellTarget);
                 else
-                    m_runningSpellHandler.CastSpell();
+                    CurrentSpellHandler.CastSpell();
             }
         }
 
@@ -8844,17 +8840,17 @@ namespace DOL.GS
 
                 lock (m_spellQueueAccessMonitor)
                 {
-                    if (m_runningSpellHandler != null)
+                    if (CurrentSpellHandler != null)
                     {
-                        if (m_runningSpellHandler.CanQueue == false)
+                        if (CurrentSpellHandler.CanQueue == false)
                         {
-                            m_runningSpellHandler.CasterMoves();
+                            CurrentSpellHandler.CasterMoves();
                             return false;
                         }
 
-                        if (spell.CastTime > 0 && !(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType != (byte)eSpellType.Chamber)
+                        if (spell.CastTime > 0 && !(CurrentSpellHandler is ChamberSpellHandler) && spell.SpellType != (byte)eSpellType.Chamber)
                         {
-                            if (m_runningSpellHandler.Spell.InstrumentRequirement != 0)
+                            if (CurrentSpellHandler.Spell.InstrumentRequirement != 0)
                             {
                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                                 return false;
@@ -8879,7 +8875,7 @@ namespace DOL.GS
 							
                             return false;
                         }
-                        else if (m_runningSpellHandler is PrimerSpellHandler)
+                        else if (CurrentSpellHandler is PrimerSpellHandler)
                         {
                             if (!spell.IsSecondary)
                             {
@@ -8887,10 +8883,10 @@ namespace DOL.GS
                             }
                             else
                             {
-                                if (SpellQueue && !(m_runningSpellHandler is ChamberSpellHandler))
+                                if (SpellQueue && !(CurrentSpellHandler is ChamberSpellHandler))
                                 {
                                     Spell cloneSpell = null;
-                                    if (m_runningSpellHandler is PowerlessSpellHandler)
+                                    if (CurrentSpellHandler is PowerlessSpellHandler)
                                     {
                                         cloneSpell = spell.Copy();
                                         cloneSpell.CostPower = false;
@@ -8898,16 +8894,16 @@ namespace DOL.GS
                                         m_nextSpellLine = line;
                                         casted = true;
                                     }
-                                    else if (m_runningSpellHandler is RangeSpellHandler)
+                                    else if (CurrentSpellHandler is RangeSpellHandler)
                                     {
                                         cloneSpell = spell.Copy();
                                         cloneSpell.CostPower = false;
-                                        cloneSpell.OverrideRange = m_runningSpellHandler.Spell.Range;
+                                        cloneSpell.OverrideRange = CurrentSpellHandler.Spell.Range;
                                         m_nextSpell = cloneSpell;
                                         m_nextSpellLine = line;
                                         casted = true;
                                     }
-                                    else if (m_runningSpellHandler is UninterruptableSpellHandler)
+                                    else if (CurrentSpellHandler is UninterruptableSpellHandler)
                                     {
                                         cloneSpell = spell.Copy();
                                         cloneSpell.CostPower = false;
@@ -8920,12 +8916,11 @@ namespace DOL.GS
                                 return casted;
                             }
                         }
-                        else if (m_runningSpellHandler is ChamberSpellHandler)
+                        else if (CurrentSpellHandler is ChamberSpellHandler)
                         {
-                            ChamberSpellHandler chamber = (ChamberSpellHandler)m_runningSpellHandler;
+                            ChamberSpellHandler chamber = (ChamberSpellHandler)CurrentSpellHandler;
                             if (IsMoving || IsStrafing)
                             {
-                                m_runningSpellHandler = null;
                                 return false;
                             }
                             if (spell.IsPrimary)
@@ -8942,8 +8937,8 @@ namespace DOL.GS
                                     cloneSpell.CostPower = false;
                                     chamber.PrimarySpell = cloneSpell;
                                     chamber.PrimarySpellLine = line;
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellInChamber", spell.Name, ((ChamberSpellHandler)m_runningSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SelectSecondSpell", ((ChamberSpellHandler)m_runningSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellInChamber", spell.Name, ((ChamberSpellHandler)CurrentSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SelectSecondSpell", ((ChamberSpellHandler)CurrentSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
                                 else
                                 {
@@ -8963,7 +8958,7 @@ namespace DOL.GS
                                         chamber.SecondarySpell = cloneSpell;
                                         chamber.SecondarySpellLine = line;
 
-                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellInChamber", spell.Name, ((ChamberSpellHandler)m_runningSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.SpellInChamber", spell.Name, ((ChamberSpellHandler)CurrentSpellHandler).Spell.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                     }
                                     else
                                     {
@@ -8977,7 +8972,7 @@ namespace DOL.GS
                             }
 
                         }
-                        else if (!(m_runningSpellHandler is ChamberSpellHandler) && spell.SpellType == (byte)eSpellType.Chamber)
+                        else if (!(CurrentSpellHandler is ChamberSpellHandler) && spell.SpellType == (byte)eSpellType.Chamber)
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.NotAFollowSpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                             return false;
@@ -8997,17 +8992,15 @@ namespace DOL.GS
                         }
                         else
                         {
-                            if (spellhandler is ChamberSpellHandler && m_runningSpellHandler == null)
+                            if (spellhandler is ChamberSpellHandler && CurrentSpellHandler == null)
                             {
                                 ((ChamberSpellHandler)spellhandler).EffectSlot = ChamberSpellHandler.GetEffectSlot(spellhandler.Spell.Name);
-                                m_runningSpellHandler = spellhandler;
-                                m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                                CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
                                 casted = spellhandler.CastSpell();
                             }
-                            else if (m_runningSpellHandler == null)
+                            else if (CurrentSpellHandler == null)
                             {
-                                m_runningSpellHandler = spellhandler;
-                                m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                                CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
                                 casted = spellhandler.CastSpell();
                             }
                         }
@@ -9022,25 +9015,25 @@ namespace DOL.GS
                             if (effect == null)
                                 effect = SpellHandler.FindEffectOnTarget(this, "Uninterruptable");
 
-                            if (m_runningSpellHandler == null && effect == null)
+                            if (CurrentSpellHandler == null && effect == null)
                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.CantSpellDirectly"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                            else if (m_runningSpellHandler != null)
+                            else if (CurrentSpellHandler != null)
                             {
-                                if (m_runningSpellHandler.Spell.IsPrimary)
+                                if (CurrentSpellHandler.Spell.IsPrimary)
                                 {
                                     lock (m_spellQueueAccessMonitor)
                                     {
-                                        if (SpellQueue && !(m_runningSpellHandler is ChamberSpellHandler))
+                                        if (SpellQueue && !(CurrentSpellHandler is ChamberSpellHandler))
                                         {
                                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.PrepareSecondarySpell"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                                             m_nextSpell = spell;
-                                            spell.OverrideRange = m_runningSpellHandler.Spell.Range;
+                                            spell.OverrideRange = CurrentSpellHandler.Spell.Range;
                                             m_nextSpellLine = line;
                                             casted = true;
                                         }
                                     }
                                 }
-                                else if (!(m_runningSpellHandler is ChamberSpellHandler))
+                                else if (!(CurrentSpellHandler is ChamberSpellHandler))
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CastSpell.CantSpellDirectly"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 
                             }
@@ -9105,8 +9098,7 @@ namespace DOL.GS
                 // Instant cast abilities should not interfere with the spell queue
                 if (spellhandler.Spell.CastTime > 0)
                 {
-                    m_runningSpellHandler = spellhandler;
-                    m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                    CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
                 }
 
                 spellhandler.Ability = ab;
@@ -10151,7 +10143,7 @@ namespace DOL.GS
                 return false;
             }
 
-            if (m_runningSpellHandler != null)
+            if (CurrentSpellHandler != null)
             {
                 Out.SendMessage("You are already casting a spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
@@ -10191,8 +10183,8 @@ namespace DOL.GS
                     {
                         castingComponent.StartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
-                        //m_runningSpellHandler = spellHandler;
-                        //m_runningSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                        //CurrentSpellHandler = spellHandler;
+                        //CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
                         //spellHandler.CastSpell(item);
                         return true;
                     }
@@ -11691,7 +11683,7 @@ namespace DOL.GS
                 if (value)
                 {
                     if (IsCasting)
-                        m_runningSpellHandler.CasterMoves();
+                        CurrentSpellHandler.CasterMoves();
                     if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
                         string attackTypeMsg = "shot";
@@ -11803,7 +11795,7 @@ namespace DOL.GS
             }
             if (IsCasting)
             {
-                m_runningSpellHandler.CasterMoves();
+                CurrentSpellHandler.CasterMoves();
             }
             if (IsCastingRealmAbility)
             {
@@ -14194,6 +14186,9 @@ namespace DOL.GS
             if (enemy.Client.Account.PrivLevel > 1)
                 return false;
 
+            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
+                return true;
+
             /*
              * http://www.critshot.com/forums/showthread.php?threadid=3142
              * The person doing the looking has a chance to find them based on their level, minus the stealthed person's stealth spec.
@@ -14222,11 +14217,13 @@ namespace DOL.GS
             }
 
             // Mastery of Stealth Bonus
+            /*
+             //removed, this is NF MoStealth. OF Version does not add range, only movespeed
             RAPropertyEnhancer mos = GetAbility<MasteryOfStealthAbility>();
             if (mos != null && !enemyHasCamouflage)
                 if (!HasAbility(Abilities.DetectHidden) || !enemy.HasAbility(Abilities.DetectHidden))
                     range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
-			
+			*/
             range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
 
             //Buff (Stealth Detection)

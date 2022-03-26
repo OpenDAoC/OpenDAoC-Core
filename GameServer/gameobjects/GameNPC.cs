@@ -4001,6 +4001,8 @@ namespace DOL.GS
 		//}
 
 		private int scalingFactor = 23;
+
+		private int orbsReward = 0;
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
@@ -5430,7 +5432,7 @@ namespace DOL.GS
 			*/
 			
 
-			if (m_runningSpellHandler != null)
+			if (CurrentSpellHandler != null)
 			{
 				//prevent from relaunch
 				base.OnAfterSpellCastSequence(handler);
@@ -5602,6 +5604,9 @@ namespace DOL.GS
 						}
 					}
 				}
+
+				if (spellToCast.Range > 0 && !IsWithinRadius(TargetObject, spellToCast.Range))
+					return false;
 
 				if (LOSChecker == null)
 				{
@@ -6117,5 +6122,7 @@ namespace DOL.GS
 		}
 
         public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
+        
+        public int OrbsReward { get => orbsReward; set => orbsReward = value; }
     }
 }

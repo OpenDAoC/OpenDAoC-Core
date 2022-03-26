@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
 		public object _stateLock = new object();
 
 		//GameLoop Methods
-		private eCastState castState;
+		public eCastState castState { get; set; }
 		private double _castFinishedTickTime;
 		//todo create this list when loading spell
 		private List<IEffectComponent> _spellEffectComponents = new List<IEffectComponent>();
@@ -671,8 +671,7 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && !Caster.castingComponent.spellHandler.Spell.Uninterruptible && 
-				(GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))// Stage < 2) //only interrupt if we're under 50% of the way through the cast
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))// Stage < 2) //only interrupt if we're under 50% of the way through the cast
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
@@ -893,6 +892,8 @@ namespace DOL.GS.Spells
 					                                                   eChatType.CT_SpellResisted);
 					Caster.Notify(GameLivingEvent.CastFailed,
 					              new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
+					if (Caster is GameNPC npc)
+						npc.Follow(selectedTarget, Spell.Range - 100, GameNPC.STICKMAXIMUMRANGE);
 					return false;
 				}
 
@@ -1681,7 +1682,6 @@ namespace DOL.GS.Spells
 							{
 								SendCastAnimation();
 								castState = eCastState.Casting;
-								Caster.CurrentSpellHandler = this;
 							}
 						}
 						else
@@ -1772,7 +1772,6 @@ namespace DOL.GS.Spells
 					else
 					{
 						p.castingComponent.spellHandler = null;
-						p.CurrentSpellHandler = null;
 					}
 				}
 				else
@@ -1798,7 +1797,6 @@ namespace DOL.GS.Spells
 						else
 						{
 							Caster.castingComponent.spellHandler = null;
-							Caster.CurrentSpellHandler = null;
 						}
 
 						if (necroBrain.SpellsQueued)
@@ -1823,10 +1821,8 @@ namespace DOL.GS.Spells
 				else
 				{
 					Caster.castingComponent.spellHandler = null;
-					Caster.CurrentSpellHandler = null;
 				}
 			}
-			Caster.CurrentSpellHandler = Caster.castingComponent.spellHandler;
 		}
 
 		
@@ -1965,7 +1961,6 @@ namespace DOL.GS.Spells
             {
 				p.castingComponent.spellHandler = null;
 				p.castingComponent.queuedSpellHandler = null;
-				p.CurrentSpellHandler = null;
             }
 
 			if (m_castTimer != null)
@@ -3103,6 +3098,7 @@ namespace DOL.GS.Spells
 						case (byte)eSpellType.DirectDamage:
 						case (byte)eSpellType.MagicalStrike:
 						case (byte)eSpellType.SiegeArrow:
+						case (byte)eSpellType.SiegeDirectDamage:
 						case (byte)eSpellType.SummonTheurgistPet:
 						case (byte)eSpellType.DirectDamageWithDebuff:
 							isAllowed = true;
@@ -4300,6 +4296,17 @@ namespace DOL.GS.Spells
             {
 				hitchance = (int)(87.5 - (target.Level - Caster.Level));
             }
+
+			//check for active RAs
+			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
+			{
+				var effect = Caster.effectListComponent
+					.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
+				if (effect != null)
+				{
+					hitchance += (int)effect.Effectiveness * 5;
+				}
+			}
 
 			return hitchance;
 		}
