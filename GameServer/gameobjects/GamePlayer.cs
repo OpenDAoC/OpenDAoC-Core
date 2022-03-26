@@ -34,6 +34,7 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
+using DOL.GS.PlayerClass;
 using DOL.GS.PlayerTitles;
 using DOL.GS.PropertyCalc;
 using DOL.GS.Quests;
@@ -14188,6 +14189,17 @@ namespace DOL.GS
 
             if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
                 return true;
+
+            if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 
+                && ( enemy.CharacterClass is ClassMinstrel 
+                     || enemy.CharacterClass is ClassRanger
+                     || enemy.CharacterClass is ClassHunter
+                     || enemy.CharacterClass is ClassScout)
+                && this.IsWithinRadius(enemy, 650)
+                && !enemy.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
+            {
+                return true;
+            }
 
             /*
              * http://www.critshot.com/forums/showthread.php?threadid=3142
