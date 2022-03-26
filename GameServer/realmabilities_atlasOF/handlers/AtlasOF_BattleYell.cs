@@ -19,8 +19,8 @@ namespace DOL.GS.RealmAbilities
         public Ability Ability { get { return this; } }
 
         
-		private const int m_range = 0; // pbaoe
-        private const int m_radius = 500; //
+		private const int m_range = 500; // pbaoe
+        private const int m_radius = 0; //
         private const eDamageType m_damageType = eDamageType.Natural;
 
 		private DBSpell m_dbspell;
@@ -70,9 +70,14 @@ namespace DOL.GS.RealmAbilities
 
 			CreateSpell(caster);
 
-            foreach (GameNPC npc in caster.GetNPCsInRadius(m_radius))
+			foreach (GamePlayer pc in caster.GetPlayersInRadius(m_range))
+			{
+				CastSpellOn(pc, caster);
+			}
+
+            foreach (GameNPC npc in caster.GetNPCsInRadius(m_range))
             {
-	            CastSpellOn(npc);
+	            CastSpellOn(npc, caster);
             }
 
             // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
@@ -90,11 +95,11 @@ namespace DOL.GS.RealmAbilities
 	        }
         }
         
-        public void CastSpellOn(GameLiving target)
+        public void CastSpellOn(GameLiving target, GamePlayer caster)
         {
 	        if (target.IsAlive && m_spell != null)
 	        {
-		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(target, m_spell, m_spellline);
+		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline);
 		        dd.StartSpell(target);
 	        }
         }
