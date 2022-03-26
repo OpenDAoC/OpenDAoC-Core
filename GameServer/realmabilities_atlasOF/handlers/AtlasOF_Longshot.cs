@@ -79,6 +79,8 @@ namespace DOL.GS.RealmAbilities
 			}
 			player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
 			player.attackComponent.StartAttack(player.TargetObject);
+			
+			DisableSkill(player);
 		}
 
 		public AtlasOF_Longshot(DBAbility ability, int level) : base(ability, level)
