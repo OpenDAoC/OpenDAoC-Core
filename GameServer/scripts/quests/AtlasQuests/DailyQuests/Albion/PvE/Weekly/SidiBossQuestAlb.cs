@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Albion
         private int _deadSidiBossMob = 0;
         protected const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Cola = null; // Start NPC
+        private static GameNPC Hector = null; // Start NPC
 
 
         // Constructors
@@ -67,37 +67,37 @@ namespace DOL.GS.DailyQuest.Albion
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Albion);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Albion);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
                     if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
                     {
-                        Cola = npc;
+                        Hector = npc;
                         break;
                     }
 
-            if (Cola == null)
+            if (Hector == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Cola , creating it ...");
-                Cola = new GameNPC();
-                Cola.Model = 724;
-                Cola.Name = "Cola";
-                Cola.GuildName = "Advisor to the King";
-                Cola.Realm = eRealm.Albion;
-                Cola.CurrentRegionID = 1;
-                Cola.Size = 50;
-                Cola.Level = 59;
+                    log.Warn("Could not find Hector , creating it ...");
+                Hector = new GameNPC();
+                Hector.Model = 724;
+                Hector.Name = "Hector";
+                Hector.GuildName = "Advisor to the King";
+                Hector.Realm = eRealm.Albion;
+                Hector.CurrentRegionID = 1;
+                Hector.Size = 50;
+                Hector.Level = 59;
                 //Castle Sauvage Location
-                Cola.X = 583860;
-                Cola.Y = 477619;
-                Cola.Z = 2600;
-                Cola.Heading = 3111;
-                Cola.AddToWorld();
+                Hector.X = 583860;
+                Hector.Y = 477619;
+                Hector.Z = 2600;
+                Hector.Heading = 3111;
+                Hector.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Cola.SaveIntoDatabase();
+                    Hector.SaveIntoDatabase();
                 }
             }
 
@@ -114,11 +114,11 @@ namespace DOL.GS.DailyQuest.Albion
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-            GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+            GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
+            GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
             /* Now we bring to Haszan the possibility to give this quest to players */
-            Cola.AddQuestToGive(typeof(SidiBossQuestAlb));
+            Hector.AddQuestToGive(typeof(SidiBossQuestAlb));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Alb initialized");
@@ -128,27 +128,27 @@ namespace DOL.GS.DailyQuest.Albion
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Cola == null)
+            if (Hector == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-            GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+            GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
+            GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
             /* Now we remove to Haszan the possibility to give this quest to players */
-            Cola.RemoveQuestToGive(typeof(SidiBossQuestAlb));
+            Hector.RemoveQuestToGive(typeof(SidiBossQuestAlb));
         }
 
-        protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Cola.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
+            if (Hector.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
@@ -161,17 +161,17 @@ namespace DOL.GS.DailyQuest.Albion
                     switch (quest.Step)
                     {
                         case 1:
-                            Cola.SayTo(player,
+                            Hector.SayTo(player,
                                 "Please, enter Caer Sidi and slay strong opponents. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Cola.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            Hector.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Cola.SayTo(player, "Hello " + player.Name + ", I am Cola. " +
+                    Hector.SayTo(player, "Hello " + player.Name + ", I am Hector. " +
                                          "An infiltrator has reported the forces in Caer Sidi are planning an attack. \n" +
                                          "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
@@ -185,7 +185,7 @@ namespace DOL.GS.DailyQuest.Albion
                     switch (wArgs.Text)
                     {
                         case "end their plotting":
-                            player.Out.SendQuestSubscribeCommand(Cola,
+                            player.Out.SendQuestSubscribeCommand(Hector,
                                 QuestMgr.GetIDForQuestType(typeof(SidiBossQuestAlb)),
                                 "Will you help Dean " + questTitle + "");
                             break;
@@ -268,7 +268,7 @@ namespace DOL.GS.DailyQuest.Albion
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Cola.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
+            if (Hector.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
                 return;
 
             if (player.IsDoingQuest(typeof(SidiBossQuestAlb)) != null)
@@ -281,10 +281,10 @@ namespace DOL.GS.DailyQuest.Albion
             else
             {
                 //Check if we can add the quest!
-                if (!Cola.GiveQuest(typeof(SidiBossQuestAlb), player, 1))
+                if (!Hector.GiveQuest(typeof(SidiBossQuestAlb), player, 1))
                     return;
 
-                Cola.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                Hector.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -305,7 +305,7 @@ namespace DOL.GS.DailyQuest.Albion
                         return "Find a way to Caer Sidi and kill strong opponents. \nKilled: Bosses in Caer Sidi (" +
                                _deadSidiBossMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Cola for your Reward.";
+                        return "Return to Hector for your Reward.";
                 }
 
                 return base.Description;

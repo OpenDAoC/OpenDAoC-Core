@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Kill Goal
 		protected const int MAX_KILLED = 50;
 		
-		private static GameNPC Cola = null; // Start NPC
+		private static GameNPC Hector = null; // Start NPC
 
 		private bool HasFighter = false;
 		private bool HasAcolyte = false;
@@ -72,37 +72,37 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
 					{
-						Cola = npc;
+						Hector = npc;
 						break;
 					}
 
-			if (Cola == null)
+			if (Hector == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Cola , creating it ...");
-				Cola = new GameNPC();
-				Cola.Model = 724;
-				Cola.Name = "Cola";
-				Cola.GuildName = "Advisor to the King";
-				Cola.Realm = eRealm.Albion;
-				Cola.CurrentRegionID = 1;
-				Cola.Size = 50;
-				Cola.Level = 59;
+					log.Warn("Could not find Hector , creating it ...");
+				Hector = new GameNPC();
+				Hector.Model = 724;
+				Hector.Name = "Hector";
+				Hector.GuildName = "Advisor to the King";
+				Hector.Realm = eRealm.Albion;
+				Hector.CurrentRegionID = 1;
+				Hector.Size = 50;
+				Hector.Level = 59;
 				//Castle Sauvage Location
-				Cola.X = 583860;
-				Cola.Y = 477619;
-				Cola.Z = 2600;
-				Cola.Heading = 3111;
-				Cola.AddToWorld();
+				Hector.X = 583860;
+				Hector.Y = 477619;
+				Hector.Z = 2600;
+				Hector.Heading = 3111;
+				Hector.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Cola.SaveIntoDatabase();
+					Hector.SaveIntoDatabase();
 				}
 			}
 
@@ -117,11 +117,11 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
+			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			Cola.AddQuestToGive(typeof (TeamBuildingAlb));
+			Hector.AddQuestToGive(typeof (TeamBuildingAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -131,27 +131,27 @@ namespace DOL.GS.DailyQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Cola == null)
+			if (Hector == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
+			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			Cola.RemoveQuestToGive(typeof (TeamBuildingAlb));
+			Hector.RemoveQuestToGive(typeof (TeamBuildingAlb));
 		}
 
-		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Cola.CanGiveQuest(typeof (TeamBuildingAlb), player)  <= 0)
+			if(Hector.CanGiveQuest(typeof (TeamBuildingAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -164,16 +164,16 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Cola.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
+							Hector.SayTo(player, "Kill creatures in any RvR zone to help us clear more room for the armies to maneuver around.");
 							break;
 						case 2:
-							Cola.SayTo(player, "Hello " + player.Name + ", did you [forge the bonds of unity]?");
+							Hector.SayTo(player, "Hello " + player.Name + ", did you [forge the bonds of unity]?");
 							break;
 					}
 				}
 				else
 				{
-					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					Hector.SayTo(player, "Hello "+ player.Name +", I am Hector. I help the king with logistics, and he's tasked me with getting things done around here. "+
 					                       "The king recently implemented a new unity initiative and he wants you to help out.\n"+
 					                       "What do you say, are you [feeling social]?");
 				}
@@ -187,7 +187,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "feeling social":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(TeamBuildingAlb)), "Will you help Dean "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Hector, QuestMgr.GetIDForQuestType(typeof(TeamBuildingAlb)), "Will you help Dean "+questTitle+"");
 							break;
 					}
 				}
@@ -275,7 +275,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Cola.CanGiveQuest(typeof (TeamBuildingAlb), player)  <= 0)
+			if(Hector.CanGiveQuest(typeof (TeamBuildingAlb), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (TeamBuildingAlb)) != null)
@@ -288,10 +288,10 @@ namespace DOL.GS.DailyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Cola.GiveQuest(typeof (TeamBuildingAlb), player, 1))
+				if (!Hector.GiveQuest(typeof (TeamBuildingAlb), player, 1))
 					return;
 
-				Cola.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
+				Hector.SayTo(player, "Killing creatures in any RvR zone will work. Thanks for your service!");
 
 			}
 		}
@@ -331,7 +331,7 @@ namespace DOL.GS.DailyQuest.Albion
 						}
 						
 					case 2:
-						return "Return to Cola in Castle Sauvage for your Reward.";
+						return "Return to Hector in Castle Sauvage for your Reward.";
 				}
 				return base.Description;
 			}
