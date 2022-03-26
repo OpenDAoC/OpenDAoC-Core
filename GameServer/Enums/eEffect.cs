@@ -149,6 +149,7 @@ namespace DOL.GS
         ShadowRun,
         Vanish,
         BatteryOfLife,
+        RuneOfDecimation,
         MasteryOfConcentration,
     }
 }
