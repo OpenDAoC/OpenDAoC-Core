@@ -48,6 +48,7 @@ namespace DOL.GS.RealmAbilities
 			}
 			caster.StopCurrentSpellcast();
 
+			/*
 			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
 			{
 				switch (Level)
@@ -69,7 +70,10 @@ namespace DOL.GS.RealmAbilities
 					case 3: m_dmgValue = 250; m_duration = 30; break;
 					default: return;
 				}
-			}
+			}*/
+
+			m_dmgValue = caster.Level * 2;
+			m_duration = 30;
 
 			foreach (GamePlayer i_player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{
@@ -102,7 +106,7 @@ namespace DOL.GS.RealmAbilities
 			if (m_player.IsMezzed || m_player.IsStunned || m_player.IsSitting)
 				return 0;
 			Statics.ThornweedFieldBase twf = new Statics.ThornweedFieldBase(m_dmgValue);
-			twf.CreateStatic(m_player, m_player.GroundTarget, m_duration, 3, 500);
+			twf.CreateStatic(m_player, m_player.GroundTarget, m_duration, 5, 500);
 			DisableSkill(m_player);
 			timer.Stop();
 			timer = null;
