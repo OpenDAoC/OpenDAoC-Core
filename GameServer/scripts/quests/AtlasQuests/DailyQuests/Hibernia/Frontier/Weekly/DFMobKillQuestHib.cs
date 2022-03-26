@@ -340,7 +340,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 					}
 					else
 					{
-						_mobsKilled++;	
+						if(player.GetConLevel(gArgs.Target) >= 0)
+							_mobsKilled++;	
 					}
 					
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
