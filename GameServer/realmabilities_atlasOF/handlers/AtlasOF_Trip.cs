@@ -19,9 +19,8 @@ namespace DOL.GS.RealmAbilities
         public Ability Ability { get { return this; } }
 
         private const int m_tauntValue = 0;
-		private const int m_range = 0; // pbaoe
-        private const int m_radius = 500; //
-        private const eDamageType m_damageType = eDamageType.Natural;
+		private const int m_range = 350;
+		private const eDamageType m_damageType = eDamageType.Natural;
 
 		private DBSpell m_dbspell;
         private Spell m_spell = null;
@@ -38,11 +37,11 @@ namespace DOL.GS.RealmAbilities
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Trip";
             m_dbspell.Icon = 333;
-            m_dbspell.ClientEffect = 7046;
+            m_dbspell.ClientEffect = 2758;
             m_dbspell.Damage = 0;
 			m_dbspell.DamageType = (int)m_damageType;
             m_dbspell.Target = "Enemy";
-            m_dbspell.Radius = m_radius;
+            m_dbspell.Radius = 0;
 			m_dbspell.Type = eSpellType.SpeedDecrease.ToString();
             m_dbspell.Value = 30;
             m_dbspell.Duration = 12;
@@ -54,7 +53,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.RecastDelay = GetReUseDelay(0); // Spell code is responsible for disabling this ability and will use this value.
             m_dbspell.Range = m_range;
             m_dbspell.Description = "Reduce the movement speed of all enemies in a " 
-                                               + m_radius + " unit radius by 35%.";
+                                               + m_range + " unit radius by 35%.";
 			m_spell = new Spell(m_dbspell, caster.Level);
             m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
         }
@@ -68,27 +67,29 @@ namespace DOL.GS.RealmAbilities
 
 			CreateSpell(caster);
 
-			foreach (GamePlayer pl in caster.GetPlayersInRadius(m_radius))
+			foreach (GamePlayer pl in caster.GetPlayersInRadius(m_range))
 			{
 				if(pl.Realm != caster.Realm)
-					CastSpellOn(pl);
+					CastSpellOn(pl, caster);
 			}
 
-			foreach (GameNPC npc in caster.GetNPCsInRadius(m_radius))
+			foreach (GameNPC npc in caster.GetNPCsInRadius(m_range))
 			{
-				CastSpellOn(npc);
+				CastSpellOn(npc, caster);
 			}
 
 			// We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
 		}
 
-        public void CastSpellOn(GameLiving target)
+        public void CastSpellOn(GameLiving target, GameLiving caster)
         {
 	        if (target.IsAlive && m_spell != null)
 	        {
-		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(target, m_spell, m_spellline);
+		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline);
 		        dd.StartSpell(target);
+		        if(caster is GamePlayer c) c.Out.SendMessage($"{target.Name} is tripped and begins moving more slowly!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+		        if(target is GamePlayer t) t.Out.SendMessage($"{caster.Name} trips you and you begin moving more slowly.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 	        }
         }
 
