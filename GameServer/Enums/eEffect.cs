@@ -148,6 +148,7 @@ namespace DOL.GS
         TrueSight,
         ShadowRun,
         Vanish,
+        BatteryOfLife,
         MasteryOfConcentration,
     }
 }
