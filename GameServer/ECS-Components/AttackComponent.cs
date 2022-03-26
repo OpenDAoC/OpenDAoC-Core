@@ -1317,6 +1317,7 @@ namespace DOL.GS
 
             if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Long)
             {
+                AttackRange = (int)Math.Round(AttackRange * 1.5);
                 owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
             }
 
