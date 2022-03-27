@@ -99,7 +99,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =
                 ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
             SteinvorBrain.PlayerX = 0;
             SteinvorBrain.PlayerY = 0;
             SteinvorBrain.PlayerZ = 0;
@@ -119,7 +119,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Steinvor", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Steinvor", 160, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Icelord Steinvor not found, creating it...");
@@ -138,7 +138,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 25405;
                 TG.Y = 57241;
@@ -296,7 +296,7 @@ namespace DOL.AI.Brain
 
                     if (damage_enemies.Count > 0)
                     {
-                        GamePlayer PortTarget = (GamePlayer) damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
+                        GamePlayer PortTarget = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                         RandomTarget = PortTarget;
                         PlayerX = RandomTarget.X;
                         PlayerY = RandomTarget.Y;
@@ -446,7 +446,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =
                 ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             SkufBrain sbrain = new SkufBrain();
             SetOwnBrain(sbrain);
@@ -460,7 +460,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Skuf", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Skuf", 160, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Icelord Skuf not found, creating it...");
@@ -479,7 +479,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 25405;
                 TG.Y = 57241;
@@ -634,12 +634,12 @@ namespace DOL.GS
             MaxDistance = 3500;
             TetherRange = 3800;
             Size = 60;
-            Level = (byte) Util.Random(73, 75);
+            Level = (byte)Util.Random(73, 75);
             MaxSpeedBase = 270;
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
             Realm = eRealm.None;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
 
@@ -724,7 +724,9 @@ namespace DOL.GS
         public EffectMob() : base()
         {
         }
-
+        public override void StartAttack(GameObject target)
+        {
+        }
         public int Show_Effect(RegionTimer timer)
         {
             if (this.IsAlive)
@@ -763,7 +765,6 @@ namespace DOL.GS
             MaxSpeedBase = 0;
             Name = "Pillar of Ice";
             Level = 80;
-            Flags = GameNPC.eFlags.PEACE;
             Flags = GameNPC.eFlags.DONTSHOWNAME;
             Flags = GameNPC.eFlags.CANTTARGET;
             Flags = GameNPC.eFlags.STATUE;
@@ -808,7 +809,7 @@ namespace DOL.GS
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
+                    spell.DamageType = (int)eDamageType.Cold;
                     m_Icelord_Gtaoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_Gtaoe);
                 }
@@ -836,6 +837,22 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
+            if (Body.IsAlive)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!AggroTable.ContainsKey(player))
+                            {
+                                AggroTable.Add(player, 100);
+                            }
+                        }
+                    }
+                }
+            }
             base.Think();
         }
     }
