@@ -443,6 +443,7 @@ namespace DOL.AI.Brain
                     spell.Icon = 1358;
                     spell.TooltipId = 360;
                     spell.Name = "Spectral Heal";
+                    spell.Value = 350;
                     spell.Range = 1800;
                     spell.SpellID = 11776;
                     spell.Target = eSpellTarget.Realm.ToString();
