@@ -141,7 +141,6 @@ namespace DOL.GS
                 HOC.CurrentRegionID = 277; //hall of the corrupt
                 HOC.MeleeDamageType = eDamageType.Crush;
                 HOC.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                HOC.Faction = FactionMgr.GetFactionByID(140);
                 HOC.Faction = FactionMgr.GetFactionByID(187);
                 HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
