@@ -76,7 +76,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =
                 ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
@@ -100,7 +100,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Council Birghir", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Council Birghir", 160, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Elder Council Birghir not found, creating it...");
@@ -119,7 +119,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 34595;
                 TG.Y = 55711;
@@ -213,26 +213,26 @@ namespace DOL.AI.Brain
 
                     if (damage_enemies.Count > 0)
                     {
-                        GamePlayer Target = (GamePlayer) damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
+                        GamePlayer Target = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                         RandomTarget = Target; //randomly picked target is now RandomTarget
                         if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView)
                         {
-                            GamePlayer oldTarget = (GamePlayer) Body.TargetObject; //old target
+                            GamePlayer oldTarget = (GamePlayer)Body.TargetObject; //old target
                             Body.TargetObject = RandomTarget; //set target to randomly picked
                             Body.TurnTo(RandomTarget);
                             switch (Util.Random(1, 2)) //pick one of 2 spells to cast
                             {
                                 case 1:
-                                {
-                                    Body.CastSpell(Icelord_Bolt,
-                                        SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //bolt
-                                }
+                                    {
+                                        Body.CastSpell(Icelord_Bolt,
+                                            SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //bolt
+                                    }
                                     break;
                                 case 2:
-                                {
-                                    Body.CastSpell(Icelord_dd,
-                                        SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //dd cold
-                                }
+                                    {
+                                        Body.CastSpell(Icelord_dd,
+                                            SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //dd cold
+                                    }
                                     break;
                             }
 
@@ -337,7 +337,7 @@ namespace DOL.AI.Brain
                     spell.Type = eSpellType.Bolt.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
+                    spell.DamageType = (int)eDamageType.Cold;
                     m_Icelord_Bolt = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_Bolt);
                 }
@@ -369,7 +369,7 @@ namespace DOL.AI.Brain
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
+                    spell.DamageType = (int)eDamageType.Cold;
                     m_Icelord_dd = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_dd);
                 }
@@ -466,7 +466,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =
                 ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
@@ -492,7 +492,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Council Guthlac", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Council Guthlac", 160, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Elder Council Guthlac not found, creating it...");
@@ -511,7 +511,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 34595;
                 TG.Y = 55711;
@@ -595,6 +595,7 @@ namespace DOL.AI.Brain
                 this.Body.Health = this.Body.MaxHealth;
                 IsPulled2 = false;
                 RandomTarget = null;
+                FrozenBomb.FrozenBombCount = 0;
                 message1 = false;
                 IsBombUp = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
@@ -680,6 +681,7 @@ namespace DOL.AI.Brain
         public void SpawnFrozenBomb()
         {
             FrozenBomb npc = new FrozenBomb();
+            npc.Name = "Ice Spike";
             if (RandomTarget != null)
             {
                 npc.X = RandomTarget.X;
@@ -712,7 +714,9 @@ namespace DOL.GS
         public FrozenBomb() : base()
         {
         }
-
+        public override void StartAttack(GameObject target)
+        {
+        }
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
@@ -765,6 +769,7 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
+                SetGroundTarget(X, Y, Z);
                 this.CastSpell(IceSpike_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 new RegionTimer(this, new RegionTimerCallback(KillBomb), 500);
             }
@@ -797,7 +802,7 @@ namespace DOL.GS
 
         public override void Die(GameObject killer)
         {
-            --FrozenBombCount;
+            FrozenBombCount = 0;
             base.Die(null);
         }
 
@@ -811,9 +816,9 @@ namespace DOL.GS
             Model = 665;
             Size = 100;
             MaxSpeedBase = 0;
-            ++FrozenBombCount;
+            FrozenBombCount = 1;
             Name = "Ice Spike";
-            Level = (byte) Util.Random(62, 66);
+            Level = (byte)Util.Random(62, 66);
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
@@ -851,13 +856,13 @@ namespace DOL.GS
                     spell.Damage = 2000;
                     spell.Name = "Ice Bomb";
                     spell.Radius = 2000; //very big radius to make them feel pain lol
-                    spell.Range = 0;
+                    spell.Range = 2000;
                     spell.SpellID = 11751;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.Area.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
+                    spell.DamageType = (int)eDamageType.Cold;
                     m_IceSpike_aoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IceSpike_aoe);
                 }
@@ -882,18 +887,25 @@ namespace DOL.AI.Brain
             AggroRange = 0;
             ThinkInterval = 1500;
         }
-
-        public override void AttackMostWanted() // mob doesnt attack
-        {
-        }
-
-        public override void OnAttackedByEnemy(AttackData ad) //another check to not attack enemys
-        {
-            base.OnAttackedByEnemy(ad);
-        }
-
         public override void Think()
         {
+            if (Body.IsAlive)
+            {
+                //FSM.SetCurrentState(eFSMStateType.AGGRO);
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!AggroTable.ContainsKey(player))
+                            {
+                                AggroTable.Add(player, 100);
+                            }
+                        }
+                    }
+                }
+            }
             base.Think();
         }
     }
