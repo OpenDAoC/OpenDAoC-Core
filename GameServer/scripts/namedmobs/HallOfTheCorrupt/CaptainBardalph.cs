@@ -7,25 +7,25 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
 namespace DOL.GS
 {
-    public class CaptainAtwell : GameEpicBoss
+    public class CaptainBardalph : GameEpicBoss
     {
-        public CaptainAtwell() : base()
+        public CaptainBardalph() : base()
         {
         }
-        public static int PoleAnytimerID = 93;
-        public static int PoleAnytimerClassID = 2;
-        public static Style PoleAnytimer = SkillBase.GetStyleByID(PoleAnytimerID, PoleAnytimerClassID);
+        public static int AfterEvadeID = 145;
+        public static int AfterEvadeClassID = 11;
+        public static Style AfterEvade = SkillBase.GetStyleByID(AfterEvadeID, AfterEvadeClassID);
 
-        public static int AfterParryID = 90;
-        public static int AfterParryClassID = 2;
-        public static Style AfterParry = SkillBase.GetStyleByID(AfterParryID, AfterParryClassID);
+        public static int TauntID = 130;
+        public static int TauntClassID = 11;
+        public static Style Taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
         public override void OnAttackedByEnemy(AttackData ad) // on Boss actions
         {
             base.OnAttackedByEnemy(ad);
         }
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {
-            if(Util.Chance(35))
+            if (Util.Chance(35))
             {
                 if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
                 {
@@ -106,31 +106,40 @@ namespace DOL.GS
         }
         public override bool AddToWorld()
         {
-            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(7718);
-            LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            if (!this.Styles.Contains(PoleAnytimer))
+            GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 186, 0, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 188, 0);
+            template.AddNPCEquipment(eInventorySlot.LegsArmor, 187, 0);
+            template.AddNPCEquipment(eInventorySlot.HandsArmor, 189, 0, 0, 0);
+            template.AddNPCEquipment(eInventorySlot.FeetArmor, 190, 0, 0, 0);
+            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 653, 0, 0);
+            template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 25, 0, 0);
+            Inventory = template.CloseTemplate();
+            SwitchWeapon(eActiveWeaponSlot.Standard);
+            if (!this.Styles.Contains(AfterEvade))
             {
-                Styles.Add(PoleAnytimer);
+                Styles.Add(AfterEvade);
             }
-            if (!this.Styles.Contains(AfterParry))
+            if (!this.Styles.Contains(Taunt))
             {
-                Styles.Add(AfterParry);
+                Styles.Add(Taunt);
             }
-            VisibleActiveWeaponSlots = 34;
-            CaptainAtwellBrain sbrain = new CaptainAtwellBrain();
+            LeftHandSwingChance = 100;
+            EvadeChance = 50;
+            MaxDistance = 2000;
+            TetherRange = 1500;
+            MaxSpeedBase = 225;
+            Gender = eGender.Female;
+            Flags = eFlags.GHOST;
+            VisibleActiveWeaponSlots = 16;
+            MeleeDamageType = eDamageType.Thrust;
+            CaptainBardalphBrain sbrain = new CaptainBardalphBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
             SaveIntoDatabase();
@@ -142,15 +151,15 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Captain Atwell", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Captain Bardalph", 277, (eRealm)0);
             if (npcs.Length == 0)
             {
-                log.Warn("Captain Atwell not found, creating it...");
+                log.Warn("Captain Heathyr not found, creating it...");
 
-                log.Warn("Initializing Captain Atwell...");
-                CaptainAtwell HOC = new CaptainAtwell();
-                HOC.Name = "Captain Atwell";
-                HOC.Model = 723;
+                log.Warn("Initializing Captain Bardalph...");
+                CaptainBardalph HOC = new CaptainBardalph();
+                HOC.Name = "Captain Bardalph";
+                HOC.Model = 55;
                 HOC.Realm = 0;
                 HOC.Level = 65;
                 HOC.Size = 50;
@@ -159,18 +168,24 @@ namespace DOL.GS
                 HOC.Faction = FactionMgr.GetFactionByID(187);
                 HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
-                HOC.X = 34000;
-                HOC.Y = 38791;
-                HOC.Z = 14614;
-                HOC.Heading = 1003;
-                CaptainAtwellBrain ubrain = new CaptainAtwellBrain();
+                HOC.Strength = 5;
+                HOC.Constitution = 100;
+                HOC.Dexterity = 200;
+                HOC.Quickness = 145;
+                HOC.Empathy = 200;
+
+                HOC.X = 34604;
+                HOC.Y = 35842;
+                HOC.Z = 14134;
+                HOC.Heading = 1008;
+                CaptainBardalphBrain ubrain = new CaptainBardalphBrain();
                 HOC.SetOwnBrain(ubrain);
                 HOC.AddToWorld();
                 HOC.SaveIntoDatabase();
                 HOC.Brain.Start();
             }
             else
-                log.Warn("Captain Atwell exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn("Captain Bardalph exist ingame, remove it and restart server if you want to add by script code.");
         }
         private Spell m_Bleed;
 
@@ -195,7 +210,7 @@ namespace DOL.GS
                     spell.Duration = 30;
                     spell.Frequency = 30;
                     spell.Range = 350;
-                    spell.SpellID = 11778;
+                    spell.SpellID = 11780;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.StyleBleeding.ToString();
                     spell.Uninterruptible = true;
@@ -213,12 +228,12 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-    public class CaptainAtwellBrain : StandardMobBrain
+    public class CaptainBardalphBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public CaptainAtwellBrain()
+        public CaptainBardalphBrain()
             : base()
         {
             AggroLevel = 100;
@@ -244,13 +259,15 @@ namespace DOL.AI.Brain
             }
             if (Body.InCombat && HasAggro)
             {
-                if(Body.TargetObject != null)
+                if (Body.TargetObject != null)
                 {
-                    Body.styleComponent.NextCombatBackupStyle = CaptainAtwell.PoleAnytimer;
-                    Body.styleComponent.NextCombatStyle = CaptainAtwell.AfterParry;
+                    Body.styleComponent.NextCombatBackupStyle = CaptainBardalph.Taunt;
+                    Body.styleComponent.NextCombatStyle = CaptainBardalph.AfterEvade;
                 }
             }
             base.Think();
         }
     }
 }
+
+

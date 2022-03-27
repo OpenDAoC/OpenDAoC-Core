@@ -155,7 +155,7 @@ namespace DOL.GS
             npcs = WorldMgr.GetNPCsByNameFromRegion("Captain Heathyr", 277, (eRealm)0);
             if (npcs.Length == 0)
             {
-                log.Warn("Captain Heathyr found, creating it...");
+                log.Warn("Captain Heathyr not found, creating it...");
 
                 log.Warn("Initializing Captain Heathyr...");
                 CaptainHeathyr HOC = new CaptainHeathyr();
