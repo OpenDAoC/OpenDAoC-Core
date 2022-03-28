@@ -322,13 +322,13 @@ namespace DOL.GS.DailyQuest.Hibernia
 				if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && _playersKilledMid < MAX_KILLGOAL) 
 				{
 					_playersKilledMid++;
-					player.Out.SendMessage("[Daily] Killed Midgard Enemy: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Daily] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 				}
 				else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && _playersKilledAlb < MAX_KILLGOAL) 
 				{
 					_playersKilledAlb++;
-					player.Out.SendMessage("[Daily] Killed Albion Enemy: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 				}
 				

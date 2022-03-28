@@ -319,7 +319,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && gArgs.Target.Level >= MIN_LEVEL) 
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
 				{
 					PlayersKilled++;
 					player.Out.SendMessage("[Weekly] Enemy Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
