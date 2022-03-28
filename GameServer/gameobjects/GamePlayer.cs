@@ -5239,13 +5239,14 @@ namespace DOL.GS
             var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
             if (loyaltyCheck == null)
                 loyaltyCheck = DateTime.UnixEpoch;
+            
+            List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-                List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
                 bool realmFound = false;
-                foreach (var rl in realmLoyalty)
+                foreach (var rl in rloyal)
                 {
                     if (rl.Realm == (int)this.Realm)
                     {
@@ -5287,6 +5288,23 @@ namespace DOL.GS
                 
                 this.TempProperties.setProperty(REALM_LOYALTY_KEY, DateTime.Now);
                 this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+            }
+
+            if (xpSource == eXPSource.Player && !this.CurrentZone.IsBG)
+            {
+                foreach (var loyalty in rloyal)
+                {
+                    if (loyalty.Realm == (int) this.Realm)
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        loyalty.LoyalDays = 0;
+                        if (loyalty.LoyalDays < loyalty.MinimumLoyalDays)
+                            loyalty.LoyalDays = loyalty.MinimumLoyalDays;
+                    }
+                }
             }
 
             long RealmLoyaltyBonus = 0;
