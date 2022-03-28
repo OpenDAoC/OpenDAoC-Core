@@ -31,7 +31,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public virtual int HurionDifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -101,9 +110,14 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
             HurionthexBrain sbrain = new HurionthexBrain();
             SetOwnBrain(sbrain);
+            SaveIntoDatabase();
+            LoadedFromScript = false;
             base.AddToWorld();
             return true;
         }
@@ -127,12 +141,13 @@ namespace DOL.GS
                 Hurion.Level = 81;
                 Hurion.Size = 170;
                 Hurion.CurrentRegionID = 191; // Galladoria
-                Hurion.Strength = 400;
+                Hurion.Strength = 4;
                 Hurion.Intelligence = 220;
                 Hurion.Piety = 220;
                 Hurion.Dexterity = 200;
                 Hurion.Constitution = 200;
                 Hurion.Quickness = 125;
+                Hurion.Empathy = 280;
                 Hurion.BodyType = 5; // Giant
                 Hurion.MeleeDamageType = eDamageType.Crush;
                 Hurion.RoamingRange = 0;
@@ -215,11 +230,11 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Crush;
             Body.BodyType = 5; // Giant
 
-            Body.Strength = 300;
+            Body.Strength = 5;
             Body.Dexterity = 200;
-            Body.Quickness = 125;
+            Body.Quickness = 100;
             Body.Intelligence = 200;
-            Body.Empathy = 200;
+            Body.Empathy = 280;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
@@ -242,12 +257,12 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Spirit;
             Body.BodyType = 10; // Plant
 
-            Body.Strength = 400;
+            Body.Strength = 5;
             Body.Constitution = 100;
             Body.Dexterity = 200;
             Body.Quickness = 85;
             Body.Intelligence = 200;
-            Body.Empathy = 200;
+            Body.Empathy = 300;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
@@ -270,12 +285,12 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Spirit;
             Body.BodyType = 1; // Animal
 
-            Body.Strength = 350;
+            Body.Strength = 5;
             Body.Constitution = 100;
             Body.Dexterity = 200;
             Body.Quickness = 185;
             Body.Intelligence = 200;
-            Body.Empathy = 200;
+            Body.Empathy = 260;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
@@ -297,14 +312,14 @@ namespace DOL.AI.Brain
             Body.AttackRange = 450;
             Body.MeleeDamageType = eDamageType.Spirit;
 
-            Body.Strength = 450;
+            Body.Strength = 5;
             Body.Constitution = 100;
             Body.Dexterity = 200;
             Body.Quickness = 125;
             Body.Intelligence = 200;
-            Body.Empathy = 100;
+            Body.Empathy = 250;
             Body.Piety = 200;
-            Body.Charisma = 100;
+            Body.Charisma = 200;
         }
 
         #endregion Granidan Form

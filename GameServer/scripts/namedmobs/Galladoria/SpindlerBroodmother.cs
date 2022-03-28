@@ -20,7 +20,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public virtual int COifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -87,8 +96,14 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             SpindlerBroodmotherBrain sBrain = new SpindlerBroodmotherBrain();
             SetOwnBrain(sBrain);
+            SaveIntoDatabase();
+            LoadedFromScript = false;
             base.AddToWorld();
             return true;
         }

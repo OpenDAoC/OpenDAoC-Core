@@ -22,7 +22,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public virtual int COifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -62,7 +71,32 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-
+        public void SpawnTineBeatha()
+        {
+            if (Tine.TineCount == 0)
+            {
+                Tine tine = new Tine();
+                tine.X = 27575;
+                tine.Y = 54730;
+                tine.Z = 12951;
+                tine.CurrentRegion = this.CurrentRegion;
+                tine.Heading = 2157;
+                tine.RespawnInterval = -1;
+                tine.AddToWorld();
+            }
+            if (Beatha.BeathaCount == 0)
+            {
+                Beatha beatha = new Beatha();
+                beatha.X = 27210;
+                beatha.Y = 54721;
+                beatha.Z = 12959;
+                beatha.CurrentRegion = this.CurrentRegion;
+                beatha.Heading = 2038;
+                beatha.RespawnInterval = -1;
+                beatha.AddToWorld();
+            }
+        }
+        public static bool spawn_lights = false;
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168075);
@@ -75,14 +109,26 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             XagaBrain sBrain = new XagaBrain();
             SetOwnBrain(sBrain);
-
-            base.AddToWorld();
-            return true;
+            SaveIntoDatabase();
+            LoadedFromScript = false;
+            spawn_lights = false;
+            bool success = base.AddToWorld();
+            if (success)
+            {
+                if (spawn_lights == false)
+                {
+                    SpawnTineBeatha();
+                    spawn_lights = true;
+                }
+            }
+            return success;
         }
-
-
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
@@ -536,7 +582,12 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-
+        public static int BeathaCount = 0;
+        public override void Die(GameObject killer)
+        {
+            --BeathaCount;
+            base.Die(killer);
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -574,61 +625,13 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+            ++BeathaCount;
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BeathaBrain sBrain = new BeathaBrain();
             SetOwnBrain(sBrain);
-
             base.AddToWorld();
             return true;
-        }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Beatha", 191, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Beatha not found, creating it...");
-
-                log.Warn("Initializing Beatha...");
-                Beatha SB = new Beatha();
-                SB.Name = "Beatha";
-                SB.Model = 907;
-                SB.Realm = 0;
-                SB.Level = 65;
-                SB.Size = 80;
-                SB.CurrentRegionID = 191; //galladoria
-
-                SB.Strength = 250;
-                SB.Intelligence = 150;
-                SB.Piety = 150;
-                SB.Dexterity = 200;
-                SB.Constitution = 100;
-                SB.Quickness = 125;
-                SB.BodyType = 5;
-                SB.MeleeDamageType = eDamageType.Slash;
-                SB.Faction = FactionMgr.GetFactionByID(96);
-                SB.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
-                SB.X = 27247;
-                SB.Y = 54637;
-                SB.Z = 12944;
-                SB.MaxDistance = 2000;
-                SB.TetherRange = 2500;
-                SB.MaxSpeedBase = 300;
-                SB.Heading = 3793;
-
-                BeathaBrain ubrain = new BeathaBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 500;
-                SB.SetOwnBrain(ubrain);
-                SB.AddToWorld();
-                SB.Brain.Start();
-                SB.SaveIntoDatabase();
-            }
-            else
-                log.Warn("Beatha exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -753,7 +756,12 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.85;
         }
-
+        public static int TineCount = 0;
+        public override void Die(GameObject killer)
+        {
+            --TineCount;
+            base.Die(killer);
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -791,61 +799,13 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            ++TineCount;
             TineBrain sBrain = new TineBrain();
             SetOwnBrain(sBrain);
-
             base.AddToWorld();
             return true;
-        }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Tine", 191, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Tine not found, creating it...");
-
-                log.Warn("Initializing Tine...");
-                Tine SB = new Tine();
-                SB.Name = "Tine";
-                SB.Model = 911;
-                SB.Realm = 0;
-                SB.Level = 67;
-                SB.Size = 80;
-                SB.CurrentRegionID = 191; //galladoria
-
-                SB.Strength = 250;
-                SB.Intelligence = 150;
-                SB.Piety = 150;
-                SB.Dexterity = 200;
-                SB.Constitution = 100;
-                SB.Quickness = 125;
-                SB.BodyType = 5;
-                SB.MeleeDamageType = eDamageType.Slash;
-                SB.Faction = FactionMgr.GetFactionByID(96);
-                SB.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
-                SB.X = 27496;
-                SB.Y = 54625;
-                SB.Z = 12931;
-                SB.MaxDistance = 2000;
-                SB.TetherRange = 2500;
-                SB.MaxSpeedBase = 300;
-                SB.Heading = 1024;
-
-                TineBrain ubrain = new TineBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 500;
-                SB.SetOwnBrain(ubrain);
-                SB.AddToWorld();
-                SB.Brain.Start();
-                SB.SaveIntoDatabase();
-            }
-            else
-                log.Warn("Tine exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }

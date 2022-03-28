@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -19,17 +15,24 @@ namespace DOL.GS
             : base()
         {
         }
-
         public virtual int COifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
-        }
-        
+        }    
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
@@ -42,13 +45,19 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+            ConservatorBrain.spampoison = false;
+            ConservatorBrain.spamaoe = false;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
             ConservatorBrain sBrain = new ConservatorBrain();
             SetOwnBrain(sBrain);
+            LoadedFromScript = false; //load from database
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
-
         public override int MaxHealth
         {
             get
@@ -56,7 +65,6 @@ namespace DOL.GS
                 return 20000;
             }
         }
-
         public override int AttackRange
         {
             get
@@ -78,18 +86,15 @@ namespace DOL.GS
         {
             return 1000;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
-
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-
             npcs = WorldMgr.GetNPCsByNameFromRegion("Conservator", 191, (eRealm)0);
             if (npcs.Length == 0)
             {
@@ -195,38 +200,33 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
-            }
-            if (Body.IsOutOfTetherRange)
+                spamaoe = false;
+                spampoison = false;
+            }          
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
                 this.Body.Health = this.Body.MaxHealth;
+                spamaoe = false;
+                spampoison = false;
             }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
             if (HasAggro && Body.InCombat)
             {
-                if (Util.Chance(10))//cast dot
+                if (Body.TargetObject != null)
                 {
-                    if (Body.TargetObject != null && spampoison == false)
+                    if (spampoison == false)
                     {
-                        if (COPoison.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+                        GameLiving target = Body.TargetObject as GameLiving;
+                        if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
                         {
                             Body.TurnTo(Body.TargetObject);
                             new RegionTimer(Body, new RegionTimerCallback(PoisonTimer), 5000);
                             spampoison = true;
                         }
                     }
-                }               
-                if(Util.Chance(10))
-                {
-                    if (Body.TargetObject != null && spamaoe == false)
+                    if (spamaoe == false)
                     {
                         Body.TurnTo(Body.TargetObject);
-                            new RegionTimer(Body, new RegionTimerCallback(AoeTimer), 15000);//15s to avoid being it too often called
+                        new RegionTimer(Body, new RegionTimerCallback(AoeTimer), Util.Random(15000, 20000));//15s to avoid being it too often called
                         spamaoe = true;
                     }
                 }
@@ -235,7 +235,6 @@ namespace DOL.AI.Brain
         }
 
         public Spell m_co_poison;
-
         public Spell COPoison
         {
             get
@@ -263,6 +262,7 @@ namespace DOL.AI.Brain
                     spell.Target = "Enemy";
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
+                    spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
                     m_co_poison = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_poison);
@@ -272,7 +272,6 @@ namespace DOL.AI.Brain
         }
 
         public Spell m_co_aoe;
-
         public Spell COaoe
         {
             get
@@ -285,13 +284,15 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 3510;
                     spell.Icon = 3510;
                     spell.TooltipId = 3510;
-                    spell.Damage = 350;
+                    spell.Damage = 550;
                     spell.Range = 1800;
                     spell.Radius = 1200;
                     spell.SpellID = 11704;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamage";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
                     m_co_aoe = new Spell(spell, 70);                   
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_aoe);
                 }
