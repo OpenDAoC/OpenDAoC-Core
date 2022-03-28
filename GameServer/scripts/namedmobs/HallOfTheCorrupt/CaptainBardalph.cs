@@ -130,7 +130,6 @@ namespace DOL.GS
             {
                 Styles.Add(Taunt);
             }
-            LeftHandSwingChance = 100;
             EvadeChance = 50;
             MaxDistance = 2000;
             TetherRange = 1500;
