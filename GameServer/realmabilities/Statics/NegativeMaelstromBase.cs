@@ -28,9 +28,9 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.DamageType = (int)eDamageType.Cold;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-            dbs.Type = eSpellType.DirectDamageNoVariance.ToString();
-			dbs.Value =0;
-			dbs.Duration = 0;
+            dbs.Type = eSpellType.DirectDamageWithDebuff.ToString();
+			dbs.Value = 10;
+			dbs.Duration = 10;
 			dbs.Pulse = 0;
 			dbs.PulsePower = 0;
 			dbs.Power = 0;

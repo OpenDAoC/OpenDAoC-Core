@@ -28,6 +28,7 @@ namespace DOL.GS.DailyQuest
 		protected static GameNPC SucciMid = null; // Start NPC
 
 		private int PlayerKilled = 0;
+		private int MAX_KillGoal = 1;
 
 		// Constructors
 		public HardcoreKillAPlayerMid() : base()
@@ -294,7 +295,7 @@ namespace DOL.GS.DailyQuest
 					case -1:
 						return "Your deeds are done for today.";
 					case 1:
-						return "Kill another player without dying. \n Life Taken: ("+ PlayerKilled +" | 1)";
+						return "Kill another player without dying. \n Life Taken: ("+ PlayerKilled +" | "+MAX_KillGoal+")";
 					case 2:
 						return "Return to Succi in Svasud Faste for your grim reward.";
 				}
@@ -326,8 +327,10 @@ namespace DOL.GS.DailyQuest
 				if (player.GetConLevel(gArgs.Target) > -3 
 				    && gArgs.Target is GamePlayer enemyPlayer 
 				    && enemyPlayer.Realm != 0
-				    && player.Realm != enemyPlayer.Realm) 
+				    && player.Realm != enemyPlayer.Realm)
 				{
+					PlayerKilled = 1;
+					player.Out.SendMessage("[Hardcore] Enemy Killed: (" + PlayerKilled + " | " + MAX_KillGoal + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					// FinishQuest or go back to npc
 					Step = 2;

@@ -468,6 +468,8 @@ namespace DOL.GS
                     return eEffect.BodySpiritEnergyBuff;
                 case (byte)eSpellType.HeatColdMatterBuff:
                     return eEffect.HeatColdMatterBuff;
+                case (byte)eSpellType.AllMagicResistBuff:
+                    return eEffect.AllMagicResistsBuff;
 
 
                 //regen

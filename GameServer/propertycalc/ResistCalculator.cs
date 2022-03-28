@@ -74,7 +74,6 @@ namespace DOL.GS.PropertyCalc
             }
 
             // Add up and apply hardcap.
-
             return Math.Min(itemBonus + buffBonus + abilityBonus + racialBonus, HardCap);
 		}
 
@@ -147,7 +146,8 @@ namespace DOL.GS.PropertyCalc
 				+ living.BuffBonusCategory4[(int)property];
             if (living is GameNPC)
                 return buffBonus;
-            return Math.Min(buffBonus, BuffBonusCap);
+            int RACalcHolder = Math.Min(buffBonus, BuffBonusCap);
+            return RACalcHolder + living.SpecBuffBonusCategory[(int) property];
         }
 
         /// <summary>

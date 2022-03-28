@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Albion
 		protected const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 50;
+		protected const int MAX_KILLED = 25;
 		
 		private static GameNPC Isaac = null; // Start NPC
 
@@ -317,7 +317,7 @@ namespace DOL.GS.DailyQuest.Albion
 						{
 							return "The spirit of unity flows through you. \n" +
 							       "Kill orange con or higher mobs: \n" + 
-							       "Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)";
+							       "Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | "+MAX_KILLED+")";
 						}
 						else
 						{
@@ -326,7 +326,7 @@ namespace DOL.GS.DailyQuest.Albion
 							if (!HasSeer) output.Append("Seer required\n");
 							if (!HasRogue) output.Append("Rogue required\n");
 							if (!HasMystic) output.Append("Mystic required\n");
-							output.Append("Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | 25)");
+							output.Append("Orange+ Con Mobs Killed: ("+ TeamBuildMobsKilled +" | "+MAX_KILLED+")");
 							return output.ToString();
 						}
 						
@@ -384,6 +384,9 @@ namespace DOL.GS.DailyQuest.Albion
 				    HasViking && HasSeer && HasRogue && HasMystic) 
 				{
 					TeamBuildMobsKilled++;
+					player.Out.SendMessage(
+						"[Group Daily] Monster killed: (" + TeamBuildMobsKilled + " | " + MAX_KILLED + ")",
+						eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
 					if (TeamBuildMobsKilled >= MAX_KILLED)

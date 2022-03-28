@@ -297,7 +297,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill Hibernia's enemies in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
+						return "Kill Hibernia's enemies in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | "+MAX_KILLED+")";
 					case 2:
 						return "Return to Rey for your Reward.";
 				}

@@ -267,7 +267,7 @@ namespace DOL.GS.Scripts
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsLegion++;
-                player.RaiseRealmLoyaltyFloor(2);
+                player.RaiseRealmLoyaltyFloor(1);
                 count++;
             }
 

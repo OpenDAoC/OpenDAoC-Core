@@ -30,6 +30,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private int _playersKilledMid = 0;
 		private int _playersKilledAlb = 0;
 		protected const int MAX_KILLGOAL = 5;
+		
+		// prevent grey killing
+		protected const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public EveryLittleBitHelpsQuestHib() : base()
@@ -319,16 +322,16 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && _playersKilledMid < MAX_KILLGOAL) 
+				if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledMid < MAX_KILLGOAL) 
 				{
 					_playersKilledMid++;
-					player.Out.SendMessage("[Daily] Killed Midgard Enemy: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Daily] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 				}
-				else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && _playersKilledAlb < MAX_KILLGOAL) 
+				else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
 				{
 					_playersKilledAlb++;
-					player.Out.SendMessage("[Daily] Killed Albion Enemy: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 				}
 				

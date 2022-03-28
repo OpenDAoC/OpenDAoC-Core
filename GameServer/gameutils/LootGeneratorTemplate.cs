@@ -438,7 +438,11 @@ namespace DOL.GS
 									int dropCooldown = lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
 									long tempProp = player.TempProperties.getProperty<long>(XPItemKey, 0); //check if our loot has dropped for player
 									List<string> itemsDropped = player.TempProperties.getProperty<List<string>>(XPItemDroppersKey); //check our list of dropped monsters
+									GamePlayer GroupedTimerToUse = null;
 									if (itemsDropped == null) itemsDropped = new List<string>();
+
+									if (player.Group != null)
+										GroupedTimerToUse = CheckGroupForValidXpTimer(XPItemKey, dropCooldown, player);
 											
 									//if we've never dropped an item, or our cooldown is up, drop an item
 									if (tempProp == 0 ||
@@ -459,7 +463,25 @@ namespace DOL.GS
 										itemsDropped.Clear();
 										player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
 										
-									} //else if this drop cycle has not seen this item, reduce global cooldown
+									}
+									else if (GroupedTimerToUse != null)
+									{
+										long nextDropTime = GameLoop.GameLoopTime;
+										AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(player.Realm)));
+										if (realmLoyalty != null && realmLoyalty.LoyalDays > 0)
+										{
+											int tmpLoyal = realmLoyalty.LoyalDays > 30
+												? 30 : realmLoyalty.LoyalDays;
+											nextDropTime -= tmpLoyal * 1000; //reduce cooldown by 1s per loyalty day up to 30s cap
+										}
+										
+										loot.AddFixed(drop, lootTemplate.Count);
+										GroupedTimerToUse.TempProperties.setProperty(XPItemKey, nextDropTime);
+										
+										itemsDropped.Clear();
+										GroupedTimerToUse.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+									}
+									//else if this drop cycle has not seen this item, reduce global cooldown
 									else if (!itemsDropped.Contains(drop.Name))
 									{
 										itemsDropped.Add(drop.Name);
@@ -492,6 +514,19 @@ namespace DOL.GS
 			}
 
 			return loot;
+		}
+
+		private GamePlayer CheckGroupForValidXpTimer(String xpItemKey, int dropCooldown, GameLiving player)
+		{
+			//check if any group member has a valid timer to use
+			foreach (GamePlayer groupMember in player.Group.GetPlayersInTheGroup())
+			{
+				long tempProp = groupMember.TempProperties.getProperty<long>(xpItemKey, 0);
+				if (tempProp == 0 || tempProp + dropCooldown < GameLoop.GameLoopTime)
+					return groupMember;
+			}
+
+			return null;
 		}
 
 		/// <summary>

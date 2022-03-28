@@ -339,7 +339,9 @@ namespace DOL.GS.DailyQuest.Albion
 					}
 					else
 					{
-						_mobsKilled++;	
+						Console.WriteLine($"Con level: {player.GetConLevel(gArgs.Target)}");
+						if(player.GetConLevel(gArgs.Target) > -1)
+							_mobsKilled++;	
 					}
 					
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);

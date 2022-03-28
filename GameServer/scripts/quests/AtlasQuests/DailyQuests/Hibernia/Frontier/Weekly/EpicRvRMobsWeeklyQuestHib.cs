@@ -31,7 +31,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private int _glacierGiantKilled = 0;
 		private int _greenKnightKilled = 0;
 		
-		private static GameNPC Hector = null; // Start NPC
+		private static GameNPC Cola = null; // Start NPC
 
 		protected const string EVERN_NAME = "Evern";
 		protected const string GREENKNIGHT_NAME = "Green Knight";
@@ -72,37 +72,37 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 334793 && npc.Y == 420805)
 					{
-						Hector = npc;
+						Cola = npc;
 						break;
 					}
 
-			if (Hector == null)
+			if (Cola == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hector , creating it ...");
-				Hector = new GameNPC();
-				Hector.Model = 583;
-				Hector.Name = "Hector";
-				Hector.GuildName = "Realm Logistics";
-				Hector.Realm = eRealm.Hibernia;
+					log.Warn("Could not find Cola , creating it ...");
+				Cola = new GameNPC();
+				Cola.Model = 583;
+				Cola.Name = "Cola";
+				Cola.GuildName = "Realm Logistics";
+				Cola.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
-				Hector.CurrentRegionID = 200;
-				Hector.Size = 50;
-				Hector.Level = 59;
-				Hector.X = 334793;
-				Hector.Y = 420805;
-				Hector.Z = 5184;
-				Hector.Heading = 1586;
-				Hector.AddToWorld();
+				Cola.CurrentRegionID = 200;
+				Cola.Size = 50;
+				Cola.Level = 59;
+				Cola.X = 334793;
+				Cola.Y = 420805;
+				Cola.Z = 5184;
+				Cola.Heading = 1586;
+				Cola.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Hector.SaveIntoDatabase();
+					Cola.SaveIntoDatabase();
 				}
 			}
 
@@ -117,11 +117,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			Hector.AddQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
+			Cola.AddQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -131,17 +131,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Hector == null)
+			if (Cola == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			Hector.RemoveQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
+			Cola.RemoveQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
 		}
 
 		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
@@ -151,7 +151,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (player == null)
 				return;
 
-			if(Hector.CanGiveQuest(typeof (EpicRvRMobsWeeklyQuestHib), player)  <= 0)
+			if(Cola.CanGiveQuest(typeof (EpicRvRMobsWeeklyQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -164,16 +164,16 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Hector.SayTo(player, player.Name + ", please find allies and kill the epic creatures in frontiers for Hibernia!");
+							Cola.SayTo(player, player.Name + ", please find allies and kill the epic creatures in frontiers for Hibernia!");
 							break;
 						case 2:
-							Hector.SayTo(player, "Hello " + player.Name + ", did you [slay the creatures] and return for your reward?");
+							Cola.SayTo(player, "Hello " + player.Name + ", did you [slay the creatures] and return for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Hector.SayTo(player, "Hello "+ player.Name +", I am Hector. Some large monsters have blocked the supply lines in our frontier, and I could use your help in getting rid of them.\n"+
+					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. Some large monsters have blocked the supply lines in our frontier, and I could use your help in getting rid of them.\n"+
 					                   "You'll probably need to gather some friends for this one. We've lost a lot of good soldiers already. \n\n"+
 					                   "Can you support Hibernia and [kill the epic creatures] in frontiers?");
 				}
@@ -187,7 +187,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "kill the epic creatures":
-							player.Out.SendQuestSubscribeCommand(Hector, QuestMgr.GetIDForQuestType(typeof(EpicRvRMobsWeeklyQuestHib)), "Will you help Dean "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(EpicRvRMobsWeeklyQuestHib)), "Will you help Dean "+questTitle+"?");
 							break;
 					}
 				}
@@ -284,7 +284,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Hector.CanGiveQuest(typeof (EpicRvRMobsWeeklyQuestHib), player)  <= 0)
+			if(Cola.CanGiveQuest(typeof (EpicRvRMobsWeeklyQuestHib), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (EpicRvRMobsWeeklyQuestHib)) != null)
@@ -297,10 +297,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!Hector.GiveQuest(typeof (EpicRvRMobsWeeklyQuestHib), player, 1))
+				if (!Cola.GiveQuest(typeof (EpicRvRMobsWeeklyQuestHib), player, 1))
 					return;
 
-				Hector.SayTo(player, "Please, find the epic monsters in frontiers and return for your reward.");
+				Cola.SayTo(player, "Please, find the epic monsters in frontiers and return for your reward.");
 
 			}
 		}
@@ -324,7 +324,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 						       "Killed: " + GREENKNIGHT_NAME + " ("+ _greenKnightKilled +" | " + MAX_KILLED + ")\n" +
 						       "Killed: " + GLACIERGIANT_NAME + " ("+ _glacierGiantKilled +" | " + MAX_KILLED + ")\n";
 					case 2:
-						return "Return to Hector for your Reward.";
+						return "Return to Cola for your Reward.";
 				}
 				return base.Description;
 			}

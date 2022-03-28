@@ -147,6 +147,9 @@ namespace DOL.GS
         MajesticWill,
         TrueSight,
         ShadowRun,
+        Vanish,
+        BatteryOfLife,
+        RuneOfDecimation,
         MasteryOfConcentration,
     }
 }

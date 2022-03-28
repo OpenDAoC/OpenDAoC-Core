@@ -428,13 +428,6 @@ namespace DOL.GS {
                 DelveArmorStats(delve, player);
             }
 
-            if (Object_Type == (int)eObjectType.Magical && Slot.CLOAK == (int)eInventorySlot.Cloak)
-            {
-                WriteUsableClasses(delve, player.Client);
-                WriteMagicalBonuses(delve, player.Client, false);
-                DelveArmorStats(delve, player);
-            }
-            
             if (Object_Type == (int)eObjectType.Shield)
             {
                 WriteUsableClasses(delve, player.Client);
@@ -444,6 +437,10 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical || Object_Type == (int)eObjectType.AlchemyTincture || Object_Type == (int)eObjectType.SpellcraftGem)
             {
+                if (SlotPosition == (int) eInventorySlot.Cloak)
+                {
+                    WriteUsableClasses(delve, player.Client);
+                }
                 WriteMagicalBonuses(delve, player.Client, false);
             }
 
@@ -888,10 +885,10 @@ namespace DOL.GS {
             //10 == maxHP =  *.25
             //11-19 == resists = *2
             //20-115 == skill = *5
-            //163 == all magic = *10
-            //164 == all melee = *10
-            //167 == all dual weild = *10
-            //168 == all archery = *10
+            //163 == all magic = *5
+            //164 == all melee = *5
+            //167 == all dual weild = *5
+            //168 == all archery = *5
             if (Bonus1Type != 0 &&
                 Bonus1 != 0)
             {
@@ -921,7 +918,7 @@ namespace DOL.GS {
                   || Bonus1Type == 168
                   || Bonus1Type == 213)
                 {
-                    totalUti += Bonus1 * 10;
+                    totalUti += Bonus1 * 5;
                 }
             }
 
@@ -954,7 +951,7 @@ namespace DOL.GS {
                   || Bonus2Type == 168
                   || Bonus2Type == 213)
                 {
-                    totalUti += Bonus2 * 10;
+                    totalUti += Bonus2 * 5;
                 }
             }
 
@@ -987,7 +984,7 @@ namespace DOL.GS {
                   || Bonus3Type == 168
                   || Bonus3Type == 213)
                 {
-                    totalUti += Bonus3 * 10;
+                    totalUti += Bonus3 * 5;
                 }
             }
 
@@ -1020,7 +1017,7 @@ namespace DOL.GS {
                   || Bonus4Type == 168
                   || Bonus4Type == 213)
                 {
-                    totalUti += Bonus4 * 10;
+                    totalUti += Bonus4 * 5;
                 }
             }
 
@@ -1053,7 +1050,7 @@ namespace DOL.GS {
                   || Bonus5Type == 168
                   || Bonus5Type == 213)
                 {
-                    totalUti += Bonus5 * 10;
+                    totalUti += Bonus5 * 5;
                 }
             }
 
@@ -1086,7 +1083,7 @@ namespace DOL.GS {
                   || Bonus6Type == 168
                   || Bonus6Type == 213)
                 {
-                    totalUti += Bonus6 * 10;
+                    totalUti += Bonus6 * 5;
                 }
             }
 
@@ -1119,7 +1116,7 @@ namespace DOL.GS {
                   || Bonus7Type == 168
                   || Bonus7Type == 213)
                 {
-                    totalUti += Bonus7 * 10;
+                    totalUti += Bonus7 * 5;
                 }
             }
             if (Bonus8Type != 0 &&
@@ -1151,7 +1148,7 @@ namespace DOL.GS {
                   || Bonus8Type == 168
                   || Bonus8Type == 213)
                 {
-                    totalUti += Bonus8 * 10;
+                    totalUti += Bonus8 * 5;
                 }
             }
             if (Bonus9Type != 0 &&
@@ -1183,7 +1180,7 @@ namespace DOL.GS {
                   || Bonus9Type == 168
                   || Bonus9Type == 213)
                 {
-                    totalUti += Bonus9 * 10;
+                    totalUti += Bonus9 * 5;
                 }
             }
             if (Bonus10Type != 0 &&
@@ -1215,7 +1212,7 @@ namespace DOL.GS {
                   || Bonus10Type == 168
                   || Bonus10Type == 213)
                 {
-                    totalUti += Bonus10 * 10;
+                    totalUti += Bonus10 * 5;
                 }
             }
             if (ExtraBonusType != 0 &&
@@ -1247,7 +1244,7 @@ namespace DOL.GS {
                   || ExtraBonusType == 168
                   || ExtraBonusType == 213)
                 {
-                    totalUti += ExtraBonus * 10;
+                    totalUti += ExtraBonus * 5;
                 }
             }
 

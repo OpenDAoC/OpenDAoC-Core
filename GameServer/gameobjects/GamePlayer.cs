@@ -34,6 +34,7 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
+using DOL.GS.PlayerClass;
 using DOL.GS.PlayerTitles;
 using DOL.GS.PropertyCalc;
 using DOL.GS.Quests;
@@ -5238,13 +5239,14 @@ namespace DOL.GS
             var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
             if (loyaltyCheck == null)
                 loyaltyCheck = DateTime.UnixEpoch;
+            
+            List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-                List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
 
                 bool realmFound = false;
-                foreach (var rl in realmLoyalty)
+                foreach (var rl in rloyal)
                 {
                     if (rl.Realm == (int)this.Realm)
                     {
@@ -5255,18 +5257,19 @@ namespace DOL.GS
                     }
                     else
                     {
-                        /*if (rl.LoyalDays < 2)
+                        //reduce loyalty
+                        if (rl.LoyalDays < 2 || xpSource == eXPSource.Player)
                         {
                             rl.LoyalDays = 0;
                         }
                         else {
                             rl.LoyalDays--;
                             rl.LoyalDays--;    
-                        }
+                        } 
 
                         if (rl.LoyalDays < rl.MinimumLoyalDays)
                             rl.LoyalDays = rl.MinimumLoyalDays;
-                            */
+                            
                     }
                     rl.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.SaveObject(rl);
@@ -5285,6 +5288,23 @@ namespace DOL.GS
                 
                 this.TempProperties.setProperty(REALM_LOYALTY_KEY, DateTime.Now);
                 this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+            }
+
+            if (xpSource == eXPSource.Player && !this.CurrentZone.IsBG)
+            {
+                foreach (var loyalty in rloyal)
+                {
+                    if (loyalty.Realm == (int) this.Realm)
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        loyalty.LoyalDays = 0;
+                        if (loyalty.LoyalDays < loyalty.MinimumLoyalDays)
+                            loyalty.LoyalDays = loyalty.MinimumLoyalDays;
+                    }
+                }
             }
 
             long RealmLoyaltyBonus = 0;
@@ -7237,7 +7257,7 @@ namespace DOL.GS
                     if (ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
                         break;
 
-                    if (IsStealthed)
+                    if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                     {
                         if (!(ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell.SpellType == (byte)eSpellType.DamageOverTime))
                             Stealth(false);
@@ -14009,6 +14029,8 @@ namespace DOL.GS
                 {
                     EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
                 }
+                if(effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
             }
         }
 
@@ -14188,6 +14210,17 @@ namespace DOL.GS
 
             if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
                 return true;
+
+            if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 
+                && ( enemy.CharacterClass is ClassMinstrel 
+                     || enemy.CharacterClass is ClassRanger
+                     || enemy.CharacterClass is ClassHunter
+                     || enemy.CharacterClass is ClassScout)
+                && this.IsWithinRadius(enemy, 650)
+                && !enemy.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
+            {
+                return true;
+            }
 
             /*
              * http://www.critshot.com/forums/showthread.php?threadid=3142

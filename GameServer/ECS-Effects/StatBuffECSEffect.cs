@@ -31,6 +31,13 @@ namespace DOL.GS
             {
                 ApplyBonus(Owner, (SpellHandler as PaladinArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, false);
             }
+            else if (SpellHandler.Spell.SpellType == (byte) eSpellType.AllMagicResistBuff)
+            {
+                foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
+                {
+                    ApplyBonus(Owner, eBuffBonusCategory.SpecBuff, prop, SpellHandler.Spell.Value, Effectiveness, false);
+                }
+            }
             else
             {
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
@@ -86,6 +93,13 @@ namespace DOL.GS
             {
                 ApplyBonus(Owner, (SpellHandler as PaladinArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, true);
             }
+            else if (SpellHandler.Spell.SpellType == (byte) eSpellType.AllMagicResistBuff)
+            {
+                foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
+                {
+                    ApplyBonus(Owner, eBuffBonusCategory.SpecBuff, prop, SpellHandler.Spell.Value, Effectiveness, true);
+                }
+            }
             else
             {
                 if (EffectType == eEffect.EnduranceRegenBuff)
@@ -130,6 +144,7 @@ namespace DOL.GS
             if (Property != eProperty.Undefined)
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
+                //Console.WriteLine($"Applying bonus for property {Property} at value {Value} for owner {owner} bonus cat {tblBonusCat} #2 {BonusCat}");
                 //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
                 if (IsSubstracted)
                 {
