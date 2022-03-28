@@ -428,13 +428,6 @@ namespace DOL.GS {
                 DelveArmorStats(delve, player);
             }
 
-            if (Object_Type == (int)eObjectType.Magical && Slot.CLOAK == (int)eInventorySlot.Cloak)
-            {
-                WriteUsableClasses(delve, player.Client);
-                WriteMagicalBonuses(delve, player.Client, false);
-                DelveArmorStats(delve, player);
-            }
-            
             if (Object_Type == (int)eObjectType.Shield)
             {
                 WriteUsableClasses(delve, player.Client);
@@ -444,6 +437,10 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical || Object_Type == (int)eObjectType.AlchemyTincture || Object_Type == (int)eObjectType.SpellcraftGem)
             {
+                if (Slot.CLOAK == (int) eInventorySlot.Cloak)
+                {
+                    WriteUsableClasses(delve, player.Client);
+                }
                 WriteMagicalBonuses(delve, player.Client, false);
             }
 
