@@ -7,6 +7,7 @@ using System.Reflection;
 using DOL.Database;
 using log4net.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.GS.Scripts
 {
@@ -102,7 +103,7 @@ namespace DOL.GS.Scripts
 						//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 
-				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
+					DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
 					charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
 					charFreeEventEquip.KeyName = customKey;
 					charFreeEventEquip.Value = "1";
@@ -137,6 +138,7 @@ namespace DOL.GS.Scripts
 					return false;
 				}
 
+				/*
 				List<eInventorySlot> gemSlots = new List<eInventorySlot>();
 				gemSlots.Add(eInventorySlot.Cloak);
 				gemSlots.Add(eInventorySlot.Neck);
@@ -160,6 +162,14 @@ namespace DOL.GS.Scripts
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
+				*/
+				List<ItemTemplate> atlasGem = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_gem")));
+				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(atlasGem.FirstOrDefault());
+				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+				
+				List<ItemTemplate> atlasCloak = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_cloak")));
+				InventoryItem invitem2 = GameInventoryItem.Create<ItemUnique>(atlasCloak.FirstOrDefault());
+				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem2);
 
 				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
 				charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
