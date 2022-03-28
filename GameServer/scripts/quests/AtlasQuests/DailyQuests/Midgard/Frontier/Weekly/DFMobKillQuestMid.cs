@@ -339,7 +339,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					}
 					else
 					{
-						if(player.GetConLevel(gArgs.Target) >= 0)
+						if(player.GetConLevel(gArgs.Target) > -1)
 							_mobsKilled++;	
 					}
 					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);

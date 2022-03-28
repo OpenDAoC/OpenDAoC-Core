@@ -339,7 +339,8 @@ namespace DOL.GS.DailyQuest.Albion
 					}
 					else
 					{
-						if(player.GetConLevel(gArgs.Target) >= 0)
+						Console.WriteLine($"Con level: {player.GetConLevel(gArgs.Target)}");
+						if(player.GetConLevel(gArgs.Target) > -1)
 							_mobsKilled++;	
 					}
 					

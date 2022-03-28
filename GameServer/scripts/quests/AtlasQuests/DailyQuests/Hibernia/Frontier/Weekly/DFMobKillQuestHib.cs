@@ -340,7 +340,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					}
 					else
 					{
-						if(player.GetConLevel(gArgs.Target) >= 0)
+						if(player.GetConLevel(gArgs.Target) > -1)
 							_mobsKilled++;	
 					}
 					
