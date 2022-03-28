@@ -437,7 +437,7 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical || Object_Type == (int)eObjectType.AlchemyTincture || Object_Type == (int)eObjectType.SpellcraftGem)
             {
-                if (Slot.CLOAK == (int) eInventorySlot.Cloak)
+                if (SlotPosition == (int) eInventorySlot.Cloak)
                 {
                     WriteUsableClasses(delve, player.Client);
                 }
