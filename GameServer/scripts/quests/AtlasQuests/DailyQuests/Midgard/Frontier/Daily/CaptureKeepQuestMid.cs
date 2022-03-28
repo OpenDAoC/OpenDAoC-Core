@@ -294,7 +294,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Go to the battlefield and conquer a keep. \nCaptured: Keep ("+ _isCaptured +" | 1)";
+						return "Go to the battlefield and conquer a keep. \nCaptured: Keep ("+ _isCaptured +" | "+MAX_CAPTURED+")";
 					case 2:
 						return "Return to Herou for your Reward.";
 				}

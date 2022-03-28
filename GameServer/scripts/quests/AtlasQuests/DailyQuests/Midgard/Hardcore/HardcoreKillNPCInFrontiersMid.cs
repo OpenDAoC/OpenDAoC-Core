@@ -28,6 +28,7 @@ namespace DOL.GS.DailyQuest
 		protected static GameNPC SucciMid = null; // Start NPC
 
 		private int FrontierMobsKilled = 0;
+		private int MAX_KillGoal = 25;
 
 		// Constructors
 		public HardcoreKillNPCInFrontiersMid() : base()
@@ -293,7 +294,7 @@ namespace DOL.GS.DailyQuest
 					case -1:
 						return "Your deeds are done for today.";
 					case 1:
-						return "Kill 25 mobs in a frontier zone. \n Creatures Killed: ("+ FrontierMobsKilled +" | 25)";
+						return "Kill 25 mobs in a frontier zone. \n Creatures Killed: ("+ FrontierMobsKilled +" | "+MAX_KillGoal+")";
 					case 2:
 						return "Return to Succi in Druim Ligen for your grim reward.";
 				}
@@ -326,9 +327,10 @@ namespace DOL.GS.DailyQuest
 				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
+					player.Out.SendMessage("[Hardcore] Monster Killed: (" + FrontierMobsKilled + " | " + MAX_KillGoal + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= 25)
+					if (FrontierMobsKilled >= MAX_KillGoal)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;

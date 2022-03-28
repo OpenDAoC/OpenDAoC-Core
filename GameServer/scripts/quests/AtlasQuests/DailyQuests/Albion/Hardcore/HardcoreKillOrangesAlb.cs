@@ -28,6 +28,7 @@ namespace DOL.GS.DailyQuest
 		protected static GameNPC SucciAlb = null; // Start NPC
 
 		private int OrangeConKilled = 0;
+		private int MAX_KillGoal = 10;
 
 		// Constructors
 		public HardcoreKillOrangesAlb() : base()
@@ -292,7 +293,7 @@ namespace DOL.GS.DailyQuest
 				switch (Step)
 				{
 					case 1:
-						return "Kill mobs orange con or higher. \n Orange Con Monsters Killed: ("+ OrangeConKilled +" | 10)";
+						return "Kill mobs orange con or higher. \n Orange Con Monsters Killed: ("+ OrangeConKilled +" | "+MAX_KillGoal+")";
 					case 2:
 						return "Return to Succi in Castle Sauvage for your Reward.";
 				}
@@ -325,9 +326,10 @@ namespace DOL.GS.DailyQuest
 				if (player.GetConLevel(gArgs.Target) > 0) 
 				{
 					OrangeConKilled++;
+					player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (OrangeConKilled >= 10)
+					if (OrangeConKilled >= MAX_KillGoal)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;
