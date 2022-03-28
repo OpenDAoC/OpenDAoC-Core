@@ -21,6 +21,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -44,6 +45,15 @@ namespace DOL.GS.Spells
         /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+			{
+				if (Util.Chance(Caster.SpellCriticalChance))
+				{
+					double preModEffectiveness = effectiveness;
+					effectiveness *= 1 + Util.Random(1, 10) * .1;
+					if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(effectiveness-preModEffectiveness) * 100}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				}
+			}
 			base.ApplyEffectOnTarget(target, effectiveness);
 			
 			if (target.Realm == 0 || Caster.Realm == 0)

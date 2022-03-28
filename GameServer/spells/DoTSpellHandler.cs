@@ -23,6 +23,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Language;
 using DOL.AI.Brain;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -93,12 +94,15 @@ namespace DOL.GS.Spells
 					ad.Damage += additional;
 				}
             }
-            			
-			//GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
+
+            //dots can only crit through Wild Arcana RA, which is handled elsewhere
+            if (ad.CriticalDamage > 0) ad.CriticalDamage = 0;
+            
+            
+	            //GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
 			//if (iWarLordEffect != null)
 			//	ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
-                       
-            //ad.CriticalDamage = 0; - DoTs can crit.
+			
 			return ad;
 		}
 
@@ -191,6 +195,17 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+			{
+				if (Util.Chance(Caster.SpellCriticalChance))
+				{
+					double preModEffectiveness = effectiveness;
+					double critMod =  1 + Util.Random(10, 100) * .01;
+					int critPercent = (int)((critMod - 1) * 100);
+					effectiveness *= critMod;
+					if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for {critPercent}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				}
+			}
 			base.ApplyEffectOnTarget(target, effectiveness);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}

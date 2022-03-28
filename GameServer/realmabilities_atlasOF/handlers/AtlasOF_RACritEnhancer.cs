@@ -46,13 +46,13 @@ namespace DOL.GS.RealmAbilities
     /// <summary>
     /// DoT & Debuff crit chance %.
     /// </summary>
-    //     public class AtlasOF_WildArcanaAbility : RAPropertyEnhancer
-    //     {
-    //         public AtlasOF_WildArcanaAbility(DBAbility dba, int level) : base(dba, level) { }
-    //         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
-    //         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancerAmountForLevel(level); }
-    //         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPropertyEnhancerCostForUpgrade(level); }
-    //     }
+         public class AtlasOF_WildArcanaAbility : RAPropertyEnhancer
+         {
+             public AtlasOF_WildArcanaAbility(DBAbility dba, int level) : base(dba, level, eProperty.CriticalSpellHitChance) { }
+             public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
+             public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
+             public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+         }
 
     /// <summary>
     /// Pet crit chance %.

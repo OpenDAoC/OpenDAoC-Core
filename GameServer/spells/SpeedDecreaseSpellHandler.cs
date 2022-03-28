@@ -21,6 +21,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Events;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -51,6 +52,16 @@ namespace DOL.GS.Spells
 				OnSpellResisted(target);
 				return;
 			}
+
+			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+			{
+				if (Util.Chance(Caster.SpellCriticalChance))
+				{
+					effectiveness *= 2;
+					if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for 100% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				}
+			}
+			
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}
 
