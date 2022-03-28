@@ -4953,7 +4953,7 @@ namespace DOL.GS {
 
             //based off of eProperty
             //1-8 == stats = *.6667
-            //9 == power cap = *2
+            //9 == power cap = *1
             //10 == maxHP =  *.25
             //11-19 == resists = *2
             //20-115 == skill = *5
@@ -4970,7 +4970,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus1Type == 9)
                 {
-                    totalUti += Bonus1 * 2;
+                    totalUti += Bonus1 ;
                 }
                 else if (Bonus1Type == 10)
                 {
@@ -5003,7 +5003,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus2Type == 9)
                 {
-                    totalUti += Bonus2 * 2;
+                    totalUti += Bonus2;
                 }
                 else if (Bonus2Type == 10)
                 {
@@ -5036,7 +5036,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus3Type == 9)
                 {
-                    totalUti += Bonus3 * 2;
+                    totalUti += Bonus3 ;
                 }
                 else if (Bonus3Type == 10)
                 {
@@ -5069,7 +5069,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus4Type == 9)
                 {
-                    totalUti += Bonus4 * 2;
+                    totalUti += Bonus4;
                 }
                 else if (Bonus4Type == 10)
                 {
@@ -5102,7 +5102,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus5Type == 9)
                 {
-                    totalUti += Bonus5 * 2;
+                    totalUti += Bonus5;
                 }
                 else if (Bonus5Type == 10)
                 {
@@ -5135,7 +5135,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus6Type == 9)
                 {
-                    totalUti += Bonus6 * 2;
+                    totalUti += Bonus6 ;
                 }
                 else if (Bonus6Type == 10)
                 {
@@ -5168,7 +5168,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus7Type == 9)
                 {
-                    totalUti += Bonus7 * 2;
+                    totalUti += Bonus7;
                 }
                 else if (Bonus7Type == 10)
                 {
@@ -5200,7 +5200,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus8Type == 9)
                 {
-                    totalUti += Bonus8 * 2;
+                    totalUti += Bonus8;
                 }
                 else if (Bonus8Type == 10)
                 {
@@ -5232,7 +5232,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus9Type == 9)
                 {
-                    totalUti += Bonus9 * 2;
+                    totalUti += Bonus9;
                 }
                 else if (Bonus9Type == 10)
                 {
@@ -5264,7 +5264,7 @@ namespace DOL.GS {
                 }
                 else if (Bonus10Type == 9)
                 {
-                    totalUti += Bonus10 * 2;
+                    totalUti += Bonus10;
                 }
                 else if (Bonus10Type == 10)
                 {
@@ -5296,7 +5296,7 @@ namespace DOL.GS {
                 }
                 else if (ExtraBonusType == 9)
                 {
-                    totalUti += ExtraBonus * 2;
+                    totalUti += ExtraBonus;
                 }
                 else if (ExtraBonusType == 10)
                 {
@@ -5346,7 +5346,7 @@ namespace DOL.GS {
                 }
                 else if (BonusType == 9)
                 {
-                    totalUti += Bonus * 2;
+                    totalUti += Bonus;
                 }
                 else if (BonusType == 10)
                 {
