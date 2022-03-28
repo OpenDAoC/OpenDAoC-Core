@@ -87,7 +87,7 @@ namespace DOL.GS.DailyQuest.Albion
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hector , creating it ...");
 				Hector = new GameNPC();
-				Hector.Model = 724;
+				Hector.Model = 716;
 				Hector.Name = "Hector";
 				Hector.GuildName = "Advisor to the King";
 				Hector.Realm = eRealm.Albion;
