@@ -28,6 +28,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private int PlayersKilled = 0;
 		protected const int MAX_KILLED = 10;
+		
+		// prevent grey killing
+		protected const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public PlayerKillQuestHib() : base()
@@ -331,7 +334,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON) 
 				{
 					PlayersKilled++;
 					player.Out.SendMessage("[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
