@@ -5256,18 +5256,19 @@ namespace DOL.GS
                     }
                     else
                     {
-                        /*if (rl.LoyalDays < 2)
+                        //reduce loyalty
+                        if (rl.LoyalDays < 2 || xpSource == eXPSource.Player)
                         {
                             rl.LoyalDays = 0;
                         }
                         else {
                             rl.LoyalDays--;
                             rl.LoyalDays--;    
-                        }
+                        } 
 
                         if (rl.LoyalDays < rl.MinimumLoyalDays)
                             rl.LoyalDays = rl.MinimumLoyalDays;
-                            */
+                            
                     }
                     rl.LastLoyaltyUpdate = DateTime.Now;
                     GameServer.Database.SaveObject(rl);
