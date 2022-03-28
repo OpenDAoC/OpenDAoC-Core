@@ -138,38 +138,45 @@ namespace DOL.GS.Scripts
 					return false;
 				}
 
-				/*
-				List<eInventorySlot> gemSlots = new List<eInventorySlot>();
-				gemSlots.Add(eInventorySlot.Cloak);
-				gemSlots.Add(eInventorySlot.Neck);
-				gemSlots.Add(eInventorySlot.Waist);
-				gemSlots.Add(eInventorySlot.Jewellery);
-				gemSlots.Add(eInventorySlot.LeftRing);
-				gemSlots.Add(eInventorySlot.RightRing);
-				gemSlots.Add(eInventorySlot.LeftBracer);
-				gemSlots.Add(eInventorySlot.RightBracer);
-
-				foreach (eInventorySlot islot in gemSlots)
+				if (player.Level < 50)
 				{
-					GeneratedUniqueItem item = null;
-					item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), eObjectType.Magical, islot);
-					item.AllowAdd = true;
-					item.Color = (int)color;
-					item.IsTradable = false;
-					item.Price = 1;
-					GameServer.Database.AddObject(item);
-					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-					//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					List<eInventorySlot> gemSlots = new List<eInventorySlot>();
+					gemSlots.Add(eInventorySlot.Cloak);
+					gemSlots.Add(eInventorySlot.Neck);
+					gemSlots.Add(eInventorySlot.Waist);
+					gemSlots.Add(eInventorySlot.Jewellery);
+					gemSlots.Add(eInventorySlot.LeftRing);
+					gemSlots.Add(eInventorySlot.RightRing);
+					gemSlots.Add(eInventorySlot.LeftBracer);
+					gemSlots.Add(eInventorySlot.RightBracer);
+
+					foreach (eInventorySlot islot in gemSlots)
+					{
+						GeneratedUniqueItem item = null;
+						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), eObjectType.Magical, islot);
+						item.AllowAdd = true;
+						item.Color = (int)color;
+						item.IsTradable = false;
+						item.Price = 1;
+						GameServer.Database.AddObject(item);
+						InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+						//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
 				}
-				*/
-				List<ItemTemplate> atlasGem = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_gem")));
-				InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(atlasGem.FirstOrDefault());
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+				else
+				{
+					List<ItemTemplate> atlasGem = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_gem")));
+					InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(atlasGem.FirstOrDefault());
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
 				
-				List<ItemTemplate> atlasCloak = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_cloak")));
-				InventoryItem invitem2 = GameInventoryItem.Create<ItemUnique>(atlasCloak.FirstOrDefault());
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem2);
+					List<ItemTemplate> atlasCloak = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_cloak")));
+					InventoryItem invitem2 = GameInventoryItem.Create<ItemUnique>(atlasCloak.FirstOrDefault());
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem2);
+				}
+				
+				
+				
 
 				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
 				charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
