@@ -30,8 +30,8 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		
 		// Kill Goal
 		private int MAX_KILLING_GOAL = 100;
-		// Prevent Grey Killing
-		private static int MIN_LEVEL = 35;
+		// prevent grey killing
+		protected const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public PlayerKillWeeklyQuestMid() : base()
@@ -320,7 +320,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
+				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON) 
 				{
 					PlayersKilled++;
 					player.Out.SendMessage("[Weekly] Enemy Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
