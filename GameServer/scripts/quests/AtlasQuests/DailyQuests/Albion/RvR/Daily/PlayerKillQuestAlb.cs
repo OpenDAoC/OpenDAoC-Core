@@ -319,7 +319,7 @@ namespace DOL.GS.DailyQuest.Albion
 				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer) 
 				{
 					PlayersKilled++;
-					player.Out.SendMessage("[Daily] Killed Enemies: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
 					if (PlayersKilled >= MAX_KILLED)
