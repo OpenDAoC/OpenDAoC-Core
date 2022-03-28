@@ -42,6 +42,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if ((client.Player.TargetObject is IGameInventoryObject) == false)
 				return;
+			
+			packet.Skip(4); // 4 bytes unused
 
 			MarketSearch.SearchData search = new MarketSearch.SearchData
 			{
