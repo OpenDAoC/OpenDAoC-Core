@@ -30,7 +30,16 @@ namespace DOL.GS
         {
             Master = master;
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                default: return 25; // dmg reduction for rest resists
+            }
+        }
         public virtual int GSCifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -123,6 +132,18 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161336);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Charisma = npcTemplate.Charisma;
+            Empathy = npcTemplate.Empathy;
+
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             GiantSporiteClusterBrain sBrain = new GiantSporiteClusterBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
