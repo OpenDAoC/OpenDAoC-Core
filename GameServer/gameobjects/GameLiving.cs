@@ -4255,16 +4255,20 @@ namespace DOL.GS
 
 				attackComponent.AddAttacker( ad.Attacker );
 
-				if (ad.Attacker.Realm == 0 || this.Realm == 0)
+				if (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler)
 				{
-					LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
+					if (ad.Attacker.Realm == 0 || this.Realm == 0)
+					{
+						LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+						ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
+					}
+					else
+					{
+						LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+						ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
+					}
 				}
-				else
-				{
-					LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
-				}
+				
 
 				// Melee Attack that actually caused damage.
 				if (ad.IsMeleeAttack && ad.Damage > 0)
