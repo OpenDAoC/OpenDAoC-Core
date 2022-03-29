@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 using DOL.Language;
 
 namespace DOL.GS.Spells
@@ -44,6 +45,14 @@ namespace DOL.GS.Spells
 
 			if ((target is Keeps.GameKeepDoor) == false && (target is Keeps.GameKeepComponent == false))
 			{
+				if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+				{
+					if (Util.Chance(Caster.SpellCriticalChance))
+					{
+						effectiveness *= 2;
+						if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for 100% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					}
+				}
 				base.ApplyEffectOnTarget(target, effectiveness);
 			}
 		}

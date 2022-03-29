@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | 25)";
+						return "Kill yellow con or higher mobs in any RvR zone. \nKilled: ("+ FrontierMobsKilled +" | "+MAX_KILLED+")";
 					case 2:
 						return "Return to Cola in Druim Ligen for your Reward.";
 				}
@@ -329,9 +329,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
 				{
 					FrontierMobsKilled++;
+					player.Out.SendMessage("[Daily] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= 25)
+					if (FrontierMobsKilled >= MAX_KILLED)
 					{
 						// FinishQuest or go back to npc
 						Step = 2;

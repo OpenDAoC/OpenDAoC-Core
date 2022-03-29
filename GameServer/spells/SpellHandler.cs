@@ -4569,16 +4569,19 @@ namespace DOL.GS.Spells
 				IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 					aggroBrain.AddToAggroList(Caster, 1);
-
-				if (Caster.Realm == 0 || ad.Target.Realm == 0)
+				
+				if (this is not DoTSpellHandler and not StyleBleeding)
 				{
-					ad.Target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-				}
-				else
-				{
-					ad.Target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+					if (Caster.Realm == 0 || ad.Target.Realm == 0)
+					{
+						ad.Target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+						Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+					}
+					else
+					{
+						ad.Target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+						Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+					}
 				}
 			}
 

@@ -109,6 +109,11 @@ namespace DOL.GS
                     }
                     else Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
                 }
+
+                if (Owner.Realm == 0 || SpellHandler.Caster.Realm == 0)
+                    Owner.LastAttackTickPvE = GameLoop.GameLoopTime;
+                else
+                    Owner.LastAttackTickPvP = GameLoop.GameLoopTime;
             }
 
             if (LastTick == 0)

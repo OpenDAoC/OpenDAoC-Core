@@ -165,7 +165,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 							if (!ra.CheckRequirement(client.Player))
 							{
-								client.Out.SendMessage("You are not experienced enough to get " + ra.Name + " now. Come back later.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage("You do not have required pre-requisites to train " + ra.Name + " now. Come back later.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
 							

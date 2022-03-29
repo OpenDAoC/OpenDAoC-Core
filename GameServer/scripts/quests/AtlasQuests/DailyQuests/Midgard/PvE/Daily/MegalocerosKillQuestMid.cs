@@ -304,7 +304,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Find Megaloceros in the South East of Gripklosa Mountains. \nKilled: Megaloceros ("+ megalocerosKilled +" | 10)";
+						return "Find Megaloceros in the South East of Gripklosa Mountains. \nKilled: Megaloceros ("+ megalocerosKilled +" | "+MAX_KILLED+")";
 					case 2:
 						return "Return to Isaac for your Reward.";
 				}

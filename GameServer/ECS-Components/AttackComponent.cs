@@ -1256,7 +1256,7 @@ namespace DOL.GS
             ad.DamageType = AttackDamageType(weapon);
             ad.ArmorHitLocation = eArmorSlot.NOTSET;
             ad.Weapon = weapon;
-            ad.IsOffHand = weapon == null ? false : weapon.Hand == 2;
+            ad.IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND;
             AttackState = true;
 
             // Asp style range add
