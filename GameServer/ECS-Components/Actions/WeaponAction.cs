@@ -136,14 +136,15 @@ namespace DOL.GS
                 if (mainWeapon.Object_Type == (int)eObjectType.HandToHand || 
                     leftWeapon?.Object_Type == (int)eObjectType.HandToHand || 
                     mainWeapon.Object_Type == (int)eObjectType.TwoHandedWeapon || 
-                    mainWeapon.Item_Type == (int)Slot.RANGED)
+                    mainWeapon.Object_Type == (int)eObjectType.Thrown ||
+                    mainWeapon.SlotPosition == (int)Slot.RANGED)
                     usingOH = false;
                 else
                     usingOH = true;
 
                 if (owner is GameNPC)
                     usingOH = false;
-
+                
                 // both hands are used for attack
                 mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
                 if (style == null)
@@ -271,7 +272,7 @@ namespace DOL.GS
             owner.TempProperties.removeProperty(LAST_ATTACK_DATA_LH);
 
             //now left hand damage
-            if (leftHandSwingCount > 0)
+            if (leftHandSwingCount > 0 && mainWeapon.SlotPosition != Slot.RANGED)
             {
                 switch (mainHandAD.AttackResult)
                 {
