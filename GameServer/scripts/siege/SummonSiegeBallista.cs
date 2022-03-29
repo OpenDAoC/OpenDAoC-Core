@@ -1,6 +1,6 @@
 ﻿/*
  *
- * Atlas -  Summon Siege Ram
+ * Atlas -  Summon Siege Ballista
  *
  */
 
@@ -8,25 +8,25 @@ using System.Collections.Generic;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("SummonSiegeRam")]
-    public class SummonSiegeRam : SpellHandler
+    [SpellHandler("SummonSiegeBallista")]
+    public class SummonSiegeBallista : SpellHandler
     {
-	    public SummonSiegeRam(GameLiving caster, Spell spell, SpellLine line)
+	    public SummonSiegeBallista(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line) { }
 	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
             base.ApplyEffectOnTarget(target, effectiveness);
-
-            GameSiegeRam ram = new GameSiegeRam();
-            ram.X = Caster.X;
-            ram.Y = Caster.Y;
-            ram.Z = Caster.Z;
-            ram.CurrentRegion = Caster.CurrentRegion;
-            ram.Model = 2600;
-            ram.Level = 1;
-            ram.Name = "light siege ram";
-            ram.Realm = Caster.Realm;
-            ram.AddToWorld();
+            
+            GameSiegeBallista bal = new GameSiegeBallista();
+            bal.X = Caster.X;
+            bal.Y = Caster.Y;
+            bal.Z = Caster.Z;
+            bal.CurrentRegion = Caster.CurrentRegion;
+            bal.Model = 0x0A55;
+            bal.Level = 3;
+            bal.Name = "field ballista";
+            bal.Realm = Caster.Realm;
+            bal.AddToWorld();
         }
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
