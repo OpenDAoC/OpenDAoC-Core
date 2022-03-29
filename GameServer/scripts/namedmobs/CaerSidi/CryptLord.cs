@@ -5,9 +5,6 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -20,7 +17,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public virtual int COifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -76,13 +82,16 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159518);
             LoadTemplate(npcTemplate);
-            LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;
             Dexterity = npcTemplate.Dexterity;
             Constitution = npcTemplate.Constitution;
             Quickness = npcTemplate.Quickness;
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(64);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
             CryptLordBrain adds = new CryptLordBrain();
             SetOwnBrain(adds);
@@ -119,6 +128,7 @@ namespace DOL.GS
                 CO.MeleeDamageType = eDamageType.Slash;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
+                CO.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
                 CO.X = 24906;
                 CO.Y = 40138;
@@ -138,24 +148,6 @@ namespace DOL.GS
             }
             else
                 log.Warn("Crypt Lord exist ingame, remove it and restart server if you want to add by script code.");
-        }
-
-        public override void Die(GameObject killer) //on kill generate orbs
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
-                }
-            }
-
-            base.Die(killer);
         }
     }
 }
@@ -345,7 +337,6 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 BafMobs = false;
                 this.Body.Health = this.Body.MaxHealth;
-                ;
             }
 
             if (Body.IsOutOfTetherRange)
