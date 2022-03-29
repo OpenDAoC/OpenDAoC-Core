@@ -58,7 +58,7 @@ namespace DOL.GS.Scripts
                 return false;
             }
             
-            if (player.Level > 1)
+            if (player.Level > 1 && !player.Boosted)
             {
                 player.Out.SendMessage($"I'm sorry {player.Name}, you are too high level to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
