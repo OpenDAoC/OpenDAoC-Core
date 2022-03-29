@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (Caster.CurrentZone.IsRvR || Caster.CurrentRegion.IsDungeon)
+            if (Caster.CurrentZone.IsRvR)
             {
                 MessageToCaster("You cannot summon your pet here!", PacketHandler.eChatType.CT_SpellResisted);
                 return false;
