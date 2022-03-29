@@ -749,7 +749,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					#endregion
 					#region Group
-				case 12: // Item info to Group Chat
+				case 14: // Item info to Group Chat
 					{
 						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
 						if (invItem == null)
@@ -765,7 +765,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					#endregion
 					#region Guild
-				case 13: // Item info to Guild Chat
+				case 12: // Item info to Guild Chat
 					{
 						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
 						if (invItem == null)

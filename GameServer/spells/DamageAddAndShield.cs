@@ -78,11 +78,13 @@ namespace DOL.GS.Spells
 			if (attacker.ObjectState != GameObject.eObjectState.Active) return;
 			if (attacker.IsAlive == false) return;
 
-			int spread = m_minDamageSpread;
-			spread += Util.Random(50);
+			double minVariance;
+			double maxVariance;
+			CalculateDamageVariance(Caster, out minVariance, out maxVariance);
+			//spread += Util.Random(50);
 			double dpsCap = DPSCap(attacker.Level);
 			double dps = IgnoreDamageCap ? Spell.Damage : Math.Min(Spell.Damage, dpsCap);
-			double damage = dps * atkArgs.AttackData.WeaponSpeed * spread * 0.001; // attack speed is 10 times higher (2.5spd=25)
+			double damage = Util.Random((int)(minVariance * dps * atkArgs.AttackData.WeaponSpeed * 0.1), (int)(maxVariance * dps * atkArgs.AttackData.WeaponSpeed * 0.1)); ; // attack speed is 10 times higher (2.5spd=25)
 			double damageResisted = damage * target.GetResist(Spell.DamageType) * -0.01;
 
 			// log.DebugFormat("dps: {0}, damage: {1}, damageResisted: {2}, minDamageSpread: {3}, spread: {4}", dps, damage, damageResisted, m_minDamageSpread, spread);
