@@ -330,7 +330,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					if (player.Group != null)
 					{
-						double minRequiredCon =(double) (player.Group.MemberCount / 2);
+						double minRequiredCon =Math.Ceiling((double) (player.Group.MemberCount / 3));
+						if (minRequiredCon > 3) minRequiredCon = 3;
 						if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
 							_mobsKilled++;
 						else

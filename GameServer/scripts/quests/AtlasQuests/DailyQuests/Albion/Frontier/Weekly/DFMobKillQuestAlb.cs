@@ -329,7 +329,8 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					if (player.Group != null)
 					{
-						double minRequiredCon = (double) player.Group.MemberCount / 2;
+						double minRequiredCon = Math.Ceiling((double) (player.Group.MemberCount / 3));
+						if (minRequiredCon > 3) minRequiredCon = 3;
 						if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
 							_mobsKilled++;
 						else
@@ -339,7 +340,6 @@ namespace DOL.GS.DailyQuest.Albion
 					}
 					else
 					{
-						Console.WriteLine($"Con level: {player.GetConLevel(gArgs.Target)}");
 						if(player.GetConLevel(gArgs.Target) > -1)
 							_mobsKilled++;	
 					}
