@@ -269,7 +269,7 @@ namespace DOL.GS
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Special"));
 
 			//This is an Array of the bonuses that show up in the Bonus Snapshot on Live, the only ones that really need to be there.
-			int[] bonusToBeDisplayed = new int[37] { 10, 9, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 247, 248, 251, 252, 253, 254, 210 };
+			int[] bonusToBeDisplayed = new int[37] { 9, 10, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 210, 247, 248, 251, 252, 253, 254};
 			for (int i = 0; i < (int)eProperty.MaxProperty; i++)
 			{
 				if ((player.ItemBonus[i] > 0) && ((Array.BinarySearch(bonusToBeDisplayed, i)) >= 0)) //Tiny edit here to add the binary serach to weed out the non essential bonuses
