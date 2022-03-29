@@ -16,7 +16,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 55; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 55; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 55; // dmg reduction for melee dmg
+                default: return 35; // dmg reduction for rest resists
+            }
+        }
         public virtual int COifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -61,14 +70,16 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166369);
             LoadTemplate(npcTemplate);
-            LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;
             Dexterity = npcTemplate.Dexterity;
             Constitution = npcTemplate.Constitution;
             Quickness = npcTemplate.Quickness;
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
 
+            MeleeDamageType = eDamageType.Spirit;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             ReckonedSoul.SoulCount = 0;
             SoulReckonerBrain adds = new SoulReckonerBrain();
             SetOwnBrain(adds);
@@ -128,29 +139,16 @@ namespace DOL.GS
                 CO.Size = 190;
                 CO.CurrentRegionID = 60; //caer sidi
 
-                CO.Strength = 500;
-                CO.Intelligence = 220;
-                CO.Piety = 220;
-                CO.Dexterity = 200;
-                CO.Constitution = 200;
-                CO.Quickness = 125;
-                CO.BodyType = 5;
-                CO.MeleeDamageType = eDamageType.Spirit;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
                 CO.X = 28891;
                 CO.Y = 35855;
                 CO.Z = 15370;
-                CO.MaxDistance = 2500;
-                CO.TetherRange = 2600;
-                CO.MaxSpeedBase = 300;
                 CO.Heading = 966;
                 CO.Flags = eFlags.GHOST;
 
                 SoulReckonerBrain ubrain = new SoulReckonerBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 400;
                 CO.SetOwnBrain(ubrain);
                 CO.AddToWorld();
                 CO.Brain.Start();
@@ -364,7 +362,7 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
+                    spell.CastTime = 3;
                     spell.RecastDelay = 20;
                     spell.ClientEffect = 9191;
                     spell.Icon = 710;
