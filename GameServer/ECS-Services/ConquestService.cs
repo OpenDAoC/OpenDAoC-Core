@@ -32,7 +32,7 @@ public class ConquestService
         {
             foreach (var activeObjective in ConquestManager.GetActiveObjectives)
             {
-                activeObjective.DoSubtaskRollover();
+                activeObjective.DoRollover();
             }
         }
         //Console.WriteLine($"conquest heartbeat {GameLoop.GameLoopTime} countdown {GameLoop.GameLoopTime - (ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 10000)}");

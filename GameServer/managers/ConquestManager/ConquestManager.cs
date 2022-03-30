@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using Microsoft.AspNetCore.Components.Server;
 
 namespace DOL.GS;
 
@@ -146,12 +147,14 @@ public class ConquestManager
                 client.Player.Out.SendMessage($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
         }
 
+        List<GamePlayer> RecentContributors = new List<GamePlayer>();
         foreach (var activeObjective in GetActiveObjectives)
         {
             AddSubtotalToOverallFrom(activeObjective);
+            activeObjective.ConquestCapture();
         }
         
-        
+        AwardContributorsForRealm(CapturedKeep.Realm);
     }
     
     private void AwardContributorsForRealm(eRealm realmToAward)
@@ -163,12 +166,20 @@ public class ConquestManager
                 //if player is of the correct realm, award them their realm's portion of the overall reward
                 if (contributingPlayer.Realm == realmToAward)
                 {
-                    if(realmToAward == eRealm.Hibernia)
-                        contributingPlayer.GainRealmPoints((SumOfContributions * (HiberniaContribution/SumOfContributions)), false, true);
-                    if(realmToAward == eRealm.Albion)
-                        contributingPlayer.GainRealmPoints((SumOfContributions * (AlbionContribution/SumOfContributions)), false, true);
+                    int realmContribution = 0;
+                    if (realmToAward == eRealm.Hibernia)
+                        realmContribution = HiberniaContribution;
+                    if (realmToAward == eRealm.Albion)
+                        realmContribution = AlbionContribution;
                     if(realmToAward == eRealm.Midgard)
-                        contributingPlayer.GainRealmPoints((SumOfContributions * (MidgardContribution/SumOfContributions)), false, true);
+                        realmContribution = MidgardContribution;
+
+                    int calculatedReward = (SumOfContributions * (realmContribution / SumOfContributions));
+                    
+                    if (calculatedReward > ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD)
+                        calculatedReward = ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD;
+                    
+                    contributingPlayer.GainRealmPoints(calculatedReward, false, true);
                 }
             }
         }
@@ -228,7 +239,6 @@ public class ConquestManager
             {
                 objectiveWeight = objective.Value;
             }
-                
         }
 
         switch (realm)
@@ -236,17 +246,14 @@ public class ConquestManager
             case eRealm.Albion:
                 List<ConquestObjective> albKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
                 ActiveAlbionObjective = albKeepsSort[Util.Random(albKeepsSort.Count()-1)]; //pick one at random
-                Console.WriteLine($"New albion objective: {ActiveAlbionObjective.Keep.Name} weight {keepDict[ActiveAlbionObjective]}");
                 break;
             case eRealm.Hibernia:
                 List<ConquestObjective> hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
                 ActiveHiberniaObjective = hibKeepsSort[Util.Random(hibKeepsSort.Count()-1)]; //pick one at random
-                Console.WriteLine($"New hibernia objective: {ActiveHiberniaObjective.Keep.Name} weight {keepDict[ActiveHiberniaObjective]}");
                 break;
             case eRealm.Midgard:
                 List<ConquestObjective> midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
                 ActiveMidgardObjective = midKeepsSort[Util.Random(midKeepsSort.Count()-1)]; //pick one at random
-                Console.WriteLine($"New midgard objective: {ActiveMidgardObjective.Keep.Name} weight {keepDict[ActiveMidgardObjective]}");
                 break;
         }
     }
