@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -28,9 +29,9 @@ public class ConquestManager
     public ConquestObjective ActiveHiberniaObjective;
     public ConquestObjective ActiveMidgardObjective;
 
-    private int HibStreak;
-    private int AlbStreak;
-    private int MidStreak;
+    public int HibStreak;
+    public int AlbStreak;
+    public int MidStreak;
 
     public long LastTaskRolloverTick;
 
@@ -177,12 +178,21 @@ public class ConquestManager
         {
             case eRealm.Albion:
                 AlbStreak++;
+                HibStreak = 0;
+                MidStreak = 0;
+                Console.WriteLine($"Alb Streak: {AlbStreak}");
                 break;
             case eRealm.Hibernia:
                 HibStreak++;
+                AlbStreak = 0;
+                MidStreak = 0;
+                Console.WriteLine($"Hib Streak: {HibStreak}");
                 break;
             case eRealm.Midgard:
                 MidStreak++;
+                HibStreak = 0;
+                AlbStreak = 0;
+                Console.WriteLine($"Mid Streak: {MidStreak}");
                 break;
         }
     }
@@ -210,11 +220,11 @@ public class ConquestManager
                         calculatedReward = ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD;
 
                     if (contributingPlayer.Realm == eRealm.Hibernia && HibStreak > 0)
-                        calculatedReward += calculatedReward * (HibStreak * 10)/100;
+                        calculatedReward += calculatedReward * (HibStreak * 10) / 100;
                     if (contributingPlayer.Realm == eRealm.Albion && AlbStreak > 0)
-                        calculatedReward += calculatedReward * (AlbStreak * 10)/100;
+                        calculatedReward += calculatedReward * (AlbStreak * 10) / 100;
                     if (contributingPlayer.Realm == eRealm.Midgard && MidStreak > 0)
-                        calculatedReward += calculatedReward * (MidStreak * 10)/100;
+                        calculatedReward += calculatedReward * (MidStreak * 10) / 100;
 
                     contributingPlayer.GainRealmPoints(calculatedReward, false, true);
                 }
@@ -312,10 +322,8 @@ public class ConquestManager
                             allKeepsOfTierAreCaptured = false;
                     }
                 }
-                
             }
-
-            Console.WriteLine($"All captured? {allKeepsOfTierAreCaptured}");
+            
             int objectiveWeight = GetConquestValue(keep);
             //pick an assault target in next tier if all are captured
             if (allKeepsOfTierAreCaptured) objectiveWeight++;
@@ -323,7 +331,6 @@ public class ConquestManager
             switch (keep.OriginalRealm)
             {
                 case eRealm.Albion:
-                    Console.WriteLine($"alb weight {objectiveWeight}");
                     List<ConquestObjective> albKeepsSort =
                         new List<ConquestObjective>(keepDict.Keys.Where(x =>
                             keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
@@ -331,36 +338,33 @@ public class ConquestManager
                     {
                         Console.WriteLine(tmp.Keep.Name);
                     }
+
                     ActiveAlbionObjective =
                         albKeepsSort[Util.Random(albKeepsSort.Count() - 1)]; //pick one at random
                     break;
                 case eRealm.Hibernia:
-                    Console.WriteLine($"hib weight {objectiveWeight}");
                     List<ConquestObjective> hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
                         keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
                     foreach (var tmp in hibKeepsSort)
                     {
                         Console.WriteLine(tmp.Keep.Name);
                     }
+
                     ActiveHiberniaObjective =
                         hibKeepsSort[Util.Random(hibKeepsSort.Count() - 1)]; //pick one at random
                     break;
                 case eRealm.Midgard:
-                    Console.WriteLine($"mid weight {objectiveWeight}");
                     List<ConquestObjective> midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
                         keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
                     foreach (var tmp in midKeepsSort)
                     {
                         Console.WriteLine(tmp.Keep.Name);
                     }
+
                     ActiveMidgardObjective =
                         midKeepsSort[Util.Random(midKeepsSort.Count() - 1)]; //pick one at random
                     break;
             }
-            
-            Console.WriteLine($"H Conq Targ {ActiveHiberniaObjective?.Keep?.Name}");
-            Console.WriteLine($"A Conq Targ {ActiveAlbionObjective?.Keep?.Name}");
-            Console.WriteLine($"M Conq Targ {ActiveMidgardObjective?.Keep?.Name}");
         }
         else
         {
@@ -375,15 +379,12 @@ public class ConquestManager
         {
             case eRealm.Albion:
                 keepDict = _albionObjectives;
-                AlbStreak = 0;
                 break;
             case eRealm.Hibernia:
                 keepDict = _hiberniaObjectives;
-                HibStreak = 0;
                 break;
             case eRealm.Midgard:
                 keepDict = _midgardObjectives;
-                MidStreak = 0;
                 break;
         }
 
@@ -442,13 +443,102 @@ public class ConquestManager
 
                 break;
         }
-        Console.WriteLine($"H Def Targ {ActiveHiberniaObjective?.Keep?.Name}");
-        Console.WriteLine($"A Def Targ {ActiveAlbionObjective?.Keep?.Name}");
-        Console.WriteLine($"M Def Targ {ActiveMidgardObjective?.Keep?.Name}");
     }
 
     private void SetDefensiveKeepForRealm(eRealm realm)
     {
         SetDefensiveKeepForRealm(realm, 1);
+    }
+
+    public IList<string> GetTextList()
+    {
+        List<string> temp = new List<string>();
+
+        ConquestObjective hibObj = ActiveHiberniaObjective;
+        ConquestObjective albObj = ActiveAlbionObjective;
+        ConquestObjective midObj = ActiveMidgardObjective;
+        ArrayList hibList = new ArrayList();
+        ArrayList midList = new ArrayList();
+        ArrayList albList = new ArrayList();
+        hibList = hibObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, hibObj.Keep.X,
+            hibObj.Keep.Y, hibObj.Keep.Z, 15000, hibList, true);
+        albList = albObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, albObj.Keep.X,
+            albObj.Keep.Y, albObj.Keep.Z, 15000, albList, true);
+        midList = midObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, midObj.Keep.X,
+            midObj.Keep.Y, midObj.Keep.Z, 15000, midList, true);
+
+
+        long tasktime = 300000 - ((GameLoop.GameLoopTime - LastTaskRolloverTick) % 300000);
+        //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
+        //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
+        
+        temp.Add("Objective Details:");
+        foreach (var activeObjective in GetActiveObjectives)
+        {
+            ArrayList playerCount = new ArrayList();
+            playerCount = activeObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER,
+                activeObjective.Keep.X,
+                activeObjective.Keep.Y, activeObjective.Keep.Z, 15000, playerCount, true);
+
+            temp.Add($"{GetStringFromRealm(activeObjective.Keep.OriginalRealm).ToUpper()}");
+            temp.Add($"{activeObjective.Keep.Name}");
+            temp.Add($"Total Contribution: {activeObjective.TotalContribution}");
+            temp.Add(
+                $"Hib {Math.Round(activeObjective.HiberniaContribution / (double) (activeObjective.TotalContribution + 1), 2) * 100}% | " +
+                $"Alb: {Math.Round(activeObjective.AlbionContribution / (double) (activeObjective.TotalContribution + 1), 2) * 100}% | " +
+                $"Mid: {Math.Round(activeObjective.MidgardContribution / (double) (activeObjective.TotalContribution + 1), 2) * 100}%");
+            temp.Add($"Players Nearby: {playerCount.Count}");
+            temp.Add("");
+        }
+
+        temp.Add($"Objective Capture Reward: {SumOfContributions}");
+        temp.Add($"Hibernia: {Math.Round(HiberniaContribution / (double) (SumOfContributions + 1), 2) * 100}%");
+        temp.Add($"Albion: {Math.Round(AlbionContribution / (double) (SumOfContributions + 1), 2) * 100}%");
+        temp.Add($"Midgard: {Math.Round(MidgardContribution / (double) (SumOfContributions + 1), 2) * 100}%");
+
+        temp.Add($"");
+        
+        long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastTaskRolloverTick;
+        temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
+        temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
+        temp.Add("");
+
+        //capture streak info
+        int streak = 0;
+        String streakingRealm = "";
+
+        if (AlbStreak > 0)
+        {
+            streak = AlbStreak;
+            streakingRealm = GetStringFromRealm(eRealm.Albion);
+        }
+        else if (HibStreak > 0)
+        {
+            streak = 0;
+            streakingRealm = GetStringFromRealm(eRealm.Hibernia);
+        }
+        else if (MidStreak > 0)
+        {
+            streak = 0;
+            streakingRealm = GetStringFromRealm(eRealm.Midgard);
+        }
+
+        temp.Add($"Current Capture Streak: {streak} Realm: {(streakingRealm.Equals("") ? "None" : streakingRealm)}");
+        temp.Add(
+            $"{(streak * 10) / 100}% reward from task contributions. Capture a task objective to claim the streak for your own realm, or build your realm's current streak if active.");
+        
+        temp.Add("");
+        temp.Add("Conquest Details");
+        temp.Add(
+            "Killing players within the area of any conquest target will contribute towards the conquest. Every 5 minutes, the global contribution will be tallied and updated.\n");
+        temp.Add("The conquest target will change if any of the conquest targets are captured, or if the conquest time expires. " +
+                 "If any of the conquest targets are captured, the capturing realm is immediately awarded an RP bonus based off of the total contribution");
+        
+        temp.Add("");
+        //temp.Add($"Time Until Subtask Rollover: {TimeSpan.FromMilliseconds(tasktime).Minutes}m " +
+                 //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
+
+        return temp;
     }
 }
