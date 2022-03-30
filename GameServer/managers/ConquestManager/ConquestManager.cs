@@ -150,6 +150,7 @@ public class ConquestManager
         }
         
         AwardContributorsForRealm(CapturedKeep.Realm);
+        RotateKeeps();
     }
     
     private void AwardContributorsForRealm(eRealm realmToAward)
@@ -250,16 +251,44 @@ public class ConquestManager
         switch (realm)
         {
             case eRealm.Albion:
-                List<ConquestObjective> albKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
-                ActiveAlbionObjective = albKeepsSort[Util.Random(albKeepsSort.Count()-1)]; //pick one at random
+                if (objectiveWeight == 1)
+                {
+                    ActiveAlbionObjective = keepDict.Keys.FirstOrDefault(x => keepDict[x] == 1);
+                }
+                else
+                {
+                    List<ConquestObjective> albKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight && x.Keep.OriginalRealm != x.Keep.Realm)); //get a list of all keeps with the current weight
+                    ActiveAlbionObjective = albKeepsSort[Util.Random(albKeepsSort.Count()-1)]; //pick one at random
+                }
+                
                 break;
             case eRealm.Hibernia:
-                List<ConquestObjective> hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
-                ActiveHiberniaObjective = hibKeepsSort[Util.Random(hibKeepsSort.Count()-1)]; //pick one at random
+                if (objectiveWeight == 1)
+                {
+                    ActiveHiberniaObjective = keepDict.Keys.FirstOrDefault(x => keepDict[x] == 1);
+                }
+                else
+                {
+                    List<ConquestObjective> hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
+                        keepDict[x] == objectiveWeight &&
+                        x.Keep.OriginalRealm != x.Keep.Realm)); //get a list of all keeps with the current weight
+                    ActiveHiberniaObjective = hibKeepsSort[Util.Random(hibKeepsSort.Count() - 1)]; //pick one at random
+                }
+
                 break;
             case eRealm.Midgard:
-                List<ConquestObjective> midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
-                ActiveMidgardObjective = midKeepsSort[Util.Random(midKeepsSort.Count()-1)]; //pick one at random
+                if (objectiveWeight == 1)
+                {
+                    ActiveMidgardObjective = keepDict.Keys.FirstOrDefault(x => keepDict[x] == 1);
+                }
+                else
+                {
+                    List<ConquestObjective> midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
+                        keepDict[x] == objectiveWeight &&
+                        x.Keep.OriginalRealm != x.Keep.Realm)); //get a list of all keeps with the current weight
+                    ActiveMidgardObjective = midKeepsSort[Util.Random(midKeepsSort.Count() - 1)]; //pick one at random
+                }
+
                 break;
         }
     }
