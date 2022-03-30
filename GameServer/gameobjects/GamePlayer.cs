@@ -8570,6 +8570,16 @@ namespace DOL.GS
             if (ControlledBrain != null && ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
                 ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
 
+            if (CurrentZone.IsRvR)
+            {
+                var activeConquests = ConquestService.ConquestManager.GetActiveObjectives;
+                foreach (var conquestObjective in activeConquests)
+                {
+                    if(this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <= ServerProperties.Properties.MAX_CONQUEST_RANGE)
+                        conquestObjective.Contribute(this, 1); //one contribution point per player kill maybe todo turn it into a server prop
+                }
+            }
+
             base.EnemyKilled(enemy);
         }
 
