@@ -2624,6 +2624,11 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
 		public static int MAX_ENTITIES;
 		
+		/// <summary>
+		/// Max duration of a Conquest Task in minutes
+		/// </summary>
+		[ServerProperty("server", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)] //2700000 == 45 minutes
+		public static int MAX_CONQUEST_TASK_DURATION;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
