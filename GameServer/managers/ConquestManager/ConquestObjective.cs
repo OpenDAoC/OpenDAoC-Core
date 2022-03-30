@@ -65,6 +65,7 @@ public class ConquestObjective
 
     private void AwardContributors()
     {
+        ConquestManager conqMan = ConquestService.ConquestManager;
         foreach (var player in PlayerToContributionDict.Keys.Where(x => PlayerToContributionDict[x] > 0))
         {
             switch (player.Realm)
@@ -72,16 +73,19 @@ public class ConquestObjective
                 case eRealm.Albion:
                     int albaward = (int)Math.Round(AlbionContribution * (PlayerToContributionDict[player] / (double) AlbionContribution));
                     if (albaward > SubTickMaxReward) albaward = SubTickMaxReward;
+                    if (conqMan.AlbStreak > 0) albaward *= conqMan.AlbStreak;
                     player.GainRealmPoints(albaward, false, true);
                     break;
                 case eRealm.Hibernia:
                     int hibaward = (int)Math.Round(HiberniaContribution * (PlayerToContributionDict[player] / (double) HiberniaContribution));
                     if (hibaward > SubTickMaxReward) hibaward = SubTickMaxReward;
+                    if (conqMan.HibStreak > 0) hibaward *= conqMan.HibStreak;
                     player.GainRealmPoints(hibaward, false, true);
                     break;
                 case eRealm.Midgard:
                     int midaward = (int)Math.Round(MidgardContribution * (PlayerToContributionDict[player] / (double) MidgardContribution));
                     if (midaward > SubTickMaxReward) midaward = SubTickMaxReward;
+                    if (conqMan.MidStreak > 0) midaward *= conqMan.MidStreak;
                     player.GainRealmPoints(midaward, false, true);
                     break;
             }

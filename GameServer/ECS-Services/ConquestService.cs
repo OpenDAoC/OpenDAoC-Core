@@ -28,7 +28,7 @@ public class ConquestService
         if(ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
         {
             ConquestManager.RotateKeeps();
-        }else if((GameLoop.GameLoopTime - ConquestManager.LastTaskRolloverTick) % 300000 == 0) //every 5 minutes
+        }else if(300000 - ((GameLoop.GameLoopTime - ConquestManager.LastTaskRolloverTick) % 300000) <= 50) //every 5 minutes
         {
             foreach (var activeObjective in ConquestManager.GetActiveObjectives)
             {
