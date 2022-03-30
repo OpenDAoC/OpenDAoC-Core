@@ -25,9 +25,15 @@ public class ConquestService
     {
         Diagnostics.StartPerfCounter(ServiceName);
         
-        if(ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 10000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
+        if(ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
         {
             ConquestManager.RotateKeeps();
+        }else if((GameLoop.GameLoopTime - ConquestManager.LastTaskRolloverTick) % 300000 == 0) //every 5 minutes
+        {
+            foreach (var activeObjective in ConquestManager.GetActiveObjectives)
+            {
+                activeObjective.DoSubtaskRollover();
+            }
         }
         //Console.WriteLine($"conquest heartbeat {GameLoop.GameLoopTime} countdown {GameLoop.GameLoopTime - (ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 10000)}");
         
