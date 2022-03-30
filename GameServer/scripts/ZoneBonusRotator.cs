@@ -431,11 +431,12 @@ namespace DOL.GS.Scripts
                 midObj.Keep.Y, midObj.Keep.Z, 15000, midList, true);
 
             long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastTaskRolloverTick;
-            temp.Add("Conquest Max Time Limit: " + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m");
-            temp.Add("Time since beginning of this conquest: " + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " + TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s");
+            temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
+            temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " + TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
+            temp.Add("(A) Conquest Target: " + albObj.Keep.Name + " | Players Nearby: " + albList.Count);
             temp.Add("(H) Conquest Target: " + hibObj.Keep.Name + " | Players Nearby: " + hibList.Count);
             temp.Add("(M) Conquest Target: " + midObj.Keep.Name + " | Players Nearby: " + midList.Count);
-            temp.Add("(A) Conquest Target: " + albObj.Keep.Name + " | Players Nearby: " + albList.Count);
+            
             
                      
 
