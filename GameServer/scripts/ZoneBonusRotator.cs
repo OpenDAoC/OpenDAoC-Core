@@ -417,29 +417,6 @@ namespace DOL.GS.Scripts
             temp.Add("");
             temp.Add("");
 
-            ConquestObjective hibObj = ConquestService.ConquestManager.ActiveHiberniaObjective;
-            ConquestObjective albObj = ConquestService.ConquestManager.ActiveAlbionObjective;
-            ConquestObjective midObj = ConquestService.ConquestManager.ActiveMidgardObjective;
-            ArrayList hibList = new ArrayList();
-            ArrayList midList = new ArrayList();
-            ArrayList albList = new ArrayList();
-            hibList = hibObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, hibObj.Keep.X,
-                hibObj.Keep.Y, hibObj.Keep.Z, 15000, hibList, true);
-            albList = albObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, albObj.Keep.X,
-                albObj.Keep.Y, albObj.Keep.Z, 15000, albList, true);
-            midList =  midObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, midObj.Keep.X,
-                midObj.Keep.Y, midObj.Keep.Z, 15000, midList, true);
-
-            long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastTaskRolloverTick;
-            temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
-            temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " + TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
-            temp.Add("(A) Conquest Target: " + albObj.Keep.Name + " | Players Nearby: " + albList.Count);
-            temp.Add("(H) Conquest Target: " + hibObj.Keep.Name + " | Players Nearby: " + hibList.Count);
-            temp.Add("(M) Conquest Target: " + midObj.Keep.Name + " | Players Nearby: " + midList.Count);
-            
-            
-                     
-
             return temp;
         }
 
