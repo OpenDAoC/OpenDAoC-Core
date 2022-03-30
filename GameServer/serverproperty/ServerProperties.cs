@@ -2629,6 +2629,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("server", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)] //2700000 == 45 minutes
 		public static int MAX_CONQUEST_TASK_DURATION;
+		
+		/// <summary>
+		/// Max range to contribute to a conquest target
+		/// </summary>
+		[ServerProperty("server", "max_conquest_range", "Max range to contribute to a conquest target", 10000)]
+		public static int MAX_CONQUEST_RANGE;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
