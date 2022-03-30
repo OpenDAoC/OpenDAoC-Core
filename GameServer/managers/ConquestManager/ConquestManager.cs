@@ -28,7 +28,9 @@ public class ConquestManager
     public ConquestObjective ActiveMidgardObjective;
 
     public long LastTaskRolloverTick;
-    
+
+    private List<GamePlayer> ContributedPlayers = new List<GamePlayer>();
+
     public int SumOfContributions { get { return AlbionContribution + HiberniaContribution + MidgardContribution; }}
     int HiberniaContribution = 0;
     int AlbionContribution = 0;
@@ -46,14 +48,14 @@ public class ConquestManager
         }
         set { }
     }
-
+    
     public ConquestManager()
     {
         ResetKeeps();
         ResetObjectives();
         RotateKeeps();
     }
-
+    
     private void ResetKeeps()
     {
         if (_albionKeeps == null) _albionKeeps = new List<AbstractGameKeep>();
@@ -78,7 +80,7 @@ public class ConquestManager
         if (_albionObjectives == null) _albionObjectives = new Dictionary<ConquestObjective, int>();
         if (_hiberniaObjectives == null) _hiberniaObjectives = new Dictionary<ConquestObjective, int>();
         if (_midgardObjectives == null) _midgardObjectives = new Dictionary<ConquestObjective, int>();
-        
+
         _albionObjectives.Clear();
         _hiberniaObjectives.Clear();
         _midgardObjectives.Clear();
@@ -97,6 +99,11 @@ public class ConquestManager
         {
             _midgardObjectives.Add(new ConquestObjective(keep), GetConquestValue(keep));
         }
+    }
+
+    private void ResetContribution()
+    {
+        ContributedPlayers.Clear();
     }
 
     private int GetConquestValue(AbstractGameKeep keep)
@@ -141,8 +148,7 @@ public class ConquestManager
     public void ConquestCapture(AbstractGameKeep CapturedKeep)
     {
         BroadcastConquestMessageToRvRPlayers($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!");
-
-        List<GamePlayer> RecentContributors = new List<GamePlayer>();
+        
         foreach (var activeObjective in GetActiveObjectives)
         {
             AddSubtotalToOverallFrom(activeObjective);
@@ -150,7 +156,7 @@ public class ConquestManager
         }
         
         AwardContributorsForRealm(CapturedKeep.Realm);
-        RotateKeeps();
+        RotateKeepsOnCapture(CapturedKeep);
     }
     
     private void AwardContributorsForRealm(eRealm realmToAward)
@@ -196,11 +202,27 @@ public class ConquestManager
         }
     }
 
+    private void RotateKeepsOnCapture(AbstractGameKeep capturedKeep)
+    {
+        for (int i = 1; i < 4; i++)
+        {
+            if ((eRealm) i == capturedKeep.Realm)
+            {
+                SetKeepForCapturedRealm(capturedKeep);
+            }
+            else
+            {
+                SetKeepForRealm((eRealm)i);
+            }
+        }
+    }
+
     public void RotateKeeps()
     {
         SetKeepForRealm(eRealm.Albion);
         SetKeepForRealm(eRealm.Hibernia);
         SetKeepForRealm(eRealm.Midgard);
+        ResetContribution();
         LastTaskRolloverTick = GameLoop.GameLoopTime;
         BroadcastConquestMessageToRvRPlayers($"Conquest targets have changed.");
     }
@@ -222,7 +244,21 @@ public class ConquestManager
         }
     }
 
-    private void SetKeepForRealm(eRealm realm)
+    private void SetKeepForCapturedRealm(AbstractGameKeep keep)
+    {
+        
+        if(keep.Realm != keep.OriginalRealm && GetConquestValue(keep) == 1)
+        {
+            SetKeepForRealm(keep.Realm, 2);
+        }
+        else
+        {
+            SetKeepForRealm(keep.Realm);
+        }
+        
+    }
+
+    private void SetKeepForRealm(eRealm realm, int minimumValue)
     {
         Dictionary<ConquestObjective, int> keepDict = new Dictionary<ConquestObjective, int>();
         switch (realm)
@@ -238,7 +274,7 @@ public class ConquestManager
                 break;
         }
 
-        int objectiveWeight = 1;
+        int objectiveWeight = minimumValue;
 
         foreach (var objective in keepDict)
         {
@@ -291,6 +327,11 @@ public class ConquestManager
 
                 break;
         }
+    }
+
+    private void SetKeepForRealm(eRealm realm)
+    {
+        SetKeepForRealm(realm, 1);
     }
 
 
