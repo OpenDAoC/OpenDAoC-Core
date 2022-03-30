@@ -24,5 +24,7 @@ public class ConquestObjective
             PlayerToContributionDict[contributor] += contributionValue;
         else
             PlayerToContributionDict.Add(contributor, contributionValue);
+        
+        
     }
 }

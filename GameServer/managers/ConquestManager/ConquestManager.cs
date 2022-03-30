@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DOL.Database;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS;
 
@@ -122,6 +124,40 @@ public class ConquestManager
         }
 
         return 1;
+    }
+
+    public void FinishConquest(AbstractGameKeep CapturedKeep)
+    {
+        var activeObjectives = GetActiveObjectives;
+        foreach (var objective in activeObjectives)
+        {
+            if (objective.Keep == CapturedKeep)
+            {
+                //notify everyone an objective was captured
+                foreach (var client in WorldMgr.GetAllPlayingClients())
+                {
+                    if(client.Player.CurrentZone.IsRvR)
+                        client.Player.Out.SendMessage($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                }
+            }
+            
+            
+        }
+    }
+
+    private string GetStringFromRealm(eRealm realm)
+    {
+        switch (realm)
+        {
+            case eRealm.Albion:
+                return "Albion";
+            case eRealm.Midgard:
+                return "Midgard";
+            case eRealm.Hibernia:
+                return "Hibernia";
+            default:
+                return "Undefined Realm";
+        }
     }
 
     public void RotateKeeps()
