@@ -26,6 +26,19 @@ public class ConquestManager
 
     public long LastTaskRolloverTick;
     
+    public List<ConquestObjective> GetActiveObjectives
+    {
+        get
+        {
+            var list = new List<ConquestObjective>();
+            list.Add(ActiveAlbionObjective);
+            list.Add(ActiveHiberniaObjective);
+            list.Add(ActiveMidgardObjective);
+            return list;
+        }
+        set { }
+    }
+
     public ConquestManager()
     {
         ResetKeeps();
