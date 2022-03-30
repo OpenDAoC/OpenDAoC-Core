@@ -13,13 +13,10 @@ public class ConquestObjective
     public int MidgardContribution;
     public int HiberniaContribution;
 
-    private int SubTickMaxReward = 1000;
+    private int SubTickMaxReward = ServerProperties.Properties.MAX_SUBTASK_RP_REWARD; //maximum of 1000 rps awarded every interval (5 minutes atm)
     
-    public int TotalContribution
-    {
-        get { return AlbionContribution + HiberniaContribution + MidgardContribution; }
-    }
-    
+    public int TotalContribution => AlbionContribution + HiberniaContribution + MidgardContribution;
+
     private Dictionary<GamePlayer, int> PlayerToContributionDict;
 
     public ConquestObjective(AbstractGameKeep keep)
@@ -53,7 +50,7 @@ public class ConquestObjective
         }
     }
 
-    public void DoSubtaskRollover()
+    public void DoRollover()
     {
         AwardContributors();
         UpdateTotalContribution();
@@ -61,9 +58,9 @@ public class ConquestObjective
         ResetContribution();
     }
 
-    public void FinishConquest()
+    public void ConquestCapture()
     {
-        DoSubtaskRollover();
+        DoRollover();
     }
 
     private void AwardContributors()
