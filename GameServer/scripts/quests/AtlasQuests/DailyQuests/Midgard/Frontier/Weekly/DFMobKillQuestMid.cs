@@ -314,6 +314,11 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
+			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target.OwnerID != null)
+				return;
 
 			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestMid)) == null)
 				return;
@@ -323,7 +328,6 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
 				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && player.GetConLevel(gArgs.Target) > -2) 
 				{

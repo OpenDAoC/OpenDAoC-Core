@@ -340,7 +340,12 @@ namespace DOL.GS.DailyQuest.Albion
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
-
+			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target.OwnerID != null)
+				return;
+			
 			if (player == null || player.IsDoingQuest(typeof(TeamBuildingAlb)) == null)
 				return;
 			
@@ -380,7 +385,7 @@ namespace DOL.GS.DailyQuest.Albion
 			
 			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+				
 				if (player.GetConLevel(gArgs.Target) >= 1 &&
 				    player.Group != null &&
 				    HasFighter && HasAcolyte && HasRogue && HasMageElemDisc) 
