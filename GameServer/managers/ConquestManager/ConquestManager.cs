@@ -28,6 +28,11 @@ public class ConquestManager
 
     public long LastTaskRolloverTick;
     
+    public int SumOfContributions { get { return AlbionContribution + HiberniaContribution + MidgardContribution; }}
+    int HiberniaContribution = 0;
+    int AlbionContribution = 0;
+    int MidgardContribution = 0;
+    
     public List<ConquestObjective> GetActiveObjectives
     {
         get
@@ -101,22 +106,28 @@ public class ConquestManager
             case 75: //bledmeer
             case 100: //crauchon
                 return 1;
+            //alb
             case 52: //erasleigh
             case 53: //boldiam
             case 54: //sursbrooke
+            //mid
             case 76: //nottmoor
             case 77: //hlidskialf
             case 78: //blendrake
+            //hib    
             case 101: //crimthain
             case 102: //bold
             case 104: //da behn
                 return 2;
+            //alb
             case 51: //berkstead
             case 55: //hurbury
             case 56: //renaris
+            //mid                
             case 79: //glenlock
             case 80: //fensalir
             case 81: //arvakr
+            //hib
             case 103: //na nGed
             case 105: //scathaig
             case 106: //ailline
@@ -126,22 +137,40 @@ public class ConquestManager
         return 1;
     }
 
-    public void FinishConquest(AbstractGameKeep CapturedKeep)
+    public void ConquestCapture(AbstractGameKeep CapturedKeep)
     {
-        var activeObjectives = GetActiveObjectives;
-        foreach (var objective in activeObjectives)
+        //notify everyone an objective was captured
+        foreach (var client in WorldMgr.GetAllPlayingClients())
         {
-            if (objective.Keep == CapturedKeep)
+            if(client.Player.CurrentZone.IsRvR)
+                client.Player.Out.SendMessage($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        }
+
+        foreach (var activeObjective in GetActiveObjectives)
+        {
+            AddSubtotalToOverallFrom(activeObjective);
+        }
+        
+        
+    }
+    
+    private void AwardContributorsForRealm(eRealm realmToAward)
+    {
+        foreach (var conquestObjective in GetActiveObjectives)
+        {
+            foreach (var contributingPlayer in conquestObjective.GetContributingPlayers())
             {
-                //notify everyone an objective was captured
-                foreach (var client in WorldMgr.GetAllPlayingClients())
+                //if player is of the correct realm, award them their realm's portion of the overall reward
+                if (contributingPlayer.Realm == realmToAward)
                 {
-                    if(client.Player.CurrentZone.IsRvR)
-                        client.Player.Out.SendMessage($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                    if(realmToAward == eRealm.Hibernia)
+                        contributingPlayer.GainRealmPoints((SumOfContributions * (HiberniaContribution/SumOfContributions)), false, true);
+                    if(realmToAward == eRealm.Albion)
+                        contributingPlayer.GainRealmPoints((SumOfContributions * (AlbionContribution/SumOfContributions)), false, true);
+                    if(realmToAward == eRealm.Midgard)
+                        contributingPlayer.GainRealmPoints((SumOfContributions * (MidgardContribution/SumOfContributions)), false, true);
                 }
             }
-            
-            
         }
     }
 
@@ -166,6 +195,13 @@ public class ConquestManager
         SetKeepForRealm(eRealm.Hibernia);
         SetKeepForRealm(eRealm.Midgard);
         LastTaskRolloverTick = GameLoop.GameLoopTime;
+    }
+
+    public void AddSubtotalToOverallFrom(ConquestObjective objective)
+    {
+        HiberniaContribution += objective.HiberniaContribution;
+        AlbionContribution += objective.AlbionContribution;
+        MidgardContribution += objective.MidgardContribution;
     }
 
     private void SetKeepForRealm(eRealm realm)
