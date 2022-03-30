@@ -2627,14 +2627,26 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Max duration of a Conquest Task in minutes
 		/// </summary>
-		[ServerProperty("server", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)] //2700000 == 45 minutes
+		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)] //2700000 == 45 minutes
 		public static int MAX_CONQUEST_TASK_DURATION;
 		
 		/// <summary>
 		/// Max range to contribute to a conquest target
 		/// </summary>
-		[ServerProperty("server", "max_conquest_range", "Max range to contribute to a conquest target", 10000)]
+		[ServerProperty("conquest", "max_conquest_range", "Max range to contribute to a conquest target", 10000)]
 		public static int MAX_CONQUEST_RANGE;
+		
+		/// <summary>
+		/// Max reward (in RP value) for any given subtask interval
+		/// </summary>
+		[ServerProperty("conquest", "max_subtask_rp_reward", "Max reward (in RP value) for any given subtask interval", 1000)]
+		public static int MAX_SUBTASK_RP_REWARD;
+		
+		/// <summary>
+		/// Max reward (in RP value) for a keep capture
+		/// </summary>
+		[ServerProperty("conquest", "max_keep_conquest_rp_reward", "Max reward (in RP value) for a keep capture", 25000)]
+		public static int MAX_KEEP_CONQUEST_RP_REWARD;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
