@@ -21,7 +21,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public virtual int OEMDifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
@@ -31,7 +40,9 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override void StartAttack(GameObject target)//dont attack
+        {
+        }
         public override int MaxHealth
         {
             get { return 20000; }
@@ -101,8 +112,14 @@ namespace DOL.GS
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
             OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             SetOwnBrain(sBrain);
-
+            addeffect = true;
+            OrganicEnergyMechanismBrain.start_poison = false;
+            OrganicEnergyMechanismBrain.spambroad = false;
+            OrganicEnergyMechanismBrain.RandomTarget = null;
             bool success = base.AddToWorld();
             if (success)
             {
@@ -112,7 +129,8 @@ namespace DOL.GS
                     addeffect = false;
                 }
             }
-
+            SaveIntoDatabase();
+            LoadedFromScript = false;
             return success;
         }
 
@@ -184,14 +202,6 @@ namespace DOL.AI.Brain
         }
 
         protected String m_AOE_POison_Announce;
-
-        public override void AttackMostWanted() // mob doesnt attack
-        {
-            if (Body.IsAlive)
-                return;
-            base.AttackMostWanted();
-        }
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -199,7 +209,6 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
         private int CastPoison(RegionTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
@@ -209,8 +218,8 @@ namespace DOL.AI.Brain
             {
                 Body.CastSpell(OEMpoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 spambroad = false; //to avoid spamming
+                start_poison = false;
             }
-
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
@@ -230,24 +239,31 @@ namespace DOL.AI.Brain
             }
         }
 
-        private GameLiving randomtarget;
+        public static GameLiving randomtarget;
 
-        private GameLiving RandomTarget
+        public static GameLiving RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-
+        public int Pickrandomly(RegionTimer timer)
+        {
+            if (Body.IsAlive)
+            {
+                PickRandomTarget();
+            }
+            return 0;
+        }
         public void PickRandomTarget()
         {
             ArrayList inRangeLiving = new ArrayList();
-            foreach (GameLiving living in Body.GetPlayersInRadius(2000))
+            foreach (GamePlayer living in Body.GetPlayersInRadius(2000))
             {
                 if (living.IsAlive)
                 {
-                    if (living is GamePlayer || living is GamePet)
+                    if (living is GamePlayer && living.Client.Account.PrivLevel == 1)
                     {
-                        if (!inRangeLiving.Contains(living) || inRangeLiving.Contains(living) == false)
+                        if (!inRangeLiving.Contains(living) )
                         {
                             inRangeLiving.Add(living);
                         }
@@ -259,7 +275,7 @@ namespace DOL.AI.Brain
             {
                 GameLiving ptarget = ((GameLiving) (inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                 RandomTarget = ptarget;
-                if (OEMpoison.TargetHasEffect(randomtarget) == false && randomtarget.IsVisibleTo(Body))
+                if (!RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
                 {
                     PrepareToPoison();
                 }
@@ -275,18 +291,37 @@ namespace DOL.AI.Brain
         }
 
         public static bool spawnadds = true;
+        public static bool start_poison = false;
 
         public override void Think()
         {
-            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            foreach (GamePlayer player in Body.GetPlayersInRadius(1800))
             {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
+                if (player != null)
+                {
+                    if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                    {
+                        if (!AggroTable.ContainsKey(player))
+                        {
+                            AggroTable.Add(player, 100);
+                        }
+                    }
+                }
+            }
+            if (!HasAggressionTable())
+            {
                 this.Body.Health = this.Body.MaxHealth;
+                start_poison = false;
+                spambroad = false;
+                RandomTarget = null;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
-                    if (npc.Brain is OEMAddBrain)
+                    if (npc != null)
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.IsAlive && npc.Brain is OEMAddBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
                 }
             }
@@ -295,9 +330,10 @@ namespace DOL.AI.Brain
             {
                 if (Body.HealthPercent < 100)
                 {
-                    if (Util.Chance(15))
+                    if (start_poison == false)
                     {
-                        PickRandomTarget();
+                        new RegionTimer(Body, new RegionTimerCallback(Pickrandomly), Util.Random(25000, 35000));
+                        start_poison = false;
                     }
 
                     if (Util.Chance(15))
@@ -349,7 +385,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 30;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
                     spell.Damage = 350;
@@ -363,8 +399,8 @@ namespace DOL.AI.Brain
                     spell.TooltipId = 4445;
                     spell.Range = 1800;
                     spell.Radius = 600;
-                    spell.Duration = 45;
-                    spell.Frequency = 40; //dot tick every 4s
+                    spell.Duration = 50;
+                    spell.Frequency = 50; //dot tick every 4s
                     spell.SpellID = 11700;
                     spell.Target = "Enemy";
                     spell.Type = "DamageOverTime";

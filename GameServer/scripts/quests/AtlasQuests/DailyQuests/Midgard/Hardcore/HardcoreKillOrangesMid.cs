@@ -319,7 +319,7 @@ namespace DOL.GS.DailyQuest
 				FailQuest();
 			}
 			
-			if (e == GameLivingEvent.EnemyKilled)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 

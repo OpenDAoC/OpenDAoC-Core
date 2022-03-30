@@ -27,7 +27,16 @@ namespace DOL.GS.Scripts
         {
             m_FleeingAnnounce = "{0} starts fleeing!";
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public override bool AddToWorld()
         {
             Model = 844;
@@ -40,10 +49,13 @@ namespace DOL.GS.Scripts
             RoamingRange = 0;
             MaxSpeedBase = 300;
 
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
             LoadTemplate(npcTemplate);
+            SaveIntoDatabase();
+            LoadedFromScript = false;
             base.AddToWorld();
             base.SetOwnBrain(new UaimhLairmasterBrain());
             return true;

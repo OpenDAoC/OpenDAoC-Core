@@ -75,7 +75,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =
                 ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 573, 0);
@@ -96,7 +96,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Icelord Suttung", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Icelord Suttung", 160, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Elder Icelord Suttung not found, creating it...");
@@ -115,7 +115,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 32090;
                 TG.Y = 54204;
@@ -261,7 +261,7 @@ namespace DOL.AI.Brain
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
+                    spell.DamageType = (int)eDamageType.Cold;
                     m_Icelord_aoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_aoe);
                 }
@@ -368,7 +368,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =
                 ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
             Styles.Add(taunt);
             Styles.Add(back_style);
 
@@ -392,7 +392,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Icelord Hjalmar", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Icelord Hjalmar", 160, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Elder Icelord Hjalmar not found, creating it...");
@@ -411,7 +411,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort) NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
                 TG.X = 32073;
                 TG.Y = 53569;
@@ -477,11 +477,15 @@ namespace DOL.AI.Brain
                 message2 = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                 {
-                    if (npc == null) break;
-                    if (!npc.IsAlive) break;
-                    if (npc.Brain is MorkimmaBrain)
+                    if (npc != null)
                     {
-                        npc.Die(Body);
+                        if (npc.IsAlive)
+                        {
+                            if (npc.Brain is MorkimmaBrain)
+                            {
+                                npc.Die(Body);
+                            }
+                        }
                     }
                 }
             }
@@ -535,7 +539,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////////////Hjalmar adds/////////////////////////////////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class Morkimma : GameEpicNPC
+    public class Morkimma : GameNPC
     {
         public Morkimma() : base()
         {
@@ -611,7 +615,7 @@ namespace DOL.GS
             Constitution = 100;
             MaxSpeedBase = 220;
             Name = "Morkimma";
-            Level = (byte) Util.Random(50, 55);
+            Level = (byte)Util.Random(50, 55);
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));

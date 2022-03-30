@@ -204,6 +204,10 @@ namespace DOL.GS
         SummonVaultkeeper = 198,
         OffhandDamage = 199,
         OffhandChance = 200,
-        Null = 201
+        SummonSiegeRam = 201,
+        SummonSiegeBallista = 202,
+        SummonSiegeCatapult = 203,
+        SummonSiegeTrebuchet = 204,
+        Null = 205
     }
 }

@@ -18,7 +18,7 @@ namespace DOL.GS.RealmAbilities
         public SpellLine SpellLine { get { return m_spellline; } }
         public Ability Ability { get { return this; } }
 
-        private const int m_dmgValue = 350; //Unclear what the real OF value was. This forum says ~750 damage: https://forums.freddyshouse.com/threads/wrath-of-champions-ra.39511/
+        private const int m_dmgValue = 350; //Unclear what the real OF value was.
 		private const int m_range = 0; // pbaoe
         private const int m_radius = 350; //
         private const eDamageType m_damageType = eDamageType.Slash;

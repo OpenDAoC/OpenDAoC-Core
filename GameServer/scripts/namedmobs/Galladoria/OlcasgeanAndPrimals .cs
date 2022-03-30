@@ -6,10 +6,6 @@ using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
-using Timer = System.Timers.Timer;
-using System.Timers;
 
 #region Olcasgean Initializator
 /// <summary>
@@ -106,7 +102,7 @@ namespace DOL.AI.Brain
                 {
                     if (player.IsAlive)
                     {
-                        if (player.IsWithinRadius(point1, 120) && startevent == true)
+                        if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
                         {
                             BroadcastMessage(String.Format("The magic elements of nature start appearing in this area..."));
                             new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 30000);//30s to start
@@ -203,7 +199,7 @@ namespace DOL.AI.Brain
             Add3.AddToWorld();
         }
         public void SpawnShadowyEarthmender()
-        { 
+        {
             ShadowyEarthmender Add4 = new ShadowyEarthmender();
             Add4.X = 39965;
             Add4.Y = 62921;
@@ -327,7 +323,16 @@ namespace DOL.GS
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 90; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 90; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 90; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -416,17 +421,17 @@ namespace DOL.GS
                         }
                     }
                 }
-                foreach(GameNPC npc in GetNPCsInRadius(10000))
+                foreach (GameNPC npc in GetNPCsInRadius(10000))
                 {
-                    if(npc != null)
+                    if (npc != null)
                     {
-                        if(npc.IsAlive)
+                        if (npc.IsAlive)
                         {
-                            if(npc.Brain is VortexBrain)
+                            if (npc.Brain is VortexBrain)
                             {
                                 npc.RemoveFromWorld();
                             }
-                            if(npc.Brain is WaterfallAntipassBrain)
+                            if (npc.Brain is WaterfallAntipassBrain)
                             {
                                 npc.RemoveFromWorld();
                             }
@@ -482,13 +487,13 @@ namespace DOL.GS
                 OLC.Z = 11681;
                 OLC.Heading = 2491;
 
-                OLC.Strength = 650;
-                OLC.Intelligence = 350;
-                OLC.Piety = 350;
+                OLC.Strength = 5;
+                OLC.Intelligence = 200;
+                OLC.Piety = 200;
                 OLC.Dexterity = 200;
-                OLC.Constitution = 200;
-                OLC.Quickness = 125;
-                OLC.BodyType = 5;
+                OLC.Constitution = 100;
+                OLC.Quickness = 80;
+                OLC.Empathy = 300;
                 OLC.MeleeDamageType = eDamageType.Slash;
                 OLC.Faction = FactionMgr.GetFactionByID(96);
                 OLC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -543,12 +548,13 @@ namespace DOL.AI.Brain
             Add.Faction = FactionMgr.GetFactionByID(96);
             Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
-            Add.Strength = 650;
-            Add.Intelligence = 350;
-            Add.Piety = 350;
+            Add.Strength = 5;
+            Add.Intelligence = 200;
+            Add.Piety = 200;
             Add.Dexterity = 200;
-            Add.Constitution = 200;
-            Add.Quickness = 125;
+            Add.Constitution = 100;
+            Add.Quickness = 80;
+            Add.Empathy = 300;
             Add.MaxSpeedBase = 0;
             Add.AttackRange = 1500;
             Add.RespawnInterval = -1;
@@ -563,7 +569,7 @@ namespace DOL.AI.Brain
             smb.AggroLevel = 100;
             smb.AggroRange = 1500;
             Add.AddBrain(smb);
-            Add.AddToWorld();           
+            Add.AddToWorld();
 
             OlcasgeanBrain brain = (OlcasgeanBrain)Add.Brain;
             brain.AddToAggroList(ptarget, 1);
@@ -718,7 +724,7 @@ namespace DOL.AI.Brain
                     if (ported_player == null)
                         ported_player = new List<GamePlayer>();
 
-                    if(spawn_antipass==false)//spawn anti pass near waterfall so players cant leave boss area until killed 
+                    if (spawn_antipass == false)//spawn anti pass near waterfall so players cant leave boss area until killed 
                     {
                         SpawnAntiPass();
                         spawn_antipass = true;
@@ -809,7 +815,7 @@ namespace DOL.AI.Brain
                         new RegionTimer(Body, new RegionTimerCallback(DoPort), 20000);//do teleport every 20s
                         teleport_player = true;
                     }
-                }               
+                }
             }
             base.Think();
         }
@@ -870,7 +876,7 @@ namespace DOL.AI.Brain
             teleport_player = false;
             return 0;
         }
-        
+
         public Spell m_OlcasgeanDD;
 
         public Spell OlcasgeanDD
@@ -881,17 +887,18 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.CastTime = 4;
+                    spell.RecastDelay = 1;
                     spell.ClientEffect = 11027;
                     spell.Icon = 11027;
                     spell.TooltipId = 11027;
-                    spell.Damage = 500;
+                    spell.Name = "Olcasgean's Root";
+                    spell.Damage = 600;
                     spell.Range = 1800;
                     spell.SpellID = 11717;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamage";
-                    spell.DamageType = (int)eDamageType.Slash; 
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OlcasgeanDD);
                 }
@@ -908,7 +915,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class AirPrimal: GameNPC
+    public class AirPrimal : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -916,7 +923,19 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
+                default: return 50; // dmg reduction for rest resists
+            }
+        }
+        public override void StartAttack(GameObject target)
+        {
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -961,7 +980,7 @@ namespace DOL.GS
         public override void StopFollowing()
         {
         }
-       
+
         public static int DeadPrimalsCount = 0;
         public override void Die(GameObject killer)
         {
@@ -970,31 +989,22 @@ namespace DOL.GS
         }
         public override bool AddToWorld()
         {
-            Model = 913;
-            Name = "Corrupt Primal of Air";
-            Size = 100;
-            Level = 83;
-            Realm = 0;
-            CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 300;
-            Flags ^= eFlags.FLYING;//flying
-            Intelligence = 350;
-            Piety = 350;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
-            Quickness = 125;
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159435);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             RespawnInterval = -1;//will not respawn
-            Gender = eGender.Neutral;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            Flags = eFlags.FLYING;
 
-            BodyType = 5;
             AirPrimalBrain sBrain = new AirPrimalBrain();
             SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 0;
             Brain.Start();
             base.AddToWorld();
             return true;
@@ -1017,13 +1027,6 @@ namespace DOL.AI.Brain
             AggroRange = 0;
             ThinkInterval = 3000;
         }
-        public override void AttackMostWanted()// mob doesnt attack
-        {
-        }
-
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-        }
 
         private GameLiving randomtarget = null;
         private GameLiving RandomTarget
@@ -1038,15 +1041,15 @@ namespace DOL.AI.Brain
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
             {
-                if(player != null)
+                if (player != null)
                 {
-                    if(player.IsAlive && player.Client.Account.PrivLevel == 1)
+                    if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
-                        if(player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
+                        if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
                         {
-                            if(!m_aggroTable.ContainsKey(player))
+                            if (!m_aggroTable.ContainsKey(player))
                             {
-                                m_aggroTable.Add(player,1);
+                                m_aggroTable.Add(player, 1);
                             }
                         }
                         else
@@ -1074,7 +1077,7 @@ namespace DOL.AI.Brain
                     if (!(enemies[i] as GameLiving).IsAlive)
                         continue;
                     GameLiving living = null;
-                     living = enemies[i] as GameLiving;
+                    living = enemies[i] as GameLiving;
                     if (living.IsVisibleTo(Body) && Body.TargetInView)
                     {
                         damage_enemies.Add(enemies[i] as GameLiving);
@@ -1141,6 +1144,19 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+            {
+                if (player != null)
+                {
+                    if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                    {
+                        if (!AggroTable.ContainsKey(player))
+                        {
+                            AggroTable.Add(player, 100);
+                        }
+                    }
+                }
+            }
             Point3D point1 = new Point3D();
             point1.X = 39120; point1.Y = 61387; point1.Z = 12372;
             Point3D point2 = new Point3D();
@@ -1280,7 +1296,7 @@ namespace DOL.AI.Brain
                 }
 
                 PickRandomTarget();
-            }          
+            }
             base.Think();
         }
 
@@ -1295,15 +1311,15 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 1;
+                    spell.RecastDelay = 3;
                     spell.ClientEffect = 479;
                     spell.Icon = 479;
                     spell.TooltipId = 479;
-                    spell.Damage = 450;
+                    spell.Damage = 550;
                     spell.Range = 1200;
                     spell.SpellID = 11718;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamage";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit;
@@ -1353,7 +1369,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class WaterPrimal : GameNPC
+    public class WaterPrimal : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -1434,31 +1450,23 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = 892;
-            Name = "Corrupt Primal of Water";
-            Size = 250;
-            Level = 83;
-            Realm = 0;
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159438);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
+
             CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 300;
             Flags ^= eFlags.GHOST;//ghost
 
-            Strength = 350;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
-            Quickness = 125;
-
             RespawnInterval = -1;//will not respawn
-            Gender = eGender.Neutral;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            MeleeDamageType = eDamageType.Slash;
-            BodyType = 5;
-            
+
             WaterPrimalBrain sBrain = new WaterPrimalBrain();
             SetOwnBrain(sBrain);
             sBrain.AggroLevel = 100;
@@ -1585,12 +1593,15 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class FirePrimal : GameNPC
+    public class FirePrimal : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FirePrimal()
             : base()
+        {
+        }
+        public override void StartAttack(GameObject target)
         {
         }
         public override void Die(GameObject killer)
@@ -1666,33 +1677,24 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = 911;
-            Name = "Corrupt Primal of Fire";
-            Size = 100;
-            Level = 83;
-            Realm = 0;
-            CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 300;
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159437);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
+            FirePrimalBrain.CanCast = false;
+
             Flags ^= eFlags.FLYING;//flying
-
-            Intelligence = 250;
-            Piety = 250;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
-
             RespawnInterval = -1;//will not respawn
-            Gender = eGender.Neutral;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            MeleeDamageType = eDamageType.Slash;
-            BodyType = 5;
 
             FirePrimalBrain sBrain = new FirePrimalBrain();
             SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 0;
             Brain.Start();
             base.AddToWorld();
             return true;
@@ -1715,14 +1717,7 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 2500;
         }
-        public override void AttackMostWanted()// mob doesnt attack
-        {
-        }
 
-        public override void OnAttackedByEnemy(AttackData ad)//another check to not attack enemys
-        {
-            base.OnAttackedByEnemy(ad);
-        }
         public static bool path1 = false;
         public static bool path2 = false;
         public static bool path3 = false;
@@ -1741,19 +1736,29 @@ namespace DOL.AI.Brain
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
                 this.Body.Health = this.Body.MaxHealth;
+                CanCast = false;
             }
             if (Body.IsAlive)
             {
-                if (!Body.IsCasting)
+                Body.CastSpell(FireDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast dmg shield every 60s
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                 {
-                    //set groundtarget before using spell, behind boss
-                    Body.GroundTarget.X = Body.X;
-                    Body.GroundTarget.Y = Body.Y - 100;
-                    Body.GroundTarget.Z = Body.Z;
-                    Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast groundtarget behind as trial of fire
-                    Body.CastSpell(FireDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast dmg shield every 60s
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!AggroTable.ContainsKey(player))
+                            {
+                                AggroTable.Add(player, 100);
+                            }
+                        }
+                    }
                 }
-
+                if (CanCast == false)
+                {
+                    new RegionTimer(Body, new RegionTimerCallback(CastGT), 1500);
+                    CanCast = true;
+                }
                 if (!Body.IsWithinRadius(point1, 20) && path1 == false)
                 {
                     Body.WalkTo(point1, 250);
@@ -1793,6 +1798,16 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
+        public static bool CanCast = false;
+        public int CastGT(RegionTimer timer)
+        {
+            Body.GroundTarget.X = Body.X;
+            Body.GroundTarget.Y = Body.Y - 100;
+            Body.GroundTarget.Z = Body.Z;
+            Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast groundtarget behind as trial of fire   
+            CanCast = false;
+            return 0;
+        }
 
         private Spell m_FireGroundDD;
 
@@ -1805,7 +1820,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 2;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 77;
                     spell.Icon = 77;
                     spell.TooltipId = 77;
@@ -1814,7 +1829,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 300;
                     spell.SpellID = 11720;
                     spell.Target = "Area";
-                    spell.Type = "DirectDamage";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Heat;
@@ -1863,7 +1878,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class EarthPrimal : GameNPC
+    public class EarthPrimal : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -1871,16 +1886,26 @@ namespace DOL.GS
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
+                default: return 50; // dmg reduction for rest resists
+            }
+        }
         public override void Die(GameObject killer)
         {
             ++AirPrimal.DeadPrimalsCount;
-            foreach(GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
-                if(npc != null)
+                if (npc != null)
                 {
-                    if(npc.IsAlive)
+                    if (npc.IsAlive)
                     {
-                        if(npc.Brain is GuardianEarthmenderBrain || npc.Brain is MagicalEarthmenderBrain || npc.Brain is NaturalEarthmenderBrain || npc.Brain is ShadowyEarthmenderBrain)
+                        if (npc.Brain is GuardianEarthmenderBrain || npc.Brain is MagicalEarthmenderBrain || npc.Brain is NaturalEarthmenderBrain || npc.Brain is ShadowyEarthmenderBrain)
                         {
                             npc.Die(null);
                         }
@@ -1932,34 +1957,22 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            Model = 951;
-            Name = "Corrupt Primal of Earth";
-            Size = 250;
-            Level = 83;
-            Realm = 0;
-            CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 250;
-
-            Strength = 600;
-            Quickness = 15;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159436);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
 
             RespawnInterval = -1;//will not respawn
-            Gender = eGender.Neutral;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            MeleeDamageType = eDamageType.Slash;
-            BodyType = 5;
 
             EarthPrimalBrain sBrain = new EarthPrimalBrain();
             SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 500;
             Brain.Start();
             base.AddToWorld();
             return true;
@@ -1986,9 +1999,9 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if(Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro)
             {
-                if(Util.Chance(15))
+                if (Util.Chance(15))
                 {
                     Body.CastSpell(EarthRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
@@ -2004,7 +2017,7 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
+                    spell.CastTime = 3;
                     spell.RecastDelay = 15;
                     spell.ClientEffect = 277;
                     spell.Icon = 277;
@@ -2201,12 +2214,12 @@ namespace DOL.AI.Brain
                                 {
                                     inRangeLiving.Add(npc);
                                 }
-                                if(inRangeLiving.Count > 0)
+                                if (inRangeLiving.Count > 0)
                                 {
                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                                     RandomTarget = ptarget;
                                     new RegionTimer(Body, new RegionTimerCallback(CastHeal), 2000);
-                                }     
+                                }
                             }
                         }
                     }
@@ -2706,7 +2719,7 @@ namespace DOL.GS
                     return;
                 }
             }
-            if(source is GamePet)
+            if (source is GamePet)
             {
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
@@ -2817,8 +2830,8 @@ namespace DOL.AI.Brain
             Body.TargetObject = RandomTarget;
             if (Body.TargetObject != null)
             {
-                if(!Body.IsCasting)
-                Body.CastSpell(EarthmenderHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                if (!Body.IsCasting)
+                    Body.CastSpell(EarthmenderHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
@@ -2900,7 +2913,7 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat 
+                if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
                     || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
                     || damageType == eDamageType.Slash)
                 {
@@ -2986,7 +2999,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if(Body.InCombat || HasAggro)
+            if (Body.InCombat || HasAggro)
             {
                 if (!Body.IsCasting)
                 {
