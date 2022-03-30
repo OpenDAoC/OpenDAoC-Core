@@ -484,17 +484,17 @@ public class ConquestManager
             temp.Add($"{activeObjective.Keep.Name}");
             temp.Add($"Total Contribution: {activeObjective.TotalContribution}");
             temp.Add(
-                $"Hib {Math.Round(activeObjective.HiberniaContribution / (double) (activeObjective.TotalContribution + 1), 2) * 100}% | " +
-                $"Alb: {Math.Round(activeObjective.AlbionContribution / (double) (activeObjective.TotalContribution + 1), 2) * 100}% | " +
-                $"Mid: {Math.Round(activeObjective.MidgardContribution / (double) (activeObjective.TotalContribution + 1), 2) * 100}%");
+                $"Hib {Math.Round((activeObjective.HiberniaContribution * 100) / (double) (activeObjective.TotalContribution + 1), 2)}% | " +
+                $"Alb: {Math.Round((activeObjective.AlbionContribution  * 100)/ (double) (activeObjective.TotalContribution + 1), 2) }% | " +
+                $"Mid: {Math.Round((activeObjective.MidgardContribution * 100) / (double) (activeObjective.TotalContribution + 1), 2)}%");
             temp.Add($"Players Nearby: {playerCount.Count}");
             temp.Add("");
         }
 
         temp.Add($"Objective Capture Reward: {SumOfContributions}");
-        temp.Add($"Hibernia: {Math.Round(HiberniaContribution / (double) (SumOfContributions + 1), 2) * 100}%");
-        temp.Add($"Albion: {Math.Round(AlbionContribution / (double) (SumOfContributions + 1), 2) * 100}%");
-        temp.Add($"Midgard: {Math.Round(MidgardContribution / (double) (SumOfContributions + 1), 2) * 100}%");
+        temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions + 1), 2) }%");
+        temp.Add($"Albion: {Math.Round(AlbionContribution * 100/ (double) (SumOfContributions + 1), 2) }%");
+        temp.Add($"Midgard: {Math.Round(MidgardContribution * 100 / (double) (SumOfContributions + 1), 2) }%");
 
         temp.Add($"");
         
