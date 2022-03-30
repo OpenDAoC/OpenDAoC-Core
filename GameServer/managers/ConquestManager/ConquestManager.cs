@@ -140,12 +140,7 @@ public class ConquestManager
 
     public void ConquestCapture(AbstractGameKeep CapturedKeep)
     {
-        //notify everyone an objective was captured
-        foreach (var client in WorldMgr.GetAllPlayingClients())
-        {
-            if(client.Player.CurrentZone.IsRvR)
-                client.Player.Out.SendMessage($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
-        }
+        BroadcastConquestMessageToRvRPlayers($"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!");
 
         List<GamePlayer> RecentContributors = new List<GamePlayer>();
         foreach (var activeObjective in GetActiveObjectives)
@@ -206,6 +201,7 @@ public class ConquestManager
         SetKeepForRealm(eRealm.Hibernia);
         SetKeepForRealm(eRealm.Midgard);
         LastTaskRolloverTick = GameLoop.GameLoopTime;
+        BroadcastConquestMessageToRvRPlayers($"Conquest targets have changed.");
     }
 
     public void AddSubtotalToOverallFrom(ConquestObjective objective)
@@ -213,6 +209,16 @@ public class ConquestManager
         HiberniaContribution += objective.HiberniaContribution;
         AlbionContribution += objective.AlbionContribution;
         MidgardContribution += objective.MidgardContribution;
+    }
+
+    private void BroadcastConquestMessageToRvRPlayers(String message)
+    {
+        //notify everyone an objective was captured
+        foreach (var client in WorldMgr.GetAllPlayingClients())
+        {
+            if(client.Player.CurrentZone.IsRvR && !client.Player.CurrentZone.IsBG)
+                client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        }
     }
 
     private void SetKeepForRealm(eRealm realm)
