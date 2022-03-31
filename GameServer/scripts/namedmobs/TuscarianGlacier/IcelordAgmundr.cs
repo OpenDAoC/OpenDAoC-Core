@@ -154,13 +154,17 @@ namespace DOL.AI.Brain
             ThinkInterval = 2000;
         }
 
-        private static bool IsPulled = false;
+        private static bool IsPulled;
+
+        private static bool IsChanged;
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
             {
-                SetMobstats();
+                if (!IsChanged)
+                    SetMobstats();
+                
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc == null) continue;
@@ -195,7 +199,8 @@ namespace DOL.AI.Brain
             
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.RETURN_TO_SPAWN))
             {
-                LoadBAFTemplate();
+                if (IsChanged)
+                    LoadBAFTemplate();
             }
 
             if (Body.IsOutOfTetherRange)
@@ -227,6 +232,7 @@ namespace DOL.AI.Brain
                 else
                     npc.MaxSpeedBase = npc.NPCTemplate.MaxSpeed; //return speed to normal
             }
+            IsChanged = true;
         }
 
         private void LoadBAFTemplate()
@@ -246,6 +252,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+            IsChanged = false;
         }
 
         private Spell m_AgmundrDD;
