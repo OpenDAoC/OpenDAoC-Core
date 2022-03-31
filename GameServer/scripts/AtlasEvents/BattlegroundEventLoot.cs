@@ -37,11 +37,12 @@ namespace DOL.GS.Scripts
             }
 			TurnTo(player.X, player.Y);
 
+			/*
 			if (!player.Boosted)
 			{
 				player.Out.SendMessage("I'm sorry " + player.Name + ", my services are not available to you.", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
-			}
+			}*/
 			
 			player.Out.SendMessage("Hello " + player.Name + "! We're happy to see you here, supporting your realm.\n" +
 				"For your efforts, " + realmName + " has procured a [full suit] of equipment and some [gems] to adorn them with. " +
