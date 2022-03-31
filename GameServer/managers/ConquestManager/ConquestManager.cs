@@ -521,7 +521,7 @@ public class ConquestManager
         }
         else
         {
-            long nextStartTime = (LastConquestStartTime + 7200000) - GameLoop.GameLoopTime;
+            long nextStartTime = (LastConquestStartTime + (ServerProperties.Properties.CONQUEST_CYCLE_TIMER * 60000 )) - GameLoop.GameLoopTime;
             temp.Add("Next Conquest will start in " + TimeSpan.FromMilliseconds(nextStartTime).Minutes + "m " +
                      TimeSpan.FromMilliseconds(nextStartTime).Seconds + "s");
             temp.Add("");
