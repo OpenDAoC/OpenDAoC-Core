@@ -25,7 +25,7 @@ public class ConquestService
     {
         Diagnostics.StartPerfCounter(ServiceName);
         
-        if(ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
+        if(ConquestManager.LastTaskRolloverTick + 7200000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
         {
             ConquestManager.RotateKeeps();
         }else if(300000 - ((GameLoop.GameLoopTime - ConquestManager.LastTaskRolloverTick) % 300000) <= GameLoop.TickRate) //every 5 minutes
