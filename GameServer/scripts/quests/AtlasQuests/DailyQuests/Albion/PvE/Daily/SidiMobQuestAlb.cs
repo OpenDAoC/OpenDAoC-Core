@@ -313,18 +313,18 @@ namespace DOL.GS.DailyQuest.Albion
         {
             GamePlayer player = sender as GamePlayer;
             
-            EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-			
-            if (gArgs.Target is GamePet)
+            if (sender != m_questPlayer)
                 return;
 
             if (player?.IsDoingQuest(typeof(SidiMobQuestAlb)) == null)
                 return;
 
-            if (sender != m_questPlayer)
-                return;
-
             if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            
+            EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+            if (gArgs.Target is GamePet)
+                return;
             // check if a GameNPC died + if its in Caer sidi
             if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 60)
             {

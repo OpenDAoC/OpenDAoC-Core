@@ -316,18 +316,19 @@ namespace DOL.GS.DailyQuest.Hibernia
         {
             GamePlayer player = sender as GamePlayer;
             
+            if (sender != m_questPlayer)
+                return;
+            
+            if (player?.IsDoingQuest(typeof(GallaMobQuestHib)) == null)
+                return;
+            
+            if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            
             EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
             if (gArgs.Target is GamePet)
                 return;
-
-            if (player?.IsDoingQuest(typeof(GallaMobQuestHib)) == null)
-                return;
-
-            if (sender != m_questPlayer)
-                return;
-
-            if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            
             // check if a GameNPC died + if its in Galladoria
             if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNPC || gArgs.Target.CurrentRegionID != 191) return;
             _deadGallaMob++;
