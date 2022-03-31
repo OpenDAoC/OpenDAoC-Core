@@ -43,7 +43,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Rain Of Ice";
-            m_dbspell.Icon = 7023;
+            m_dbspell.Icon = 4236;
             m_dbspell.ClientEffect = 7023;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 13;

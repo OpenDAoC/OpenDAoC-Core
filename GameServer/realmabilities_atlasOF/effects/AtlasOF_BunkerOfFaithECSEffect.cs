@@ -12,7 +12,7 @@ namespace DOL.GS.Effects
             EffectService.RequestStartEffect(this);
         }
 
-        public override ushort Icon { get { return 3015; } }
+        public override ushort Icon { get { return 4242; } }
         public override string Name { get { return "Bunker of Faith"; } }
         public override bool HasPositiveEffect { get { return true; } }
 

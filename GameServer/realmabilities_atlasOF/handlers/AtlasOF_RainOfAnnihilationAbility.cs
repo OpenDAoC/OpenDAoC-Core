@@ -44,7 +44,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Rain Of Annihilation";
-            m_dbspell.Icon = 7023;
+            m_dbspell.Icon = 4237;
             m_dbspell.ClientEffect = 7023;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 15;

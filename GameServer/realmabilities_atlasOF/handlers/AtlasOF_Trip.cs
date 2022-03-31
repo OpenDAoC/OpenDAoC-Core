@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Trip";
-            m_dbspell.Icon = 333;
+            m_dbspell.Icon = 4225;
             m_dbspell.ClientEffect = 2758;
             m_dbspell.Damage = 0;
 			m_dbspell.DamageType = (int)m_damageType;

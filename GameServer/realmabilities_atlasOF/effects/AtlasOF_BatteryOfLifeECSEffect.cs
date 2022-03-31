@@ -20,7 +20,7 @@ namespace DOL.GS.Effects
         
         private int m_HealthPool = 0;
 
-        public override ushort Icon { get { return 3019; } }
+        public override ushort Icon { get { return 4274; } }
         public override string Name { get { return "Battery Of Life"; } }
         public override bool HasPositiveEffect { get { return true; } }
         

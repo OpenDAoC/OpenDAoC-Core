@@ -10,7 +10,7 @@ namespace DOL.GS.Effects
             EffectService.RequestStartEffect(this);
         }
 
-        public override ushort Icon { get { return 3014; } }
+        public override ushort Icon { get { return 4241; } }
         public override string Name { get { return "Soldier's Barricade"; } }
         public override bool HasPositiveEffect { get { return true; } }
 

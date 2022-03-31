@@ -16,7 +16,7 @@ namespace DOL.GS.Effects
             EffectService.RequestStartEffect(this);
         }
 
-        public override ushort Icon { get { return 3019; } }
+        public override ushort Icon { get { return 4254; } }
         public override string Name { get { return "Rune Of Decimation"; } }
         public override bool HasPositiveEffect { get { return true; } }
 
