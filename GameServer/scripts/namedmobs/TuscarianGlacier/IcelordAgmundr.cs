@@ -160,21 +160,27 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
+                SetMobstats();
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
-                    if (npc != null)
-                    {
-                        if (npc.IsAlive && npc.PackageID == "AgmundrBaf")
-                        {
-                            AddAggroListTo(
-                                npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
-                            IsPulled = true;
-                        }
-                    }
+                    if (npc == null) continue;
+                    if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
+                    AddAggroListTo(
+                        npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                    IsPulled = true;
                 }
             }
 
             base.OnAttackedByEnemy(ad);
+        }
+
+        public override void AttackMostWanted()
+        {
+            if (Util.Chance(15))
+            {
+                Body.CastSpell(AgmundrDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.AttackMostWanted();
         }
 
         public override void Think()
@@ -185,6 +191,10 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
+            }
+            
+            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.RETURN_TO_SPAWN))
+            {
                 LoadBAFTemplate();
             }
 
@@ -196,16 +206,6 @@ namespace DOL.AI.Brain
             else if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-            }
-
-            if (Body.InCombat || HasAggro || Body.AttackState)
-            {
-                if (Util.Chance(15))
-                {
-                    Body.CastSpell(AgmundrDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                }
-
-                SetMobstats(); // //setting mob distance+tether+speed
             }
 
             base.Think();
@@ -253,27 +253,25 @@ namespace DOL.AI.Brain
         {
             get
             {
-                if (m_AgmundrDD == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(25, 45);
-                    spell.ClientEffect = 228;
-                    spell.Icon = 208;
-                    spell.TooltipId = 479;
-                    spell.Damage = 650;
-                    spell.Range = 1500;
-                    spell.Radius = 800;
-                    spell.SpellID = 11744;
-                    spell.Target = "Enemy";
-                    spell.Type = "DirectDamageNoVariance";
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
-                    m_AgmundrDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AgmundrDD);
-                }
+                if (m_AgmundrDD != null) return m_AgmundrDD;
+                DBSpell spell = new DBSpell();
+                spell.AllowAdd = false;
+                spell.CastTime = 0;
+                spell.RecastDelay = Util.Random(25, 45);
+                spell.ClientEffect = 228;
+                spell.Icon = 208;
+                spell.TooltipId = 479;
+                spell.Damage = 650;
+                spell.Range = 1500;
+                spell.Radius = 800;
+                spell.SpellID = 11744;
+                spell.Target = "Enemy";
+                spell.Type = "DirectDamageNoVariance";
+                spell.Uninterruptible = true;
+                spell.MoveCast = true;
+                spell.DamageType = (int) eDamageType.Cold;
+                m_AgmundrDD = new Spell(spell, 70);
+                SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AgmundrDD);
 
                 return m_AgmundrDD;
             }
