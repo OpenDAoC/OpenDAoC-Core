@@ -315,7 +315,7 @@ namespace DOL.GS.DailyQuest.Albion
             
             EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-            if (gArgs.Target.OwnerID != null)
+            if (gArgs.Target is GamePet)
                 return;
 
             if (player?.IsDoingQuest(typeof(SidiMobQuestAlb)) == null)

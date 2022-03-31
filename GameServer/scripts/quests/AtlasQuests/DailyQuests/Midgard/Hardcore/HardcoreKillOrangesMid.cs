@@ -322,7 +322,7 @@ namespace DOL.GS.DailyQuest
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target.OwnerID != null)
+			if (gArgs.Target is GamePet)
 				return;
 
 			if (!(player.GetConLevel(gArgs.Target) > 0)) return;

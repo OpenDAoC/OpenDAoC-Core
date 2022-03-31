@@ -326,7 +326,7 @@ namespace DOL.GS.DailyQuest.Albion
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target.OwnerID != null)
+			if (gArgs.Target is GamePet)
 				return;
 			
 			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||

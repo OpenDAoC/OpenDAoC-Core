@@ -317,7 +317,7 @@ namespace DOL.GS.DailyQuest
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target.OwnerID != null)
+			if (gArgs.Target is GamePet)
 				return;
 			
 			if (!(player.GetConLevel(gArgs.Target) > 0)) return;

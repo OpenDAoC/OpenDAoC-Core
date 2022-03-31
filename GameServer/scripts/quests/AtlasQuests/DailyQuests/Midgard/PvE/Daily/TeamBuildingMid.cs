@@ -350,7 +350,7 @@ namespace DOL.GS.DailyQuest.Albion
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target.OwnerID != null)
+			if (gArgs.Target is GamePet)
 				return;
 				
 			if (player.Group != null)

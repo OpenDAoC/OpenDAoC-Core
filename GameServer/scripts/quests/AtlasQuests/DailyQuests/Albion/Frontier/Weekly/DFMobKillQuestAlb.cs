@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest.Albion
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target.OwnerID != null)
+			if (gArgs.Target is GamePet)
 				return;
 			
 			if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNPC || gArgs.Target.CurrentRegionID != 249 ||

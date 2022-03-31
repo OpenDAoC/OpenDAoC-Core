@@ -326,7 +326,7 @@ namespace DOL.GS.DailyQuest.Midgard
             
             EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-            if (gArgs.Target.OwnerID != null)
+            if (gArgs.Target is GamePet)
                 return;
             
             // check if a GameNPC died + if its in Tuscaran Glacier
