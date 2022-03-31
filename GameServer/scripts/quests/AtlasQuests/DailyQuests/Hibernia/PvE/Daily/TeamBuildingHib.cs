@@ -22,12 +22,12 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Group Daily] A Team Building Exercise";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Group Daily] A Team Building Exercise";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 25;
+		private const int MAX_KILLED = 25;
 		
 		private static GameNPC Dean = null; // Start NPC
 
@@ -144,7 +144,7 @@ namespace DOL.GS.DailyQuest.Albion
 			Dean.RemoveQuestToGive(typeof (TeamBuildingHib));
 		}
 
-		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -258,7 +258,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -341,15 +341,17 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 			
-			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-			
-			if (gArgs.Target.OwnerID != null)
-				return;
-
-			if (player == null || player.IsDoingQuest(typeof(TeamBuildingHib)) == null)
+			if (player?.IsDoingQuest(typeof(TeamBuildingHib)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
+				return;
+			
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
+			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target.OwnerID != null)
 				return;
 
 			if (player.Group != null)
@@ -382,38 +384,27 @@ namespace DOL.GS.DailyQuest.Albion
 				player.Out.SendQuestUpdate(this);
 			}
 			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
-				if (player.GetConLevel(gArgs.Target) >= 1 &&
-				    player.Group != null &&
-				    HasGuardian && HasNaturalist && HasStalker && HasMagicianForester) 
-				{
-					TeamBuildMobsKilled++;
-					player.Out.SendMessage(
-						"[Group Daily] Monster killed: (" + TeamBuildMobsKilled + " | " + MAX_KILLED + ")",
-						eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-					
-					if (TeamBuildMobsKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
-			}
+			if (!(player.GetConLevel(gArgs.Target) >= 1) || player.Group == null || !HasGuardian || !HasNaturalist ||
+			    !HasStalker || !HasMagicianForester) return;
 			
+			TeamBuildMobsKilled++;
+			player.Out.SendMessage(
+				"[Group Daily] Monster killed: (" + TeamBuildMobsKilled + " | " + MAX_KILLED + ")",
+				eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
+					
+			if (TeamBuildMobsKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
+			}
+
 		}
 		
 		public override string QuestPropertyKey
 		{
 			get => "TeamBuildingHib";
 			set { ; }
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

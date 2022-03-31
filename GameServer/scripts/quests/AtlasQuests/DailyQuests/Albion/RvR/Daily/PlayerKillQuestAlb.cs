@@ -21,17 +21,17 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Fen's New Friends";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] Fen's New Friends";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 50;
 
-		protected static GameNPC ReyAlb = null; // Start NPC
+		private static GameNPC ReyAlb = null; // Start NPC
 
 		private int PlayersKilled = 0;
-		protected const int MAX_KILLED = 10;
+		private const int MAX_KILLED = 10;
 		
 		// prevent grey killing
-		protected const int MIN_PLAYER_CON = -3;
+		private const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public PlayerKillQuestAlb() : base()
@@ -227,7 +227,7 @@ namespace DOL.GS.DailyQuest.Albion
 			return true;
 		}
 
-		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			PlayerKillQuestAlb quest = player.IsDoingQuest(typeof (PlayerKillQuestAlb)) as PlayerKillQuestAlb;
 
@@ -245,7 +245,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -309,29 +309,25 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(PlayerKillQuestAlb)) == null)
+			if (player?.IsDoingQuest(typeof(PlayerKillQuestAlb)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON) 
-				{
-					PlayersKilled++;
-					player.Out.SendMessage("[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			if (gArgs.Target.Realm == 0 || gArgs.Target.Realm == player.Realm || gArgs.Target is not GamePlayer ||
+			    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON)) return;
+			PlayersKilled++;
+			player.Out.SendMessage("[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (PlayersKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Dean
-						Step = 2;
-					}
-				}
-				
+			if (PlayersKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to Dean
+				Step = 2;
 			}
 		}
 		

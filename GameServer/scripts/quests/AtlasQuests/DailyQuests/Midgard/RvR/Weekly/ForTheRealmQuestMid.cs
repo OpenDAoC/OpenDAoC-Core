@@ -21,18 +21,18 @@ namespace DOL.GS.DailyQuest.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] For The Realm";
-		protected const int minimumLevel = 40;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Weekly] For The Realm";
+		private const int minimumLevel = 40;
+		private const int maximumLevel = 50;
 
 		private static GameNPC ReyMid = null; // Start NPC
 
 		private int _playersKilledHib = 0;
 		private int _playersKilledAlb = 0;
-		protected const int MAX_KILLGOAL = 25;
+		private const int MAX_KILLGOAL = 25;
 		
 		// prevent grey killing
-		protected const int MIN_PLAYER_CON = -3;
+		private const int MIN_PLAYER_CON = -3;
 		// Constructors
 		public ForTheRealmQuestMid() : base()
 		{
@@ -245,7 +245,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -311,35 +311,32 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(ForTheRealmQuestMid)) == null)
+			if (player?.IsDoingQuest(typeof(ForTheRealmQuestMid)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == eRealm.Hibernia && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledHib < MAX_KILLGOAL) 
-				{
-					_playersKilledHib++;
-					player.Out.SendMessage("[Daily] Killed Hibernia Enemy: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
-				{
-					_playersKilledAlb++;
-					player.Out.SendMessage("[Daily] Killed Albion Enemy: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
+			if (gArgs.Target.Realm == eRealm.Hibernia && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledHib < MAX_KILLGOAL) 
+			{
+				_playersKilledHib++;
+				player.Out.SendMessage("[Daily] Killed Hibernia Enemy: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
+			else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
+			{
+				_playersKilledAlb++;
+				player.Out.SendMessage("[Daily] Killed Albion Enemy: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
 				
-				if (_playersKilledHib >= MAX_KILLGOAL && _playersKilledAlb >= MAX_KILLGOAL)
-				{
-					// FinishQuest or go back to Rey
-					Step = 2;
-				}
-				
+			if (_playersKilledHib >= MAX_KILLGOAL && _playersKilledAlb >= MAX_KILLGOAL)
+			{
+				// FinishQuest or go back to Rey
+				Step = 2;
 			}
 		}
 		
@@ -359,12 +356,6 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			SetCustomProperty("ForTheRealmKilledAlb", _playersKilledAlb.ToString());
 			SetCustomProperty("ForTheRealmKilledHib", _playersKilledHib.ToString());
-		}
-
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

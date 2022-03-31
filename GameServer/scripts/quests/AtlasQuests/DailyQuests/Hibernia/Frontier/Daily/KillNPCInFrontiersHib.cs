@@ -20,12 +20,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] A Bit of Bravery";
-		protected const int minimumLevel = 10;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] A Bit of Bravery";
+		private const int minimumLevel = 10;
+		private const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 25;
+		private const int MAX_KILLED = 25;
 		
 		private static GameNPC Cola = null; // Start NPC
 
@@ -138,7 +138,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Cola.RemoveQuestToGive(typeof (KillNPCInFrontiersHib));
 		}
 
-		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToCola(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -252,7 +252,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -315,47 +315,39 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
-			
-			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-			
-			if (gArgs.Target.OwnerID != null)
-				return;
 
-			if (player == null || player.IsDoingQuest(typeof(KillNPCInFrontiersHib)) == null)
+			if (player?.IsDoingQuest(typeof(KillNPCInFrontiersHib)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
 				return;
+
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
-				if (player.GetConLevel(gArgs.Target) > -1
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
-				{
-					FrontierMobsKilled++;
-					player.Out.SendMessage("[Daily] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+						
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target.OwnerID != null)
+				return;
+			
+			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||
+			    !player.CurrentZone.IsRvR) return;
+			FrontierMobsKilled++;
+			player.Out.SendMessage("[Daily] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
+			if (FrontierMobsKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
 		{
 			get => "KillNPCInFrontiersHib";
 			set { ; }
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

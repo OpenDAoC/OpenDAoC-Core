@@ -316,35 +316,31 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 			
+			if (player?.IsDoingQuest(typeof(KillNPCInFrontiersMid)) == null)
+				return;
+			
+			if (sender != m_questPlayer)
+				return;
+
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
+			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
 			if (gArgs.Target.OwnerID != null)
 				return;
 
-			if (player == null || player.IsDoingQuest(typeof(KillNPCInFrontiersMid)) == null)
-				return;
-			
-			if (sender != m_questPlayer)
-				return;
-			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
-				if (player.GetConLevel(gArgs.Target) > -1
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
-				{
-					FrontierMobsKilled++;
-					player.Out.SendMessage("[Daily] Monster Killed: (" + FrontierMobsKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||
+			    !player.CurrentZone.IsRvR) return;
+			FrontierMobsKilled++;
+			player.Out.SendMessage("[Daily] Monster Killed: (" + FrontierMobsKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
+			if (FrontierMobsKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey

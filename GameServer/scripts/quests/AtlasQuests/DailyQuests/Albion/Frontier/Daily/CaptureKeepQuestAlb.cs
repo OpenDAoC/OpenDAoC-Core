@@ -21,12 +21,12 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Frontier Conquerer";
-		protected const int minimumLevel = 50;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] Frontier Conquerer";
+		private const int minimumLevel = 50;
+		private const int maximumLevel = 50;
 
 		// Capture Goal
-		protected const int MAX_CAPTURED = 1;
+		private const int MAX_CAPTURED = 1;
 		
 		private static GameNPC Haszan = null; // Start NPC
 
@@ -139,7 +139,7 @@ namespace DOL.GS.DailyQuest.Albion
 			Haszan.RemoveQuestToGive(typeof (CaptureKeepQuestAlb));
 		}
 
-		protected static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -306,26 +306,23 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(CaptureKeepQuestAlb)) == null)
+			if (player?.IsDoingQuest(typeof(CaptureKeepQuestAlb)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
 				return;
-			
-			if (Step == 1 && e == GamePlayerEvent.CapturedKeepsChanged)
-			{
-				_isCaptured = 1;
-				player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				player.Out.SendQuestUpdate(this);
+
+			if (Step != 1 || e != GamePlayerEvent.CapturedKeepsChanged) return;
+			_isCaptured = 1;
+			player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-				if (_isCaptured >= MAX_CAPTURED)
-				{
-					// FinishQuest or go back to Dean
-					Step = 2;
-				}
-				
+			if (_isCaptured >= MAX_CAPTURED)
+			{
+				// FinishQuest or go back to Dean
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey

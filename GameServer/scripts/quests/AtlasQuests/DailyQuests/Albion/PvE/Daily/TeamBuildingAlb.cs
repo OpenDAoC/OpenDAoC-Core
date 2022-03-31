@@ -1,15 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
-using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
@@ -22,12 +17,12 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Group Daily] A Team Building Exercise";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Group Daily] A Team Building Exercise";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 25;
+		private const int MAX_KILLED = 25;
 		
 		private static GameNPC Hector = null; // Start NPC
 
@@ -340,18 +335,20 @@ namespace DOL.GS.DailyQuest.Albion
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
+
+			if (player?.IsDoingQuest(typeof(TeamBuildingAlb)) == null)
+				return;
+			
+			if (sender != m_questPlayer)
+				return;
+
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
 			if (gArgs.Target.OwnerID != null)
 				return;
 			
-			if (player == null || player.IsDoingQuest(typeof(TeamBuildingAlb)) == null)
-				return;
-			
-			if (sender != m_questPlayer)
-				return;
-
 			if (player.Group != null)
 			{
 				foreach (var member in player.Group.GetMembersInTheGroup())
@@ -359,15 +356,14 @@ namespace DOL.GS.DailyQuest.Albion
 					//update class counters
 					if (member is GamePlayer gplayer)
 					{
-						if (gplayer.CharacterClass is ClassFighter)
+						if (gplayer.CharacterClass is ClassGuardian)
 							HasFighter = true;
 						if (gplayer.CharacterClass is ClassAcolyte)
 							HasAcolyte = true;
 						if (gplayer.CharacterClass is ClassAlbionRogue)
 							HasRogue = true;
 						if (gplayer.CharacterClass is ClassMage ||
-						    gplayer.CharacterClass is ClassElementalist ||
-						    gplayer.CharacterClass is ClassDisciple)
+						    gplayer.CharacterClass is ClassElementalist || gplayer.CharacterClass is ClassDisciple)
 							HasMageElemDisc = true;
 					}
 				}
@@ -382,40 +378,28 @@ namespace DOL.GS.DailyQuest.Albion
 				HasMageElemDisc = false;
 				player.Out.SendQuestUpdate(this);
 			}
+
+			if (!(player.GetConLevel(gArgs.Target) >= 1) || player.Group == null || !HasFighter || !HasAcolyte ||
+			    !HasRogue || !HasMageElemDisc) return;
 			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
-				
-				if (player.GetConLevel(gArgs.Target) >= 1 &&
-				    player.Group != null &&
-				    HasFighter && HasAcolyte && HasRogue && HasMageElemDisc) 
-				{
-					TeamBuildMobsKilled++;
-					player.Out.SendMessage(
-						"[Group Daily] Monster killed: (" + TeamBuildMobsKilled + " | " + MAX_KILLED + ")",
-						eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			TeamBuildMobsKilled++;
+			player.Out.SendMessage(
+				"[Group Daily] Monster killed: (" + TeamBuildMobsKilled + " | " + MAX_KILLED + ")",
+				eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (TeamBuildMobsKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
+			if (TeamBuildMobsKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
 		{
 			get => "TeamBuildingAlb";
 			set { ; }
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

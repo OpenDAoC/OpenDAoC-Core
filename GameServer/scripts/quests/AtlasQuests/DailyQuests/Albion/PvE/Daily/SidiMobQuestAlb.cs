@@ -21,13 +21,13 @@ namespace DOL.GS.DailyQuest.Albion
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Daily] Too Many Monsters";
-        protected const int minimumLevel = 45;
-        protected const int maximumLevel = 50;
+        private const string questTitle = "[Daily] Too Many Monsters";
+        private const int minimumLevel = 45;
+        private const int maximumLevel = 50;
 
         // Kill Goal
         private int _deadSidiMob = 0;
-        protected const int MAX_KILLGOAL = 3;
+        private const int MAX_KILLGOAL = 3;
 
         private static GameNPC Hector = null; // Start NPC
 
@@ -227,10 +227,7 @@ namespace DOL.GS.DailyQuest.Albion
             //if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
             //	return false;
 
-            if (player.Level < minimumLevel || player.Level > maximumLevel)
-                return false;
-
-            return true;
+            return player.Level >= minimumLevel && player.Level <= maximumLevel;
         }
 
         private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
@@ -251,7 +248,7 @@ namespace DOL.GS.DailyQuest.Albion
             }
         }
 
-        protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+        private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
         {
             QuestEventArgs qargs = args as QuestEventArgs;
             if (qargs == null)
@@ -321,28 +318,26 @@ namespace DOL.GS.DailyQuest.Albion
             if (gArgs.Target.OwnerID != null)
                 return;
 
-            if (player == null || player.IsDoingQuest(typeof(SidiMobQuestAlb)) == null)
+            if (player?.IsDoingQuest(typeof(SidiMobQuestAlb)) == null)
                 return;
 
             if (sender != m_questPlayer)
                 return;
 
-            if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+            if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            // check if a GameNPC died + if its in Caer sidi
+            if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 60)
             {
-                // check if a GameNPC died + if its in Caer sidi
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 60)
-                {
-                    _deadSidiMob++;
-                    player.Out.SendMessage(
-                        "[Daily] Monsters killed in Caer Sidi: (" + _deadSidiMob + " | " + MAX_KILLGOAL + ")",
-                        eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    player.Out.SendQuestUpdate(this);
+                _deadSidiMob++;
+                player.Out.SendMessage(
+                    "[Daily] Monsters killed in Caer Sidi: (" + _deadSidiMob + " | " + MAX_KILLGOAL + ")",
+                    eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendQuestUpdate(this);
 
-                    if (_deadSidiMob >= MAX_KILLGOAL)
-                    {
-                        // FinishQuest or go back to Haszan
-                        Step = 2;
-                    }
+                if (_deadSidiMob >= MAX_KILLGOAL)
+                {
+                    // FinishQuest or go back to Haszan
+                    Step = 2;
                 }
             }
         }
@@ -361,11 +356,6 @@ namespace DOL.GS.DailyQuest.Albion
         public override void SaveQuestParameters()
         {
             SetCustomProperty(QuestPropertyKey, _deadSidiMob.ToString());
-        }
-
-        public override void AbortQuest()
-        {
-            base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }
 
         public override void FinishQuest()

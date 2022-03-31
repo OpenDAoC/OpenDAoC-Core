@@ -21,11 +21,11 @@ namespace DOL.GS.DailyQuest
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Hardcore] Apex Predator";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Hardcore] Apex Predator";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 50;
 
-		protected static GameNPC SucciAlb = null; // Start NPC
+		private static GameNPC SucciAlb = null; // Start NPC
 
 		private int PlayerKilled = 0;
 		private int MAX_KillGoal = 1;
@@ -139,7 +139,7 @@ namespace DOL.GS.DailyQuest
 			SucciAlb.RemoveQuestToGive(typeof (HardcoreKillAPlayerAlb));
 		}
 
-		protected static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -220,7 +220,7 @@ namespace DOL.GS.DailyQuest
 			return true;
 		}
 
-		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			HardcoreKillAPlayerAlb oranges = player.IsDoingQuest(typeof (HardcoreKillAPlayerAlb)) as HardcoreKillAPlayerAlb;
 
@@ -238,7 +238,7 @@ namespace DOL.GS.DailyQuest
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -307,7 +307,7 @@ namespace DOL.GS.DailyQuest
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(HardcoreKillAPlayerAlb)) == null)
+			if (player?.IsDoingQuest(typeof(HardcoreKillAPlayerAlb)) == null)
 				return;
 			
 			if(player.Group != null && Step == 1)
@@ -320,24 +320,18 @@ namespace DOL.GS.DailyQuest
 			{
 				FailQuest();
 			}
+
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) > -3 
-				    && gArgs.Target is GamePlayer enemyPlayer 
-				    && enemyPlayer.Realm != 0
-				    && player.Realm != enemyPlayer.Realm)
-				{
-					PlayerKilled = 1;
-					player.Out.SendMessage("[Hardcore] Enemy Killed: ("+PlayerKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-					// FinishQuest or go back to npc
-					Step = 2;
-				}
-				
-			}
-			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (!(player.GetConLevel(gArgs.Target) > -3) || gArgs.Target is not GamePlayer enemyPlayer ||
+			    enemyPlayer.Realm == 0 || player.Realm == enemyPlayer.Realm) return;
+			PlayerKilled = 1;
+			player.Out.SendMessage("[Hardcore] Enemy Killed: ("+PlayerKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
+			// FinishQuest or go back to npc
+			Step = 2;
+
 		}
 		
 		public override string QuestPropertyKey
@@ -356,12 +350,6 @@ namespace DOL.GS.DailyQuest
 			
 		}
 
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-		}
-
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2, false);
@@ -372,7 +360,7 @@ namespace DOL.GS.DailyQuest
 			
 		}
 
-		public void FailQuest()
+		private void FailQuest()
 		{
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
