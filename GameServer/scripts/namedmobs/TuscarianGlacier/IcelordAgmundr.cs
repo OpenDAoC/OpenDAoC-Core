@@ -235,6 +235,7 @@ namespace DOL.AI.Brain
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc == null) continue;
+                    if (npc.NPCTemplate == null) continue;
                     INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(npc.NPCTemplate.TemplateId);
                     if (npcTemplate == null)
                         return;
