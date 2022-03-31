@@ -30,6 +30,8 @@ public class ConquestObjective
 
     public void Contribute(GamePlayer contributor, int contributionValue)
     {
+        if (!ConquestService.ConquestManager.ConquestIsActive) return;
+        
         if (PlayerToContributionDict.Keys.Contains(contributor))
         {
             int existing = PlayerToContributionDict[contributor];
