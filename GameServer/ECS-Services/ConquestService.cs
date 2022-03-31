@@ -33,7 +33,6 @@ public class ConquestService
 
         if (ConquestManager.LastConquestStartTime + fullCycle < GameLoop.GameLoopTime)
         {
-            Console.WriteLine($"Starting conquest! laststart{ConquestManager.LastConquestStartTime} cycletime {fullCycle} together {ConquestManager.LastConquestStartTime + fullCycle} looptime {GameLoop.GameLoopTime}");
             ConquestManager.StartConquest();
         }
 
@@ -42,7 +41,6 @@ public class ConquestService
             if (ConquestManager.LastConquestStartTime + maxConquestTime <
                 GameLoop.GameLoopTime)
             {
-                Console.WriteLine($"Conquest timeout! laststart{ConquestManager.LastConquestStartTime} maxTime {maxConquestTime} together {ConquestManager.LastConquestStartTime + maxConquestTime} looptime {GameLoop.GameLoopTime}");
                 ConquestManager.ConquestTimeout();
             }
             else
@@ -51,7 +49,6 @@ public class ConquestService
                 {
                     if (activeObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
                     {
-                        Console.WriteLine($"Tally objective {activeObjective.Keep.Name}! laststart{activeObjective.LastRolloverTick} tallyCycle {tallyCycle} together {ConquestManager.LastConquestStartTime + tallyCycle} looptime {GameLoop.GameLoopTime}");
                         activeObjective.DoRollover();
                     }
                        
