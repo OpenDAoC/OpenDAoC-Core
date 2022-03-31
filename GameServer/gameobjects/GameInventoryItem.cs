@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using DOL.Language;
 using DOL.GS.PacketHandler;
 using DOL.Database;
+using DOL.GS.Scripts;
 using DOL.GS.Spells;
 
 using log4net;
@@ -406,13 +407,6 @@ namespace DOL.GS {
                 delve.Add(" ");
             }
 
-            if (Charges > 0 && (Name.Equals("Bead of Regeneration") || Name.Equals("Barrel of Combined Buffs") || Name.Equals("Barrel of Combined Regens")))
-            {
-                delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
-                delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
-                delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
-            }
-
             if ((Object_Type >= (int)eObjectType.GenericWeapon) && (Object_Type <= (int)eObjectType._LastWeapon) ||
                 Object_Type == (int)eObjectType.Instrument)
             {
@@ -454,10 +448,37 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
             {
-                if (SpellID == 31051)
+                /*if (SpellID == 31051)
                     WritePotionInfo(delve, AllStatsBarrel.BuffList, player.Client);
                 else
-                    WritePotionInfo(delve, player.Client);
+                    WritePotionInfo(delve, player.Client);*/
+                switch (SpellID)
+                {
+                    case 31051:
+                        WritePotionInfo(delve, AllStatsBarrel.BuffList, player.Client);
+                        break;
+                    case 31052:
+                        WritePotionInfo(delve, AllRegenBuff.RegenList, player.Client);
+                        break;
+                    case 31053:
+                        // summon merchant
+                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
+                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
+                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
+                        break;
+                    case 31054:
+                        WritePotionInfo(delve, BeadRegen.BeadRegenList, player.Client);
+                        break;
+                    case 34000:
+                        // summon vaultkeeper
+                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
+                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
+                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
+                        break;
+                    default:
+                        WritePotionInfo(delve, player.Client);
+                        break;
+                }
             }
             else if (CanUseEvery > 0)
             {
@@ -1469,6 +1490,7 @@ namespace DOL.GS {
         protected virtual void WritePotionInfo(IList<string> list, IList<int> idList, GameClient client)
         {
             Spell mSpell = SkillBase.GetSpellByID(SpellID);
+            list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
             list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
             list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
             list.Add(" ");
