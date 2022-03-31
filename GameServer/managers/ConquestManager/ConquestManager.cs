@@ -33,7 +33,8 @@ public class ConquestManager
     public int AlbStreak;
     public int MidStreak;
 
-    public long LastTaskRolloverTick;
+    public long LastConquestStartTime;
+    public long LastConquestStopTime;
 
     private List<GamePlayer> ContributedPlayers = new List<GamePlayer>();
 
@@ -59,11 +60,13 @@ public class ConquestManager
         set { }
     }
 
+    public bool ConquestIsActive = false;
+
     public ConquestManager()
     {
         ResetKeeps();
         ResetObjectives();
-        RotateKeeps();
+        StartConquest();
     }
 
     private void ResetKeeps()
@@ -171,6 +174,19 @@ public class ConquestManager
         AwardContributorsForRealm(CapturedKeep.Realm);
         RotateKeepsOnCapture(CapturedKeep);
         ResetContribution();
+        StopConquest();
+    }
+
+    public void ConquestTimeout()
+    {
+        BroadcastConquestMessageToRvRPlayers(
+            $"The Conquest has ended with no victors.");
+        
+        StopConquest();
+
+        ActiveAlbionObjective = null;
+        ActiveHiberniaObjective = null;
+        ActiveMidgardObjective = null;
     }
 
     private void CheckStreak(AbstractGameKeep capturedKeep)
@@ -266,14 +282,21 @@ public class ConquestManager
         }
     }
 
-    public void RotateKeeps()
+    public void StartConquest()
     {
-        SetDefensiveKeepForRealm(eRealm.Albion);
-        SetDefensiveKeepForRealm(eRealm.Hibernia);
-        SetDefensiveKeepForRealm(eRealm.Midgard);
+        if(ActiveAlbionObjective == null) SetDefensiveKeepForRealm(eRealm.Albion);
+        if(ActiveHiberniaObjective == null) SetDefensiveKeepForRealm(eRealm.Hibernia);
+        if(ActiveMidgardObjective == null) SetDefensiveKeepForRealm(eRealm.Midgard);
         ResetContribution();
-        LastTaskRolloverTick = GameLoop.GameLoopTime;
-        BroadcastConquestMessageToRvRPlayers($"Conquest targets have updated.");
+        LastConquestStartTime = GameLoop.GameLoopTime;
+        ConquestIsActive = true;
+        BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
+    }
+
+    public void StopConquest()
+    {
+        LastConquestStopTime = GameLoop.GameLoopTime;
+        ConquestIsActive = false;
     }
 
     public void AddSubtotalToOverallFrom(ConquestObjective objective)
@@ -442,6 +465,7 @@ public class ConquestManager
     {
         List<string> temp = new List<string>();
 
+        /*
         ConquestObjective hibObj = ActiveHiberniaObjective;
         ConquestObjective albObj = ActiveAlbionObjective;
         ConquestObjective midObj = ActiveMidgardObjective;
@@ -454,43 +478,57 @@ public class ConquestManager
             albObj.Keep.Y, albObj.Keep.Z, 15000, albList, true);
         midList = midObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, midObj.Keep.X,
             midObj.Keep.Y, midObj.Keep.Z, 15000, midList, true);
+            */
 
 
-        long tasktime = 300000 - ((GameLoop.GameLoopTime - LastTaskRolloverTick) % 300000);
+        long tasktime = 300000 - ((GameLoop.GameLoopTime - LastConquestStartTime) % 300000);
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
         
         temp.Add("Objective Details:");
-        foreach (var activeObjective in GetActiveObjectives)
+        if (ConquestIsActive)
         {
-            ArrayList playerCount = new ArrayList();
-            playerCount = activeObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER,
-                activeObjective.Keep.X,
-                activeObjective.Keep.Y, activeObjective.Keep.Z, 15000, playerCount, true);
+            foreach (var activeObjective in GetActiveObjectives)
+            {
+                ArrayList playerCount = new ArrayList();
+                playerCount = activeObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER,
+                    activeObjective.Keep.X,
+                    activeObjective.Keep.Y, activeObjective.Keep.Z, 15000, playerCount, true);
 
-            temp.Add($"{GetStringFromRealm(activeObjective.Keep.OriginalRealm).ToUpper()}");
-            temp.Add($"{activeObjective.Keep.Name}");
-            temp.Add($"Total Contribution: {activeObjective.TotalContribution}");
-            temp.Add(
-                $"Hib {Math.Round((activeObjective.HiberniaContribution * 100) / (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2)}% | " +
-                $"Alb: {Math.Round((activeObjective.AlbionContribution  * 100)/ (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2) }% | " +
-                $"Mid: {Math.Round((activeObjective.MidgardContribution * 100) / (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2)}%");
-            temp.Add($"Players Nearby: {playerCount.Count}");
+                temp.Add($"{GetStringFromRealm(activeObjective.Keep.OriginalRealm).ToUpper()}");
+                temp.Add($"{activeObjective.Keep.Name}");
+                temp.Add($"Total Contribution: {activeObjective.TotalContribution}");
+                temp.Add(
+                    $"Hib {Math.Round((activeObjective.HiberniaContribution * 100) / (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2)}% | " +
+                    $"Alb: {Math.Round((activeObjective.AlbionContribution  * 100)/ (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2) }% | " +
+                    $"Mid: {Math.Round((activeObjective.MidgardContribution * 100) / (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2)}%");
+                temp.Add($"Players Nearby: {playerCount.Count}");
+                temp.Add("");
+            }
+            
+            temp.Add($"Objective Capture Reward: {SumOfContributions}");
+            temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
+            temp.Add($"Albion: {Math.Round(AlbionContribution * 100/ (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
+            temp.Add($"Midgard: {Math.Round(MidgardContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
+
+            temp.Add($"");
+        
+            long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
+            temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
+            temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
+                     TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
             temp.Add("");
         }
-
-        temp.Add($"Objective Capture Reward: {SumOfContributions}");
-        temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-        temp.Add($"Albion: {Math.Round(AlbionContribution * 100/ (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-        temp.Add($"Midgard: {Math.Round(MidgardContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-
-        temp.Add($"");
+        else
+        {
+            long nextStartTime = (LastConquestStartTime + 7200000) - GameLoop.GameLoopTime;
+            temp.Add("Next Conquest will start in " + TimeSpan.FromMilliseconds(nextStartTime).Minutes + "m " +
+                     TimeSpan.FromMilliseconds(nextStartTime).Seconds + "s");
+            temp.Add("");
+        }
         
-        long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastTaskRolloverTick;
-        temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
-        temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
-                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
-        temp.Add("");
+
+        
 
         //capture streak info
         int streak = 0;

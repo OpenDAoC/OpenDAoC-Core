@@ -14,6 +14,8 @@ public class ConquestService
 
     public static ConquestManager ConquestManager;
 
+    private static long lastCheckTick;
+
 
     static ConquestService()
     {
@@ -24,17 +26,53 @@ public class ConquestService
     public static void Tick(long tick)
     {
         Diagnostics.StartPerfCounter(ServiceName);
-        
-        if(ConquestManager.LastTaskRolloverTick + 7200000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
+
+        long fullCycle = ServerProperties.Properties.CONQUEST_CYCLE_TIMER * 60000; //multiply by 60000 to accomodate for minute input
+        long maxConquestTime = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //multiply by 60000 to accomodate for minute input
+        long tallyCycle = ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000; //multiply by 000 to accomodate for second input
+
+        if (ConquestManager.LastConquestStartTime + fullCycle < GameLoop.GameLoopTime)
         {
-            ConquestManager.RotateKeeps();
-        }else if(300000 - ((GameLoop.GameLoopTime - ConquestManager.LastTaskRolloverTick) % 300000) <= GameLoop.TickRate) //every 5 minutes
+            Console.WriteLine($"Starting conquest! laststart{ConquestManager.LastConquestStartTime} cycletime {fullCycle} together {ConquestManager.LastConquestStartTime + fullCycle} looptime {GameLoop.GameLoopTime}");
+            ConquestManager.StartConquest();
+        }
+
+        if (ConquestManager.ConquestIsActive)
+        {
+            if (ConquestManager.LastConquestStartTime + maxConquestTime <
+                GameLoop.GameLoopTime)
+            {
+                Console.WriteLine($"Conquest timeout! laststart{ConquestManager.LastConquestStartTime} maxTime {maxConquestTime} together {ConquestManager.LastConquestStartTime + maxConquestTime} looptime {GameLoop.GameLoopTime}");
+                ConquestManager.ConquestTimeout();
+            }
+            else
+            {
+                foreach (var activeObjective in ConquestManager.GetActiveObjectives)
+                {
+                    if (activeObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
+                    {
+                        Console.WriteLine($"Tally objective {activeObjective.Keep.Name}! laststart{activeObjective.LastRolloverTick} tallyCycle {tallyCycle} together {ConquestManager.LastConquestStartTime + tallyCycle} looptime {GameLoop.GameLoopTime}");
+                        activeObjective.DoRollover();
+                    }
+                       
+                }
+            }
+                
+        }
+        
+        /*
+        if(ConquestManager.LastConquestStartTime + 7200000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
+        {
+            ConquestManager.StartConquest();
+        }else if(300000 - ((GameLoop.GameLoopTime - ConquestManager.LastConquestStartTime) % 300000) <= GameLoop.TickRate) //every 5 minutes
         {
             foreach (var activeObjective in ConquestManager.GetActiveObjectives)
             {
                 activeObjective.DoRollover();
             }
         }
+        */
+        lastCheckTick = GameLoop.GameLoopTime;
         //Console.WriteLine($"conquest heartbeat {GameLoop.GameLoopTime} countdown {GameLoop.GameLoopTime - (ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 10000)}");
         
         Diagnostics.StopPerfCounter(ServiceName);

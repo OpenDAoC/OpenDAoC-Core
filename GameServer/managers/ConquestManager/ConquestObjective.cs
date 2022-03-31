@@ -14,6 +14,8 @@ public class ConquestObjective
     public int HiberniaContribution;
 
     private int SubTickMaxReward = ServerProperties.Properties.MAX_SUBTASK_RP_REWARD; //maximum of 1000 rps awarded every interval (5 minutes atm)
+
+    public long LastRolloverTick = 0;
     
     public int TotalContribution => AlbionContribution + HiberniaContribution + MidgardContribution;
 
@@ -56,6 +58,7 @@ public class ConquestObjective
         UpdateTotalContribution();
         PlayerToContributionDict.Clear();
         ResetContribution();
+        LastRolloverTick = GameLoop.GameLoopTime;
     }
 
     public void ConquestCapture()
