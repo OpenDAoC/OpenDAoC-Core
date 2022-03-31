@@ -162,9 +162,6 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
-                if (!IsChanged)
-                    SetMobstats();
-                
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc == null) continue;
@@ -173,6 +170,9 @@ namespace DOL.AI.Brain
                         npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
                     IsPulled = true;
                 }
+                
+                if (!IsChanged)
+                    SetMobstats();
             }
 
             base.OnAttackedByEnemy(ad);
