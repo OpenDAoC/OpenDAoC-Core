@@ -55,7 +55,7 @@ namespace DOL.GS.Scripts
                 eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             }
             
-            if (player.RealmPoints < 61750)
+            if (realmPoints != 0)
             {
                 player.Out.SendMessage("\nAdditionally, you might be interested in a small [realm level] boost.",
                         eChatType.CT_Say, eChatLoc.CL_PopupWindow);
