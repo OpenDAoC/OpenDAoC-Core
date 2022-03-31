@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -68,7 +63,6 @@ namespace DOL.GS
                 if (IsAlive)
                     return;
             }
-
             base.WalkToSpawn();
         }
 
@@ -140,23 +134,6 @@ namespace DOL.GS
                 log.Warn("Crypt Lord exist ingame, remove it and restart server if you want to add by script code.");
         }
 
-        public override void Die(GameObject killer) //on kill generate orbs
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
-                }
-            }
-
-            base.Die(killer);
-        }
     }
 }
 
@@ -279,8 +256,7 @@ namespace DOL.AI.Brain
                                 GameLiving target = npc.TargetObject as GameLiving;
                                 if (Body.IsAlive)
                                 {
-                                    if (npc.IsWithinRadius(Body,
-                                            800)) //the range that mob will bring Boss and rest mobs
+                                    if (npc.IsWithinRadius(Body,800)) //the range that mob will bring Boss and rest mobs
                                     {
                                         AddToAggroList(target, 100);
                                     }
@@ -302,7 +278,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
                         {
-                            if (BafMobs == true && npc.TargetObject == Body.TargetObject)
+                            if (BafMobs == true && npc.TargetObject == Body.TargetObject && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                             {
                                 npc.MaxDistance = 10000; //set mob distance to make it reach target
                                 npc.TetherRange = 10000; //set tether to not return to home
@@ -323,7 +299,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
+                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf" && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                         {
                             if (BafMobs == false)
                             {
@@ -339,23 +315,31 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
+            if(Body.IsMoving)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            AddToAggroList(player, 10);//aggro players if roaming
+                        }
+                    }
+                    if(player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
+                    {
+                        if(AggroTable.Count>0)
+                        {
+                            ClearAggroList();//clear list if it contain any aggroed players
+                        }
+                    }
+                }
+            }
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 BafMobs = false;
-                this.Body.Health = this.Body.MaxHealth;
-                ;
-            }
-
-            if (Body.IsOutOfTetherRange)
-            {
-                this.Body.Health = this.Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat || HasAggro ||
@@ -369,8 +353,7 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
                             {
-                                AddAggroListTo(
-                                    npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                                AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
                                 BafMobs = true;
                             }
                         }
