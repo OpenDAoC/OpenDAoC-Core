@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
                     Body.CastSpell(AgmundrDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
-            SetMobstats();//setting mob distance+tether+speed
+            // SetMobstats();//setting mob distance+tether+speed
             base.Think();
         }
         public void SetMobstats()
