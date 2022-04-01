@@ -6843,9 +6843,17 @@ namespace DOL.GS {
             tempAd.Target = display;
             tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
             tempAd.AttackResult = eAttackResult.HitUnstyled;
-            var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));
-            animationThread.IsBackground = true;
-            animationThread.Start();
+            display.AttackState = true;
+            display.TargetObject = display;
+            display.ObjectState = eObjectState.Active;
+            display.attackComponent.AttackState = true;
+            display.BroadcastLivingEquipmentUpdate();
+            player.Out.SendObjectUpdate(display);
+            
+            //Uncomment this if you want animations
+            // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));
+            // animationThread.IsBackground = true;
+            // animationThread.Start();
             
 
         }
@@ -6857,7 +6865,6 @@ namespace DOL.GS {
             {
                 if (GameLoop.GameLoopTime - _lastAnimation > 2000)
                 {
-                    display.StartAttack(display);
                     _lastAnimation = GameLoop.GameLoopTime;
                 }
       
