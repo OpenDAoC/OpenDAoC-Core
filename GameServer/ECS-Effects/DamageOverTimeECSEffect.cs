@@ -58,7 +58,7 @@ namespace DOL.GS
                     }
 
                     double postRAEffectiveness = Effectiveness;
-                    if (handler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper))
+                    if (handler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper) && SpellHandler.Spell.IsPoison)
                         postRAEffectiveness *= 2;
                     
                     handler.OnDirectEffect(Owner, postRAEffectiveness);
