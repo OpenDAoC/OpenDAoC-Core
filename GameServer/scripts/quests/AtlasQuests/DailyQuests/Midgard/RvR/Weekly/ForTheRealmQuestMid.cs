@@ -298,7 +298,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					case 1:
 						return "Head into the enemy frontiers and slay their forces. \n" +
-						       "Players Killed: Albion ("+ _playersKilledAlb +" | "+ MAX_KILLGOAL +")" +
+						       "Players Killed: Albion ("+ _playersKilledAlb +" | "+ MAX_KILLGOAL +")\n" +
 						       "Players Killed: Hibernia ("+ _playersKilledHib +" | "+ MAX_KILLGOAL +")";
 					case 2:
 						return "Return to Rey in Svasud Faste for your Reward.";
