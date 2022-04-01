@@ -557,7 +557,7 @@ public class ConquestManager
 
         temp.Add($"Current Capture Streak: {streak} Realm: {(streakingRealm.Equals("") ? "None" : streakingRealm)}");
         temp.Add(
-            $"{(tmpStreak >= 20 ? tmpStreak : 0)}% reward from task contributions. Capture a task objective to claim the streak for your own realm, or build your realm's current streak if active.");
+            $"{(tmpStreak >= 0 ? tmpStreak : 0)}% reward from task contributions. Capture a task objective to claim the streak for your own realm, or build your realm's current streak if active.");
         
         temp.Add("");
         temp.Add("Conquest Details");
