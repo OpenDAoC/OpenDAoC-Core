@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
@@ -74,7 +72,6 @@ namespace DOL.GS
                 if (IsAlive)
                     return;
             }
-
             base.WalkToSpawn();
         }
 
@@ -271,8 +268,7 @@ namespace DOL.AI.Brain
                                 GameLiving target = npc.TargetObject as GameLiving;
                                 if (Body.IsAlive)
                                 {
-                                    if (npc.IsWithinRadius(Body,
-                                            800)) //the range that mob will bring Boss and rest mobs
+                                    if (npc.IsWithinRadius(Body,800)) //the range that mob will bring Boss and rest mobs
                                     {
                                         AddToAggroList(target, 100);
                                     }
@@ -294,7 +290,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
                         {
-                            if (BafMobs == true && npc.TargetObject == Body.TargetObject)
+                            if (BafMobs == true && npc.TargetObject == Body.TargetObject && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                             {
                                 npc.MaxDistance = 10000; //set mob distance to make it reach target
                                 npc.TetherRange = 10000; //set tether to not return to home
@@ -315,7 +311,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
+                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf" && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                         {
                             if (BafMobs == false)
                             {
@@ -331,10 +327,29 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
+            if(Body.IsMoving)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            AddToAggroList(player, 10);//aggro players if roaming
+                        }
+                    }
+                    if(player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
+                    {
+                        if(AggroTable.Count>0)
+                        {
+                            ClearAggroList();//clear list if it contain any aggroed players
+                        }
+                    }
+                }
+            }
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 BafMobs = false;
                 this.Body.Health = this.Body.MaxHealth;
             }
@@ -360,8 +375,7 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
                             {
-                                AddAggroListTo(
-                                    npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                                AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
                                 BafMobs = true;
                             }
                         }

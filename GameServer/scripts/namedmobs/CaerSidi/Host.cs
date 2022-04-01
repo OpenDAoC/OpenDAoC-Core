@@ -334,7 +334,7 @@ namespace DOL.GS
             Quickness = 125;
             Piety = 220;
             Intelligence = 220;
-            Empathy = 180;
+            Empathy = 170;
 
             HostBrain.walkback = false;
             HostBrain.path1 = false;
@@ -4023,7 +4023,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "HostBaf")
+                        if (npc.IsAlive && npc.PackageID == "HostBaf" && npc.NPCTemplate != null)
                         {
                             if (BafMobs == true && npc.TargetObject == Body.TargetObject)
                             {
@@ -4046,7 +4046,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "HostBaf")
+                        if (npc.IsAlive && npc.PackageID == "HostBaf" && npc.NPCTemplate != null)
                         {
                             if (BafMobs == false)
                             {
@@ -4066,22 +4066,9 @@ namespace DOL.AI.Brain
         {
             if (!HasAggressionTable())
             {
-                //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 BafMobs = false;
             }
-
-            if (Body.IsOutOfTetherRange)
-            {
-                this.Body.Health = this.Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
             if (Body.IsMoving)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -4093,18 +4080,11 @@ namespace DOL.AI.Brain
                             AddToAggroList(player, 10);
                         }
                     }
-                }
-
-                foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
-                {
-                    if (npc != null)
+                    if (player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
                     {
-                        if (npc.IsAlive)
+                        if (AggroTable.Count > 0)
                         {
-                            if (npc is GamePet && npc.Realm != Body.Realm)
-                            {
-                                AddToAggroList((GamePet) npc, 10);
-                            }
+                            ClearAggroList();//clear list if it contain any aggroed players
                         }
                     }
                 }

@@ -71,8 +71,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
@@ -82,6 +81,8 @@ namespace DOL.GS
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
 
+            AgmundrBrain.IsChanged = false;
+            AgmundrBrain.IsPulled = false;
             AgmundrBrain sbrain = new AgmundrBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -108,9 +109,7 @@ namespace DOL.GS
                 TG.Size = 70;
                 TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
+                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
@@ -133,8 +132,7 @@ namespace DOL.GS
                 TG.Brain.Start();
             }
             else
-                log.Warn(
-                    "Icelord Agmundr exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn("Icelord Agmundr exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -154,27 +152,12 @@ namespace DOL.AI.Brain
             ThinkInterval = 2000;
         }
 
-        private static bool IsPulled;
+        public static bool IsPulled = false;
 
-        private static bool IsChanged;
+        public static bool IsChanged = false;
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (IsPulled == false)
-            {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-                    if (npc == null) continue;
-                    if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
-                    AddAggroListTo(
-                        npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
-                    IsPulled = true;
-                }
-                
-                if (!IsChanged)
-                    SetMobstats();
-            }
-
             base.OnAttackedByEnemy(ad);
         }
 
@@ -196,13 +179,28 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
             }
-            
-            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.RETURN_TO_SPAWN))
+            if(Body.InCombat && HasAggro)
             {
-                if (IsChanged)
-                    LoadBAFTemplate();
+                IsChanged = false;//reset IsChanged flag here
+                if(IsPulled==false)
+                { 
+                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    {
+                        if (npc == null) continue;
+                        if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
+                        AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                        SetMobstats();//setting mob stats here
+                    }
+                }
             }
-
+            else
+            {
+                if (IsChanged == false)
+                {
+                    LoadBAFTemplate();
+                    IsChanged = true;//to stop mob 'blink' effect
+                }
+            }
             if (Body.IsOutOfTetherRange)
             {
                 Body.Health = Body.MaxHealth;
@@ -212,7 +210,6 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-
             base.Think();
         }
 
@@ -221,8 +218,9 @@ namespace DOL.AI.Brain
             foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
             {
                 if (npc == null) continue;
+                if (npc.NPCTemplate == null) continue;//check for nontemplated mobs
                 if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
-                if (!IsPulled || npc.TargetObject != Body.TargetObject) continue;
+                if (npc.TargetObject != Body.TargetObject) continue;
                 npc.MaxDistance = 10000; //set mob distance to make it reach target
                 npc.TetherRange = 10000; //set tether to not return to home
                 if (!npc.IsWithinRadius(Body.TargetObject, 100))
@@ -230,31 +228,28 @@ namespace DOL.AI.Brain
                     npc.MaxSpeedBase = 300; //speed is is not near to reach target faster
                 }
                 else
-                    npc.MaxSpeedBase = npc.NPCTemplate.MaxSpeed; //return speed to normal
-            }
-            IsChanged = true;
-        }
-
-        private void LoadBAFTemplate()
-        {
-            {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
-                    if (npc == null) continue;
-                    if (npc.NPCTemplate == null) continue;
-                    INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(npc.NPCTemplate.TemplateId);
-                    if (npcTemplate == null)
-                        return;
-                    if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
-                    if (IsPulled == false)
-                    {
-                        npc.LoadTemplate(npcTemplate);
-                    }
+                    npc.MaxSpeedBase = npc.NPCTemplate.MaxSpeed; //return speed to normal
+                    IsPulled = true;//to stop mob adjusting stats nonstop
                 }
             }
-            IsChanged = false;
         }
-
+        private void LoadBAFTemplate()
+        {
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+            {
+                if (npc == null) continue;
+                if (npc.NPCTemplate == null) continue;//check if mob got npctemplate
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(npc.NPCTemplate.TemplateId);
+                if (npcTemplate == null)
+                    return;
+                if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
+                if (npc.NPCTemplate != null)//check again if got npctemplate
+                {
+                    npc.LoadTemplate(npcTemplate);
+                }
+            }
+        }
         private Spell m_AgmundrDD;
 
         private Spell AgmundrDD
@@ -264,7 +259,7 @@ namespace DOL.AI.Brain
                 if (m_AgmundrDD != null) return m_AgmundrDD;
                 DBSpell spell = new DBSpell();
                 spell.AllowAdd = false;
-                spell.CastTime = 0;
+                spell.CastTime = 3;
                 spell.RecastDelay = Util.Random(25, 45);
                 spell.ClientEffect = 228;
                 spell.Icon = 208;
