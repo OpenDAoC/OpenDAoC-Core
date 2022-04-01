@@ -311,7 +311,7 @@ public class ConquestManager
         //notify everyone an objective was captured
         foreach (var client in WorldMgr.GetAllPlayingClients())
         {
-            if (client.Player.CurrentZone.IsRvR && !client.Player.CurrentZone.IsBG)
+            if ((client.Player.CurrentZone.IsRvR || client.Player.Level >= 40 ) && !client.Player.CurrentZone.IsBG)
                 client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller_And_CT_System,
                     eChatLoc.CL_SystemWindow);
         }
