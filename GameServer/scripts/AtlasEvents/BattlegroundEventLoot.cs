@@ -30,6 +30,7 @@ namespace DOL.GS.Scripts
 		public override bool Interact(GamePlayer player)
 		{
 			if (!base.Interact(player)) return false;
+			if(player.Level < 50){player.Out.SendMessage("Come back when you're older, kid.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);}
 			string realmName = player.Realm.ToString();
 			if (realmName.Equals("_FirstPlayerRealm")) {
 				realmName = "Albion";
@@ -56,6 +57,7 @@ namespace DOL.GS.Scripts
 			if (!base.WhisperReceive(source, str)) return false;
 			if (!(source is GamePlayer)) return false;
 			GamePlayer player = (GamePlayer)source;
+			if (player.Level < 50) return false;
 			TurnTo(player.X, player.Y);
 			eRealm realm = player.Realm;
 			eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
