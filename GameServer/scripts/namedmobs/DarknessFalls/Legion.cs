@@ -195,7 +195,7 @@ namespace DOL.GS.Scripts
 
             DyingEventArgs eArgs = args as DyingEventArgs;
 
-            if (eArgs?.Killer.Name != "Legion")
+            if (eArgs?.Killer?.Name != "Legion")
                 return;
 
             foreach (GameNPC mob in player.GetNPCsInRadius(2000))
