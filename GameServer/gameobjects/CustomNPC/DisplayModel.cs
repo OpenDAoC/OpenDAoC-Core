@@ -53,8 +53,8 @@ namespace DOL.GS {
 
         public override bool AddToWorld()
         {
-            ObjectState = eObjectState.Inactive;
-            m_spawnTick = GameLoop.GameLoopTime + 60*1000;
+            ObjectState = eObjectState.Active;
+            m_spawnTick = GameLoop.GameLoopTime + 120*1000;
             
             m_displayedPlayer.Out.SendNPCCreate(this);
             m_displayedPlayer.Out.SendLivingEquipmentUpdate(this);
