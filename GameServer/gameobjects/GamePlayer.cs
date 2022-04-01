@@ -8576,7 +8576,7 @@ namespace DOL.GS
                 int baseContribution = 200; //todo turn it into a server prop?
                 foreach (var conquestObjective in activeConquests)
                 {
-                    if (this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <=
+                    if (conquestObjective != null && this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <=
                         ServerProperties.Properties.MAX_CONQUEST_RANGE)
                     {
                         if (Group != null)
