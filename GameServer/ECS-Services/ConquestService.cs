@@ -47,7 +47,7 @@ public class ConquestService
             {
                 foreach (var activeObjective in ConquestManager.GetActiveObjectives)
                 {
-                    if (activeObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
+                    if (activeObjective != null && activeObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
                     {
                         activeObjective.DoRollover();
                     }
