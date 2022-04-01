@@ -101,9 +101,10 @@ namespace DOL.GS.Scripts
                         var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                         
                         player.Out.SendMessage("I have given you enough experience to fight, now speak with the quartermaster and go make your Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        player.Boosted = true;
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
-                        player.Boosted = true;
+                        
                         
                         if (boosterKey == null)
                         {
