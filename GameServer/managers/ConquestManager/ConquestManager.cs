@@ -174,15 +174,16 @@ public class ConquestManager
         AwardContributorsForRealm(CapturedKeep.Realm);
         RotateKeepsOnCapture(CapturedKeep);
         ResetContribution();
-        StopConquest();
     }
 
     public void ConquestTimeout()
     {
         BroadcastConquestMessageToRvRPlayers(
-            $"The Conquest has ended with no victors.");
-        
+            $"The Conquest has ended.");
+
         StopConquest();
+        
+        ResetStreak();
 
         ActiveAlbionObjective = null;
         ActiveHiberniaObjective = null;
@@ -209,6 +210,13 @@ public class ConquestManager
                 AlbStreak = 0;
                 break;
         }
+    }
+
+    private void ResetStreak()
+    {
+        AlbStreak = 0;
+        HibStreak = 0;
+        MidStreak = 0;
     }
 
     private void AwardContributorsForRealm(eRealm realmToAward)
@@ -487,9 +495,9 @@ public class ConquestManager
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
         
-        temp.Add("Objective Details:");
         if (ConquestIsActive)
         {
+            temp.Add("Objective Details:");
             foreach (var activeObjective in GetActiveObjectives)
             {
                 ArrayList playerCount = new ArrayList();
@@ -523,6 +531,7 @@ public class ConquestManager
         }
         else
         {
+            temp.Add("No Conquest currently active.");
             long nextStartTime = (LastConquestStartTime + (ServerProperties.Properties.CONQUEST_CYCLE_TIMER * 60000 )) - GameLoop.GameLoopTime;
             temp.Add("Next Conquest will start in " + TimeSpan.FromMilliseconds(nextStartTime).Hours + "h " 
                      + TimeSpan.FromMilliseconds(nextStartTime).Minutes + "m " +
