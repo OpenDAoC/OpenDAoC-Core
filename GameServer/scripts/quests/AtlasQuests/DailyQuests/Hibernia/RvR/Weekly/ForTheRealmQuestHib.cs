@@ -299,7 +299,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					case 1:
 						return "Head into the enemy frontiers and slay their forces. \n" +
-						       "Players Killed: Albion ("+ _playersKilledAlb +" | "+ MAX_KILLGOAL +")" +
+						       "Players Killed: Albion ("+ _playersKilledAlb +" | "+ MAX_KILLGOAL +")\n" +
 						       "Players Killed: Midgard ("+ _playersKilledMid +" | "+ MAX_KILLGOAL +")";
 					case 2:
 						return "Return to Rey in Druim Ligen for your Reward.";
