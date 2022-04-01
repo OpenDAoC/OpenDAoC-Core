@@ -8574,7 +8574,7 @@ namespace DOL.GS
             if (CurrentZone.IsRvR)
             {
                 var activeConquests = ConquestService.ConquestManager.GetActiveObjectives;
-                int baseContribution = 200; //todo turn it into a server prop?
+                int baseContribution = enemy.RealmPointsValue / 2; //todo turn it into a server prop?
                 foreach (var conquestObjective in activeConquests)
                 {
                     if (conquestObjective != null && this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <=
@@ -8582,7 +8582,7 @@ namespace DOL.GS
                     {
                         if (Group != null)
                         {
-                            conquestObjective.Contribute(this, (baseContribution/Group.MemberCount) + 100); //offset to minimize the grouping penalty by a bit less than half
+                            conquestObjective.Contribute(this, (baseContribution/Group.MemberCount) + 20); //offset to minimize the grouping penalty by a bit
                         }
                         else
                         {
