@@ -618,7 +618,7 @@ namespace DOL.GS.Commands
 					{
 						new DiscordMessageEmbed(
 							color: 15844367,
-							description: $"A server restart has been scheduled for {date:HH:mm \"GMT\"}",
+							description: $"A server restart has been scheduled for {date:HH:mm \"GMT\" zzz}",
 							thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/attachments/879754382231613451/959414859932532756/unknown.png")
 						)
 					}
