@@ -311,6 +311,31 @@ namespace DOL.GS.Commands
 						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
 						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
+					
+					if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+					{
+
+						var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+						// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
+					
+						var message = new DiscordMessage(
+							"",
+							username: "Atlas GameServer",
+							avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+							tts: false,
+							embeds: new[]
+							{
+								new DiscordMessageEmbed(
+									color: 15158332,
+									description: $"The server will reboot in **2 minutes** and is temporarily not accepting new incoming connections!\n Stay tuned for the patch notes.",
+									thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/893545614942564412.webp")
+								)
+							}
+						);
+
+						discordClient.SendToDiscord(message);
+					}
+					
 				}
 			}
 		}
