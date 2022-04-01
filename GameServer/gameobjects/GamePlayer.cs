@@ -5670,6 +5670,7 @@ namespace DOL.GS
                 const string customKey2 = "BoostedLevel-40";
                 var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
+                /*
                 if (usedi30 != null)
                 {
                     Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -5679,7 +5680,7 @@ namespace DOL.GS
                 {
                     Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }
+                }*/
                     
                 
                 // Check if player has completed the Hardcore Challenge
