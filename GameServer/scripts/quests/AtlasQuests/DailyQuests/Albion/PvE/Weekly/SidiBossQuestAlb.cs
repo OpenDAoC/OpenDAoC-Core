@@ -21,13 +21,13 @@ namespace DOL.GS.DailyQuest.Albion
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Weekly] Harder Adversaries";
-        protected const int minimumLevel = 45;
-        protected const int maximumLevel = 50;
+        private const string questTitle = "[Weekly] Harder Adversaries";
+        private const int minimumLevel = 45;
+        private const int maximumLevel = 50;
 
         // Kill Goal
         private int _deadSidiBossMob = 0;
-        protected const int MAX_KILLGOAL = 3;
+        private const int MAX_KILLGOAL = 3;
 
         private static GameNPC Hector = null; // Start NPC
 
@@ -322,25 +322,22 @@ namespace DOL.GS.DailyQuest.Albion
             if (sender != m_questPlayer)
                 return;
 
-            if (Step == 1 && e == GameLivingEvent.EnemyKilled)
-            {
-                EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+            if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
                 
-                // check if a GameEpicBoss died + if its in Caer Sidi
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameEpicBoss && gArgs.Target.CurrentRegionID == 60)
-                {
-                    _deadSidiBossMob++;
-                    player.Out.SendMessage(
-                        "[Weekly] Bosses killed in Caer Sidi: (" + _deadSidiBossMob + " | " + MAX_KILLGOAL + ")",
-                        eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    player.Out.SendQuestUpdate(this);
+            // check if a GameEpicBoss died + if its in Caer Sidi
+            if (gArgs.Target.Realm != 0 || gArgs.Target is not GameEpicBoss ||
+                gArgs.Target.CurrentRegionID != 60) return;
+            _deadSidiBossMob++;
+            player.Out.SendMessage(
+                "[Weekly] Bosses killed in Caer Sidi: (" + _deadSidiBossMob + " | " + MAX_KILLGOAL + ")",
+                eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            player.Out.SendQuestUpdate(this);
 
-                    if (_deadSidiBossMob >= MAX_KILLGOAL)
-                    {
-                        // FinishQuest or go back to Haszan
-                        Step = 2;
-                    }
-                }
+            if (_deadSidiBossMob >= MAX_KILLGOAL)
+            {
+                // FinishQuest or go back to Haszan
+                Step = 2;
             }
         }
 
@@ -358,11 +355,6 @@ namespace DOL.GS.DailyQuest.Albion
         public override void SaveQuestParameters()
         {
             SetCustomProperty(QuestPropertyKey, _deadSidiBossMob.ToString());
-        }
-
-        public override void AbortQuest()
-        {
-            base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }
 
         public override void FinishQuest()

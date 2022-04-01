@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Defender Of The Vale";
-            m_dbspell.Icon = 11253;
+            m_dbspell.Icon = 4270;
             m_dbspell.ClientEffect = 11253;
             m_dbspell.Damage = 50;
             m_dbspell.DamageType = 11;

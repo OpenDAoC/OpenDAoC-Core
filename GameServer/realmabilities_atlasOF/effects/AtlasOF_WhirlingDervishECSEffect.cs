@@ -13,7 +13,7 @@ namespace DOL.GS.Effects
             EffectService.RequestStartEffect(this);
         }
         
-        public override ushort Icon { get { return 3072; } }
+        public override ushort Icon { get { return 4282; } }
         public override string Name { get { return "Whirling Dervish"; } }
         
         public override bool HasPositiveEffect { get { return true; } }

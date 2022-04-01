@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
         {
             DBSpell tmpSpell = new DBSpell();
             tmpSpell.Name = "Viper";
-            tmpSpell.Icon = 7013;
+            tmpSpell.Icon = 4283;
             tmpSpell.ClientEffect = 7013;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;

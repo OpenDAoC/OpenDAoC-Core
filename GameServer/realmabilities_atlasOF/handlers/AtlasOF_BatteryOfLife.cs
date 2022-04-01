@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
         {
             DBSpell tmpSpell = new DBSpell();
             tmpSpell.Name = "Battery Of Life";
-            tmpSpell.Icon = 3056;
+            tmpSpell.Icon = 4274;
             tmpSpell.ClientEffect = 3056;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;

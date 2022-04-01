@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
         {
             DBSpell tmpSpell = new DBSpell();
             tmpSpell.Name = "Vanish";
-            tmpSpell.Icon = 3019;
+            tmpSpell.Icon = 4280;
             tmpSpell.ClientEffect = 3019;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;

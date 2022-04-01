@@ -58,8 +58,8 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
     {
         m_dbspell = new DBSpell();
         m_dbspell.Name = "Brilliant Aura of Deflection";
-        m_dbspell.Icon = 3080;
-        m_dbspell.ClientEffect = 1470;
+        m_dbspell.Icon = 4259;
+        m_dbspell.ClientEffect = 4259;
         m_dbspell.Damage = 0;
         m_dbspell.DamageType = 0;
         m_dbspell.Target = "Realm";

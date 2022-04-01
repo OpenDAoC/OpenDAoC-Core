@@ -1,14 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Cache;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
@@ -21,11 +15,11 @@ namespace DOL.GS.DailyQuest
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Hardcore] Big Man On Campus";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 49;
+		private const string questTitle = "[Hardcore] Big Man On Campus";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 49;
 
-		protected static GameNPC SucciHib = null; // Start NPC
+		private static GameNPC SucciHib = null; // Start NPC
 
 		private int OrangeConKilled = 0;
 		private int MAX_KillGoal = 10;
@@ -139,7 +133,7 @@ namespace DOL.GS.DailyQuest
 			SucciHib.RemoveQuestToGive(typeof (HardcoreKillOrangesHib));
 		}
 
-		protected static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -220,7 +214,7 @@ namespace DOL.GS.DailyQuest
 			return true;
 		}
 
-		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			HardcoreKillOrangesHib oranges = player.IsDoingQuest(typeof (HardcoreKillOrangesHib)) as HardcoreKillOrangesHib;
 
@@ -238,7 +232,7 @@ namespace DOL.GS.DailyQuest
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -304,13 +298,8 @@ namespace DOL.GS.DailyQuest
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
-			
-			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-			
-			if (gArgs.Target.OwnerID != null)
-				return;
 
-			if (player == null || player.IsDoingQuest(typeof(HardcoreKillOrangesHib)) == null)
+			if (player?.IsDoingQuest(typeof(HardcoreKillOrangesHib)) == null)
 				return;
 			
 			if(player.Group != null && Step == 1)
@@ -323,25 +312,25 @@ namespace DOL.GS.DailyQuest
 			{
 				FailQuest();
 			}
-			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
 
-				if (player.GetConLevel(gArgs.Target) > 0) 
-				{
-					OrangeConKilled++;
-					player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-					
-					if (OrangeConKilled >= MAX_KillGoal)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
-			}
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target is GamePet)
+				return;
+			
+			if (!(player.GetConLevel(gArgs.Target) > 0)) return;
+			OrangeConKilled++;
+			player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
+					
+			if (OrangeConKilled >= MAX_KillGoal)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
+			}
+
 		}
 		
 		public override string QuestPropertyKey

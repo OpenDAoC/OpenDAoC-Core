@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
         {
             DBSpell tmpSpell = new DBSpell();
             tmpSpell.Name = "Shadow Run";
-            tmpSpell.Icon = 7014;
+            tmpSpell.Icon = 4278;
             tmpSpell.ClientEffect = 7014;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;

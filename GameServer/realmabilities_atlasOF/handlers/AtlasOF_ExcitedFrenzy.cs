@@ -40,8 +40,8 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Excited Frenzy";
-            m_dbspell.Icon = 3050;
-            m_dbspell.ClientEffect = 3050;
+            m_dbspell.Icon = 4246;
+            m_dbspell.ClientEffect = 4246;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Pet";

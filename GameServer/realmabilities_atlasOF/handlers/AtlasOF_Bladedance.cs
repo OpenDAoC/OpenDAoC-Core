@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Bladedance";
-            m_dbspell.Icon = 333;
+            m_dbspell.Icon = 4230;
             m_dbspell.ClientEffect = 2797;
             m_dbspell.Damage = m_dmgValue;
 			m_dbspell.DamageType = (int)m_damageType;

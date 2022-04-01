@@ -21,18 +21,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Every Little Bit Helps";
-		protected const int minimumLevel = 40;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] Every Little Bit Helps";
+		private const int minimumLevel = 40;
+		private const int maximumLevel = 50;
 
 		private static GameNPC ReyHib = null; // Start NPC
 
 		private int _playersKilledMid = 0;
 		private int _playersKilledAlb = 0;
-		protected const int MAX_KILLGOAL = 5;
+		private const int MAX_KILLGOAL = 5;
 		
 		// prevent grey killing
-		protected const int MIN_PLAYER_CON = -3;
+		private const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public EveryLittleBitHelpsQuestHib() : base()
@@ -246,7 +246,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -312,35 +312,32 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(EveryLittleBitHelpsQuestHib)) == null)
+			if (player?.IsDoingQuest(typeof(EveryLittleBitHelpsQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledMid < MAX_KILLGOAL) 
-				{
-					_playersKilledMid++;
-					player.Out.SendMessage("[Daily] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
-				{
-					_playersKilledAlb++;
-					player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
+			if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledMid < MAX_KILLGOAL) 
+			{
+				_playersKilledMid++;
+				player.Out.SendMessage("[Daily] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
+			else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
+			{
+				_playersKilledAlb++;
+				player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
 				
-				if (_playersKilledMid >= MAX_KILLGOAL && _playersKilledAlb >= MAX_KILLGOAL)
-				{
-					// FinishQuest or go back to Rey
-					Step = 2;
-				}
-				
+			if (_playersKilledMid >= MAX_KILLGOAL && _playersKilledAlb >= MAX_KILLGOAL)
+			{
+				// FinishQuest or go back to Rey
+				Step = 2;
 			}
 		}
 		
@@ -362,11 +359,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 			SetCustomProperty("PlayersKilledMid", _playersKilledMid.ToString());
 		}
 
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-		}
 
 		public override void FinishQuest()
 		{

@@ -39,7 +39,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Resilience of Death";
-            m_dbspell.Icon = 3075;
+            m_dbspell.Icon = 4272;
             m_dbspell.ClientEffect = 3075;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 0;

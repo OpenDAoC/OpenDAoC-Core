@@ -20,12 +20,12 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Danaoin Invasion";
-		protected const int minimumLevel = 40;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] Danaoin Invasion";
+		private const int minimumLevel = 40;
+		private const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 10;
+		private const int MAX_KILLED = 10;
 		
 		private static GameNPC Hector = null; // Start NPC
 
@@ -138,7 +138,7 @@ namespace DOL.GS.DailyQuest.Albion
 			Hector.RemoveQuestToGive(typeof (DanaoinKillQuestAlb));
 		}
 
-		protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHector(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -217,10 +217,7 @@ namespace DOL.GS.DailyQuest.Albion
 			//if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
 			//	return false;
 
-			if (player.Level < minimumLevel || player.Level > maximumLevel)
-				return false;
-
-			return true;
+			return player.Level >= minimumLevel && player.Level <= maximumLevel;
 		}
 		
 		public override void LoadQuestParameters()
@@ -252,7 +249,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -321,35 +318,26 @@ namespace DOL.GS.DailyQuest.Albion
 			
 			if (sender != m_questPlayer)
 				return;
-			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name.ToLower() == "danaoin farmer") 
-				{
-					danaoinKilled++;
-					player.Out.SendMessage("[Daily] Danaoin Farmers Killed: ("+danaoinKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+
+			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (gArgs.Target.Name.ToLower() != "danaoin farmer") return;
+			danaoinKilled++;
+			player.Out.SendMessage("[Daily] Danaoin Farmers Killed: ("+danaoinKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (danaoinKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Hector
-						Step = 2;
-					}
-				}
+			if (danaoinKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to Hector
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
 		{
 			get => "DanaoinKillQuestAlb";
 			set { ; }
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()
