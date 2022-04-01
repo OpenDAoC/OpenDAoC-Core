@@ -271,10 +271,18 @@ namespace DOL.GS
 									  eChatLoc.CL_SystemWindow);
 				return;
 			}
-			if (!Owner.GroundTargetInView)
+            
+            if (!Owner.GroundTargetInView)
 			{
 				Owner.Out.SendMessage("Ground target is out of sight!", eChatType.CT_System,
 									  eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (Owner.GroundTarget.Z > this.Z + 100)
+			{
+				Owner.Out.SendMessage("Ground target too high!", eChatType.CT_System,
+					eChatLoc.CL_SystemWindow);
 				return;
 			}
 
