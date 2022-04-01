@@ -322,10 +322,10 @@ namespace DOL.AI.Brain
                     {
                         if (npc != null)
                         {
-                            if (npc.IsAlive && npc.PackageID == "SoulReckonerBaf")
+                            if (npc.IsAlive && npc.PackageID == "SoulReckonerBaf" && npc.Brain is ReckonedSoulBrain brain)
                             {
                                 AddAggroListTo(
-                                    npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                                    brain); // add to aggro mobs with CryptLordBaf PackageID
                                 BafMobs = true;
                             }
                         }
