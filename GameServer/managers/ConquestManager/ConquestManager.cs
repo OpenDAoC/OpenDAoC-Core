@@ -215,7 +215,8 @@ public class ConquestManager
     {
         foreach (var conquestObjective in GetActiveObjectives)
         {
-            foreach (var contributingPlayer in conquestObjective.GetContributingPlayers())
+            var contributingPlayers = conquestObjective.GetContributingPlayers().Where(x => x.Realm == realmToAward);
+            foreach (var contributingPlayer in contributingPlayers)
             {
                 //if player is of the correct realm, award them their realm's portion of the overall reward
                 if (contributingPlayer.Realm == realmToAward)
@@ -230,6 +231,7 @@ public class ConquestManager
 
                     int totalContributions = SumOfContributions > 0 ? SumOfContributions : 1;
                     int calculatedReward = (int) Math.Round((double)totalContributions * (realmContribution / ((double)totalContributions)), 2);
+                    calculatedReward = (int) Math.Round((double) calculatedReward/contributingPlayers.Count()); //divide reward by number of contributors
 
                     if (calculatedReward > ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD)
                         calculatedReward = ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD;
@@ -522,7 +524,8 @@ public class ConquestManager
         else
         {
             long nextStartTime = (LastConquestStartTime + (ServerProperties.Properties.CONQUEST_CYCLE_TIMER * 60000 )) - GameLoop.GameLoopTime;
-            temp.Add("Next Conquest will start in " + TimeSpan.FromMilliseconds(nextStartTime).Minutes + "m " +
+            temp.Add("Next Conquest will start in " + TimeSpan.FromMilliseconds(nextStartTime).Hours + "h " 
+                     + TimeSpan.FromMilliseconds(nextStartTime).Minutes + "m " +
                      TimeSpan.FromMilliseconds(nextStartTime).Seconds + "s");
             temp.Add("");
         }
