@@ -13,9 +13,15 @@ namespace DOL.GS.Spells
     {
 	    public SummonSiegeRam(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line) { }
+
 	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
-        {
-            base.ApplyEffectOnTarget(target, effectiveness);
+	    {
+		    if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
+			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+			    return;
+		    }
+		    
+		    base.ApplyEffectOnTarget(target, effectiveness);
 
             GameSiegeRam ram = new GameSiegeRam();
             ram.X = Caster.X;
@@ -31,7 +37,7 @@ namespace DOL.GS.Spells
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (!Caster.CurrentZone.IsRvR || Caster.CurrentRegion.IsDungeon)
+            if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
             {
                 MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
                 return false;

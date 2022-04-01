@@ -17,7 +17,6 @@ namespace DOL.GS
             : base()
         {
         }
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -30,23 +29,19 @@ namespace DOL.GS
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
             get { return 20000; }
         }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -54,12 +49,10 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
@@ -159,29 +152,22 @@ namespace DOL.GS
             Quickness = npcTemplate.Quickness;
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
+            attackers_count = 0;
+            get_resist = false;
+            resist_timer = false;
+            resist_timer_end = false;
+            spam1 = false;
+            if(attackers.Count>0)
+            {
+                attackers.Clear();
+            }
 
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             SilencerBrain adds = new SilencerBrain();
             SetOwnBrain(adds);
             base.AddToWorld();
             return true;
-        }
-
-        public override void Die(GameObject killer) //on kill generate orbs
-        {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
-                }
-            }
-
-            base.Die(killer);
         }
 
         [ScriptLoadedEvent]
@@ -203,28 +189,16 @@ namespace DOL.GS
                 CO.Size = 220;
                 CO.CurrentRegionID = 60; //caer sidi
 
-                CO.Strength = 500;
-                CO.Intelligence = 220;
-                CO.Piety = 220;
-                CO.Dexterity = 200;
-                CO.Constitution = 200;
-                CO.Quickness = 125;
-                CO.BodyType = 5;
-                CO.MeleeDamageType = eDamageType.Slash;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
+                CO.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
                 CO.X = 31035;
                 CO.Y = 36323;
                 CO.Z = 15620;
-                CO.MaxDistance = 2000;
-                CO.TetherRange = 1700;
-                CO.MaxSpeedBase = 300;
                 CO.Heading = 3035;
 
                 SilencerBrain ubrain = new SilencerBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 600;
                 CO.SetOwnBrain(ubrain);
                 CO.AddToWorld();
                 CO.Brain.Start();
@@ -250,7 +224,6 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 5000;
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -262,24 +235,17 @@ namespace DOL.AI.Brain
                 Silencer silencer = new Silencer();
                 silencer.attackers.Clear();
             }
-
             if (Body.IsOutOfTetherRange)
             {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
                 this.Body.Health = this.Body.MaxHealth;
                 Body.Model = 934;
             }
-
-            if (Body.InCombat && HasAggro)
-            {
-            }
-
             base.Think();
         }
     }

@@ -106,20 +106,25 @@ namespace DOL.GS.Commands
         {
             if (response == 1)
             {
+                if (player.Level > 1)
                 {
-                    player.Emote(eEmote.StagFrenzy);
-                    player.HCFlag = true;
-                    player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-                    if (player.NoHelp)
-                    {
-                        player.CurrentTitle = new HardCoreSoloTitle();
-                    }
-                    else
-                    {
-                        player.CurrentTitle = new HardCoreTitle();
-                    }
+                    player.Out.SendMessage("You must be level 1 to activate Hardcore.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    return;
                 }
+                
+                player.Emote(eEmote.StagFrenzy);
+                player.HCFlag = true;
+                player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+                if (player.NoHelp)
+                {
+                    player.CurrentTitle = new HardCoreSoloTitle();
+                }
+                else
+                {
+                    player.CurrentTitle = new HardCoreTitle();
+                }
+                
             }
             else
             {

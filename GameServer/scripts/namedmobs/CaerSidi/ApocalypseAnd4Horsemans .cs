@@ -486,6 +486,8 @@ namespace DOL.GS
             Level = 83;
             MaxSpeedBase = 300;
 
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160695);
+            LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -688,6 +690,8 @@ namespace DOL.GS
             Level = 83;
             MaxSpeedBase = 300;
 
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158353);
+            LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -1621,8 +1625,6 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-
-            
             --ApocInitializator.HorsemanCount;
             MorbusBrain.StartedMorbus = false;
             spawn_fate3 = false;
@@ -1656,7 +1658,9 @@ namespace DOL.GS
             Size = 140;
             Level = 83;
             MaxSpeedBase = 300;
-
+            
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164171);
+            LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -2139,8 +2143,6 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-
-            
             --ApocInitializator.HorsemanCount;
             spawn_fate4 = false;
             FunusBrain.StartedFunus = false;
@@ -2175,6 +2177,8 @@ namespace DOL.GS
             Level = 83;
             MaxSpeedBase = 300;
 
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161151);
+            LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -2318,18 +2322,6 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 10000);//10k orbs for every player in group
-                }
-            }
             foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
                 if (npc != null)
@@ -2368,8 +2360,10 @@ namespace DOL.GS
             Level = 87;
             MaxSpeedBase = 300;
             ParryChance = 35;
-            Flags = eFlags.FLYING;  
+            Flags = eFlags.FLYING;
 
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157955);
+            LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;

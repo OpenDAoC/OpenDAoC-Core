@@ -299,7 +299,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					case 1:
 						return "Head into the enemy frontiers and slay their forces. \n" +
-						       "Players Killed: Hibernia ("+ _playersKilledHib +" | "+ MAX_KILLGOAL +")" +
+						       "Players Killed: Hibernia ("+ _playersKilledHib +" | "+ MAX_KILLGOAL +")\n" +
 						       "Players Killed: Midgard ("+ _playersKilledMid +" | "+ MAX_KILLGOAL +")";
 					case 2:
 						return "Return to Rey in Castle Sauvage for your Reward.";
