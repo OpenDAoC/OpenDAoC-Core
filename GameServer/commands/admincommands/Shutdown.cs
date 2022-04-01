@@ -433,7 +433,7 @@ namespace DOL.GS.Commands
 								{
 									new DiscordMessageEmbed(
 										color: 3066993,
-										description: "The server restart has been cancelled.\nPlease stand by for additional information from Atlas staff.",
+										description: "The server restart has been cancelled.\nPlease stand by for additional information from Atlas team.",
 										thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/865577034087923742.png")
 									)
 								}
