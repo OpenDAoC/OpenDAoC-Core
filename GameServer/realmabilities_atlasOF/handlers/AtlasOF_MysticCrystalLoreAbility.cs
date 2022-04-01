@@ -22,5 +22,10 @@ namespace DOL.GS.RealmAbilities
                 default: return 1000;
             }
         }
+        
+        public override int GetReUseDelay(int level)
+        {
+	        return 300;
+        }
     }
 }
