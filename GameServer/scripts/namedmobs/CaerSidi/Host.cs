@@ -238,39 +238,34 @@ namespace DOL.GS
             set { }
         }
 
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 45; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 45; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 45; // dmg reduction for melee dmg
+                default: return 25; // dmg reduction for rest resists
+            }
+        }
+        public override int MaxHealth
+        {
+            get { return 15000; }
+        }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 700;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
-        }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
+            return 0.55;
         }
 
         public override void Die(GameObject killer)
         {
             if (PackageID == "HostReal")
             {
-                // debug
-                log.Debug($"{Name} killed by {killer.Name}");
-
-                GamePlayer playerKiller = killer as GamePlayer;
-
-                if (playerKiller?.Group != null)
-                {
-                    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                    {
-                        AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
-                    }
-                }
-
                 foreach (GameNPC boss in WorldMgr.GetNPCsByNameFromRegion("Host", this.CurrentRegionID, 0))
                 {
                     if (boss != null)
@@ -305,14 +300,12 @@ namespace DOL.GS
                 base.DropLoot(killer);
             }
         }
-
         public override void WalkToSpawn() //dont walk to spawn
         {
             if (IsAlive)
                 return;
             base.WalkToSpawn();
         }
-
         public static int HostCount = 0;
 
         public override bool AddToWorld()
@@ -335,12 +328,13 @@ namespace DOL.GS
             BodyType = 6;
             Realm = eRealm.None;
 
-            Strength = 25;
+            Strength = 5;
             Dexterity = 200;
             Constitution = 100;
             Quickness = 125;
             Piety = 220;
             Intelligence = 220;
+            Empathy = 180;
 
             HostBrain.walkback = false;
             HostBrain.path1 = false;
@@ -4137,7 +4131,6 @@ namespace DOL.AI.Brain
             {
                 HostPath();
             }
-
             base.Think();
         }
     }
