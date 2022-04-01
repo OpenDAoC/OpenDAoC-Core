@@ -89,7 +89,11 @@ namespace DOL.GS.Scripts
             {
                 case "experience":
                     if (player.Level > 1)
+                    {
                         player.Out.SendMessage("You need to be Level 1 to receive my training.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        return false;
+                    }
+                        
                     
                     if (player.Level < EventLVCap)
                     {
