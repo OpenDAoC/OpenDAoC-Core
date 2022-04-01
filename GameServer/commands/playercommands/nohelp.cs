@@ -56,18 +56,24 @@ namespace DOL.GS.Commands
 		{
 			if (response == 1)
 			{
+				if (player.Level > 1)
 				{
-					player.Emote(eEmote.Rude);
-					player.NoHelp = true;
-					player.Out.SendMessage(
-						"You have chosen the path of solitude and will no longer receive any help from members of your Realm.",
+					player.Out.SendMessage("You have already received help and cannot join this challenge.",
 						eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-					if (player.HCFlag)
-						player.CurrentTitle = new HardCoreSoloTitle();
-					else
-						player.CurrentTitle = new NoHelpTitle();
+					return;
 				}
+				
+				player.Emote(eEmote.Rude);
+				player.NoHelp = true;
+				player.Out.SendMessage(
+					"You have chosen the path of solitude and will no longer receive any help from members of your Realm.",
+					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (player.HCFlag)
+					player.CurrentTitle = new HardCoreSoloTitle();
+				else
+					player.CurrentTitle = new NoHelpTitle();
+			
 			}
 			else
 			{
