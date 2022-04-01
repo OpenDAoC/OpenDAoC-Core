@@ -21,11 +21,11 @@ namespace DOL.GS.DailyQuest
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Hardcore] Big Man On Campus";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 49;
+		private const string questTitle = "[Hardcore] Big Man On Campus";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 49;
 
-		protected static GameNPC SucciAlb = null; // Start NPC
+		private static GameNPC SucciAlb = null; // Start NPC
 
 		private int OrangeConKilled = 0;
 		private int MAX_KillGoal = 10;
@@ -139,7 +139,7 @@ namespace DOL.GS.DailyQuest
 			SucciAlb.RemoveQuestToGive(typeof (HardcoreKillOrangesAlb));
 		}
 
-		protected static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -214,13 +214,10 @@ namespace DOL.GS.DailyQuest
 
 			// This checks below are only performed is player isn't doing quest already
 
-			if (player.Level < minimumLevel || player.Level > maximumLevel)
-				return false;
-
-			return true;
+			return player.Level >= minimumLevel && player.Level <= maximumLevel;
 		}
 
-		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			HardcoreKillOrangesAlb oranges = player.IsDoingQuest(typeof (HardcoreKillOrangesAlb)) as HardcoreKillOrangesAlb;
 
@@ -238,7 +235,7 @@ namespace DOL.GS.DailyQuest
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -304,13 +301,8 @@ namespace DOL.GS.DailyQuest
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
-			
-			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-			
-			if (gArgs.Target.OwnerID != null)
-				return;
 
-			if (player == null || player.IsDoingQuest(typeof(HardcoreKillOrangesAlb)) == null)
+			if (player?.IsDoingQuest(typeof(HardcoreKillOrangesAlb)) == null)
 				return;
 			
 			if(player.Group != null && Step == 1)
@@ -323,25 +315,25 @@ namespace DOL.GS.DailyQuest
 			{
 				FailQuest();
 			}
-			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
 
-				if (player.GetConLevel(gArgs.Target) > 0) 
-				{
-					OrangeConKilled++;
-					player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-					
-					if (OrangeConKilled >= MAX_KillGoal)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
-			}
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target is GamePet)
+				return;
+			
+			if (!(player.GetConLevel(gArgs.Target) > 0)) return;
+			OrangeConKilled++;
+			player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
+					
+			if (OrangeConKilled >= MAX_KillGoal)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
+			}
+
 		}
 		
 		public override string QuestPropertyKey
@@ -359,12 +351,7 @@ namespace DOL.GS.DailyQuest
 		{
 			SetCustomProperty(QuestPropertyKey, OrangeConKilled.ToString());
 		}
-
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-		}
+		
 
 		public override void FinishQuest()
 		{
@@ -376,7 +363,7 @@ namespace DOL.GS.DailyQuest
 			
 		}
 
-		public void FailQuest()
+		private void FailQuest()
 		{
 			OrangeConKilled = 0;
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);

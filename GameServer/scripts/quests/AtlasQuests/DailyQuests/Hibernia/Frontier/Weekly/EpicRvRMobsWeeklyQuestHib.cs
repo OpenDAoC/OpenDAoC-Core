@@ -20,12 +20,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Frontier Cleanup";
-		protected const int minimumLevel = 50;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Weekly] Frontier Cleanup";
+		private const int minimumLevel = 50;
+		private const int maximumLevel = 50;
 		
 		// Kill Goal
-		protected const int MAX_KILLED = 1;
+		private const int MAX_KILLED = 1;
 		// Quest Counter
 		private int _evernKilled = 0;
 		private int _glacierGiantKilled = 0;
@@ -33,9 +33,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 		
 		private static GameNPC Cola = null; // Start NPC
 
-		protected const string EVERN_NAME = "Evern";
-		protected const string GREENKNIGHT_NAME = "Green Knight";
-		protected const string GLACIERGIANT_NAME = "Glacier Giant";
+		private const string EVERN_NAME = "Evern";
+		private const string GREENKNIGHT_NAME = "Green Knight";
+		private const string GLACIERGIANT_NAME = "Glacier Giant";
 		
 		// Constructors
 		public EpicRvRMobsWeeklyQuestHib() : base()
@@ -144,7 +144,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Cola.RemoveQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
 		}
 
-		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -267,7 +267,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -334,46 +334,39 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(EpicRvRMobsWeeklyQuestHib)) == null)
+			if (player?.IsDoingQuest(typeof(EpicRvRMobsWeeklyQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+
+			if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNPC && _evernKilled < MAX_KILLED)
 			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-
-				if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNPC && _evernKilled < MAX_KILLED)
-				{
-					_evernKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + EVERN_NAME + ": (" + _evernKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNPC && _greenKnightKilled < MAX_KILLED)
-				{
-					_greenKnightKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + GREENKNIGHT_NAME + ": (" + _greenKnightKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNPC && _glacierGiantKilled < MAX_KILLED)
-				{
-					_glacierGiantKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + GLACIERGIANT_NAME + ": (" + _glacierGiantKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				
-				if (_evernKilled >= MAX_KILLED && _greenKnightKilled >= MAX_KILLED && _glacierGiantKilled>= MAX_KILLED)
-				{
-					// FinishQuest or go back to Dean
-					Step = 2;
-				}
+				_evernKilled = 1;
+				player.Out.SendMessage("[Weekly] You killed " + EVERN_NAME + ": (" + _evernKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
 			}
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNPC && _greenKnightKilled < MAX_KILLED)
+			{
+				_greenKnightKilled = 1;
+				player.Out.SendMessage("[Weekly] You killed " + GREENKNIGHT_NAME + ": (" + _greenKnightKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
+			else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNPC && _glacierGiantKilled < MAX_KILLED)
+			{
+				_glacierGiantKilled = 1;
+				player.Out.SendMessage("[Weekly] You killed " + GLACIERGIANT_NAME + ": (" + _glacierGiantKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
+				
+			if (_evernKilled >= MAX_KILLED && _greenKnightKilled >= MAX_KILLED && _glacierGiantKilled>= MAX_KILLED)
+			{
+				// FinishQuest or go back to Dean
+				Step = 2;
+			}
 		}
 
 		public override void FinishQuest()

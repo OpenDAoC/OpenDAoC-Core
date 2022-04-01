@@ -49,6 +49,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using System.Collections.Generic;
 using DOL.Language;
+using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS.Commands
 {
@@ -416,6 +417,31 @@ namespace DOL.GS.Commands
 						{
 							log.Info("Shutdown aborted. Server still accepting incoming connections!");
 						}
+						
+						if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+						{
+
+							var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+							// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
+					
+							var message = new DiscordMessage(
+								"",
+								username: "Atlas GameServer",
+								avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+								tts: false,
+								embeds: new[]
+								{
+									new DiscordMessageEmbed(
+										color: 3066993,
+										description: "The server restart has been cancelled.\nPlease stand by for additional information from Atlas team.",
+										thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/865577034087923742.png")
+									)
+								}
+							);
+
+							discordClient.SendToDiscord(message);
+						}
+						
 					}
 					// If no countdown is detected
 					else
@@ -575,6 +601,30 @@ namespace DOL.GS.Commands
 
 				// Message: "ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}."
 				ChatUtil.SendServerMessage(m_client, "AdminCommands.Shutdown.Msg.AttentionShutdown", m_counter / 60, date.ToString("HH:mm \"GMT\" zzz"));
+			}
+
+			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+			{
+
+				var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+				// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
+					
+				var message = new DiscordMessage(
+					"",
+					username: "Atlas GameServer",
+					avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+					tts: false,
+					embeds: new[]
+					{
+						new DiscordMessageEmbed(
+							color: 15844367,
+							description: $"A server restart has been scheduled for {date:HH:mm \"GMT\"}",
+							thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/attachments/879754382231613451/959414859932532756/unknown.png")
+						)
+					}
+				);
+
+				discordClient.SendToDiscord(message);
 			}
 
 			log.Warn(msg);

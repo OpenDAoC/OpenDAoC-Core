@@ -238,20 +238,28 @@ namespace DOL.GS
             set { }
         }
 
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 45; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 45; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 45; // dmg reduction for melee dmg
+                default: return 25; // dmg reduction for rest resists
+            }
+        }
+        public override int MaxHealth
+        {
+            get { return 15000; }
+        }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 700;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
-        }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
+            return 0.55;
         }
 
         public override void Die(GameObject killer)
@@ -292,14 +300,12 @@ namespace DOL.GS
                 base.DropLoot(killer);
             }
         }
-
         public override void WalkToSpawn() //dont walk to spawn
         {
             if (IsAlive)
                 return;
             base.WalkToSpawn();
         }
-
         public static int HostCount = 0;
 
         public override bool AddToWorld()
@@ -4105,7 +4111,6 @@ namespace DOL.AI.Brain
             {
                 HostPath();
             }
-
             base.Think();
         }
     }

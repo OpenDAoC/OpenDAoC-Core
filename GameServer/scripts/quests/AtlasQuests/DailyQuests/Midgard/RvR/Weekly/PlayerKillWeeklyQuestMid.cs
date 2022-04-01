@@ -20,9 +20,9 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Slay the enemies";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Weekly] Slay the enemies";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 50;
 
 		private static GameNPC ReyMid = null; // Start NPC
 
@@ -31,7 +31,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		// Kill Goal
 		private int MAX_KILLING_GOAL = 100;
 		// prevent grey killing
-		protected const int MIN_PLAYER_CON = -3;
+		private const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public PlayerKillWeeklyQuestMid() : base()
@@ -142,7 +142,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 			ReyMid.RemoveQuestToGive(typeof (PlayerKillWeeklyQuestMid));
 		}
 
-		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToRey(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -245,7 +245,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -310,29 +310,25 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(PlayerKillWeeklyQuestMid)) == null)
+			if (player?.IsDoingQuest(typeof(PlayerKillWeeklyQuestMid)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
-			
-			if (e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm != 0 && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON) 
-				{
-					PlayersKilled++;
-					player.Out.SendMessage("[Weekly] Enemy Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			if (e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+
+			if (gArgs.Target.Realm == 0 || gArgs.Target.Realm == player.Realm || gArgs.Target is not GamePlayer ||
+			    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON)) return;
+			PlayersKilled++;
+			player.Out.SendMessage("[Weekly] Enemy Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (PlayersKilled >= MAX_KILLING_GOAL)
-					{
-						// FinishQuest or go back to Rey
-						Step = 2;
-					}
-				}
-				
+			if (PlayersKilled >= MAX_KILLING_GOAL)
+			{
+				// FinishQuest or go back to Rey
+				Step = 2;
 			}
 		}
 		
@@ -350,11 +346,6 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		public override void SaveQuestParameters()
 		{
 			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

@@ -6,13 +6,9 @@
  */
 
 using System;
-using DOL;
-using DOL.GS;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.ServerProperties;
 using log4net;
@@ -43,10 +39,6 @@ namespace DOL.GS.Scripts
             if (log.IsInfoEnabled)
                 log.Info("Boost NPC is loading...");
         }
-        public void SendReply(GamePlayer player, string msg)
-        {
-            player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
-        }
         public override bool Interact(GamePlayer player)
         {
 
@@ -58,15 +50,8 @@ namespace DOL.GS.Scripts
                 return false;
             }
             
-            if (player.Level > 1 && !player.Boosted)
-            {
-                player.Out.SendMessage($"I'm sorry {player.Name}, you are too high level to use my services.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-
-                return false;
-            }
-
             if (EventLVCap != 0)
-            { player.Out.SendMessage($"Hello {player.Name},\n\n I have been told to give you enough [experience] to reach level " + EventLVCap + ".",
+            { player.Out.SendMessage($"Hello {player.Name},\n\n I have been told to give you enough [experience] to reach level {EventLVCap}.",
                 eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             }
             
@@ -100,21 +85,26 @@ namespace DOL.GS.Scripts
                 return false;
             }
 
-            if (player.Level > 1 && !player.Boosted)
-                return false;
-
             switch(str)
             {
                 case "experience":
+                    if (player.Level > 1)
+                    {
+                        player.Out.SendMessage("You need to be Level 1 to receive my training.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        return false;
+                    }
+                        
+                    
                     if (player.Level < EventLVCap)
                     {
                         string customKey = "BoostedLevel-" + EventLVCap;
                         var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                         
                         player.Out.SendMessage("I have given you enough experience to fight, now speak with the quartermaster and go make your Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        player.Boosted = true;
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
-                        player.Boosted = true;
+                        
                         
                         if (boosterKey == null)
                         {
@@ -133,23 +123,9 @@ namespace DOL.GS.Scripts
                 case "realm level":
                     if (player.RealmPoints < realmPoints)
                     {
-                        string customKey = "BoostedRP-" + realmPoints;
-                        var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-                        
                         long realmPointsToGive = realmPoints - player.RealmPoints;
-                        player.GainRealmPoints(realmPointsToGive/(long)Properties.RP_RATE);
+                        player.GainRealmPoints(realmPointsToGive);
                         player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-                        player.Boosted = true;
-                        
-                        if (boosterKey == null)
-                        {
-                            DOLCharactersXCustomParam boostedRR = new DOLCharactersXCustomParam();
-                            boostedRR.DOLCharactersObjectId = player.ObjectId;
-                            boostedRR.KeyName = customKey;
-                            boostedRR.Value = "1";
-                            GameServer.Database.AddObject(boostedRR);
-                        }
-                        
                         return true;
                     }
                     player.Out.SendMessage("You have killed enough enemies already, go kill more!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);

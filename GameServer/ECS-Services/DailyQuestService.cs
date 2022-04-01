@@ -19,7 +19,7 @@ public class DailyQuestService
 
     static DailyQuestService()
     {
-        EntityManager.AddService(typeof(AttackService));
+        EntityManager.AddService(typeof(DailyQuestService));
 
         //var loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(DailyIntervalKey));
         var loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();

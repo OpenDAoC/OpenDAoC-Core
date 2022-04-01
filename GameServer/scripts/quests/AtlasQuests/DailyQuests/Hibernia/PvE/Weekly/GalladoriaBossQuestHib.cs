@@ -21,13 +21,13 @@ namespace DOL.GS.DailyQuest.Hibernia
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Weekly] Harder Adversaries";
-        protected const int minimumLevel = 45;
-        protected const int maximumLevel = 50;
+        private const string questTitle = "[Weekly] Harder Adversaries";
+        private const int minimumLevel = 45;
+        private const int maximumLevel = 50;
 
         // Kill Goal
         private int _deadGallaBossMob = 0;
-        protected const int MAX_KILLGOAL = 3;
+        private const int MAX_KILLGOAL = 3;
 
         private static GameNPC Dean = null; // Start NPC
 
@@ -141,7 +141,7 @@ namespace DOL.GS.DailyQuest.Hibernia
             Dean.RemoveQuestToGive(typeof(GalladoriaBossQuestHib));
         }
 
-        protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+        private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -251,7 +251,7 @@ namespace DOL.GS.DailyQuest.Hibernia
             }
         }
 
-        protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+        private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
         {
             QuestEventArgs qargs = args as QuestEventArgs;
             if (qargs == null)
@@ -316,30 +316,28 @@ namespace DOL.GS.DailyQuest.Hibernia
         {
             GamePlayer player = sender as GamePlayer;
 
-            if (player == null || player.IsDoingQuest(typeof(GalladoriaBossQuestHib)) == null)
+            if (player?.IsDoingQuest(typeof(GalladoriaBossQuestHib)) == null)
                 return;
 
             if (sender != m_questPlayer)
                 return;
 
-            if (Step == 1 && e == GameLivingEvent.EnemyKilled)
-            {
-                EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+            if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
                 
-                // check if a GameEpicBoss died + if its in Galladoria
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameEpicBoss && gArgs.Target.CurrentRegionID == 191)
-                {
-                    _deadGallaBossMob++;
-                    player.Out.SendMessage(
-                        "[Weekly] Bosses killed in Galladoria: (" + _deadGallaBossMob + " | " + MAX_KILLGOAL + ")",
-                        eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    player.Out.SendQuestUpdate(this);
+            // check if a GameEpicBoss died + if its in Galladoria
+            if (gArgs.Target.Realm == 0 && gArgs.Target is GameEpicBoss && gArgs.Target.CurrentRegionID == 191)
+            {
+                _deadGallaBossMob++;
+                player.Out.SendMessage(
+                    "[Weekly] Bosses killed in Galladoria: (" + _deadGallaBossMob + " | " + MAX_KILLGOAL + ")",
+                    eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendQuestUpdate(this);
 
-                    if (_deadGallaBossMob >= MAX_KILLGOAL)
-                    {
-                        // FinishQuest or go back to Dean
-                        Step = 2;
-                    }
+                if (_deadGallaBossMob >= MAX_KILLGOAL)
+                {
+                    // FinishQuest or go back to Dean
+                    Step = 2;
                 }
             }
         }
@@ -358,11 +356,6 @@ namespace DOL.GS.DailyQuest.Hibernia
         public override void SaveQuestParameters()
         {
             SetCustomProperty(QuestPropertyKey, _deadGallaBossMob.ToString());
-        }
-
-        public override void AbortQuest()
-        {
-            base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }
 
         public override void FinishQuest()
