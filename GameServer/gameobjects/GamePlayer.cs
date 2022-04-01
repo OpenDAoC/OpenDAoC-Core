@@ -8570,6 +8570,29 @@ namespace DOL.GS
             if (ControlledBrain != null && ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
                 ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
 
+            if (CurrentZone.IsRvR)
+            {
+                var activeConquests = ConquestService.ConquestManager.GetActiveObjectives;
+                int baseContribution = 200; //todo turn it into a server prop?
+                foreach (var conquestObjective in activeConquests)
+                {
+                    if (this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <=
+                        ServerProperties.Properties.MAX_CONQUEST_RANGE)
+                    {
+                        if (Group != null)
+                        {
+                            conquestObjective.Contribute(this, (baseContribution/Group.MemberCount) + 100); //offset to minimize the grouping penalty by a bit less than half
+                        }
+                        else
+                        {
+                            conquestObjective.Contribute(this, baseContribution); 
+                        }
+                    }
+                        
+                    
+                }
+            }
+
             base.EnemyKilled(enemy);
         }
 

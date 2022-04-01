@@ -4,6 +4,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scheduler;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -412,7 +413,9 @@ namespace DOL.GS.Scripts
             temp.Add("All Dungeons: 25%");
             temp.Add("RvR Dungeons: 50%");
             temp.Add("Darkness Falls: 75%");
-
+            
+            temp.Add("");
+            temp.Add("");
 
             return temp;
         }
