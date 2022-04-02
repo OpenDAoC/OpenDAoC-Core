@@ -7,7 +7,7 @@ namespace DOL.GS.Scripts
     [CmdAttribute(
         "&bounty",
         ePrivLevel.Player,
-        "Allows to set a bounty on an enemy player", "/bounty add <amount>")]
+        "Allows to set a bounty on an enemy player", "/bounty list","/bounty add <amount>")]
     public class BountyCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         private const string KILLEDBY = "KilledBy";

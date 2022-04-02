@@ -11,7 +11,7 @@ public class BountyManager
 {
     private const string KILLEDBY = "KilledBy";
 
-    public static List<BountyPoster> ActiveBounties;
+    private static List<BountyPoster> ActiveBounties;
     
     private static BountyPoster m_nextPosterToExpire;
 
@@ -159,7 +159,6 @@ public class BountyManager
         if (ActiveBounties.Contains(bountyPoster))
         {
                 ActiveBounties.Remove(bountyPoster);
-                Console.WriteLine("Bounty expired");
                 return;
         }
         Console.WriteLine("Bounty to remove not found");
@@ -181,6 +180,11 @@ public class BountyManager
                     expireTime = poster.PostedTime + bountyDuration;
                     m_nextPosterToExpire = poster;
                     if (tick <= expireTime) continue;
+                    
+                    var reward = (long) (poster.Reward * 10000 * ServerProperties.Properties.BOUNTY_PAYOUT_RATE); // *10000 to convert to gold
+                    GamePlayer playerToReimburse = poster.Ganked;
+                    playerToReimburse.AddMoney(reward, "You have been reimbursed {0} for your expired bounty.");
+                    
                     RemoveBounty(poster);
                     BroadcastExpiration(poster);
                     m_nextPosterToExpire = null;
@@ -194,19 +198,21 @@ public class BountyManager
         //debug
         if (m_nextPosterToExpire != null)
         {
-            Console.WriteLine($"bounty check heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} + {bountyDuration} from {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {GameLoop.GameLoopTime - expireTime}");
+            Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} by {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {(GameLoop.GameLoopTime - expireTime)/1000}s");
         }
         else
         {
-            Console.WriteLine($"bounty check heartbeat {GameLoop.GameLoopTime} - no bounties");
+            Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - no bounties");
         }
 
     }
-    public static List<BountyPoster> GetActiveBountiesForPlayer(GamePlayer player)
+
+    private static List<BountyPoster> GetActiveBountiesForPlayer(GamePlayer player)
     {
         return ActiveBounties.FindAll(x => x.Target.Name.Equals(player.Name));
     }
-    public static BountyPoster GetActiveBountyForPlayerForRealm(GamePlayer player, eRealm realm)
+
+    private static BountyPoster GetActiveBountyForPlayerForRealm(GamePlayer player, eRealm realm)
     {
         return ActiveBounties.FirstOrDefault(x => x.Target.Name.Equals(player.Name) && x.BountyRealm == realm);
     }
@@ -216,7 +222,8 @@ public class BountyManager
         return ActiveBounties;
         ;
     }
-    public static BountyPoster GetBountyPostedBy(GamePlayer player)
+
+    private static BountyPoster GetBountyPostedBy(GamePlayer player)
     {
         return ActiveBounties.FirstOrDefault(x => x.Ganked.Name.Equals(player.Name));
     }
