@@ -7,12 +7,11 @@ public class BountyService
     private const string ServiceName = "Bounty Service";
 
     private static BountyManager BountyManager;
-    
+
     // private static long _updateInterval = 10000; // 10secs
     private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
 
-    private static long _lastUpdate = 0;
-    private static long _lastDebug = 0;
+    private static long _lastUpdate;
 
     static BountyService()
     {
@@ -29,13 +28,6 @@ public class BountyService
             _lastUpdate = tick;
             BountyManager.CheckExpiringBounty(tick);
         }
-
-        // if (tick - _lastDebug > 1000)
-        // {
-        //     Console.WriteLine(
-        //         $"bounty heartbeat {GameLoop.GameLoopTime} - next check at {_lastUpdate + _updateInterval} in {(_lastUpdate + _updateInterval - tick) / 1000} seconds");
-        //     _lastDebug = tick;
-        // }
 
         Diagnostics.StopPerfCounter(ServiceName);
     }

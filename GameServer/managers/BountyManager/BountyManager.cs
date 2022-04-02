@@ -13,7 +13,7 @@ public class BountyManager
     private const string KILLEDBY = "KilledBy";
 
     private static List<BountyPoster> ActiveBounties;
-    
+
     private static BountyPoster m_nextPosterToExpire;
 
     private static int minBountyReward;
@@ -41,7 +41,6 @@ public class BountyManager
         if (ActiveBounties == null)
             ActiveBounties = new List<BountyPoster>();
         ActiveBounties.Clear();
-        
     }
 
     public static List<BountyPoster> GetActiveBounties
@@ -80,19 +79,19 @@ public class BountyManager
         if (killedPlayer == null) return;
 
         if (e != GameLivingEvent.Dying) return;
-        
+
         DyingEventArgs eArgs = args as DyingEventArgs;
-        
+
         GamePlayer killerPlayer = eArgs.Killer as GamePlayer;
-        
+
         if (killerPlayer == null) return;
-        
+
         if (killerPlayer.Realm == killedPlayer.Realm) return;
 
         var activeBounties = GetActiveBountiesForPlayer(killedPlayer);
-        
+
         if (activeBounties is null || !activeBounties.Any()) return;
-        
+
         foreach (BountyPoster activeBounty in activeBounties.ToList())
         {
             List<GamePlayer> playersToAward = new List<GamePlayer>();
@@ -107,20 +106,23 @@ public class BountyManager
                     playersToAward.Add(player);
                 }
             }
-            
+
             var playersToAwardCount = playersToAward.Count;
-            
+
             if (playersToAward.Contains(activeBounty.Ganked)) playersToAward.Remove(activeBounty.Ganked);
 
-            var reward = (long)(activeBounty.Reward * 10000 * Properties.BOUNTY_PAYOUT_RATE ) / playersToAwardCount; // *10000 to convert to gold
+            var reward = (long) (activeBounty.Reward * 10000 * Properties.BOUNTY_PAYOUT_RATE) /
+                         playersToAwardCount; // *10000 to convert to gold
             foreach (GamePlayer player in playersToAward)
             {
                 player.AddMoney(reward, "You have been rewarded {0} extra for killing a bounty target!");
             }
+
             BroadcastBountyKill(activeBounty);
             RemoveBounty(activeBounty);
         }
     }
+
     private static void PlayerKilled(DOLEvent e, object sender, EventArgs args)
     {
         GamePlayer player = sender as GamePlayer;
@@ -140,7 +142,7 @@ public class BountyManager
 
         foreach (BountyPoster activeBounty in activeBounties.ToList())
         {
-            int stealedReward = (int)(activeBounty.Reward-(activeBounty.Reward * 0.9)) * 10000;
+            int stealedReward = (int) (activeBounty.Reward - (activeBounty.Reward * 0.9)) * 10000;
             player.AddMoney(stealedReward, "You have stolen {0} from a bounty on you!");
             activeBounty.Reward -= stealedReward;
 
@@ -149,12 +151,12 @@ public class BountyManager
             RemoveBounty(activeBounty);
         }
     }
+
     public static void AddBounty(GamePlayer killed, GamePlayer killer, int amount = 50)
     {
         if (amount < minBountyReward) amount = minBountyReward;
 
-        // this is commented for debugging
-        // killed.TempProperties.removeProperty(KILLEDBY);
+        killed.TempProperties.removeProperty(KILLEDBY);
 
         BountyPoster poster = new BountyPoster(killed, killer, amount);
 
@@ -163,14 +165,14 @@ public class BountyManager
         if (ActiveBounties.Any())
         {
             var previousPoster = GetBountyPostedBy(killed);
-            
+
             if (previousPoster.Target != killer)
             {
                 killed.Out.SendMessage("You can only post one Bounty at the time!", eChatType.CT_Important,
                     eChatLoc.CL_SystemWindow);
                 return;
             }
-            
+
             //search for existing killer and increment if they exist, add them to the list if they don't
             var activePoster = GetActiveBountyForPlayerForRealm(killer, killed.Realm);
             if (activePoster != null)
@@ -189,59 +191,57 @@ public class BountyManager
             //add if its the first entry
             ActiveBounties.Add(poster);
         }
-        BroadcastBounty(poster);
 
+        BroadcastBounty(poster);
     }
 
     private static void RemoveBounty(BountyPoster bountyPoster)
     {
         if (ActiveBounties.Contains(bountyPoster))
         {
-                ActiveBounties.Remove(bountyPoster);
-                return;
+            ActiveBounties.Remove(bountyPoster);
         }
-        Console.WriteLine("Bounty to remove not found");
     }
 
     public static void CheckExpiringBounty(long tick)
     {
-
         long expireTime = 0;
-        
-            if (ActiveBounties.Any())
+
+        if (ActiveBounties.Any())
+        {
+            foreach (BountyPoster poster in ActiveBounties.ToList())
             {
-                foreach (BountyPoster poster in ActiveBounties.ToList())
-                {
-                    if (poster == null) continue;
-                    if (poster.PostedTime + bountyDuration >= expireTime && expireTime != 0) continue;
-                    expireTime = poster.PostedTime + bountyDuration;
-                    m_nextPosterToExpire = poster;
-                    if (tick <= expireTime) continue;
-                    
-                    var reward = (long) (poster.Reward * 10000 * ServerProperties.Properties.BOUNTY_PAYOUT_RATE); // *10000 to convert to gold
-                    GamePlayer playerToReimburse = poster.Ganked;
-                    playerToReimburse.AddMoney(reward, "You have been reimbursed {0} for your expired bounty.");
-                    
-                    RemoveBounty(poster);
-                    BroadcastExpiration(poster);
-                    m_nextPosterToExpire = null;
-                }
-            }
-            else
-            {
+                if (poster == null) continue;
+                if (poster.PostedTime + bountyDuration >= expireTime && expireTime != 0) continue;
+                expireTime = poster.PostedTime + bountyDuration;
+                m_nextPosterToExpire = poster;
+                if (tick <= expireTime) continue;
+
+                var reward =
+                    (long) (poster.Reward * 10000 *
+                            ServerProperties.Properties.BOUNTY_PAYOUT_RATE); // *10000 to convert to gold
+                GamePlayer playerToReimburse = poster.Ganked;
+                playerToReimburse.AddMoney(reward, "You have been reimbursed {0} for your expired bounty.");
+
+                RemoveBounty(poster);
+                BroadcastExpiration(poster);
                 m_nextPosterToExpire = null;
             }
-        
-        //debug
-        if (m_nextPosterToExpire != null)
-        {
-            Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} by {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {(GameLoop.GameLoopTime - expireTime)/1000}s");
         }
         else
         {
-            Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - no bounties");
+            m_nextPosterToExpire = null;
         }
-
+        // //debug
+        // if (m_nextPosterToExpire != null)
+        // {
+        //     Console.WriteLine(
+        //         $"bounty heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} by {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {(GameLoop.GameLoopTime - expireTime) / 1000}s");
+        // }
+        // else
+        // {
+        //     Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - no bounties");
+        // }
     }
 
     private static List<BountyPoster> GetActiveBountiesForPlayer(GamePlayer player)
@@ -293,7 +293,7 @@ public class BountyManager
         killerClient.Player.Out.SendMessage($"ATTENTION!\n{messageToKiller}", eChatType.CT_Important,
             eChatLoc.CL_SystemWindow);
     }
-    
+
     private static void BroadcastBountyKill(BountyPoster poster)
     {
         foreach (var client in WorldMgr.GetAllPlayingClients())
@@ -303,11 +303,12 @@ public class BountyManager
 
             var message =
                 $"{poster.Target.Name} has been killed and the bounty has been paid out!";
-            
+
             client.Player.Out.SendMessage(message, eChatType.CT_Broadcast,
                 eChatLoc.CL_SystemWindow);
         }
     }
+
     private static void BroadcastExpiration(BountyPoster poster)
     {
         foreach (var client in WorldMgr.GetAllPlayingClients())
@@ -321,7 +322,7 @@ public class BountyManager
             client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenter_And_CT_System,
                 eChatLoc.CL_SystemWindow);
         }
-        
+
         var killerClient = WorldMgr.GetClientByPlayerName(poster.Target.Name, false, true);
 
         if (killerClient == null) return;
@@ -331,8 +332,8 @@ public class BountyManager
 
         killerClient.Player.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter_And_CT_System,
             eChatLoc.CL_SystemWindow);
-
     }
+
     public static IList<string> GetTextList(GamePlayer player)
     {
         long timeLeft;
@@ -346,17 +347,19 @@ public class BountyManager
         }
 
         var activePosters = GetActiveBountiesForPlayer(player);
-        
+
         if (activePosters.Count > 0)
         {
             temp.Add($"ATTENTION: You have {activePosters.Count} bounties on your head!");
             temp.Add("");
-            
+
             foreach (var bounty in activePosters)
             {
                 timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
-                temp.Add($"{GlobalConstants.RealmToName(bounty.BountyRealm)} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
+                temp.Add(
+                    $"{GlobalConstants.RealmToName(bounty.BountyRealm)} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
             }
+
             temp.Add("");
         }
 
@@ -369,7 +372,8 @@ public class BountyManager
             bountyAvailable = true;
             // var timeLeft = Properties.BOUNTY_DURATION - (expireTime - GameLoop.GameLoopTime);
             timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
-            temp.Add($"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
+            temp.Add(
+                $"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
         }
 
         if (!bountyAvailable) temp.Add("Your Realm doesn't have any Bounty Hunt posted.");
