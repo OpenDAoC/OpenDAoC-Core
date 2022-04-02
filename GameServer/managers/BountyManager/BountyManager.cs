@@ -101,6 +101,11 @@ public class BountyManager
         return ActiveBounties.FirstOrDefault(x => x.Target.Name.Equals(player.Name));
     }
 
+    public static IEnumerable<BountyPoster> GetBountiesPostedBy(GamePlayer player)
+    {
+        return ActiveBounties.Where(x => x.Ganked.Name.Equals(player.Name));
+    }
+
     private static void BroadcastBounty(BountyPoster poster)
     {
         foreach (var client in WorldMgr.GetAllPlayingClients())
