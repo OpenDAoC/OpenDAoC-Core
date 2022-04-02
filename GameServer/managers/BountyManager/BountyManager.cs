@@ -174,6 +174,7 @@ public class BountyManager
                     m_nextPosterToExpire = poster;
                     if (tick <= expireTime) continue;
                     RemoveBounty(poster);
+                    BroadcastExpiration(poster);
                     m_nextPosterToExpire = null;
                 }
             }
@@ -216,6 +217,7 @@ public class BountyManager
     {
         foreach (var client in WorldMgr.GetAllPlayingClients())
         {
+            if (client.Player == null) continue;
             if (client.Player.Realm != poster.Ganked.Realm) continue;
 
             var message =
@@ -227,25 +229,43 @@ public class BountyManager
                 eChatLoc.CL_SystemWindow);
         }
 
-        BroadcastBountyToTarget(poster);
-    }
-
-    private static void BroadcastBountyToTarget(BountyPoster poster)
-    {
         var killerClient = WorldMgr.GetClientByPlayerName(poster.Target.Name, false, true);
 
         if (killerClient == null) return;
 
-        var message =
+        var messageToKiller =
             $"{poster.Ganked.Name} is offering {poster.Reward} gold for your head!";
 
-        killerClient.Player.Out.SendMessage(message, eChatType.CT_ScreenCenter,
+        killerClient.Player.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter,
             eChatLoc.CL_SystemWindow);
-        killerClient.Player.Out.SendMessage($"ATTENTION!\n{message}", eChatType.CT_Important,
+        killerClient.Player.Out.SendMessage($"ATTENTION!\n{messageToKiller}", eChatType.CT_Important,
+            eChatLoc.CL_SystemWindow);
+    }
+    private static void BroadcastExpiration(BountyPoster poster)
+    {
+        foreach (var client in WorldMgr.GetAllPlayingClients())
+        {
+            if (client.Player == null) continue;
+            if (client.Player.Realm != poster.Ganked.Realm) continue;
+
+            var message =
+                $"{poster.Ganked.Name}'s Bounty Hunt for {poster.Target.Name}'s head has expired.";
+
+            client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenter_And_CT_System,
+                eChatLoc.CL_SystemWindow);
+        }
+        
+        var killerClient = WorldMgr.GetClientByPlayerName(poster.Target.Name, false, true);
+
+        if (killerClient == null) return;
+
+        var messageToKiller =
+            $"{poster.Ganked.Name}'s Bounty Hunt for your head has expired!";
+
+        killerClient.Player.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter_And_CT_System,
             eChatLoc.CL_SystemWindow);
 
     }
-
     public static IList<string> GetTextList(GamePlayer player)
     {
         List<string> temp = new List<string>();
@@ -253,7 +273,7 @@ public class BountyManager
 
         if (ActiveBounties == null || ActiveBounties.Count == 0)
         {
-            temp.Add("No active bounties.");
+            temp.Add("Your Realm doesn't have any Bounty Hunt posted.");
             return temp;
         }
 
@@ -282,7 +302,7 @@ public class BountyManager
                 $"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g]");
         }
 
-        if (!bountyAvailable) temp.Add("No active bounties.");
+        if (!bountyAvailable) temp.Add("Your Realm doesn't have any Bounty Hunt posted.");
 
         return temp;
     }
