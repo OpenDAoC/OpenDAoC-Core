@@ -2660,6 +2660,11 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("conquest", "max_keep_conquest_rp_reward", "Max reward (in RP value) for a keep capture", 25000)]
 		public static int MAX_KEEP_CONQUEST_RP_REWARD;
 		
+		/// <summary>
+		/// Bounty Poster duration in minutes
+		/// </summary>
+		[ServerProperty("bounty", "bounty_duration", "Bounty Poster duration in minutes", 90)]
+		public static int BOUNTY_DURATION;
 		
 
 		#endregion
