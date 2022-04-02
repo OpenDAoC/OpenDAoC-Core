@@ -26,11 +26,16 @@ namespace DOL.GS.Scripts
                 DisplaySyntax(client);
                 return;
             }
+            
+            if (args[1] == "clear")
+            {
+                BountyManager.ActiveBounties.Clear();
+                return;
+            }
 
             if (args[1] == "list")
             {
                 client.Out.SendCustomTextWindow("Active Bounties", BountyManager.GetTextList());
-                ;
                 return;
             }
 

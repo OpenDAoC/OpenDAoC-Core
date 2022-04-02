@@ -20,13 +20,13 @@ public class BountyManager
     
     public BountyManager()
     {
-        ResetBounty();
     }
 
     private void ResetBounty()
     {
         if (ActiveBounties == null)
             ActiveBounties = new List<BountyPoster>();
+        ActiveBounties.Clear();
     }
 
     public static List<BountyPoster> GetActiveBounties
@@ -75,6 +75,12 @@ public class BountyManager
         }
         else
         {
+            foreach (BountyPoster activePoster in ActiveBounties)
+            {
+                if (activePoster.Target.Name != killer.Name) continue;
+                activePoster.Reward += amount;
+                break;
+            }
             ActiveBounties.Add(poster);
         }
         
@@ -101,15 +107,19 @@ public class BountyManager
     public static IList<string> GetTextList()
     {
         List<string> temp = new List<string>();
+        temp.Clear();
 
-        if (ActiveBounties == null)
+        if (ActiveBounties == null || ActiveBounties.Count == 0)
         {
-            temp.Add("No active bounties");
+            temp.Add("No active bounties.");
             return temp;
         }
 
+        var count = 0;
         foreach (BountyPoster bounty in ActiveBounties)
         {
+            count++;
+            Console.WriteLine($"{count}. {bounty.Target.Name} - {bounty.Reward}");
             temp.Add($"{bounty.Ganked.Name} is offering {bounty.Reward} gold on {bounty.Target.Name}'s head!");
         }
         
