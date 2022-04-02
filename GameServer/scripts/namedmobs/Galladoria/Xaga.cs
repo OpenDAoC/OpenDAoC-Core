@@ -321,10 +321,13 @@ namespace DOL.AI.Brain
             {
                 foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
                 {
-                    if ((mob_c?.Brain is BeathaBrain || mob_c?.Brain is TineBrain) && mob_c.IsAlive &&
-                        mob_c.IsAvailable)
+                    if (mob_c?.Brain is BeathaBrain && mob_c.IsAlive && mob_c.IsAvailable)
                     {
-                        AddAggroListTo(mob_c.Brain as StandardMobBrain);
+                        AddAggroListTo(mob_c.Brain as BeathaBrain);
+                    }
+                    if (mob_c?.Brain is TineBrain && mob_c.IsAlive && mob_c.IsAvailable)
+                    {
+                        AddAggroListTo(mob_c.Brain as TineBrain);
                     }
                 }
             }
