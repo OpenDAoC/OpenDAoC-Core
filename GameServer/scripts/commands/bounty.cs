@@ -1,5 +1,6 @@
 ﻿using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 
 namespace DOL.GS.Scripts
@@ -14,7 +15,10 @@ namespace DOL.GS.Scripts
         
         private int amount;
         private GamePlayer killerPlayer;
-
+        
+        private int minBountyReward = Properties.BOUNTY_MIN_REWARD;
+        private int maxBountyReward = Properties.BOUNTY_MAX_REWARD;
+        
         public void OnCommand(GameClient client, string[] args)
         {
             if (IsSpammingCommand(client.Player, "Bounty"))
@@ -52,27 +56,27 @@ namespace DOL.GS.Scripts
                 
                 killerPlayer = client.Player.TempProperties.getProperty<GamePlayer>(KILLEDBY);
 
-                amount = 50;
+                amount = minBountyReward;
                 
                 if (args.Length == 3)
                 {
                     if (!int.TryParse(args[2], out amount))
                     {
-                        amount = 50;
+                        amount = minBountyReward;
                     }
                     
-                    if (amount < 50)
+                    if (amount < minBountyReward)
                     {
                         client.Out.SendMessage("The minimum Bounty amount is 50g", eChatType.CT_Important,
                             eChatLoc.CL_SystemWindow);
-                        amount = 50;
+                        amount = minBountyReward;
                     }
                     
-                    if (amount > 1000)
+                    if (amount > maxBountyReward)
                     {
                         client.Out.SendMessage("The maximum Bounty amount is 1000g", eChatType.CT_Important,
                             eChatLoc.CL_SystemWindow);
-                        amount = 1000;
+                        amount = maxBountyReward;
                     }
                 }
                 
