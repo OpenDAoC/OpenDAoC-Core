@@ -9,9 +9,9 @@ namespace DOL.GS;
 public class BountyManager
 
 {
-    public const string KILLEDBY = "KilledBy";
+    private const string KILLEDBY = "KilledBy";
 
-    public static List<BountyPoster> ActiveBounties;
+    private static List<BountyPoster> ActiveBounties;
 
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -23,7 +23,7 @@ public class BountyManager
     {
     }
 
-    private void ResetBounty()
+    public static void ResetBounty()
     {
         if (ActiveBounties == null)
             ActiveBounties = new List<BountyPoster>();
@@ -66,17 +66,14 @@ public class BountyManager
         if (amount < 50) amount = 50;
         killed.Out.SendMessage($"You have called the head of {killer.Name} for {amount} gold!", eChatType.CT_System,
             eChatLoc.CL_SystemWindow);
+        // this is commented for debugging
         // killed.TempProperties.removeProperty(KILLEDBY);
             
         BountyPoster poster = new BountyPoster(killed, killer, killed.CurrentZone, amount);
         
-        if(ActiveBounties == null)
-        {
-            ActiveBounties = new List<BountyPoster>();
-        }
+        ActiveBounties ??= new List<BountyPoster>();
         
-        
-        if(ActiveBounties.Count() > 0)
+        if(ActiveBounties.Any())
         {
             //search for existing killer and increment if they exist, add them to the list if they don't
             bool killerExists = false;
@@ -95,9 +92,6 @@ public class BountyManager
             //add if its the first entry
             ActiveBounties.Add(poster);
         }
-        
-        
-        
         BroadcastBounty(poster);
 
     }
@@ -118,7 +112,7 @@ public class BountyManager
         }
     }
     
-    public static IList<string> GetTextList()
+    public static IList<string> GetTextList(GamePlayer player)
     {
         List<string> temp = new List<string>();
         temp.Clear();
@@ -132,10 +126,18 @@ public class BountyManager
         var count = 0;
         foreach (BountyPoster bounty in ActiveBounties)
         {
+            if (bounty.Target.Name == player.Name)
+            {
+                temp.Add($"ATTENTION: You have a bounty for {bounty.Reward}g on your head!");
+                temp.Add("");
+            }
+            if (bounty.Ganked.Realm != player.Realm) continue;
+            
             count++;
-            Console.WriteLine($"{count}. {bounty.Target.Name} - {bounty.Reward}");
-            temp.Add($"{bounty.Ganked.Name} is offering {bounty.Reward} gold on {bounty.Target.Name}'s head!");
+            temp.Add($"{count} - {bounty.Target.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g]");
         }
+        
+        if (!temp.Any()) temp.Add("No active bounties.");
         
         return temp;
     }

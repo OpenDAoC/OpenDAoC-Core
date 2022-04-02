@@ -1,4 +1,5 @@
 ﻿using System;
+using DOL.GS.API;
 using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 
@@ -27,15 +28,16 @@ namespace DOL.GS.Scripts
                 return;
             }
             
+            // todo: remove this
             if (args[1] == "clear")
             {
-                BountyManager.ActiveBounties.Clear();
+                BountyManager.ResetBounty();
                 return;
             }
 
             if (args[1] == "list")
             {
-                client.Out.SendCustomTextWindow("Active Bounties", BountyManager.GetTextList());
+                client.Out.SendCustomTextWindow("Active Bounties", BountyManager.GetTextList(client.Player));
                 return;
             }
 
