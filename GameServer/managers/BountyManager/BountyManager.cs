@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
@@ -73,17 +74,29 @@ public class BountyManager
         {
             ActiveBounties = new List<BountyPoster>();
         }
-        else
+        
+        
+        if(ActiveBounties.Count() > 0)
         {
+            //search for existing killer and increment if they exist, add them to the list if they don't
+            bool killerExists = false;
             foreach (BountyPoster activePoster in ActiveBounties)
             {
                 if (activePoster.Target.Name != killer.Name) continue;
                 activePoster.Reward += amount;
                 activePoster.LastSeenZone = killed.CurrentZone;
+                killerExists = true;
                 break;
             }
+            if(!killerExists) ActiveBounties.Add(poster);
+        }
+        else
+        {
+            //add if its the first entry
             ActiveBounties.Add(poster);
         }
+        
+        
         
         BroadcastBounty(poster);
 
