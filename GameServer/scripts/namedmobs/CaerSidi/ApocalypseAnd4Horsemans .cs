@@ -375,6 +375,16 @@ namespace DOL.GS
             return 0;
         }
         public static bool CanInteract = false;
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
+                default: return 65; // dmg reduction for rest resists
+            }
+        }
         public override bool Interact(GamePlayer player)
         {
             if (!base.Interact(player)) return false;
@@ -496,15 +506,6 @@ namespace DOL.GS
             CanInteract = false;
             FamesBrain.StartedFames = false;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
 
             Strength = 5;
             Empathy = 325;
@@ -1554,6 +1555,16 @@ namespace DOL.GS
     public class Morbus : GameEpicBoss
     {
         public Morbus() : base() { }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
+                default: return 65; // dmg reduction for rest resists
+            }
+        }
         public override bool HasAbility(string keyName)
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
@@ -1671,15 +1682,15 @@ namespace DOL.GS
             MorbusBrain.message_warning1 = false;
             MorbusBrain.IsBug = false;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 15;
+            this.AbilityBonus[(int)eProperty.Resist_Body] = 26;
+            this.AbilityBonus[(int)eProperty.Resist_Heat] = 26;
             this.AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
+            this.AbilityBonus[(int)eProperty.Resist_Matter] = 26;
+            this.AbilityBonus[(int)eProperty.Resist_Energy] = 26;
+            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 26;
+            this.AbilityBonus[(int)eProperty.Resist_Slash] = 80;
+            this.AbilityBonus[(int)eProperty.Resist_Crush] = 80;
+            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 80;
 
             Strength = 5;
             Empathy = 325;
@@ -1749,7 +1760,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 StartedMorbus = false;
                 BafMobs3 = false;
                 message_warning1 = false;
@@ -1770,13 +1781,13 @@ namespace DOL.AI.Brain
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
                 BafMobs3 = false;
             }
             else if (Body.InCombatInLast(40 * 1000) == false && this.Body.InCombatInLast(45 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Model = 952;
                 Body.Size = 140;
                 IsBug = false;
@@ -1810,9 +1821,9 @@ namespace DOL.AI.Brain
                     {
                         if (npc != null)
                         {
-                            if (npc.IsAlive && npc.PackageID == "MorbusBaf")
+                            if (npc.IsAlive && npc.PackageID == "MorbusBaf" && npc.Brain is MorbusSwarmBrain)
                             {
-                                AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with MorbusBaf PackageID
+                                AddAggroListTo(npc.Brain as MorbusSwarmBrain);// add to aggro mobs with MorbusBaf PackageID
                                 BafMobs3 = true;
                             }
                         }
@@ -1828,9 +1839,9 @@ namespace DOL.AI.Brain
                         {
                             if (npc != null)
                             {
-                                if (npc.IsAlive && npc.PackageID == "MorbusBaf")
+                                if (npc.IsAlive && npc.PackageID == "MorbusBaf" && npc.Brain is MorbusSwarmBrain)
                                 {
-                                    AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with MorbusBaf PackageID
+                                    AddAggroListTo(npc.Brain as MorbusSwarmBrain);// add to aggro mobs with MorbusBaf PackageID
                                 }
                             }
                         }
@@ -2013,7 +2024,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 700;
+            AggroRange = 1000;
         }
         public override void Think()
         {
@@ -2186,15 +2197,15 @@ namespace DOL.GS
             FunusBrain.StartedFunus = false;
             FunusBrain.BafMobs4 = false;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
+            this.AbilityBonus[(int)eProperty.Resist_Body] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Heat] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Cold] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Matter] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Energy] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Slash] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Crush] = 55;
+            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 55;
 
             Strength = 5;
             Empathy = 325;
@@ -2235,18 +2246,18 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 StartedFunus = false;
                 BafMobs4 = false;
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             if (Body.InCombat || HasAggro || Body.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
             {
@@ -2380,15 +2391,15 @@ namespace DOL.GS
             ApocalypseBrain.StartedApoc = false;
             HarbringerOfFate.HarbringersCount = 0;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 50;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 50;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 50;
+            this.AbilityBonus[(int)eProperty.Resist_Body] = 70;
+            this.AbilityBonus[(int)eProperty.Resist_Heat] = 70;
+            this.AbilityBonus[(int)eProperty.Resist_Cold] = 70;
+            this.AbilityBonus[(int)eProperty.Resist_Matter] = 70;
+            this.AbilityBonus[(int)eProperty.Resist_Energy] = 70;
+            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 70;
+            this.AbilityBonus[(int)eProperty.Resist_Slash] = 80;
+            this.AbilityBonus[(int)eProperty.Resist_Crush] = 80;
+            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 80;
 
             foreach (GameClient client in WorldMgr.GetClientsOfRegion(this.CurrentRegionID))
             {
@@ -2558,7 +2569,7 @@ namespace DOL.AI.Brain
                             {
                                 if (npc.IsAlive && npc.PackageID == "ApocBaf" && npc.Brain is HarbringerOfFateBrain)
                                 {
-                                    AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with ApocBaf PackageID
+                                    AddAggroListTo(npc.Brain as HarbringerOfFateBrain);// add to aggro mobs with ApocBaf PackageID
                                 }
                             }
                         }
