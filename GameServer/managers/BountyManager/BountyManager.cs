@@ -111,12 +111,10 @@ public class BountyManager
         }
     }
     
-
     public static void AddBounty(GamePlayer killed, GamePlayer killer, int amount = 50)
     {
         if (amount < 50) amount = 50;
-        killed.Out.SendMessage($"You have called the head of {killer.Name} for {amount} gold!", eChatType.CT_System,
-            eChatLoc.CL_SystemWindow);
+
         // this is commented for debugging
         // killed.TempProperties.removeProperty(KILLEDBY);
 
