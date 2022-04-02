@@ -203,6 +203,8 @@ namespace DOL.GS
 				player.Out.SendMessage("You can't take control of a siege weapon while it is moving.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 				return;
 			}
+
+			if (Realm == 0) Realm = player.Realm;
 			Owner = player;
 			player.SiegeWeapon = this;
 			Owner.Out.SendSiegeWeaponInterface(this, SiegeWeaponTimer.TimeUntilElapsed / 100);
@@ -269,10 +271,18 @@ namespace DOL.GS
 									  eChatLoc.CL_SystemWindow);
 				return;
 			}
-			if (!Owner.GroundTargetInView)
+            
+            if (!Owner.GroundTargetInView)
 			{
 				Owner.Out.SendMessage("Ground target is out of sight!", eChatType.CT_System,
 									  eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (Owner.GroundTarget.Z > this.Z + 100)
+			{
+				Owner.Out.SendMessage("Ground target too high!", eChatType.CT_System,
+					eChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -445,6 +455,14 @@ namespace DOL.GS
 				Owner.Out.SendMessage("You are too far from your siege equipment to control it any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
+
+			if (Owner.Realm != this.Realm)
+			{
+				Owner.Out.SendMessage($"This siege equipment is owned by an enemy realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+				
+			
 			return true;
 		}
 

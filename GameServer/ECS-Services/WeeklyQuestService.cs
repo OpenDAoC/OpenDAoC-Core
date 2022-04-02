@@ -17,7 +17,7 @@ public class WeeklyQuestService
 
     static WeeklyQuestService()
     {
-        EntityManager.AddService(typeof(AttackService));
+        EntityManager.AddService(typeof(WeeklyQuestService));
         
         var loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
 

@@ -2624,6 +2624,43 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
 		public static int MAX_ENTITIES;
 		
+		/// <summary>
+		/// Max duration of a Conquest Task in minutes
+		/// </summary>
+		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)]
+		public static int MAX_CONQUEST_TASK_DURATION;
+		
+		/// <summary>
+		/// Time (in minutes) of the overall conquest window and cooldown
+		/// </summary>
+		[ServerProperty("conquest", "conquest_cycle_timer", "Time (in minutes) of the overall conquest window and cooldown", 90)]
+		public static int CONQUEST_CYCLE_TIMER;
+		
+		/// <summary>
+		/// Time (in seconds) of the duration between conquest objective point tallies
+		/// </summary>
+		[ServerProperty("conquest", "conquest_tally_interval", "Time (in seconds) of the duration between conquest objective point tallies", 300)]
+		public static int CONQUEST_TALLY_INTERVAL;
+		
+		/// <summary>
+		/// Max range to contribute to a conquest target
+		/// </summary>
+		[ServerProperty("conquest", "max_conquest_range", "Max range to contribute to a conquest target", 15000)]
+		public static int MAX_CONQUEST_RANGE;
+		
+		/// <summary>
+		/// Max reward (in RP value) for any given subtask interval
+		/// </summary>
+		[ServerProperty("conquest", "max_subtask_rp_reward", "Max reward (in RP value) for any given subtask interval", 5000)]
+		public static int MAX_SUBTASK_RP_REWARD;
+		
+		/// <summary>
+		/// Max reward (in RP value) for a keep capture
+		/// </summary>
+		[ServerProperty("conquest", "max_keep_conquest_rp_reward", "Max reward (in RP value) for a keep capture", 25000)]
+		public static int MAX_KEEP_CONQUEST_RP_REWARD;
+		
+		
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

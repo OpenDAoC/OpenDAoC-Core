@@ -1,12 +1,11 @@
 using System;
-using System.Reflection;
 using System.Collections;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Database;
-using log4net;
+using DOL.GS.ServerProperties;
+
 
 namespace DOL.GS
 {
@@ -230,10 +229,10 @@ namespace DOL.GS
 				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
 
 				log.DebugFormat("keep {0}", keep);
-
-				if (keep != null && keep.Realm != player.Realm)
+				
+				if (m_currentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
 				{
-					player.Out.SendMessage("You must capture this keep before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -241,7 +240,7 @@ namespace DOL.GS
 			if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, m_item))
 			{
 				if (m_item == null)
-					log.Warn("GameRelic: Could not retrive " + Name + " as InventoryItem on player " + player.Name);
+					log.Warn("GameRelic: Could not retrieve " + Name + " as InventoryItem on player " + player.Name);
 				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, m_item.Template, m_item.Count);
 
 

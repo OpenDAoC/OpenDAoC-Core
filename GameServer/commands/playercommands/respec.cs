@@ -295,9 +295,9 @@ namespace DOL.GS.Commands
             DisplayMessage(player, "All self-cast buffs have been removed due to a respec.");
             if (player.effectListComponent != null)
             {
-				foreach (ECSGameSpellEffect e in player.effectListComponent.GetAllEffects())
+				foreach (ECSGameEffect e in player.effectListComponent.GetAllEffects())
                 {
-					if (e.SpellHandler.Caster == player)
+					if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                     {
 						EffectService.RequestCancelEffect(e);
 					}

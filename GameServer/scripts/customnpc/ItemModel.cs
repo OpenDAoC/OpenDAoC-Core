@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DOL.GS.Spells;
 using Microsoft.CodeAnalysis;
@@ -6836,8 +6837,39 @@ namespace DOL.GS {
         {
             GameNPC display = CreateDisplayNPC(player, item);
             display.AddToWorld();
-            display.attackComponent.ShowAttackAnimation(new AttackData(), item);
+
+            var tempAd = new AttackData();
+            tempAd.Attacker = display;
+            tempAd.Target = display;
+            tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+            tempAd.AttackResult = eAttackResult.HitUnstyled;
+            display.AttackState = true;
+            display.TargetObject = display;
+            display.ObjectState = eObjectState.Active;
+            display.attackComponent.AttackState = true;
+            display.BroadcastLivingEquipmentUpdate();
+            player.Out.SendObjectUpdate(display);
             
+            //Uncomment this if you want animations
+            // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));
+            // animationThread.IsBackground = true;
+            // animationThread.Start();
+            
+
+        }
+
+        private void LoopAnimation(GamePlayer player, InventoryItem item, GameNPC display,AttackData ad)
+        {
+            var _lastAnimation = 0l;
+            while (GameLoop.GameLoopTime < display.SpawnTick )
+            {
+                if (GameLoop.GameLoopTime - _lastAnimation > 2000)
+                {
+                    _lastAnimation = GameLoop.GameLoopTime;
+                }
+      
+            }
+
         }
     }
 }
