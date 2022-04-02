@@ -354,7 +354,7 @@ namespace DOL.AI.Brain
                         {
                             if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
                             {
-                                AddAggroListTo(npc.Brain as StandardMobBrain); //if one pet aggro all will aggro
+                                AddAggroListTo(npc.Brain as OtryggAddBrain); //if one pet aggro all will aggro
                             }
                         }
                     }
