@@ -67,7 +67,7 @@ public class BountyManager
             eChatLoc.CL_SystemWindow);
         // killed.TempProperties.removeProperty(KILLEDBY);
             
-        BountyPoster poster = new BountyPoster(killed, killer, amount);
+        BountyPoster poster = new BountyPoster(killed, killer, killed.CurrentZone, amount);
         
         if(ActiveBounties == null)
         {
@@ -79,6 +79,7 @@ public class BountyManager
             {
                 if (activePoster.Target.Name != killer.Name) continue;
                 activePoster.Reward += amount;
+                activePoster.LastSeenZone = killed.CurrentZone;
                 break;
             }
             ActiveBounties.Add(poster);
