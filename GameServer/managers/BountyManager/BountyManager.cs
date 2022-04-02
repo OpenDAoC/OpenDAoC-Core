@@ -79,16 +79,16 @@ public class BountyManager
         if(ActiveBounties.Count() > 0)
         {
             //search for existing killer and increment if they exist, add them to the list if they don't
-            bool killerExists = false;
-            foreach (BountyPoster activePoster in ActiveBounties)
+            var activePoster = GetActiveBountyForPlayer(killer);
+            if (activePoster != null)
             {
-                if (activePoster.Target.Name != killer.Name) continue;
                 activePoster.Reward += amount;
                 activePoster.LastSeenZone = killed.CurrentZone;
-                killerExists = true;
-                break;
             }
-            if(!killerExists) ActiveBounties.Add(poster);
+            else
+            {
+                ActiveBounties.Add(poster);
+            }
         }
         else
         {
@@ -100,6 +100,11 @@ public class BountyManager
         
         BroadcastBounty(poster);
 
+    }
+
+    public static BountyPoster GetActiveBountyForPlayer(GamePlayer player)
+    {
+        return ActiveBounties.FirstOrDefault(x => x.Target.Name.Equals(player.Name));
     }
 
     private static void BroadcastBounty(BountyPoster poster)
