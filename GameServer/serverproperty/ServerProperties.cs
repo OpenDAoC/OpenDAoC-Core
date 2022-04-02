@@ -2663,8 +2663,20 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Bounty Poster duration in minutes
 		/// </summary>
-		[ServerProperty("bounty", "bounty_duration", "Bounty Poster duration in minutes", 90)]
+		[ServerProperty("bounty", "bounty_duration", "Bounty Poster duration in minutes", 30)]
 		public static int BOUNTY_DURATION;
+		
+		/// <summary>
+		/// Bounty minimum reward in gold
+		/// </summary>
+		[ServerProperty("bounty", "bounty_min_reward", "Bounty minimum reward in gold", 50)]
+		public static int BOUNTY_MIN_REWARD;
+		
+		/// <summary>
+		/// Bounty maximum reward in gold
+		/// </summary>
+		[ServerProperty("bounty", "bounty_max_reward", "Bounty maximum reward in gold", 1000)]
+		public static int BOUNTY_MAX_REWARD;
 		
 		/// <summary>
 		/// Bounty Reward payout rate - enter 1 for 100% (no Realm Tax), default is 0.9 for 10% tax

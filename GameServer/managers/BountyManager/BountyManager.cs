@@ -16,6 +16,9 @@ public class BountyManager
     
     private static BountyPoster m_nextPosterToExpire;
 
+    private static int minBountyReward;
+    private static int maxBountyReward;
+
     private static long bountyDuration = Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
 
     [ScriptLoadedEvent]
@@ -23,10 +26,13 @@ public class BountyManager
     {
         GameEventMgr.AddHandler(GameLivingEvent.Dying, GreyPlayerKilled);
         GameEventMgr.AddHandler(GameLivingEvent.Dying, BountyKilled);
+        GameEventMgr.AddHandler(GameLivingEvent.EnemyKilled, PlayerKilled);
     }
 
     public BountyManager()
     {
+        minBountyReward = Properties.BOUNTY_MIN_REWARD;
+        maxBountyReward = Properties.BOUNTY_MAX_REWARD;
         ResetBounty();
     }
 
@@ -35,6 +41,7 @@ public class BountyManager
         if (ActiveBounties == null)
             ActiveBounties = new List<BountyPoster>();
         ActiveBounties.Clear();
+        
     }
 
     public static List<BountyPoster> GetActiveBounties
@@ -53,7 +60,7 @@ public class BountyManager
 
         DyingEventArgs eArgs = args as DyingEventArgs;
 
-        if (eArgs.Killer is not GamePlayer) return;
+        if (eArgs?.Killer is not GamePlayer) return;
 
         GamePlayer killer = eArgs.Killer as GamePlayer;
 
@@ -110,13 +117,41 @@ public class BountyManager
             {
                 player.AddMoney(reward, "You have been rewarded {0} extra for killing a bounty target!");
             }
+            BroadcastBountyKill(activeBounty);
             RemoveBounty(activeBounty);
         }
     }
-    
+    private static void PlayerKilled(DOLEvent e, object sender, EventArgs args)
+    {
+        GamePlayer player = sender as GamePlayer;
+
+        if (player == null) return;
+
+        if (e != GameLivingEvent.EnemyKilled) return;
+
+        EnemyKilledEventArgs eArgs = args as EnemyKilledEventArgs;
+
+        if (eArgs?.Target is not GamePlayer) return;
+
+        var activeBounties = GetActiveBountiesForPlayer(player);
+
+        if (activeBounties.Count <= 0) return;
+        if (player.GetConLevel(eArgs.Target as GamePlayer) != 0) return;
+
+        foreach (BountyPoster activeBounty in activeBounties.ToList())
+        {
+            int stealedReward = (int)(activeBounty.Reward-(activeBounty.Reward * 0.9)) * 10000;
+            player.AddMoney(stealedReward, "You have stolen {0} from a bounty on you!");
+            activeBounty.Reward -= stealedReward;
+
+            if (activeBounty.Reward > minBountyReward) continue;
+            BroadcastExpiration(activeBounty);
+            RemoveBounty(activeBounty);
+        }
+    }
     public static void AddBounty(GamePlayer killed, GamePlayer killer, int amount = 50)
     {
-        if (amount < 50) amount = 50;
+        if (amount < minBountyReward) amount = minBountyReward;
 
         // this is commented for debugging
         // killed.TempProperties.removeProperty(KILLEDBY);
@@ -133,6 +168,7 @@ public class BountyManager
             {
                 killed.Out.SendMessage("You can only post one Bounty at the time!", eChatType.CT_Important,
                     eChatLoc.CL_SystemWindow);
+                return;
             }
             
             //search for existing killer and increment if they exist, add them to the list if they don't
@@ -257,6 +293,21 @@ public class BountyManager
         killerClient.Player.Out.SendMessage($"ATTENTION!\n{messageToKiller}", eChatType.CT_Important,
             eChatLoc.CL_SystemWindow);
     }
+    
+    private static void BroadcastBountyKill(BountyPoster poster)
+    {
+        foreach (var client in WorldMgr.GetAllPlayingClients())
+        {
+            if (client.Player == null) continue;
+            if (client.Player.Realm != poster.Ganked.Realm) continue;
+
+            var message =
+                $"{poster.Target.Name} has been killed and the bounty has been paid out!";
+            
+            client.Player.Out.SendMessage(message, eChatType.CT_Broadcast,
+                eChatLoc.CL_SystemWindow);
+        }
+    }
     private static void BroadcastExpiration(BountyPoster poster)
     {
         foreach (var client in WorldMgr.GetAllPlayingClients())
@@ -284,6 +335,7 @@ public class BountyManager
     }
     public static IList<string> GetTextList(GamePlayer player)
     {
+        long timeLeft;
         List<string> temp = new List<string>();
         temp.Clear();
 
@@ -302,7 +354,8 @@ public class BountyManager
             
             foreach (var bounty in activePosters)
             {
-                temp.Add($"[{bounty.BountyRealm}] {bounty.Reward}g reward");
+                timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
+                temp.Add($"{GlobalConstants.RealmToName(bounty.BountyRealm)} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
             }
             temp.Add("");
         }
@@ -314,9 +367,8 @@ public class BountyManager
             if (bounty.BountyRealm != player.Realm) continue;
             count++;
             bountyAvailable = true;
-            var expireTime = bounty.PostedTime + bountyDuration;
             // var timeLeft = Properties.BOUNTY_DURATION - (expireTime - GameLoop.GameLoopTime);
-            var timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
+            timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
             temp.Add($"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
         }
 
