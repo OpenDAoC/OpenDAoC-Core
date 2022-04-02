@@ -19,6 +19,7 @@ public class BountyManager
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
     {
         GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(GreyPlayerKilled));
+        GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(BountyKilled));
     }
 
     public BountyManager()
@@ -62,6 +63,31 @@ public class BountyManager
             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
     }
 
+    private static void BountyKilled(DOLEvent e, object sender, EventArgs args)
+    {
+        GamePlayer killedPlayer = sender as GamePlayer;
+
+        if (killedPlayer == null) return;
+
+        if (e != GameLivingEvent.Dying) return;
+        
+        DyingEventArgs eArgs = args as DyingEventArgs;
+        
+        if (eArgs.Killer is not GamePlayer) return;
+        
+        if (eArgs.Killer.Realm == killedPlayer.Realm) return;
+
+        var activeBounties = GetActiveBountiesForPlayer(killedPlayer);
+        
+        if (activeBounties is null || !activeBounties.Any()) return;
+        Console.WriteLine("Bounty target killed");
+        foreach (BountyPoster activeBounty in activeBounties.ToList())
+        {
+         Console.WriteLine($"Removed bounty for {activeBounty.Target.Name} for {activeBounty.BountyRealm}");
+         RemoveBounty(activeBounty);
+        }
+    }
+
     public static void AddBounty(GamePlayer killed, GamePlayer killer, int amount = 50)
     {
         if (amount < 50) amount = 50;
@@ -70,18 +96,19 @@ public class BountyManager
         // this is commented for debugging
         // killed.TempProperties.removeProperty(KILLEDBY);
 
-        BountyPoster poster = new BountyPoster(killed, killer, killed.CurrentZone, amount);
+        BountyPoster poster = new BountyPoster(killed, killer, amount);
 
         ActiveBounties ??= new List<BountyPoster>();
 
         if (ActiveBounties.Any())
         {
             //search for existing killer and increment if they exist, add them to the list if they don't
-            var activePoster = GetActiveBountyForPlayer(killer);
+            var activePoster = GetActiveBountyForPlayerForRealm(killer, killed.Realm);
             if (activePoster != null)
             {
                 activePoster.Reward += amount;
                 activePoster.LastSeenZone = killed.CurrentZone;
+                activePoster.PostedTime = GameLoop.GameLoopTime;
             }
             else
             {
@@ -144,10 +171,13 @@ public class BountyManager
         }
 
     }
-
-    public static BountyPoster GetActiveBountyForPlayer(GamePlayer player)
+    public static List<BountyPoster> GetActiveBountiesForPlayer(GamePlayer player)
     {
-        return ActiveBounties.FirstOrDefault(x => x.Target.Name.Equals(player.Name));
+        return ActiveBounties.FindAll(x => x.Target.Name.Equals(player.Name));
+    }
+    public static BountyPoster GetActiveBountyForPlayerForRealm(GamePlayer player, eRealm realm)
+    {
+        return ActiveBounties.FirstOrDefault(x => x.Target.Name.Equals(player.Name) && x.BountyRealm == realm);
     }
 
     public static List<BountyPoster> GetAllBounties()
@@ -155,7 +185,6 @@ public class BountyManager
         return ActiveBounties;
         ;
     }
-
     public static IEnumerable<BountyPoster> GetBountiesPostedBy(GamePlayer player)
     {
         return ActiveBounties.Where(x => x.Ganked.Name.Equals(player.Name));
@@ -206,26 +235,32 @@ public class BountyManager
             return temp;
         }
 
-        var activePoster = GetActiveBountyForPlayer(player);
-
-        if (activePoster != null)
+        var activePosters = GetActiveBountiesForPlayer(player);
+        
+        if (activePosters.Count > 0)
         {
-            temp.Add($"ATTENTION: You have a bounty for {activePoster.Reward}g on your head!");
+            temp.Add($"ATTENTION: You have {activePosters.Count} bounties on your head!");
             temp.Add("");
-            return temp;
+            
+            foreach (var bounty in activePosters)
+            {
+                temp.Add($"[{bounty.BountyRealm}] {bounty.Reward}g reward");
+            }
+            temp.Add("");
         }
 
         var count = 0;
+        var bountyAvailable = false;
         foreach (BountyPoster bounty in ActiveBounties)
         {
-            if (bounty.Ganked.Realm != player.Realm) continue;
-
+            if (bounty.BountyRealm != player.Realm) continue;
             count++;
+            bountyAvailable = true;
             temp.Add(
-                $"{count} - {bounty.Target.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g]");
+                $"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g]");
         }
 
-        if (!temp.Any()) temp.Add("No active bounties.");
+        if (!bountyAvailable) temp.Add("No active bounties.");
 
         return temp;
     }
