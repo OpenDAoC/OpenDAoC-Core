@@ -181,7 +181,7 @@ namespace DOL.AI.Brain
                         if (Nokkvi != null && Nokkvi.IsAlive && Nokkvi.Brain is NokkviBrain)
                         {
                             ppl.Out.SendSpellEffectAnimation(Body, Nokkvi, 2682, 0, false, 0x01);
-                            AddAggroListTo(Nokkvi.Brain as StandardMobBrain);
+                            AddAggroListTo(Nokkvi.Brain as NokkviBrain);
                         }
                     }
                 }
@@ -399,7 +399,7 @@ namespace DOL.AI.Brain
                     {
                         if (Vagn != null && Vagn.IsAlive && Vagn.Brain is VagnBrain)
                         {
-                            AddAggroListTo(Vagn.Brain as StandardMobBrain);
+                            AddAggroListTo(Vagn.Brain as VagnBrain);
                         }
                     }
                 }
