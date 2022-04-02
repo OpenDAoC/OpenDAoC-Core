@@ -11,7 +11,9 @@ public class BountyManager
 {
     private const string KILLEDBY = "KilledBy";
 
-    private static List<BountyPoster> ActiveBounties;
+    public static List<BountyPoster> ActiveBounties;
+    
+    private static BountyPoster m_nextPosterToExpire;
 
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -95,19 +97,52 @@ public class BountyManager
 
     }
 
-    public static void RemoveBounty(BountyPoster bountyPoster)
+    private static void RemoveBounty(BountyPoster bountyPoster)
     {
-        if (ActiveBounties.Any())
+        if (ActiveBounties.Contains(bountyPoster))
         {
-            if (ActiveBounties.Contains(bountyPoster))
-            {
                 ActiveBounties.Remove(bountyPoster);
+                Console.WriteLine("Bounty expired");
+                return;
+        }
+        Console.WriteLine("Bounty to remove not found");
+    }
+
+    public static void CheckExpiringBounty(long tick)
+    {
+        long bountyDuration = 30000;
+        // long bountyDuration = ServerProperties.Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
+        
+        long expireTime = 0;
+        
+            if (ActiveBounties.Any())
+            {
+                foreach (BountyPoster poster in ActiveBounties.ToList())
+                {
+                    if (poster == null) continue;
+                    if (poster.PostedTime + bountyDuration >= expireTime && expireTime != 0) continue;
+                    expireTime = poster.PostedTime + bountyDuration;
+                    m_nextPosterToExpire = poster;
+                    if (tick <= expireTime) continue;
+                    RemoveBounty(poster);
+                    m_nextPosterToExpire = null;
+                }
             }
+            else
+            {
+                m_nextPosterToExpire = null;
+            }
+        
+        //debug
+        if (m_nextPosterToExpire != null)
+        {
+            Console.WriteLine($"bounty check heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} + {bountyDuration} from {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {GameLoop.GameLoopTime - expireTime}");
         }
         else
         {
-            Console.WriteLine("Bounty to remove not found");
+            Console.WriteLine($"bounty check heartbeat {GameLoop.GameLoopTime} - no bounties");
         }
+
     }
 
     public static BountyPoster GetActiveBountyForPlayer(GamePlayer player)

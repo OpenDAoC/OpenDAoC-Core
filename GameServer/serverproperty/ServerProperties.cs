@@ -2666,6 +2666,11 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("bounty", "bounty_duration", "Bounty Poster duration in minutes", 90)]
 		public static int BOUNTY_DURATION;
 		
+		/// <summary>
+		/// Bounty expire check interval in seconds
+		/// </summary>
+		[ServerProperty("bounty", "bounty_check_interval", "Bounty expire check interval in seconds", 60)]
+		public static int BOUNTY_CHECK_INTERVAL;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using ECS.Debug;
 
 namespace DOL.GS;
@@ -10,8 +9,12 @@ public class BountyService
 
     public static BountyManager BountyManager;
     
-    private static BountyPoster m_nextPosterToExpire;
-    
+    private static long _updateInterval = 10000; // 10secs
+    // private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000; // 10secs
+
+    private static long _lastUpdate = 0;
+    private static long _lastDebug = 0;
+
     static BountyService()
     {
         EntityManager.AddService(typeof(ConquestService));
@@ -22,32 +25,19 @@ public class BountyService
     {
         Diagnostics.StartPerfCounter(ServiceName);
 
-        long bountyDuration = ServerProperties.Properties.BOUNTY_DURATION * 60000; //multiply by 60000 to accomodate for minute input
-
-        long expireTime = 0;
-        
-        var allBounties = BountyManager.GetAllBounties();
-
-        if (allBounties.Any())
+        if (tick - _lastUpdate > _updateInterval)
         {
-            foreach (BountyPoster poster in allBounties)
-            {
-                if (poster.PostedTime + bountyDuration >= expireTime && expireTime != 0) continue;
-                expireTime = poster.PostedTime + bountyDuration;
-                m_nextPosterToExpire = poster;
-                if (poster.PostedTime + bountyDuration < tick)
-                {
-                    BountyManager.RemoveBounty(poster);
-                }
-            }
-        }
-        else
-        {
-            m_nextPosterToExpire = null;
+            _lastUpdate = tick;
+            BountyManager.CheckExpiringBounty(tick);
         }
 
-        Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - next bounty to expire is from {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g in {GameLoop.GameLoopTime - (m_nextPosterToExpire?.PostedTime + ServerProperties.Properties.BOUNTY_DURATION * 10000)}");
-        
+        // if (tick - _lastDebug > 1000)
+        // {
+        //     Console.WriteLine(
+        //         $"bounty heartbeat {GameLoop.GameLoopTime} - next check at {_lastUpdate + _updateInterval} in {(_lastUpdate + _updateInterval - tick) / 1000} seconds");
+        //     _lastDebug = tick;
+        // }
+
         Diagnostics.StopPerfCounter(ServiceName);
     }
 }
