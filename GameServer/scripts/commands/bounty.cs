@@ -1,4 +1,5 @@
-﻿using DOL.GS.Commands;
+﻿using System;
+using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 
 
@@ -19,27 +20,34 @@ namespace DOL.GS.Scripts
             {
                 return;
             }
-
-            if (client.Player.Level > 35)
-            {
-                client.Out.SendMessage("You are too high level to call a bounty!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                return;
-            }
             
-            if (client.Player.TempProperties.getProperty<GamePlayer>(KILLEDBY) == null)
-            {
-                client.Out.SendMessage("You have not been ganked ..yet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
             if (args.Length < 2)
             {
                 DisplaySyntax(client);
                 return;
             }
 
+            if (args[1] == "list")
+            {
+                client.Out.SendCustomTextWindow("Active Bounties", BountyManager.GetTextList());
+                ;
+                return;
+            }
+
             if (args[1] == "add")
             {
+                if (client.Player.TempProperties.getProperty<GamePlayer>(KILLEDBY) == null)
+                {
+                    client.Out.SendMessage("You have not been ganked ..yet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+                
+                if (client.Player.Level > 35)
+                {
+                    client.Out.SendMessage("You are too high level to call a bounty!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+                
                 int amount = 0;
                 if (args.Length == 3)
                 {
@@ -58,7 +66,7 @@ namespace DOL.GS.Scripts
                     return;
                 }
                 
-                AddBounty(client.Player, killerPlayer, amount);
+                BountyManager.AddBounty(client.Player, killerPlayer, amount);
                 
             }
             else
@@ -67,29 +75,6 @@ namespace DOL.GS.Scripts
                 return; 
             }
         }
-
-        private static void AddBounty(GamePlayer killed, GamePlayer killer,  int amount = 50)
-        {
-            if (amount < 50) amount = 50;
-            killed.Out.SendMessage($"You have called the head of {killer.Name} for {amount} gold!", eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
-            killed.TempProperties.removeProperty(KILLEDBY);
-            
-            BountyPoster poster = new BountyPoster(killed, killer, amount);
-            
-            
-            foreach (var client in WorldMgr.GetAllPlayingClients())
-            {
-                if (client.Player.Realm != killed.Realm) continue;
-
-                var message =
-                    $"{killed.Name} is offering {amount} gold for the head of {killer.Name} in {killer.CurrentZone.Description}";
-                
-                client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller,
-                        eChatLoc.CL_SystemWindow);
-                client.Player.Out.SendMessage(message, eChatType.CT_Broadcast,
-                    eChatLoc.CL_SystemWindow);
-            }
-        }
+        
     }
 }
