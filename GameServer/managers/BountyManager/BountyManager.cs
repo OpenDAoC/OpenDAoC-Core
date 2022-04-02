@@ -124,6 +124,14 @@ public class BountyManager
 
         if (ActiveBounties.Any())
         {
+            var previousPoster = GetBountyPostedBy(killed);
+            
+            if (previousPoster.Target != killer)
+            {
+                killed.Out.SendMessage("You can only post one Bounty at the time!", eChatType.CT_Important,
+                    eChatLoc.CL_SystemWindow);
+            }
+            
             //search for existing killer and increment if they exist, add them to the list if they don't
             var activePoster = GetActiveBountyForPlayerForRealm(killer, killed.Realm);
             if (activePoster != null)
@@ -208,9 +216,9 @@ public class BountyManager
         return ActiveBounties;
         ;
     }
-    public static IEnumerable<BountyPoster> GetBountiesPostedBy(GamePlayer player)
+    public static BountyPoster GetBountyPostedBy(GamePlayer player)
     {
-        return ActiveBounties.Where(x => x.Ganked.Name.Equals(player.Name));
+        return ActiveBounties.FirstOrDefault(x => x.Ganked.Name.Equals(player.Name));
     }
 
     private static void BroadcastBounty(BountyPoster poster)
