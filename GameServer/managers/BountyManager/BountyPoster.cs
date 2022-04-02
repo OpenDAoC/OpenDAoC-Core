@@ -6,6 +6,7 @@ public class BountyPoster
     public GamePlayer Target;
     public int Reward;
     public Zone LastSeenZone;
+    public long PostedTime;
 
     public BountyPoster(GamePlayer ganked, GamePlayer target, Zone zone, int reward)
     {
@@ -13,6 +14,7 @@ public class BountyPoster
         Target = target;
         LastSeenZone = zone;
         Reward = reward;
+        PostedTime = GameLoop.GameLoopTime;
     }
     
     public void AddReward(int contributionValue)
