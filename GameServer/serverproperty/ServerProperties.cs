@@ -2667,6 +2667,12 @@ namespace DOL.GS.ServerProperties
 		public static int BOUNTY_DURATION;
 		
 		/// <summary>
+		/// Bounty Reward payout rate - enter 1 for 100% (no Realm Tax), default is 0.9 for 10% tax
+		/// </summary>
+		[ServerProperty("bounty", "bounty_payout_rate", "Bounty Reward payout rate - 1 for 100% (no Realm Tax), default is 0.9 for 10% tax", 0.9)]
+		public static double BOUNTY_PAYOUT_RATE;
+		
+		/// <summary>
 		/// Bounty expire check interval in seconds
 		/// </summary>
 		[ServerProperty("bounty", "bounty_check_interval", "Bounty expire check interval in seconds", 60)]
