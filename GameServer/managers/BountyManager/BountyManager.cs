@@ -133,14 +133,18 @@ public class BountyManager
             return temp;
         }
 
+        var activePoster = GetActiveBountyForPlayer(player);
+        
+        if (activePoster != null)
+        {
+            temp.Add($"ATTENTION: You have a bounty for {activePoster.Reward}g on your head!");
+            temp.Add("");
+            return temp;
+        }
+        
         var count = 0;
         foreach (BountyPoster bounty in ActiveBounties)
         {
-            if (bounty.Target.Name == player.Name)
-            {
-                temp.Add($"ATTENTION: You have a bounty for {bounty.Reward}g on your head!");
-                temp.Add("");
-            }
             if (bounty.Ganked.Realm != player.Realm) continue;
             
             count++;
