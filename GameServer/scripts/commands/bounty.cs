@@ -1,6 +1,4 @@
-﻿using System;
-using DOL.GS.API;
-using DOL.GS.Commands;
+﻿using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 
 
@@ -12,8 +10,7 @@ namespace DOL.GS.Scripts
         "Allows to set a bounty on an enemy player", "/bounty add <amount>")]
     public class BountyCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-
-        public const string KILLEDBY = "KilledBy";
+        private const string KILLEDBY = "KilledBy";
 
         public void OnCommand(GameClient client, string[] args)
         {
@@ -43,11 +40,6 @@ namespace DOL.GS.Scripts
 
             if (args[1] == "add")
             {
-                if (client.Player.TempProperties.getProperty<GamePlayer>(KILLEDBY) == null)
-                {
-                    client.Out.SendMessage("You have not been ganked ..yet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    return;
-                }
                 
                 if (client.Player.Level > 35)
                 {
@@ -55,7 +47,13 @@ namespace DOL.GS.Scripts
                     return;
                 }
                 
-                int amount = 0;
+                if (client.Player.TempProperties.getProperty<GamePlayer>(KILLEDBY) == null)
+                {
+                    client.Out.SendMessage("You have not been ganked ..yet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+                
+                var amount = 0;
                 if (args.Length == 3)
                 {
                     if (!int.TryParse(args[2], out amount))
@@ -68,7 +66,7 @@ namespace DOL.GS.Scripts
 
                 if (killerPlayer.Client.Account.PrivLevel > 1)
                 {
-                    client.Out.SendMessage("You can't set a bounty on a GM!", eChatType.CT_System,
+                    client.Out.SendMessage("You can't set a bounty on a GM!", eChatType.CT_Important,
                         eChatLoc.CL_SystemWindow);
                     return;
                 }
