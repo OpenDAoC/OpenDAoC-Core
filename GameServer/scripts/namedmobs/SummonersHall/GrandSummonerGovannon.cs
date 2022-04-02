@@ -285,7 +285,7 @@ namespace DOL.AI.Brain
 					{
 						if (shade.IsAlive && shade.Brain is ShadeOfAelfgarBrain)
 						{
-							AddAggroListTo(shade.Brain as StandardMobBrain);
+							AddAggroListTo(shade.Brain as ShadeOfAelfgarBrain);
 						}
 					}
 				}
