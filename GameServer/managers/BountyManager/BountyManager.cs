@@ -73,20 +73,44 @@ public class BountyManager
         
         DyingEventArgs eArgs = args as DyingEventArgs;
         
-        if (eArgs.Killer is not GamePlayer) return;
+        GamePlayer killerPlayer = eArgs.Killer as GamePlayer;
         
-        if (eArgs.Killer.Realm == killedPlayer.Realm) return;
+        if (killerPlayer == null) return;
+        
+        if (killerPlayer.Realm == killedPlayer.Realm) return;
 
         var activeBounties = GetActiveBountiesForPlayer(killedPlayer);
         
         if (activeBounties is null || !activeBounties.Any()) return;
-        Console.WriteLine("Bounty target killed");
+        
         foreach (BountyPoster activeBounty in activeBounties.ToList())
         {
-         Console.WriteLine($"Removed bounty for {activeBounty.Target.Name} for {activeBounty.BountyRealm}");
-         RemoveBounty(activeBounty);
+            List<GamePlayer> playersToAward = new List<GamePlayer>();
+
+            foreach (System.Collections.DictionaryEntry de in killedPlayer.XPGainers)
+            {
+                GameLiving living = de.Key as GameLiving;
+                GamePlayer player = living as GamePlayer;
+                if (player == null) continue;
+                if (player.Realm == activeBounty.BountyRealm)
+                {
+                    playersToAward.Add(player);
+                }
+            }
+            
+            var playersToAwardCount = playersToAward.Count;
+            
+            if (playersToAward.Contains(activeBounty.Ganked)) playersToAward.Remove(activeBounty.Ganked);
+
+            var reward = (long)(activeBounty.Reward * 10000 * ServerProperties.Properties.BOUNTY_PAYOUT_RATE ) / playersToAwardCount; // *10000 to convert to gold
+            foreach (GamePlayer player in playersToAward)
+            {
+                player.AddMoney(reward, "You have been rewarded {0} extra for killing a bounty target!");
+            }
+            RemoveBounty(activeBounty);
         }
     }
+    
 
     public static void AddBounty(GamePlayer killed, GamePlayer killer, int amount = 50)
     {

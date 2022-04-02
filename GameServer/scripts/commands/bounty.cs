@@ -77,7 +77,6 @@ namespace DOL.GS.Scripts
             else
             {          
                 DisplaySyntax(client);
-                return; 
             }
         }
         
