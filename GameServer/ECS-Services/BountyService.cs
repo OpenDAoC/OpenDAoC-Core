@@ -8,8 +8,8 @@ public class BountyService
 
     private static BountyManager BountyManager;
     
-    private static long _updateInterval = 10000; // 10secs
-    // private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
+    // private static long _updateInterval = 10000; // 10secs
+    private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
 
     private static long _lastUpdate = 0;
     private static long _lastDebug = 0;

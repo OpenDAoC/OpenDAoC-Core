@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS;
 
@@ -15,11 +16,13 @@ public class BountyManager
     
     private static BountyPoster m_nextPosterToExpire;
 
+    private static long bountyDuration = Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
+
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
     {
-        GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(GreyPlayerKilled));
-        GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(BountyKilled));
+        GameEventMgr.AddHandler(GameLivingEvent.Dying, GreyPlayerKilled);
+        GameEventMgr.AddHandler(GameLivingEvent.Dying, BountyKilled);
     }
 
     public BountyManager()
@@ -102,7 +105,7 @@ public class BountyManager
             
             if (playersToAward.Contains(activeBounty.Ganked)) playersToAward.Remove(activeBounty.Ganked);
 
-            var reward = (long)(activeBounty.Reward * 10000 * ServerProperties.Properties.BOUNTY_PAYOUT_RATE ) / playersToAwardCount; // *10000 to convert to gold
+            var reward = (long)(activeBounty.Reward * 10000 * Properties.BOUNTY_PAYOUT_RATE ) / playersToAwardCount; // *10000 to convert to gold
             foreach (GamePlayer player in playersToAward)
             {
                 player.AddMoney(reward, "You have been rewarded {0} extra for killing a bounty target!");
@@ -166,9 +169,7 @@ public class BountyManager
 
     public static void CheckExpiringBounty(long tick)
     {
-        long bountyDuration = 30000;
-        // long bountyDuration = ServerProperties.Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
-        
+
         long expireTime = 0;
         
             if (ActiveBounties.Any())
@@ -313,8 +314,10 @@ public class BountyManager
             if (bounty.BountyRealm != player.Realm) continue;
             count++;
             bountyAvailable = true;
-            temp.Add(
-                $"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g]");
+            var expireTime = bounty.PostedTime + bountyDuration;
+            // var timeLeft = Properties.BOUNTY_DURATION - (expireTime - GameLoop.GameLoopTime);
+            var timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
+            temp.Add($"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
         }
 
         if (!bountyAvailable) temp.Add("Your Realm doesn't have any Bounty Hunt posted.");
