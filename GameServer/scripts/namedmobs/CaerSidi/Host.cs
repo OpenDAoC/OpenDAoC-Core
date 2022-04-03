@@ -242,10 +242,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 45; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 45; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 45; // dmg reduction for melee dmg
-                default: return 25; // dmg reduction for rest resists
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 65; // dmg reduction for rest resists
             }
         }
         public override int MaxHealth
@@ -254,12 +254,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 1000;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.75;
         }
 
         public override void Die(GameObject killer)
@@ -413,6 +413,7 @@ namespace DOL.AI.Brain
         }
 
         public static bool BafMobs = false;
+        public static bool BafMobs2 = false;
 
         #region path points checks
 
@@ -4068,6 +4069,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
                 BafMobs = false;
+                BafMobs2 = false;
             }
             if (Body.IsMoving)
             {
@@ -4098,10 +4100,24 @@ namespace DOL.AI.Brain
                     {
                         if (npc != null)
                         {
-                            if (npc.IsAlive && (npc?.Brain is HostBrain || npc?.PackageID == "HostBaf"))
+                            if (npc.IsAlive && npc?.Brain is HostBrain)
                             {
                                 AddAggroListTo(npc?.Brain as HostBrain);
                                 BafMobs = true;
+                            }
+                        }
+                    }
+                }
+                if (BafMobs2 == false)
+                {
+                    foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    {
+                        if (npc2 != null)
+                        {
+                            if (npc2.IsAlive && npc2?.PackageID == "HostBaf")
+                            {
+                                AddAggroListTo(npc2?.Brain as StandardMobBrain);
+                                BafMobs2 = true;
                             }
                         }
                     }
