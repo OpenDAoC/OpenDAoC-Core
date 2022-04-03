@@ -431,10 +431,7 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical || Object_Type == (int)eObjectType.AlchemyTincture || Object_Type == (int)eObjectType.SpellcraftGem)
             {
-                if (SlotPosition == (int) eInventorySlot.Cloak)
-                {
-                    WriteUsableClasses(delve, player.Client);
-                }
+                WriteUsableClasses(delve, player.Client);
                 WriteMagicalBonuses(delve, player.Client, false);
             }
 
@@ -448,16 +445,14 @@ namespace DOL.GS {
 
             if (Object_Type == (int)eObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
             {
-                /*if (SpellID == 31051)
-                    WritePotionInfo(delve, AllStatsBarrel.BuffList, player.Client);
-                else
-                    WritePotionInfo(delve, player.Client);*/
                 switch (SpellID)
                 {
                     case 31051:
+                        // buff barrel
                         WritePotionInfo(delve, AllStatsBarrel.BuffList, player.Client);
                         break;
                     case 31052:
+                        // regen barrel
                         WritePotionInfo(delve, AllRegenBuff.RegenList, player.Client);
                         break;
                     case 31053:
@@ -467,6 +462,7 @@ namespace DOL.GS {
                         delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
                         break;
                     case 31054:
+                        // bead regen gem
                         WritePotionInfo(delve, BeadRegen.BeadRegenList, player.Client);
                         break;
                     case 34000:
