@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -48,8 +49,8 @@ namespace DOL.GS.RealmAbilities
 						int healed = player.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
 
 						if (healed > 0) didHeal = true;
-						SendCasterSpellEffectAndCastMessage(living, 7001, healed > 0);
-						if (living is GamePlayer pl)
+						SendSpellEffectsToLiving(living, didHeal);
+						if (didHeal && living is GamePlayer pl)
 						{
 							if(player == pl)
 								pl.Out.SendMessage("You heal yourself for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);	
@@ -65,13 +66,23 @@ namespace DOL.GS.RealmAbilities
 			{
 				int healAmount = living.MaxHealth;
 				int healed = living.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
-				if(living is GamePlayer pla) pla.Out.SendMessage("You heal yourself for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				if (healed > 0) didHeal = true;
+				SendSpellEffectsToLiving(living, didHeal);
+				if(didHeal && living is GamePlayer pla) pla.Out.SendMessage("You heal yourself for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				
+				
 			}
 			
 			if(didHeal) DisableSkill(living);
 			
 		}
+
+        private async void SendSpellEffectsToLiving(GameLiving living, bool didHeal)
+        {
+	        SendCasterSpellEffectAndCastMessage(living, 10535, didHeal);
+	        await Task.Delay(2000);
+	        SendCasterSpellEffect(living, 3011, didHeal);
+        }
 
 		public override int GetReUseDelay(int level)
 		{
