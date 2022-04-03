@@ -653,7 +653,7 @@ namespace DOL.GS
 					chance = 55;
 					break;
 				case 2:
-					chance = 45;
+					chance = 65;
 					break;
 				case 3:
 					return 0;
