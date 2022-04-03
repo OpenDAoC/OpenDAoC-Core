@@ -75,4 +75,18 @@ public class LoyaltyManager
         return realmLoyalty;
     }
 
+    public static void LoyaltyUpdateAddDays(GamePlayer player, int days)
+    {
+        List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
+        DateTime lastUpdatedTime = realmLoyalty.First().LastLoyaltyUpdate;
+        lastUpdatedTime.AddDays(days);
+    }
+    
+    public static DateTime GetLastLoyaltyUpdate(GamePlayer player)
+    {
+        List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
+        DateTime lastUpdatedTime = realmLoyalty.First().LastLoyaltyUpdate;
+        return lastUpdatedTime;
+    }
+
 }
