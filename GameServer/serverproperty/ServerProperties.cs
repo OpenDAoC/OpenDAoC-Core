@@ -2660,7 +2660,41 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("conquest", "max_keep_conquest_rp_reward", "Max reward (in RP value) for a keep capture", 25000)]
 		public static int MAX_KEEP_CONQUEST_RP_REWARD;
 		
+		/// <summary>
+		/// Bounty Poster duration in minutes
+		/// </summary>
+		[ServerProperty("bounty", "bounty_duration", "Bounty Poster duration in minutes", 30)]
+		public static int BOUNTY_DURATION;
 		
+		/// <summary>
+		/// Bounty minimum reward in gold
+		/// </summary>
+		[ServerProperty("bounty", "bounty_min_reward", "Bounty minimum reward in gold", 50)]
+		public static int BOUNTY_MIN_REWARD;
+		
+		/// <summary>
+		/// Bounty maximum reward in gold
+		/// </summary>
+		[ServerProperty("bounty", "bounty_max_reward", "Bounty maximum reward in gold", 1000)]
+		public static int BOUNTY_MAX_REWARD;
+		
+		/// <summary>
+		/// Minimum Realm Loyalty in days to post a bounty
+		/// </summary>
+		[ServerProperty("bounty", "bounty_min_loyalty", "Minimum Realm Loyalty in days to post a bounty", 3)]
+		public static int BOUNTY_MIN_LOYALTY;
+		
+		/// <summary>
+		/// Bounty Reward payout rate - enter 1 for 100% (no Realm Tax), default is 0.9 for 10% tax
+		/// </summary>
+		[ServerProperty("bounty", "bounty_payout_rate", "Bounty Reward payout rate - 1 for 100% (no Realm Tax), default is 0.9 for 10% tax", 0.9)]
+		public static double BOUNTY_PAYOUT_RATE;
+		
+		/// <summary>
+		/// Bounty expire check interval in seconds
+		/// </summary>
+		[ServerProperty("bounty", "bounty_check_interval", "Bounty expire check interval in seconds", 60)]
+		public static int BOUNTY_CHECK_INTERVAL;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
