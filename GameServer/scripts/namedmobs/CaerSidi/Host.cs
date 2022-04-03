@@ -334,7 +334,7 @@ namespace DOL.GS
             Quickness = 125;
             Piety = 220;
             Intelligence = 220;
-            Empathy = 170;
+            Empathy = 100;
 
             HostBrain.walkback = false;
             HostBrain.path1 = false;
@@ -4100,7 +4100,7 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && (npc.Brain is HostBrain || npc.PackageID == "HostBaf"))
                             {
-                                AddAggroListTo(npc.Brain as StandardMobBrain);
+                                AddAggroListTo(npc.Brain as HostBrain);
                                 BafMobs = true;
                             }
                         }

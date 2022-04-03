@@ -262,7 +262,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is GuthlacBrain)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as GuthlacBrain);
                             IsPulled = true;
                         }
                     }
@@ -576,7 +576,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is BirghirBrain)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as BirghirBrain);
                             IsPulled2 = true;
                         }
                     }

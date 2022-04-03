@@ -197,7 +197,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is HakrAddBrain && npc.PackageID == "HakrBaf")
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as HakrAddBrain);
                             IsPulled = true;
                         }
                     }
@@ -312,19 +312,6 @@ namespace DOL.AI.Brain
             {
                 this.Body.Health = this.Body.MaxHealth;
                 IsPulled = false;
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(160))
-                {
-                    if (npc != null)
-                    {
-                        if (npc.IsAlive && !npc.InCombat)
-                        {
-                            if (npc.Brain is JailerAddBrain && npc.RespawnInterval == -1)
-                            {
-                                npc.RemoveFromWorld();
-                            }
-                        }
-                    }
-                }
             }
 
             if (Body.InCombat || HasAggro || Body.AttackState == true)
@@ -424,7 +411,7 @@ namespace DOL.GS
 
             HakrAddBrain adds = new HakrAddBrain();
             SetOwnBrain(adds);
-            LoadedFromScript = false;
+            LoadedFromScript = true;
             base.AddToWorld();
             return true;
         }
@@ -457,7 +444,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is HakrAddBrain && npc.PackageID == "HakrBaf")
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as HakrAddBrain);
                             IsPulled = true;
                         }
                     }
