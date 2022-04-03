@@ -159,7 +159,8 @@ public class BountyManager
     {
         if (amount < minBountyReward) amount = minBountyReward;
 
-        // killed.TempProperties.removeProperty(KILLEDBY);
+        // comment below for easier debugging
+        killed.TempProperties.removeProperty(KILLEDBY);
 
         BountyPoster poster = new BountyPoster(killed, killer, amount);
 
