@@ -161,7 +161,14 @@ public class BountyManager
 
         foreach (BountyPoster activeBounty in activeBounties.ToList())
         {
-            int stolenReward = (int) (activeBounty.Reward - (activeBounty.Reward * 0.9)) * 10000;
+            var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+            
+            if (playerLoyalty.Days >= 30)
+            {
+                bountyRate = 1;
+            }
+            
+            int stolenReward = (int) (activeBounty.Reward - (activeBounty.Reward * bountyRate)) * 10000;
             player.AddMoney(stolenReward, "You have stolen {0} from a bounty on you!");
             activeBounty.Reward -= stolenReward;
 
