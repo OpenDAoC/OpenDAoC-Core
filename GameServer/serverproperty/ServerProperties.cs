@@ -2679,6 +2679,12 @@ namespace DOL.GS.ServerProperties
 		public static int BOUNTY_MAX_REWARD;
 		
 		/// <summary>
+		/// Minimum Realm Loyalty in days to post a bounty
+		/// </summary>
+		[ServerProperty("bounty", "bounty_min_loyalty", "Minimum Realm Loyalty in days to post a bounty", 3)]
+		public static int BOUNTY_MIN_LOYALTY;
+		
+		/// <summary>
 		/// Bounty Reward payout rate - enter 1 for 100% (no Realm Tax), default is 0.9 for 10% tax
 		/// </summary>
 		[ServerProperty("bounty", "bounty_payout_rate", "Bounty Reward payout rate - 1 for 100% (no Realm Tax), default is 0.9 for 10% tax", 0.9)]
