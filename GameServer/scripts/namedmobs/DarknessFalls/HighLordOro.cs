@@ -130,7 +130,7 @@ namespace DOL.AI.Brain
                     if (npc?.Brain is OroCloneBrain && npc.IsAlive)
                     {
                         if (npc.InCombat) continue;
-                        AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                        AddAggroListTo(npc.Brain as OroCloneBrain); // add to aggro mobs with CryptLordBaf PackageID
                         isPulled = true;
                     }
                 }
@@ -239,6 +239,7 @@ namespace DOL.AI.Brain
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         bool isPulled;
+        bool isPulled2;
 
         public OroCloneBrain()
             : base()
@@ -253,11 +254,23 @@ namespace DOL.AI.Brain
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
                 {
-                    if (npc?.Brain is OroCloneBrain or OroBrain)
+                    if (npc?.Brain is OroCloneBrain)
                     {
                         if (npc.InCombat || !npc.IsAlive) continue;
-                        AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                        AddAggroListTo(npc.Brain as OroCloneBrain); // add to aggro mobs with CryptLordBaf PackageID
                         isPulled = true;
+                    }
+                }
+            }
+            if(!isPulled2)
+            {
+                foreach (GameNPC npc2 in Body.GetNPCsInRadius(2500))
+                {
+                    if (npc2?.Brain is OroBrain)
+                    {
+                        if (npc2.InCombat || !npc2.IsAlive) continue;
+                        AddAggroListTo(npc2.Brain as OroBrain); // add to aggro mobs with CryptLordBaf PackageID
+                        isPulled2 = true;
                     }
                 }
             }
@@ -273,6 +286,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 isPulled = false;
+                isPulled2 = false;
             }
             else
             {

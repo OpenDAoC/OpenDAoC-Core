@@ -122,7 +122,7 @@ namespace DOL.AI.Brain
                 {
                     if (mob_c?.Brain is NahemahMinionBrain && mob_c.IsAlive && mob_c.IsAvailable)
                     {
-                        AddAggroListTo(mob_c.Brain as StandardMobBrain);
+                        AddAggroListTo(mob_c.Brain as NahemahMinionBrain);
                     }
                 }
             }
