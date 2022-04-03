@@ -4473,7 +4473,7 @@ namespace DOL.GS
 							continue;
 					}
 					
-					
+					EffectService.RequestImmediateCancelEffect(effects[i]);
 					effectRemoved = true;
 				}
             }
