@@ -44,7 +44,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Rain Of Annihilation";
-            m_dbspell.Icon = 4237;
+            m_dbspell.Icon = 1645;
             m_dbspell.ClientEffect = 7023;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 15;
@@ -72,7 +72,12 @@ namespace DOL.GS.RealmAbilities
             m_damage = GetDamageAddAmount(m_player);
 
             CreateSpell(m_damage);
-            CastSpell(living);
+           
+            ISpellHandler dd = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
+            dd.IgnoreDamageCap = true;
+
+            new AtlasOF_RainOfIceECSEffect(new ECSGameEffectInitParams(living, 60000, 1, dd));
+            
             DisableSkill(living);
         }
         
