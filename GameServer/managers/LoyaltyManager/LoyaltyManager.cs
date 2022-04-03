@@ -86,9 +86,7 @@ public class LoyaltyManager
     {
         List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
         DateTime lastUpdatedTime = realmLoyalty[(int)player.Realm].LastLoyaltyUpdate;
-        Console.WriteLine(lastUpdatedTime);
         lastUpdatedTime.AddHours(hours);
-        Console.WriteLine(lastUpdatedTime);
     }
     
     public static DateTime GetLastLoyaltyUpdate(GamePlayer player)
