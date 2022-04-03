@@ -21,6 +21,7 @@ public class BountyManager
     private static int maxBountyReward;
 
     private static long bountyDuration = Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
+    private static double bountyRate = Properties.BOUNTY_PAYOUT_RATE;
 
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -114,15 +115,24 @@ public class BountyManager
 
             // if (playersToAward.Contains(activeBounty.Ganked)) playersToAward.Remove(activeBounty.Ganked);
 
-            var totalReward = (long) (activeBounty.Reward * Properties.BOUNTY_PAYOUT_RATE);
+            var totalReward = activeBounty.Reward;
 
             var loyaltyHoursReward = (int)(totalReward / 50); // 50g = 1 hour of loyalty
             
             var reward = totalReward / playersToAwardCount * 10000; // *10000 as DOL is expecting the value in copper
             foreach (GamePlayer player in playersToAward)
             {
+                var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+
+                if (playerLoyalty.Days >= 3)
+                {
+                    bountyRate = 1;
+                }
+                
+                reward = (int)(reward * bountyRate);
+                
                 LoyaltyManager.LoyaltyUpdateAddHours(player, loyaltyHoursReward);
-                player.AddMoney(reward, "You have been rewarded {0} extra for killing a bounty target!");
+                player.AddMoney(reward , "You have been rewarded {0} extra for killing a bounty target!");
             }
 
             BroadcastBountyKill(activeBounty);
@@ -237,11 +247,19 @@ public class BountyManager
                     expireTime = poster.PostedTime + bountyDuration;
                     m_nextPosterToExpire = poster;
                     if (tick <= expireTime) continue;
+                    
+                    GamePlayer playerToReimburse = poster.Ganked;
+                    
+                    var posterLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(playerToReimburse);
+
+                    if (posterLoyalty.Days >= 3)
+                    {
+                        bountyRate = 1;
+                    }
 
                     var reward =
-                        (long) (poster.Reward * 10000 *
-                                Properties.BOUNTY_PAYOUT_RATE); // *10000 to convert to gold
-                    GamePlayer playerToReimburse = poster.Ganked;
+                        (long) (poster.Reward * 10000 * bountyRate); // *10000 to convert to gold
+
                     playerToReimburse.AddMoney(reward, "You have been reimbursed {0} for your expired bounty.");
 
                     RemoveBounty(poster);
