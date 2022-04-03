@@ -124,10 +124,12 @@ public class BountyManager
             {
                 var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
 
-                if (playerLoyalty.Days >= 3)
+                if (playerLoyalty.Days >= 30)
                 {
                     bountyRate = 1;
                 }
+
+                if (playerLoyalty.Days < 3) continue;
                 
                 reward = (int)(reward * bountyRate);
                 
@@ -252,7 +254,7 @@ public class BountyManager
                     
                     var posterLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(playerToReimburse);
 
-                    if (posterLoyalty.Days >= 3)
+                    if (posterLoyalty.Days >= 30)
                     {
                         bountyRate = 1;
                     }
