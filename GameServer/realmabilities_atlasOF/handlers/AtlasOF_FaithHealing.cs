@@ -7,7 +7,7 @@ using DOL.Language;
 namespace DOL.GS.RealmAbilities
 {
 	/// <summary>
-	/// Minor % based Self Heal -  30 / lvl
+	/// 100% group heal
 	/// </summary>
 	public class AtlasOF_FaithHealing : TimedRealmAbility
 	{
@@ -75,7 +75,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override int GetReUseDelay(int level)
 		{
-			return 900;	// 900 = 15 min / 1800 = 30 min
+			return 1800;	// 900 = 15 min / 1800 = 30 min
 		}
 
 		public override void AddEffectsInfo(IList<string> list)
