@@ -18,9 +18,11 @@ namespace DOL.GS.Scripts
 
         private int minBountyReward = Properties.BOUNTY_MIN_REWARD;
         private int maxBountyReward = Properties.BOUNTY_MAX_REWARD;
+        private int minLoyalty = Properties.BOUNTY_MIN_LOYALTY;
 
         public void OnCommand(GameClient client, string[] args)
         {
+            
             if (IsSpammingCommand(client.Player, "Bounty"))
             {
                 return;
@@ -51,6 +53,15 @@ namespace DOL.GS.Scripts
                 if (client.Player.Level > 35)
                 {
                     client.Out.SendMessage("You are too high level to call a bounty!", eChatType.CT_Important,
+                        eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(client.Player).Days;
+
+                if (playerLoyalty < minLoyalty)
+                {
+                    client.Out.SendMessage($"You need to have at least {minLoyalty} days of Realm Loyalty to post a bounty.", eChatType.CT_Important,
                         eChatLoc.CL_SystemWindow);
                     return;
                 }
