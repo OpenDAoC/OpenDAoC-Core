@@ -4098,9 +4098,9 @@ namespace DOL.AI.Brain
                     {
                         if (npc != null)
                         {
-                            if (npc.IsAlive && (npc.Brain is HostBrain || npc.PackageID == "HostBaf"))
+                            if (npc.IsAlive && (npc?.Brain is HostBrain || npc?.PackageID == "HostBaf"))
                             {
-                                AddAggroListTo(npc.Brain as HostBrain);
+                                AddAggroListTo(npc?.Brain as HostBrain);
                                 BafMobs = true;
                             }
                         }
