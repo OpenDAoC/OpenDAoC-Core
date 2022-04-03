@@ -4441,7 +4441,7 @@ namespace DOL.GS
             if (effectListComponent == null || ad == null)
                 return false;
 
-			// Cancel movement speed buffs when attacked
+            // Cancel movement speed buffs when attacked
 			bool effectRemoved = TryCancelMovementSpeedBuffs(false);
 
 			
@@ -4469,9 +4469,11 @@ namespace DOL.GS
 					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "pet")
 					{
 						effectRemoved = false;
+						if (spellEffect.Name.ToLower().Equals("whip of encouragement"))
+							continue;
 					}
-
-					EffectService.RequestImmediateCancelEffect(effects[i]);
+					
+					
 					effectRemoved = true;
 				}
             }
