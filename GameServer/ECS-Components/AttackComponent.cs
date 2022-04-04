@@ -1444,15 +1444,18 @@ namespace DOL.GS
 
                 double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
                 //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
-                damage *= (owner.GetWeaponSkill(weapon) + 90.68) * specModifier/ (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
+                double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90.68) * specModifier;
+                double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
+                double DamageMod = weaponskillCalc / armorCalc;
+                damage *= DamageMod;
 
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
-                    weaponskiller.Out.SendMessage($"WS: {(owner.GetWeaponSkill(weapon) + 90.68)* specModifier} AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    weaponskiller.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF: {armorCalc}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                    attackee.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(((owner.GetWeaponSkill(weapon) + 90.68) * specModifier / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67)) * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    attackee.Out.SendMessage($"WS/AF Damage Multiplier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 
                 // Badge Of Valor Calculation 1+ absorb or 1- absorb
                 if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
