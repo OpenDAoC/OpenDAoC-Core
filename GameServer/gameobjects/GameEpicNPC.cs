@@ -35,7 +35,7 @@ namespace DOL.GS {
             }
             else
             {
-                int numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days;
+                int numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days : 0;
                 if (numCurrentLoyalDays >= 1)
                 {
                     realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
