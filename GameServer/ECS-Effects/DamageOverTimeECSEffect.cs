@@ -58,7 +58,7 @@ namespace DOL.GS
                     }
 
                     double postRAEffectiveness = Effectiveness;
-                    if (handler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper))
+                    if (handler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper) && SpellHandler.Spell.IsPoison)
                         postRAEffectiveness *= 2;
                     
                     handler.OnDirectEffect(Owner, postRAEffectiveness);
@@ -126,6 +126,10 @@ namespace DOL.GS
                 LastTick += PulseFreq;
                 NextTick = LastTick + PulseFreq;
             }
+            
+            if(SpellHandler.Caster is GamePet)
+                Owner.StartInterruptTimer(SpellHandler.Caster.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
+                
         }
     }
 }

@@ -104,7 +104,7 @@ namespace DOL.GS
 
             DyingEventArgs eArgs = args as DyingEventArgs;
 
-            if (eArgs?.Killer.Name != "High Lord Saeor")
+            if (eArgs?.Killer?.Name != "High Lord Saeor")
                 return;
 
             foreach (GameNPC mob in player.GetNPCsInRadius(1000))

@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 10; }
         public override int GetReUseDelay(int level) { return 1800; } // 30 mins
-        protected override int GetArmorFactorAmount() { return 200; }
+        protected override int GetArmorFactorAmount() { return 330; }
 
         public override void AddEffectsInfo(IList<string> list)
         {

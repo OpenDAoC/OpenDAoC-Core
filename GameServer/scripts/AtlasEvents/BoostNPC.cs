@@ -89,7 +89,11 @@ namespace DOL.GS.Scripts
             {
                 case "experience":
                     if (player.Level > 1)
+                    {
                         player.Out.SendMessage("You need to be Level 1 to receive my training.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        return false;
+                    }
+                        
                     
                     if (player.Level < EventLVCap)
                     {
@@ -97,9 +101,10 @@ namespace DOL.GS.Scripts
                         var boosterKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
                         
                         player.Out.SendMessage("I have given you enough experience to fight, now speak with the quartermaster and go make your Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        player.Boosted = true;
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
-                        player.Boosted = true;
+                        
                         
                         if (boosterKey == null)
                         {
@@ -118,8 +123,9 @@ namespace DOL.GS.Scripts
                 case "realm level":
                     if (player.RealmPoints < realmPoints)
                     {
-                        long realmPointsToGive = realmPoints - player.RealmPoints;
-                        player.GainRealmPoints(realmPointsToGive/(long)Properties.RP_RATE);
+                        var rate = Properties.RP_RATE;
+                        var realmPointsToGive = Math.Floor((realmPoints - player.RealmPoints)/rate);
+                        player.GainRealmPoints((long)realmPointsToGive);
                         player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         return true;
                     }

@@ -4,7 +4,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
@@ -106,46 +105,56 @@ namespace DOL.GS.Scripts
             if (player.Realm != this.Realm && player.Client.Account.PrivLevel == 1) return false;
 
             TurnTo(player, 10000);
+            
+            var message = "";
 
             switch (Realm)
             {
                 case eRealm.Albion:
-                    SayTo(player, "Greetings, " + player.Name +
-                                  " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                  "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North\n" +
-                                  "[Avalon Marsh] wharf\n" +
-                                  "[Gothwaite Harbor] in the [Shrouded Isles]\n" +
-                                  "[Camelot] our glorious capital\n" +
-                                  "[Entrance] to the areas of [Housing]\n\n" +
-                                  "Or one of the many [towns] throughout Albion");
+
+                    message = "Greetings, " + player.Name +
+                              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                              "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North,\n" +
+                              "[Avalon Marsh] wharf,\n" +
+                              "[Gothwaite Harbor] in the [Shrouded Isles],\n" +
+                              "[Camelot] our glorious capital,\n" +
+                              "[Entrance] to the areas of [Housing]\n\n" +
+                              "or one of the many [towns] throughout Albion.";
                     break;
 
                 case eRealm.Midgard:
-                    SayTo(player, "Greetings, " + player.Name +
-                                  " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                  "[Svasud Faste] in Mularn or \n[Vindsaul Faste] in West Svealand\n" +
-                                  "Beaches of [Gotar] near Nailiten\n" +
-                                  "[Aegirhamn] in the [Shrouded Isles]\n" +
-                                  "Our glorious city of [Jordheim]\n" +
-                                  "[Entrance] to the areas of [Housing]\n\n" +
-                                  "Or one of the many [towns] throughout Midgard");
+                    
+                    message = "Greetings, " + player.Name +
+                              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                              "[Svasud Faste] in Mularn or \n[Vindsaul Faste] in West Svealand,\n" +
+                              "Beaches of [Gotar] near Nailiten,\n" +
+                              "[Aegirhamn] in the [Shrouded Isles],\n" +
+                              "Our glorious city of [Jordheim],\n" +
+                              "[Entrance] to the areas of [Housing]\n\n" +
+                              "rr one of the many [towns] throughout Midgard.";
                     break;
 
                 case eRealm.Hibernia:
-                    SayTo(player, "Greetings, " + player.Name +
-                                  " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                                  "[Druim Ligen] in Connacht or \n[Druim Cain] in Bri Leith\n" +
-                                  "[Shannon Estuary] watchtower\n" +
-                                  "[Domnann] Grove in the [Shrouded Isles]\n" +
-                                  "[Tir na Nog] our glorious capital\n" +
-                                  "[Entrance] to the areas of [Housing]\n\n" +
-                                  "Or one of the many [towns] throughout Hibernia");
+                    
+                    message = "Greetings, " + player.Name +
+                              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                              "[Druim Ligen] in Connacht or \n[Druim Cain] in Bri Leith,\n" +
+                              "[Shannon Estuary] watchtower,\n" +
+                              "[Domnann] Grove in the [Shrouded Isles],\n" +
+                              "[Tir na Nog] our glorious capital,\n" +
+                              "[Entrance] to the areas of [Housing]\n\n" +
+                              "or one of the many [towns] throughout Hibernia.";
                     break;
 
                 default:
                     SayTo(player, "I have no Realm set, so don't know what locations to offer..");
                     break;
             }
+            
+            message += "\n\n" +
+                       "Perhaps you would like the challenge of the [Epic Dungeon]?";
+            
+            SayTo(player, message);
 
             return true;
         }
@@ -379,6 +388,22 @@ namespace DOL.GS.Scripts
                     teleport.Heading = location.Heading;
                     OnDestinationPicked(player, teleport);
                     return true;
+                }
+            }
+
+            if (text.ToLower() == "epic dungeon")
+            {
+                switch (player.Realm)
+                {
+                    case eRealm.Albion:
+                        GetTeleportLocation(player, "Caer Sidi");
+                        return true;
+                    case eRealm.Midgard:
+                        GetTeleportLocation(player, "Tuscaran Glacier");
+                        return true;
+                    case eRealm.Hibernia:
+                        GetTeleportLocation(player, "Galladoria");
+                        return false;
                 }
             }
 

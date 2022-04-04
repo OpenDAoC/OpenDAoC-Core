@@ -226,17 +226,17 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(160))
                 {
@@ -295,7 +295,16 @@ namespace DOL.GS
         public JailerAdd() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 45; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 45; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 45; // dmg reduction for melee dmg
+                default: return 30; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;

@@ -142,9 +142,8 @@ namespace DOL.GS
 			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
-				// Temporarily disabled to gauge effect on server freezes -- Lefty, 22/03/08
 				// "{0} looks more agile!"
-				// Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
+				Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
 		}
         #endregion Effect Start Messages
@@ -184,9 +183,8 @@ namespace DOL.GS
 			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
-				// Temporarily disabled to gauge effect on server freezes -- Lefty, 22/03/08
 				// "{0}'s enhanced agility fades."
-				// Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_System, target);
+				Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_System, target);
 			}
 		}
 		#endregion Effect Start Messages

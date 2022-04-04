@@ -80,8 +80,7 @@ namespace DOL.GS.RealmAbilities
 				CastSpellOn(npc, caster);
 			}
 
-			// We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
-            // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
+			DisableSkill(caster);
 		}
 
         public void CastSpellOn(GameLiving target, GameLiving caster)

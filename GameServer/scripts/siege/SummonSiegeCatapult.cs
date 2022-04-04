@@ -15,6 +15,12 @@ namespace DOL.GS.Spells
             : base(caster, spell, line) { }
 	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
+	        
+	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
+		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+		        return;
+	        }
+	        
             base.ApplyEffectOnTarget(target, effectiveness);
             
             GameSiegeCatapult cat = new GameSiegeCatapult();
@@ -32,11 +38,10 @@ namespace DOL.GS.Spells
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (!Caster.CurrentZone.IsRvR || Caster.CurrentRegion.IsDungeon)
-            {
-                MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
-                return false;
-            }
+	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
+		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+		        return false;
+	        }
 
             return base.CheckBeginCast(selectedTarget);
         }

@@ -2624,6 +2624,77 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
 		public static int MAX_ENTITIES;
 		
+		/// <summary>
+		/// Max duration of a Conquest Task in minutes
+		/// </summary>
+		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)]
+		public static int MAX_CONQUEST_TASK_DURATION;
+		
+		/// <summary>
+		/// Time (in minutes) of the overall conquest window and cooldown
+		/// </summary>
+		[ServerProperty("conquest", "conquest_cycle_timer", "Time (in minutes) of the overall conquest window and cooldown", 90)]
+		public static int CONQUEST_CYCLE_TIMER;
+		
+		/// <summary>
+		/// Time (in seconds) of the duration between conquest objective point tallies
+		/// </summary>
+		[ServerProperty("conquest", "conquest_tally_interval", "Time (in seconds) of the duration between conquest objective point tallies", 300)]
+		public static int CONQUEST_TALLY_INTERVAL;
+		
+		/// <summary>
+		/// Max range to contribute to a conquest target
+		/// </summary>
+		[ServerProperty("conquest", "max_conquest_range", "Max range to contribute to a conquest target", 15000)]
+		public static int MAX_CONQUEST_RANGE;
+		
+		/// <summary>
+		/// Max reward (in RP value) for any given subtask interval
+		/// </summary>
+		[ServerProperty("conquest", "max_subtask_rp_reward", "Max reward (in RP value) for any given subtask interval", 5000)]
+		public static int MAX_SUBTASK_RP_REWARD;
+		
+		/// <summary>
+		/// Max reward (in RP value) for a keep capture
+		/// </summary>
+		[ServerProperty("conquest", "max_keep_conquest_rp_reward", "Max reward (in RP value) for a keep capture", 25000)]
+		public static int MAX_KEEP_CONQUEST_RP_REWARD;
+		
+		/// <summary>
+		/// Bounty Poster duration in minutes
+		/// </summary>
+		[ServerProperty("bounty", "bounty_duration", "Bounty Poster duration in minutes", 30)]
+		public static int BOUNTY_DURATION;
+		
+		/// <summary>
+		/// Bounty minimum reward in gold
+		/// </summary>
+		[ServerProperty("bounty", "bounty_min_reward", "Bounty minimum reward in gold", 50)]
+		public static int BOUNTY_MIN_REWARD;
+		
+		/// <summary>
+		/// Bounty maximum reward in gold
+		/// </summary>
+		[ServerProperty("bounty", "bounty_max_reward", "Bounty maximum reward in gold", 1000)]
+		public static int BOUNTY_MAX_REWARD;
+		
+		/// <summary>
+		/// Minimum Realm Loyalty in days to post a bounty
+		/// </summary>
+		[ServerProperty("bounty", "bounty_min_loyalty", "Minimum Realm Loyalty in days to post a bounty", 3)]
+		public static int BOUNTY_MIN_LOYALTY;
+		
+		/// <summary>
+		/// Bounty Reward payout rate - enter 1 for 100% (no Realm Tax), default is 0.9 for 10% tax
+		/// </summary>
+		[ServerProperty("bounty", "bounty_payout_rate", "Bounty Reward payout rate - 1 for 100% (no Realm Tax), default is 0.9 for 10% tax", 0.9)]
+		public static double BOUNTY_PAYOUT_RATE;
+		
+		/// <summary>
+		/// Bounty expire check interval in seconds
+		/// </summary>
+		[ServerProperty("bounty", "bounty_check_interval", "Bounty expire check interval in seconds", 60)]
+		public static int BOUNTY_CHECK_INTERVAL;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

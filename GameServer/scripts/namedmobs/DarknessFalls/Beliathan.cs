@@ -239,7 +239,7 @@ namespace DOL.GS
 
             DyingEventArgs eArgs = args as DyingEventArgs;
 
-            if (eArgs?.Killer.Name != "Beliathan")
+            if (eArgs?.Killer?.Name != "Beliathan")
                 return;
 
             GameNPC beliathan = eArgs.Killer as GameNPC;

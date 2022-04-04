@@ -18,7 +18,6 @@ namespace DOL.GS
 {
     public class AccountVaultKeeper : GameNPC
     {
-        private bool oldAcc = false;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public override bool Interact(GamePlayer player)
@@ -31,6 +30,14 @@ namespace DOL.GS
                 SayTo(player,$"I'm sorry {player.Name}, my vault is not Hardcore enough for you.");
                 return false;
             }
+
+            if (player.Level <= 1)
+            {
+                SayTo(player,$"I'm sorry {player.Name}, come back if you are venerable to use my services.");
+                return false;
+            }
+            
+            SayTo(player,$"Greetings {player.Name}, nice to meet you. I am happy to offer you my services.");
 
             ItemTemplate vaultItem = GetDummyVaultItem(player);
             AccountVault vault = new AccountVault(player, this, player.Client.Account.Name, 0, vaultItem);
@@ -60,6 +67,12 @@ namespace DOL.GS
             if (player.NoHelp)
             {
                 SayTo(player,$"I'm sorry {player.Name}, you have chosen the path of solitude.");
+                return false;
+            }
+            
+            if (player.Level <= 1)
+            {
+                SayTo(player,$"I'm sorry {player.Name}, come back if you are venerable to use my services.");
                 return false;
             }
 

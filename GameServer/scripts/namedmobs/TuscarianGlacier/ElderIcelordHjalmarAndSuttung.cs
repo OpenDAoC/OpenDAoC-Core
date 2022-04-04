@@ -38,7 +38,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -197,18 +197,18 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 message1 = false;
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat && HasAggro)
@@ -313,7 +313,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -349,7 +349,6 @@ namespace DOL.GS
                     SpawnAdds();
                 }
             }
-
             base.OnAttackEnemy(ad);
         }
 
@@ -366,8 +365,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
             Styles.Add(taunt);
             Styles.Add(back_style);
@@ -406,9 +404,7 @@ namespace DOL.GS
                 TG.Size = 65;
                 TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
+                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
                 TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
@@ -431,12 +427,12 @@ namespace DOL.GS
         public void SpawnAdds()
         {
             Morkimma npc = new Morkimma();
-            npc.X = this.TargetObject.X + Util.Random(-100, 100);
-            npc.Y = this.TargetObject.Y + Util.Random(-100, 100);
-            npc.Z = this.TargetObject.Z;
+            npc.X = TargetObject.X + Util.Random(-100, 100);
+            npc.Y = TargetObject.Y + Util.Random(-100, 100);
+            npc.Z = TargetObject.Z;
             npc.RespawnInterval = -1;
-            npc.Heading = this.Heading;
-            npc.CurrentRegion = this.CurrentRegion;
+            npc.Heading = Heading;
+            npc.CurrentRegion = CurrentRegion;
             npc.AddToWorld();
         }
     }
@@ -453,7 +449,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 1000;
+            AggroRange = 600;
             ThinkInterval = 1500;
         }
 
@@ -473,7 +469,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 message2 = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                 {
@@ -492,12 +488,12 @@ namespace DOL.AI.Brain
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat && HasAggro)

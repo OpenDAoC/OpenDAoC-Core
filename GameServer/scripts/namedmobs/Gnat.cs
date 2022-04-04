@@ -78,7 +78,7 @@ namespace DOL.AI.Brain
                             {
                                 if (mob_c.Brain is GnatAntsBrain && mob_c.RespawnInterval == -1)
                                 {
-                                    AddAggroListTo(mob_c.Brain as StandardMobBrain); //add ants to boss agrro brain
+                                    AddAggroListTo(mob_c.Brain as GnatAntsBrain); //add ants to boss agrro brain
                                 }
                             }
                         }

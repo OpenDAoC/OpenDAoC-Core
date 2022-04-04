@@ -238,39 +238,34 @@ namespace DOL.GS
             set { }
         }
 
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                default: return 65; // dmg reduction for rest resists
+            }
+        }
+        public override int MaxHealth
+        {
+            get { return 15000; }
+        }
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
-        }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
+            return 0.75;
         }
 
         public override void Die(GameObject killer)
         {
             if (PackageID == "HostReal")
             {
-                // debug
-                log.Debug($"{Name} killed by {killer.Name}");
-
-                GamePlayer playerKiller = killer as GamePlayer;
-
-                if (playerKiller?.Group != null)
-                {
-                    foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                    {
-                        AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
-                    }
-                }
-
                 foreach (GameNPC boss in WorldMgr.GetNPCsByNameFromRegion("Host", this.CurrentRegionID, 0))
                 {
                     if (boss != null)
@@ -305,14 +300,12 @@ namespace DOL.GS
                 base.DropLoot(killer);
             }
         }
-
         public override void WalkToSpawn() //dont walk to spawn
         {
             if (IsAlive)
                 return;
             base.WalkToSpawn();
         }
-
         public static int HostCount = 0;
 
         public override bool AddToWorld()
@@ -335,12 +328,13 @@ namespace DOL.GS
             BodyType = 6;
             Realm = eRealm.None;
 
-            Strength = 25;
+            Strength = 5;
             Dexterity = 200;
             Constitution = 100;
             Quickness = 125;
             Piety = 220;
             Intelligence = 220;
+            Empathy = 100;
 
             HostBrain.walkback = false;
             HostBrain.path1 = false;
@@ -419,6 +413,7 @@ namespace DOL.AI.Brain
         }
 
         public static bool BafMobs = false;
+        public static bool BafMobs2 = false;
 
         #region path points checks
 
@@ -4029,7 +4024,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "HostBaf")
+                        if (npc.IsAlive && npc.PackageID == "HostBaf" && npc.NPCTemplate != null)
                         {
                             if (BafMobs == true && npc.TargetObject == Body.TargetObject)
                             {
@@ -4052,7 +4047,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "HostBaf")
+                        if (npc.IsAlive && npc.PackageID == "HostBaf" && npc.NPCTemplate != null)
                         {
                             if (BafMobs == false)
                             {
@@ -4072,22 +4067,10 @@ namespace DOL.AI.Brain
         {
             if (!HasAggressionTable())
             {
-                //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 BafMobs = false;
+                BafMobs2 = false;
             }
-
-            if (Body.IsOutOfTetherRange)
-            {
-                this.Body.Health = this.Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
             if (Body.IsMoving)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -4099,18 +4082,11 @@ namespace DOL.AI.Brain
                             AddToAggroList(player, 10);
                         }
                     }
-                }
-
-                foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
-                {
-                    if (npc != null)
+                    if (player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
                     {
-                        if (npc.IsAlive)
+                        if (AggroTable.Count > 0)
                         {
-                            if (npc is GamePet && npc.Realm != Body.Realm)
-                            {
-                                AddToAggroList((GamePet) npc, 10);
-                            }
+                            ClearAggroList();//clear list if it contain any aggroed players
                         }
                     }
                 }
@@ -4124,10 +4100,24 @@ namespace DOL.AI.Brain
                     {
                         if (npc != null)
                         {
-                            if (npc.IsAlive && (npc.Brain is HostBrain || npc.PackageID == "HostBaf"))
+                            if (npc.IsAlive && npc?.Brain is HostBrain)
                             {
-                                AddAggroListTo(npc.Brain as StandardMobBrain);
+                                AddAggroListTo(npc?.Brain as HostBrain);
                                 BafMobs = true;
+                            }
+                        }
+                    }
+                }
+                if (BafMobs2 == false)
+                {
+                    foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    {
+                        if (npc2 != null)
+                        {
+                            if (npc2.IsAlive && npc2?.PackageID == "HostBaf")
+                            {
+                                AddAggroListTo(npc2?.Brain as StandardMobBrain);
+                                BafMobs2 = true;
                             }
                         }
                     }
@@ -4137,7 +4127,6 @@ namespace DOL.AI.Brain
             {
                 HostPath();
             }
-
             base.Think();
         }
     }

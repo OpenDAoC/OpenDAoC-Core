@@ -46,7 +46,7 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
                     }
@@ -90,7 +90,7 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -111,25 +111,13 @@ namespace DOL.GS
         public static int QueenKulaCount = 0;
         public void BroadcastMessage(String message)
         {
-            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             BroadcastMessage(String.Format("King Tuscar rages and gains strength from Odin!"));
             --QueenKulaCount;
             base.Die(killer);
@@ -330,7 +318,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is KingTuscarBrain)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as KingTuscarBrain);
                             IsPulled1 = true;
                         }
                     }
@@ -344,17 +332,17 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsTargetPicked=false;
                 IsPulled1 = false;
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 message1 = false;
             }
             if (Body.InCombat && HasAggro)
@@ -514,7 +502,7 @@ namespace DOL.GS
                         else
                             truc = ((source as GamePet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
                     }
@@ -527,7 +515,7 @@ namespace DOL.GS
                     else
                         truc = ((source as GamePet).Owner as GamePlayer);
                     
-                    foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+                    foreach (GameNPC npc in GetNPCsInRadius(5000))
                     {
                         if (npc != null)
                         {
@@ -557,7 +545,7 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -578,18 +566,6 @@ namespace DOL.GS
         public static int KingTuscarCount = 0;
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-
-            GamePlayer playerKiller = killer as GamePlayer;
-
-            if (playerKiller?.Group != null)
-            {
-                foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-                {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer, 5000);//5k orbs for every player in group
-                }
-            }
             --KingTuscarCount;
             base.Die(killer);
         }
@@ -836,7 +812,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is QueenKulaBrain)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as QueenKulaBrain);
                             IsPulled2 = true;
                         }
                     }
@@ -850,17 +826,17 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 TuscarRage = false;
                 IsPulled2 = false;
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 message2 = false;
             }
             if (Body.InCombat && HasAggro)
