@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -43,7 +39,8 @@ namespace DOL.GS
         {
             if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
-
+            if(this.IsReturningToSpawnPoint && keyName == DOL.GS.Abilities.DamageImmunity)
+                return true;
             return base.HasAbility(keyName);
         }
 
@@ -105,9 +102,10 @@ namespace DOL.GS
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             EvernBrain.spawnfairy = false;
+            Idle = false;
+            MaxSpeedBase = 300;
 
             EvernBrain sbrain = new EvernBrain();
             SetOwnBrain(sbrain);
@@ -165,6 +163,18 @@ namespace DOL.GS
             else
                 log.Warn("Evern exist ingame, remove it and restart server if you want to add by script code.");
         }
+        public static bool Idle = false;
+        public override void WalkToSpawn(short speed)
+        {
+            speed = 300;
+            base.WalkToSpawn(speed);
+        }
+        public override void StartAttack(GameObject target)
+        {
+            if (Idle)
+                return;
+            base.StartAttack(target);
+        }
     }
 }
 
@@ -183,13 +193,29 @@ namespace DOL.AI.Brain
         }
 
         public static bool spawnfairy = false;
-
+        public static bool nearspawn = false;
+        public int ReturnSpawn(RegionTimer timer)
+        {
+            ClearAggroList();
+            Evern.Idle = false;
+            return 0;
+        }
+        public int StartReturnSpawn(RegionTimer timer)
+        {
+            ClearAggroList();
+            Evern.Idle = true;
+            return 0;
+        }
         public override void Think()
         {
+            if(Body.IsNearSpawn() && nearspawn==true)
+            {
+                new RegionTimer(Body, new RegionTimerCallback(ReturnSpawn), 1000);
+                nearspawn = false;
+            }
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
                 spawnfairy = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
@@ -222,10 +248,16 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
+            if(Body.IsOutOfTetherRange && nearspawn==false)
+            {
+                Body.WalkToSpawn();
+                new RegionTimer(Body, new RegionTimerCallback(StartReturnSpawn), 500);
+                nearspawn = true;
+            }
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
             {
                 this.Body.Health = this.Body.MaxHealth;
+                Evern.Idle = false;
 
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                 {
@@ -239,7 +271,6 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.Think();
         }
 
