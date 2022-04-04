@@ -64,7 +64,7 @@ namespace DOL.GS.PropertyCalc
 				if (living is GameKeepComponent)
 					component = living as GameKeepComponent;
 
-				int amount = component.Keep.BaseLevel;
+				int amount = component.Keep.BaseLevel * 200;
 				if (component.Keep is GameKeep)
 					return amount;
 				else return amount / 2;
