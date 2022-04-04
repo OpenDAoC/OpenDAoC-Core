@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Trip";
-            m_dbspell.Icon = 333;
+            m_dbspell.Icon = 4225;
             m_dbspell.ClientEffect = 2758;
             m_dbspell.Damage = 0;
 			m_dbspell.DamageType = (int)m_damageType;
@@ -80,8 +80,7 @@ namespace DOL.GS.RealmAbilities
 				CastSpellOn(npc, caster);
 			}
 
-			// We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
-            // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
+			DisableSkill(caster);
 		}
 
         public void CastSpellOn(GameLiving target, GameLiving caster)

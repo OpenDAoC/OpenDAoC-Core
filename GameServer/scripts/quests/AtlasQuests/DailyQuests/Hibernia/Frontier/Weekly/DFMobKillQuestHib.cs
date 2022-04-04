@@ -1,13 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
@@ -20,12 +15,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Weekly] Darkness Falls Invasion";
-		protected const int minimumLevel = 30;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Weekly] Darkness Falls Invasion";
+		private const int minimumLevel = 30;
+		private const int maximumLevel = 50;
 		
 		// Kill Goal
-		protected const int MAX_KILLED = 200;
+		private const int MAX_KILLED = 200;
 
 		private static GameNPC Cola = null; // Start NPC
 
@@ -138,7 +133,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Cola.RemoveQuestToGive(typeof (DFMobKillQuestHib));
 		}
 
-		protected static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToCola(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -251,7 +246,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -316,57 +311,53 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DFMobKillQuestHib)) == null)
+			if (player?.IsDoingQuest(typeof(DFMobKillQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+			
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target is GamePet)
+				return;
+			
+			if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNPC || gArgs.Target.CurrentRegionID != 249 ||
+			    !(player.GetConLevel(gArgs.Target) > -2)) return;
+			if (player.Group != null)
 			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-
-				if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 249 && player.GetConLevel(gArgs.Target) > -2) 
+				double minRequiredCon =Math.Ceiling((double) (player.Group.MemberCount / 3));
+				if (minRequiredCon > 3) minRequiredCon = 3;
+				if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
+					_mobsKilled++;
+				else
 				{
-					if (player.Group != null)
-					{
-						double minRequiredCon =Math.Ceiling((double) (player.Group.MemberCount / 3));
-						if (minRequiredCon > 3) minRequiredCon = 3;
-						if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
-							_mobsKilled++;
-						else
-						{
-							player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);		
-						}
-					}
-					else
-					{
-						if(player.GetConLevel(gArgs.Target) > -1)
-							_mobsKilled++;	
-					}
-					
-					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-					
-					if (_mobsKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Dean
-						Step = 2;
-					}
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);		
 				}
 			}
-			
+			else
+			{
+				if(player.GetConLevel(gArgs.Target) > -1)
+					_mobsKilled++;	
+			}
+					
+			player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
+					
+			if (_mobsKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to Dean
+				Step = 2;
+			}
+
 		}
 		
 		public override string QuestPropertyKey
 		{
 			get => "DFMobKillQuestHib";
 			set { ; }
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

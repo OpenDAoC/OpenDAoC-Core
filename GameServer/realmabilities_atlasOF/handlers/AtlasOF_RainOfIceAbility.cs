@@ -43,7 +43,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Rain Of Ice";
-            m_dbspell.Icon = 7023;
+            m_dbspell.Icon = 1645;
             m_dbspell.ClientEffect = 7023;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 13;
@@ -70,7 +70,10 @@ namespace DOL.GS.RealmAbilities
 
             CreateSpell(m_damage);
             
-            CastSpell(living);
+            ISpellHandler dd = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
+            dd.IgnoreDamageCap = true;
+
+            new AtlasOF_RainOfIceECSEffect(new ECSGameEffectInitParams(living, 60000, 1, dd));
             DisableSkill(living);
         }
         
@@ -85,16 +88,6 @@ namespace DOL.GS.RealmAbilities
             }
 
             return 0;
-        }
-        
-        protected void CastSpell(GameLiving target)
-        {
-            if (target.IsAlive && m_spell != null)
-            {
-                ISpellHandler dd = ScriptMgr.CreateSpellHandler(target, m_spell, m_spellline);
-                dd.IgnoreDamageCap = true;
-                dd.StartSpell(target);
-            }
         }
     }
 

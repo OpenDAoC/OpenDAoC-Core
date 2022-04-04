@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
 					{
 						if (npc.IsAlive && npc.Brain is RoesiaBowsBrain)
 						{
-							AddAggroListTo(npc.Brain as StandardMobBrain);
+							AddAggroListTo(npc.Brain as RoesiaBowsBrain);
 							IsPulled = true;
 						}
 					}

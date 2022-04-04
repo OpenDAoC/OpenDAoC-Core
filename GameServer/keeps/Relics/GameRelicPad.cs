@@ -204,6 +204,19 @@ namespace DOL.GS
 				Notify(RelicPadEvent.RelicStolen, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
 			}
 		}
+		
+		public int GetEnemiesOnPad()
+		{
+			var players = GetPlayersInRadius(500);
+			var enemyNearby = 0;
+				
+			foreach (GamePlayer p in players)
+			{
+				if (p.Realm == Realm) continue;
+				enemyNearby++;
+			}
+			return enemyNearby;
+		}
 
 		public void RemoveRelic()
 		{
@@ -233,7 +246,6 @@ namespace DOL.GS
 			public override void OnPlayerEnter(GamePlayer player)
 			{
 				GameRelic relicOnPlayer = player.TempProperties.getProperty<object>(GameRelic.PLAYER_CARRY_RELIC_WEAK, null) as GameRelic;
-
 				if (relicOnPlayer == null)
 				{
 					return;

@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Whip Of Encouragement";
-            m_dbspell.Icon = 3050;
+            m_dbspell.Icon = 4245;
             m_dbspell.ClientEffect = 3050;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 0;

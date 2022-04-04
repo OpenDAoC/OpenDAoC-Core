@@ -11,7 +11,16 @@ namespace DOL.GS
         public Issorden() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -25,7 +34,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -94,16 +103,6 @@ namespace DOL.GS
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
-                TG.AbilityBonus[(int) eProperty.Resist_Body] = 15;
-                TG.AbilityBonus[(int) eProperty.Resist_Heat] = 15;
-                TG.AbilityBonus[(int) eProperty.Resist_Cold] = 15;
-                TG.AbilityBonus[(int) eProperty.Resist_Matter] = 15;
-                TG.AbilityBonus[(int) eProperty.Resist_Energy] = 15;
-                TG.AbilityBonus[(int) eProperty.Resist_Spirit] = 15;
-                TG.AbilityBonus[(int) eProperty.Resist_Slash] = 25;
-                TG.AbilityBonus[(int) eProperty.Resist_Crush] = 25;
-                TG.AbilityBonus[(int) eProperty.Resist_Thrust] = 25;
-
                 TG.X = 54583;
                 TG.Y = 37745;
                 TG.Z = 11435;
@@ -142,18 +141,18 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 BafMobs = false;
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat || HasAggro || Body.AttackState == true)

@@ -7,6 +7,7 @@ using DOL.GS.PropertyCalc;
 using DOL.GS.Effects;
 using DOL.Events;
 using DOL.Database;
+using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -32,7 +33,8 @@ namespace DOL.GS.RealmAbilities
 
             int effectiveness = GetEffectiveness();
 
-			new TheEmptyMindEffect(effectiveness, GetDuration()).Start(living);
+			//new TheEmptyMindEffect(effectiveness, GetDuration()).Start(living);
+			new StatBuffECSEffect(new ECSGameEffectInitParams(living, 30000, 1, CreateSpell(living)));
 			DisableSkill(living);
 		}
 
@@ -70,6 +72,31 @@ namespace DOL.GS.RealmAbilities
                     default: return 0;
                 }
             }
+        }
+        
+        public virtual SpellHandler CreateSpell(GameLiving caster)
+        {
+	        DBSpell dbspell = new DBSpell();
+	        dbspell.Name = "The Empty Mind";
+	        dbspell.Icon = 4232;
+	        dbspell.ClientEffect = 4232;
+	        dbspell.Damage = 0;
+	        dbspell.DamageType = 0;
+	        dbspell.Target = "Self";
+	        dbspell.Radius = 0;
+	        dbspell.Type = eSpellType.AllMagicResistBuff.ToString();
+	        dbspell.Value = GetEffectiveness();
+	        dbspell.Duration = 30;
+	        dbspell.Pulse = 0;
+	        dbspell.PulsePower = 0;
+	        dbspell.Power = 0;
+	        dbspell.CastTime = 0;
+	        dbspell.EffectGroup = 0;
+	        dbspell.Frequency = 0;
+	        dbspell.Range = 1500;
+	        Spell spell = new Spell(dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
+	        SpellLine line = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+	        return new SpellHandler(caster, spell, line);
         }
     }
 }

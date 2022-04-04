@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is SkufBrain)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as SkufBrain);
                             IsPulled = true;
                         }
                     }
@@ -524,7 +524,7 @@ namespace DOL.AI.Brain
                     {
                         if (npc.IsAlive && npc.Brain is SteinvorBrain)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            AddAggroListTo(npc.Brain as SteinvorBrain);
                             IsPulled2 = true;
                         }
                     }

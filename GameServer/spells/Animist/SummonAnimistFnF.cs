@@ -73,7 +73,7 @@ namespace DOL.GS.Spells
 		{
 			base.ApplyEffectOnTarget(target, effectiveness);
 
-			if (Spell.SubSpellID > 0 && SkillBase.GetSpellByID(Spell.SubSpellID) != null)
+			if (Spell.SubSpellID > 0 && m_pet.Spells != null && SkillBase.GetSpellByID(Spell.SubSpellID) != null)
 			{
 				m_pet.Spells.Add(SkillBase.GetSpellByID(Spell.SubSpellID));
 			}

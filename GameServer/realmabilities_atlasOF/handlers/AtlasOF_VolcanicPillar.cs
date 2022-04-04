@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Volcanic Pillar";
-            m_dbspell.Icon = 0;
+            m_dbspell.Icon = 4253;
             m_dbspell.ClientEffect = 7025;
             m_dbspell.Damage = m_dmgValue;
 			m_dbspell.DamageType = 13; // heat

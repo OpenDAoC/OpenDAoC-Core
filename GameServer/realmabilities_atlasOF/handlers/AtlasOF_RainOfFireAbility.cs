@@ -45,7 +45,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Rain Of Fire";
-            m_dbspell.Icon = 7023;
+            m_dbspell.Icon = 1643;
             m_dbspell.ClientEffect = 7023;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 11;
@@ -75,7 +75,11 @@ namespace DOL.GS.RealmAbilities
                 
 
             CreateSpell(m_damage);
-            CastSpell(living);
+            
+            ISpellHandler dd = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
+            dd.IgnoreDamageCap = true;
+
+            new AtlasOF_RainOfIceECSEffect(new ECSGameEffectInitParams(living, 60000, 1, dd));
             DisableSkill(living);
         }
         

@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
         {
             DBSpell tmpSpell = new DBSpell();
             tmpSpell.Name = "Majestic Will";
-            tmpSpell.Icon = 7065;
+            tmpSpell.Icon = 4239;
             tmpSpell.ClientEffect = 7065;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;

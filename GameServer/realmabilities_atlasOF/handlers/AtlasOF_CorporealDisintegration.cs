@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Corporeal Disintegration";
-            m_dbspell.Icon = 612;
+            m_dbspell.Icon = 4257;
             m_dbspell.ClientEffect = 612;
             m_dbspell.Damage = m_dmgValue;
 			m_dbspell.DamageType = 14; // matter

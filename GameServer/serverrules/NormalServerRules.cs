@@ -431,6 +431,14 @@ namespace DOL.GS.ServerRules
 		{
 			base.ResetKeep(lord, killer);
 			lord.Component.Keep.Reset((eRealm)killer.Realm);
+			foreach (var objective in ConquestService.ConquestManager.GetActiveObjectives)
+			{
+				if (objective != null && objective.Keep == lord.Component.Keep)
+				{
+					ConquestService.ConquestManager.ConquestCapture(objective.Keep);
+				}	
+			}
+			
 		}
 	}
 }

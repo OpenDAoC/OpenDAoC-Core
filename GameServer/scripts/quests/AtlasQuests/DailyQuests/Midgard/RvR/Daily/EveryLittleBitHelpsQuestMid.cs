@@ -21,18 +21,18 @@ namespace DOL.GS.DailyQuest.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Every Little Bit Helps";
-		protected const int minimumLevel = 40;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] Every Little Bit Helps";
+		private const int minimumLevel = 40;
+		private const int maximumLevel = 50;
 
 		private static GameNPC ReyMid = null; // Start NPC
 
 		private int _playersKilledAlb = 0;
 		private int _playersKilledHib = 0;
-		protected const int MAX_KILLGOAL = 5;
+		private const int MAX_KILLGOAL = 5;
 		
 		// prevent grey killing
-		protected const int MIN_PLAYER_CON = -3;
+		private const int MIN_PLAYER_CON = -3;
 
 		// Constructors
 		public EveryLittleBitHelpsQuestMid() : base()
@@ -143,7 +143,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			ReyMid.RemoveQuestToGive(typeof (EveryLittleBitHelpsQuestMid));
 		}
 
-		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToRey(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -246,7 +246,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -299,7 +299,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					case 1:
 						return "You will find suitable players in the frontiers. \n" +
-						       "Players Killed: Hibernia ("+ _playersKilledHib +" | "+ MAX_KILLGOAL +")" +
+						       "Players Killed: Hibernia ("+ _playersKilledHib +" | "+ MAX_KILLGOAL +")\n" +
 						       "Players Killed: Albion ("+ _playersKilledAlb +" | "+ MAX_KILLGOAL +")";
 					case 2:
 						return "Return to Rey in Svasud Faste for your Reward.";
@@ -312,35 +312,32 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(EveryLittleBitHelpsQuestMid)) == null)
+			if (player?.IsDoingQuest(typeof(EveryLittleBitHelpsQuestMid)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
-				{
-					_playersKilledAlb++;
-					player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
-				else if (gArgs.Target.Realm == eRealm.Hibernia && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledHib < MAX_KILLGOAL) 
-				{
-					_playersKilledHib++;
-					player.Out.SendMessage("[Daily] Hibernia Enemy Killed: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
-				}
+			if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
+			{
+				_playersKilledAlb++;
+				player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
+			else if (gArgs.Target.Realm == eRealm.Hibernia && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledHib < MAX_KILLGOAL) 
+			{
+				_playersKilledHib++;
+				player.Out.SendMessage("[Daily] Hibernia Enemy Killed: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
+			}
 				
-				if (_playersKilledAlb >= MAX_KILLGOAL && _playersKilledHib >= MAX_KILLGOAL)
-				{
-					// FinishQuest or go back to Rey
-					Step = 2;
-				}
-				
+			if (_playersKilledAlb >= MAX_KILLGOAL && _playersKilledHib >= MAX_KILLGOAL)
+			{
+				// FinishQuest or go back to Rey
+				Step = 2;
 			}
 		}
 		
@@ -361,13 +358,6 @@ namespace DOL.GS.DailyQuest.Midgard
 			SetCustomProperty("PlayersKilledHib", _playersKilledHib.ToString());
 			SetCustomProperty("PlayersKilledAlb", _playersKilledAlb.ToString());
 		}
-
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-		}
-
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);

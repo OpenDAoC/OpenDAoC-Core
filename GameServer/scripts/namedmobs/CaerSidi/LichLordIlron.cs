@@ -8,6 +8,16 @@ namespace DOL.GS.Scripts
 {
     public class LichLordIlron : GameEpicBoss
     {
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
@@ -32,7 +42,13 @@ namespace DOL.GS.Scripts
             get => 180;
             set { }
         }
+        public override bool HasAbility(string keyName)
+        {
+            if (this.IsAlive && keyName == "CCImmunity")
+                return true;
 
+            return base.HasAbility(keyName);
+        }
         public override bool AddToWorld()
         {
             Level = 79;
@@ -41,8 +57,18 @@ namespace DOL.GS.Scripts
             MaxDistance = 1500;
             TetherRange = 2000;
             RoamingRange = 400;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            Faction = FactionMgr.GetFactionByID(64);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             LichLordIlronBrain sBrain = new LichLordIlronBrain();
             SetOwnBrain(sBrain);
             sBrain.AggroLevel = 100;
@@ -114,7 +140,7 @@ namespace DOL.AI.Brain
                 {
                     if (mob_c?.Brain is IlronImagesBrain && mob_c.IsAlive && mob_c.IsAvailable)
                     {
-                        AddAggroListTo(mob_c.Brain as StandardMobBrain);
+                        AddAggroListTo(mob_c.Brain as IlronImagesBrain);
                     }
                 }
             }
@@ -135,8 +161,8 @@ namespace DOL.AI.Brain
             for (int i = 0; i < 4; i++) // Spawn 5 images
             {
                 IlronImages Add = new IlronImages();
-                Add.X = Body.X + Util.Random(50, 80);
-                Add.Y = Body.Y + Util.Random(50, 80);
+                Add.X = Body.X + Util.Random(-100, 100);
+                Add.Y = Body.Y + Util.Random(-100, 100);
                 Add.Z = Body.Z;
                 Add.CurrentRegion = Body.CurrentRegion;
                 Add.IsWorthReward = false;
@@ -155,9 +181,28 @@ namespace DOL.GS
     {
         public override int MaxHealth
         {
-            get { return 450 * Constitution / 100; }
+            get { return 1000; }
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 25; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 25; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 25; // dmg reduction for melee dmg
+                default: return 25; // dmg reduction for rest resists
+            }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 700;
         }
 
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.35;
+        }
         public override bool AddToWorld()
         {
             Model = 441;

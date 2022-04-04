@@ -7,7 +7,39 @@ namespace DOL.GS.Scripts
 {
     public class SkeletalSacristan : GameEpicBoss
     {
-	    public override bool AddToWorld()
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 55; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 55; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 55; // dmg reduction for melee dmg
+                default: return 35; // dmg reduction for rest resists
+            }
+        }
+        public override int MaxHealth
+        {
+            get { return 15000; }
+        }
+        public override bool HasAbility(string keyName)
+        {         
+            if (this.IsAlive && keyName == "CCImmunity")
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 1000;
+        }
+
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.85;
+        }
+        public override bool AddToWorld()
 		{
 			Model = 916;
 			Name = "Skeletal Sacristan";
@@ -15,14 +47,27 @@ namespace DOL.GS.Scripts
 			Level = 77;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
-			MaxDistance = 1500;
-			TetherRange = 2000;
+			MaxDistance = 0;
+			TetherRange = 0;
 			RoamingRange = 0;
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166180);
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+
+            SkeletalSacristanBrain.point7check = false;
+            SkeletalSacristanBrain.point1check = false;
+            SkeletalSacristanBrain.point2check = false;
+            SkeletalSacristanBrain.point3check = false;
+            SkeletalSacristanBrain.point4check = false;
+            SkeletalSacristanBrain.point5check = false;
+            SkeletalSacristanBrain.point6check = false;
+            SkeletalSacristanBrain.ToSpawn = false;
+
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166180);
 			LoadTemplate(npcTemplate);
 			SkeletalSacristanBrain sBrain = new SkeletalSacristanBrain();
 			SetOwnBrain(sBrain);
 			base.AddToWorld();
+            SaveIntoDatabase();
+            LoadedFromScript = false;
 			return true;
 		}
 	    [ScriptLoadedEvent]
@@ -31,6 +76,22 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Skeletal Sacristan NPC Initializing...");
 		}
+
+        public override void WalkToSpawn(short speed)
+        {
+            if (this.CurrentRegionID == 60) //if region is caer sidi
+            {
+                if (SkeletalSacristanBrain.ToSpawn == true)
+                {
+                    return;
+                }
+                else
+                {
+                    speed = 250;
+                    base.WalkToSpawn(speed);
+                }
+            }
+        }
     }
     
 }
@@ -38,29 +99,146 @@ namespace DOL.AI.Brain
 {
 	public class SkeletalSacristanBrain : StandardMobBrain
 	{
-		public override void OnAttackedByEnemy(AttackData ad)
+		public static bool point1check = false;
+		public static bool point2check = false;
+		public static bool point3check = false;
+		public static bool point4check = false;
+		public static bool point5check = false;
+		public static bool point6check = false;
+		public static bool point7check = false;
+        public static bool ToSpawn = false;
+        public override void AttackMostWanted()
+        {
+        }
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+        }
+        public override void Think()
 		{
-			Body.WalkTo(Body.X + Util.Random(1000), Body.Y + Util.Random(1000), Body.Z, 460);
-
-			base.OnAttackedByEnemy(ad);
-		}
-		
-		public override void AttackMostWanted()
-		{
-
-		}
-		
-		public override void Think()
-		{
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			Point3D point1 = new Point3D(31826, 32256, 16750);
+			Point3D point2 = new Point3D(32846, 32250, 16750);
+			Point3D point3 = new Point3D(35357, 32243, 16494);
+			Point3D point4 = new Point3D(35408, 35788, 16494);
+			Point3D point5 = new Point3D(33112, 35808, 16750);
+			Point3D point6 = new Point3D(30259, 35800, 16750);
+			Point3D point7 = new Point3D(30238, 32269, 16750);
+            foreach(GamePlayer player in Body.GetPlayersInRadius(1000))
+            {
+                if(player != null)
+                {
+                    if(player.IsAlive && player.Client.Account.PrivLevel == 1)
+                    {
+                        if(!AggroTable.ContainsKey(player))
+                        {
+                            AggroTable.Add(player,10);
+                        }
+                    }
+                }
+                if(player == null || player.Client.Account.PrivLevel != 1 || player.IsAlive==false)
+                {
+                    if(AggroTable.Count > 0)
+                    {
+                        ClearAggroList();
+                    }
+                }
+            }
+            if(!HasAggressionTable())
+            {
+                point7check = false;
+                point1check = false;
+                point2check = false;
+                point3check = false;
+                point4check = false;
+                point5check = false;
+                point6check = false;
+                ToSpawn = false;
+                this.Body.Health = this.Body.MaxHealth;
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            }
+			if (HasAggressionTable())
 			{
-				Body.WalkTo(Body.X + Util.Random(1000), Body.Y + Util.Random(1000), Body.Z, 460);
-			}
-			if (Body.InCombatInLast(15 * 1000) == false && this.Body.InCombatInLast(15 * 1000))
-			{
-				Body.WalkTo(Body.X + Util.Random(1000), Body.Y + Util.Random(1000), Body.Z, 460);
-			}
-			base.Think();
+                ToSpawn = true;
+                if (Body.CurrentRegionID == 60) //caer sidi
+                {
+                    if (!Body.IsWithinRadius(point1, 30) && point1check == false)
+                    {
+                        Body.WalkTo(point1, (short)Util.Random(195,250));
+                    }
+                    else
+                    {
+                        point1check = true;
+                        point7check = false;
+                        if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
+                        {
+                            Body.WalkTo(point2, (short)Util.Random(195, 250));
+                        }
+                        else
+                        {
+                            point2check = true;
+                            if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
+                                point3check == false)
+                            {
+                                Body.WalkTo(point3, (short)Util.Random(195, 250));
+                            }
+                            else
+                            {
+                                point3check = true;
+                                if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
+                                    point3check == true && point4check == false)
+                                {
+                                    Body.WalkTo(point4, (short)Util.Random(195, 250));
+                                }
+                                else
+                                {
+                                    point4check = true;
+                                    if (!Body.IsWithinRadius(point5, 30) && point1check == true && point2check == true &&
+                                        point3check == true && point4check == true && point5check == false)
+                                    {
+                                        Body.WalkTo(point5, (short)Util.Random(195, 250));
+                                    }
+                                    else
+                                    {
+                                        point5check = true;
+                                        if (!Body.IsWithinRadius(point6, 30) && point1check == true && point2check == true &&
+                                        point3check == true && point4check == true && point5check == true && point6check==false)
+                                        {
+                                            Body.WalkTo(point6, (short)Util.Random(195, 250));
+                                        }
+                                        else
+                                        {
+                                            point6check = true;
+                                            if (!Body.IsWithinRadius(point7, 30) && point1check == true && point2check == true &&
+                                            point3check == true && point4check == true && point5check == true && point6check ==true && point7check==false)
+                                            {
+                                                Body.WalkTo(point7, (short)Util.Random(195, 250));
+                                            }
+                                            else
+                                            {
+                                                point7check = true;
+                                                point1check = false;
+                                                point2check = false;
+                                                point3check = false;
+                                                point4check = false;
+                                                point5check = false;
+                                                point6check = false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else //not sidi
+                {
+                    //mob will not roam
+                }
+            }
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            {
+                ClearAggroList();
+            }
+            base.Think();
 		}
 		
 	}

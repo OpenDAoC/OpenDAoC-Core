@@ -21,13 +21,13 @@ namespace DOL.GS.DailyQuest.Midgard
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected const string questTitle = "[Daily] Too Many Monsters";
-        protected const int minimumLevel = 45;
-        protected const int maximumLevel = 50;
+        private const string questTitle = "[Daily] Too Many Monsters";
+        private const int minimumLevel = 45;
+        private const int maximumLevel = 50;
 
         // Kill Goal
         private int _deadTuscaMob = 0;
-        protected const int MAX_KILLGOAL = 3;
+        private const int MAX_KILLGOAL = 3;
 
         private static GameNPC Isaac = null; // Start NPC
 
@@ -141,7 +141,7 @@ namespace DOL.GS.DailyQuest.Midgard
             Isaac.RemoveQuestToGive(typeof(TuscarianMobQuestMid));
         }
 
-        protected static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
+        public static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -251,7 +251,7 @@ namespace DOL.GS.DailyQuest.Midgard
             }
         }
 
-        protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+        public static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
         {
             QuestEventArgs qargs = args as QuestEventArgs;
             if (qargs == null)
@@ -315,31 +315,33 @@ namespace DOL.GS.DailyQuest.Midgard
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
-
-            if (player == null || player.IsDoingQuest(typeof(TuscarianMobQuestMid)) == null)
+            
+            if (player?.IsDoingQuest(typeof(TuscarianMobQuestMid)) == null)
                 return;
 
             if (sender != m_questPlayer)
                 return;
 
-            if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+            if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+            
+            EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+            if (gArgs.Target is GamePet)
+                return;
+            
+            // check if a GameNPC died + if its in Tuscaran Glacier
+            if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 160)
             {
-                EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-                
-                // check if a GameNPC died + if its in Tuscaran Glacier
-                if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 160)
-                {
-                    _deadTuscaMob++;
-                    player.Out.SendMessage(
-                        "[Daily] Monsters killed in Tuscaran Glacier: (" + _deadTuscaMob + " | " + MAX_KILLGOAL + ")",
-                        eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    player.Out.SendQuestUpdate(this);
+                _deadTuscaMob++;
+                player.Out.SendMessage(
+                    "[Daily] Monsters killed in Tuscaran Glacier: (" + _deadTuscaMob + " | " + MAX_KILLGOAL + ")",
+                    eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendQuestUpdate(this);
 
-                    if (_deadTuscaMob >= MAX_KILLGOAL)
-                    {
-                        // FinishQuest or go back to Herou
-                        Step = 2;
-                    }
+                if (_deadTuscaMob >= MAX_KILLGOAL)
+                {
+                    // FinishQuest or go back to Herou
+                    Step = 2;
                 }
             }
         }
@@ -358,11 +360,6 @@ namespace DOL.GS.DailyQuest.Midgard
         public override void SaveQuestParameters()
         {
             SetCustomProperty(QuestPropertyKey, _deadTuscaMob.ToString());
-        }
-
-        public override void AbortQuest()
-        {
-            base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }
 
         public override void FinishQuest()

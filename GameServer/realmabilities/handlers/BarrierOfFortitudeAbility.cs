@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Collections;
 using DOL.GS;
@@ -47,7 +48,13 @@ namespace DOL.GS.RealmAbilities
 				if (!target.IsAlive) continue;
 				success = !target.TempProperties.getProperty(BofBaSb, false);
 				foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					visPlayer.Out.SendSpellEffectAnimation(player, target, 7016, 0, false, CastSuccess(success));
+				{
+					SendCasterSpellEffectAndCastMessage(player, 7009, success);
+					SendCasterSpellEffect(player, 1486, success);
+					SendCasterSpellEffect(player, 10535, success);
+				}
+				
+					
 				if (success)
 				{
 					if (target != null)

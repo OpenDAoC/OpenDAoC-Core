@@ -239,6 +239,14 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 		}
+		
+		public virtual void SendCasterSpellEffect(GameLiving caster, ushort spellEffect, bool success)
+		{
+			foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				player.Out.SendSpellEffectAnimation(caster, caster, spellEffect, 0, false, success ? (byte)1 : (byte)0);
+			}
+		}
 
 
 		/// <summary>

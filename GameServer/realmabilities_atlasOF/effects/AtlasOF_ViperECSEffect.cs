@@ -15,7 +15,7 @@ namespace DOL.GS.Effects
             EffectService.RequestStartEffect(this);
         }
 
-        public override ushort Icon { get { return 3012; } }
+        public override ushort Icon { get { return 4283; } }
         public override string Name { get { return "Viper"; } }
         public override bool HasPositiveEffect { get { return true; } }
     }

@@ -826,7 +826,7 @@ namespace DOL.GS
  						embeds: new[]
  						{
  							new DiscordMessageEmbed(
-	                            color: 65280,
+	                            color: 3066993,
 	                            description: "Server open for connections!",
                                 thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/865577034087923742.png")
                             )

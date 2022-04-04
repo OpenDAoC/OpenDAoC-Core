@@ -68,6 +68,8 @@ namespace DOL.GS
             EffectListService.Tick(GameLoopTime);
             DailyQuestService.Tick(GameLoopTime);
             WeeklyQuestService.Tick(GameLoopTime);
+            ConquestService.Tick(GameLoopTime);
+            BountyService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;

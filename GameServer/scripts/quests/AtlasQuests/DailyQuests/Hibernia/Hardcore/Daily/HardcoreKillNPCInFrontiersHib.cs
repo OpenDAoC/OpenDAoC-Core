@@ -21,11 +21,11 @@ namespace DOL.GS.DailyQuest
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Hardcore] A Lot Of Bravery";
-		protected const int minimumLevel = 1;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Hardcore] A Lot Of Bravery";
+		private const int minimumLevel = 1;
+		private const int maximumLevel = 50;
 
-		protected static GameNPC SucciHib = null; // Start NPC
+		private static GameNPC SucciHib = null; // Start NPC
 
 		private int FrontierMobsKilled = 0;
 		private int MAX_KillGoal = 25;
@@ -139,7 +139,7 @@ namespace DOL.GS.DailyQuest
 			SucciHib.RemoveQuestToGive(typeof (HardcoreKillNPCInFrontiersHib));
 		}
 
-		protected static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToSucci(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -219,7 +219,7 @@ namespace DOL.GS.DailyQuest
 			return true;
 		}
 
-		protected static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
 			HardcoreKillNPCInFrontiersHib oranges = player.IsDoingQuest(typeof (HardcoreKillNPCInFrontiersHib)) as HardcoreKillNPCInFrontiersHib;
 
@@ -306,7 +306,7 @@ namespace DOL.GS.DailyQuest
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(HardcoreKillNPCInFrontiersHib)) == null)
+			if (player?.IsDoingQuest(typeof(HardcoreKillNPCInFrontiersHib)) == null)
 				return;
 			
 			if(player.Group != null && Step == 1)
@@ -319,26 +319,26 @@ namespace DOL.GS.DailyQuest
 			{
 				FailQuest();
 			}
+
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (player.GetConLevel(gArgs.Target) > -1 
-				    && gArgs.Target.CurrentZone.IsRvR && player.CurrentZone.IsRvR) 
-				{
-					FrontierMobsKilled++;
-					player.Out.SendMessage("[Hardcore] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
+			if (gArgs.Target is GamePet)
+				return;
+			
+			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||
+			    !player.CurrentZone.IsRvR) return;
+			FrontierMobsKilled++;
+			player.Out.SendMessage("[Hardcore] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (FrontierMobsKilled >= MAX_KillGoal)
-					{
-						// FinishQuest or go back to npc
-						Step = 2;
-					}
-				}
-				
+			if (FrontierMobsKilled >= MAX_KillGoal)
+			{
+				// FinishQuest or go back to npc
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
@@ -357,12 +357,6 @@ namespace DOL.GS.DailyQuest
 			SetCustomProperty(QuestPropertyKey, FrontierMobsKilled.ToString());
 		}
 
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-		}
-
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
@@ -373,7 +367,7 @@ namespace DOL.GS.DailyQuest
 			
 		}
 
-		public void FailQuest()
+		private void FailQuest()
 		{
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 			FrontierMobsKilled = 0;

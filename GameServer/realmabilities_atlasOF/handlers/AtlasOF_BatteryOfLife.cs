@@ -20,6 +20,11 @@ namespace DOL.GS.RealmAbilities
         {
             GamePlayer player = living as GamePlayer;
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+            
+            foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                SendCasterSpellEffectAndCastMessage(player, 7009, true);
+            }
 
             DisableSkill(living);
 
@@ -30,8 +35,8 @@ namespace DOL.GS.RealmAbilities
         {
             DBSpell tmpSpell = new DBSpell();
             tmpSpell.Name = "Battery Of Life";
-            tmpSpell.Icon = 3056;
-            tmpSpell.ClientEffect = 3056;
+            tmpSpell.Icon = 4274;
+            tmpSpell.ClientEffect = 7009;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;
             tmpSpell.Target = "Self";

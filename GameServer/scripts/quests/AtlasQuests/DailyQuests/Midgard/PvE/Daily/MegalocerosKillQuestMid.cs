@@ -20,12 +20,12 @@ namespace DOL.GS.DailyQuest.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "[Daily] Megaloceros Invasion";
-		protected const int minimumLevel = 40;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "[Daily] Megaloceros Invasion";
+		private const int minimumLevel = 40;
+		private const int maximumLevel = 50;
 
 		// Kill Goal
-		protected const int MAX_KILLED = 10;
+		private const int MAX_KILLED = 10;
 		
 		private static GameNPC Isaac = null; // Start NPC
 
@@ -138,7 +138,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			Isaac.RemoveQuestToGive(typeof (MegalocerosKillQuestMid));
 		}
 
-		protected static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -252,7 +252,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -321,24 +321,20 @@ namespace DOL.GS.DailyQuest.Midgard
 			
 			if (sender != m_questPlayer)
 				return;
-			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name.ToLower() == "megaloceros") 
-				{
-					megalocerosKilled++;
-					player.Out.SendMessage("[Daily] Megaloceros Killed: ("+megalocerosKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+
+			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (gArgs.Target.Name.ToLower() != "megaloceros") return;
+			megalocerosKilled++;
+			player.Out.SendMessage("[Daily] Megaloceros Killed: ("+megalocerosKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (megalocerosKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Isaac
-						Step = 2;
-					}
-				}
+			if (megalocerosKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to Isaac
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
@@ -346,12 +342,6 @@ namespace DOL.GS.DailyQuest.Midgard
 			get => "MegalocerosKillQuestMid";
 			set { ; }
 		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-		}
-
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, false);

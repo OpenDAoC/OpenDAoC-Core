@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Rune Of Decimation";
-            m_dbspell.Icon = 3025;
+            m_dbspell.Icon = 4254;
             m_dbspell.ClientEffect = 3025;
             m_dbspell.Damage = 600;
             m_dbspell.DamageType = 0;

@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
             }
         }
 
-        public override ushort Icon { get { return 3013; } }
+        public override ushort Icon { get { return 4278; } }
         public override string Name { get { return "Shadow Run"; } }
         public override bool HasPositiveEffect { get { return true; } }
     }

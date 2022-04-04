@@ -82,7 +82,7 @@ Social.ReceiveMessage.Private.FalseLanguage:			{0} sends something in a language
 Social.ReceiveMessage.Advice.Sends:                     {0} [ADVICE] sends, "{1}"
 Social.ReceiveMessage.Staff.SendsToYou:                    {0} [TEAM] sends, "{1}"
 Social.ReceiveMessage.AFK.PlayerAFK:						{0} is currently AFK.
-Social.ReceiveMessage.AFK.Sends:				<AFK> {0} sends, "{1}"
+Social.ReceiveMessage.AFK.Sends:				{0} [AFK] sends, "{1}"
 Social.SendMessage.Private.YouSendTo:					You send, "{0}" to {1}.
 Social.SendMessage.Private.DontUnderstandYou:		{0} doesn't seem to understand you!
 Social.SendMessage.Staff.YouSendAnon:                   You send, "{0}" to {1} [ANON].

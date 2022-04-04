@@ -20,14 +20,14 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string DRAGON_NAME = "Golestandt";
-		
-		protected const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
-		protected const int minimumLevel = 45;
-		protected const int maximumLevel = 50;
+		private const string DRAGON_NAME = "Golestandt";
+
+		private const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
+		private const int minimumLevel = 45;
+		private const int maximumLevel = 50;
 		
 		// Kill Goal
-		protected const int MAX_KILLED = 1;
+		private const int MAX_KILLED = 1;
 		// Quest Counter
 		private int DragonKilled = 0;
 		
@@ -140,7 +140,7 @@ namespace DOL.GS.DailyQuest.Albion
 			Hector.RemoveQuestToGive(typeof (DragonWeeklyQuestAlb));
 		}
 
-		protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHector(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -171,7 +171,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					Hector.SayTo(player, "Hello "+ player.Name +", I am Hector. I bring sad news today. " + DRAGON_NAME + " razed a small settlement in Dartmoor last night. \n" +
 					                   "Please, help the king avenge their deaths and keep Albion safe from " + DRAGON_NAME +  "\'s influence. \n\n"+
-					                   "Can you support Hibernia and [kill the dragon]?");
+					                   "Can you support Albion and [kill the dragon]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -243,7 +243,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -313,24 +313,20 @@ namespace DOL.GS.DailyQuest.Albion
 			if (sender != m_questPlayer)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Name.ToLower() == DRAGON_NAME.ToLower()) 
-				{
-					DragonKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			if (gArgs.Target.Name.ToLower() != DRAGON_NAME.ToLower()) return;
+			DragonKilled = 1;
+			player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
 					
-					if (DragonKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Haszan
-						Step = 2;
-					}
-				}
+			if (DragonKilled >= MAX_KILLED)
+			{
+				// FinishQuest or go back to Haszan
+				Step = 2;
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
@@ -347,11 +343,6 @@ namespace DOL.GS.DailyQuest.Albion
 		public override void SaveQuestParameters()
 		{
 			
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

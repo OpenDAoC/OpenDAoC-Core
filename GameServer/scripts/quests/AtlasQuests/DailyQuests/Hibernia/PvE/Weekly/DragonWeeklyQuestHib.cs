@@ -20,14 +20,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string DRAGON_NAME = "Cuuldurach the Glimmer King";
-		
-		protected const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
-		protected const int minimumLevel = 45;
-		protected const int maximumLevel = 50;
+		private const string DRAGON_NAME = "Cuuldurach the Glimmer King";
+
+		private const string questTitle = "[Weekly] Extinction of " + DRAGON_NAME;
+		private const int minimumLevel = 45;
+		private const int maximumLevel = 50;
 		
 		// Kill Goal
-		protected const int MAX_KILLED = 1;
+		private const int MAX_KILLED = 1;
 		// Quest Counter
 		private int DragonKilled = 0;
 		
@@ -140,7 +140,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			Dean.RemoveQuestToGive(typeof (DragonWeeklyQuestHib));
 		}
 
-		protected static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -243,7 +243,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -307,30 +307,28 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(DragonWeeklyQuestHib)) == null)
+			if (player?.IsDoingQuest(typeof(DragonWeeklyQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
 				return;
 
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
-			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Name.ToLower() == DRAGON_NAME.ToLower()) 
-				{
-					DragonKilled = 1;
-					player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-					player.Out.SendQuestUpdate(this);
+			if (gArgs.Target.Name.ToLower() == DRAGON_NAME.ToLower()) 
+			{
+				DragonKilled = 1;
+				player.Out.SendMessage("[Weekly] You killed " + DRAGON_NAME + ": (" + DragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendQuestUpdate(this);
 					
-					if (DragonKilled >= MAX_KILLED)
-					{
-						// FinishQuest or go back to Dean
-						Step = 2;
-					}
+				if (DragonKilled >= MAX_KILLED)
+				{
+					// FinishQuest or go back to Dean
+					Step = 2;
 				}
 			}
-			
+
 		}
 		
 		public override string QuestPropertyKey
@@ -345,11 +343,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		public override void SaveQuestParameters()
 		{
-		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}
 
 		public override void FinishQuest()

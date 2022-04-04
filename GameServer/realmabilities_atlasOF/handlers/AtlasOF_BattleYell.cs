@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Battle Yell";
-            m_dbspell.Icon = 333;
+            m_dbspell.Icon = 4231;
             m_dbspell.ClientEffect = 7276;
             m_dbspell.Damage = 0;
 			m_dbspell.DamageType = (int)m_damageType;

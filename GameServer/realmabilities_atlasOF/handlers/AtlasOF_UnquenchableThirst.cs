@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Unquenchable Thirst of Souls";
-            m_dbspell.Icon = 358;
+            m_dbspell.Icon = 4269;
             m_dbspell.ClientEffect = 2797;
             m_dbspell.Damage = m_dmgValue;
 			m_dbspell.DamageType = (int)m_damageType;

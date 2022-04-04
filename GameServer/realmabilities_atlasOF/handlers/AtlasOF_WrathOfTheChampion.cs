@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Wrath Of The Champion";
-            m_dbspell.Icon = 333;
+            m_dbspell.Icon = 4252;
             m_dbspell.ClientEffect = 2797;
             m_dbspell.Damage = m_dmgValue;
 			m_dbspell.DamageType = (int)m_damageType;
