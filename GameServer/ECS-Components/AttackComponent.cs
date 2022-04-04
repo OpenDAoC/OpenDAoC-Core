@@ -1447,6 +1447,7 @@ namespace DOL.GS
                 double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90.68) * specModifier;
                 double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
                 double DamageMod = weaponskillCalc / armorCalc;
+                if (DamageMod > 3.0) DamageMod = 3.0;
                 damage *= DamageMod;
 
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
