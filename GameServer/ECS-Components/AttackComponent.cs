@@ -1045,7 +1045,7 @@ namespace DOL.GS
                     p.Out.SendCloseTimerWindow();
                 }
 
-                AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness * (1 + p.CharacterClass.WeaponSkillBase / 20.0 / 100.0), interruptDuration, dualWield);
+                AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness, interruptDuration, dualWield);
 
                 //Clear the styles for the next round!
                 owner.styleComponent.NextCombatStyle = null;
