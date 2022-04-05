@@ -1421,15 +1421,15 @@ namespace DOL.GS
                 {
                     int spec = owner.WeaponSpecLevel(weaponTypeToUse);
 
-
+                    double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : spec < owner.Level + 2 ? 0.75 : 1.0;
                     double weaponskillCalc = owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
                     double strengthRelicCount = 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
-                    double specModifier = (0.75 + 0.5 * Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)) / ad.Target.EffectiveLevel+1 + 0.01 * Util.Random(50);
+                    double specModifier = (lowerLimit + 0.5 * Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)) / ad.Target.EffectiveLevel+1 + 0.01 * Util.Random(50);
                     double armorMod = (20 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     //Console.WriteLine($"hitAF {ad.Target.GetArmorAF(ad.ArmorHitLocation)} abs {(1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation))}");
-                    double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01;
+                    //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                     double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
-                    double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod * absBuffReduction * resistReduction;
+                    double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod  * resistReduction;
                     //Console.WriteLine($"WS {weaponskillCalc} str {strengthRelicCount} spec {specModifier} armor {armorMod} abs {absBuffReduction} resist {resistReduction} mod {DamageMod}");
                     if (DamageMod > 3.0) DamageMod = 3.0;
                     damage *= DamageMod;
@@ -1441,17 +1441,17 @@ namespace DOL.GS
                     }
                     if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
                         attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-                
-                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                    if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                    {
-                        damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    }
-                    else
-                    {
-                        damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    }
+                    
+                    /*
+                        // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                        if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                        {
+                            damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                        }
+                        else
+                        {
+                            damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                        }*/
                 }
                 else
                 {
@@ -1486,6 +1486,7 @@ namespace DOL.GS
                     if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
                         attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 
+                    /*
                     // Badge Of Valor Calculation 1+ absorb or 1- absorb
                     if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
                     {
@@ -1494,7 +1495,7 @@ namespace DOL.GS
                     else
                     {
                         damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    }
+                    }*/
                 
                     // Added to ensure damage variance never exceeds 150%
                     int range = upperboundary - lowerboundary;
