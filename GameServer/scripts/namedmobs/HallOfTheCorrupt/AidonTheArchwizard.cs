@@ -196,11 +196,22 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && (npc.Brain is AidonCopyAirBrain || npc.Brain is AidonCopyFireBrain || npc.Brain is AidonCopyEarthBrain || npc.Brain is AidonCopyIceBrain))
+                        if (npc.IsAlive)
                         {
-                            AddAggroListTo(npc.Brain as StandardMobBrain);
+                            if(npc.Brain is AidonCopyAirBrain)
+                                AddAggroListTo(npc.Brain as AidonCopyAirBrain);
+
+                            if (npc.Brain is AidonCopyFireBrain)
+                                AddAggroListTo(npc.Brain as AidonCopyFireBrain);
+
+                            if (npc.Brain is AidonCopyIceBrain)
+                                AddAggroListTo(npc.Brain as AidonCopyIceBrain);
+
+                            if (npc.Brain is AidonCopyEarthBrain)
+                                AddAggroListTo(npc.Brain as AidonCopyEarthBrain);
+
                             IsPulled = true;
-                        }
+                        }                      
                     }
                 }
             }

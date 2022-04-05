@@ -604,6 +604,7 @@ namespace DOL.GS.Scripts
 					GenerateWeapon(player, charClass, eObjectType.CrushingWeapon, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.ThrustWeapon, eInventorySlot.LeftHandWeapon);
 					GenerateWeapon(player, charClass, eObjectType.Fired, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, eObjectType.Shield, eInventorySlot.LeftHandWeapon);
 					break;
 
 

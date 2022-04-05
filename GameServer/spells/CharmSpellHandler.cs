@@ -431,10 +431,10 @@ namespace DOL.GS.Spells
 
             //PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
 
-            var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
+            //var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
 
-            if (concEffect != null)
-                EffectService.RequestImmediateCancelConcEffect((ECSPulseEffect)concEffect);
+            //if (concEffect != null)
+            //    EffectService.RequestImmediateCancelConcEffect((ECSPulseEffect)concEffect);
                 //concEffect.CancelEffect = true;
                 //concEffect.Cancel(false);
 

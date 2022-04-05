@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities.Statics
 	public class NegativeMaelstromBase : GenericBase 
     {
 		protected override string GetStaticName() {return "Negative Maelstrom";}
-		protected override ushort GetStaticModel() {return 1293;}
+		protected override ushort GetStaticModel() => 3738;
 		protected override ushort GetStaticEffect() {return 7027;}
 		private DBSpell dbs;
 		private Spell   s;

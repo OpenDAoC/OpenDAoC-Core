@@ -211,7 +211,7 @@ namespace DOL.AI.Brain
                     {
 						if(souls.IsAlive && souls.Brain is TorturedSoulsBrain)
                         {
-							AddAggroListTo(souls.Brain as StandardMobBrain);
+							AddAggroListTo(souls.Brain as TorturedSoulsBrain);
 						}
                     }
                 }

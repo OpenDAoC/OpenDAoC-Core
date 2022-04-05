@@ -176,6 +176,7 @@ namespace DOL.GS.Scripts
                     
                     player.Name = "DELETEME" + player.Name;
                     player.Reset();
+                    player.Level = 2;
 
                     player.MoveTo(249, 47400, 48686, 25000, 2085);
 

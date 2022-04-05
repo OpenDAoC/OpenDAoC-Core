@@ -124,10 +124,10 @@ namespace DOL.GS.RealmAbilities
 					i_player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				}
 
-				i_player.Out.SendSpellCastAnimation(caster, 7029, 20);
+				//i_player.Out.SendSpellCastAnimation(caster, 7029, 0);
 			}
 
-			m_expireTimerID = new RegionTimer(caster, new RegionTimerCallback(EndCast), 2000);
+			m_expireTimerID = new RegionTimer(caster, new RegionTimerCallback(EndCast), 1);
 		}
 
 		protected virtual int EndCast(RegionTimer timer)
@@ -188,8 +188,11 @@ namespace DOL.GS.RealmAbilities
 				if (mez != null)
 					EffectService.RequestCancelEffect(mez);
 					//mez.Cancel(false);
+					
+				//falloff
+				int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, mob);
 				
-				mob.TakeDamage(caster, eDamageType.Spirit, dmgValue, 0);
+				mob.TakeDamage(caster, eDamageType.Spirit, dmgWithFalloff, 0);
 
 				if (mob.EffectList.GetOfType<ChargeEffect>() == null && mob.EffectList.GetOfType<SpeedOfSoundEffect>() == null)
 				{
@@ -199,7 +202,7 @@ namespace DOL.GS.RealmAbilities
 					SendUpdates(mob);
 				}
 
-				caster.Out.SendMessage("You hit the " + mob.Name + " for " + dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You hit the " + mob.Name + " for " + dmgWithFalloff + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
 				foreach (GamePlayer player2 in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
@@ -217,7 +220,11 @@ namespace DOL.GS.RealmAbilities
 				if (mez != null)
 					EffectService.RequestCancelEffect(mez);
 					//mez.Cancel(false);
-				aeplayer.TakeDamage(caster, eDamageType.Spirit, dmgValue, 0);
+					
+				//falloff
+				int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, aeplayer);
+					
+				aeplayer.TakeDamage(caster, eDamageType.Spirit, dmgWithFalloff, 0);
 				aeplayer.StartInterruptTimer(3000, AttackData.eAttackType.Spell, caster);
 
 				if (aeplayer.EffectList.GetOfType<ChargeEffect>() == null && aeplayer.EffectList.GetOfType<SpeedOfSoundEffect>() == null)
@@ -228,7 +235,7 @@ namespace DOL.GS.RealmAbilities
 					SendUpdates(aeplayer);
 				}
 
-				caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + dmgWithFalloff + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
 				foreach (GamePlayer player3 in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
@@ -240,6 +247,14 @@ namespace DOL.GS.RealmAbilities
 			timer.Stop();
 			timer = null;
 			return 0;
+		}
+
+		private int CalculateDamageWithFalloff(int initialDamage, GameLiving initTarget, GameLiving aetarget)
+		{
+			Console.WriteLine($"initial {initialDamage} caster {initTarget} target {aetarget}");
+			int modDamage = (int)Math.Round((decimal) (initialDamage * ((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)));
+			Console.WriteLine($"distance {((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)} Mod {modDamage}");
+			return modDamage;
 		}
 
 		protected virtual int RootExpires(RegionTimer timer)

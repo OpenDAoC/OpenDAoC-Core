@@ -171,7 +171,7 @@ namespace DOL.GS.DailyQuest.Albion
 				{
 					Hector.SayTo(player, "Hello "+ player.Name +", I am Hector. I bring sad news today. " + DRAGON_NAME + " razed a small settlement in Dartmoor last night. \n" +
 					                   "Please, help the king avenge their deaths and keep Albion safe from " + DRAGON_NAME +  "\'s influence. \n\n"+
-					                   "Can you support Hibernia and [kill the dragon]?");
+					                   "Can you support Albion and [kill the dragon]?");
 				}
 			}
 				// The player whispered to the NPC

@@ -69,7 +69,7 @@ namespace DOL.GS
             if (source is GamePlayer || source is GamePet)
             {
                 attackers.Add(source as GamePlayer);
-                attackers_count = attackers.Count / 2;
+                attackers_count = attackers.Count / 4;
 
                 if (Util.Chance(attackers_count))
                 {
@@ -230,7 +230,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Silencer.attackers_count = 0;
                 Silencer silencer = new Silencer();
                 silencer.attackers.Clear();
@@ -238,12 +238,12 @@ namespace DOL.AI.Brain
             if (Body.IsOutOfTetherRange)
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Model = 934;
             }
             base.Think();

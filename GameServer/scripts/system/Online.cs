@@ -174,7 +174,7 @@ namespace DOL.GS.Commands
                     || c.Player.ObjectState != GameObject.eObjectState.Active)
                     continue;
 
-                if (c.Account.PrivLevel >= (uint)ePrivLevel.GM)
+                if (c.Account.PrivLevel >= (uint)ePrivLevel.GM && !c.Player.IsAnonymous)
                 {
                     ++gms;
                     continue;
