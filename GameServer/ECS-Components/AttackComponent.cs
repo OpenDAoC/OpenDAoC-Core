@@ -1443,7 +1443,7 @@ namespace DOL.GS
                 
                 if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
-                    weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF: {armorMod} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF/ABS: {armorMod} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
