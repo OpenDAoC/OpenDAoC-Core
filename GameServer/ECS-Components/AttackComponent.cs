@@ -1415,27 +1415,52 @@ namespace DOL.GS
                             weaponTypeToUse.Object_Type = (int)eObjectType.ThrustWeapon;
                         }
                     }
-                }                
+                } 
+                
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
-                // Modified to change the lowest value being 75
+                
+                
+                  // Modified to change the lowest value being 75
                 int lowerboundary = (int)((spec - 1) / (ad.Target.EffectiveLevel * 1.0 + 1) * 75.0 + 25);
                 // Added to clamp variance in ranges
                 int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
                 lowerboundary = Math.Max(lowerboundary, lowerLimit);
                 lowerboundary = Math.Min(lowerboundary, 100);
                 int upperboundary = Math.Max(lowerboundary + 50, 125);
-
-                if (owner is GameNPC)
+                 
+                 
+                double weaponskillCalc = owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
+                double strengthRelicCount = 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
+                double specModifier = (0.75 + 0.5 * Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)) / ad.Target.EffectiveLevel+1 + 0.01 * Util.Random(50);
+                double armorMod = (20 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                Console.WriteLine($"hitAF {ad.Target.GetArmorAF(ad.ArmorHitLocation)} abs {(1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation))}");
+                double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01;
+                double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
+                double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod * absBuffReduction * resistReduction;
+                Console.WriteLine($"WS {weaponskillCalc} str {strengthRelicCount} spec {specModifier} armor {armorMod} abs {absBuffReduction} resist {resistReduction} mod {DamageMod}");
+                if (DamageMod > 3.0) DamageMod = 3.0;
+                damage *= DamageMod;
+                
+                if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                 {
-                    lowerboundary = 75;
-                    upperboundary = 125;
+                    weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF: {armorMod} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
-                if(owner is GameEpicBoss)//do always same dmg(max cap), remove it incase of eny errors
-                {                        //
-                    lowerboundary = 125; //
-                    upperboundary = 125; //
-                }                        //remove till here if errors appears
+                if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                    attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
+                
+                // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                {
+                    damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                }
+                else
+                {
+                    damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                }
+                /*
+                int spec = owner.WeaponSpecLevel(weaponTypeToUse);
                 int styleSpec = 0;
                 if (ad.Style != null)
                 {
@@ -1467,7 +1492,7 @@ namespace DOL.GS
                 {
                     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                 }
-
+*/
                 // Added to ensure damage variance never exceeds 150%
                 int range = upperboundary - lowerboundary;
                 damage *= (lowerboundary + Util.Random(range)) * 0.01;
@@ -1476,7 +1501,8 @@ namespace DOL.GS
                 {
                     damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage) + owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
                 }
-
+                
+                
                 ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
                 //damage += ad.Modifier;
                 // RA resist check
@@ -1492,7 +1518,7 @@ namespace DOL.GS
                 ad.Modifier += resist;
                 damage += ad.Modifier;
                 ad.Damage = (int)damage;
-
+                
                 // apply total damage cap
                 ad.UncappedDamage = ad.Damage;
                // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
