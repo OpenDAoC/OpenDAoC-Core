@@ -30,17 +30,17 @@ namespace DOL.GS
 
         
         /// <summary>
-		/// The objects currently attacking this living
-		/// To be more exact, the objects that are in combat
-		/// and have this living as target.
-		/// </summary>
-		protected List<GameObject> m_attackers;
+        /// The objects currently attacking this living
+        /// To be more exact, the objects that are in combat
+        /// and have this living as target.
+        /// </summary>
+        protected List<GameObject> m_attackers;
         
 
         /// <summary>
-		/// Returns the list of attackers
-		/// </summary>
-		public List<GameObject> Attackers
+        /// Returns the list of attackers
+        /// </summary>
+        public List<GameObject> Attackers
         {
             get { return m_attackers; }
         }
@@ -105,86 +105,86 @@ namespace DOL.GS
 
 
 
-  //      /// <summary>
-		///// The result of an attack
-		///// </summary>
-		//public enum eAttackResult : int
-  //      {
-  //          /// <summary>
-  //          /// No specific attack
-  //          /// </summary>
-  //          Any = 0,
-  //          /// <summary>
-  //          /// The attack was a hit
-  //          /// </summary>
-  //          HitUnstyled = 1,
-  //          /// <summary>
-  //          /// The attack was a hit
-  //          /// </summary>
-  //          HitStyle = 2,
-  //          /// <summary>
-  //          /// Attack was denied by server rules
-  //          /// </summary>
-  //          NotAllowed_ServerRules = 3,
-  //          /// <summary>
-  //          /// No target for the attack
-  //          /// </summary>
-  //          NoTarget = 5,
-  //          /// <summary>
-  //          /// Target is already dead
-  //          /// </summary>
-  //          TargetDead = 6,
-  //          /// <summary>
-  //          /// Target is out of range
-  //          /// </summary>
-  //          OutOfRange = 7,
-  //          /// <summary>
-  //          /// Attack missed
-  //          /// </summary>
-  //          Missed = 8,
-  //          /// <summary>
-  //          /// The attack was evaded
-  //          /// </summary>
-  //          Evaded = 9,
-  //          /// <summary>
-  //          /// The attack was blocked
-  //          /// </summary>
-  //          Blocked = 10,
-  //          /// <summary>
-  //          /// The attack was parried
-  //          /// </summary>
-  //          Parried = 11,
-  //          /// <summary>
-  //          /// The target is invalid
-  //          /// </summary>
-  //          NoValidTarget = 12,
-  //          /// <summary>
-  //          /// The target is not visible
-  //          /// </summary>
-  //          TargetNotVisible = 14,
-  //          /// <summary>
-  //          /// The attack was fumbled
-  //          /// </summary>
-  //          Fumbled = 15,
-  //          /// <summary>
-  //          /// The attack was Bodyguarded
-  //          /// </summary>
-  //          Bodyguarded = 16,
-  //          /// <summary>
-  //          /// The attack was Phaseshiftet
-  //          /// </summary>
-  //          Phaseshift = 17,
-  //          /// <summary>
-  //          /// The attack was Grappled
-  //          /// </summary>
-  //          Grappled = 18
-  //      }
+        //      /// <summary>
+        ///// The result of an attack
+        ///// </summary>
+        //public enum eAttackResult : int
+        //      {
+        //          /// <summary>
+        //          /// No specific attack
+        //          /// </summary>
+        //          Any = 0,
+        //          /// <summary>
+        //          /// The attack was a hit
+        //          /// </summary>
+        //          HitUnstyled = 1,
+        //          /// <summary>
+        //          /// The attack was a hit
+        //          /// </summary>
+        //          HitStyle = 2,
+        //          /// <summary>
+        //          /// Attack was denied by server rules
+        //          /// </summary>
+        //          NotAllowed_ServerRules = 3,
+        //          /// <summary>
+        //          /// No target for the attack
+        //          /// </summary>
+        //          NoTarget = 5,
+        //          /// <summary>
+        //          /// Target is already dead
+        //          /// </summary>
+        //          TargetDead = 6,
+        //          /// <summary>
+        //          /// Target is out of range
+        //          /// </summary>
+        //          OutOfRange = 7,
+        //          /// <summary>
+        //          /// Attack missed
+        //          /// </summary>
+        //          Missed = 8,
+        //          /// <summary>
+        //          /// The attack was evaded
+        //          /// </summary>
+        //          Evaded = 9,
+        //          /// <summary>
+        //          /// The attack was blocked
+        //          /// </summary>
+        //          Blocked = 10,
+        //          /// <summary>
+        //          /// The attack was parried
+        //          /// </summary>
+        //          Parried = 11,
+        //          /// <summary>
+        //          /// The target is invalid
+        //          /// </summary>
+        //          NoValidTarget = 12,
+        //          /// <summary>
+        //          /// The target is not visible
+        //          /// </summary>
+        //          TargetNotVisible = 14,
+        //          /// <summary>
+        //          /// The attack was fumbled
+        //          /// </summary>
+        //          Fumbled = 15,
+        //          /// <summary>
+        //          /// The attack was Bodyguarded
+        //          /// </summary>
+        //          Bodyguarded = 16,
+        //          /// <summary>
+        //          /// The attack was Phaseshiftet
+        //          /// </summary>
+        //          Phaseshift = 17,
+        //          /// <summary>
+        //          /// The attack was Grappled
+        //          /// </summary>
+        //          Grappled = 18
+        //      }
 
         /// <summary>
-		/// The chance for a critical hit
-		/// </summary>
-		/// <param name="weapon">attack weapon</param>
-		public int AttackCriticalChance(InventoryItem weapon)
+        /// The chance for a critical hit
+        /// </summary>
+        /// <param name="weapon">attack weapon</param>
+        public int AttackCriticalChance(InventoryItem weapon)
         {
             if (owner is GamePlayer)
             {
@@ -267,9 +267,9 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Gets the attack-state of this living
-		/// </summary>
-		public virtual bool AttackState { get; set; }
+        /// Gets the attack-state of this living
+        /// </summary>
+        public virtual bool AttackState { get; set; }
 
         /// <summary>
         /// Returns the AttackRange of this living
@@ -317,7 +317,7 @@ namespace DOL.GS
                             switch ((ammo.SPD_ABS >> 2) & 0x3)
                             {
                                 case 0: range *= 0.85; break; //Clout -15%
-                                                              //						case 1:                break; //(none) 0%
+                                //						case 1:                break; //(none) 0%
                                 case 2: range *= 1.15; break; //doesn't exist on live
                                 case 3: range *= 1.25; break; //Flight +25%
                             }
@@ -501,7 +501,7 @@ namespace DOL.GS
                         switch ((p.rangeAttackComponent?.RangeAttackAmmo.SPD_ABS) & 0x3)
                         {
                             case 0: damage *= 0.85; break; //Blunt       (light) -15%
-                                                           //case 1: damage *= 1;	break; //Bodkin     (medium)   0%
+                            //case 1: damage *= 1;	break; //Bodkin     (medium)   0%
                             case 2: damage *= 1.15; break; //doesn't exist on live
                             case 3: damage *= 1.25; break; //Broadhead (X-heavy) +25%
                         }
@@ -703,7 +703,7 @@ namespace DOL.GS
                     if (attackTarget == null)
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CombatNoTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     else
-                        if (attackTarget is GameNPC)
+                    if (attackTarget is GameNPC)
                     {
                         p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget",
                             attackTarget.GetName(0, false, p.Client.Account.Language, (attackTarget as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -779,10 +779,10 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Starts a melee or ranged attack on a given target.
-		/// </summary>
-		/// <param name="attackTarget">The object to attack.</param>
-		private void LivingStartAttack(GameObject attackTarget)
+        /// Starts a melee or ranged attack on a given target.
+        /// </summary>
+        /// <param name="attackTarget">The object to attack.</param>
+        private void LivingStartAttack(GameObject attackTarget)
         {
             // Aredhel: Let the brain handle this, no need to call StartAttack
             // if the body can't do anything anyway.
@@ -811,7 +811,7 @@ namespace DOL.GS
 
                         foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             player.Out.SendCombatAnimation(owner, null, (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
-                                                           0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
+                                0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
                         attackAction.StartTime = (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire) ? Math.Max(1500, speed / 2) : speed;
@@ -829,10 +829,10 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Starts a melee attack on a target
-		/// </summary>
-		/// <param name="target">The object to attack</param>
-		private void NPCStartAttack(GameObject target)
+        /// Starts a melee attack on a target
+        /// </summary>
+        /// <param name="target">The object to attack</param>
+        private void NPCStartAttack(GameObject target)
         {
             if (target == null)
                 return;
@@ -1006,9 +1006,9 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Stops all attack actions, including following target
-		/// </summary>
-		public void NPCStopAttack()
+        /// Stops all attack actions, including following target
+        /// </summary>
+        public void NPCStopAttack()
         {
             var p = owner as GameNPC;
 
@@ -1055,36 +1055,36 @@ namespace DOL.GS
                 {
                     case eAttackResult.HitStyle:
                     case eAttackResult.HitUnstyled:
+                    {
+                        //keep component
+                        if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameSiegeWeapon) && ad.Attacker is GamePlayer && ad.Attacker.GetModified(eProperty.KeepDamage) > 0)
                         {
-                            //keep component
-                            if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameSiegeWeapon) && ad.Attacker is GamePlayer && ad.Attacker.GetModified(eProperty.KeepDamage) > 0)
-                            {
-                                int keepdamage = (int)Math.Floor((double)ad.Damage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
-                                int keepstyle = (int)Math.Floor((double)ad.StyleDamage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
-                                ad.Damage += keepdamage;
-                                ad.StyleDamage += keepstyle;
-                            }
-                            // vampiir
-                            if (p.CharacterClass is PlayerClass.ClassVampiir
-                                && target is GameKeepComponent == false
-                                && target is GameKeepDoor == false
-                                && target is GameSiegeWeapon == false)
-                            {
-                                int perc = Convert.ToInt32(((double)(ad.Damage + ad.CriticalDamage) / 100) * (55 - p.Level));
-                                perc = (perc < 1) ? 1 : ((perc > 15) ? 15 : perc);
-                                p.Mana += Convert.ToInt32(Math.Ceiling(((Decimal)(perc * p.MaxMana) / 100)));
-                            }
+                            int keepdamage = (int)Math.Floor((double)ad.Damage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
+                            int keepstyle = (int)Math.Floor((double)ad.StyleDamage * ((double)ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
+                            ad.Damage += keepdamage;
+                            ad.StyleDamage += keepstyle;
+                        }
+                        // vampiir
+                        if (p.CharacterClass is PlayerClass.ClassVampiir
+                            && target is GameKeepComponent == false
+                            && target is GameKeepDoor == false
+                            && target is GameSiegeWeapon == false)
+                        {
+                            int perc = Convert.ToInt32(((double)(ad.Damage + ad.CriticalDamage) / 100) * (55 - p.Level));
+                            perc = (perc < 1) ? 1 : ((perc > 15) ? 15 : perc);
+                            p.Mana += Convert.ToInt32(Math.Ceiling(((Decimal)(perc * p.MaxMana) / 100)));
+                        }
 
-                            //only miss when strafing when attacking a player
-                            //30% chance to miss
-                            if (p.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
-                            {
-                                ad.AttackResult = eAttackResult.Missed;
-                                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.StrafMiss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                                break;
-                            }
+                        //only miss when strafing when attacking a player
+                        //30% chance to miss
+                        if (p.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
+                        {
+                            ad.AttackResult = eAttackResult.Missed;
+                            p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.StrafMiss"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             break;
                         }
+                        break;
+                    }
                 }
 
                 switch (ad.AttackResult)
@@ -1267,13 +1267,13 @@ namespace DOL.GS
             else if (weapon == null)
                 ad.AttackType = AttackData.eAttackType.MeleeOneHand;
             else switch (weapon.Item_Type)
-                {
-                    default:
-                    case Slot.RIGHTHAND:
-                    case Slot.LEFTHAND: ad.AttackType = AttackData.eAttackType.MeleeOneHand; break;
-                    case Slot.TWOHAND: ad.AttackType = AttackData.eAttackType.MeleeTwoHand; break;
-                    case Slot.RANGED: ad.AttackType = AttackData.eAttackType.Ranged; break;
-                }
+            {
+                default:
+                case Slot.RIGHTHAND:
+                case Slot.LEFTHAND: ad.AttackType = AttackData.eAttackType.MeleeOneHand; break;
+                case Slot.TWOHAND: ad.AttackType = AttackData.eAttackType.MeleeTwoHand; break;
+                case Slot.RANGED: ad.AttackType = AttackData.eAttackType.Ranged; break;
+            }
 
             //No target, stop the attack
             if (ad.Target == null)
@@ -1397,9 +1397,9 @@ namespace DOL.GS
                     weaponTypeToUse.SlotPosition = weapon.SlotPosition;
 
                     if ((owner is GamePlayer) && owner.Realm == eRealm.Albion
-                        && (GameServer.ServerRules.IsObjectTypesEqual((eObjectType)weapon.Object_Type, eObjectType.TwoHandedWeapon)
-                        || GameServer.ServerRules.IsObjectTypesEqual((eObjectType)weapon.Object_Type, eObjectType.PolearmWeapon))
-                        && ServerProperties.Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC)
+                                              && (GameServer.ServerRules.IsObjectTypesEqual((eObjectType)weapon.Object_Type, eObjectType.TwoHandedWeapon)
+                                                  || GameServer.ServerRules.IsObjectTypesEqual((eObjectType)weapon.Object_Type, eObjectType.PolearmWeapon))
+                                              && ServerProperties.Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC)
                     {
                         // Albion dual spec penalty, which sets minimum damage to the base damage spec
                         if (weapon.Type_Damage == (int)eDamageType.Crush)
@@ -1415,88 +1415,92 @@ namespace DOL.GS
                             weaponTypeToUse.Object_Type = (int)eObjectType.ThrustWeapon;
                         }
                     }
-                } 
-                
-                int spec = owner.WeaponSpecLevel(weaponTypeToUse);
-                
-                
-                  // Modified to change the lowest value being 75
-                int lowerboundary = (int)((spec - 1) / (ad.Target.EffectiveLevel * 1.0 + 1) * 75.0 + 25);
-                // Added to clamp variance in ranges
-                int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
-                lowerboundary = Math.Max(lowerboundary, lowerLimit);
-                lowerboundary = Math.Min(lowerboundary, 100);
-                int upperboundary = Math.Max(lowerboundary + 50, 125);
-                 
-                 
-                double weaponskillCalc = owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
-                double strengthRelicCount = 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
-                double specModifier = (0.75 + 0.5 * Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)) / ad.Target.EffectiveLevel+1 + 0.01 * Util.Random(50);
-                double armorMod = (20 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                Console.WriteLine($"hitAF {ad.Target.GetArmorAF(ad.ArmorHitLocation)} abs {(1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation))}");
-                double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01;
-                double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
-                double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod * absBuffReduction * resistReduction;
-                Console.WriteLine($"WS {weaponskillCalc} str {strengthRelicCount} spec {specModifier} armor {armorMod} abs {absBuffReduction} resist {resistReduction} mod {DamageMod}");
-                if (DamageMod > 3.0) DamageMod = 3.0;
-                damage *= DamageMod;
-                
-                if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
-                {
-                    weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF/ABS: {armorMod} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
-                if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                    attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                if (owner is GamePlayer)
+                {
+                    int spec = owner.WeaponSpecLevel(weaponTypeToUse);
+
+
+                    double weaponskillCalc = owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
+                    double strengthRelicCount = 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
+                    double specModifier = (0.75 + 0.5 * Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)) / ad.Target.EffectiveLevel+1 + 0.01 * Util.Random(50);
+                    double armorMod = (20 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    //Console.WriteLine($"hitAF {ad.Target.GetArmorAF(ad.ArmorHitLocation)} abs {(1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation))}");
+                    double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01;
+                    double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
+                    double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod * absBuffReduction * resistReduction;
+                    //Console.WriteLine($"WS {weaponskillCalc} str {strengthRelicCount} spec {specModifier} armor {armorMod} abs {absBuffReduction} resist {resistReduction} mod {DamageMod}");
+                    if (DamageMod > 3.0) DamageMod = 3.0;
+                    damage *= DamageMod;
+                
+                    if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                    {
+                        weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF/ABS: {armorMod} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+                    if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                        attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 
-                // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                {
-                    damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                    if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                    {
+                        damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }
+                    else
+                    {
+                        damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }
                 }
                 else
                 {
-                    damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                }
-                /*
-                int spec = owner.WeaponSpecLevel(weaponTypeToUse);
-                int styleSpec = 0;
-                if (ad.Style != null)
-                {
-                    styleSpec = owner.GetModifiedSpecLevel(ad.Style.Spec);
+                    int spec = owner.WeaponSpecLevel(weaponTypeToUse);
+                    int styleSpec = 0;
+                    if (ad.Style != null)
+                    {
+                        styleSpec = owner.GetModifiedSpecLevel(ad.Style.Spec);
+                    }
+                
+                    // Modified to change the lowest value being 75
+                    int lowerboundary = (int)((spec - 1) / (ad.Target.EffectiveLevel * 1.0 + 1) * 75.0 + 25);
+                    // Added to clamp variance in ranges
+                    int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
+                    lowerboundary = Math.Max(lowerboundary, lowerLimit);
+                    lowerboundary = Math.Min(lowerboundary, 100);
+                    int upperboundary = Math.Max(lowerboundary + 50, 125);
+
+                    double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
+                    //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
+                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90.68) * specModifier;
+                    double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
+                    double DamageMod = weaponskillCalc / armorCalc;
+                    if (DamageMod > 3.0) DamageMod = 3.0;
+                    damage *= DamageMod;
+
+                    if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                    {
+                        weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF: {armorCalc}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+                    if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                        attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                
+                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                    if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                    {
+                        damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }
+                    else
+                    {
+                        damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }
+                
+                    // Added to ensure damage variance never exceeds 150%
+                    int range = upperboundary - lowerboundary;
+                    damage *= (lowerboundary + Util.Random(range)) * 0.01;
                 }
 
-                double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
-                //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
-                double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90.68) * specModifier;
-                double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
-                double DamageMod = weaponskillCalc / armorCalc;
-                if (DamageMod > 3.0) DamageMod = 3.0;
-                damage *= DamageMod;
-
-                if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
-                {
-                    weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF: {armorCalc}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
-                if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                    attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                
-                // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                {
-                    damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                }
-                else
-                {
-                    damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                }
-*/
-                // Added to ensure damage variance never exceeds 150%
-                int range = upperboundary - lowerboundary;
-                damage *= (lowerboundary + Util.Random(range)) * 0.01;
-                
                 if (ad.IsOffHand)
                 {
                     damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage) + owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
@@ -1521,7 +1525,7 @@ namespace DOL.GS
                 
                 // apply total damage cap
                 ad.UncappedDamage = ad.Damage;
-               // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
+                // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
                 if(owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int)(UnstyledDamageCap(weapon) * 2));
                 else 
@@ -1621,68 +1625,68 @@ namespace DOL.GS
                 case eAttackResult.Missed: message = string.Format("{0} attacks {1} and misses!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false)); break;
 
                 case eAttackResult.Blocked:
+                {
+                    message = string.Format("{0} attacks {1} and is blocked!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
+                    // guard messages
+                    if (target != null && target != ad.Target)
                     {
-                        message = string.Format("{0} attacks {1} and is blocked!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
-                        // guard messages
-                        if (target != null && target != ad.Target)
+                        excludes.Add(target);
+
+                        // another player blocked for real target
+                        if (target is GamePlayer)
+                            ((GamePlayer)target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)target).Client.Account.Language, "GameLiving.AttackData.BlocksYou"), ad.Target.GetName(0, true), ad.Attacker.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+
+                        // blocked for another player
+                        if (ad.Target is GamePlayer)
                         {
-                            excludes.Add(target);
-
-                            // another player blocked for real target
-                            if (target is GamePlayer)
-                                ((GamePlayer)target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)target).Client.Account.Language, "GameLiving.AttackData.BlocksYou"), ad.Target.GetName(0, true), ad.Attacker.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-
-                            // blocked for another player
-                            if (ad.Target is GamePlayer)
-                            {
-                                ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.YouBlock") + " (" + /*(ad.Target as GamePlayer).GetBlockChance()*/ad.BlockChance.ToString("0.0") + "%)", ad.Attacker.GetName(0, false), target.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                                ((GamePlayer)ad.Target).Stealth(false);
-                            }
+                            ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.YouBlock") + " (" + /*(ad.Target as GamePlayer).GetBlockChance()*/ad.BlockChance.ToString("0.0") + "%)", ad.Attacker.GetName(0, false), target.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                            ((GamePlayer)ad.Target).Stealth(false);
                         }
-                        else if (ad.Target is GamePlayer)
-                        {
-                            // Added for Nature's Shield
-                            int percent = 0;
-                            if (ad.Target.styleComponent != null && (ad.Target.styleComponent.NextCombatStyle != null && ad.Target.styleComponent.NextCombatStyle.ID == 394) ||
-                                (ad.Target.styleComponent.NextCombatBackupStyle != null && ad.Target.styleComponent.NextCombatBackupStyle.ID == 394))
-                                percent = 60;
-
-                            ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.AttacksYou") + " (" + (percent > 0 ? percent.ToString("0.0") + "%)" : ad.BlockChance.ToString("0.0") + "%)"), ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                        }
-                        break;
                     }
+                    else if (ad.Target is GamePlayer)
+                    {
+                        // Added for Nature's Shield
+                        int percent = 0;
+                        if (ad.Target.styleComponent != null && (ad.Target.styleComponent.NextCombatStyle != null && ad.Target.styleComponent.NextCombatStyle.ID == 394) ||
+                            (ad.Target.styleComponent.NextCombatBackupStyle != null && ad.Target.styleComponent.NextCombatBackupStyle.ID == 394))
+                            percent = 60;
+
+                        ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.AttacksYou") + " (" + (percent > 0 ? percent.ToString("0.0") + "%)" : ad.BlockChance.ToString("0.0") + "%)"), ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                    }
+                    break;
+                }
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
+                {
+                    if (target != null && target != ad.Target)
                     {
-                        if (target != null && target != ad.Target)
+                        message = string.Format("{0} attacks {1} but hits {2}!", ad.Attacker.GetName(0, true), target.GetName(0, false), ad.Target.GetName(0, false));
+                        excludes.Add(target);
+
+                        // intercept for another player
+                        if (target is GamePlayer)
+                            ((GamePlayer)target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)target).Client.Account.Language, "GameLiving.AttackData.StepsInFront"), ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+
+                        // intercept by player
+                        if (ad.Target is GamePlayer)
+                            ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.YouStepInFront"), target.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    }
+                    else
+                    {
+                        if (ad.Attacker is GamePlayer)
                         {
-                            message = string.Format("{0} attacks {1} but hits {2}!", ad.Attacker.GetName(0, true), target.GetName(0, false), ad.Target.GetName(0, false));
-                            excludes.Add(target);
-
-                            // intercept for another player
-                            if (target is GamePlayer)
-                                ((GamePlayer)target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)target).Client.Account.Language, "GameLiving.AttackData.StepsInFront"), ad.Target.GetName(0, true)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-
-                            // intercept by player
-                            if (ad.Target is GamePlayer)
-                                ((GamePlayer)ad.Target).Out.SendMessage(string.Format(LanguageMgr.GetTranslation(((GamePlayer)ad.Target).Client.Account.Language, "GameLiving.AttackData.YouStepInFront"), target.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                            string hitWeapon = "weapon";
+                            if (weapon != null)
+                                hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
+                            message = string.Format("{0} attacks {1} with {2} {3}!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false), ad.Attacker.GetPronoun(1, false), hitWeapon);
                         }
                         else
                         {
-                            if (ad.Attacker is GamePlayer)
-                            {
-                                string hitWeapon = "weapon";
-                                if (weapon != null)
-                                    hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
-                                message = string.Format("{0} attacks {1} with {2} {3}!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false), ad.Attacker.GetPronoun(1, false), hitWeapon);
-                            }
-                            else
-                            {
-                                message = string.Format("{0} attacks {1} and hits!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
-                            }
+                            message = string.Format("{0} attacks {1} and hits!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
                         }
-                        break;
                     }
+                    break;
+                }
                 default: broadcast = false; break;
             }
             SendAttackingCombatMessages(ad);
@@ -1738,23 +1742,23 @@ namespace DOL.GS
                         {
                             case eAttackResult.HitStyle:
                             case eAttackResult.HitUnstyled:
+                            {
+                                string modmessage = "";
+                                if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+                                if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+                                string attackTypeMsg = "attacks";
+                                if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                                 {
-                                    string modmessage = "";
-                                    if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                                    if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
-                                    string attackTypeMsg = "attacks";
-                                    if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                                    {
-                                        attackTypeMsg = "shoots";
-                                    }
-                                    owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourHits"), ad.Attacker.Name, attackTypeMsg, ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                                    if (ad.CriticalDamage > 0)
-                                    {
-                                        owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourCriticallyHits"), ad.Attacker.Name, ad.Target.GetName(0, false), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                                    }
-
-                                    break;
+                                    attackTypeMsg = "shoots";
                                 }
+                                owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourHits"), ad.Attacker.Name, attackTypeMsg, ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                if (ad.CriticalDamage > 0)
+                                {
+                                    owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourCriticallyHits"), ad.Attacker.Name, ad.Target.GetName(0, false), ad.CriticalDamage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                }
+
+                                break;
+                            }
                             default:
                                 owner.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                                 break;
@@ -1793,17 +1797,17 @@ namespace DOL.GS
                                 break;
                             case eAttackResult.HitStyle:
                             case eAttackResult.HitUnstyled:
+                            {
+                                string modmessage = "";
+                                if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
+                                if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+                                owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                                if (ad.CriticalDamage > 0)
                                 {
-                                    string modmessage = "";
-                                    if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                                    if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
-                                    owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                                    if (ad.CriticalDamage > 0)
-                                    {
-                                        owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                                    }
-                                    break;
+                                    owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                                 }
+                                break;
+                            }
                             default: break;
                         }
                     }
@@ -1832,13 +1836,13 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Returns the result of an enemy attack,
-		/// yes this means WE decide if an enemy hits us or not :-)
-		/// </summary>
-		/// <param name="ad">AttackData</param>
-		/// <param name="weapon">the weapon used for attack</param>
-		/// <returns>the result of the attack</returns>
-		public virtual eAttackResult CalculateEnemyAttackResult(AttackData ad, InventoryItem weapon)
+        /// Returns the result of an enemy attack,
+        /// yes this means WE decide if an enemy hits us or not :-)
+        /// </summary>
+        /// <param name="ad">AttackData</param>
+        /// <param name="weapon">the weapon used for attack</param>
+        /// <returns>the result of the attack</returns>
+        public virtual eAttackResult CalculateEnemyAttackResult(AttackData ad, InventoryItem weapon)
         {
             if (!IsValidTarget)
                 return eAttackResult.NoValidTarget;
@@ -2166,7 +2170,7 @@ namespace DOL.GS
                         if (guardchance < 0.01)
                             guardchance = 0.01;
                         //else if (ad.Attacker is GamePlayer && guardchance > .6)
-                           // guardchance = .6;
+                        // guardchance = .6;
                         else if (shieldSize == 1 && guardchance > .8)
                             guardchance = .8;
                         else if (shieldSize == 2 && guardchance > .9)
@@ -2357,7 +2361,7 @@ namespace DOL.GS
                     {
                         // http://rothwellhome.org/guides/archery.htm
                         case 0: missrate += (int)Math.Round(missrate * .15); break; // Rough
-                                                       //						case 1: missrate -= 0; break;
+                        //						case 1: missrate -= 0; break;
                         case 2: missrate -= (int)Math.Round(missrate * .15); break; // doesn't exist (?)
                         case 3: missrate -= (int)Math.Round(missrate * .25); break; // Footed
                     }
@@ -2455,11 +2459,11 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Called to display an attack animation of this living
-		/// </summary>
-		/// <param name="ad">Infos about the attack</param>
-		/// <param name="weapon">The weapon used for attack</param>
-		public virtual void ShowAttackAnimation(AttackData ad, InventoryItem weapon)
+        /// Called to display an attack animation of this living
+        /// </summary>
+        /// <param name="ad">Infos about the attack</param>
+        /// <param name="weapon">The weapon used for attack</param>
+        public virtual void ShowAttackAnimation(AttackData ad, InventoryItem weapon)
         {
             bool showAnim = false;
             switch (ad.AttackResult)
@@ -2574,22 +2578,22 @@ namespace DOL.GS
                     {
                         case eAttackResult.TargetNotVisible:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.NotInView",
-                            ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                                ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.OutOfRange:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.TooFarAway",
-                        ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                                ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.TargetDead:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.AlreadyDead",
-                            ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                                ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.Blocked:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Blocked",
-                            ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                                ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.Parried:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Parried",
-                            ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                                ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.Evaded:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Evaded",
-                            ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
+                                ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.NoTarget: p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.NeedTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.NoValidTarget: p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.CantBeAttacked"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                         case eAttackResult.Missed: p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Miss") + " (" + ad.MissRate + "%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
@@ -2751,12 +2755,12 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Calculates melee critical damage of this living.
-		/// </summary>
-		/// <param name="ad">The attack data.</param>
-		/// <param name="weapon">The weapon used.</param>
-		/// <returns>The amount of critical damage.</returns>
-		public int LivingGetMeleeCriticalDamage(AttackData attackData, InventoryItem weapon)
+        /// Calculates melee critical damage of this living.
+        /// </summary>
+        /// <param name="ad">The attack data.</param>
+        /// <param name="weapon">The weapon used.</param>
+        /// <returns>The amount of critical damage.</returns>
+        public int LivingGetMeleeCriticalDamage(AttackData attackData, InventoryItem weapon)
         {
             if (Util.Chance(AttackCriticalChance(weapon)))
             {
@@ -2782,10 +2786,10 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Max. Damage possible without style
-		/// </summary>
-		/// <param name="weapon">attack weapon</param>
-		public double UnstyledDamageCap(InventoryItem weapon)
+        /// Max. Damage possible without style
+        /// </summary>
+        /// <param name="weapon">attack weapon</param>
+        public double UnstyledDamageCap(InventoryItem weapon)
         {
             if (owner is GameEpicBoss)//damage cap for epic encounters if they use melee weapons,if errors appear remove from here
             {
@@ -2865,9 +2869,9 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Returns the weapon used to attack, null=natural
-		/// </summary>
-		public virtual InventoryItem AttackWeapon
+        /// Returns the weapon used to attack, null=natural
+        /// </summary>
+        public virtual InventoryItem AttackWeapon
         {
             get
             {
@@ -2885,18 +2889,18 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Whether the living is actually attacking something.
-		/// </summary>
-		public virtual bool IsAttacking
+        /// Whether the living is actually attacking something.
+        /// </summary>
+        public virtual bool IsAttacking
         {
             //get { return (AttackState && (m_attackAction != null) && m_attackAction.IsAlive); }
             get { return (AttackState && (attackAction != null)); }
         }
 
         /// <summary>
-		/// Checks whether Living has ability to use lefthanded weapons
-		/// </summary>
-		public bool CanUseLefthandedWeapon
+        /// Checks whether Living has ability to use lefthanded weapons
+        /// </summary>
+        public bool CanUseLefthandedWeapon
         {
             get
             {
@@ -2945,8 +2949,8 @@ namespace DOL.GS
                 if (owner is GamePlayer p && p.UseDetailedCombatLog)
                 {
                     p.Out.SendMessage(
-                            $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n",
-                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n",
+                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
                 
                 if (specLevel > 0)
