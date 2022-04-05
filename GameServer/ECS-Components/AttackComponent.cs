@@ -2770,6 +2770,8 @@ namespace DOL.GS
 
                 int minCriticalDamage = (int)(attackData.Damage * MinMeleeCriticalDamage);
 
+                if (minCriticalDamage > maxCriticalDamage) minCriticalDamage = maxCriticalDamage;
+
                 return Util.Random(minCriticalDamage, maxCriticalDamage);
             }
 
