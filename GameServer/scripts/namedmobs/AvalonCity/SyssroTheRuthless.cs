@@ -292,6 +292,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				IsTargetPicked = false;
 				IsPulled = false;
+				RandomTarget = null;
 			}
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
