@@ -71,8 +71,8 @@ namespace DOL.GS
             //			log.Error(Environment.StackTrace);
             lock (Attackers)
             {
-                m_attackers.Remove(attacker);
-
+                if(m_attackers.Contains(attacker)) m_attackers.Remove(attacker);
+                
                 //if (m_attackers.Count() == 0)
                 //    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
             }
@@ -1472,8 +1472,8 @@ namespace DOL.GS
 
                     double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
-                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90.68) * specModifier;
-                    double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
+                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90) * specModifier;
+                    double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
                     damage *= DamageMod;
