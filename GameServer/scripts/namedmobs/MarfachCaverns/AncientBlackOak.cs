@@ -1,10 +1,7 @@
-﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
+﻿using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
 namespace DOL.GS
 {
     public class AncientBlackOak : GameEpicBoss
@@ -22,7 +19,7 @@ namespace DOL.GS
             {
                 if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
                 {
-                    this.CastSpell(OakDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    CastSpell(OakDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
             base.OnAttackEnemy(ad);
@@ -122,8 +119,7 @@ namespace DOL.GS
             MeleeDamageType = eDamageType.Matter;
             AncientBlackOakBrain sbrain = new AncientBlackOakBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = false; //load from database
-            SaveIntoDatabase();
+            LoadedFromScript = true;
             base.AddToWorld();
             return true;
         }
@@ -184,7 +180,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
             }
             if (Body.InCombat && HasAggro)
