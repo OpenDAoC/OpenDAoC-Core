@@ -294,6 +294,7 @@ namespace DOL.GS {
 
         private void ResetArmor()
         {
+            ClearAFAndABSBuffs();
             CreateArmorSetOfType(eObjectType.GenericArmor);
         }
 
