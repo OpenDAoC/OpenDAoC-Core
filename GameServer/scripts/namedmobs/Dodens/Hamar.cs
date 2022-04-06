@@ -160,12 +160,12 @@ namespace DOL.GS.Scripts
 					{
 						if (_startAttack)
 						{
-							foreach (GameNPC vendos in Body.GetNPCsInRadius(1500))
+							foreach (GameNPC vendos in Body.GetNPCsInRadius(1000))
 							{
 								if (vendos == null) 
 									return;
 							
-								foreach (GamePlayer player in Body.GetPlayersInRadius(1500))
+								foreach (GamePlayer player in Body.GetPlayersInRadius(1000))
 								{
 									if (player == null)
 										return;
