@@ -78,6 +78,9 @@ namespace DOL.GS.PropertyCalc
 			if (regen != 0 && ServerProperties.Properties.HEALTH_REGEN_RATE != 1)
 				regen *= ServerProperties.Properties.HEALTH_REGEN_RATE;
 
+			if (living.IsSitting && living is GamePlayer)
+				regen *= 1.75;
+
 			double decimals = regen - (int)regen;
 			if (Util.ChanceDouble(decimals)) 
 			{

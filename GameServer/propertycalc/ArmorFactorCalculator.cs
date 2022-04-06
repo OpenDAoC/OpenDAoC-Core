@@ -97,14 +97,14 @@ namespace DOL.GS.PropertyCalc
 				if (epicScaleFactor < 5)
 					epicScaleFactor = 5;
 
-				return (int)((1 + (living.Level / 170.0)) * (living.Level << 1) * epicScaleFactor) //5* factor for tough mobs
+				return (int)((1 + (living.Level / 50.0)) * (living.Level << 1) * epicScaleFactor) //5* factor for tough mobs
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];
 			}
 			else
 			{
-				return (int)((1.5 + (living.Level / 50.0)) * (living.Level << 1))
+				return (int)((1.2 + (living.Level / 100.0)) * (living.Level << 1))
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];

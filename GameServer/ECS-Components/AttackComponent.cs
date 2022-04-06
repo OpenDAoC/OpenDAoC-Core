@@ -1379,14 +1379,15 @@ namespace DOL.GS
                     damage > 0 &&
                     owner is GameNPC && (owner as GameNPC).Brain is IControlledBrain == false)
                 {
-                    double modifiedDamage = ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL * (owner.Level - ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
+                    double modifiedDamage = ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL *
+                                            (owner.Level - ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
                     damage += (modifiedDamage * effectiveness);
                 }
 
                 InventoryItem armor = null;
 
                 if (ad.Target.Inventory != null)
-                    armor = ad.Target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
+                    armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
 
                 InventoryItem weaponTypeToUse = null;
 
@@ -1397,61 +1398,77 @@ namespace DOL.GS
                     weaponTypeToUse.SlotPosition = weapon.SlotPosition;
 
                     if ((owner is GamePlayer) && owner.Realm == eRealm.Albion
-                                              && (GameServer.ServerRules.IsObjectTypesEqual((eObjectType)weapon.Object_Type, eObjectType.TwoHandedWeapon)
-                                                  || GameServer.ServerRules.IsObjectTypesEqual((eObjectType)weapon.Object_Type, eObjectType.PolearmWeapon))
+                                              && (GameServer.ServerRules.IsObjectTypesEqual(
+                                                      (eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon)
+                                                  || GameServer.ServerRules.IsObjectTypesEqual(
+                                                      (eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon))
                                               && ServerProperties.Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC)
                     {
                         // Albion dual spec penalty, which sets minimum damage to the base damage spec
-                        if (weapon.Type_Damage == (int)eDamageType.Crush)
+                        if (weapon.Type_Damage == (int) eDamageType.Crush)
                         {
-                            weaponTypeToUse.Object_Type = (int)eObjectType.CrushingWeapon;
+                            weaponTypeToUse.Object_Type = (int) eObjectType.CrushingWeapon;
                         }
-                        else if (weapon.Type_Damage == (int)eDamageType.Slash)
+                        else if (weapon.Type_Damage == (int) eDamageType.Slash)
                         {
-                            weaponTypeToUse.Object_Type = (int)eObjectType.SlashingWeapon;
+                            weaponTypeToUse.Object_Type = (int) eObjectType.SlashingWeapon;
                         }
                         else
                         {
-                            weaponTypeToUse.Object_Type = (int)eObjectType.ThrustWeapon;
+                            weaponTypeToUse.Object_Type = (int) eObjectType.ThrustWeapon;
                         }
                     }
                 }
 
+                
                 if (owner is GamePlayer)
                 {
-                    int spec = owner.WeaponSpecLevel(weaponTypeToUse);
+                int spec = owner.WeaponSpecLevel(weaponTypeToUse);
+                if (owner.Level < 5 && spec == 1) spec++;
+                double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : 0.75;
+                if (owner.Level < 6 && lowerLimit < 0.75)
+                    lowerLimit = 0.75; //remove subspec penalty for characters lvl5 or less
 
-                    double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : spec < owner.Level + 2 ? 0.75 : 1.0;
-                    double weaponskillCalc = owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
-                    double strengthRelicCount = 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
-                    double specModifier = (lowerLimit + 0.5 * Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)) / ad.Target.EffectiveLevel+1 + 0.01 * Util.Random(50);
-                    double armorMod = (20 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    //Console.WriteLine($"hitAF {ad.Target.GetArmorAF(ad.ArmorHitLocation)} abs {(1-ad.Target.GetArmorAbsorb(ad.ArmorHitLocation))}");
-                    //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
-                    double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
-                    double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod  * resistReduction;
-                    //Console.WriteLine($"WS {weaponskillCalc} str {strengthRelicCount} spec {specModifier} armor {armorMod} abs {absBuffReduction} resist {resistReduction} mod {DamageMod}");
-                    if (DamageMod > 3.0) DamageMod = 3.0;
-                    damage *= DamageMod;
-                
-                    if(ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+               double weaponskillCalc =
+                    owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
+                double strengthRelicCount =
+                    0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
+                int range = lowerLimit < 0.26 ? 100 : 50; //check for a 0.25 base, add variance
+                //Console.WriteLine($"lowerlim {lowerLimit} effeclvl {ad.Target.EffectiveLevel + 1} spec {spec} min {Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)} bottom {(ad.Target.EffectiveLevel + 1)}");
+                double specModifier =
+                    lowerLimit + 0.5 * (Math.Min(ad.Target.EffectiveLevel + 1, spec - 1) / (ad.Target.EffectiveLevel + 1)) +
+                    0.01d * Util.Random(range);
+                if (specModifier > 1.25) specModifier -= 0.25; //this is a cheap hack but I've spent hours and I'm tired
+                double armorMod = (ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
+                double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
+                double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod * resistReduction;
+                if (DamageMod > 3.0) DamageMod = 3.0;
+                damage *= DamageMod;
+
+                if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                {
+                    weaponskiller.Out.SendMessage(
+                        $"Calculated WS: {weaponskillCalc.ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
+                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
+                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+
+                if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                    attackee.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}", eChatType.CT_DamageAdd,
+                        eChatLoc.CL_SystemWindow);
+                /*
+                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                    if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
                     {
-                        weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF/ABS: {armorMod} SpecMod: {specModifier}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     }
-                    if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                        attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    else
+                    {
+                        damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }*/
                     
-                    /*
-                        // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                        if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                        {
-                            damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                        }
-                        else
-                        {
-                            damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                        }*/
                 }
                 else
                 {
@@ -1463,16 +1480,12 @@ namespace DOL.GS
                     }
                 
                     // Modified to change the lowest value being 75
-                    int lowerboundary = (int)((spec - 1) / (ad.Target.EffectiveLevel * 1.0 + 1) * 75.0 + 25);
-                    // Added to clamp variance in ranges
-                    int lowerLimit = spec < owner.Level * 2 / 3 ? 25 : spec < owner.Level + 2 ? 75 : 100;
-                    lowerboundary = Math.Max(lowerboundary, lowerLimit);
-                    lowerboundary = Math.Min(lowerboundary, 100);
-                    int upperboundary = Math.Max(lowerboundary + 50, 125);
+                    int lowerboundary = 75;
+                    int upperboundary = 125;
 
                     double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
-                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + 90) * specModifier;
+                    double weaponskillCalc = (owner.GetWeaponSkill(weapon));
                     double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
@@ -1483,8 +1496,12 @@ namespace DOL.GS
                         weaponskiller.Out.SendMessage($"WS: {weaponskillCalc} AF: {armorCalc}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
-                    if(ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                        attackee.Out.SendMessage($"Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                    if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                    {
+                        attackee.Out.SendMessage($"NPC Damage Modifier: {(int)(DamageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+                        
                 
                     /*
                     // Badge Of Valor Calculation 1+ absorb or 1- absorb
@@ -1496,8 +1513,7 @@ namespace DOL.GS
                     {
                         damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     }*/
-                
-                    // Added to ensure damage variance never exceeds 150%
+
                     int range = upperboundary - lowerboundary;
                     damage *= (lowerboundary + Util.Random(range)) * 0.01;
                 }

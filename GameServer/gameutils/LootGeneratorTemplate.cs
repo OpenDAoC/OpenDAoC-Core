@@ -517,8 +517,6 @@ namespace DOL.GS
 								}
 							}
 						}
-						
-						Console.WriteLine($"Top bracket tmp {tmp} dropChan {dropChan}");
 
 						if (tmp > 0 && dropChan > 0)
 						{
