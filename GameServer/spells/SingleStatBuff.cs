@@ -20,6 +20,7 @@ using System;
 using System.Reflection;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using log4net;
 
 namespace DOL.GS.Spells
@@ -212,6 +213,7 @@ namespace DOL.GS.Spells
         {
             get
             {
+                if (Caster is GamePlayer c && (c.CharacterClass is ClassRanger || c.CharacterClass is ClassHunter)) return eBuffBonusCategory.BaseBuff;
             	if (Spell.Target.Equals("Self", StringComparison.OrdinalIgnoreCase)) return eBuffBonusCategory.Other; // no caps for self buffs
                 if (m_spellLine.IsBaseLine) return eBuffBonusCategory.BaseBuff; // baseline cap
                 return eBuffBonusCategory.Other; // no caps for spec line buffs

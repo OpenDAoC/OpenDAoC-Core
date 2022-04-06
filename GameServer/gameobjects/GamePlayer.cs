@@ -7680,7 +7680,8 @@ namespace DOL.GS
                     : CharacterClass.WeaponSkillBase);
 
             //added for WS Poisons
-            double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
+            //double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
+            double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon))) * Effectiveness;
 
             //return ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * PlayerEffectiveness);
             return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
@@ -7748,7 +7749,7 @@ namespace DOL.GS
             eaf *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
 
             eaf += GetModified(eProperty.ArmorFactor);
-            eaf *= 4.67; // compensate *4.67 in damage formula
+            //eaf *= 4.67; // compensate *4.67 in damage formula
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
