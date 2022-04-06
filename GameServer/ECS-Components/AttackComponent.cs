@@ -1425,20 +1425,22 @@ namespace DOL.GS
                 {
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
                 if (owner.Level < 5 && spec == 1) spec++;
-                double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : 0.75;
-                if (owner.Level < 6 && lowerLimit < 0.75)
-                    lowerLimit = 0.75; //remove subspec penalty for characters lvl5 or less
+                
+                //double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : 0.75;
+                double lowerLimit = Math.Min(0.75 * (spec - 1) / (ad.Target.EffectiveLevel + 1) + 0.25, 1.0);
 
-               double weaponskillCalc =
-                    owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
+                //good luck to all ye who must read this math
+                //trust in the rust, baby
+                double upperLimit = Math.Min(Math.Max(1.25+(((spec-1)-((ad.Target.EffectiveLevel+1)*2/3))/((ad.Target.EffectiveLevel+1)-((ad.Target.EffectiveLevel+1)*2/3)))*.25,1.25),1.50);
+                int varianceRange = (int)(upperLimit*100 - lowerLimit*100);
+
+                double weaponskillCalc = owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
                 double strengthRelicCount =
                     0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
-                int range = lowerLimit < 0.26 ? 100 : 50; //check for a 0.25 base, add variance
                 //Console.WriteLine($"lowerlim {lowerLimit} effeclvl {ad.Target.EffectiveLevel + 1} spec {spec} min {Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)} bottom {(ad.Target.EffectiveLevel + 1)}");
-                double specModifier =
-                    lowerLimit + 0.5 * (Math.Min(ad.Target.EffectiveLevel + 1, spec - 1) / (ad.Target.EffectiveLevel + 1)) +
-                    0.01d * Util.Random(range);
-                if (specModifier > 1.25) specModifier -= 0.25; //this is a cheap hack but I've spent hours and I'm tired
+                //double specModifier = lowerLimit + 0.5 * (Math.Min(ad.Target.EffectiveLevel + 1, spec - 1) / (ad.Target.EffectiveLevel + 1)) + 0.01d * Util.Random(range);
+                double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
+               
                 double armorMod = (ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                 //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                 double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
