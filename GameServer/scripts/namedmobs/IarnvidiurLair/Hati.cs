@@ -107,7 +107,7 @@ namespace DOL.GS
 					spell.TooltipId = 4568;
 					spell.Damage = 260;
 					spell.Range = 350;
-					spell.SpellID = 4568;
+					spell.SpellID = 11815;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
