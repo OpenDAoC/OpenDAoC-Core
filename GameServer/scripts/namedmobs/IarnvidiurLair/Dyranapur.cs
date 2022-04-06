@@ -6,7 +6,7 @@ using DOL.Events;
 
 namespace DOL.GS
 {
-	public class Dyranapur : GameEpicBoss
+	public class Dyranapur : GameEpicNPC
 	{
 		public Dyranapur() : base() { }
 
@@ -64,7 +64,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
