@@ -114,14 +114,14 @@ namespace DOL.GS
 
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			int AF = 1000;
+			int AF = 400;
 			if (this.attackComponent.Attackers.Count > 1)
 			{
 				AF -= 5 * this.attackComponent.Attackers.Count;
 			}
 
-			if (AF <= 800)
-				AF = 800;
+			if (AF <= 200)
+				AF = 200;
 			return AF * DragonDifficulty / 100;
 		}
 
