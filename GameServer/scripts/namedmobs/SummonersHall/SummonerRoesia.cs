@@ -94,7 +94,7 @@ namespace DOL.GS
 			SummonerRoesiaBrain.spawn_bows = false;
 			SummonerRoesiaBrain.IsPulled = false;
 			Faction = FactionMgr.GetFactionByID(187);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
+			Faction.AddFriendFaction(FactionMgr.GetFactionByID(206));
 			IsCloakHoodUp = true;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -144,7 +144,7 @@ namespace DOL.GS
 				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 				OF.MeleeDamageType = eDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(187);
-				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
+				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(206));
 
 				OF.X = 34577;
 				OF.Y = 31371;
