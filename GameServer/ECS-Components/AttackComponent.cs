@@ -1426,7 +1426,10 @@ namespace DOL.GS
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
                 if (ad.Style != null)
                 {
-                    spec = owner.GetModifiedSpecLevel(ad.Style.Spec);
+                    spec = owner.GetModifiedSpecLevel(ad.Style.Spec) > spec
+                        ? owner.GetModifiedSpecLevel(ad.Style.Spec)
+                        : spec;
+                    
                 }
                 if (owner.Level < 5 && spec == 1) spec++;
                 
@@ -1492,6 +1495,8 @@ namespace DOL.GS
 
                     double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0)  : ((100 + spec) / 100.0);
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
+                    int range = upperboundary - lowerboundary;
+                    damage *= (lowerboundary + Util.Random(range)) * 0.01;
                     double weaponskillCalc = (owner.GetWeaponSkill(weapon));
                     double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20) * (1+ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) * (1 + ad.Target.GetResist(ad.DamageType) * .01)));
                     double DamageMod = weaponskillCalc / armorCalc;
@@ -1520,9 +1525,6 @@ namespace DOL.GS
                     {
                         damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     }*/
-
-                    int range = upperboundary - lowerboundary;
-                    damage *= (lowerboundary + Util.Random(range)) * 0.01;
                 }
 
                 if (ad.IsOffHand)
