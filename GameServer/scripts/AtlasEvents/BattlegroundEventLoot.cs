@@ -237,7 +237,7 @@ namespace DOL.GS.Scripts
 
 				InventoryItem item = GameInventoryItem.Create(orbs);
 
-				player.Inventory.AddTemplate(item, 15000, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+				player.Inventory.AddTemplate(item, 1500, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
 				//GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot);
 			}
