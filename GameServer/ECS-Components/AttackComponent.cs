@@ -1424,6 +1424,10 @@ namespace DOL.GS
                 if (owner is GamePlayer)
                 {
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
+                if (ad.Style != null)
+                {
+                    spec = owner.GetModifiedSpecLevel(ad.Style.Spec);
+                }
                 if (owner.Level < 5 && spec == 1) spec++;
                 
                 //double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : 0.75;
@@ -1441,7 +1445,7 @@ namespace DOL.GS
                 //double specModifier = lowerLimit + 0.5 * (Math.Min(ad.Target.EffectiveLevel + 1, spec - 1) / (ad.Target.EffectiveLevel + 1)) + 0.01d * Util.Random(range);
                 double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
                
-                double armorMod = (ad.Target.GetArmorAF(ad.ArmorHitLocation)) / (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                double armorMod = ad.Target.GetArmorAF(ad.ArmorHitLocation) / (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                 //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                 double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
                 double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod * resistReduction;
