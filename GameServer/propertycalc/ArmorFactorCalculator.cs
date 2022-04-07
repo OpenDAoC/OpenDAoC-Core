@@ -50,9 +50,10 @@ namespace DOL.GS.PropertyCalc
 				af += Math.Min(living.Level, living.ItemBonus[(int)property]);
 				// uncapped category
 				af += living.BuffBonusCategory4[(int)property];
-
+				
 				// buffs should be spread across each armor piece since the damage calculation is based on piece hit
-				af /= 6;
+				if(living is GamePlayer)
+					af /= 6;
 
 				return af;
 			}
