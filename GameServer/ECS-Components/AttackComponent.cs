@@ -1424,13 +1424,7 @@ namespace DOL.GS
                 if (owner is GamePlayer)
                 {
                 int spec = owner.WeaponSpecLevel(weaponTypeToUse);
-                if (ad.Style != null)
-                {
-                    spec = owner.GetModifiedSpecLevel(ad.Style.Spec) > spec
-                        ? owner.GetModifiedSpecLevel(ad.Style.Spec)
-                        : spec;
-                    
-                }
+
                 if (owner.Level < 5 && spec == 1) spec++;
                 
                 //double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : 0.75;
