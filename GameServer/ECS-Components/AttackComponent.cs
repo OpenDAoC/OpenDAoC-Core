@@ -3308,6 +3308,13 @@ namespace DOL.GS
                 return AttackDamage(weapon) * ((double) p.Empathy / 100) *
                        ServerProperties.Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
             } ///////////////////////////remove until here if errors appear
+              
+            if (owner is GameDragon) //damage cap for dragon encounter
+            {
+                var p = owner as GameDragon;
+                return AttackDamage(weapon) * ((double) p.Empathy / 100) *
+                       ServerProperties.Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+            } 
 
             if (owner is GamePlayer)
             {
