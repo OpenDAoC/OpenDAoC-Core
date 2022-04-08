@@ -4190,9 +4190,9 @@ namespace DOL.GS.Spells
 
 				if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
-					double WeaponSkill = player.GetWeaponSkill(player.AttackWeapon);
-					WeaponSkill /= 5;
-					spellDamage *= (WeaponSkill + 200) / 275.0;
+					double WeaponStat = player.GetWeaponStat(player.AttackWeapon);
+					WeaponStat /= 5;
+					spellDamage *= (WeaponStat + 200) / 275.0;
 				}
 
 				if (player.CharacterClass.ManaStat != eStat.UNDEFINED
