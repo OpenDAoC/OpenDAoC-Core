@@ -4000,9 +4000,10 @@ namespace DOL.GS
 
 		//}
 
-		private int scalingFactor = 23;
+		private int scalingFactor = 15;
 
 		private int orbsReward = 0;
+		
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
@@ -4014,13 +4015,13 @@ namespace DOL.GS
 			*(100 + WEAPONSKILL_BONUS) / 100]
 			*/
 			int weaponskill = 0;
-
+  
 			weaponskill = (Level + 1) 
-				* ScalingFactor/20 //scaling factor. Higher = more difficult
+				* (int)(ScalingFactor/4) //mob damage table calc, basically
 				* (200 + GetModified(eProperty.MeleeDamage)) / 500 //melee damage buffs
 				* ((100 + Strength) / 100) //NPCs only use STR to calculate, can skip str or str/dex check
 				* ((100 + GetModified(eProperty.WeaponSkill)) / 100); //weaponskill buffs
-
+  
 			return weaponskill;
         }
 		

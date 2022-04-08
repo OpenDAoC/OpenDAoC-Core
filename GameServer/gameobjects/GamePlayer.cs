@@ -5617,7 +5617,7 @@ namespace DOL.GS
                 if (usedi30 != null)
                 {
                     Out.SendMessage("You have been awarded a bonus of 1000 Atlas Orbs for hitting level 40 with a test character.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 1000);
+                    AtlasROGManager.GenerateOrbAmount(this, 100);
                 }
                 
                 // Creates a TimeXLevel to track the levelling time to 40
@@ -5689,7 +5689,7 @@ namespace DOL.GS
                     HCFlag = false;
                     HCCompleted = true;
                     Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 50000);
+                    AtlasROGManager.GenerateOrbAmount(this, 5000);
                 }
                 
                 // Check if player has completed the Solo Challenge
@@ -5706,7 +5706,7 @@ namespace DOL.GS
                     soloBeetle.KeyName = soloKey;
                     soloBeetle.Value = "1";
                     GameServer.Database.AddObject(soloBeetle);
-                    AtlasROGManager.GenerateOrbAmount(this, 15000);
+                    AtlasROGManager.GenerateOrbAmount(this, 1500);
                     Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
                 
@@ -7681,7 +7681,7 @@ namespace DOL.GS
 
             //added for WS Poisons
             //double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
-            double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon))) * Effectiveness;
+            double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon)/2)) * Effectiveness;
 
             //return ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * PlayerEffectiveness);
             return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);

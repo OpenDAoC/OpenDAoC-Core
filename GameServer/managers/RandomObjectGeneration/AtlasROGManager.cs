@@ -69,6 +69,10 @@ namespace DOL.GS {
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
                 int maxcount = Util.Random(10, 20);
+
+                int REMOVE_ME_BETA_SCALAR = 10;
+                
+                maxcount *= REMOVE_ME_BETA_SCALAR;
                 int orbBonus = (int) Math.Floor((decimal) ((maxcount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 
@@ -87,6 +91,9 @@ namespace DOL.GS {
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
+                int REMOVE_ME_BETA_SCALAR = 10;
+                
+                amount *= REMOVE_ME_BETA_SCALAR;
                 int orbBonus = (int) Math.Floor((decimal) ((amount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, amount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 

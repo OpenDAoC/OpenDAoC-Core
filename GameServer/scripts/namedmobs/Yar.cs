@@ -19,7 +19,7 @@ namespace DOL.GS
 
         public virtual int YarDifficulty
         {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS / 100; }
         }
 
         public override double AttackDamage(InventoryItem weapon)

@@ -143,6 +143,7 @@ namespace DOL.GS.Scripts
 	{
 		public class HamarBrain : StandardMobBrain
 		{
+			private bool _startAttack = true;
 			public HamarBrain() : base()
 			{
 				AggroLevel = 200;
@@ -157,23 +158,31 @@ namespace DOL.GS.Scripts
 				{
 					if (Body.TargetObject != null)
 					{
-						foreach (GameNPC vendos in Body.GetNPCsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+						if (_startAttack)
 						{
-							if (vendos == null)
-								return;
-
-							foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+							foreach (GameNPC vendos in Body.GetNPCsInRadius(1000))
 							{
-								if (player == null)
+								if (vendos == null) 
 									return;
-
-								if (vendos.Name.ToLower().Contains("snow vendo") && vendos.IsVisibleTo(Body))
+							
+								foreach (GamePlayer player in Body.GetPlayersInRadius(1000))
 								{
-									vendos.StartAttack(player);
+									if (player == null)
+										return;
+
+									if (vendos.Name.ToLower().Contains("snow vendo") && vendos.IsVisibleTo(Body))
+									{
+										vendos.StartAttack(player);
+										_startAttack = false;
+									}
 								}
 							}
 						}
 					}
+				}
+				else if(!Body.InCombat && Body.IsAlive && !HasAggro)
+				{
+					_startAttack = true;
 				}
 			}
 
