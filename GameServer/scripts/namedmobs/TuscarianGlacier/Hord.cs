@@ -69,13 +69,13 @@ namespace DOL.GS.Scripts
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * HordDifficulty / 100;
+            return 800 * HordDifficulty / 100;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85 * HordDifficulty / 100;
+            return 0.55 * HordDifficulty / 100;
         }
 
         #region Damage & Heal Events
