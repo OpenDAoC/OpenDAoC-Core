@@ -50,9 +50,10 @@ namespace DOL.GS.PropertyCalc
 				af += Math.Min(living.Level, living.ItemBonus[(int)property]);
 				// uncapped category
 				af += living.BuffBonusCategory4[(int)property];
-
+				
 				// buffs should be spread across each armor piece since the damage calculation is based on piece hit
-				af /= 6;
+				if(living is GamePlayer)
+					af /= 6;
 
 				return af;
 			}
@@ -72,20 +73,20 @@ namespace DOL.GS.PropertyCalc
 			else if (living is GameEpicNPC epic || living is GameEpicBoss)
 			{
 				GameLiving bossnpc = living;
-				double epicScaleFactor = 10;
+				double epicScaleFactor = 7;
 				int petCap = 16;
 				int petCount = 0;
 
 				if(bossnpc is GameEpicBoss)
                 {
-					epicScaleFactor = 15;
+					epicScaleFactor *= 2;
 					petCap = 24;
                 }
 
                 foreach (var attacker in bossnpc.attackComponent.Attackers)
                 {
 					if(attacker is GamePlayer)
-						epicScaleFactor -= 0.2;
+						epicScaleFactor -= 0.4;
 					if (attacker is GamePet && petCount <= petCap)
                     {
 						epicScaleFactor -= 0.1;
@@ -94,17 +95,19 @@ namespace DOL.GS.PropertyCalc
 						
 				}
 
-				if (epicScaleFactor < 5)
-					epicScaleFactor = 5;
+				if (epicScaleFactor < 4)
+					epicScaleFactor = 4;
 
-				return (int)((1 + (living.Level / 50.0)) * (living.Level << 1) * epicScaleFactor) //5* factor for tough mobs
+				epicScaleFactor *= .1;
+
+				return (int)((1 + (living.Level / 50.0)) * (living.Level << 1) * epicScaleFactor) 
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];
 			}
 			else
 			{
-				return (int)((1.2 + (living.Level / 100.0)) * (living.Level << 1))
+				return (int)((1 + (living.Level / 200.0)) * (living.Level << 1))
 				+ living.SpecBuffBonusCategory[(int)property]
 				- Math.Abs(living.DebuffCategory[(int)property])
 				+ living.BuffBonusCategory4[(int)property];

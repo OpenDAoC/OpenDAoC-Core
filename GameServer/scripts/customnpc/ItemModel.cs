@@ -6070,6 +6070,26 @@ namespace DOL.GS {
             switch (item.Item_Type)
             {
                 case Slot.HELM:
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("A fine piece of headwear. \n" +
+                              "I can apply the following skins: \n\n" +
+                              "***** Catacombs Models Only ***** \n" +
+                              "[Dragonslayer Helm] (" + dragon * 2 + " " + currencyName + ")\n" +
+                              "[Dragonsworn Helm] (" + dragon + " " + currencyName + ")\n" +
+                              "***** End Cata Only ***** \n\n" +
+
+                              "[Crown of Zahur] (" + artifact + " " + currencyName + ")\n" +
+                              "[Crown of Zahur variant] (" + artifact + " " + currencyName + ")\n" +
+                              "[Winged Helm] (" + artifact + " " + currencyName + ")\n" +
+                              "[Oceanus Helm] (" + toageneric + " " + currencyName + ")\n" +
+                              "[Stygia Helm] (" + toageneric + " " + currencyName + ")\n" +
+                              "[Volcanus Helm] (" + toageneric + " " + currencyName + ")\n" +
+                              "[Aerus Helm] (" + toageneric + " " + currencyName + ")\n");
+                    if (item.Object_Type == (int)eObjectType.Cloth)
+                        sb.Append("[Wizard Hat] (" + epic + " " + currencyName + ")\n");
+                    sb.Append("\nAdditionally, I have some realm specific headgear available: ");
+                    SendReply(t, sb.ToString());
+                    /*
                     SendReply(t, "A fine piece of headwear. \n" +
                         "I can apply the following skins: \n\n" +
                         "***** Catacombs Models Only ***** \n" +
@@ -6084,9 +6104,10 @@ namespace DOL.GS {
                         "[Stygia Helm] (" + toageneric + " " + currencyName + ")\n" +
                         "[Volcanus Helm] (" + toageneric + " " + currencyName + ")\n" +
                         "[Aerus Helm] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Wizard Hat] (" + epic + " " + currencyName + ")\n\n" +
+                        
                         "Additionally, I have some realm specific headgear available:" +
                         "");
+                        */
                     switch (source.Realm)
                     {
                         case eRealm.Albion:

@@ -165,12 +165,12 @@ namespace DOL.GS.Scripts
                     const string soloKey = "solo_to_50";
                     var isSolo = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player?.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
                     
-                    var orbAmount = 10000;
+                    var orbAmount = 1000;
                     player.Client.Account.CharactersTraded++;
                     
                     if (player.NoHelp || isSolo != null)
                     {
-                        orbAmount = 25000;
+                        orbAmount = 2500;
                         player.Client.Account.SoloCharactersTraded++;
                     }
                     

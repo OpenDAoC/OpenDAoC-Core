@@ -122,7 +122,7 @@ namespace DOL.GS
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-			Faction = FactionMgr.GetFactionByID(187);
+			Faction = FactionMgr.GetFactionByID(206);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			GrandSummonerGovannonBrain.SpawnSacrifices1 = false;
 			GrandSummonerGovannonBrain.Stage2 = false;
@@ -173,7 +173,7 @@ namespace DOL.GS
 				OF.Empathy = 300;
 				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 				OF.MeleeDamageType = eDamageType.Crush;
-				OF.Faction = FactionMgr.GetFactionByID(187);
+				OF.Faction = FactionMgr.GetFactionByID(206);
 				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
 				OF.X = 34577;
