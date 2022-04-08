@@ -73,7 +73,7 @@ namespace DOL.GS.PropertyCalc
 			else if (living is GameEpicNPC epic || living is GameEpicBoss)
 			{
 				GameLiving bossnpc = living;
-				double epicScaleFactor = 7;
+				double epicScaleFactor = 8;
 				int petCap = 16;
 				int petCount = 0;
 
