@@ -165,8 +165,9 @@ namespace DOL.GS {
 
         private void CreateArmorSetOfType(eObjectType armorType)
         {
-            ClearAFAndABSBuffs();
+            
             Inventory.ClearInventory();
+            ClearAFAndABSBuffs();
             List<int> invSlots = new List<int>();
             invSlots.Add(Slot.ARMS);
             invSlots.Add(Slot.FEET);
@@ -183,7 +184,7 @@ namespace DOL.GS {
                 invItem = GenerateItemNameModel(invItem);
                 invItem = GenerateArmorStats(invItem);
                 this.ItemBonus[eProperty.ArmorFactor] += invItem.DPS_AF;
-                this.ItemBonus[eProperty.ArmorAbsorption] += invItem.SPD_ABS;
+                //this.ItemBonus[eProperty.ArmorAbsorption] += invItem.SPD_ABS;
                 //Console.WriteLine($"AF item prop{ItemBonus[eProperty.ArmorFactor]}");
                 ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, invItem.DPS_AF, 1, false);
                 //ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, invItem.SPD_ABS, 1, false);
@@ -202,10 +203,12 @@ namespace DOL.GS {
             //set dps_af and spd_abs
             if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
             {
-                if (type == eObjectType.Cloth)
+                if (type == eObjectType.GenericArmor)
+                    item.DPS_AF = 0;
+                else if (type == eObjectType.Cloth)
                     item.DPS_AF = Level;
                 else item.DPS_AF = Level * 2;
-                //item.SPD_ABS = GetAbsorb(type);
+                item.SPD_ABS = GetAbsorb(type);
             }
             item.Quality = 99;
             item.Condition = 100;
@@ -214,14 +217,14 @@ namespace DOL.GS {
 
         private void ClearAFAndABSBuffs()
         {
-            
+            Console.WriteLine($"af {GetModified(eProperty.ArmorFactor)} abs {GetModified(eProperty.ArmorAbsorption)} itemB AF {this.ItemBonus[eProperty.ArmorFactor]} itemb ABS {this.ItemBonus[eProperty.ArmorAbsorption]}");
             if (GetModified(eProperty.ArmorFactor) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, GetModified(eProperty.ArmorFactor), 1, true);
+                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, ItemBonus[eProperty.ArmorFactor], 1, true);
             }
             if (GetModified(eProperty.ArmorAbsorption) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, GetModified(eProperty.ArmorAbsorption), 1, true);
+                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, ItemBonus[eProperty.ArmorAbsorption], 1, true);
             }
             if (this.ItemBonus[eProperty.ArmorFactor] > 0)
             {
@@ -231,6 +234,11 @@ namespace DOL.GS {
             {
                 ItemBonus[eProperty.ArmorAbsorption] = 0;
             }
+        }
+
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return base.GetArmorAF(slot)/6;
         }
 
         private static int GetAbsorb(eObjectType type)
@@ -294,7 +302,6 @@ namespace DOL.GS {
 
         private void ResetArmor()
         {
-            ClearAFAndABSBuffs();
             CreateArmorSetOfType(eObjectType.GenericArmor);
         }
 
