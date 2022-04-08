@@ -1586,18 +1586,16 @@ namespace DOL.GS
 
                     //good luck to all ye who must read this math
                     //trust in the rust, baby
-                    //double upperLimit = Math.Min(Math.Max(1.25+(((spec-1)-((ad.Target.EffectiveLevel+1)*2/3d))/((ad.Target.EffectiveLevel+1)-((ad.Target.EffectiveLevel+1)*2/3d)))*.25,1.25),1.50);
                     double upperLimit =
                         Math.Min(Math.Max(1.25 + ((3d * (spec - 1) / (ad.Target.EffectiveLevel + 1)) - 2) * .25, 1.25),
                             1.50);
+                    
                     int varianceRange = (int) (upperLimit * 100 - lowerLimit * 100);
 
                     double weaponskillCalc =
                         owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
                     double strengthRelicCount =
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
-                    //Console.WriteLine($"lowerlim {lowerLimit} effeclvl {ad.Target.EffectiveLevel + 1} spec {spec} min {Math.Min(ad.Target.EffectiveLevel + 1, spec - 1)} bottom {(ad.Target.EffectiveLevel + 1)}");
-                    //double specModifier = lowerLimit + 0.5 * (Math.Min(ad.Target.EffectiveLevel + 1, spec - 1) / (ad.Target.EffectiveLevel + 1)) + 0.01d * Util.Random(range);
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
                     double armorMod = ad.Target.GetArmorAF(ad.ArmorHitLocation) /
