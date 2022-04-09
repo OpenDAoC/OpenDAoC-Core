@@ -163,7 +163,7 @@ namespace DOL.GS.PropertyCalc
 						}
 					}
 				}
-				if (living.InCombat)
+				else
 				{
 					if (brain != null)
 					{
