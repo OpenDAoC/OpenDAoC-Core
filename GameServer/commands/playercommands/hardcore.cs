@@ -79,6 +79,9 @@ namespace DOL.GS.Commands
         {
             if (IsSpammingCommand(client.Player, "hardcore"))
                 return;
+
+            if (client.Player.RealmPoints > 0)
+                return;
             
             if (client.Player.HCFlag){
                 client.Out.SendMessage("Your Hardcore flag is ON! Death will result in the character deletion.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
