@@ -131,7 +131,7 @@ namespace DOL.GS.Scripts
                               "[Aegirhamn] in the [Shrouded Isles],\n" +
                               "Our glorious city of [Jordheim],\n" +
                               "[Entrance] to the areas of [Housing]\n\n" +
-                              "rr one of the many [towns] throughout Midgard.";
+                              "or one of the many [towns] throughout Midgard.";
                     break;
 
                 case eRealm.Hibernia:
