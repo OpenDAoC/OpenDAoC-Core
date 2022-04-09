@@ -41,9 +41,10 @@ namespace DOL.GS.PropertyCalc
 			{
 				int af;
 
-				af = living.BaseBuffBonusCategory[(int) property];
+				//base AF buffs are calculated in the item's armor calc since they have the same cap
+				//af = living.BaseBuffBonusCategory[(int) property];
 				// 1.5*1.25 spec line buff cap
-				af += Math.Min((int)(living.Level * 1.875), living.SpecBuffBonusCategory[(int)property]);
+				af = Math.Min((int)(living.Level * 1.875), living.SpecBuffBonusCategory[(int)property]);
 				// debuff
 				af -= Math.Abs(living.DebuffCategory[(int)property]);
 				// TrialsOfAtlantis af bonus
