@@ -26,6 +26,12 @@ namespace DOL.GS.Commands
 
 			if (!client.Player.NoHelp)
 			{
+				if (client.Player.RealmPoints > 0)
+				{
+					client.Player.Out.SendMessage("You have already received help and cannot join this challenge.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					return;
+				}
+
 				const string customKey = "grouped_char";
 				var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 					.IsEqualTo(client.Player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
