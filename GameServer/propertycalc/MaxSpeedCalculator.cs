@@ -128,17 +128,20 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is GameNPC)
 			{
+				IControlledBrain brain = ((GameNPC)living).Brain as IControlledBrain;
+				
 				if (!living.InCombat)
 				{
-					IControlledBrain brain = ((GameNPC)living).Brain as IControlledBrain;
 					if (brain != null)
 					{
                         GameLiving owner = brain.GetLivingOwner();
+                        int distance = brain.Body.GetDistanceTo(owner);
 						if (owner != null)
 						{
 							if (owner == brain.Body.CurrentFollowTarget)
 							{
-								speed *= 1.25;
+								if (distance > 50)
+									speed *= 1.25;
 
 								double ownerSpeedAdjust = (double)owner.MaxSpeed / (double)GamePlayer.PLAYER_BASE_SPEED;
 
@@ -150,6 +153,28 @@ namespace DOL.GS.PropertyCalc
                                 if (owner is GamePlayer && (owner as GamePlayer).IsOnHorse)
                                 {
 									speed *= 1.45;
+								}
+                                
+                                if (owner is GamePlayer && (owner as GamePlayer).IsSprinting)
+                                {
+	                                speed *= 1.3;
+                                }
+							}
+						}
+					}
+				}
+				if (living.InCombat)
+				{
+					if (brain != null)
+					{
+						GameLiving owner = brain.GetLivingOwner();
+						if (owner != null)
+						{
+							if (owner == brain.Body.CurrentFollowTarget)
+							{
+								if (owner is GamePlayer && (owner as GamePlayer).IsSprinting)
+								{
+									speed *= 1.3;
 								}
 							}
 						}
