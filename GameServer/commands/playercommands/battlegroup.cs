@@ -645,12 +645,14 @@ namespace DOL.GS.Commands
                             PrintHelp(client);
                         }
                         string treasname = String.Join(" ", args, 2, args.Length - 2);
-                        GameClient treasclient = WorldMgr.GetClientByPlayerName(treasname, false, false);
-                        if (treasclient == null)
+                        GameClient treasclient = WorldMgr.GetClientByPlayerName(treasname, true, true);
+                        
+                        if (treasclient == null || treasclient.Player.Realm != client.Player.Realm)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.NoPlayer", treasclient.Player.Name), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
 							return;
                         }
+                        
                         mybattlegroup.SetBGTreasurer(treasclient.Player);
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattlegroupTreasurerOn", treasclient.Player.Name), eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
                         treasclient.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattlegroupTreasurerIsYou"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
