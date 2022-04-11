@@ -21,7 +21,7 @@ namespace DOL.GS.RealmAbilities
 		
 		protected override string ValueUnit { get {	return "%"; } }
 
-		public override int CostForUpgrade(int level) {	return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
+		public override int CostForUpgrade(int level) {	return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
 
 		public override int GetAmountForLevel(int level)
 		{
