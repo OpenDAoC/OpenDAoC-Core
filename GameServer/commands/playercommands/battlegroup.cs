@@ -721,6 +721,18 @@ namespace DOL.GS.Commands
 				{
 					mybattlegroup.AddBattlePlayer(player, false);
 				}
+				else
+				{
+					if (mybattlegroup.Members.Count == 1)
+					{
+						ArrayList lastPlayers = new ArrayList(mybattlegroup.Members.Count);
+						lastPlayers.AddRange(mybattlegroup.Members.Keys);
+						foreach (GamePlayer plr in lastPlayers)
+						{
+							mybattlegroup.RemoveBattlePlayer(plr);
+						}
+					}
+				}
 				player.TempProperties.removeProperty(JOIN_BATTLEGROUP_PROPERTY);
 			}
 		}
