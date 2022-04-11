@@ -1,28 +1,19 @@
+<!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="/docs/swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/index.css" />
+    <link rel="icon" type="image/png" href="/docs/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/docs/favicon-16x16.png" sizes="16x16" />
+  </head>
 
-<head>
-    <title>AtlasAPI Documentation</title>
-    <!-- needed for adaptive design -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
-
-    <!--
-    Redoc doesn't change outer page styles
-    -->
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-    </style>
-</head>
-
-<body>
-<redoc spec-url='/docs/swagger.json' disable-search></redoc>
-<script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js">
-</script>
-</body>
-
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="/docs/swagger-ui-bundle.js" charset="UTF-8"> </script>
+    <script src="/docs/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script src="/docs/swagger-initializer.js" charset="UTF-8"> </script>
+  </body>
 </html>
