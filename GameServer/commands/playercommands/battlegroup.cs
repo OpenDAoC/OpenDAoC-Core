@@ -455,17 +455,7 @@ namespace DOL.GS.Commands
 						}
 					}
 					break;
-                case "credit":
-                    {
-							client.Out.SendMessage("Command is not yet implimented.", eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-                    }
-                    break;
-                case "grantcredit":
-                    {
-                        client.Out.SendMessage("Command is not yet implimented.", eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-                    }
-                    break;
-                case "private":
+				case "private":
 					{
 						BattleGroup mybattlegroup = client.Player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 						if (mybattlegroup == null)
@@ -712,9 +702,7 @@ namespace DOL.GS.Commands
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Treasurer"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Status"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.LootLevel"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Credit"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.GrantCredit"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-        }
+		}
 
 		protected const string JOIN_BATTLEGROUP_PROPERTY = "JOIN_BATTLEGROUP_PROPERTY";
 
