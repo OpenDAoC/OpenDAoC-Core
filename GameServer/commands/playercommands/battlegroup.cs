@@ -338,7 +338,7 @@ namespace DOL.GS.Commands
                         text.Append(i);
                         text.Append(") ");
 
-                        if ((bool)mybattlegroup.Members[player] == true)
+                        if (mybattlegroup.Leader == player.Name)
                         {
                             text.Append(" <Leader> ");
                         }
