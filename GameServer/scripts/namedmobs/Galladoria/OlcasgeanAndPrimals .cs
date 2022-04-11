@@ -126,7 +126,6 @@ namespace DOL.AI.Brain
             SpawnVortex();
             return 0;
         }
-
         public void SpawnAir()
         {
             AirPrimal Add = new AirPrimal();
@@ -327,10 +326,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 90; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 90; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 90; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
+                default: return 90; // dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -927,10 +926,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
-                default: return 50; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
         public override void StartAttack(GameObject target)
@@ -1377,6 +1376,16 @@ namespace DOL.GS
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 99; // dmg reduction for rest resists
+            }
+        }
         public override void Die(GameObject killer)
         {
             ++AirPrimal.DeadPrimalsCount;
@@ -1600,6 +1609,16 @@ namespace DOL.GS
         public FirePrimal()
             : base()
         {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 90; // dmg reduction for rest resists
+            }
         }
         public override void StartAttack(GameObject target)
         {
@@ -1893,7 +1912,7 @@ namespace DOL.GS
                 case eDamageType.Slash: return 70; // dmg reduction for melee dmg
                 case eDamageType.Crush: return 70; // dmg reduction for melee dmg
                 case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
-                default: return 50; // dmg reduction for rest resists
+                default: return 90; // dmg reduction for rest resists
             }
         }
         public override void Die(GameObject killer)
@@ -1995,8 +2014,6 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 3000;
         }
-
-
         public override void Think()
         {
             if (Body.InCombat && HasAggro)
@@ -2056,6 +2073,16 @@ namespace DOL.GS
         public GuardianEarthmender()
             : base()
         {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -2270,6 +2297,16 @@ namespace DOL.GS
         public MagicalEarthmender()
             : base()
         {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -2486,6 +2523,16 @@ namespace DOL.GS
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
@@ -2698,6 +2745,16 @@ namespace DOL.GS
         public ShadowyEarthmender()
             : base()
         {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
