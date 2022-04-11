@@ -649,7 +649,7 @@ namespace DOL.GS.Commands
                         
                         if (treasclient == null || treasclient.Player.Realm != client.Player.Realm)
                         {
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.NoPlayer", treasclient.Player.Name), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.NoPlayer", treasclient?.Player.Name), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
 							return;
                         }
                         
