@@ -303,10 +303,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 85; // dmg reduction for rest resists
             }
         }
         public override bool HasAbility(string keyName)
@@ -641,7 +641,16 @@ namespace DOL.GS
         public CorpScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -795,7 +804,16 @@ namespace DOL.GS
         public SpioradScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -981,7 +999,16 @@ namespace DOL.GS
         public RopadhScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -1167,7 +1194,16 @@ namespace DOL.GS
         public DamhnaScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -1353,7 +1389,16 @@ namespace DOL.GS
         public FuinneamgScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -1540,7 +1585,16 @@ namespace DOL.GS
         public BruScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -1727,7 +1781,16 @@ namespace DOL.GS
         public FuarScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -1914,7 +1977,16 @@ namespace DOL.GS
         public TaesScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -2102,7 +2174,16 @@ namespace DOL.GS
         public ScorScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
