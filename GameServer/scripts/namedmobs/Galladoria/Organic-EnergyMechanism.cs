@@ -25,17 +25,16 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
+                default: return 90; // dmg reduction for rest resists
             }
         }
         public virtual int OEMDifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -47,32 +46,27 @@ namespace DOL.GS
         {
             get { return 20000; }
         }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.85;
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 1000;
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public void StartTimer()
         {
             Timer myTimer = new Timer();
@@ -80,23 +74,20 @@ namespace DOL.GS
             myTimer.Interval = 4000; // 1000 ms is one second
             myTimer.Start();
         }
-
         public void DisplayTimeEvent(object source, ElapsedEventArgs e)
         {
             ShowEffect();
         }
-
         public void ShowEffect()
         {
             if (this.IsAlive)
             {
-                foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
                     player.Out.SendSpellEffectAnimation(this, this, 509, 0, false, 0x01); //finished heal effect
                 }
             }
         }
-
         public static bool addeffect = true;
 
         public override bool AddToWorld()
@@ -117,8 +108,8 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             SetOwnBrain(sBrain);
             addeffect = true;
-            OrganicEnergyMechanismBrain.start_poison = false;
-            OrganicEnergyMechanismBrain.spambroad = false;
+            OrganicEnergyMechanismBrain.StartCastDOT = false;
+            OrganicEnergyMechanismBrain.CanCast = false;
             OrganicEnergyMechanismBrain.RandomTarget = null;
             bool success = base.AddToWorld();
             if (success)
@@ -133,7 +124,6 @@ namespace DOL.GS
             LoadedFromScript = false;
             return success;
         }
-
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
@@ -185,23 +175,17 @@ namespace DOL.GS
         }
     }
 }
-
 namespace DOL.AI.Brain
 {
     public class OrganicEnergyMechanismBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public OrganicEnergyMechanismBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 500;
-            m_AOE_POison_Announce = "{0} looks sickly";
         }
-
-        protected String m_AOE_POison_Announce;
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -209,110 +193,85 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        private int CastPoison(RegionTimer timer)
-        {
-            GameObject oldTarget = Body.TargetObject;
-            Body.TargetObject = RandomTarget;
-            Body.TurnTo(RandomTarget);
-            if (Body.TargetObject != null)
-            {
-                Body.CastSpell(OEMpoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                spambroad = false; //to avoid spamming
-                start_poison = false;
-            }
-            RandomTarget = null;
-            if (oldTarget != null) Body.TargetObject = oldTarget;
-            return 0;
-        }
-
-        public static bool spambroad = false;
-
-        private void PrepareToPoison()
-        {
-            if (spambroad == false)
-            {
-                BroadcastMessage(String.Format(
-                    m_AOE_POison_Announce + " and powerfull magic essense will errupt on " + RandomTarget.Name + "!",
-                    Body.Name));
-                new RegionTimer(Body, new RegionTimerCallback(CastPoison), 5000);
-                spambroad = true;
-            }
-        }
-
-        public static GameLiving randomtarget;
-
-        public static GameLiving RandomTarget
+        #region OEM Dot
+        public static bool CanCast = false;
+        public static bool StartCastDOT = false;
+        public static GamePlayer randomtarget = null;
+        public static GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public int Pickrandomly(RegionTimer timer)
+        List<GamePlayer> Enemys_To_DOT = new List<GamePlayer>();
+        public int PickRandomTarget(RegionTimer timer)
         {
-            if (Body.IsAlive)
+            if (HasAggro)
             {
-                PickRandomTarget();
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!Enemys_To_DOT.Contains(player))
+                            {
+                                Enemys_To_DOT.Add(player);
+                            }
+                        }
+                    }
+                }
+                if (Enemys_To_DOT.Count > 0)
+                {
+                    if (CanCast == false)
+                    {
+                        GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
+                        RandomTarget = Target;//set random target to static RandomTarget
+                        BroadcastMessage(String.Format(Body.Name + "looks sickly... powerfull magic essense will errupt on " + RandomTarget.Name + "!"));
+                        new RegionTimer(Body, new RegionTimerCallback(CastDOT), 5000);
+                        CanCast = true;
+                    }
+                }
             }
             return 0;
         }
-        public void PickRandomTarget()
+        public int CastDOT(RegionTimer timer)
         {
-            ArrayList inRangeLiving = new ArrayList();
-            foreach (GamePlayer living in Body.GetPlayersInRadius(2000))
+            if (HasAggro && RandomTarget != null)
             {
-                if (living.IsAlive)
+                GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+                if (RandomTarget != null && RandomTarget.IsAlive)
                 {
-                    if (living is GamePlayer && living.Client.Account.PrivLevel == 1)
-                    {
-                        if (!inRangeLiving.Contains(living) )
-                        {
-                            inRangeLiving.Add(living);
-                        }
-                    }
+                    Body.TargetObject = RandomTarget;
+                    Body.TurnTo(RandomTarget);
+                    Body.CastSpell(OEMpoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
+                if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
+                new RegionTimer(Body, new RegionTimerCallback(ResetDOT), 5000);
             }
-
-            if (inRangeLiving.Count > 0)
-            {
-                GameLiving ptarget = ((GameLiving) (inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-                RandomTarget = ptarget;
-                if (!RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
-                {
-                    PrepareToPoison();
-                }
-            }
+            return 0;
         }
-
-        public void CastDMGShield()
+        public int ResetDOT(RegionTimer timer)
         {
-            if (OEMDamageShield.TargetHasEffect(Body) == false)
-            {
-                Body.CastSpell(OEMDamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
+            RandomTarget = null;
+            CanCast = false;
+            StartCastDOT = false;
+            return 0;
         }
-
+        #endregion
         public static bool spawnadds = true;
-        public static bool start_poison = false;
-
         public override void Think()
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(1800))
+            if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
             {
-                if (player != null)
-                {
-                    if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                    {
-                        if (!AggroTable.ContainsKey(player))
-                        {
-                            AggroTable.Add(player, 100);
-                        }
-                    }
-                }
+                if(AggroTable.Count>0)
+                    ClearAggroList();
             }
             if (!HasAggressionTable())
             {
-                this.Body.Health = this.Body.MaxHealth;
-                start_poison = false;
-                spambroad = false;
+                Body.Health = Body.MaxHealth;
+                RandomTarget = null;
+                CanCast = false;
+                StartCastDOT = false;
                 RandomTarget = null;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
@@ -325,32 +284,26 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
-            if (HasAggro && Body.InCombat)
+            if (HasAggro && Body.IsAlive)
             {
-                if (Body.HealthPercent < 100)
+                if (StartCastDOT == false)
                 {
-                    if (start_poison == false)
-                    {
-                        new RegionTimer(Body, new RegionTimerCallback(Pickrandomly), Util.Random(25000, 35000));
-                        start_poison = false;
-                    }
+                    new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(20000, 25000));
+                    StartCastDOT = true;
+                }
+                if (Util.Chance(15))
+                    Body.CastSpell(OEMDamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
-                    if (Util.Chance(15))
-                    {
-                        CastDMGShield();
-                    }
-
+                if (Body.HealthPercent < 50)
+                {
                     if (Util.Chance(5))
                     {
-                        Spawn(); // spawn images
+                        Spawn(); // spawn adds
                     }
                 }
             }
-
             base.Think();
         }
-
         public void Spawn() // We define here adds
         {
             foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
@@ -360,7 +313,6 @@ namespace DOL.AI.Brain
                     return;
                 }
             }
-
             for (int i = 0; i < Util.Random(4, 6); i++) //Spawn 4 or 6 adds
             {
                 OEMAdd Add = new OEMAdd();
@@ -372,11 +324,9 @@ namespace DOL.AI.Brain
                 Add.AddToWorld();
             }
         }
-
+        #region Spells
         private Spell m_AOE_Poison;
-        private Spell m_DamageShield;
-
-        public Spell OEMpoison
+        private Spell OEMpoison
         {
             get
             {
@@ -388,10 +338,9 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
-                    spell.Damage = 350;
+                    spell.Damage = 200;
                     spell.Name = "Essense of World Soul";
-                    spell.Description =
-                        "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
+                    spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony.";
                     spell.Message1 = "You are wracked with pain!";
                     spell.Message2 = "{0} is wracked with pain!";
                     spell.Message3 = "You look healthy again.";
@@ -400,21 +349,20 @@ namespace DOL.AI.Brain
                     spell.Range = 1800;
                     spell.Radius = 600;
                     spell.Duration = 50;
-                    spell.Frequency = 50; //dot tick every 4s
+                    spell.Frequency = 50; //dot tick every 5s
                     spell.SpellID = 11700;
                     spell.Target = "Enemy";
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
-                    m_AOE_Poison = new Spell(spell, 70);
+                    m_AOE_Poison = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AOE_Poison);
                 }
-
                 return m_AOE_Poison;
             }
         }
-
-        public Spell OEMDamageShield
+        private Spell m_DamageShield;
+        private Spell OEMDamageShield
         {
             get
             {
@@ -441,10 +389,10 @@ namespace DOL.AI.Brain
                     m_DamageShield = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageShield);
                 }
-
                 return m_DamageShield;
             }
         }
+        #endregion
     }
 }
 
@@ -453,39 +401,52 @@ namespace DOL.GS
 {
     public class OEMAdd : GameNPC
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public OEMAdd()
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                default: return 35; // dmg reduction for rest resists
+            }
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.25;
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 400;
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
-            get { return 1500; }
+            get { return 2500; }
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override void DropLoot(GameObject killer) //no loot
         {
         }
-
         public override void Die(GameObject killer)
         {
             base.Die(null); //null to not gain experience
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 150; }
         public override bool AddToWorld()
         {
             Model = 905;
@@ -511,8 +472,6 @@ namespace DOL.GS
             BodyType = 1;
             OEMAddBrain sBrain = new OEMAddBrain();
             SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 500;
             base.AddToWorld();
             return true;
         }
@@ -530,7 +489,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 1000;
+            AggroRange = 1500;
         }
 
         public override void Think()
