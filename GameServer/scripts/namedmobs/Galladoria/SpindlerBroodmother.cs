@@ -24,10 +24,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
+                default: return 85; // dmg reduction for rest resists
             }
         }
         public virtual int COifficulty
