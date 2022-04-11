@@ -615,12 +615,14 @@ namespace DOL.GS.Commands
                             client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
 							return;
                         }
-                        if (Convert.ToInt32(args[2]) == 0)
+                        var lootlevel = Convert.ToInt32(args[2]);
+                        if (lootlevel == 0)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattlegroupLootThresholdOff"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
                         }
                         else
                         {
+	                        mybattlegroup.SetBGLootTypeThreshold(lootlevel);
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattlegroupLootThresholdOn", mybattlegroup.GetBGLootTypeThreshold()), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
                         }
                     }
