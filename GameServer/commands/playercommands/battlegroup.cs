@@ -420,7 +420,7 @@ namespace DOL.GS.Commands
 							PrintHelp(client);
 						}
 						string invitename = String.Join(" ", args, 2, args.Length - 2);
-						GameClient inviteeclient = WorldMgr.GetClientByPlayerName(invitename, false, false);
+						GameClient inviteeclient = WorldMgr.GetClientByPlayerName(invitename, true, true);
 						if (inviteeclient == null)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.NoPlayer"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
