@@ -20,15 +20,38 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
+                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
                 default: return 90; // dmg reduction for rest resists
             }
         }
-        public virtual int COifficulty
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+            if (source is GamePlayer || source is GamePet)
+            {
+                if (this.IsOutOfTetherRange)//dont take any dmg if is too far away from spawn point
+                {
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                        || damageType == eDamageType.Slash)
+                    {
+                        GamePlayer truc;
+                        if (source is GamePlayer)
+                            truc = (source as GamePlayer);
+                        else
+                            truc = ((source as GamePet).Owner as GamePlayer);
+                        if (truc != null)
+                            truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        base.TakeDamage(source, damageType, 0, 0);
+                        return;
+                    }
+                }
+                else//take dmg
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
+            }
         }
         public override double AttackDamage(InventoryItem weapon)
         {
@@ -64,9 +87,9 @@ namespace DOL.GS
             if (Tine.TineCount == 0)
             {
                 Tine tine = new Tine();
-                tine.X = 27575;
-                tine.Y = 54730;
-                tine.Z = 12951;
+                tine.X = 27211;
+                tine.Y = 54902;
+                tine.Z = 13213;
                 tine.CurrentRegion = CurrentRegion;
                 tine.Heading = 2157;
                 tine.RespawnInterval = -1;
@@ -75,9 +98,9 @@ namespace DOL.GS
             if (Beatha.BeathaCount == 0)
             {
                 Beatha beatha = new Beatha();
-                beatha.X = 27210;
-                beatha.Y = 54721;
-                beatha.Z = 12959;
+                beatha.X = 27614;
+                beatha.Y = 54866;
+                beatha.Z = 13213;
                 beatha.CurrentRegion = CurrentRegion;
                 beatha.Heading = 2038;
                 beatha.RespawnInterval = -1;
@@ -200,16 +223,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-        public static bool spawstaffs1 = true;
-        public static bool spawstaffs2 = true;
-        public static bool spawstaffs3 = true;
-        public static bool spawstaffs4 = true;
-        public static bool spawstaffs5 = true;
-        public static bool spawstaffs6 = true;
-        public static bool spawstaffs7 = true;
-        public static bool spawstaffs8 = true;
-        public static bool spawstaffs9 = true;
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -217,73 +230,19 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                spawstaffs1 = true;
-                spawstaffs2 = true;
-                spawstaffs3 = true;
-                spawstaffs4 = true;
-                spawstaffs5 = true;
-                spawstaffs6 = true;
-                spawstaffs7 = true;
-                spawstaffs8 = true;
-                spawstaffs9 = true;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
                 {
-                    if (npc.Brain is XagaStaffBrain)
+                    if (mob_c != null)
                     {
-                        npc.RemoveFromWorld();
+                        if (mob_c?.Brain is BeathaBrain brain1 && mob_c.IsAlive && brain1.HasAggro)
+                            brain1.ClearAggroList();
+                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && brain2.HasAggro)
+                            brain2.ClearAggroList();
                     }
                 }
             }
             if (HasAggro && Body.InCombat)
             {
-                if (Body.HealthPercent < 92 && Body.HealthPercent >= 90 && spawstaffs1 == true)
-                {
-                    Spawn();
-                    PrepareMezz();
-                    spawstaffs1 = false;
-                }
-                if (Body.HealthPercent < 82 && Body.HealthPercent >= 80 && spawstaffs2 == true)
-                {
-                    Spawn();
-                    spawstaffs2 = false;
-                }
-                if (Body.HealthPercent < 72 && Body.HealthPercent >= 70 && spawstaffs3 == true)
-                {
-                    Spawn();
-                    spawstaffs3 = false;
-                }
-                if (Body.HealthPercent < 62 && Body.HealthPercent >= 60 && spawstaffs4 == true)
-                {
-                    Spawn();
-                    spawstaffs4 = false;
-                }
-                if (Body.HealthPercent < 52 && Body.HealthPercent >= 50 && spawstaffs5 == true)
-                {
-                    Spawn();
-                    PrepareMezz();
-                    spawstaffs5 = false;
-                }
-                if (Body.HealthPercent < 42 && Body.HealthPercent >= 40 && spawstaffs6 == true)
-                {
-                    Spawn();
-                    spawstaffs6 = false;
-                }
-                if (Body.HealthPercent < 32 && Body.HealthPercent >= 30 && spawstaffs7 == true)
-                {
-                    Spawn();
-                    spawstaffs7 = false;
-                }
-                if (Body.HealthPercent < 22 && Body.HealthPercent >= 20 && spawstaffs8 == true)
-                {
-                    Spawn();
-                    spawstaffs8 = false;
-                }
-                if (Body.HealthPercent < 12 && Body.HealthPercent >= 10 && spawstaffs9 == true)
-                {
-                    Spawn();
-                    PrepareMezz();
-                    spawstaffs9 = false;
-                }
             }
             base.Think();
         }
@@ -294,196 +253,19 @@ namespace DOL.AI.Brain
             {
                 foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
                 {
-                    if (mob_c?.Brain is BeathaBrain && mob_c.IsAlive && mob_c.IsAvailable)
+                    if (mob_c != null)
                     {
-                        AddAggroListTo(mob_c.Brain as BeathaBrain);
-                    }
-                    if (mob_c?.Brain is TineBrain && mob_c.IsAlive && mob_c.IsAvailable)
-                    {
-                        AddAggroListTo(mob_c.Brain as TineBrain);
+                        if (mob_c?.Brain is BeathaBrain brain1 && mob_c.IsAlive && !brain1.HasAggro)
+                            AddAggroListTo(brain1);
+                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && !brain2.HasAggro)
+                            AddAggroListTo(brain2);
                     }
                 }
             }
             base.OnAttackedByEnemy(ad);
         }
-
-        public void Spawn() // We define here adds
-        {
-            foreach (GamePlayer ppl in Body.GetPlayersInRadius(1500))
-            {
-                if (ppl.IsAlive)
-                {
-                    XagaStaff Add = new XagaStaff();
-                    Add.X = ppl.X;
-                    Add.Y = ppl.Y;
-                    Add.Z = ppl.Z;
-                    Add.CurrentRegion = Body.CurrentRegion;
-                    Add.Heading = ppl.Heading;
-                    Add.AddToWorld();
-                }
-            }
-        }
-
-        public void BroadcastMessage(String message)
-        {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-            {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-            }
-        }
-        public void PrepareMezz()
-        {
-            if (Mezz.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
-            {
-                BroadcastMessage(
-                    String.Format(Body.Name + " look at " + Body.TargetObject.Name + " angrly!", Body.Name));
-                new RegionTimer(Body, new RegionTimerCallback(CastMezz), 5000);
-            }
-        }
-        protected virtual int CastMezz(RegionTimer timer)
-        {
-            Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            return 0;
-        }
-        protected Spell m_mezSpell;
-        /// <summary>
-        /// The Mezz spell.
-        /// </summary>
-        protected Spell Mezz
-        {
-            get
-            {
-                if (m_mezSpell == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 30;
-                    spell.ClientEffect = 1681;
-                    spell.Icon = 1685;
-                    spell.Damage = 0;
-                    spell.Name = "Mesmerized";
-                    spell.Range = 1500;
-                    spell.Radius = 800;
-                    spell.SpellID = 11706;
-                    spell.Duration = 30;
-                    spell.Target = "Enemy";
-                    spell.Type = "Mesmerize";
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
-                    m_mezSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
-                }
-                return m_mezSpell;
-            }
-        }
     }
 }
-#region Xaga Staff
-namespace DOL.GS
-{
-    public class XagaStaff : GameNPC
-    {
-        public XagaStaff() : base()
-        {
-        }
-        public static GameNPC m_XagaStaff = new GameNPC();
-        public override int MaxHealth
-        {
-            get { return 650; }
-        }
-        public override bool AddToWorld()
-        {
-            GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 0, 91);
-            Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            Model = 665;
-            Name = "magic staff";
-            MeleeDamageType = eDamageType.Crush;
-            RespawnInterval = -1;
-            MaxSpeedBase = 0;
-            Intelligence = 250;
-            Piety = 250;
-            IsWorthReward = false; //worth no reward
-            Size = (byte) Util.Random(50, 55);
-            Level = (byte) Util.Random(55, 58);
-            Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            Realm = eRealm.None;
-            XagaStaffBrain adds = new XagaStaffBrain();
-            LoadedFromScript = true;
-            SetOwnBrain(adds);
-            base.AddToWorld();
-            return true;
-        }
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
-        public override void Die(GameObject killer)
-        {
-            base.Die(null); //null to not gain experience
-        }
-    }
-}
-namespace DOL.AI.Brain
-{
-    public class XagaStaffBrain : StandardMobBrain
-    {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public XagaStaffBrain()
-            : base()
-        {
-            AggroLevel = 100;
-            AggroRange = 450;
-            ThinkInterval = 4000;
-        }
-        public override void Think()
-        {
-            Body.IsWorthReward = false;
-            if (Body.IsAlive)
-            {
-                Body.SetGroundTarget(Body.X,Body.Y,Body.Z);
-                Body.CastSpell(XagaStaffPBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
-            base.Think();
-        }
-        private Spell m_XagaStaffPBAOE;
-        private Spell XagaStaffPBAOE
-        {
-            get
-            {
-                if (m_XagaStaffPBAOE == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 3;
-                    spell.RecastDelay = 2;
-                    spell.ClientEffect = 4468;
-                    spell.Icon = 4468;
-                    spell.Damage = 400;
-                    spell.Name = "Xaga Staff Bomb";
-                    spell.TooltipId = 4468;
-                    spell.Range = 500;
-                    spell.Radius = 450;
-                    spell.SpellID = 11705;
-                    spell.Target = "Area";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Heat;
-                    m_XagaStaffPBAOE = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_XagaStaffPBAOE);
-                }
-                return m_XagaStaffPBAOE;
-            }
-        }
-    }
-}
-#endregion
 ////////////////////////////////////////////////Beatha/////////////////////////////////////////////
 #region Beatha
 namespace DOL.GS
@@ -497,37 +279,39 @@ namespace DOL.GS
             : base()
         {
         }
-        public virtual int COifficulty
+        public override void StartAttack(GameObject target)
         {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-        public override int GetResist(eDamageType damageType)
+        public override void WalkToSpawn() //dont walk to spawn
         {
-            switch (damageType)
+            if (IsAlive)
+                return;
+            base.WalkToSpawn();
+        }
+        public override void DealDamage(AttackData ad)
+        {
+            if (ad != null)
             {
-                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                foreach (GameNPC xaga in GetNPCsInRadius(8000))
+                {
+                    if (xaga != null)
+                    {
+                        if (xaga.IsAlive && xaga.Brain is XagaBrain)
+                        {
+                            xaga.Health += ad.Damage*2;//dmg heals xaga
+                        }
+                    }
+                }
             }
-        }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
+            base.DealDamage(ad);
         }
         public override int MaxHealth
         {
             get { return 10000; }
         }
-
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -547,30 +331,6 @@ namespace DOL.GS
             --BeathaCount;
             base.Die(killer);
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (source is GamePlayer || source is GamePet)
-            {
-                if (damageType == eDamageType.Cold)
-                {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to cold damage!", eChatType.CT_System,
-                            eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
-                }
-                else
-                {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                }
-            }
-        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158330);
@@ -583,6 +343,22 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+            Flags = eFlags.FLYING;
+            BeathaBrain.path4 = false;
+            BeathaBrain.path1 = false;
+            BeathaBrain.path2 = false;
+            BeathaBrain.path3 = false;
+
+            AbilityBonus[(int)eProperty.Resist_Body] = 60;
+            AbilityBonus[(int)eProperty.Resist_Heat] = -20;//weak to heat
+            AbilityBonus[(int)eProperty.Resist_Cold] = 99;//resi to cold
+            AbilityBonus[(int)eProperty.Resist_Matter] = 60;
+            AbilityBonus[(int)eProperty.Resist_Energy] = 60;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = 60;
+            AbilityBonus[(int)eProperty.Resist_Slash] = 40;
+            AbilityBonus[(int)eProperty.Resist_Crush] = 40;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = 40;
+
             ++BeathaCount;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -605,23 +381,87 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 500;
+        }       
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+            if (Body.IsAlive)
+            {
+                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
+                {
+                    if (mob_c != null)
+                    {
+                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.IsAvailable && !brain1.HasAggro)
+                            AddAggroListTo(brain1);
+                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && mob_c.IsAvailable && !brain2.HasAggro)
+                            AddAggroListTo(brain2);
+                    }
+                }
+            }
+            base.OnAttackedByEnemy(ad);
         }
-
+        public static bool path1 = false;
+        public static bool path2 = false;
+        public static bool path3 = false;
+        public static bool path4 = false;
         public override void Think()
         {
-            if (Body.InCombat && HasAggro)
+            if(Body.IsAlive)
             {
-                if (Util.Chance(10) && Body.TargetObject != null)
+                Point3D point1 = new Point3D(27572,54473,13213);
+                Point3D point2 = new Point3D(27183, 54530, 13213);
+                Point3D point3 = new Point3D(27213, 55106, 13213);
+                Point3D point4 = new Point3D(27581, 55079, 13213);
+                if (!Body.IsWithinRadius(point1, 20) && path1 == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
+                    Body.WalkTo(point1, 250);
+                }
+                else
+                {
+                    path1 = true;
+                    path4 = false;
+                    if (!Body.IsWithinRadius(point2, 20) && path1 == true && path2 == false)
+                    {
+                        Body.WalkTo(point2, 250);
+                    }
+                    else
+                    {
+                        path2 = true;
+                        if (!Body.IsWithinRadius(point3, 20) && path1 == true && path2 == true && path3 == false)
+                        {
+                            Body.WalkTo(point3, 250);
+                        }
+                        else
+                        {
+                            path3 = true;
+                            if (!Body.IsWithinRadius(point4, 20) && path1 == true && path2 == true && path3 == true && path4 == false)
+                            {
+                                Body.WalkTo(point4, 250);
+                            }
+                            else
+                            {
+                                path4 = true;
+                                path1 = false;
+                                path2 = false;
+                                path3 = false;
+                            }
+                        }
+                    }
+                }
+            }
+            if(!HasAggressionTable())
+            {
+                Body.Health = Body.MaxHealth;
+            }
+            if (HasAggro && Body.IsAlive)
+            {
+                GameLiving target = Body.TargetObject as GameLiving;
+                if (target != null)
+                {
+                    Body.SetGroundTarget(target.X, target.Y, target.Z);
+                    Body.CastSpell(BeathaAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
                 }
             }
             base.Think();
-        }
-        public int CastAOEDD(RegionTimer timer)
-        {
-            Body.CastSpell(BeathaAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            return 0;
         }
         private Spell m_BeathaAoe;
         private Spell BeathaAoe
@@ -636,12 +476,13 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 8;
                     spell.ClientEffect = 4568;
                     spell.Icon = 4568;
-                    spell.Damage = 350;
-                    spell.Name = "Xaga Staff Bomb";
+                    spell.Damage = 400;
+                    spell.Name = "Beatha's Void";
                     spell.TooltipId = 4568;
-                    spell.Radius = 650;
+                    spell.Range = 3000;
+                    spell.Radius = 450;
                     spell.SpellID = 11707;
-                    spell.Target = "Enemy";
+                    spell.Target = "Area";
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -668,46 +509,29 @@ namespace DOL.GS
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override void StartAttack(GameObject target)
         {
-            switch (damageType)
-            {
-                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
-            }
         }
-        public virtual int COifficulty
+        public override void WalkToSpawn() //dont walk to spawn
         {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+            if (IsAlive)
+                return;
+            base.WalkToSpawn();
         }
-
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
-
         public override int MaxHealth
         {
             get { return 10000; }
         }
-
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 600;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
@@ -719,30 +543,6 @@ namespace DOL.GS
         {
             --TineCount;
             base.Die(killer);
-        }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (source is GamePlayer || source is GamePet)
-            {
-                if (damageType == eDamageType.Heat)
-                {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to heat damage!", eChatType.CT_System,
-                            eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
-                }
-                else
-                {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                }
-            }
         }
         public override bool AddToWorld()
         {
@@ -758,6 +558,22 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            Flags = eFlags.FLYING;
+            TineBrain.path4_2 = false;
+            TineBrain.path1_2 = false;
+            TineBrain.path2_2 = false;
+            TineBrain.path3_2 = false;
+
+            AbilityBonus[(int)eProperty.Resist_Body] = 60;
+            AbilityBonus[(int)eProperty.Resist_Heat] = 99;//resi to heat
+            AbilityBonus[(int)eProperty.Resist_Cold] = -20;//weak to cold
+            AbilityBonus[(int)eProperty.Resist_Matter] = 60;
+            AbilityBonus[(int)eProperty.Resist_Energy] = 60;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = 60;
+            AbilityBonus[(int)eProperty.Resist_Slash] = 40;
+            AbilityBonus[(int)eProperty.Resist_Crush] = 40;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = 40;
+
             ++TineCount;
             TineBrain sBrain = new TineBrain();
             SetOwnBrain(sBrain);
@@ -779,21 +595,87 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+            if (Body.IsAlive)
+            {
+                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
+                {
+                    if (mob_c != null)
+                    {
+                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.IsAvailable && !brain1.HasAggro)
+                            AddAggroListTo(brain1);
+                        if (mob_c?.Brain is BeathaBrain brain2 && mob_c.IsAlive && mob_c.IsAvailable && !brain2.HasAggro)
+                            AddAggroListTo(brain2);
+                    }
+                }
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        public static bool path1_2 = false;
+        public static bool path2_2 = false;
+        public static bool path3_2 = false;
+        public static bool path4_2 = false;
         public override void Think()
         {
-            if (Body.InCombat && HasAggro)
+            if (Body.IsAlive)
             {
-                if (Util.Chance(10) && Body.TargetObject != null)
+                Point3D point1 = new Point3D(27168, 54598, 13213);
+                Point3D point2 = new Point3D(27597, 54579, 13213);
+                Point3D point3 = new Point3D(27606, 55086, 13213);
+                Point3D point4 = new Point3D(27208, 55133, 13213);
+                if (!Body.IsWithinRadius(point1, 20) && path1_2 == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
+                    Body.WalkTo(point1, 250);
+                }
+                else
+                {
+                    path1_2 = true;
+                    path4_2 = false;
+                    if (!Body.IsWithinRadius(point2, 20) && path1_2 == true && path2_2 == false)
+                    {
+                        Body.WalkTo(point2, 250);
+                    }
+                    else
+                    {
+                        path2_2 = true;
+                        if (!Body.IsWithinRadius(point3, 20) && path1_2 == true && path2_2 == true && path3_2 == false)
+                        {
+                            Body.WalkTo(point3, 250);
+                        }
+                        else
+                        {
+                            path3_2 = true;
+                            if (!Body.IsWithinRadius(point4, 20) && path1_2 == true && path2_2 == true && path3_2 == true && path4_2 == false)
+                            {
+                                Body.WalkTo(point4, 250);
+                            }
+                            else
+                            {
+                                path4_2 = true;
+                                path1_2 = false;
+                                path2_2 = false;
+                                path3_2 = false;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!HasAggressionTable())
+            {
+                Body.Health = Body.MaxHealth;
+            }
+            if (HasAggro && Body.IsAlive)
+            {
+                GameLiving target = Body.TargetObject as GameLiving;
+                if (target != null)
+                {
+                    Body.SetGroundTarget(target.X, target.Y, target.Z);
+                    Body.CastSpell(TineAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
                 }
             }
             base.Think();
-        }
-        public int CastAOEDD(RegionTimer timer)
-        {
-            Body.CastSpell(TineAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            return 0;
         }
         private Spell m_TineAoe;
         private Spell TineAoe
@@ -809,11 +691,12 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 4227;
                     spell.Icon = 4227;
                     spell.Damage = 350;
-                    spell.Name = "Xaga Staff Bomb";
+                    spell.Name = "Tine's Fire";
                     spell.TooltipId = 4227;
-                    spell.Radius = 650;
+                    spell.Range = 3000;
+                    spell.Radius = 450;
                     spell.SpellID = 11708;
-                    spell.Target = "Enemy";
+                    spell.Target = "Area";
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
