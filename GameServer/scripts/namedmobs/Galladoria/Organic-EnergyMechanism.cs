@@ -54,11 +54,11 @@ namespace DOL.GS
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.55;
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 800;
         }
         public override bool HasAbility(string keyName)
         {

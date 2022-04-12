@@ -159,7 +159,7 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 850;
         }
 
         public override int AttackSpeed(params InventoryItem[] weapon)
@@ -170,7 +170,7 @@ namespace DOL.GS
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.55;
         }
 
         public override short MaxSpeedBase

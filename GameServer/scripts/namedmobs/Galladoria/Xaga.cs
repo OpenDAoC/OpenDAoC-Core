@@ -52,12 +52,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 850;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.55;
         }
         public void SpawnTineBeatha()
         {
@@ -534,12 +534,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 700;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
         public static int BeathaCount = 0;
         public override void Die(GameObject killer)
@@ -707,12 +707,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 700;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
         public static int TineCount = 0;
         public override void Die(GameObject killer)

@@ -58,6 +58,8 @@ namespace DOL.GS
 		protected String[] m_breathAnnounce;
 		protected String m_glareAnnounce;
 		protected String[] m_deathAnnounce;
+		
+		private int OrbsReward = Properties.EPICBOSS_ORBS;
 
 		/// <summary>
 		/// Creates a new instance of GameDragon.
@@ -207,6 +209,20 @@ namespace DOL.GS
 				log.Error("Dragon Killed: killer is null!");
 			else
 				log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
+			
+			GamePlayer playerKiller = killer as GamePlayer;
+			
+			if (playerKiller?.Group != null)
+			{
+				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
+				}
+			}
+			else
+			{
+				AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
+			}
 
 			bool canReportNews = true;
 

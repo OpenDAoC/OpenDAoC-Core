@@ -244,7 +244,7 @@ paths:
         '404':
           description: Not found
 servers:
-  - url: http://api.atlasfreeshard.com/
+  - url: https://api.atlasfreeshard.com/
 components:
   schemas:
     allPlayers:
