@@ -24,10 +24,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 95;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 95;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 95;// dmg reduction for melee dmg
-                default: return 90;// dmg reduction for rest resists
+                case eDamageType.Slash: return 80;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 80;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
+                default: return 80;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -97,12 +97,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 900;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.65;
         }
         public override int MaxHealth
         {
@@ -480,10 +480,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 95;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 95;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 95;// dmg reduction for melee dmg
-                default: return 90;// dmg reduction for rest resists
+                case eDamageType.Slash: return 80;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 80;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
+                default: return 80;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -552,12 +552,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 900;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.65;
         }
         public override int MaxHealth
         {
