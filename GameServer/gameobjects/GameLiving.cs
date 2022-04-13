@@ -5671,18 +5671,18 @@ namespace DOL.GS
 
 				if (!InCombat)
 				{
-					if (ManaPercent < 15)
+					/*if (ManaPercent < 15)
 					{
 						ChangeMana(this, eManaChangeType.Regenerate, (int)OnePercMana);
 						return 4000;
 					}
 					else if (ManaPercent > 15)
-					{
-						ChangeMana(this, eManaChangeType.Regenerate, (int)(-OnePercMana));
-						return 1000;
-					}
+					{*/
+					ChangeMana(this, eManaChangeType.Regenerate, (int)(-OnePercMana));
+					return 1000;
+					//}
 
-					return 0;
+					//return 0;
 				}
 			}
 			else
