@@ -35,7 +35,7 @@ public class TimerService
 
         while (TimerToRemove.Count > 0) ActiveTimers.Remove(TimerToRemove.Pop());
         
-        Console.WriteLine($"timer size {ActiveTimers.Count}");
+        //Console.WriteLine($"timer size {ActiveTimers.Count}");
 
         foreach (var timer in ActiveTimers)
         {
@@ -104,7 +104,11 @@ public class ECSGameTimer
     public void Tick()
     {
         StartTick = GameLoop.GameLoopTime;
-        Callback?.Invoke(this);
+        if (Callback != null)
+        {
+            Interval = (long) Callback.Invoke(this);
+        }
+        
     }
 
     
