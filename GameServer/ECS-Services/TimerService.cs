@@ -103,8 +103,8 @@ public class ECSGameTimer
 
     public void Tick()
     {
-        Callback?.Invoke(this);
         StartTick = GameLoop.GameLoopTime;
+        Callback?.Invoke(this);
     }
 
     
