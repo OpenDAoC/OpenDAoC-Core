@@ -768,14 +768,14 @@ namespace DOL.GS
         /// <summary>
         /// quit timer
         /// </summary>
-        protected RegionTimer m_quitTimer;
+        protected ECSGameTimer m_quitTimer;
 
         /// <summary>
         /// Timer callback for quit
         /// </summary>
         /// <param name="callingTimer">the calling timer</param>
         /// <returns>the new intervall</returns>
-        protected virtual int QuitTimerCallback(RegionTimer callingTimer)
+        protected virtual int QuitTimerCallback(ECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active)
             {
@@ -819,6 +819,7 @@ namespace DOL.GS
             Out.SendPlayerQuit(false);
             Quit(true);
             SaveIntoDatabase();
+            m_quitTimer.Stop();
             m_quitTimer = null;
             return 0;
         }
@@ -1163,9 +1164,9 @@ namespace DOL.GS
 
                 if (m_quitTimer == null)
                 {
-                    m_quitTimer = new RegionTimer(this);
-                    m_quitTimer.Callback = new RegionTimerCallback(QuitTimerCallback);
-                    m_quitTimer.Start(1);
+                    m_quitTimer = new ECSGameTimer();
+                    m_quitTimer.Callback = new ECSGameTimer.ECSTimerCallback(QuitTimerCallback);
+                    m_quitTimer.Start(1000);
                 }
 
                 if (secondsleft > 20)
