@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -24,17 +20,40 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 85; // dmg reduction for rest resists
             }
         }
-        public virtual int COifficulty
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+            if (source is GamePlayer || source is GamePet)
+            {
+                Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
+                if (!source.IsWithinRadius(spawn, TetherRange))//dont take any dmg 
+                {
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                        || damageType == eDamageType.Slash)
+                    {
+                        GamePlayer truc;
+                        if (source is GamePlayer)
+                            truc = (source as GamePlayer);
+                        else
+                            truc = ((source as GamePet).Owner as GamePlayer);
+                        if (truc != null)
+                            truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        base.TakeDamage(source, damageType, 0, 0);
+                        return;
+                    }
+                }
+                else//take dmg
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
+            }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -53,15 +72,14 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
-
             return base.HasAbility(keyName);
         }
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 800;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
@@ -69,7 +87,22 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.55;
         }
-
+        public override void WalkToSpawn(short speed)
+        {
+            speed = 300;
+            base.WalkToSpawn(speed);
+        }
+        public override void Die(GameObject killer)
+        {
+            foreach(GamePlayer player in GetPlayersInRadius(10000))
+            {
+                if(player != null)
+                {
+                    player.Out.SendMessage("With the death of the Easmarach, the current of the falls reduces significantly.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                }
+            }
+            base.Die(killer);
+        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
@@ -85,6 +118,10 @@ namespace DOL.GS
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            EasmarachBrain.restphase = false;
+            EasmarachBrain.dontattack = false;
+            EasmarachBrain.message = false;
+            EasmarachBrain.FloatAgain = false;
 
             EasmarachBrain sBrain = new EasmarachBrain();
             SetOwnBrain(sBrain);
@@ -93,20 +130,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        public override void Die(GameObject killer)
-        {
-            foreach (GameNPC npc in this.GetNPCsInRadius(4000))
-            {
-                if (npc.Brain is EasmarachAddBrain)
-                {
-                    npc.RemoveFromWorld();
-                }
-            }
-
-            base.Die(killer);
-        }
-
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
@@ -157,7 +180,7 @@ namespace DOL.GS
             }
             else
                 log.Warn("Easmarach exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        }      
     }
 }
 
@@ -174,25 +197,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-
-        private int m_stage = 10;
-
-        /// <summary>
-        /// This keeps track of the stage the encounter is in.
-        /// </summary>
-        public int Stage
-        {
-            get { return m_stage; }
-            set
-            {
-                if (value >= 0 && value <= 10) m_stage = value;
-            }
-        }
-
-        public static bool restphase = false;
-        public static bool dontattack = false;
-        public static bool message = false;
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -200,10 +204,13 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
+        public static bool restphase = false;
+        public static bool dontattack = false;
+        public static bool message = false;
+        public static bool FloatAgain = false;
         public override void AttackMostWanted()
         {
-            if (dontattack == true)
+            if (dontattack==true)
                 return;
             else
             {
@@ -211,9 +218,7 @@ namespace DOL.AI.Brain
                 {
                     PrintAggroTable();
                 }
-
                 Body.TargetObject = CalculateNextAttackTarget();
-
                 if (Body.TargetObject != null)
                 {
                     if (!CheckSpells(eCheckSpellType.Offensive))
@@ -222,249 +227,92 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.AttackMostWanted();
         }
-
         public void ReturnToWaterfall()
         {
-            Point3D point1 = new Point3D();
-            point1.X = 37811;
-            point1.Y = 50342;
-            point1.Z = 10758;
-
-            if (Body.HealthPercent <= 50 && restphase == false)
-            {
-                Body.StopAttack();
-                Body.StopFollowing();
-                AggroTable.Clear();
-                ClearAggroList();
-
+            Point3D point1 = new Point3D(37811, 50342, 10958);
+            if (Body.HealthPercent <= 30 && restphase == false)
+            {             
                 if (Body.IsWithinRadius(point1, 80))
                 {
-                    Body.Health += Body.MaxHealth / 6;
+                    Body.Health += Body.MaxHealth / 8;
                     restphase = true;
                     dontattack = false;
-                    Stage = 7;
+                    if(FloatAgain==false)
+                    {
+                        new RegionTimer(Body, new RegionTimerCallback(StartWalk), Util.Random(45000,70000));
+                        FloatAgain = true;
+                    }
                 }
                 else
                 {
-                    if (!Body.IsMoving)
+                    Body.Z = 10958;
+                    Body.WalkTo(point1, 200);
+                    dontattack = true;
+                    if (message == false)
                     {
-                        Body.WalkTo(point1, 200);
-                        dontattack = true;
-                        if (message == false)
-                        {
-                            BroadcastMessage(String.Format(Body.Name + " is retreating to waterfall!"));
-                            message = true;
-                        }
+                        ClearAggroList();                     
+                        BroadcastMessage(String.Format(Body.Name + " is retreating to waterfall!"));
+                        message = true;
                     }
                 }
             }
         }
-
+        public int StartWalk(RegionTimer timer)
+        {
+            restphase = false;
+            dontattack = false;
+            message = false;
+            FloatAgain = false;
+            return 0;
+        }
         public override void Think()
         {
             ReturnToWaterfall();
-
-            if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
+            if(Body.IsAlive)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Point3D nopass = new Point3D(37653, 52843, 10758);//you shall not pass!
+                foreach(GamePlayer player in Body.GetPlayersInRadius(10000))
+                {
+                    if(player != null)
+                    {
+                        if(player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (player.IsWithinRadius(nopass, 1000))
+                            { 
+                                player.MoveTo(Body.CurrentRegionID, 40067, 50494, 11708, 1066);
+                                player.Out.SendMessage("The strong current of the waterfall pushes you behind", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                            }
+                        }
+                    }
+                }
+            }
+            if (Body.InCombatInLast(40 * 1000) == false && Body.InCombatInLast(45 * 1000))
+            {
+                Body.Health = Body.MaxHealth;
                 restphase = false;
                 dontattack = false;
                 message = false;
-                Stage = 10;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
-                {
-                    if (npc.Brain is EasmarachAddBrain)
-                    {
-                        npc.RemoveFromWorld();
-                    }
-                }
+                FloatAgain = false;
             }
-
-            if (Body.InCombat && HasAggro)
+            if (Body.IsOutOfTetherRange)
             {
-                int health = Body.HealthPercent / 10;
-                if (Body.TargetObject != null && health < Stage)
+                Body.StopFollowing();
+                Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
+                GameLiving target = Body.TargetObject as GameLiving;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
+                if (target != null)
                 {
-                    switch (health)
+                    if (!target.IsWithinRadius(spawn, Body.TetherRange))
                     {
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                        {
-                            Spawn();
-                        }
-                            break;
+                        Body.MaxSpeedBase = 0;
                     }
-
-                    Stage = health;
+                    else
+                        Body.MaxSpeedBase = npcTemplate.MaxSpeed;
                 }
             }
-
             base.Think();
-        }
-
-        public void Spawn() // We define here adds
-        {
-            for (int i = 0; i < Util.Random(2, 3); i++) //Spawn 2 or 3 adds
-            {
-                EasmarachAdd Add = new EasmarachAdd();
-                Add.X = Body.X + Util.Random(-50, 80);
-                Add.Y = Body.Y + Util.Random(-50, 80);
-                Add.Z = Body.Z;
-                Add.CurrentRegion = Body.CurrentRegion;
-                Add.Heading = Body.Heading;
-                Add.AddToWorld();
-            }
-        }
-    }
-}
-
-////////////////////////////////////////adds//////////////////////
-namespace DOL.GS
-{
-    public class EasmarachAdd : GameNPC
-    {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public EasmarachAdd()
-            : base()
-        {
-        }
-
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
-
-        public override int MaxHealth
-        {
-            get { return 7000; }
-        }
-
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 1000;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.85;
-        }
-
-        public override bool AddToWorld()
-        {
-            Model = 816;
-            Name = "lurker";
-            Size = 80;
-            Level = 77;
-            Realm = 0;
-            CurrentRegionID = 191; //galladoria
-
-            Strength = 180;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            Quickness = 125;
-            RespawnInterval = -1;
-
-            Gender = eGender.Neutral;
-            MeleeDamageType = eDamageType.Slash;
-            Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
-            BodyType = 5;
-            EasmarachAddBrain sBrain = new EasmarachAddBrain();
-            SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 500;
-            base.AddToWorld();
-            return true;
-        }
-    }
-}
-
-namespace DOL.AI.Brain
-{
-    public class EasmarachAddBrain : StandardMobBrain
-    {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public EasmarachAddBrain()
-            : base()
-        {
-            AggroLevel = 100;
-            AggroRange = 500;
-        }
-
-        public override void Think()
-        {
-            if (Body.InCombat && HasAggro)
-            {
-                if (Util.Chance(5) && Body.TargetObject != null)
-                {
-                    if (LurkerStun.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
-                    {
-                        new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
-                    }
-                }
-            }
-
-            base.Think();
-        }
-
-        public int CastAOEDD(RegionTimer timer)
-        {
-            Body.CastSpell(LurkerStun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            return 0;
-        }
-
-        private Spell m_LurkerStun;
-
-        private Spell LurkerStun
-        {
-            get
-            {
-                if (m_LurkerStun == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 35;
-                    spell.ClientEffect = 4125;
-                    spell.Icon = 4125;
-                    spell.Name = "Stun";
-                    spell.TooltipId = 4125;
-                    spell.Duration = 9;
-                    spell.SpellID = 11712;
-                    spell.Target = "Enemy";
-                    spell.Type = "Stun";
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Energy;
-                    m_LurkerStun = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LurkerStun);
-                }
-
-                return m_LurkerStun;
-            }
         }
     }
 }
