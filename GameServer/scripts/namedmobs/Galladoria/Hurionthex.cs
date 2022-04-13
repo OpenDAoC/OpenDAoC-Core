@@ -141,7 +141,7 @@ namespace DOL.GS
                 Hurion.Level = 81;
                 Hurion.Size = 170;
                 Hurion.CurrentRegionID = 191; // Galladoria
-                Hurion.Strength = 4;
+                Hurion.Strength = 550;
                 Hurion.Intelligence = 220;
                 Hurion.Piety = 220;
                 Hurion.Dexterity = 200;
@@ -230,7 +230,7 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Crush;
             Body.BodyType = 5; // Giant
 
-            Body.Strength = 5;
+            Body.Strength = 550;
             Body.Dexterity = 200;
             Body.Quickness = 100;
             Body.Intelligence = 200;
@@ -257,10 +257,10 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Spirit;
             Body.BodyType = 10; // Plant
 
-            Body.Strength = 5;
+            Body.Strength = 700;
             Body.Constitution = 100;
             Body.Dexterity = 200;
-            Body.Quickness = 85;
+            Body.Quickness = 80;
             Body.Intelligence = 200;
             Body.Empathy = 300;
             Body.Piety = 200;
@@ -285,7 +285,7 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Spirit;
             Body.BodyType = 1; // Animal
 
-            Body.Strength = 5;
+            Body.Strength = 550;
             Body.Constitution = 100;
             Body.Dexterity = 200;
             Body.Quickness = 185;
@@ -312,10 +312,10 @@ namespace DOL.AI.Brain
             Body.AttackRange = 450;
             Body.MeleeDamageType = eDamageType.Spirit;
 
-            Body.Strength = 5;
+            Body.Strength = 500;
             Body.Constitution = 100;
             Body.Dexterity = 200;
-            Body.Quickness = 125;
+            Body.Quickness = 100;
             Body.Intelligence = 200;
             Body.Empathy = 250;
             Body.Piety = 200;
@@ -645,7 +645,7 @@ namespace DOL.AI.Brain
                     spell.TooltipId = 4375;
                     spell.Range = 1500;
                     spell.Radius = 350;
-                    spell.Duration = 3000;
+                    spell.Duration = 60;
                     spell.SpellID = 11731;
                     spell.Target = "Enemy";
                     spell.Type = "Disease";
