@@ -96,6 +96,7 @@ namespace DOL.GS.Spells
 					}
 			}
 
+            /*
             if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
             {
 	            if (Util.Chance(Caster.SpellCriticalChance))
@@ -105,7 +106,7 @@ namespace DOL.GS.Spells
 		            if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(effectiveness-preModEffectiveness) * 100}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 	            }
             }
-			
+			*/
 			base.ApplyEffectOnTarget(target, effectiveness);
 
 			if (target.Realm == 0 || Caster.Realm == 0)
