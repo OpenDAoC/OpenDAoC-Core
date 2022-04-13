@@ -56,6 +56,11 @@ public class TimerService
         if (ActiveTimers.Contains(timerToRemove)) 
             TimerToRemove.Push(timerToRemove);
     }
+
+    public static bool HasActiveTimer(ECSGameTimer timer)
+    {
+        return ActiveTimers.Contains(timer);
+    }
 }
 
 public class ECSGameTimer
@@ -67,12 +72,25 @@ public class ECSGameTimer
 
     public ECSTimerCallback Callback;
     public long Interval;
-    public long LastTick;
-    public long NextTick => LastTick + Interval;
+    public long StartTick;
+    public long NextTick => StartTick + Interval;
+
+    public GameLiving TimerOwner;
+    public bool IsAlive => TimerService.HasActiveTimer(this);
+
+    public ECSGameTimer(GameLiving living)
+    {
+        TimerOwner = living;
+    }
+
+    public void Start()
+    {
+        Start(500); //use half-second intervals by default
+    }
 
     public void Start(long interval)
     {
-        LastTick = 0;
+        StartTick = 0;
         Interval = interval;
         TimerService.AddTimer(this);
     }
@@ -85,6 +103,9 @@ public class ECSGameTimer
     public void Tick()
     {
         Callback?.Invoke(this);
-        LastTick = GameLoop.GameLoopTime;
+        StartTick = GameLoop.GameLoopTime;
     }
+
+    
+    
 }

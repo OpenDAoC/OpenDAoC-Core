@@ -69,7 +69,7 @@ namespace DOL.GS
         public double RegenAfterTireless { get; set; }
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
-        public RegionTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+        public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
 
         private PlayerDeck _randomNumberDeck;
 
@@ -859,7 +859,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>0</returns>
-        protected int LinkdeathTimerCallback(RegionTimer callingTimer)
+        protected int LinkdeathTimerCallback(ECSGameTimer callingTimer)
         {
             //If we died during our callback time we release
             try
@@ -927,9 +927,10 @@ namespace DOL.GS
             int secondsToQuit = QuitTime;
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
-            RegionTimer timer = new RegionTimer(this); // make sure it is not stopped!
-            timer.Callback = new RegionTimerCallback(LinkdeathTimerCallback);
-            timer.Start(1 + secondsToQuit * 1000);
+            ECSGameTimer timer = new ECSGameTimer(this); // make sure it is not stopped!
+            timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
+            timer.StartTick = 1 + secondsToQuit * 1000;
+            timer.Start();
 
             if (TradeWindow != null)
                 TradeWindow.CloseTrade();
@@ -1164,9 +1165,9 @@ namespace DOL.GS
 
                 if (m_quitTimer == null)
                 {
-                    m_quitTimer = new ECSGameTimer();
+                    m_quitTimer = new ECSGameTimer(this);
                     m_quitTimer.Callback = new ECSGameTimer.ECSTimerCallback(QuitTimerCallback);
-                    m_quitTimer.Start(1000);
+                    m_quitTimer.Start();
                 }
 
                 if (secondsleft > 20)
@@ -1423,7 +1424,7 @@ namespace DOL.GS
         /// <summary>
         /// The release timer for this player
         /// </summary>
-        protected RegionTimer m_releaseTimer;
+        protected ECSGameTimer m_releaseTimer;
 
         /// <summary>
         /// Stops release timer and closes timer window
@@ -1917,7 +1918,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer"></param>
         /// <returns></returns>
-        protected virtual int ReleaseTimerCallback(RegionTimer callingTimer)
+        protected virtual int ReleaseTimerCallback(ECSGameTimer callingTimer)
         {
             if (IsAlive)
                 return 0;
@@ -2534,7 +2535,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int HealthRegenerationTimerCallback(RegionTimer callingTimer)
+        protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
         {
             // I'm not sure what the point of this is.
             if (Client.ClientState != GameClient.eClientState.Playing)
@@ -2597,7 +2598,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int PowerRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+        protected override int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return PowerRegenerationPeriod;
@@ -2611,7 +2612,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int EnduranceRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+        protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
@@ -8401,8 +8402,8 @@ namespace DOL.GS
                 m_deathTick = Environment.TickCount; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
-                m_releaseTimer = new RegionTimer(this);
-                m_releaseTimer.Callback = new RegionTimerCallback(ReleaseTimerCallback);
+                m_releaseTimer = new ECSGameTimer(this);
+                m_releaseTimer.Callback = new ECSGameTimer.ECSTimerCallback(ReleaseTimerCallback);
                 m_releaseTimer.Start(1000);
 
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.ReleaseToReturn"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
@@ -10809,12 +10810,12 @@ namespace DOL.GS
 
             IsJumping = false;
             m_invulnerabilityTick = 0;
-            m_healthRegenerationTimer = new RegionTimer(this);
-            m_powerRegenerationTimer = new RegionTimer(this);
-            m_enduRegenerationTimer = new RegionTimer(this);
-            m_healthRegenerationTimer.Callback = new RegionTimerCallback(HealthRegenerationTimerCallback);
-            m_powerRegenerationTimer.Callback = new RegionTimerCallback(PowerRegenerationTimerCallback);
-            m_enduRegenerationTimer.Callback = new RegionTimerCallback(EnduranceRegenerationTimerCallback);
+            m_healthRegenerationTimer = new ECSGameTimer(this);
+            m_powerRegenerationTimer = new ECSGameTimer(this);
+            m_enduRegenerationTimer = new ECSGameTimer(this);
+            m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
+            m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
+            m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 if (player == null) continue;
