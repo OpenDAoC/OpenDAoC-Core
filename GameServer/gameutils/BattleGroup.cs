@@ -68,6 +68,13 @@ namespace DOL.GS
 			set{password = value;}
 		}
 
+		private string leader = "";
+		public string Leader
+		{
+			get{return leader;}
+			set{leader = value;}
+		}
+
 		/// <summary>
 		/// Adds a player to the chatgroup
 		/// </summary>
@@ -86,6 +93,12 @@ namespace DOL.GS
 				foreach(GamePlayer member in Members.Keys)
 				{
 					member.Out.SendMessage(player.Name+" has joined the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				if (leader)
+				{
+					player.Out.SendMessage("You are the leader of the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Leader = player.Name;
 				}
 				m_battlegroupMembers.Add(player,leader);
 

@@ -582,7 +582,7 @@ namespace DOL.GS.Commands
 				//TODO
 
 				//player is a bg leader, and the bg is public
-				if ((bool)bg.Members[player] == true && bg.IsPublic)
+				if (bg.Leader == player.Name && bg.IsPublic)
 					return true;
 				
 				return false;

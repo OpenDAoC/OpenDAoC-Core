@@ -283,15 +283,15 @@ public class BountyManager
         }
 
         //debug
-        if (m_nextPosterToExpire != null)
-        {
-            Console.WriteLine(
-                $"bounty heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} by {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {(GameLoop.GameLoopTime - expireTime) / 1000}s");
-        }
-        else
-        {
-            Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - no bounties");
-        }
+        // if (m_nextPosterToExpire != null)
+        // {
+        //     Console.WriteLine(
+        //         $"bounty heartbeat {GameLoop.GameLoopTime} - next bounty to expire was posted at {m_nextPosterToExpire?.PostedTime} by {m_nextPosterToExpire?.Ganked.Name} on {m_nextPosterToExpire?.Target.Name} for {m_nextPosterToExpire?.Reward}g and will expire at {expireTime} in {(GameLoop.GameLoopTime - expireTime) / 1000}s");
+        // }
+        // else
+        // {
+        //     Console.WriteLine($"bounty heartbeat {GameLoop.GameLoopTime} - no bounties");
+        // }
     }
 
     private static List<BountyPoster> GetActiveBountiesForPlayer(GamePlayer player)

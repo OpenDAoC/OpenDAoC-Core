@@ -179,7 +179,7 @@ GamePlayer.ApplyPoison.CantReapplyPoison:	Poisons can't be re-applied on this we
 
 ## Ranged Attack
 GamePlayer.Attack.YouAttack:				You attack
-GamePlayer.Attack.YouShot:					You shot
+GamePlayer.Attack.YouShot:					You shoot
 GamePlayer.Attack.WithYour:					with your
 GamePlayer.Attack.Type.Shot:				shot
 GamePlayer.Attack.Type.Throw:				throw

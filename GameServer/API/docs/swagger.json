@@ -340,7 +340,7 @@
   },
   "servers": [
     {
-      "url": "http://api.atlasfreeshard.com/"
+      "url": "https://api.atlasfreeshard.com/"
     }
   ],
   "components": {
