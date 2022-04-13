@@ -622,7 +622,7 @@ namespace DOL.GS
 		public bool CheckGlare(GameLiving target)
 		{
 			if (target == null || GlareTarget != null) return false;
-			bool success = Util.Chance(GlareChance);
+			bool success = Util.Chance(GlareChance) && (Brain is DragonBrain {GlareAvailable: true});
 			if (success)
 				GlareTarget = target;
 			return success;
