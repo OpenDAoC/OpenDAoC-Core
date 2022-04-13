@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using DOL.Database;
@@ -38,7 +39,7 @@ public class TimerService
 
         foreach (var timer in ActiveTimers)
         {
-            if (timer.NextTick < GameLoop.GameLoopTime)
+            if (timer != null && timer.NextTick < GameLoop.GameLoopTime)
                 timer.Tick();
         }
         
@@ -90,7 +91,7 @@ public class ECSGameTimer
 
     public void Start(long interval)
     {
-        StartTick = 0;
+        StartTick = GameLoop.GameLoopTime - interval * 2;
         Interval = interval;
         TimerService.AddTimer(this);
     }
