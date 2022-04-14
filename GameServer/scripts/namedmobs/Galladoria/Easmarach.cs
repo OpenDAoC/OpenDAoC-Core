@@ -288,13 +288,15 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            if (Body.InCombatInLast(40 * 1000) == false && Body.InCombatInLast(45 * 1000))
+            if (Body.InCombatInLast(35 * 1000) == false && this.Body.InCombatInLast(40 * 1000))
             {
                 Body.Health = Body.MaxHealth;
                 restphase = false;
                 dontattack = false;
                 message = false;
                 FloatAgain = false;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
+                Body.MaxSpeedBase = npcTemplate.MaxSpeed;
             }
             if (Body.IsOutOfTetherRange)
             {
