@@ -15,10 +15,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 70;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 70;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 70;// dmg reduction for melee dmg
-				default: return 50;// dmg reduction for rest resists
+				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -66,12 +66,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 1000;
+			return 700;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.85;
+			return 0.55;
 		}
 		public override int MaxHealth
 		{
@@ -366,7 +366,7 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 500;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
