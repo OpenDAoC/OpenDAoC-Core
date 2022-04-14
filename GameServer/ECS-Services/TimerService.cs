@@ -109,6 +109,7 @@ public class ECSGameTimer
             Interval = (long) Callback.Invoke(this);
         }
         
+        if(Interval == 0) Stop();
     }
 
     
