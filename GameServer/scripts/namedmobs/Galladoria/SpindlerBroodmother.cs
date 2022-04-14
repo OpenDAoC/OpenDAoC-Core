@@ -192,6 +192,16 @@ namespace DOL.AI.Brain
                 StartCastMezz = false;
                 CanCast = false;
                 RandomTarget = null;
+                TeleportTarget = null;
+                IsTargetTeleported = false;
+                if(Port_Enemys.Count>0)
+                {
+                    Port_Enemys.Clear();
+                }
+                if (Enemys_To_Mezz.Count > 0)
+                {
+                    Enemys_To_Mezz.Clear();
+                }
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
@@ -213,11 +223,17 @@ namespace DOL.AI.Brain
                     new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(20000, 30000));
                     StartCastMezz = true;
                 }
+                if (Util.Chance(10))
+                {
+                    if (IsTargetTeleported == false)
+                    {
+                        new RegionTimer(Body, new RegionTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+                        IsTargetTeleported = true;
+                    }
+                }
             }
-
             base.Think();
         }
-
         public int SpawnSplinder(RegionTimer timer)
         {
             if (HasAggro && Body.IsAlive)
@@ -302,11 +318,69 @@ namespace DOL.AI.Brain
             return 0;
         }
         #endregion
+        #region Pick player to port
+        public static bool IsTargetTeleported = false;
+        public static GamePlayer teleporttarget = null;
+        public static GamePlayer TeleportTarget
+        {
+            get { return teleporttarget; }
+            set { teleporttarget = value; }
+        }
+        List<GamePlayer> Port_Enemys = new List<GamePlayer>();
+        public int PickTeleportPlayer(RegionTimer timer)
+        {
+            if (Body.IsAlive && HasAggro)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!Port_Enemys.Contains(player))
+                            {
+                                if (player != Body.TargetObject)
+                                {
+                                    Port_Enemys.Add(player);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Port_Enemys.Count == 0)
+                {
+                    TeleportTarget = null;//reset random target to null
+                    IsTargetTeleported = false;
+                }
+                else
+                {
+                    if (Port_Enemys.Count > 0)
+                    {
+                        GamePlayer Target = Port_Enemys[Util.Random(0, Port_Enemys.Count - 1)];
+                        TeleportTarget = Target;
+                        if (TeleportTarget.IsAlive && TeleportTarget != null)
+                        {
+                            new RegionTimer(Body, new RegionTimerCallback(TeleportPlayer), 3000);
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+        public int TeleportPlayer(RegionTimer timer)
+        {
+            if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
+            {
+                TeleportTarget.MoveTo(Body.CurrentRegionID, 21115, 53483, 11286, 2100);
+                Port_Enemys.Remove(TeleportTarget);
+                TeleportTarget = null;//reset random target to null
+                IsTargetTeleported = false;
+            }
+            return 0;
+        }
+        #endregion
 
         protected Spell m_BossmezSpell;
-        /// <summary>
-        /// The Mezz spell.
-        /// </summary>
         protected Spell BossMezz
         {
             get
@@ -430,14 +504,14 @@ namespace DOL.AI.Brain
                     {
                         if (Body.TargetObject != player)
                         {
-                            Body.TargetObject = player;
-                            Body.StartAttack(player);
+                            if (!AggroTable.ContainsKey(player))
+                                AddToAggroList(player, 400);
                         }
                     }
                     else
                     {
-                        Body.TargetObject = player;
-                        Body.StartAttack(player);
+                        if (!AggroTable.ContainsKey(player))
+                            AddToAggroList(player, 10);
                     }
                 }
             }
