@@ -16,10 +16,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 70;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 70;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 70;// dmg reduction for melee dmg
-				default: return 50;// dmg reduction for rest resists
+				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -60,19 +60,19 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 1000;
+			return 700;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.85;
+			return 0.55;
 		}
 		public override int MaxHealth
 		{
@@ -280,7 +280,7 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 2970;
 					spell.Icon = 2970;
 					spell.TooltipId = 2970;
-					spell.Damage = 450;
+					spell.Damage = 250;
 					spell.Frequency = 30;
 					spell.Duration = 36;
 					spell.DamageType = (int)eDamageType.Spirit;
