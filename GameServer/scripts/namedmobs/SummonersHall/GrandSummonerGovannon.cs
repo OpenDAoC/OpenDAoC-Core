@@ -15,9 +15,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 90;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 90;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
 				default: return 80;// dmg reduction for rest resists
 			}
 		}
@@ -59,19 +59,19 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 1000;
+			return 800;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.85;
+			return 0.55;
 		}
 		public override int MaxHealth
 		{
@@ -595,21 +595,21 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 800;
+			return 600;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.55;
+			return 0.35;
 		}
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 65;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 65;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 65;// dmg reduction for melee dmg
-				default: return 55;// dmg reduction for rest resists
+				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
+				default: return 75;// dmg reduction for rest resists
 			}
 		}
 		public static int ShadeOfAelfgarCount = 0;
