@@ -91,7 +91,7 @@ public class ECSGameTimer
 
     public void Start(long interval)
     {
-        StartTick = GameLoop.GameLoopTime - interval * 2;
+        StartTick = GameLoop.GameLoopTime;
         Interval = interval;
         TimerService.AddTimer(this);
     }
