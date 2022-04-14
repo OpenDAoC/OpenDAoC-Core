@@ -1424,7 +1424,7 @@ namespace DOL.GS
         /// <summary>
         /// The release timer for this player
         /// </summary>
-        protected ECSGameTimer m_releaseTimer;
+        protected RegionTimer m_releaseTimer;
 
         /// <summary>
         /// Stops release timer and closes timer window
@@ -1918,7 +1918,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer"></param>
         /// <returns></returns>
-        protected virtual int ReleaseTimerCallback(ECSGameTimer callingTimer)
+        protected virtual int ReleaseTimerCallback(RegionTimer callingTimer)
         {
             if (IsAlive)
                 return 0;
@@ -2574,7 +2574,7 @@ namespace DOL.GS
                     m_xpGainers.Clear();
                 }
 
-                return 0;
+                callingTimer.Stop();
             }
 
             if (InCombat)
@@ -2663,7 +2663,7 @@ namespace DOL.GS
             }
             if (!sprinting)
             {
-                if (Endurance >= MaxEndurance) return 0;
+                if (Endurance >= MaxEndurance) selfRegenerationTimer.Stop();
             }
             else
             {
@@ -8403,8 +8403,8 @@ namespace DOL.GS
                 m_deathTick = Environment.TickCount; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
-                m_releaseTimer = new ECSGameTimer(this);
-                m_releaseTimer.Callback = new ECSGameTimer.ECSTimerCallback(ReleaseTimerCallback);
+                m_releaseTimer = new RegionTimer(this);
+                m_releaseTimer.Callback = new RegionTimerCallback(ReleaseTimerCallback);
                 m_releaseTimer.Start(1000);
 
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.ReleaseToReturn"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
