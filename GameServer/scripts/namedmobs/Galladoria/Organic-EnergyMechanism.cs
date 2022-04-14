@@ -25,19 +25,11 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 90; // dmg reduction for rest resists
+                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
             }
-        }
-        public virtual int OEMDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
         }
         public override void StartAttack(GameObject target)//dont attack
         {
@@ -58,7 +50,7 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 700;
         }
         public override bool HasAbility(string keyName)
         {
@@ -258,7 +250,6 @@ namespace DOL.AI.Brain
             return 0;
         }
         #endregion
-        public static bool spawnadds = true;
         public override void Think()
         {
             if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
@@ -273,6 +264,7 @@ namespace DOL.AI.Brain
                 CanCast = false;
                 StartCastDOT = false;
                 RandomTarget = null;
+                SpawnFeeder = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc != null)
@@ -286,43 +278,49 @@ namespace DOL.AI.Brain
             }
             if (HasAggro && Body.IsAlive)
             {
-                if (StartCastDOT == false)
-                {
-                    new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(20000, 25000));
-                    StartCastDOT = true;
-                }
+                //DOT is not classic like, can be anabled if we wish to
+                /* if (StartCastDOT == false)
+                 {
+                     new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(20000, 25000));
+                     StartCastDOT = true;
+                 }*/
                 if (Util.Chance(15))
                     Body.CastSpell(OEMDamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
-                if (Body.HealthPercent < 50)
+                if (Util.Chance(25))
+                    Body.CastSpell(OEMEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+
+                if (SpawnFeeder==false)
                 {
-                    if (Util.Chance(5))
-                    {
-                        Spawn(); // spawn adds
-                    }
+                    new RegionTimer(Body, new RegionTimerCallback(SpawnFeeders), 10000);
+                    SpawnFeeder = true;
                 }
             }
             base.Think();
         }
-        public void Spawn() // We define here adds
+        public static bool SpawnFeeder = false;
+        public int SpawnFeeders(RegionTimer timer) // We define here adds
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+            if (Body.IsAlive && HasAggro)
             {
-                if (npc.Brain is OEMAddBrain)
+                for (int i = 0; i < Util.Random(3, 5); i++)
                 {
-                    return;
+                    OEMAdd Add = new OEMAdd();
+                    Add.X = Body.X + Util.Random(-50, 80);
+                    Add.Y = Body.Y + Util.Random(-50, 80);
+                    Add.Z = Body.Z;
+                    Add.CurrentRegion = Body.CurrentRegion;
+                    Add.Heading = Body.Heading;
+                    Add.AddToWorld();
                 }
+                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnFeeders), Util.Random(15000,25000));
             }
-            for (int i = 0; i < Util.Random(4, 6); i++) //Spawn 4 or 6 adds
-            {
-                OEMAdd Add = new OEMAdd();
-                Add.X = Body.X + Util.Random(-50, 80);
-                Add.Y = Body.Y + Util.Random(-50, 80);
-                Add.Z = Body.Z;
-                Add.CurrentRegion = Body.CurrentRegion;
-                Add.Heading = Body.Heading;
-                Add.AddToWorld();
-            }
+            return 0;
+        }
+        public int ResetSpawnFeeders(RegionTimer timer)
+        {
+            SpawnFeeder = false;
+            return 0;
         }
         #region Spells
         private Spell m_AOE_Poison;
@@ -372,13 +370,13 @@ namespace DOL.AI.Brain
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 35;
-                    spell.ClientEffect = 4317; //509
-                    spell.Icon = 4317;
+                    spell.ClientEffect = 11027; //509
+                    spell.Icon = 11027;
                     spell.Damage = 150;
                     spell.Name = "Shield of World Soul";
                     spell.Message2 = "{0}'s armor becomes sorrounded with powerfull magic.";
                     spell.Message4 = "{0}'s powerfull magic wears off.";
-                    spell.TooltipId = 4317;
+                    spell.TooltipId = 11027;
                     spell.Range = 1800;
                     spell.Duration = 35;
                     spell.SpellID = 11701;
@@ -390,6 +388,34 @@ namespace DOL.AI.Brain
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageShield);
                 }
                 return m_DamageShield;
+            }
+        }
+        private Spell m_OEMEffect;
+        private Spell OEMEffect
+        {
+            get
+            {
+                if (m_OEMEffect == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 5;
+                    spell.Duration = 5;
+                    spell.ClientEffect = 4858;
+                    spell.Icon = 4858;
+                    spell.Value = 1;
+                    spell.Name = "Machanism Effect";
+                    spell.TooltipId = 5126;
+                    spell.SpellID = 11864;
+                    spell.Target = "Self";
+                    spell.Type = eSpellType.PowerRegenBuff.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    m_OEMEffect = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OEMEffect);
+                }
+                return m_OEMEffect;
             }
         }
         #endregion
@@ -432,7 +458,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 2500; }
+            get { return 2000; }
         }
         public override int AttackRange
         {
@@ -446,13 +472,13 @@ namespace DOL.GS
         {
             base.Die(null); //null to not gain experience
         }
-        public override short Strength { get => base.Strength; set => base.Strength = 150; }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
         {
             Model = 905;
-            Name = "bottom feeder";
+            Name = "Summoned Bottom Feeder";
             Size = 32;
-            Level = (byte) Util.Random(50, 55);
+            Level = (byte) Util.Random(51, 55);
             Realm = 0;
             CurrentRegionID = 191; //galladoria
 
@@ -470,6 +496,7 @@ namespace DOL.GS
             IsWorthReward = false; //worth no reward
 
             BodyType = 1;
+            MaxSpeedBase = 245;
             OEMAddBrain sBrain = new OEMAddBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
@@ -489,7 +516,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 1500;
+            AggroRange = 1800;
         }
 
         public override void Think()
@@ -497,30 +524,26 @@ namespace DOL.AI.Brain
             Body.IsWorthReward = false; //worth no reward
             if (Body.InCombat && HasAggro)
             {
+                GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (FeederSCDebuff.TargetHasEffect(Body.TargetObject) == false &&
-                        Body.TargetObject.IsVisibleTo(Body))
+                    if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
                     {
                         new RegionTimer(Body, new RegionTimerCallback(CastSCDebuff), 3000);
                     }
                 }
-
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (FeederDQDebuff.TargetHasEffect(Body.TargetObject) == false &&
-                        Body.TargetObject.IsVisibleTo(Body))
-                    {
-                        new RegionTimer(Body, new RegionTimerCallback(CastDQDebuff), 3000);
-                    }
-                }
-
-                if (Util.Chance(15) && Body.TargetObject != null)
-                {
-                    if (FeederHasteDebuff.TargetHasEffect(Body.TargetObject) == false &&
-                        Body.TargetObject.IsVisibleTo(Body))
+                    if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteDebuff))
                     {
                         new RegionTimer(Body, new RegionTimerCallback(CastHasteDebuff), 3000);
+                    }
+                }
+                if (Util.Chance(15) && Body.TargetObject != null)
+                {                    
+                    if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
+                    {
+                        Body.CastSpell(FeederRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                     }
                 }
             }
@@ -534,32 +557,17 @@ namespace DOL.AI.Brain
             {
                 Body.CastSpell(FeederSCDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-
             return 0;
         }
-
-        public int CastDQDebuff(RegionTimer timer)
-        {
-            if (Body.TargetObject != null)
-            {
-                Body.CastSpell(FeederDQDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
-
-            return 0;
-        }
-
         public int CastHasteDebuff(RegionTimer timer)
         {
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(FeederHasteDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-
             return 0;
         }
-
         private Spell m_FeederSCDebuff;
-
         private Spell FeederSCDebuff
         {
             get
@@ -586,46 +594,11 @@ namespace DOL.AI.Brain
                     m_FeederSCDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederSCDebuff);
                 }
-
                 return m_FeederSCDebuff;
             }
         }
 
-        private Spell m_FeederDQDebuff;
-
-        private Spell FeederDQDebuff
-        {
-            get
-            {
-                if (m_FeederDQDebuff == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 35;
-                    spell.ClientEffect = 5418;
-                    spell.Icon = 5418;
-                    spell.Name = "D/Q Debuff";
-                    spell.TooltipId = 5418;
-                    spell.Range = 1200;
-                    spell.Value = 85;
-                    spell.Duration = 60;
-                    spell.SpellID = 11714;
-                    spell.Target = "Enemy";
-                    spell.Type = "DexterityQuicknessDebuff";
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Energy;
-                    m_FeederDQDebuff = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederDQDebuff);
-                }
-
-                return m_FeederDQDebuff;
-            }
-        }
-
         private Spell m_FeederHasteDebuff;
-
         private Spell FeederHasteDebuff
         {
             get
@@ -652,8 +625,38 @@ namespace DOL.AI.Brain
                     m_FeederHasteDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederHasteDebuff);
                 }
-
                 return m_FeederHasteDebuff;
+            }
+        }
+        private Spell m_FeederRoot;
+        private Spell FeederRoot
+        {
+            get
+            {
+                if (m_FeederRoot == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 0;
+                    spell.ClientEffect = 11027;
+                    spell.Icon = 5440;
+                    spell.Name = "Root";
+                    spell.Description = "Target moves 40% slower for the spell's duration.";
+                    spell.TooltipId = 5440;
+                    spell.Range = 1200;
+                    spell.Value = 60;
+                    spell.Duration = 60;
+                    spell.SpellID = 11865;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.SpeedDecrease.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Body;
+                    m_FeederRoot = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederRoot);
+                }
+                return m_FeederRoot;
             }
         }
     }
