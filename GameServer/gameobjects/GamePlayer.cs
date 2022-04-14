@@ -7784,7 +7784,8 @@ namespace DOL.GS
                 int itemBonus = WeaponSpecLevel(attackComponent?.AttackWeapon) - WeaponBaseSpecLevel(attackComponent?.AttackWeapon) - RealmLevel / 10;
                 double m = 0.56 + itemBonus / 70.0;
                 double weaponSpec = WeaponSpecLevel(attackComponent?.AttackWeapon) + itemBonus * m;
-                return (int)(GetWeaponSkill(attackComponent?.AttackWeapon) * (1.00 + weaponSpec * 0.01));
+                double oldWStoNewWSScalar = (3 + .02 * GetWeaponStat(attackComponent?.AttackWeapon) ) /(1 + .005 * GetWeaponStat(attackComponent?.AttackWeapon));
+                return (int)(GetWeaponSkill(attackComponent?.AttackWeapon) * (1.00 + weaponSpec * 0.01) * oldWStoNewWSScalar);
             }
         }
 
