@@ -5695,7 +5695,7 @@ namespace DOL.GS
 				//If we are full, we stop the timer
 				if (Mana >= MaxMana)
 				{
-					return 0;
+					selfRegenerationTimer.Stop();
 				}
 			}
 
