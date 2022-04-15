@@ -1380,10 +1380,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
-                default: return 99; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
             }
         }
         public override void Die(GameObject killer)
@@ -1397,14 +1397,14 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 700;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
@@ -1430,27 +1430,28 @@ namespace DOL.GS
             {
             }
         }
-        /// <summary>
-        /// This primal is immune to magic dmg, only melees can dmg him
-        /// </summary>
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
+                if (WaterPrimalBrain.dontattack)//dont take any dmg 
                 {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to magic damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                        || damageType == eDamageType.Slash)
+                    {
+                        GamePlayer truc;
+                        if (source is GamePlayer)
+                            truc = (source as GamePlayer);
+                        else
+                            truc = ((source as GamePet).Owner as GamePlayer);
+                        if (truc != null)
+                            truc.Out.SendMessage(this.Name + " is under waterfall effect!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        base.TakeDamage(source, damageType, 0, 0);
+                        return;
+                    }
                 }
-                else
+                else//take dmg
                 {
                     base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
@@ -1469,17 +1470,20 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
 
+            WaterPrimalBrain.message = false;
+            WaterPrimalBrain.lowhealth1 = false;
+            WaterPrimalBrain.dontattack = false;
+            WaterPrimalBrain.TeleportTarget = null;
+            WaterPrimalBrain.IsTargetTeleported = false;
+
             CurrentRegionID = 191;//galladoria
             Flags ^= eFlags.GHOST;//ghost
 
             RespawnInterval = -1;//will not respawn
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
             WaterPrimalBrain sBrain = new WaterPrimalBrain();
             SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 1500;
             Brain.Start();
             base.AddToWorld();
             return true;
@@ -1488,7 +1492,7 @@ namespace DOL.GS
 }
 
 /// <summary>
-/// /////////////////////////////////////////      Air Elementar Brain
+/// /////////////////////////////////////////     Water Elementar Brain
 /// </summary>
 namespace DOL.AI.Brain
 {
@@ -1499,13 +1503,22 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 1500;
+            AggroRange = 600;
             ThinkInterval = 5000;
         }
         public static bool dontattack = false;
         public static bool lowhealth1 = false;
-        public static bool lowhealth2 = false;
-
+        public static bool message = false;
+        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        {
+            if(e == GameNPCEvent.AddToWorld)
+            {
+                Point3D point1 = new Point3D();
+                point1.X = 39652; point1.Y = 60831; point1.Z = 11893;
+                Body.WalkTo(point1, 300);
+            }
+            base.Notify(e, sender, args);
+        }
         public override void AttackMostWanted()
         {
             if (dontattack == true)
@@ -1529,68 +1542,156 @@ namespace DOL.AI.Brain
             }
             base.AttackMostWanted();
         }
+        public int CanAttack(RegionTimer timer)
+        {
+            dontattack = false;
+            AggroRange = 1500;
+            return 0;
+        }
         public void LowOnHealth()
         {
             Point3D point1 = new Point3D();
             point1.X = 39652; point1.Y = 60831; point1.Z = 11893;
 
-            if (Body.HealthPercent < 50 && lowhealth1 == false)
+            if (Body.HealthPercent < 30 && lowhealth1 == false)
             {
-                Body.StopAttack();
-                Body.StopFollowing();
-                AggroTable.Clear();
-                ClearAggroList();
-
                 if (Body.IsWithinRadius(point1, 80))
                 {
-                    Body.Health += Body.MaxHealth / 5;
-                    dontattack = false;
+                    Body.CastSpell(WaterEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    Body.Health += Body.MaxHealth / 6;
+                    new RegionTimer(Body, new RegionTimerCallback(CanAttack), 5000);
                     lowhealth1 = true;
                 }
                 else
                 {
-                    if (!Body.IsMoving)
+                    if (message == false)
                     {
-                        Body.WalkTo(point1, 300);
-                        dontattack = true;
+                        ClearAggroList();
+                        message = true;
                     }
-                }
-            }
-
-            if (Body.HealthPercent < 25 && lowhealth2 == false)
-            {
-                Body.StopAttack();
-                Body.StopFollowing();
-                AggroTable.Clear();
-                ClearAggroList();
-
-                if (Body.IsWithinRadius(point1, 80))
-                {
-                    Body.Health += Body.MaxHealth / 5;
-                    dontattack = false;
-                    lowhealth2 = true;
-                }
-                else
-                {
-                    if (!Body.IsMoving)
-                    {
-                        Body.WalkTo(point1, 300);
-                        dontattack = true;
-                    }
+                    Body.WalkTo(point1, 300);
+                    dontattack = true;
                 }
             }
         }
         public override void Think()
         {
+            if(HasAggro && Body.TargetObject != null)
+            {
+                if (Util.Chance(10))
+                {
+                    if (IsTargetTeleported == false)
+                    {
+                        new RegionTimer(Body, new RegionTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+                        IsTargetTeleported = true;
+                    }
+                }
+            }
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 dontattack = false;
                 lowhealth1 = false;
-                lowhealth2 = false;
+                message = false;
+                IsTargetTeleported = false;
+                TeleportTarget = null;
+                AggroRange = 600;
             }
             LowOnHealth();
             base.Think();
+        }
+        #region Pick player to port
+        public static bool IsTargetTeleported = false;
+        public static GamePlayer teleporttarget = null;
+        public static GamePlayer TeleportTarget
+        {
+            get { return teleporttarget; }
+            set { teleporttarget = value; }
+        }
+        List<GamePlayer> Port_Enemys = new List<GamePlayer>();
+        public int PickTeleportPlayer(RegionTimer timer)
+        {
+            if (Body.IsAlive && HasAggro)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!Port_Enemys.Contains(player))
+                            {
+                                if (player != Body.TargetObject)
+                                {
+                                    Port_Enemys.Add(player);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Port_Enemys.Count == 0)
+                {
+                    TeleportTarget = null;//reset random target to null
+                    IsTargetTeleported = false;
+                }
+                else
+                {
+                    if (Port_Enemys.Count > 0)
+                    {
+                        GamePlayer Target = Port_Enemys[Util.Random(0, Port_Enemys.Count - 1)];
+                        TeleportTarget = Target;
+                        if (TeleportTarget.IsAlive && TeleportTarget != null)
+                        {
+                            new RegionTimer(Body, new RegionTimerCallback(TeleportPlayer), 3000);
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+        public int TeleportPlayer(RegionTimer timer)
+        {
+            if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
+            {
+                switch(Util.Random(1,2))
+                {
+                    case 1: TeleportTarget.MoveTo(Body.CurrentRegionID, 38626, 60891, 11771, 2881); break;
+                    case 2: TeleportTarget.MoveTo(Body.CurrentRegionID, 40606, 60868, 11721, 1095); break;
+                }              
+                Port_Enemys.Remove(TeleportTarget);
+                TeleportTarget = null;//reset random target to null
+                IsTargetTeleported = false;
+            }
+            return 0;
+        }
+        #endregion
+        private Spell m_WaterEffect;
+        private Spell WaterEffect
+        {
+            get
+            {
+                if (m_WaterEffect == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 5;
+                    spell.Duration = 5;
+                    spell.ClientEffect = 4323;
+                    spell.Icon = 4323;
+                    spell.Value = 1;
+                    spell.Name = "Machanism Effect";
+                    spell.TooltipId = 4323;
+                    spell.SpellID = 11865;
+                    spell.Target = "Self";
+                    spell.Type = eSpellType.PowerRegenBuff.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    m_WaterEffect = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WaterEffect);
+                }
+                return m_WaterEffect;
+            }
         }
     }
 }
