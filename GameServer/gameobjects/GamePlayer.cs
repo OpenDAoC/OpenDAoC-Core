@@ -1424,7 +1424,7 @@ namespace DOL.GS
         /// <summary>
         /// The release timer for this player
         /// </summary>
-        protected RegionTimer m_releaseTimer;
+        protected ECSGameTimer m_releaseTimer;
 
         /// <summary>
         /// Stops release timer and closes timer window
@@ -1918,7 +1918,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer"></param>
         /// <returns></returns>
-        protected virtual int ReleaseTimerCallback(RegionTimer callingTimer)
+        protected virtual int ReleaseTimerCallback(ECSGameTimer callingTimer)
         {
             if (IsAlive)
                 return 0;
@@ -2478,7 +2478,18 @@ namespace DOL.GS
         public override void StartHealthRegeneration()
         {
             if (!IsAlive || ObjectState != eObjectState.Active) return;
-            if (m_healthRegenerationTimer.IsAlive) return;
+            if (m_healthRegenerationTimer is {IsAlive: true}) return;
+            
+            if (m_healthRegenerationTimer == null)
+            {
+                m_healthRegenerationTimer = new ECSGameTimer(this);
+                m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
+            }
+            else if (m_healthRegenerationTimer.IsAlive)
+            {
+                return;
+            }
+            
             m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
         }
         /// <summary>
@@ -2488,7 +2499,12 @@ namespace DOL.GS
         public override void StartPowerRegeneration()
         {
             if (ObjectState != eObjectState.Active) return;
-            if (m_powerRegenerationTimer.IsAlive) return;
+            if (m_powerRegenerationTimer is {IsAlive: true}) return;
+            if (m_powerRegenerationTimer == null)
+            {
+                m_powerRegenerationTimer = new ECSGameTimer(this);
+                m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
+            }
             m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
         }
         /// <summary>
@@ -2498,7 +2514,14 @@ namespace DOL.GS
         public override void StartEnduranceRegeneration()
         {
             if (ObjectState != eObjectState.Active) return;
-            if (m_enduRegenerationTimer.IsAlive) return;
+            if (m_enduRegenerationTimer is {IsAlive: true}) return;
+            if (m_enduRegenerationTimer == null)
+            {
+                m_enduRegenerationTimer = new ECSGameTimer(this);
+                m_enduRegenerationTimer.Callback =
+                    new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
+            }
+            
             m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
         }
         /// <summary>
@@ -8398,13 +8421,20 @@ namespace DOL.GS
                     m_quitTimer.Stop();
                     m_quitTimer = null;
                 }
+
+                if (m_healthRegenerationTimer != null)
+                {
+                    m_healthRegenerationTimer.Stop();
+                    m_healthRegenerationTimer = null;
+                }
+                
                 m_automaticRelease = m_releaseType == eReleaseType.Duel;
                 m_releasePhase = 0;
                 m_deathTick = Environment.TickCount; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
-                m_releaseTimer = new RegionTimer(this);
-                m_releaseTimer.Callback = new RegionTimerCallback(ReleaseTimerCallback);
+                m_releaseTimer = new ECSGameTimer(this);
+                m_releaseTimer.Callback = new ECSGameTimer.ECSTimerCallback(ReleaseTimerCallback);
                 m_releaseTimer.Start(1000);
 
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.ReleaseToReturn"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
