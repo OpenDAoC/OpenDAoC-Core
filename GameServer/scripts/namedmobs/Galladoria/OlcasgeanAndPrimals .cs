@@ -926,41 +926,48 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
-                default: return 70; // dmg reduction for rest resists
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 0; // dmg reduction for rest resists
             }
+        }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (source is GamePet || source is TurretPet)
+            {
+                base.TakeDamage(source, damageType, 5, 5);//pets deal less dmg to this primal to avoid being killed to fast
+            }
+            else//take dmg
+            {
+                base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+            }         
         }
         public override void StartAttack(GameObject target)
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.35;
         }
         public override int MaxHealth
         {
             get
             {
-                return 20000;
+                return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
             }
         }
         public override int AttackRange
@@ -1010,7 +1017,6 @@ namespace DOL.GS
         }
     }
 }
-
 /// <summary>
 /// /////////////////////////////////////////      Air Elementar Brain
 /// </summary>
@@ -1024,7 +1030,7 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 0;
-            ThinkInterval = 3000;
+            ThinkInterval = 2000;
         }
 
         private GameLiving randomtarget = null;
@@ -1181,11 +1187,10 @@ namespace DOL.AI.Brain
 
             if (inRangeLiving == null)
                 inRangeLiving = new List<GamePlayer>();
-            if (Body.InCombatInLast(50 * 1000) == false && this.Body.InCombatInLast(55 * 1000))
+            if (Body.InCombatInLast(20 * 1000) == false && this.Body.InCombatInLast(25 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
-
             if (Body.IsAlive)
             {
                 if (!Body.IsWithinRadius(point1, 20) && path1 == false)
@@ -1310,7 +1315,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.RecastDelay = 2;
                     spell.ClientEffect = 479;
                     spell.Icon = 479;
                     spell.TooltipId = 479;
