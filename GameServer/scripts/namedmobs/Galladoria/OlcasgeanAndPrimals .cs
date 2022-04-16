@@ -1723,42 +1723,22 @@ namespace DOL.GS
                 case eDamageType.Slash: return 50; // dmg reduction for melee dmg
                 case eDamageType.Crush: return 50; // dmg reduction for melee dmg
                 case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
-                default: return 90; // dmg reduction for rest resists
+                default: return 70; // dmg reduction for rest resists
             }
         }
         public override void StartAttack(GameObject target)
         {
         }
+        public override void WalkToSpawn()
+        {
+            if (IsAlive)
+                return;
+            base.WalkToSpawn();
+        }
         public override void Die(GameObject killer)
         {
             ++AirPrimal.DeadPrimalsCount;
             base.Die(killer);
-        }
-        /// <summary>
-        /// This primal is immune to magic dmg, only melees can dmg him
-        /// </summary>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (source is GamePlayer || source is GamePet)
-            {
-                if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
-                {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to magic damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
-                }
-                else
-                {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                }
-            }
         }
         public override double AttackDamage(InventoryItem weapon)
         {
@@ -1766,7 +1746,7 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -1775,7 +1755,6 @@ namespace DOL.GS
         {
             return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
@@ -1788,7 +1767,6 @@ namespace DOL.GS
                 return 20000;
             }
         }
-
         public override int AttackRange
         {
             get
@@ -1811,7 +1789,7 @@ namespace DOL.GS
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
-            FirePrimalBrain.CanCast = false;
+            FirePrimalBrain.CanSpawnFire = false;
 
             Flags ^= eFlags.FLYING;//flying
             RespawnInterval = -1;//will not respawn
@@ -1860,8 +1838,7 @@ namespace DOL.AI.Brain
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
-                CanCast = false;
+                Body.Health = Body.MaxHealth;
             }
             if (Body.IsAlive)
             {
@@ -1879,14 +1856,14 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                if (CanCast == false)
+                if(CanSpawnFire==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastGT), 1500);
-                    CanCast = true;
+                    new RegionTimer(Body, new RegionTimerCallback(SpawnFire), 1000);
+                    CanSpawnFire = true;
                 }
                 if (!Body.IsWithinRadius(point1, 20) && path1 == false)
                 {
-                    Body.WalkTo(point1, 250);
+                    Body.WalkTo(point1, 200);
                 }
                 else
                 {
@@ -1894,21 +1871,21 @@ namespace DOL.AI.Brain
                     path4 = false;
                     if (!Body.IsWithinRadius(point2, 20) && path1 == true && path2 == false)
                     {
-                        Body.WalkTo(point2, 250);
+                        Body.WalkTo(point2, 200);
                     }
                     else
                     {
                         path2 = true;
                         if (!Body.IsWithinRadius(point3, 20) && path1 == true && path2 == true && path3 == false)
                         {
-                            Body.WalkTo(point3, 250);
+                            Body.WalkTo(point3, 200);
                         }
                         else
                         {
                             path3 = true;
                             if (!Body.IsWithinRadius(point4, 20) && path1 == true && path2 == true && path3 == true && path4 == false)
                             {
-                                Body.WalkTo(point4, 250);
+                                Body.WalkTo(point4, 200);
                             }
                             else
                             {
@@ -1923,46 +1900,27 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public static bool CanCast = false;
-        public int CastGT(RegionTimer timer)
+        public static bool CanSpawnFire = false;
+        public int SpawnFire(RegionTimer timer)
         {
-            Body.GroundTarget.X = Body.X;
-            Body.GroundTarget.Y = Body.Y - 100;
-            Body.GroundTarget.Z = Body.Z;
-            Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast groundtarget behind as trial of fire   
-            CanCast = false;
+            if (Body.IsAlive)
+            {
+                TrailOfFire npc = new TrailOfFire();
+                npc.X = Body.X;
+                npc.Y = Body.Y;
+                npc.Z = Body.Z;
+                npc.RespawnInterval = -1;
+                npc.Heading = Body.Heading;
+                npc.CurrentRegion = Body.CurrentRegion;
+                npc.AddToWorld();
+                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnFire), 1000);
+            }
             return 0;
         }
-
-        private Spell m_FireGroundDD;
-
-        private Spell FireGroundDD
+        public int ResetSpawnFire(RegionTimer timer)
         {
-            get
-            {
-                if (m_FireGroundDD == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 0;
-                    spell.ClientEffect = 77;
-                    spell.Icon = 77;
-                    spell.TooltipId = 77;
-                    spell.Damage = 170;
-                    spell.Range = 1200;
-                    spell.Radius = 300;
-                    spell.SpellID = 11720;
-                    spell.Target = "Area";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
-                    m_FireGroundDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
-                }
-                return m_FireGroundDD;
-            }
+            CanSpawnFire = false;
+            return 0;
         }
         private Spell m_FireDS;
         private Spell FireDS
@@ -1995,6 +1953,207 @@ namespace DOL.AI.Brain
         }
     }
 }
+#region trail of fire
+namespace DOL.GS
+{
+    public class TrailOfFire : GameNPC
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public TrailOfFire()
+            : base()
+        {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 99; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 99; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 99; // dmg reduction for melee dmg
+                default: return 99; // dmg reduction for rest resists
+            }
+        }
+        public override void StartAttack(GameObject target)
+        {
+        }
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 800;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.55;
+        }
+        public override int MaxHealth
+        {
+            get
+            {
+                return 10000;
+            }
+        }
+        protected int Show_Effect(RegionTimer timer)
+        {
+            if (IsAlive)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    if (player != null)
+                        player.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
+                }
+                new RegionTimer(this, new RegionTimerCallback(DoCast), 1000);
+            }
+            return 0;
+        }
+        protected int DoCast(RegionTimer timer)
+        {
+            if (IsAlive)
+                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 1000);
+            return 0;
+        }
+        public int RemoveFire(RegionTimer timer)
+        {
+            if (IsAlive)
+                RemoveFromWorld();
+            return 0;
+        }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+        public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }
+        public override bool AddToWorld()
+        {
+            Model = 665;
+            Name = "trail of fire";
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
+            MaxSpeedBase = 0;
+            Level = 80;
+            Size = 10;
+
+            RespawnInterval = -1;//will not respawn
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+
+            TrailOfFireBrain sBrain = new TrailOfFireBrain();
+            SetOwnBrain(sBrain);
+            Brain.Start();
+            bool success = base.AddToWorld();
+            if (success)
+            {
+                SetGroundTarget(X, Y, Z);
+                CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
+                new RegionTimer(this, new RegionTimerCallback(RemoveFire), 8000);
+            }
+            return success;
+        }
+        private Spell m_FireGroundDD;
+        private Spell FireGroundDD
+        {
+            get
+            {
+                if (m_FireGroundDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 2;
+                    spell.ClientEffect = 368;
+                    spell.Icon = 368;
+                    spell.TooltipId = 368;
+                    spell.Damage = 180;
+                    spell.Range = 1200;
+                    spell.Radius = 450;
+                    spell.SpellID = 11866;
+                    spell.Target = "Area";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Heat;
+                    m_FireGroundDD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
+                }
+                return m_FireGroundDD;
+            }
+        }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class TrailOfFireBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public TrailOfFireBrain()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 1500;
+            ThinkInterval = 1000;
+        }
+        public override void Think()
+        {
+            if (Body.IsAlive)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!AggroTable.ContainsKey(player))
+                            {
+                                AggroTable.Add(player, 100);
+                            }
+                        }
+                    }
+                }
+                Body.SetGroundTarget(Body.X,Body.Y,Body.Z);
+                Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.Think();
+        }
+        private Spell m_FireGroundDD;
+        private Spell FireGroundDD
+        {
+            get
+            {
+                if (m_FireGroundDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 2;
+                    spell.ClientEffect = 368;
+                    spell.Icon = 368;
+                    spell.TooltipId = 368;
+                    spell.Damage = 180;
+                    spell.Range = 1200;
+                    spell.Radius = 450;
+                    spell.SpellID = 11720;
+                    spell.Target = "Area";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Heat;
+                    m_FireGroundDD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
+                }
+                return m_FireGroundDD;
+            }
+        }
+    }
+}
+#endregion
 #endregion Fire Elementar
 
 #region Earth Elementar
