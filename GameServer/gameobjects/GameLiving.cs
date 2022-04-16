@@ -5430,15 +5430,15 @@ namespace DOL.GS
 		/// <summary>
 		/// GameTimer used for restoring hp
 		/// </summary>
-		protected RegionTimer m_healthRegenerationTimer;
+		protected ECSGameTimer m_healthRegenerationTimer;
 		/// <summary>
 		/// GameTimer used for restoring mana
 		/// </summary>
-		protected RegionTimer m_powerRegenerationTimer;
+		protected ECSGameTimer m_powerRegenerationTimer;
 		/// <summary>
 		/// GameTimer used for restoring endurance
 		/// </summary>
-		protected RegionTimer m_enduRegenerationTimer;
+		protected ECSGameTimer m_enduRegenerationTimer;
 
 		/// <summary>
 		/// The default frequency of regenerating health in milliseconds
@@ -5495,8 +5495,8 @@ namespace DOL.GS
 			{
 				if (m_healthRegenerationTimer == null)
 				{
-					m_healthRegenerationTimer = new RegionTimer(this);
-					m_healthRegenerationTimer.Callback = new RegionTimerCallback(HealthRegenerationTimerCallback);
+					m_healthRegenerationTimer = new ECSGameTimer(this);
+					m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
 				}
 				else if (m_healthRegenerationTimer.IsAlive)
 				{
@@ -5518,8 +5518,8 @@ namespace DOL.GS
 			{
 				if (m_powerRegenerationTimer == null)
 				{
-					m_powerRegenerationTimer = new RegionTimer(this);
-					m_powerRegenerationTimer.Callback = new RegionTimerCallback(PowerRegenerationTimerCallback);
+					m_powerRegenerationTimer = new ECSGameTimer(this);
+					m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
 				}
 				else if (m_powerRegenerationTimer.IsAlive)
 				{
@@ -5540,8 +5540,8 @@ namespace DOL.GS
 			{
 				if (m_enduRegenerationTimer == null)
 				{
-					m_enduRegenerationTimer = new RegionTimer(this);
-					m_enduRegenerationTimer.Callback = new RegionTimerCallback(EnduranceRegenerationTimerCallback);
+					m_enduRegenerationTimer = new ECSGameTimer(this);
+					m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
 				}
 				else if (m_enduRegenerationTimer.IsAlive)
 				{
@@ -5593,7 +5593,7 @@ namespace DOL.GS
 		/// Timer callback for the hp regeneration
 		/// </summary>
 		/// <param name="callingTimer">timer calling this function</param>
-		protected virtual int HealthRegenerationTimerCallback(RegionTimer callingTimer)
+		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
 		{
 			if (Health < MaxHealth)
 			{
@@ -5656,7 +5656,7 @@ namespace DOL.GS
 		/// Callback for the power regenerationTimer
 		/// </summary>
 		/// <param name="selfRegenerationTimer">timer calling this function</param>
-		protected virtual int PowerRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+		protected virtual int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			
 			if (this is GamePlayer &&
@@ -5671,18 +5671,18 @@ namespace DOL.GS
 
 				if (!InCombat)
 				{
-					if (ManaPercent < 15)
+					/*if (ManaPercent < 15)
 					{
 						ChangeMana(this, eManaChangeType.Regenerate, (int)OnePercMana);
 						return 4000;
 					}
 					else if (ManaPercent > 15)
-					{
-						ChangeMana(this, eManaChangeType.Regenerate, (int)(-OnePercMana));
-						return 1000;
-					}
+					{*/
+					ChangeMana(this, eManaChangeType.Regenerate, (int)(-OnePercMana));
+					return 1000;
+					//}
 
-					return 0;
+					//return 0;
 				}
 			}
 			else
@@ -5695,7 +5695,7 @@ namespace DOL.GS
 				//If we are full, we stop the timer
 				if (Mana >= MaxMana)
 				{
-					return 0;
+					selfRegenerationTimer.Stop();
 				}
 			}
 
@@ -5730,7 +5730,7 @@ namespace DOL.GS
 		/// Callback for the endurance regenerationTimer
 		/// </summary>
 		/// <param name="selfRegenerationTimer">timer calling this function</param>
-		protected virtual int EnduranceRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+		protected virtual int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			if (Endurance < MaxEndurance)
 			{

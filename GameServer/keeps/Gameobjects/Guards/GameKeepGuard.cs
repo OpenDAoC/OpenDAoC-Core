@@ -783,7 +783,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="respawnTimer"></param>
 		/// <returns></returns>
-		protected override int RespawnTimerCallback(RegionTimer respawnTimer)
+		protected override int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
 			int temp = base.RespawnTimerCallback(respawnTimer);
 			RefreshTemplate();

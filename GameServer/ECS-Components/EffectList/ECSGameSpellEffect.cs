@@ -1,3 +1,4 @@
+using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
@@ -105,7 +106,7 @@ namespace DOL.GS
         /// <summary>
         /// Used for 'OnEffectStartMsg' and 'OnEffectExpiresMsg'. Identifies the entity triggering the effect (sometimes the caster and effect owner are the same entity).
         /// </summary>
-        public GameLiving Caster { get; set; }
+        public GameLiving Caster { get; }
         
         #region Effect Start Messages
         /// <summary>
@@ -120,32 +121,31 @@ namespace DOL.GS
 		{
 			// If the target variable is at the start of the string, capitalize their name or article
 			var upperCase = SpellHandler.Spell.Message2.StartsWith("{0}");
-			
+
 			// Sends no messages
-			if (msgTarget == false && msgSelf == false && msgArea == false)
-				return;
+			if (msgTarget == false && msgSelf == false && msgArea == false) return;
 
 			// Sends a first-person message directly to the caster's target, if they are a player
-			if (msgTarget && target is GamePlayer)
+			if (msgTarget && target is GamePlayer playerTarget)
 				// "You feel more dexterous!"
-				((SpellHandler) SpellHandler).MessageToLiving(target, SpellHandler.Spell.Message1, eChatType.CT_Spell);
-			
-			// Sends a third-person message directly to the caster to indicate the spell has taken effect
-			if (msgSelf && target is GamePlayer && Caster != target)
-			{
-				if (Caster == target) return;
-				
+				((SpellHandler)SpellHandler).MessageToLiving(playerTarget, SpellHandler.Spell.Message1, eChatType.CT_Spell);
+
+			// Sends a third-person message directly to the caster to indicate the spell has ended
+			if (msgSelf && Caster is GamePlayer selfCaster)
 				// "{0} looks more agile!"
-				((SpellHandler) SpellHandler).MessageToCaster(eChatType.CT_Spell, SpellHandler.Spell.Message2, target.GetName(0, upperCase));
-			}
-			
+				((SpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, true)), eChatType.CT_Spell);
+
 			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
-				// "{0} looks more agile!"
-				Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
+				if (Caster is GamePlayer areaTarget && areaTarget == target)
+					// "{0} looks more agile!"
+					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
+				else
+					// "{0} looks more agile!"
+					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
-		}
+	    }
         #endregion Effect Start Messages
         
         #region Effect End Messages
@@ -161,33 +161,31 @@ namespace DOL.GS
 		{
 			// If the target variable is at the start of the string, capitalize their name or article
 			var upperCase = SpellHandler.Spell.Message4.StartsWith("{0}");
-
+			
 			// Sends no messages
-			if (msgTarget == false && msgSelf == false && msgArea == false)
-				return;
-			
+			if (msgTarget == false && msgSelf == false && msgArea == false) return;
+
 			// Sends a first-person message directly to the caster's target, if they are a player
-			if (msgTarget && target is GamePlayer)
+			if (msgTarget && target is GamePlayer playerTarget)
 				// "Your agility returns to normal."
-				((SpellHandler) SpellHandler).MessageToLiving(target, SpellHandler.Spell.Message3, eChatType.CT_Spell);
-			
+				((SpellHandler)SpellHandler).MessageToLiving(playerTarget, SpellHandler.Spell.Message3, eChatType.CT_Spell);
+
 			// Sends a third-person message directly to the caster to indicate the spell has ended
-			if (msgSelf && target is GamePlayer)
-			{
-				if (Caster == target) return;
-				
+			if (msgSelf && Caster is GamePlayer selfCaster)
 				// "{0}'s enhanced agility fades."
-				((SpellHandler) SpellHandler).MessageToCaster(eChatType.CT_Spell, SpellHandler.Spell.Message4, Owner.GetName(0, upperCase));
-			}
-			
+				((SpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, true)), eChatType.CT_Spell);
+
 			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
-				// "{0}'s enhanced agility fades."
-				Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_System, target);
+				if (Caster is GamePlayer areaTarget && areaTarget == target)
+					// "{0}'s enhanced agility fades."
+					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
+				else
+					// "{0}'s enhanced agility fades."
+					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
 		}
-		#endregion Effect Start Messages
-
+		#endregion Effect End Messages
     }
 }

@@ -40,6 +40,10 @@ namespace DOL.AI.Brain
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+
+		private long LastGlareUseTick;
+		private int GlareUseCooldown = 30; //30 seconds?
+
         /// <summary>
         /// Create a new DragonBrain.
         /// </summary>
@@ -55,7 +59,8 @@ namespace DOL.AI.Brain
 			FSM.Add(new StandardMobState_DEAD(FSM, this));
 
 			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
-		}
+			LastGlareUseTick = 0;
+        }
 
 		/// <summary>
 		/// The brain main loop. Do necessary health checks first and take
@@ -307,12 +312,16 @@ namespace DOL.AI.Brain
 
 		#region Glare
 
+		public bool GlareAvailable => LastGlareUseTick + GlareUseCooldown * 1000 < GameLoop.GameLoopTime;
+
 		/// <summary>
 		/// Try to find a potential target for Glare.
 		/// </summary>
 		/// <returns>Whether or not a target was picked.</returns>
 		public bool PickGlareTarget()
 		{
+			if (!GlareAvailable) return false; //if we're on cooldown, return
+			
 			GameDragon dragon = Body as GameDragon;
 			if (dragon == null) return false;
 

@@ -1262,7 +1262,7 @@ namespace DOL.GS
 				}
 				else
 				{
-					return CurrentRegion.GetPlayersInRadius(X, Y, Z, radiusToCheck, withDistance, ignoreZ);
+					return CurrentRegion?.GetPlayersInRadius(X, Y, Z, radiusToCheck, withDistance, ignoreZ);
 				}
 			}
 			return new Region.EmptyEnumerator();

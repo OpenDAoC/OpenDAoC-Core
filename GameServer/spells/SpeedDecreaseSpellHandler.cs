@@ -53,6 +53,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
+			/*
 			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
 			{
 				if (Util.Chance(Caster.SpellCriticalChance))
@@ -60,7 +61,7 @@ namespace DOL.GS.Spells
 					effectiveness *= 2;
 					if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for 100% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				}
-			}
+			}*/
 			
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}

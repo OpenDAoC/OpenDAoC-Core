@@ -25,7 +25,7 @@ namespace DOL.GS
             
             // "Searing pain fills your mind!"
             // "{0} is wracked with pain!"
-            OnEffectStartsMsg(Owner, true, false, true);
+            //OnEffectStartsMsg(Owner, true, false, true);
         }
 
         public override void OnStopEffect()
