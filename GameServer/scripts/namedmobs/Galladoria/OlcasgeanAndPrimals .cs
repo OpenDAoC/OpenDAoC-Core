@@ -6,6 +6,7 @@ using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 #region Olcasgean Initializator
 /// <summary>
@@ -104,14 +105,38 @@ namespace DOL.AI.Brain
                     {
                         if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
                         {
-                            BroadcastMessage(String.Format("The magic elements of nature start appearing in this area..."));
-                            new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 30000);//30s to start
+                            
+                            new RegionTimer(Body, new RegionTimerCallback(Message1), 5000);//5s to start
                             startevent = false;
                         }
                     }
                 }
             }
             base.Think();
+        }
+        public int Message1(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have eneteres inner sanctum.'"));
+            new RegionTimer(Body, new RegionTimerCallback(Message2), 5000);
+            return 0;
+        }
+        public int Message2(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("A deep booming voice responds; 'P...R...O...T...E...C...T..'"));
+            new RegionTimer(Body, new RegionTimerCallback(Message3), 5000);
+            return 0;
+        }
+        public int Message3(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("'I am tired, and yet, there is much left for me to take care of this day'"));
+            new RegionTimer(Body, new RegionTimerCallback(Message4), 5000);
+            return 0;
+        }
+        public int Message4(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("The first voice says: 'We shall protect.'"));
+            new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 5000);
+            return 0;
         }
         protected virtual int SpawnPrimals(RegionTimer timer)//real timer to cast spell and reset check
         {
@@ -318,25 +343,20 @@ namespace DOL.GS
         {
             Master = master;
         }
-        public virtual int OlcasgeanDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 90; // dmg reduction for rest resists
+                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
             get
@@ -344,7 +364,6 @@ namespace DOL.GS
                 return 40000;//tons of health
             }
         }
-
         public override int AttackRange
         {
             get
@@ -357,20 +376,19 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 900;
+            return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65;
+            return 0.55;
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -395,6 +413,44 @@ namespace DOL.GS
                 }
             }
         }
+        #region Custom Methods
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+            }
+        }
+        protected void ReportNews(GameObject killer)
+        {
+            if (PackageID == "Olcasgean1")
+            {
+                int numPlayers = AwardEpicEncounterKillPoint();
+                String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+                NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+
+                if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+                {
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    {
+                        if (player.IsEligibleToGiveMeritPoints)
+                        {
+                            GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+                        }
+                    }
+                }
+            }
+        }
+        protected int AwardEpicEncounterKillPoint()
+        {
+            int count = 0;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.KillsEpicBoss++;
+                count++;
+            }
+            return count;
+        }      
         public override void Die(GameObject killer)
         {
             if (!(killer is Olcasgean) && !Master && Master_NPC != null)
@@ -405,7 +461,6 @@ namespace DOL.GS
             }
             else
             {
-
                 if (CopyNPC != null && CopyNPC.Count > 0)
                 {
                     lock (CopyNPC)
@@ -427,13 +482,10 @@ namespace DOL.GS
                         if (npc.IsAlive)
                         {
                             if (npc.Brain is VortexBrain)
-                            {
                                 npc.RemoveFromWorld();
-                            }
+
                             if (npc.Brain is WaterfallAntipassBrain)
-                            {
                                 npc.RemoveFromWorld();
-                            }
                         }
                     }
                 }
@@ -441,20 +493,37 @@ namespace DOL.GS
                 OlcasgeanBrain.spawn3 = true;
                 AirPrimal.DeadPrimalsCount = 0;
 
+                bool canReportNews = true;
+                // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+
+                    if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+                    {
+                        if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                            canReportNews = false;
+                    }
+                }
+                if (canReportNews)
+                {
+                    ReportNews(killer);
+                }
                 base.Die(killer);
             }
         }
-        public static bool AddOlcasgean = false;
         public override void Follow(GameObject target, int minDistance, int maxDistance)
         {
             if (TargetObject != null)
                 return;
             base.Follow(target, minDistance, maxDistance);
         }
+        #endregion
         public override bool AddToWorld()
         {
             OIBrain.startevent = true;
             OlcasgeanBrain.setbossflags = false;
+            OlcasgeanBrain.wake_up_boss = false;
             Flags ^= GameNPC.eFlags.DONTSHOWNAME;
             Flags ^= GameNPC.eFlags.PEACE;
             Flags ^= GameNPC.eFlags.STATUE;
@@ -503,7 +572,6 @@ namespace DOL.GS
                 OLC.Heading = 2491;
                 OLC.AttackRange = 1500;
 
-
                 OlcasgeanBrain ubrain = new OlcasgeanBrain();
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 1500;
@@ -515,7 +583,6 @@ namespace DOL.GS
             else
                 log.Warn("Olcasgean exist ingame, remove it and restart server if you want to add by script code.");
         }
-
     }
 }
 #endregion Olcasgean
@@ -582,7 +649,6 @@ namespace DOL.AI.Brain
                 sg.CopyNPC.Add(Add);
             }
         }
-
         public override void AddToAggroList(GameLiving living, int aggroamount, bool NaturalAggro)
         {
             base.AddToAggroList(living, aggroamount, NaturalAggro);
@@ -620,6 +686,8 @@ namespace DOL.AI.Brain
         public static bool setbossflags = false;
         public static bool teleport_player = false;
         public static bool spawn_antipass = false;
+        public static bool wake_up_boss = false;
+        public static bool spawn_effect = false;
         List<GamePlayer> player_in_range;
         List<GamePlayer> player_in_range2;
         List<GamePlayer> player_to_port;
@@ -635,12 +703,63 @@ namespace DOL.AI.Brain
             Add.Heading = Body.Heading;
             Add.AddToWorld();
         }
-
+        public int SpawnEffects(RegionTimer timer)
+        {
+            if (HasAggro && Body.IsAlive)
+            {
+                Point3D spot = new Point3D(39526, 62755, 11690);
+                for (int i = 0; i < Util.Random(8, 15); i++)
+                {
+                    OlcasgeanEffect Add = new OlcasgeanEffect();
+                    Add.X = spot.X + Util.Random(-900, 900);
+                    Add.Y = spot.Y + Util.Random(-900, 900);
+                    Add.Z = spot.Z;
+                    Add.CurrentRegion = Body.CurrentRegion;
+                    Add.Heading = Body.Heading;
+                    Add.AddToWorld();
+                }
+                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnEffect), 2000);
+            }
+            return 0;
+        }
+        public int ResetSpawnEffect(RegionTimer timer)
+        {
+            spawn_effect = false;
+            return 0;
+        }
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        public int WakeUpBoss(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("A deep booming voice echoes: 'I am eternal. You and your kind will die.'"));
+            foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
+            {
+                if (boss.Brain is OlcasgeanBrain)
+                {
+                    if (Body.PackageID == "Olcasgean1" && boss.PackageID == "Olcasgean2")
+                    {
+                        if (setbossflags == false)
+                        {
+                            Body.Flags = 0;
+                            boss.Flags = 0;
+                            setbossflags = true;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+        #region Think()
         public override void Think()
         {
             if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             if (!HasAggressionTable())
             {
@@ -649,6 +768,8 @@ namespace DOL.AI.Brain
                 teleport_player = false;
                 cast1 = true;
                 spawn_antipass = false;
+                spawn_effect = false;
+                TeleportTarget = null;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc.Brain is WaterfallAntipassBrain)
@@ -679,29 +800,16 @@ namespace DOL.AI.Brain
                             {
                                 if (OlcasgeanCount < 1)
                                 {
-                                    new RegionTimer(Body, new RegionTimerCallback(PopBoss), 3000);//create copy of himself
+                                    new RegionTimer(Body, new RegionTimerCallback(PopBoss), 1000);//create copy of himself
                                 }
                             }
                         }
                     }
                 }
-                if (AirPrimal.DeadPrimalsCount == 4)
+                if (AirPrimal.DeadPrimalsCount == 4 && wake_up_boss==false)
                 {
-                    foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
-                    {
-                        if (boss.Brain is OlcasgeanBrain)
-                        {
-                            if (Body.PackageID == "Olcasgean1" && boss.PackageID == "Olcasgean2")
-                            {
-                                if (setbossflags == false)
-                                {
-                                    Body.Flags = GameNPC.eFlags.DONTSHOWNAME;//set flags here
-                                    boss.Flags = GameNPC.eFlags.DONTSHOWNAME;
-                                    setbossflags = true;
-                                }
-                            }
-                        }
-                    }
+                    new RegionTimer(Body, new RegionTimerCallback(WakeUpBoss), 25000);
+                    wake_up_boss = true;
                 }
                 Point3D point1 = new Point3D();
                 point1.X = 40170; point1.Y = 62600; point1.Z = 11681;//location where players need to stay to avoid Olcasgean spamming dd spell
@@ -711,6 +819,12 @@ namespace DOL.AI.Brain
 
                 if (Body.InCombat || HasAggro)//Boss in combat
                 {
+                    if(spawn_effect ==false)
+                    {
+                        new RegionTimer(Body, new RegionTimerCallback(SpawnEffects), 2000);
+                        spawn_effect = true;
+                    }
+
                     if (player_in_range == null)
                         player_in_range = new List<GamePlayer>();
 
@@ -802,14 +916,14 @@ namespace DOL.AI.Brain
                         {
                             if (TeleportTarget.IsAlive)
                             {
-                                if (TeleportTarget.IsWithinRadius(point1, 130) || TeleportTarget.IsWithinRadius(point2, 130) || TeleportTarget.IsWithinRadius(point3, 130))
+                                if (TeleportTarget.IsWithinRadius(point4, 130) || TeleportTarget.IsWithinRadius(point5, 130) || TeleportTarget.IsWithinRadius(point3, 130))
                                 {
                                     ported_player.Remove(TeleportTarget);//remove player from list ported_player so boss can port again him after player climb on roots
                                 }
                             }
                         }
                     }
-                    if (teleport_player == false && Body.PackageID == "Olcasgean1")
+                    if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50)
                     {
                         new RegionTimer(Body, new RegionTimerCallback(DoPort), 20000);//do teleport every 20s
                         teleport_player = true;
@@ -818,8 +932,8 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-
-
+        #endregion
+        #region DOPort
         public int DoPort(RegionTimer timer)
         {
             if (player_to_port.Count > 0)
@@ -875,9 +989,9 @@ namespace DOL.AI.Brain
             teleport_player = false;
             return 0;
         }
+        #endregion
 
         public Spell m_OlcasgeanDD;
-
         public Spell OlcasgeanDD
         {
             get
@@ -3384,6 +3498,81 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
+    }
+}
+#endregion
+
+#region Visual Effects
+namespace DOL.GS
+{
+    public class OlcasgeanEffect : GameNPC
+    {
+        public OlcasgeanEffect() : base() { }
+
+        public override bool AddToWorld()
+        {
+            Model = 665;
+            Name = "Root Effect";
+            Size = 70;
+            Level = 50;
+            MaxSpeedBase = 0;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.PEACE;
+            Flags ^= eFlags.CANTTARGET;
+
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            BodyType = 8;
+            Realm = eRealm.None;
+            OlcasgeanEffectBrain adds = new OlcasgeanEffectBrain();
+            LoadedFromScript = true;
+            SetOwnBrain(adds);
+            bool success = base.AddToWorld();
+            if (success)
+            {
+                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);               
+            }
+            return success;
+        }
+        protected int Show_Effect(RegionTimer timer)
+        {
+            if (IsAlive)
+            {
+                foreach (GamePlayer player in this.GetPlayersInRadius(8000))
+                {
+                    if (player != null)
+                    {
+                        player.Out.SendSpellEffectAnimation(this, this, 11027, 0, false, 0x01);
+                    }
+                }
+                new RegionTimer(this, new RegionTimerCallback(RemoveMob), 3000);
+            }
+            return 0;
+        }
+        public int RemoveMob(RegionTimer timer)
+        {
+            if(IsAlive)
+                RemoveFromWorld();
+            return 0;
+        }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class OlcasgeanEffectBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public OlcasgeanEffectBrain()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 250;
+            ThinkInterval = 1000;
+        }
+        public override void Think()
+        {
+            base.Think();
+        }
     }
 }
 #endregion
