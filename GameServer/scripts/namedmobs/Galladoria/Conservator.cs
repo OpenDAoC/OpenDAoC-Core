@@ -23,10 +23,38 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
+                default: return 90; // dmg reduction for rest resists
+            }
+        }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (source is GamePlayer || source is GamePet)
+            {
+                Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
+                if (!source.IsWithinRadius(spawn,800))//dont take any dmg 
+                {
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                        || damageType == eDamageType.Slash)
+                    {
+                        GamePlayer truc;
+                        if (source is GamePlayer)
+                            truc = (source as GamePlayer);
+                        else
+                            truc = ((source as GamePet).Owner as GamePlayer);
+                        if (truc != null)
+                            truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        base.TakeDamage(source, damageType, 0, 0);
+                        return;
+                    }
+                }
+                else//take dmg
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -77,7 +105,7 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -129,8 +157,6 @@ namespace DOL.GS
                 CO.Heading = 409;
 
                 ConservatorBrain ubrain = new ConservatorBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 1500;//so players cant just pass him without aggroing
                 CO.SetOwnBrain(ubrain);
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
                 CO.LoadTemplate(npcTemplate);
@@ -152,7 +178,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 1500;//so players cant just pass him without aggroing
+            AggroRange = 500;
         }
         public void BroadcastMessage(String message)
         {
@@ -199,15 +225,34 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 spamaoe = false;
                 spampoison = false;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
+                Body.MaxSpeedBase = npcTemplate.MaxSpeed;
             }          
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
+                ClearAggroList();
                 spamaoe = false;
                 spampoison = false;
+            }
+            if(Body.IsOutOfTetherRange)
+            {
+                Body.StopFollowing();
+                Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
+                GameLiving target = Body.TargetObject as GameLiving;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
+                if (target != null)
+                {
+                    if (!target.IsWithinRadius(spawn, 800))
+                    {
+                        Body.MaxSpeedBase = 0;
+                    }
+                    else
+                        Body.MaxSpeedBase = npcTemplate.MaxSpeed;
+                }
             }
             if (HasAggro && Body.InCombat)
             {

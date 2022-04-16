@@ -6,6 +6,7 @@ using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 #region Olcasgean Initializator
 /// <summary>
@@ -104,14 +105,38 @@ namespace DOL.AI.Brain
                     {
                         if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
                         {
-                            BroadcastMessage(String.Format("The magic elements of nature start appearing in this area..."));
-                            new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 30000);//30s to start
+                            
+                            new RegionTimer(Body, new RegionTimerCallback(Message1), 5000);//5s to start
                             startevent = false;
                         }
                     }
                 }
             }
             base.Think();
+        }
+        public int Message1(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have eneteres inner sanctum.'"));
+            new RegionTimer(Body, new RegionTimerCallback(Message2), 5000);
+            return 0;
+        }
+        public int Message2(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("A deep booming voice responds; 'P...R...O...T...E...C...T..'"));
+            new RegionTimer(Body, new RegionTimerCallback(Message3), 5000);
+            return 0;
+        }
+        public int Message3(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("'I am tired, and yet, there is much left for me to take care of this day'"));
+            new RegionTimer(Body, new RegionTimerCallback(Message4), 5000);
+            return 0;
+        }
+        public int Message4(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("The first voice says: 'We shall protect.'"));
+            new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 5000);
+            return 0;
         }
         protected virtual int SpawnPrimals(RegionTimer timer)//real timer to cast spell and reset check
         {
@@ -126,7 +151,6 @@ namespace DOL.AI.Brain
             SpawnVortex();
             return 0;
         }
-
         public void SpawnAir()
         {
             AirPrimal Add = new AirPrimal();
@@ -319,17 +343,13 @@ namespace DOL.GS
         {
             Master = master;
         }
-        public virtual int OlcasgeanDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 90; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 90; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 90; // dmg reduction for melee dmg
+                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
                 default: return 80; // dmg reduction for rest resists
             }
         }
@@ -337,7 +357,6 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
             get
@@ -345,7 +364,6 @@ namespace DOL.GS
                 return 40000;//tons of health
             }
         }
-
         public override int AttackRange
         {
             get
@@ -358,20 +376,19 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 900;
+            return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65;
+            return 0.55;
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -396,6 +413,44 @@ namespace DOL.GS
                 }
             }
         }
+        #region Custom Methods
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+            }
+        }
+        protected void ReportNews(GameObject killer)
+        {
+            if (PackageID == "Olcasgean1")
+            {
+                int numPlayers = AwardEpicEncounterKillPoint();
+                String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+                NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+
+                if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+                {
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    {
+                        if (player.IsEligibleToGiveMeritPoints)
+                        {
+                            GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+                        }
+                    }
+                }
+            }
+        }
+        protected int AwardEpicEncounterKillPoint()
+        {
+            int count = 0;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.KillsEpicBoss++;
+                count++;
+            }
+            return count;
+        }      
         public override void Die(GameObject killer)
         {
             if (!(killer is Olcasgean) && !Master && Master_NPC != null)
@@ -406,7 +461,6 @@ namespace DOL.GS
             }
             else
             {
-
                 if (CopyNPC != null && CopyNPC.Count > 0)
                 {
                     lock (CopyNPC)
@@ -428,13 +482,10 @@ namespace DOL.GS
                         if (npc.IsAlive)
                         {
                             if (npc.Brain is VortexBrain)
-                            {
                                 npc.RemoveFromWorld();
-                            }
+
                             if (npc.Brain is WaterfallAntipassBrain)
-                            {
                                 npc.RemoveFromWorld();
-                            }
                         }
                     }
                 }
@@ -442,20 +493,37 @@ namespace DOL.GS
                 OlcasgeanBrain.spawn3 = true;
                 AirPrimal.DeadPrimalsCount = 0;
 
+                bool canReportNews = true;
+                // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+
+                    if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+                    {
+                        if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                            canReportNews = false;
+                    }
+                }
+                if (canReportNews)
+                {
+                    ReportNews(killer);
+                }
                 base.Die(killer);
             }
         }
-        public static bool AddOlcasgean = false;
         public override void Follow(GameObject target, int minDistance, int maxDistance)
         {
             if (TargetObject != null)
                 return;
             base.Follow(target, minDistance, maxDistance);
         }
+        #endregion
         public override bool AddToWorld()
         {
             OIBrain.startevent = true;
             OlcasgeanBrain.setbossflags = false;
+            OlcasgeanBrain.wake_up_boss = false;
             Flags ^= GameNPC.eFlags.DONTSHOWNAME;
             Flags ^= GameNPC.eFlags.PEACE;
             Flags ^= GameNPC.eFlags.STATUE;
@@ -504,7 +572,6 @@ namespace DOL.GS
                 OLC.Heading = 2491;
                 OLC.AttackRange = 1500;
 
-
                 OlcasgeanBrain ubrain = new OlcasgeanBrain();
                 ubrain.AggroLevel = 100;
                 ubrain.AggroRange = 1500;
@@ -516,7 +583,6 @@ namespace DOL.GS
             else
                 log.Warn("Olcasgean exist ingame, remove it and restart server if you want to add by script code.");
         }
-
     }
 }
 #endregion Olcasgean
@@ -583,7 +649,6 @@ namespace DOL.AI.Brain
                 sg.CopyNPC.Add(Add);
             }
         }
-
         public override void AddToAggroList(GameLiving living, int aggroamount, bool NaturalAggro)
         {
             base.AddToAggroList(living, aggroamount, NaturalAggro);
@@ -621,6 +686,8 @@ namespace DOL.AI.Brain
         public static bool setbossflags = false;
         public static bool teleport_player = false;
         public static bool spawn_antipass = false;
+        public static bool wake_up_boss = false;
+        public static bool spawn_effect = false;
         List<GamePlayer> player_in_range;
         List<GamePlayer> player_in_range2;
         List<GamePlayer> player_to_port;
@@ -636,12 +703,63 @@ namespace DOL.AI.Brain
             Add.Heading = Body.Heading;
             Add.AddToWorld();
         }
-
+        public int SpawnEffects(RegionTimer timer)
+        {
+            if (HasAggro && Body.IsAlive)
+            {
+                Point3D spot = new Point3D(39526, 62755, 11690);
+                for (int i = 0; i < Util.Random(8, 15); i++)
+                {
+                    OlcasgeanEffect Add = new OlcasgeanEffect();
+                    Add.X = spot.X + Util.Random(-900, 900);
+                    Add.Y = spot.Y + Util.Random(-900, 900);
+                    Add.Z = spot.Z;
+                    Add.CurrentRegion = Body.CurrentRegion;
+                    Add.Heading = Body.Heading;
+                    Add.AddToWorld();
+                }
+                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnEffect), 2000);
+            }
+            return 0;
+        }
+        public int ResetSpawnEffect(RegionTimer timer)
+        {
+            spawn_effect = false;
+            return 0;
+        }
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        public int WakeUpBoss(RegionTimer timer)
+        {
+            BroadcastMessage(String.Format("A deep booming voice echoes: 'I am eternal. You and your kind will die.'"));
+            foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
+            {
+                if (boss.Brain is OlcasgeanBrain)
+                {
+                    if (Body.PackageID == "Olcasgean1" && boss.PackageID == "Olcasgean2")
+                    {
+                        if (setbossflags == false)
+                        {
+                            Body.Flags = 0;
+                            boss.Flags = 0;
+                            setbossflags = true;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+        #region Think()
         public override void Think()
         {
             if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             if (!HasAggressionTable())
             {
@@ -650,6 +768,8 @@ namespace DOL.AI.Brain
                 teleport_player = false;
                 cast1 = true;
                 spawn_antipass = false;
+                spawn_effect = false;
+                TeleportTarget = null;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc.Brain is WaterfallAntipassBrain)
@@ -680,29 +800,16 @@ namespace DOL.AI.Brain
                             {
                                 if (OlcasgeanCount < 1)
                                 {
-                                    new RegionTimer(Body, new RegionTimerCallback(PopBoss), 3000);//create copy of himself
+                                    new RegionTimer(Body, new RegionTimerCallback(PopBoss), 1000);//create copy of himself
                                 }
                             }
                         }
                     }
                 }
-                if (AirPrimal.DeadPrimalsCount == 4)
+                if (AirPrimal.DeadPrimalsCount == 4 && wake_up_boss==false)
                 {
-                    foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
-                    {
-                        if (boss.Brain is OlcasgeanBrain)
-                        {
-                            if (Body.PackageID == "Olcasgean1" && boss.PackageID == "Olcasgean2")
-                            {
-                                if (setbossflags == false)
-                                {
-                                    Body.Flags = GameNPC.eFlags.DONTSHOWNAME;//set flags here
-                                    boss.Flags = GameNPC.eFlags.DONTSHOWNAME;
-                                    setbossflags = true;
-                                }
-                            }
-                        }
-                    }
+                    new RegionTimer(Body, new RegionTimerCallback(WakeUpBoss), 25000);
+                    wake_up_boss = true;
                 }
                 Point3D point1 = new Point3D();
                 point1.X = 40170; point1.Y = 62600; point1.Z = 11681;//location where players need to stay to avoid Olcasgean spamming dd spell
@@ -712,6 +819,12 @@ namespace DOL.AI.Brain
 
                 if (Body.InCombat || HasAggro)//Boss in combat
                 {
+                    if(spawn_effect ==false)
+                    {
+                        new RegionTimer(Body, new RegionTimerCallback(SpawnEffects), 2000);
+                        spawn_effect = true;
+                    }
+
                     if (player_in_range == null)
                         player_in_range = new List<GamePlayer>();
 
@@ -803,14 +916,14 @@ namespace DOL.AI.Brain
                         {
                             if (TeleportTarget.IsAlive)
                             {
-                                if (TeleportTarget.IsWithinRadius(point1, 130) || TeleportTarget.IsWithinRadius(point2, 130) || TeleportTarget.IsWithinRadius(point3, 130))
+                                if (TeleportTarget.IsWithinRadius(point4, 130) || TeleportTarget.IsWithinRadius(point5, 130) || TeleportTarget.IsWithinRadius(point3, 130))
                                 {
                                     ported_player.Remove(TeleportTarget);//remove player from list ported_player so boss can port again him after player climb on roots
                                 }
                             }
                         }
                     }
-                    if (teleport_player == false && Body.PackageID == "Olcasgean1")
+                    if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50)
                     {
                         new RegionTimer(Body, new RegionTimerCallback(DoPort), 20000);//do teleport every 20s
                         teleport_player = true;
@@ -819,8 +932,8 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-
-
+        #endregion
+        #region DOPort
         public int DoPort(RegionTimer timer)
         {
             if (player_to_port.Count > 0)
@@ -876,9 +989,9 @@ namespace DOL.AI.Brain
             teleport_player = false;
             return 0;
         }
+        #endregion
 
         public Spell m_OlcasgeanDD;
-
         public Spell OlcasgeanDD
         {
             get
@@ -927,41 +1040,48 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
-                default: return 50; // dmg reduction for rest resists
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 0; // dmg reduction for rest resists
             }
+        }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (source is GamePet || source is TurretPet)
+            {
+                base.TakeDamage(source, damageType, 5, 5);//pets deal less dmg to this primal to avoid being killed to fast
+            }
+            else//take dmg
+            {
+                base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+            }         
         }
         public override void StartAttack(GameObject target)
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.35;
         }
         public override int MaxHealth
         {
             get
             {
-                return 20000;
+                return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
             }
         }
         public override int AttackRange
@@ -1011,7 +1131,6 @@ namespace DOL.GS
         }
     }
 }
-
 /// <summary>
 /// /////////////////////////////////////////      Air Elementar Brain
 /// </summary>
@@ -1025,7 +1144,7 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 0;
-            ThinkInterval = 3000;
+            ThinkInterval = 2000;
         }
 
         private GameLiving randomtarget = null;
@@ -1182,11 +1301,10 @@ namespace DOL.AI.Brain
 
             if (inRangeLiving == null)
                 inRangeLiving = new List<GamePlayer>();
-            if (Body.InCombatInLast(50 * 1000) == false && this.Body.InCombatInLast(55 * 1000))
+            if (Body.InCombatInLast(20 * 1000) == false && this.Body.InCombatInLast(25 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
-
             if (Body.IsAlive)
             {
                 if (!Body.IsWithinRadius(point1, 20) && path1 == false)
@@ -1311,7 +1429,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.RecastDelay = 2;
                     spell.ClientEffect = 479;
                     spell.Icon = 479;
                     spell.TooltipId = 479;
@@ -1377,6 +1495,16 @@ namespace DOL.GS
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 80; // dmg reduction for rest resists
+            }
+        }
         public override void Die(GameObject killer)
         {
             ++AirPrimal.DeadPrimalsCount;
@@ -1388,14 +1516,14 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 700;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
@@ -1421,27 +1549,28 @@ namespace DOL.GS
             {
             }
         }
-        /// <summary>
-        /// This primal is immune to magic dmg, only melees can dmg him
-        /// </summary>
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
+                if (WaterPrimalBrain.dontattack)//dont take any dmg 
                 {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to magic damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
+                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+                        || damageType == eDamageType.Slash)
+                    {
+                        GamePlayer truc;
+                        if (source is GamePlayer)
+                            truc = (source as GamePlayer);
+                        else
+                            truc = ((source as GamePet).Owner as GamePlayer);
+                        if (truc != null)
+                            truc.Out.SendMessage(this.Name + " is under waterfall effect!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        base.TakeDamage(source, damageType, 0, 0);
+                        return;
+                    }
                 }
-                else
+                else//take dmg
                 {
                     base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
@@ -1460,17 +1589,20 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
 
+            WaterPrimalBrain.message = false;
+            WaterPrimalBrain.lowhealth1 = false;
+            WaterPrimalBrain.dontattack = false;
+            WaterPrimalBrain.TeleportTarget = null;
+            WaterPrimalBrain.IsTargetTeleported = false;
+
             CurrentRegionID = 191;//galladoria
             Flags ^= eFlags.GHOST;//ghost
 
             RespawnInterval = -1;//will not respawn
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
             WaterPrimalBrain sBrain = new WaterPrimalBrain();
             SetOwnBrain(sBrain);
-            sBrain.AggroLevel = 100;
-            sBrain.AggroRange = 1500;
             Brain.Start();
             base.AddToWorld();
             return true;
@@ -1479,7 +1611,7 @@ namespace DOL.GS
 }
 
 /// <summary>
-/// /////////////////////////////////////////      Air Elementar Brain
+/// /////////////////////////////////////////     Water Elementar Brain
 /// </summary>
 namespace DOL.AI.Brain
 {
@@ -1490,13 +1622,22 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 1500;
+            AggroRange = 600;
             ThinkInterval = 5000;
         }
         public static bool dontattack = false;
         public static bool lowhealth1 = false;
-        public static bool lowhealth2 = false;
-
+        public static bool message = false;
+        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        {
+            if(e == GameNPCEvent.AddToWorld)
+            {
+                Point3D point1 = new Point3D();
+                point1.X = 39652; point1.Y = 60831; point1.Z = 11893;
+                Body.WalkTo(point1, 300);
+            }
+            base.Notify(e, sender, args);
+        }
         public override void AttackMostWanted()
         {
             if (dontattack == true)
@@ -1520,68 +1661,156 @@ namespace DOL.AI.Brain
             }
             base.AttackMostWanted();
         }
+        public int CanAttack(RegionTimer timer)
+        {
+            dontattack = false;
+            AggroRange = 1500;
+            return 0;
+        }
         public void LowOnHealth()
         {
             Point3D point1 = new Point3D();
             point1.X = 39652; point1.Y = 60831; point1.Z = 11893;
 
-            if (Body.HealthPercent < 50 && lowhealth1 == false)
+            if (Body.HealthPercent < 30 && lowhealth1 == false)
             {
-                Body.StopAttack();
-                Body.StopFollowing();
-                AggroTable.Clear();
-                ClearAggroList();
-
                 if (Body.IsWithinRadius(point1, 80))
                 {
-                    Body.Health += Body.MaxHealth / 5;
-                    dontattack = false;
+                    Body.CastSpell(WaterEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    Body.Health += Body.MaxHealth / 6;
+                    new RegionTimer(Body, new RegionTimerCallback(CanAttack), 5000);
                     lowhealth1 = true;
                 }
                 else
                 {
-                    if (!Body.IsMoving)
+                    if (message == false)
                     {
-                        Body.WalkTo(point1, 300);
-                        dontattack = true;
+                        ClearAggroList();
+                        message = true;
                     }
-                }
-            }
-
-            if (Body.HealthPercent < 25 && lowhealth2 == false)
-            {
-                Body.StopAttack();
-                Body.StopFollowing();
-                AggroTable.Clear();
-                ClearAggroList();
-
-                if (Body.IsWithinRadius(point1, 80))
-                {
-                    Body.Health += Body.MaxHealth / 5;
-                    dontattack = false;
-                    lowhealth2 = true;
-                }
-                else
-                {
-                    if (!Body.IsMoving)
-                    {
-                        Body.WalkTo(point1, 300);
-                        dontattack = true;
-                    }
+                    Body.WalkTo(point1, 300);
+                    dontattack = true;
                 }
             }
         }
         public override void Think()
         {
+            if(HasAggro && Body.TargetObject != null)
+            {
+                if (Util.Chance(10))
+                {
+                    if (IsTargetTeleported == false)
+                    {
+                        new RegionTimer(Body, new RegionTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+                        IsTargetTeleported = true;
+                    }
+                }
+            }
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 dontattack = false;
                 lowhealth1 = false;
-                lowhealth2 = false;
+                message = false;
+                IsTargetTeleported = false;
+                TeleportTarget = null;
+                AggroRange = 600;
             }
             LowOnHealth();
             base.Think();
+        }
+        #region Pick player to port
+        public static bool IsTargetTeleported = false;
+        public static GamePlayer teleporttarget = null;
+        public static GamePlayer TeleportTarget
+        {
+            get { return teleporttarget; }
+            set { teleporttarget = value; }
+        }
+        List<GamePlayer> Port_Enemys = new List<GamePlayer>();
+        public int PickTeleportPlayer(RegionTimer timer)
+        {
+            if (Body.IsAlive && HasAggro)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!Port_Enemys.Contains(player))
+                            {
+                                if (player != Body.TargetObject)
+                                {
+                                    Port_Enemys.Add(player);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Port_Enemys.Count == 0)
+                {
+                    TeleportTarget = null;//reset random target to null
+                    IsTargetTeleported = false;
+                }
+                else
+                {
+                    if (Port_Enemys.Count > 0)
+                    {
+                        GamePlayer Target = Port_Enemys[Util.Random(0, Port_Enemys.Count - 1)];
+                        TeleportTarget = Target;
+                        if (TeleportTarget.IsAlive && TeleportTarget != null)
+                        {
+                            new RegionTimer(Body, new RegionTimerCallback(TeleportPlayer), 3000);
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+        public int TeleportPlayer(RegionTimer timer)
+        {
+            if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
+            {
+                switch(Util.Random(1,2))
+                {
+                    case 1: TeleportTarget.MoveTo(Body.CurrentRegionID, 38626, 60891, 11771, 2881); break;
+                    case 2: TeleportTarget.MoveTo(Body.CurrentRegionID, 40606, 60868, 11721, 1095); break;
+                }              
+                Port_Enemys.Remove(TeleportTarget);
+                TeleportTarget = null;//reset random target to null
+                IsTargetTeleported = false;
+            }
+            return 0;
+        }
+        #endregion
+        private Spell m_WaterEffect;
+        private Spell WaterEffect
+        {
+            get
+            {
+                if (m_WaterEffect == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 5;
+                    spell.Duration = 5;
+                    spell.ClientEffect = 4323;
+                    spell.Icon = 4323;
+                    spell.Value = 1;
+                    spell.Name = "Machanism Effect";
+                    spell.TooltipId = 4323;
+                    spell.SpellID = 11865;
+                    spell.Target = "Self";
+                    spell.Type = eSpellType.PowerRegenBuff.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    m_WaterEffect = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WaterEffect);
+                }
+                return m_WaterEffect;
+            }
         }
     }
 }
@@ -1601,39 +1830,29 @@ namespace DOL.GS
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
+            }
+        }
         public override void StartAttack(GameObject target)
         {
+        }
+        public override void WalkToSpawn()
+        {
+            if (IsAlive)
+                return;
+            base.WalkToSpawn();
         }
         public override void Die(GameObject killer)
         {
             ++AirPrimal.DeadPrimalsCount;
             base.Die(killer);
-        }
-        /// <summary>
-        /// This primal is immune to magic dmg, only melees can dmg him
-        /// </summary>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (source is GamePlayer || source is GamePet)
-            {
-                if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
-                {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to magic damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
-                }
-                else
-                {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                }
-            }
         }
         public override double AttackDamage(InventoryItem weapon)
         {
@@ -1641,7 +1860,7 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -1650,7 +1869,6 @@ namespace DOL.GS
         {
             return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
@@ -1663,7 +1881,6 @@ namespace DOL.GS
                 return 20000;
             }
         }
-
         public override int AttackRange
         {
             get
@@ -1686,7 +1903,7 @@ namespace DOL.GS
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
-            FirePrimalBrain.CanCast = false;
+            FirePrimalBrain.CanSpawnFire = false;
 
             Flags ^= eFlags.FLYING;//flying
             RespawnInterval = -1;//will not respawn
@@ -1735,8 +1952,7 @@ namespace DOL.AI.Brain
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
-                CanCast = false;
+                Body.Health = Body.MaxHealth;
             }
             if (Body.IsAlive)
             {
@@ -1754,14 +1970,14 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                if (CanCast == false)
+                if(CanSpawnFire==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastGT), 1500);
-                    CanCast = true;
+                    new RegionTimer(Body, new RegionTimerCallback(SpawnFire), 1000);
+                    CanSpawnFire = true;
                 }
                 if (!Body.IsWithinRadius(point1, 20) && path1 == false)
                 {
-                    Body.WalkTo(point1, 250);
+                    Body.WalkTo(point1, 200);
                 }
                 else
                 {
@@ -1769,21 +1985,21 @@ namespace DOL.AI.Brain
                     path4 = false;
                     if (!Body.IsWithinRadius(point2, 20) && path1 == true && path2 == false)
                     {
-                        Body.WalkTo(point2, 250);
+                        Body.WalkTo(point2, 200);
                     }
                     else
                     {
                         path2 = true;
                         if (!Body.IsWithinRadius(point3, 20) && path1 == true && path2 == true && path3 == false)
                         {
-                            Body.WalkTo(point3, 250);
+                            Body.WalkTo(point3, 200);
                         }
                         else
                         {
                             path3 = true;
                             if (!Body.IsWithinRadius(point4, 20) && path1 == true && path2 == true && path3 == true && path4 == false)
                             {
-                                Body.WalkTo(point4, 250);
+                                Body.WalkTo(point4, 200);
                             }
                             else
                             {
@@ -1798,46 +2014,27 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public static bool CanCast = false;
-        public int CastGT(RegionTimer timer)
+        public static bool CanSpawnFire = false;
+        public int SpawnFire(RegionTimer timer)
         {
-            Body.GroundTarget.X = Body.X;
-            Body.GroundTarget.Y = Body.Y - 100;
-            Body.GroundTarget.Z = Body.Z;
-            Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast groundtarget behind as trial of fire   
-            CanCast = false;
+            if (Body.IsAlive)
+            {
+                TrailOfFire npc = new TrailOfFire();
+                npc.X = Body.X;
+                npc.Y = Body.Y;
+                npc.Z = Body.Z;
+                npc.RespawnInterval = -1;
+                npc.Heading = Body.Heading;
+                npc.CurrentRegion = Body.CurrentRegion;
+                npc.AddToWorld();
+                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnFire), 1000);
+            }
             return 0;
         }
-
-        private Spell m_FireGroundDD;
-
-        private Spell FireGroundDD
+        public int ResetSpawnFire(RegionTimer timer)
         {
-            get
-            {
-                if (m_FireGroundDD == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 0;
-                    spell.ClientEffect = 77;
-                    spell.Icon = 77;
-                    spell.TooltipId = 77;
-                    spell.Damage = 170;
-                    spell.Range = 1200;
-                    spell.Radius = 300;
-                    spell.SpellID = 11720;
-                    spell.Target = "Area";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
-                    m_FireGroundDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
-                }
-                return m_FireGroundDD;
-            }
+            CanSpawnFire = false;
+            return 0;
         }
         private Spell m_FireDS;
         private Spell FireDS
@@ -1870,11 +2067,212 @@ namespace DOL.AI.Brain
         }
     }
 }
+#region trail of fire
+namespace DOL.GS
+{
+    public class TrailOfFire : GameNPC
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public TrailOfFire()
+            : base()
+        {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 99; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 99; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 99; // dmg reduction for melee dmg
+                default: return 99; // dmg reduction for rest resists
+            }
+        }
+        public override void StartAttack(GameObject target)
+        {
+        }
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 800;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.55;
+        }
+        public override int MaxHealth
+        {
+            get
+            {
+                return 10000;
+            }
+        }
+        protected int Show_Effect(RegionTimer timer)
+        {
+            if (IsAlive)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    if (player != null)
+                        player.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
+                }
+                new RegionTimer(this, new RegionTimerCallback(DoCast), 1000);
+            }
+            return 0;
+        }
+        protected int DoCast(RegionTimer timer)
+        {
+            if (IsAlive)
+                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 1000);
+            return 0;
+        }
+        public int RemoveFire(RegionTimer timer)
+        {
+            if (IsAlive)
+                RemoveFromWorld();
+            return 0;
+        }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+        public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }
+        public override bool AddToWorld()
+        {
+            Model = 665;
+            Name = "trail of fire";
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
+            MaxSpeedBase = 0;
+            Level = 80;
+            Size = 10;
+
+            RespawnInterval = -1;//will not respawn
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+
+            TrailOfFireBrain sBrain = new TrailOfFireBrain();
+            SetOwnBrain(sBrain);
+            Brain.Start();
+            bool success = base.AddToWorld();
+            if (success)
+            {
+                SetGroundTarget(X, Y, Z);
+                CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
+                new RegionTimer(this, new RegionTimerCallback(RemoveFire), 8000);
+            }
+            return success;
+        }
+        private Spell m_FireGroundDD;
+        private Spell FireGroundDD
+        {
+            get
+            {
+                if (m_FireGroundDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 2;
+                    spell.ClientEffect = 368;
+                    spell.Icon = 368;
+                    spell.TooltipId = 368;
+                    spell.Damage = 180;
+                    spell.Range = 1200;
+                    spell.Radius = 450;
+                    spell.SpellID = 11866;
+                    spell.Target = "Area";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Heat;
+                    m_FireGroundDD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
+                }
+                return m_FireGroundDD;
+            }
+        }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class TrailOfFireBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public TrailOfFireBrain()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 1500;
+            ThinkInterval = 1000;
+        }
+        public override void Think()
+        {
+            if (Body.IsAlive)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!AggroTable.ContainsKey(player))
+                            {
+                                AggroTable.Add(player, 100);
+                            }
+                        }
+                    }
+                }
+                Body.SetGroundTarget(Body.X,Body.Y,Body.Z);
+                Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.Think();
+        }
+        private Spell m_FireGroundDD;
+        private Spell FireGroundDD
+        {
+            get
+            {
+                if (m_FireGroundDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 2;
+                    spell.ClientEffect = 368;
+                    spell.Icon = 368;
+                    spell.TooltipId = 368;
+                    spell.Damage = 180;
+                    spell.Range = 1200;
+                    spell.Radius = 450;
+                    spell.SpellID = 11720;
+                    spell.Target = "Area";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Heat;
+                    m_FireGroundDD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
+                }
+                return m_FireGroundDD;
+            }
+        }
+    }
+}
+#endregion
 #endregion Fire Elementar
 
 #region Earth Elementar
 /// <summary>
-/// /////////////////////////////////////////      Fire Elementar Base
+/// /////////////////////////////////////////      Earth Elementar Base
 /// </summary>
 namespace DOL.GS
 {
@@ -1890,10 +2288,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
-                default: return 50; // dmg reduction for rest resists
+                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
         public override void Die(GameObject killer)
@@ -1918,19 +2316,17 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 700;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
@@ -1943,7 +2339,6 @@ namespace DOL.GS
                 return 20000;
             }
         }
-
         public override int AttackRange
         {
             get
@@ -1954,7 +2349,6 @@ namespace DOL.GS
             {
             }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159436);
@@ -1979,9 +2373,8 @@ namespace DOL.GS
         }
     }
 }
-
 /// <summary>
-/// /////////////////////////////////////////      Earth Elementar Brain ////////////////////////////
+/// /////////////////////////////////////////  Earth Elementar Brain ////////////////////////////
 /// </summary>
 namespace DOL.AI.Brain
 {
@@ -1993,18 +2386,64 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 500;
-            ThinkInterval = 3000;
+            ThinkInterval = 1000;
         }
-
-
+        public int TargetIsOut(RegionTimer timer)
+        {
+            if (Body.IsAlive)
+            {
+                Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
+                GameLiving target = Body.TargetObject as GameLiving;
+                if (!target.IsWithinRadius(spawn, 900) && AggroTable.ContainsKey(target))
+                {
+                    AggroTable.Remove(target);
+                    CalculateNextAttackTarget();
+                    CanSwitchTarget = false;
+                }
+            }
+            return 0;
+        }
+        public static bool CanSwitchTarget = false;
         public override void Think()
         {
+            if(!HasAggressionTable())
+            {
+                Body.Health = Body.MaxHealth;
+                CanSwitchTarget = false;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159436);
+                Body.MaxSpeedBase = npcTemplate.MaxSpeed;
+            }
             if (Body.InCombat && HasAggro)
             {
                 if (Util.Chance(15))
                 {
                     Body.CastSpell(EarthRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
+            }
+            if (Body.IsOutOfTetherRange && HasAggro)
+            {
+                Body.StopFollowing();
+                Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
+                GameLiving target = Body.TargetObject as GameLiving;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159436);
+                if (target != null)
+                {
+                    if (!target.IsWithinRadius(spawn, 900))
+                    {
+                        Body.MaxSpeedBase = 0;
+                        if(CanSwitchTarget==false)
+                        {
+                            new RegionTimer(Body, new RegionTimerCallback(TargetIsOut), 5000);
+                            CanSwitchTarget = true;
+                        }
+                    }
+                    else
+                        Body.MaxSpeedBase = npcTemplate.MaxSpeed;
+                }
+            }
+            if(Body.IsOutOfTetherRange && !HasAggro)
+            {
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             }
             base.Think();
         }
@@ -2017,8 +2456,8 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 3;
-                    spell.RecastDelay = 15;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = Util.Random(15,25);
                     spell.ClientEffect = 277;
                     spell.Icon = 277;
                     spell.TooltipId = 277;
@@ -2047,6 +2486,7 @@ namespace DOL.AI.Brain
 /// <summary>
 /// ////////////////////////////////////////////Guardian Earthmender Base
 /// </summary>
+#region Guardian Earthmender
 namespace DOL.GS
 {
     public class GuardianEarthmender : GameNPC
@@ -2056,6 +2496,16 @@ namespace DOL.GS
         public GuardianEarthmender()
             : base()
         {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -2082,27 +2532,24 @@ namespace DOL.GS
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override void StartAttack(GameObject target)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 600;
+            return 500;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.35;
         }
         public override int MaxHealth
         {
@@ -2111,18 +2558,6 @@ namespace DOL.GS
                 return 15000;
             }
         }
-
-        public override int AttackRange
-        {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
-        }
-
         public override bool AddToWorld()
         {
             Model = 951;
@@ -2131,16 +2566,7 @@ namespace DOL.GS
             Level = 73;
             Realm = 0;
             CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 250;
-
-            Strength = 250;
-            Quickness = 125;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
+            MaxSpeedBase = 0;
 
             RespawnInterval = -1;//will not respawn
             Gender = eGender.Neutral;
@@ -2159,7 +2585,6 @@ namespace DOL.GS
         }
     }
 }
-
 /// <summary>
 /// /////////////////////////////////////////      Guardian Earthmender Brain
 /// </summary>
@@ -2174,7 +2599,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-
         private GameLiving randomtarget;
         private GameLiving RandomTarget
         {
@@ -2200,6 +2624,10 @@ namespace DOL.AI.Brain
             if (inRangeLiving == null)
                 inRangeLiving = new List<GameNPC>();
 
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            {
+                Body.Health = Body.MaxHealth;
+            }
             if (Body.IsAlive)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
@@ -2248,7 +2676,6 @@ namespace DOL.AI.Brain
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
                     m_EarthmenderHeal = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
@@ -2257,10 +2684,11 @@ namespace DOL.AI.Brain
         }
     }
 }
-
+#endregion
 /// <summary>
 /// ////////////////////////////////////////////Magical Earthmender Base
 /// </summary>
+#region Magical Earthmender
 namespace DOL.GS
 {
     public class MagicalEarthmender : GameNPC
@@ -2269,6 +2697,19 @@ namespace DOL.GS
 
         public MagicalEarthmender()
             : base()
+        {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
+        public override void StartAttack(GameObject target)
         {
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -2296,27 +2737,22 @@ namespace DOL.GS
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 600;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.35;
         }
         public override int MaxHealth
         {
@@ -2325,18 +2761,6 @@ namespace DOL.GS
                 return 15000;
             }
         }
-
-        public override int AttackRange
-        {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
-        }
-
         public override bool AddToWorld()
         {
             Model = 951;
@@ -2345,16 +2769,8 @@ namespace DOL.GS
             Level = 73;
             Realm = 0;
             CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 250;
+            MaxSpeedBase = 0;
 
-            Strength = 250;
-            Quickness = 125;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
 
             RespawnInterval = -1;//will not respawn
             Gender = eGender.Neutral;
@@ -2388,8 +2804,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-
-
         private GameLiving randomtarget;
         private GameLiving RandomTarget
         {
@@ -2415,6 +2829,10 @@ namespace DOL.AI.Brain
             if (inRangeLiving == null)
                 inRangeLiving = new List<GameNPC>();
 
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            {
+                Body.Health = Body.MaxHealth;
+            }
             if (Body.IsAlive)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
@@ -2463,7 +2881,6 @@ namespace DOL.AI.Brain
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
                     m_EarthmenderHeal = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
@@ -2472,10 +2889,11 @@ namespace DOL.AI.Brain
         }
     }
 }
-
+#endregion
 /// <summary>
 /// ////////////////////////////////////////////Natural Earthmender Base
 /// </summary>
+#region Natural Earthmender
 namespace DOL.GS
 {
     public class NaturalEarthmender : GameNPC
@@ -2486,13 +2904,23 @@ namespace DOL.GS
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
             {
                 GamePlayer truc = source as GamePlayer;
 
-                if (truc.CharacterClass.ID == 48 || truc.CharacterClass.ID == 47 || truc.CharacterClass.ID == 46 || truc.CharacterClass.ID == 56 || truc.CharacterClass.ID == 55)// ns,ranger,ani,vw
+                if (truc.CharacterClass.ID == 48 || truc.CharacterClass.ID == 47 || truc.CharacterClass.ID == 46 || truc.CharacterClass.ID == 56 || truc.CharacterClass.ID == 55)// bard,druid,warden,ani,vw
                 {
                     if (source is GamePlayer)
                     {
@@ -2511,27 +2939,24 @@ namespace DOL.GS
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override void StartAttack(GameObject target)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 600;
+            return 500;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.35;
         }
         public override int MaxHealth
         {
@@ -2540,18 +2965,6 @@ namespace DOL.GS
                 return 15000;
             }
         }
-
-        public override int AttackRange
-        {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
-        }
-
         public override bool AddToWorld()
         {
             Model = 951;
@@ -2560,16 +2973,7 @@ namespace DOL.GS
             Level = 73;
             Realm = 0;
             CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 250;
-
-            Strength = 250;
-            Quickness = 125;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
+            MaxSpeedBase = 0;
 
             RespawnInterval = -1;//will not respawn
             Gender = eGender.Neutral;
@@ -2588,7 +2992,6 @@ namespace DOL.GS
         }
     }
 }
-
 /// <summary>
 /// /////////////////////////////////////////      Natural Earthmender Brain
 /// </summary>
@@ -2627,6 +3030,11 @@ namespace DOL.AI.Brain
         {
             if (inRangeLiving == null)
                 inRangeLiving = new List<GameNPC>();
+
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            {
+                Body.Health = Body.MaxHealth;
+            }
             if (Body.IsAlive)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
@@ -2675,20 +3083,19 @@ namespace DOL.AI.Brain
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
                     m_EarthmenderHeal = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
                 return m_EarthmenderHeal;
             }
         }
-
     }
 }
-
+#endregion
 /// <summary>
 /// ////////////////////////////////////////////Shadowy Earthmender Base
 /// </summary>
+#region Shadowy Earthmender
 namespace DOL.GS
 {
     public class ShadowyEarthmender : GameNPC
@@ -2698,6 +3105,16 @@ namespace DOL.GS
         public ShadowyEarthmender()
             : base()
         {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -2724,27 +3141,24 @@ namespace DOL.GS
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override void StartAttack(GameObject target)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 600;
+            return 500;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.35;
         }
         public override int MaxHealth
         {
@@ -2753,18 +3167,6 @@ namespace DOL.GS
                 return 15000;
             }
         }
-
-        public override int AttackRange
-        {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
-        }
-
         public override bool AddToWorld()
         {
             Model = 951;
@@ -2773,16 +3175,7 @@ namespace DOL.GS
             Level = 73;
             Realm = 0;
             CurrentRegionID = 191;//galladoria
-            MaxSpeedBase = 250;
-
-            Strength = 250;
-            Quickness = 125;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            MaxDistance = 3500;
-            TetherRange = 3600;
+            MaxSpeedBase = 0;
 
             RespawnInterval = -1;//will not respawn
             Gender = eGender.Neutral;
@@ -2801,7 +3194,6 @@ namespace DOL.GS
         }
     }
 }
-
 /// <summary>
 /// /////////////////////////////////////////      Shadowy Earthmender Brain
 /// </summary>
@@ -2816,8 +3208,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-
-
         private GameLiving randomtarget;
         private GameLiving RandomTarget
         {
@@ -2843,6 +3233,10 @@ namespace DOL.AI.Brain
             if (inRangeLiving == null)
                 inRangeLiving = new List<GameNPC>();
 
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            {
+                Body.Health = Body.MaxHealth;
+            }
             if (Body.IsAlive)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
@@ -2891,16 +3285,15 @@ namespace DOL.AI.Brain
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
                     m_EarthmenderHeal = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
                 return m_EarthmenderHeal;
             }
         }
-
     }
 }
+#endregion
 #endregion Earth Elementar
 
 #region Vortex
@@ -3105,6 +3498,81 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
+    }
+}
+#endregion
+
+#region Visual Effects
+namespace DOL.GS
+{
+    public class OlcasgeanEffect : GameNPC
+    {
+        public OlcasgeanEffect() : base() { }
+
+        public override bool AddToWorld()
+        {
+            Model = 665;
+            Name = "Root Effect";
+            Size = 70;
+            Level = 50;
+            MaxSpeedBase = 0;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.PEACE;
+            Flags ^= eFlags.CANTTARGET;
+
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            BodyType = 8;
+            Realm = eRealm.None;
+            OlcasgeanEffectBrain adds = new OlcasgeanEffectBrain();
+            LoadedFromScript = true;
+            SetOwnBrain(adds);
+            bool success = base.AddToWorld();
+            if (success)
+            {
+                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);               
+            }
+            return success;
+        }
+        protected int Show_Effect(RegionTimer timer)
+        {
+            if (IsAlive)
+            {
+                foreach (GamePlayer player in this.GetPlayersInRadius(8000))
+                {
+                    if (player != null)
+                    {
+                        player.Out.SendSpellEffectAnimation(this, this, 11027, 0, false, 0x01);
+                    }
+                }
+                new RegionTimer(this, new RegionTimerCallback(RemoveMob), 3000);
+            }
+            return 0;
+        }
+        public int RemoveMob(RegionTimer timer)
+        {
+            if(IsAlive)
+                RemoveFromWorld();
+            return 0;
+        }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class OlcasgeanEffectBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public OlcasgeanEffectBrain()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 250;
+            ThinkInterval = 1000;
+        }
+        public override void Think()
+        {
+            base.Think();
+        }
     }
 }
 #endregion
