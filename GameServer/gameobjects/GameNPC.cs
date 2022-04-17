@@ -1052,7 +1052,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Timer with purpose of follow updating
 		/// </summary>
-		protected RegionTimer m_followTimer;
+		protected ECSGameTimer m_followTimer;
 		/// <summary>
 		/// Property entry on follow timer, wether the follow target is in range
 		/// </summary>
@@ -1664,7 +1664,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Keep following a specific object at a max distance
 		/// </summary>
-		protected virtual int FollowTimerCallback(RegionTimer callingTimer)
+		protected virtual int FollowTimerCallback(ECSGameTimer callingTimer)
 		{
 			if (IsCasting)
 				return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
@@ -3272,8 +3272,8 @@ namespace DOL.GS
 				if (oldRegion != newRegion && newRegion != null)
 				{
 					if (m_followTimer != null) m_followTimer.Stop();
-					m_followTimer = new RegionTimer(this);
-					m_followTimer.Callback = new RegionTimerCallback(FollowTimerCallback);
+					m_followTimer = new ECSGameTimer(this);
+					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
 				}
 			}
 		}
@@ -4992,6 +4992,8 @@ namespace DOL.GS
 
 		#region Spell
 		private List<Spell> m_spells = new List<Spell>(0);
+
+		//public bool SortedSpells = false;
 		/// <summary>
 		/// property of spell array of NPC
 		/// </summary>
@@ -5013,7 +5015,8 @@ namespace DOL.GS
 				else
 				{
 					m_spells = value.Cast<Spell>().ToList();
-					SortSpells();
+					//if(!SortedSpells)
+						SortSpells();
 				}
 			}
 		}
@@ -5173,6 +5176,8 @@ namespace DOL.GS
 					}
 				}
 			} // foreach
+
+			//SortedSpells = true;
 		}
 		#endregion
 
