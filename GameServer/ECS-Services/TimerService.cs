@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Quests;
@@ -17,6 +18,8 @@ public class TimerService
     private static Stack<ECSGameTimer> TimerToRemove;
     private static Stack<ECSGameTimer> TimerToAdd;
 
+    private static long debugTick = 0;
+
 
     static TimerService()
     {
@@ -30,12 +33,32 @@ public class TimerService
     {
         
         Diagnostics.StartPerfCounter(ServiceName);
-        
-        while(TimerToAdd.Count > 0) ActiveTimers.Add(TimerToAdd.Pop());
 
-        while (TimerToRemove.Count > 0) ActiveTimers.Remove(TimerToRemove.Pop());
+        while (TimerToAdd.Count > 0)
+        {
+            if (!ActiveTimers.Contains(TimerToAdd.Peek()))
+                ActiveTimers.Add(TimerToAdd.Pop());
+            else
+                TimerToAdd.Pop();
+        }
+
+        while (TimerToRemove.Count > 0)
+        {
+            if(ActiveTimers.Contains(TimerToRemove.Peek()))
+                ActiveTimers.Remove(TimerToRemove.Pop());
+            else
+            {
+                TimerToRemove.Pop();
+            }
+        }
         
         //Console.WriteLine($"timer size {ActiveTimers.Count}");
+        /*
+        if (debugTick + 1000 < tick)
+        {
+            Console.WriteLine($"timer size {ActiveTimers.Count}");
+            debugTick = tick;
+        }*/
 
         foreach (var timer in ActiveTimers)
         {
@@ -48,14 +71,20 @@ public class TimerService
 
     public static void AddTimer(ECSGameTimer newTimer)
     {
-        if(!ActiveTimers.Contains(newTimer)) 
+        if (!ActiveTimers.Contains(newTimer))
+        {
             TimerToAdd.Push(newTimer);
+            //Console.WriteLine($"added {newTimer.Callback.GetMethodInfo()}");
+        }
     }
 
     public static void RemoveTimer(ECSGameTimer timerToRemove)
     {
-        if (ActiveTimers.Contains(timerToRemove)) 
+        if (ActiveTimers.Contains(timerToRemove))
+        {
             TimerToRemove.Push(timerToRemove);
+            //Console.WriteLine($"removed {timerToRemove.Callback.GetMethodInfo()}");
+        }
     }
 
     public static bool HasActiveTimer(ECSGameTimer timer)
