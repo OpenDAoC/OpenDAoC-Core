@@ -219,13 +219,13 @@ namespace DOL.GS.GameEvents
 							}
 							
 							//Restart Respawn Timers
-							List<GameNPC> respawnings = new List<GameNPC>(reg.MobsRespawning.Keys);
-							foreach(GameNPC deadMob in respawnings)
-							{
-								GameNPC mob = deadMob;
-								if(mob != null)
-									mob.StartRespawn();
-							}
+							//List<GameNPC> respawnings = new List<GameNPC>(reg.MobsRespawning.Keys);
+							//foreach(GameNPC deadMob in respawnings)
+							//{
+							//	GameNPC mob = deadMob;
+							//	if(mob != null)
+							//		mob.StartRespawn();
+							//}
 						}					
 					}
 					//RegionTimerUnfrozen(mgr, syncTime);
