@@ -118,6 +118,13 @@ public class ECSGameTimer
     {
         TimerOwner = living;
     }
+    
+    public ECSGameTimer(GameLiving living, ECSTimerCallback callback, long interval)
+    {
+        TimerOwner = living;
+        Callback = callback;
+        Interval = interval;
+    }
 
     public void Start()
     {
