@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
         {
 			if(ad.IsMeleeAttack && ad.IsHit && (ad.Attacker is GamePlayer || ad.Attacker is GamePet))
             {
-				if(Util.Chance(5))//here edit to change teleport chance to happen
+				if(Util.Chance(15))//here edit to change teleport chance to happen
                 {
 					PickRandomTarget();//start teleport here
                 }
@@ -195,7 +195,7 @@ namespace DOL.AI.Brain
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				RandomTarget = null;
 				CanCast = false;
 				if (Enemys_To_DD.Count > 0)
@@ -205,7 +205,9 @@ namespace DOL.AI.Brain
 			}
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
 			{
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
+				CanCast = false;
+				RandomTarget = null;
 			}
 			base.Think();
 		}
@@ -245,17 +247,19 @@ namespace DOL.AI.Brain
 		}
 		public int CastBolt(RegionTimer timer)
 		{
-			GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+			GameLiving oldTarget = (GameLiving)Body.TargetObject;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive)
 			{
 				RandomTarget.MoveTo(Body.CurrentRegionID, 24874, 36116, 17060, 3065);//port player to loc
-				Body.TargetObject = RandomTarget;//set target as randomtarget
+
+				if(Body.TargetObject != null && Body.TargetObject != RandomTarget)
+					Body.TargetObject = RandomTarget;//set target as randomtarget
+
 				Body.TurnTo(RandomTarget);//turn to randomtarget
 				Body.StopFollowing();//stop follow
 				Body.CastSpell(CunovindaBolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast bolt
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			Body.StartAttack(oldTarget);//start attack old target
 			new RegionTimer(Body, new RegionTimerCallback(ResetBolt), Util.Random(8000, 12000));//teleport every 8-12s if melee hit got chance to proc teleport
 			return 0;
 		}
