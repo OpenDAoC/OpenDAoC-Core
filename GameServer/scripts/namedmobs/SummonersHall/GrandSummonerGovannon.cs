@@ -260,7 +260,7 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Stage2 = false;
 				SpawnSacrifices1 = false;
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
 					if(npc != null)
@@ -314,7 +314,7 @@ namespace DOL.AI.Brain
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
 			{
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18801);
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				Body.Model = Convert.ToUInt16(npcTemplate.Model);
 				Body.Size = Convert.ToByte(npcTemplate.Size);
 				Body.Empathy = Convert.ToInt16(npcTemplate.Empathy);
@@ -323,7 +323,7 @@ namespace DOL.AI.Brain
 		}
 		public void MorphIntoDemon()
         {
-			this.Body.Health = this.Body.MaxHealth;//heal to max hp
+			Body.Health = Body.MaxHealth;//heal to max hp
 			Body.Model = 636;//demon model
 			Body.Size = 170;//bigger size
 			Body.Empathy = 350;//more dmg
@@ -419,7 +419,7 @@ namespace DOL.GS
 	{
 		public override int MaxHealth
 		{
-			get { return 3000; }
+			get { return 6000; }
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
@@ -505,7 +505,7 @@ namespace DOL.GS
 	{
 		public override int MaxHealth
 		{
-			get { return 3000; }
+			get { return 6000; }
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
