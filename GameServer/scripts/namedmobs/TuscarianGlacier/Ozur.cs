@@ -65,13 +65,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * OzurDifficulty / 100;
+            return 800 * OzurDifficulty / 100;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85 * OzurDifficulty / 100;
+            return 0.55 * OzurDifficulty / 100;
         }
 
         #region Damage & Heal Events

@@ -195,6 +195,7 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			/*
 			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
 			{
 				if (Util.Chance(Caster.SpellCriticalChance))
@@ -205,7 +206,7 @@ namespace DOL.GS.Spells
 					effectiveness *= critMod;
 					if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for {critPercent}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				}
-			}
+			}*/
 			base.ApplyEffectOnTarget(target, effectiveness);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}

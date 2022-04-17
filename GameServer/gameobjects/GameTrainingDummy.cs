@@ -100,12 +100,12 @@ namespace DOL.GS
 			if (Property != eProperty.Undefined)
 			{
 				tblBonusCat = GetBonusCategory(owner, BonusCat);
-				Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
+				//Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
 				if (IsSubstracted)
 					tblBonusCat[(int)Property] -= effectiveValue;
 				else
 					tblBonusCat[(int)Property] += effectiveValue;
-				Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
+				//Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
 			}
 		}
 

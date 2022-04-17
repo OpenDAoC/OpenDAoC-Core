@@ -72,13 +72,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * ArosDifficulty / 100;
+            return 800 * ArosDifficulty / 100;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85 * ArosDifficulty / 100;
+            return 0.55 * ArosDifficulty / 100;
         }
 
         public override short MaxSpeedBase

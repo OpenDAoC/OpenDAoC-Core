@@ -4190,9 +4190,9 @@ namespace DOL.GS.Spells
 
 				if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
-					double WeaponStat = player.GetWeaponStat(player.AttackWeapon);
-					WeaponStat /= 5;
-					spellDamage *= (WeaponStat + 200) / 275.0;
+					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
+					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
+					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 200) / 275;
 				}
 
 				if (player.CharacterClass.ManaStat != eStat.UNDEFINED
@@ -4297,6 +4297,15 @@ namespace DOL.GS.Spells
             {
 				hitchance = (int)(87.5 - (target.Level - Caster.Level));
             }
+			
+			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
+			{
+				var ecsSpell = m_caster.effectListComponent.GetSpellEffects()
+					.FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
+				
+				if (ecsSpell != null)
+					hitchance += (int)ecsSpell.SpellHandler.Spell.Value;
+			}
 
 			//check for active RAs
 			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))

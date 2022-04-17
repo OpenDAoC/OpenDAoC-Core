@@ -1599,7 +1599,7 @@ namespace DOL.GS
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double armorMod = (1+ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
+                    double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                     //double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
@@ -1647,10 +1647,9 @@ namespace DOL.GS
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
                     int range = upperboundary - lowerboundary;
                     damage *= (lowerboundary + Util.Random(range)) * 0.01;
-                    double weaponskillCalc = (owner.GetWeaponSkill(weapon));
-                    double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20) * (1 +
-                        ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) *
-                        (1 + ad.Target.GetResist(ad.DamageType) * .01)));
+                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + ad.Attacker.Level * 45/50d);
+                    double armorCalc = (ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * 45/50d) * (1 +
+                        ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
                     damage *= DamageMod;
