@@ -33,15 +33,7 @@ public class TimerService
     {
         
         Diagnostics.StartPerfCounter(ServiceName);
-
-        while (TimerToAdd.Count > 0)
-        {
-            if (!ActiveTimers.Contains(TimerToAdd.Peek()))
-                ActiveTimers.Add(TimerToAdd.Pop());
-            else
-                TimerToAdd.Pop();
-        }
-
+        
         while (TimerToRemove.Count > 0)
         {
             if(ActiveTimers.Contains(TimerToRemove.Peek()))
@@ -51,7 +43,15 @@ public class TimerService
                 TimerToRemove.Pop();
             }
         }
-        
+
+        while (TimerToAdd.Count > 0)
+        {
+            if (!ActiveTimers.Contains(TimerToAdd.Peek()))
+                ActiveTimers.Add(TimerToAdd.Pop());
+            else
+                TimerToAdd.Pop();
+        }
+
         //Console.WriteLine($"timer size {ActiveTimers.Count}");
         /*
         if (debugTick + 1000 < tick)
