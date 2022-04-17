@@ -59,7 +59,7 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
@@ -94,17 +94,6 @@ namespace DOL.GS
 			IsCloakHoodUp = true;
 			SummonerLossrenBrain.IsCreatingSouls = false;
 			TorturedSouls.TorturedSoulKilled = 0;
-
-			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 139, 43, 0, 0); //Slot,model,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 43);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 43);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 70, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 43, 92, 0);
-			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 
 			SummonerLossrenBrain sbrain = new SummonerLossrenBrain();
 			SetOwnBrain(sbrain);
@@ -184,7 +173,7 @@ namespace DOL.AI.Brain
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				TorturedSouls.TorturedSoulKilled = 0;
 				TorturedSouls.TorturedSoulCount = 0;
 				foreach (GameNPC souls in Body.GetNPCsInRadius(5000))
@@ -277,7 +266,6 @@ namespace DOL.AI.Brain
 						}
 						break;
 				}
-				add.Flags = GameNPC.eFlags.GHOST;
 				add.CurrentRegion = Body.CurrentRegion;
 				add.Heading = Body.Heading;
 				add.AddToWorld();
@@ -402,42 +390,22 @@ namespace DOL.GS
 		};
 		public override bool AddToWorld()
 		{
-			switch(Util.Random(1,5))
+			switch(Util.Random(1,2))
             {
 				case 1:
                     {
-						Model = (ushort)Util.Random(302,317);//celts
+						Model = 123;
 						Name = (string)soul_names[Util.Random(0, soul_names.Count - 1)];
 					}
 					break;
 				case 2:
                     {
-						Model = (ushort)Util.Random(318,333);//luri
-						Name = (string)soul_names[Util.Random(0, soul_names.Count - 1)];
-					}
-					break;
-				case 3:
-					{
-						Model = (ushort)Util.Random(334, 349);//elf
-						Name = (string)soul_names[Util.Random(0, soul_names.Count - 1)];
-					}
-					break;
-				case 4:
-					{
-						Model = (ushort)Util.Random(700, 715);//sylvan
-						Name = (string)soul_names[Util.Random(0, soul_names.Count - 1)];
-					}
-					break;
-				case 5:
-					{
-						Model = (ushort)Util.Random(286, 301);//firbolg
+						Model = 659;
 						Name = (string)soul_names[Util.Random(0, soul_names.Count - 1)];
 					}
 					break;
 			}
 			RespawnInterval = -1;
-			MaxDistance = 2400;
-			TetherRange = 2500;
 			MaxSpeedBase = 200;
 			RoamingRange = 150;
 			Size = (byte)Util.Random(45,55);
@@ -518,7 +486,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 1000;
 					spell.Name = "Plague";
 					spell.Radius = 500;
-					spell.Range = AggroRange;
+					spell.Range = 500;
 					spell.SpellID = 11760;
 					spell.Target = eSpellTarget.Enemy.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
