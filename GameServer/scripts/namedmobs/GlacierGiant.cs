@@ -235,7 +235,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		public static bool Clear_List = false;
-		public long ListCleanTimer(ECSGameTimer timer)
+		public int ListCleanTimer(ECSGameTimer timer)
         {
 			if (Body.IsAlive && Body.InCombat && HasAggro && Teleported_Players.Count > 0)
 			{

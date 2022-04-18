@@ -159,7 +159,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public long TeleportPlayerAway(ECSGameTimer timer)
+        public int TeleportPlayerAway(ECSGameTimer timer)
         {
             string gender;
             foreach (GamePlayer player in Body.GetPlayersInRadius(2000))

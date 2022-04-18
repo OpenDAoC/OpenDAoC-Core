@@ -730,9 +730,9 @@ namespace DOL.GS.Keeps
 
 		protected void InitialiseTimers()
 		{
-			m_changeLevelTimer = new ECSGameTimer(CurrentRegion.TimeManager);
+			m_changeLevelTimer = new ECSGameTimer(new GameNPC());
 			m_changeLevelTimer.Callback = new ECSGameTimer.ECSTimerCallback(ChangeLevelTimerCallback);
-			m_claimTimer = new ECSGameTimer(CurrentRegion.TimeManager);
+			m_claimTimer = new ECSGameTimer(new GameNPC());
 			m_claimTimer.Callback = new ECSGameTimer.ECSTimerCallback(ClaimCallBack);
 			m_claimTimer.Interval = CLAIM_CALLBACK_INTERVAL;
 		}

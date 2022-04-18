@@ -259,7 +259,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public long StartWalk(ECSGameTimer timer)
+        public int StartWalk(ECSGameTimer timer)
         {
             restphase = false;
             dontattack = false;

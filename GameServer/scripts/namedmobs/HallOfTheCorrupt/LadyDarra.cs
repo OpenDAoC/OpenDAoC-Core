@@ -299,7 +299,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public long ResetDarra(ECSGameTimer timer)
+        public int ResetDarra(ECSGameTimer timer)
         {
             reset_darra = false;
             return 0;

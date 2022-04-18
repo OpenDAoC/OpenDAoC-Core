@@ -99,10 +99,10 @@ public class ECSGameTimer
     /// <summary>
     /// This delegate is the callback function for the ECS Timer
     /// </summary>
-    public delegate long ECSTimerCallback(ECSGameTimer timer);
+    public delegate int ECSTimerCallback(ECSGameTimer timer);
 
     public ECSTimerCallback Callback;
-    public long Interval;
+    public int Interval;
     public long StartTick;
     public long NextTick => StartTick + Interval;
 

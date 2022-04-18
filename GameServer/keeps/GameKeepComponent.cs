@@ -171,7 +171,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void StartHealthRegeneration()
 		{
-			m_repairTimer = new ECSGameTimer(CurrentRegion.TimeManager);
+			m_repairTimer = new ECSGameTimer(this);
 			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
 			m_repairTimer.Interval = repairInterval;
 			m_repairTimer.Start(1);

@@ -405,7 +405,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public long Change_Granidon(ECSGameTimer timer)
+        public int Change_Granidon(ECSGameTimer timer)
         {
             if (IsGranidonForm == true && GranidonFormCheck == false)
             {
@@ -423,7 +423,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public long Change_Treant(ECSGameTimer timer)
+        public int Change_Treant(ECSGameTimer timer)
         {
             if (IsTreantForm == true && TreantFormCheck == false)
             {
@@ -441,7 +441,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public long Change_Saiyan(ECSGameTimer timer)
+        public int Change_Saiyan(ECSGameTimer timer)
         {
             if (IsSaiyanForm == true && SaiyanFormCheck == false)
             {
@@ -459,7 +459,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public long FormDuration(ECSGameTimer timer)
+        public int FormDuration(ECSGameTimer timer)
         {
             if (SwitchForm == false)
             {
@@ -476,7 +476,7 @@ namespace DOL.AI.Brain
 
         public static bool reset_checks = false;
 
-        public long ResetChecks(ECSGameTimer timer)
+        public int ResetChecks(ECSGameTimer timer)
         {
             if (SwitchForm == true && reset_checks == false)
             {
@@ -492,21 +492,21 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public long CastBlackPlague(ECSGameTimer timer)
+        public int CastBlackPlague(ECSGameTimer timer)
         {
             Body.CastSpell(BlackPlague, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_disease = false;
             return 0;
         }
 
-        public long CastDamageAdd(ECSGameTimer timer)
+        public int CastDamageAdd(ECSGameTimer timer)
         {
             Body.CastSpell(DamageAdd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_DA = false;
             return 0;
         }
 
-        public long CastDamageShield(ECSGameTimer timer)
+        public int CastDamageShield(ECSGameTimer timer)
         {
             Body.CastSpell(DamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_DS = false;

@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-        public long TeleportEnemy(ECSGameTimer timer)
+        public int TeleportEnemy(ECSGameTimer timer)
         {
             if (TeleportTarget != null)
             {

@@ -1851,7 +1851,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public long SpawnSwarm(ECSGameTimer timer)
+        public int SpawnSwarm(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2615,7 +2615,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
         #region Boss fly phase timers
-        public long FlyPhaseStart(ECSGameTimer timer)
+        public int FlyPhaseStart(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2625,7 +2625,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public long FlyPhaseDuration(ECSGameTimer timer)
+        public int FlyPhaseDuration(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2640,7 +2640,7 @@ namespace DOL.AI.Brain
 
         #region Spawn Harbringers
         public static bool spawn_harbringers = false;
-        public long SpawnHarbringers(ECSGameTimer timer)
+        public int SpawnHarbringers(ECSGameTimer timer)
         {
             if (Apocalypse.KilledEnemys == 4)//he doint it only once, spawning 2 harbringers is killed 4 players
             {
@@ -2993,7 +2993,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        private long CastDD(ECSGameTimer timer)
+        private int CastDD(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = DD_Target;
@@ -3012,7 +3012,7 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        public long ResetCast(ECSGameTimer timer)
+        public int ResetCast(ECSGameTimer timer)
         {
             cast_dd = false;
             return 0;

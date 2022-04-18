@@ -275,7 +275,7 @@ namespace DOL.AI.Brain
             set { randomtarget2 = value; }
         }
         List<GamePlayer> Enemys_To_Root = new List<GamePlayer>();
-        public long PickRandomTarget2(ECSGameTimer timer)
+        public int PickRandomTarget2(ECSGameTimer timer)
         {
             if (HasAggro)
             {
@@ -305,7 +305,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public long CastRoot(ECSGameTimer timer)
+        public int CastRoot(ECSGameTimer timer)
         {
             if (HasAggro && RandomTarget2 != null)
             {
@@ -321,7 +321,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public long ResetRoot(ECSGameTimer timer)
+        public int ResetRoot(ECSGameTimer timer)
         {
             RandomTarget2 = null;
             CanCast2 = false;
@@ -329,14 +329,14 @@ namespace DOL.AI.Brain
             return 0;
         }
         #endregion
-        public long CastEffectBubble(ECSGameTimer timer)
+        public int CastEffectBubble(ECSGameTimer timer)
         {
             Body.CastSpell(OGBubbleEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             BroadcastMessage(String.Format("Olcasar tears off a chunk of himself and tosses it to the ground."));
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Spawn), 2000);
             return 0;
         }
-        public long Spawn(ECSGameTimer timer)
+        public int Spawn(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro && Body.TargetObject != null)
             {
@@ -351,14 +351,14 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public long ResetSpawn(ECSGameTimer timer)
+        public int ResetSpawn(ECSGameTimer timer)
         {
             spawnadds = false;
             return 0;
         }
 
         public static bool CanCastAoeSnare = false;
-        public long CastAoeSnare(ECSGameTimer timer)
+        public int CastAoeSnare(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {
@@ -367,7 +367,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public long ResetAoeSnare(ECSGameTimer timer)
+        public int ResetAoeSnare(ECSGameTimer timer)
         {
             CanCastAoeSnare = false;
             return 0;

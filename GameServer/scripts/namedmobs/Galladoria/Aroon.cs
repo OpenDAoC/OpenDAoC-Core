@@ -723,7 +723,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -932,7 +932,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1141,7 +1141,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1353,7 +1353,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1566,7 +1566,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1780,7 +1780,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1994,7 +1994,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -2209,7 +2209,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -2424,7 +2424,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public long RandomAttackTarget(ECSGameTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)

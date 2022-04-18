@@ -194,13 +194,13 @@ namespace DOL.AI.Brain
 
         public static bool spawnfairy = false;
         public static bool nearspawn = false;
-        public long ReturnSpawn(ECSGameTimer timer)
+        public int ReturnSpawn(ECSGameTimer timer)
         {
             ClearAggroList();
             Evern.Idle = false;
             return 0;
         }
-        public long StartReturnSpawn(ECSGameTimer timer)
+        public int StartReturnSpawn(ECSGameTimer timer)
         {
             ClearAggroList();
             Evern.Idle = true;
@@ -274,7 +274,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        private long DoSpawn(ECSGameTimer timer)
+        private int DoSpawn(ECSGameTimer timer)
         {
             Spawn();
             spawnfairy = false;
@@ -353,7 +353,7 @@ namespace DOL.AI.Brain
             AggroRange = 0;
         }
 
-        private long HealingEffectTimer(ECSGameTimer timer)
+        private int HealingEffectTimer(ECSGameTimer timer)
         {
             foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -420,7 +420,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        private long CastingHealEffect(ECSGameTimer timer)
+        private int CastingHealEffect(ECSGameTimer timer)
         {
             foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
