@@ -65,8 +65,8 @@ namespace DOL.GS.Spells
 			else
 			{
 				targetPlayer.TempProperties.setProperty(RESURRECT_CASTER_PROPERTY, m_caster);
-                RegionTimer resurrectExpiredTimer = new RegionTimer(targetPlayer);
-				resurrectExpiredTimer.Callback = new RegionTimerCallback(ResurrectExpiredCallback);
+				ECSGameTimer resurrectExpiredTimer = new ECSGameTimer(targetPlayer);
+				resurrectExpiredTimer.Callback = new ECSGameTimer.ECSTimerCallback(ResurrectExpiredCallback);
 				resurrectExpiredTimer.Properties.setProperty("targetPlayer", targetPlayer);
 				resurrectExpiredTimer.Start(15000);
 				lock (m_resTimersByLiving.SyncRoot)
@@ -246,7 +246,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns></returns>
-		protected virtual int ResurrectExpiredCallback(RegionTimer callingTimer)
+		protected virtual int ResurrectExpiredCallback(ECSGameTimer callingTimer)
 		{
 			GamePlayer player = (GamePlayer)callingTimer.Properties.getProperty<object>("targetPlayer", null);
 			if (player == null) return 0;

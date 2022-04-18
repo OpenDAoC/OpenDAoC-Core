@@ -377,7 +377,7 @@ namespace DOL.AI.Brain
 
         List<GamePlayer> healer = new List<GamePlayer>();
 
-        public int PickHeal(RegionTimer timer)
+        public int PickHeal(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -697,14 +697,14 @@ namespace DOL.AI.Brain
 
                 if (Pick_healer == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(PickHeal),
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickHeal),
                         Util.Random(40000, 60000)); //40s-60s will try pick heal class
                     Pick_healer = true;
                 }
 
                 if (IsSpawningTrees == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(SpawnTrees),
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnTrees),
                         Util.Random(25000, 35000)); //25s-35s will spawn trees
                     IsSpawningTrees = true;
                 }
@@ -751,7 +751,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public int SpawnTrees(RegionTimer timer) // We define here adds
+        public int SpawnTrees(ECSGameTimer timer) // We define here adds
         {
             if (Body.IsAlive && Body.InCombat && HasAggro)
             {

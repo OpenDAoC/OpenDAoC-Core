@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Quests;
@@ -107,10 +108,22 @@ public class ECSGameTimer
 
     public GameLiving TimerOwner;
     public bool IsAlive => TimerService.HasActiveTimer(this);
+    
+    /// <summary>
+    /// Holds properties for this region timer
+    /// </summary>
+    private PropertyCollection m_properties;
 
     public ECSGameTimer(GameLiving living)
     {
         TimerOwner = living;
+    }
+    
+    public ECSGameTimer(GameLiving living, ECSTimerCallback callback, long interval)
+    {
+        TimerOwner = living;
+        Callback = callback;
+        Interval = interval;
     }
 
     public void Start()
@@ -141,6 +154,27 @@ public class ECSGameTimer
         if(Interval == 0) Stop();
     }
 
-    
+    /// <summary>
+    /// Gets the properties of this timer
+    /// </summary>
+    public PropertyCollection Properties
+    {
+        get
+        {
+            if (m_properties == null)
+            {
+                lock (this)
+                {
+                    if (m_properties == null)
+                    {
+                        PropertyCollection properties = new PropertyCollection();
+                        Thread.MemoryBarrier();
+                        m_properties = properties;
+                    }
+                }
+            }
+            return m_properties;
+        }
+    }
     
 }
