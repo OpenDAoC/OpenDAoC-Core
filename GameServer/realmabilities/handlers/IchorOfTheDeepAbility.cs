@@ -12,8 +12,8 @@ namespace DOL.GS.RealmAbilities
 	{
 		public IchorOfTheDeepAbility(DBAbility dba, int level) : base(dba, level) { }
 
-		private RegionTimer m_expireTimerID;
-		private RegionTimer m_rootExpire;
+		private ECSGameTimer m_expireTimerID;
+		private ECSGameTimer m_rootExpire;
 		private int dmgValue = 0;
 		private int duration = 0;
 		private GamePlayer caster;
@@ -127,10 +127,10 @@ namespace DOL.GS.RealmAbilities
 				//i_player.Out.SendSpellCastAnimation(caster, 7029, 0);
 			}
 
-			m_expireTimerID = new RegionTimer(caster, new RegionTimerCallback(EndCast), 1);
+			m_expireTimerID = new ECSGameTimer(caster, new ECSGameTimer.ECSTimerCallback(EndCast), 1);
 		}
 
-		protected virtual int EndCast(RegionTimer timer)
+		protected virtual int EndCast(ECSGameTimer timer)
 		{
 			if (caster.TargetObject == null)
 			{
@@ -165,7 +165,7 @@ namespace DOL.GS.RealmAbilities
 			if (living.EffectList.GetOfType<ChargeEffect>() == null && living.EffectList.GetOfType<SpeedOfSoundEffect>() != null)
 			{
 				living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
-				m_rootExpire = new RegionTimer(living, new RegionTimerCallback(RootExpires), duration);
+				m_rootExpire = new ECSGameTimer(living, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
 				GameEventMgr.AddHandler(living, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
 				SendUpdates(living);
 			}
@@ -197,7 +197,7 @@ namespace DOL.GS.RealmAbilities
 				if (mob.EffectList.GetOfType<ChargeEffect>() == null && mob.EffectList.GetOfType<SpeedOfSoundEffect>() == null)
 				{
 					mob.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
-					m_rootExpire = new RegionTimer(mob, new RegionTimerCallback(RootExpires), duration);
+					m_rootExpire = new ECSGameTimer(mob, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
 					GameEventMgr.AddHandler(mob, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
 					SendUpdates(mob);
 				}
@@ -230,7 +230,7 @@ namespace DOL.GS.RealmAbilities
 				if (aeplayer.EffectList.GetOfType<ChargeEffect>() == null && aeplayer.EffectList.GetOfType<SpeedOfSoundEffect>() == null)
 				{
 					(aeplayer as GameLiving).BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
-					m_rootExpire = new RegionTimer(aeplayer, new RegionTimerCallback(RootExpires), duration);
+					m_rootExpire = new ECSGameTimer(aeplayer, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
 					GameEventMgr.AddHandler(aeplayer, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
 					SendUpdates(aeplayer);
 				}
@@ -257,7 +257,7 @@ namespace DOL.GS.RealmAbilities
 			return modDamage;
 		}
 
-		protected virtual int RootExpires(RegionTimer timer)
+		protected virtual int RootExpires(ECSGameTimer timer)
 		{
 			GameLiving living = timer.Owner as GameLiving;
 			if (living != null)

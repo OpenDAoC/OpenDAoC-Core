@@ -56,7 +56,7 @@ namespace DOL.GS.Behaviour.Actions
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
 
-            RegionTimer timer = new RegionTimer(player, new RegionTimerCallback(QuestTimerCallBack));
+            ECSGameTimer timer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(QuestTimerCallBack));
             timer.Properties.setProperty(TIMER_ID, P);
             timer.Properties.setProperty(TIMER_SOURCE, player);
             timer.Start(Q);
@@ -67,7 +67,7 @@ namespace DOL.GS.Behaviour.Actions
         /// </summary>
         /// <param name="callingTimer"></param>
         /// <returns>0</returns>
-        private static int QuestTimerCallBack(RegionTimer callingTimer)
+        private static int QuestTimerCallBack(ECSGameTimer callingTimer)
         {
             string timerid = callingTimer.Properties.getProperty<object>(TIMER_ID, null) as string;
             if (timerid == null)

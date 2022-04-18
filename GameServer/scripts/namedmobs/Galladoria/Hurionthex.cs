@@ -327,7 +327,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Handles how the form changes. If not in base form, change to base, otherwise randomly change to another of three forms: Treant, Saiyan, Granidon.
         /// </summary>
-        public int ChangeForm(RegionTimer timer)
+        public int ChangeForm(ECSGameTimer timer)
         {
             if (Body.InCombat && HasAggro)
             {
@@ -346,7 +346,7 @@ namespace DOL.AI.Brain
                         if (IsGranidonForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new RegionTimer(Body, new RegionTimerCallback(Change_Granidon), 2000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Granidon), 2000);
                             IsGranidonForm = true;
                         }
                     }
@@ -356,7 +356,7 @@ namespace DOL.AI.Brain
                         if (IsTreantForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new RegionTimer(Body, new RegionTimerCallback(Change_Treant), 2000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Treant), 2000);
                             IsTreantForm = true;
                         }
                     }
@@ -366,7 +366,7 @@ namespace DOL.AI.Brain
                         if (IsSaiyanForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new RegionTimer(Body, new RegionTimerCallback(Change_Saiyan), 2000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Saiyan), 2000);
                             IsSaiyanForm = true;
                         }
                     }
@@ -376,7 +376,7 @@ namespace DOL.AI.Brain
                         if (IsBaseForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new RegionTimer(Body, new RegionTimerCallback(Change_Base), 2000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Base), 2000);
                             IsBaseForm = true;
                         }
                     }
@@ -387,7 +387,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public int Change_Base(RegionTimer timer)
+        public int Change_Base(ECSGameTimer timer)
         {
             if (IsBaseForm == true && BaseFormCheck == false)
             {
@@ -398,7 +398,7 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("Hurionthex returns to his natural form."));
                 FormBase();
-                new RegionTimer(Body, new RegionTimerCallback(FormDuration), 2000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
                 BaseFormCheck = true;
             }
 

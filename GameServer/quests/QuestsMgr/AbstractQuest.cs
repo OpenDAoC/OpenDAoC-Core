@@ -384,8 +384,8 @@ namespace DOL.GS.Quests
                 }
 
 				player.Out.SendTimerWindow(label, seconds);
-				player.QuestActionTimer = new RegionTimer(player);
-				player.QuestActionTimer.Callback = new RegionTimerCallback(QuestActionCallback);
+				player.QuestActionTimer = new ECSGameTimer(player);
+				player.QuestActionTimer.Callback = new ECSGameTimer.ECSTimerCallback(QuestActionCallback);
 				player.QuestActionTimer.Start(seconds * 1000);
 			}
 			else
@@ -394,9 +394,9 @@ namespace DOL.GS.Quests
 			}
 		}
 
-		protected virtual int QuestActionCallback(RegionTimer timer)
+		protected virtual int QuestActionCallback(ECSGameTimer timer)
 		{
-            GamePlayer player = timer.Owner as GamePlayer;
+            GamePlayer player = timer.TimerOwner as GamePlayer;
 
             if (player != null)
             {
@@ -603,7 +603,7 @@ namespace DOL.GS.Quests
 		public static Queue m_sayChatTypeQueue = new Queue();
 		public static Queue m_sayChatLocQueue = new Queue();
 
-		protected static int MakeSaySequence(RegionTimer callingTimer)
+		protected static int MakeSaySequence(ECSGameTimer callingTimer)
 		{
 			m_sayTimerQueue.Dequeue();
 			GamePlayer player = (GamePlayer)m_sayObjectQueue.Dequeue();
@@ -674,7 +674,7 @@ namespace DOL.GS.Quests
                 m_sayObjectQueue.Enqueue(player);
                 m_sayChatLocQueue.Enqueue(chatLoc);
                 m_sayChatTypeQueue.Enqueue(chatType);
-                m_sayTimerQueue.Enqueue(new RegionTimer(player, new RegionTimerCallback(MakeSaySequence), (int)delay * 100));
+                m_sayTimerQueue.Enqueue(new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(MakeSaySequence), (int)delay * 100));
             }
 		}
 

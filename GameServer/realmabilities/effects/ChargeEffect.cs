@@ -13,7 +13,7 @@ namespace DOL.GS.Effects
 		protected const String delveString = "Grants unbreakable speed 3 for 15 second duration. Grants immunity to roots, stun, snare and mesmerize spells. Target will still take damage from snare/root spells that do damage.";
 		GameLiving m_living;
 		protected long m_startTick;
-		protected RegionTimer m_expireTimer;
+		protected ECSGameTimer m_expireTimer;
 
 		public override void Start(GameLiving living)
 		{
@@ -98,7 +98,7 @@ namespace DOL.GS.Effects
 		protected virtual void StartTimers()
 		{
 			StopTimers();
-			m_expireTimer = new RegionTimer(m_living, new RegionTimerCallback(ExpiredCallback), RealmAbilities.ChargeAbility.DURATION * 1000);
+			m_expireTimer = new ECSGameTimer(m_living, new ECSGameTimer.ECSTimerCallback(ExpiredCallback), RealmAbilities.ChargeAbility.DURATION * 1000);
 		}
 
 
@@ -114,7 +114,7 @@ namespace DOL.GS.Effects
 
 
 		// The callback method when the effect expires
-		protected virtual int ExpiredCallback(RegionTimer timer)
+		protected virtual int ExpiredCallback(ECSGameTimer timer)
 		{
 			Cancel(false);
 			return 0;
@@ -132,7 +132,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				RegionTimer timer = m_expireTimer;
+				ECSGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;

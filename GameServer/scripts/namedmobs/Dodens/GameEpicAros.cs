@@ -407,7 +407,7 @@ namespace DOL.GS.Scripts
             WalkTo(BombTarget, 250);
             int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
-            new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBomb), 5000);
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace DOL.GS.Scripts
             HealthPercentOld = HealthPercent;
             int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
-            new RegionTimer(this, new RegionTimerCallback(CastBomb), 5000);
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBomb), 5000);
         }
 
 
@@ -448,7 +448,7 @@ namespace DOL.GS.Scripts
         {
             HealthPercentOld = HealthPercent;
             BroadcastMessage(String.Format(m_BigBombAnnounce, Name));
-            new RegionTimer(this, new RegionTimerCallback(CastBigBomb), 5000);
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBigBomb), 5000);
         }
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastBomb(RegionTimer timer)
+        private int CastBomb(ECSGameTimer timer)
         {
             CastSpell(Bomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
@@ -467,7 +467,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastBigBomb(RegionTimer timer)
+        private int CastBigBomb(ECSGameTimer timer)
         {
             CastSpell(BigBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
@@ -532,7 +532,7 @@ namespace DOL.GS.Scripts
             if (DebuffTarget == null) return;
             TurnTo(DebuffTarget);
             BroadcastMessage(String.Format(m_DebuffAnnounce, Name, DebuffTarget.Name));
-            new RegionTimer(this, new RegionTimerCallback(CastDebuff), 1000);
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastDebuff), 1000);
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastDebuff(RegionTimer timer)
+        private int CastDebuff(ECSGameTimer timer)
         {
             // Turn around to the target and cast Debuff, then go back to the original
             // target, if one exists.
@@ -610,7 +610,7 @@ namespace DOL.GS.Scripts
         {
             HealthPercentOld = HealthPercent;
             BroadcastMessage(String.Format(m_SummonAnnounce, Name));
-            new RegionTimer(this, new RegionTimerCallback(CastSummon), 2000);
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastSummon), 2000);
         }
 
         /// <summary>
@@ -618,7 +618,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastSummon(RegionTimer timer)
+        private int CastSummon(ECSGameTimer timer)
         {
             CastSpell(Summon, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             GameLiving target = null;

@@ -9241,12 +9241,12 @@ namespace DOL.GS
         /// <summary>
         /// This is the timer used to count time when a player casts a RA
         /// </summary>
-        private RegionTimer m_realmAbilityCastTimer;
+        private ECSGameTimer m_realmAbilityCastTimer;
 
         /// <summary>
         /// Get and set the RA cast timer
         /// </summary>
-        public RegionTimer RealmAbilityCastTimer
+        public ECSGameTimer RealmAbilityCastTimer
         {
             get { return m_realmAbilityCastTimer; }
             set { m_realmAbilityCastTimer = value; }
@@ -9645,8 +9645,8 @@ namespace DOL.GS
 									EffectService.RequestImmediateCancelEffect(effect);
 									//effect.Cancel(false);
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-								m_whistleMountTimer = new RegionTimer(this);
-								m_whistleMountTimer.Callback = new RegionTimerCallback(WhistleMountTimerCallback);
+								m_whistleMountTimer = new ECSGameTimer(this);
+								m_whistleMountTimer.Callback = new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback);
 								m_whistleMountTimer.Start(5000);
 							}
 						}
@@ -11572,8 +11572,8 @@ namespace DOL.GS
                 {
                     if (m_lavaBurningTimer == null)
                     {
-                        m_lavaBurningTimer = new RegionTimer(this);
-                        m_lavaBurningTimer.Callback = new RegionTimerCallback(LavaBurnTimerCallback);
+                        m_lavaBurningTimer = new ECSGameTimer(this);
+                        m_lavaBurningTimer.Callback = new ECSGameTimer.ECSTimerCallback(LavaBurnTimerCallback);
                         m_lavaBurningTimer.Interval = 2000;
                         m_lavaBurningTimer.Start(1);
                     }
@@ -11610,7 +11610,7 @@ namespace DOL.GS
         protected long m_beginDrowningTick;
         protected eWaterBreath m_currentWaterBreathState;
 
-        protected int DrowningTimerCallback(RegionTimer callingTimer)
+        protected int DrowningTimerCallback(ECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active)
                 return 0;
@@ -11632,16 +11632,16 @@ namespace DOL.GS
             return 1000;
         }
 
-        protected int HoldingBreathTimerCallback(RegionTimer callingTimer)
+        protected int HoldingBreathTimerCallback(ECSGameTimer callingTimer)
         {
             m_holdBreathTimer = null;
             Diving(eWaterBreath.Drowning);
             return 0;
         }
 
-        protected RegionTimer m_drowningTimer;
-        protected RegionTimer m_holdBreathTimer;
-        protected RegionTimer m_lavaBurningTimer;
+        protected ECSGameTimer m_drowningTimer;
+        protected ECSGameTimer m_holdBreathTimer;
+        protected ECSGameTimer m_lavaBurningTimer;
         /// <summary>
         /// The diving state of this player
         /// </summary>
@@ -11707,8 +11707,8 @@ namespace DOL.GS
                     if (m_holdBreathTimer == null)
                     {
                         Out.SendTimerWindow("Holding Breath", 30);
-                        m_holdBreathTimer = new RegionTimer(this);
-                        m_holdBreathTimer.Callback = new RegionTimerCallback(HoldingBreathTimerCallback);
+                        m_holdBreathTimer = new ECSGameTimer(this);
+                        m_holdBreathTimer.Callback = new ECSGameTimer.ECSTimerCallback(HoldingBreathTimerCallback);
                         m_holdBreathTimer.Start(30001);
                     }
                     break;
@@ -11717,8 +11717,8 @@ namespace DOL.GS
                     if (m_drowningTimer == null)
                     {
                         //Out.SendTimerWindow("Drowning", 5);
-                        m_drowningTimer = new RegionTimer(this);
-                        m_drowningTimer.Callback = new RegionTimerCallback(DrowningTimerCallback);
+                        m_drowningTimer = new ECSGameTimer(this);
+                        m_drowningTimer.Callback = new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback);
                         m_drowningTimer.Start(1);
                     }
                     break;
@@ -11728,7 +11728,7 @@ namespace DOL.GS
             //	Out.SendUpdateMaxSpeed();
         }
 
-        protected int LavaBurnTimerCallback(RegionTimer callingTimer)
+        protected int LavaBurnTimerCallback(ECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active || !IsSwimming)
                 return 0;
@@ -14479,9 +14479,9 @@ namespace DOL.GS
         /// </summary>
         protected List<AbstractQuest> m_questListFinished = new List<AbstractQuest>();
 
-        protected RegionTimer m_questActionTimer = null;
+        protected ECSGameTimer m_questActionTimer = null;
 
-        public RegionTimer QuestActionTimer
+        public ECSGameTimer QuestActionTimer
         {
             get { return m_questActionTimer; }
             set { m_questActionTimer = value; }
@@ -14876,12 +14876,12 @@ namespace DOL.GS
         /// <summary>
         /// This is the timer used to count time when a player craft
         /// </summary>
-        private RegionTimer m_crafttimer;
+        private ECSGameTimer m_crafttimer;
 
         /// <summary>
         /// Get and set the craft timer
         /// </summary>
-        public RegionTimer CraftTimer
+        public ECSGameTimer CraftTimer
         {
             get { return m_crafttimer; }
             set { m_crafttimer = value; }
@@ -15940,7 +15940,7 @@ namespace DOL.GS
 
         #region Controlled Mount
 
-        protected RegionTimer m_whistleMountTimer;
+        protected ECSGameTimer m_whistleMountTimer;
         protected ControlledHorse m_controlledHorse;
 
         public bool HasHorse
@@ -15993,7 +15993,7 @@ namespace DOL.GS
             m_whistleMountTimer = null;
         }
 
-        protected int WhistleMountTimerCallback(RegionTimer callingTimer)
+        protected int WhistleMountTimerCallback(ECSGameTimer callingTimer)
         {
             StopWhistleTimers();
             IsOnHorse = true;

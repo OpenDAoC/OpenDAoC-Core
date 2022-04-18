@@ -264,10 +264,10 @@ namespace DOL.AI.Brain
 				GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
 				BroadcastMessage(String.Format("Balor prepares magic beam from his eye on "+RandomTarget.Name+"."));
-				new RegionTimer(Body, new RegionTimerCallback(StartCast), 5000);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartCast), 5000);
 			}
 		}
-		public int StartCast(RegionTimer timer)
+		public int StartCast(ECSGameTimer timer)
         {
 			Cancast = true;
 			return 0;
@@ -348,11 +348,11 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new RegionTimer(this, new RegionTimerCallback(RemoveEye),15200); //mob will be removed after this time
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveEye),15200); //mob will be removed after this time
 			}
 			return success;
 		}
-		protected int RemoveEye(RegionTimer timer)
+		protected int RemoveEye(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{

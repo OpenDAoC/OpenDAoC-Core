@@ -106,7 +106,7 @@ public class ECSGameTimer
     public long StartTick;
     public long NextTick => StartTick + Interval;
 
-    public GameLiving TimerOwner;
+    public GameObject TimerOwner;
     public bool IsAlive => TimerService.HasActiveTimer(this);
     
     /// <summary>
@@ -119,9 +119,21 @@ public class ECSGameTimer
         TimerOwner = living;
     }
     
+    public ECSGameTimer(GameObject target)
+    {
+        TimerOwner = target;
+    }
+    
     public ECSGameTimer(GameLiving living, ECSTimerCallback callback, long interval)
     {
         TimerOwner = living;
+        Callback = callback;
+        Interval = interval;
+    }
+    
+    public ECSGameTimer(GameObject target, ECSTimerCallback callback, long interval)
+    {
+        TimerOwner = target;
         Callback = callback;
         Interval = interval;
     }
@@ -152,6 +164,30 @@ public class ECSGameTimer
         }
         
         if(Interval == 0) Stop();
+    }
+    
+    /// <summary>
+    /// Stores the time where the timer was inserted
+    /// </summary>
+    private long m_targetTime = -1;
+    
+    /// <summary>
+    /// Stores the time manager used for this timer
+    /// </summary>
+    private readonly GameTimer.TimeManager m_time;
+    
+    /// <summary>
+    /// Gets the time left until this timer fires, in milliseconds.
+    /// </summary>
+    public int TimeUntilElapsed
+    {
+        get
+        {
+            long ins = m_targetTime;
+            if (ins < 0)
+                return -1;
+            return (int)((ulong)ins - (ulong)m_time.CurrentTime);
+        }
     }
 
     /// <summary>

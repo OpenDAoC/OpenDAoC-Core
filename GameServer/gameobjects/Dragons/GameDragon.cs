@@ -563,7 +563,7 @@ namespace DOL.GS
 			HealthPercentOld = HealthPercent;	
 			int messageNo = Util.Random(1, m_breathAnnounce.Length) - 1;
 			BroadcastMessage(String.Format(m_breathAnnounce[messageNo], Name));
-			new RegionTimer(this, new RegionTimerCallback(CastBreath), 5000);
+			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBreath), 5000);
 		}
 
 		/// <summary>
@@ -571,7 +571,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="timer">The timer that started this cast.</param>
 		/// <returns></returns>
-		private int CastBreath(RegionTimer timer)
+		private int CastBreath(ECSGameTimer timer)
 		{
 			CastSpell(Breath, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			CastSpell(ResistDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -636,7 +636,7 @@ namespace DOL.GS
 			if (GlareTarget == null) return;
 			TurnTo(GlareTarget);
 			BroadcastMessage(String.Format(m_glareAnnounce, Name, GlareTarget.Name));
-			new RegionTimer(this, new RegionTimerCallback(CastGlare), 5000);
+			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastGlare), 5000);
 		}
 
 		/// <summary>
@@ -644,7 +644,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="timer">The timer that started this cast.</param>
 		/// <returns></returns>
-		private int CastGlare(RegionTimer timer)
+		private int CastGlare(ECSGameTimer timer)
 		{
 			// Turn around to the target and cast glare, then go back to the original
 			// target, if one exists.
@@ -903,13 +903,13 @@ namespace DOL.GS
 		public void PrepareToStun()
 		{
 			// No announcement for this seemingly.
-			new RegionTimer(this, new RegionTimerCallback(CastStun), 5000);
+			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastStun), 5000);
 		}
 
 		/// <summary>
 		/// Start the 5 second timer for the stun.
 		/// </summary>
-		private int CastStun(RegionTimer timer)
+		private int CastStun(ECSGameTimer timer)
 		{
 			CastSpell(Stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			return 0;

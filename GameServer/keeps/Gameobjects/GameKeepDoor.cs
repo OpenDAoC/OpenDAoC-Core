@@ -556,8 +556,8 @@ namespace DOL.GS.Keeps
 		public override void StartHealthRegeneration()
 		{
 			if (m_repairTimer != null && m_repairTimer.IsAlive) return; 
-			m_repairTimer = new RegionTimer(CurrentRegion.TimeManager);
-			m_repairTimer.Callback = new RegionTimerCallback(RepairTimerCallback);
+			m_repairTimer = new ECSGameTimer(CurrentRegion.TimeManager);
+			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
 			m_repairTimer.Interval = repairInterval;
 			m_repairTimer.Start(repairInterval);
 		}
@@ -770,10 +770,10 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		protected RegionTimer m_repairTimer;
+		protected ECSGameTimer m_repairTimer;
 		protected static int repairInterval = 30 * 60 * 1000;
 
-		public int RepairTimerCallback(RegionTimer timer)
+		public int RepairTimerCallback(ECSGameTimer timer)
 		{
 			if (Component == null || Component.Keep == null)
 				return 0;

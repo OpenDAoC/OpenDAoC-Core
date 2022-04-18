@@ -92,10 +92,10 @@ namespace DOL.GS.RealmAbilities
             GameEventMgr.AddHandler(caster, GamePlayerEvent.Dying, new DOLEventHandler(CastInterrupted));
             if (caster != null)
             {
-                new RegionTimer(caster, new RegionTimerCallback(EndCast), 2000);
+                new ECSGameTimer(caster, new ECSGameTimer.ECSTimerCallback(EndCast), 2000);
             }
 		}
-		protected virtual int EndCast(RegionTimer timer)
+		protected virtual int EndCast(ECSGameTimer timer)
 		{
             bool castWasSuccess = player.TempProperties.getProperty(NM_CAST_SUCCESS, false);
             player.TempProperties.removeProperty(IS_CASTING);

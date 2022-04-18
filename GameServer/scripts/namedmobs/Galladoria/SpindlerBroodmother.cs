@@ -215,12 +215,12 @@ namespace DOL.AI.Brain
             {
                 if(Spawn_Splinders==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(SpawnSplinder), 10000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSplinder), 10000);
                     Spawn_Splinders = true;
                 }
                 if (StartCastMezz== false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(20000, 30000));
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(20000, 30000));
                     StartCastMezz = true;
                 }
                 if (Util.Chance(10))

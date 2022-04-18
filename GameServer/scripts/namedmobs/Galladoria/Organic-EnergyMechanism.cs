@@ -195,7 +195,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         List<GamePlayer> Enemys_To_DOT = new List<GamePlayer>();
-        public int PickRandomTarget(RegionTimer timer)
+        public int PickRandomTarget(ECSGameTimer timer)
         {
             if (HasAggro)
             {
@@ -219,14 +219,14 @@ namespace DOL.AI.Brain
                         GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
                         RandomTarget = Target;//set random target to static RandomTarget
                         BroadcastMessage(String.Format(Body.Name + "looks sickly... powerfull magic essense will errupt on " + RandomTarget.Name + "!"));
-                        new RegionTimer(Body, new RegionTimerCallback(CastDOT), 5000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 5000);
                         CanCast = true;
                     }
                 }
             }
             return 0;
         }
-        public int CastDOT(RegionTimer timer)
+        public int CastDOT(ECSGameTimer timer)
         {
             if (HasAggro && RandomTarget != null)
             {
@@ -238,11 +238,11 @@ namespace DOL.AI.Brain
                     Body.CastSpell(OEMpoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
                 if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-                new RegionTimer(Body, new RegionTimerCallback(ResetDOT), 5000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), 5000);
             }
             return 0;
         }
-        public int ResetDOT(RegionTimer timer)
+        public int ResetDOT(ECSGameTimer timer)
         {
             RandomTarget = null;
             CanCast = false;

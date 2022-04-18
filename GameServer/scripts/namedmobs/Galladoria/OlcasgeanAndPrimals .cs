@@ -106,7 +106,7 @@ namespace DOL.AI.Brain
                         if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
                         {
                             
-                            new RegionTimer(Body, new RegionTimerCallback(Message1), 5000);//5s to start
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = false;
                         }
                     }
@@ -114,31 +114,31 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int Message1(RegionTimer timer)
+        public int Message1(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have eneteres inner sanctum.'"));
-            new RegionTimer(Body, new RegionTimerCallback(Message2), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message2), 5000);
             return 0;
         }
-        public int Message2(RegionTimer timer)
+        public int Message2(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("A deep booming voice responds; 'P...R...O...T...E...C...T..'"));
-            new RegionTimer(Body, new RegionTimerCallback(Message3), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message3), 5000);
             return 0;
         }
-        public int Message3(RegionTimer timer)
+        public int Message3(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("'I am tired, and yet, there is much left for me to take care of this day'"));
-            new RegionTimer(Body, new RegionTimerCallback(Message4), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message4), 5000);
             return 0;
         }
-        public int Message4(RegionTimer timer)
+        public int Message4(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("The first voice says: 'We shall protect.'"));
-            new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnPrimals), 5000);
             return 0;
         }
-        protected virtual int SpawnPrimals(RegionTimer timer)//real timer to cast spell and reset check
+        protected virtual int SpawnPrimals(ECSGameTimer timer)//real timer to cast spell and reset check
         {
             SpawnAir();
             SpawnWater();
@@ -667,7 +667,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public int PopBoss(RegionTimer timer)
+        public int PopBoss(ECSGameTimer timer)
         {
             if (spawn3 == true)
             {
@@ -703,7 +703,7 @@ namespace DOL.AI.Brain
             Add.Heading = Body.Heading;
             Add.AddToWorld();
         }
-        public int SpawnEffects(RegionTimer timer)
+        public int SpawnEffects(ECSGameTimer timer)
         {
             if (HasAggro && Body.IsAlive)
             {
@@ -718,11 +718,11 @@ namespace DOL.AI.Brain
                     Add.Heading = Body.Heading;
                     Add.AddToWorld();
                 }
-                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnEffect), 2000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnEffect), 2000);
             }
             return 0;
         }
-        public int ResetSpawnEffect(RegionTimer timer)
+        public int ResetSpawnEffect(ECSGameTimer timer)
         {
             spawn_effect = false;
             return 0;

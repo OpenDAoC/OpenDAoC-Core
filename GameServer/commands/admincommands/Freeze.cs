@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
 				try
 				{
 					delay = Convert.ToInt32(args[1]);
-					new RegionTimer(client.Player, FreezeCallback).Start(1);
+					new ECSGameTimer(client.Player, FreezeCallback).Start(1);
 				}
 				catch
 				{
@@ -54,7 +54,7 @@ namespace DOL.GS.Commands
 
 		}
 		
-		private int FreezeCallback(RegionTimer timer)
+		private int FreezeCallback(ECSGameTimer timer)
 		{
 			System.Threading.Thread.Sleep(delay * 1000);
 			return 0;

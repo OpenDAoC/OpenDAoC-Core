@@ -16,7 +16,7 @@ namespace DOL.GS.Effects
 		private const String m_delveString = "Grants the group an absorption bonus to all forms of damage (Does not stack with Barrier of Fortitude or Bedazzling Aura).";
 		private GamePlayer m_player;
 		private Int32 m_effectDuration;
-		private RegionTimer m_expireTimer;
+		private ECSGameTimer m_expireTimer;
 		private int m_value;
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace DOL.GS.Effects
 		private void StartTimers()
 		{
 			StopTimers();
-			m_expireTimer = new RegionTimer(m_player, new RegionTimerCallback(ExpireCallback), m_effectDuration * 1000);
+			m_expireTimer = new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(ExpireCallback), m_effectDuration * 1000);
 		}
 
 		/// <summary>
@@ -127,7 +127,7 @@ namespace DOL.GS.Effects
 		/// The callback for when the effect expires
 		/// </summary>
 		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int ExpireCallback(RegionTimer timer)
+		private int ExpireCallback(ECSGameTimer timer)
 		{
 			Cancel(false);
 
@@ -153,7 +153,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				RegionTimer timer = m_expireTimer;
+				ECSGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;
