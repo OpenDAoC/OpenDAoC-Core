@@ -651,7 +651,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck7 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck7 = true;
                     }
                 }
@@ -664,7 +664,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck8 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck8 = true;
                     }
                 }
@@ -677,7 +677,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck9 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck9 = true;
                     }
                 }
@@ -690,7 +690,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck10 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck10 = true;
                     }
                 }

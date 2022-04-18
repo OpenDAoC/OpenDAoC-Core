@@ -405,7 +405,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public int Change_Granidon(RegionTimer timer)
+        public int Change_Granidon(ECSGameTimer timer)
         {
             if (IsGranidonForm == true && GranidonFormCheck == false)
             {
@@ -416,14 +416,14 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("A ring of magical energy emanates from Hurionthex."));
                 FormGranidon();
-                new RegionTimer(Body, new RegionTimerCallback(FormDuration), 2000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
                 GranidonFormCheck = true;
             }
 
             return 0;
         }
 
-        public int Change_Treant(RegionTimer timer)
+        public int Change_Treant(ECSGameTimer timer)
         {
             if (IsTreantForm == true && TreantFormCheck == false)
             {
@@ -434,14 +434,14 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("A ring of magical energy emanates from Hurionthex."));
                 FormTreant();
-                new RegionTimer(Body, new RegionTimerCallback(FormDuration), 2000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
                 TreantFormCheck = true;
             }
 
             return 0;
         }
 
-        public int Change_Saiyan(RegionTimer timer)
+        public int Change_Saiyan(ECSGameTimer timer)
         {
             if (IsSaiyanForm == true && SaiyanFormCheck == false)
             {
@@ -452,21 +452,21 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("A ring of magical energy emanates from Hurionthex."));
                 FormSaiyan();
-                new RegionTimer(Body, new RegionTimerCallback(FormDuration), 2000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
                 SaiyanFormCheck = true;
             }
 
             return 0;
         }
 
-        public int FormDuration(RegionTimer timer)
+        public int FormDuration(ECSGameTimer timer)
         {
             if (SwitchForm == false)
             {
                 if (BaseFormCheck == true || GranidonFormCheck == true || TreantFormCheck == true ||
                     SaiyanFormCheck == true)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(ResetChecks), 2000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetChecks), 2000);
                     SwitchForm = true;
                 }
             }
@@ -476,11 +476,11 @@ namespace DOL.AI.Brain
 
         public static bool reset_checks = false;
 
-        public int ResetChecks(RegionTimer timer)
+        public int ResetChecks(ECSGameTimer timer)
         {
             if (SwitchForm == true && reset_checks == false)
             {
-                new RegionTimer(Body, new RegionTimerCallback(ChangeForm), 18000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeForm), 18000);
 
                 IsBaseForm = false;
                 IsGranidonForm = false;
@@ -492,21 +492,21 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public int CastBlackPlague(RegionTimer timer)
+        public int CastBlackPlague(ECSGameTimer timer)
         {
             Body.CastSpell(BlackPlague, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_disease = false;
             return 0;
         }
 
-        public int CastDamageAdd(RegionTimer timer)
+        public int CastDamageAdd(ECSGameTimer timer)
         {
             Body.CastSpell(DamageAdd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_DA = false;
             return 0;
         }
 
-        public int CastDamageShield(RegionTimer timer)
+        public int CastDamageShield(ECSGameTimer timer)
         {
             Body.CastSpell(DamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_DS = false;
@@ -565,7 +565,7 @@ namespace DOL.AI.Brain
                     //todo = Change switch case to form, make it dependent on timer trigger
                     if (StartForms == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(ChangeForm), 2000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeForm), 2000);
                         StartForms = true;
                     }
                 }
@@ -582,7 +582,7 @@ namespace DOL.AI.Brain
                         {
                             if (cast_disease == false)
                             {
-                                new RegionTimer(Body, new RegionTimerCallback(CastBlackPlague), 2000);
+                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBlackPlague), 2000);
                                 cast_disease = true;
                             }
                         }
@@ -597,7 +597,7 @@ namespace DOL.AI.Brain
                         {
                             if (cast_DA == false)
                             {
-                                new RegionTimer(Body, new RegionTimerCallback(CastDamageAdd), 2000);
+                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDamageAdd), 2000);
                                 cast_DA = true;
                             }
                         }
@@ -612,7 +612,7 @@ namespace DOL.AI.Brain
                         {
                             if (cast_DS == false)
                             {
-                                new RegionTimer(Body, new RegionTimerCallback(CastDamageShield), 2000);
+                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDamageShield), 2000);
                                 cast_DS = true;
                             }
                         }

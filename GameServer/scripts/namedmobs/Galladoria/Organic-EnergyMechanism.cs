@@ -292,14 +292,14 @@ namespace DOL.AI.Brain
 
                 if (SpawnFeeder==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(SpawnFeeders), 10000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnFeeders), 10000);
                     SpawnFeeder = true;
                 }
             }
             base.Think();
         }
         public static bool SpawnFeeder = false;
-        public int SpawnFeeders(RegionTimer timer) // We define here adds
+        public int SpawnFeeders(ECSGameTimer timer) // We define here adds
         {
             if (Body.IsAlive && HasAggro)
             {
@@ -313,11 +313,11 @@ namespace DOL.AI.Brain
                     Add.Heading = Body.Heading;
                     Add.AddToWorld();
                 }
-                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnFeeders), Util.Random(15000,25000));
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnFeeders), Util.Random(15000,25000));
             }
             return 0;
         }
-        public int ResetSpawnFeeders(RegionTimer timer)
+        public int ResetSpawnFeeders(ECSGameTimer timer)
         {
             SpawnFeeder = false;
             return 0;
@@ -529,14 +529,14 @@ namespace DOL.AI.Brain
                 {
                     if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastSCDebuff), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 3000);
                     }
                 }
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
                     if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteDebuff))
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastHasteDebuff), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 3000);
                     }
                 }
                 if (Util.Chance(15) && Body.TargetObject != null)
@@ -551,7 +551,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public int CastSCDebuff(RegionTimer timer)
+        public int CastSCDebuff(ECSGameTimer timer)
         {
             if (Body.TargetObject != null)
             {
@@ -559,7 +559,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public int CastHasteDebuff(RegionTimer timer)
+        public int CastHasteDebuff(ECSGameTimer timer)
         {
             if (Body.TargetObject != null)
             {

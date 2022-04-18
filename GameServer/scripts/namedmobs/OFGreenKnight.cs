@@ -689,7 +689,7 @@ namespace DOL.AI.Brain
                 }
                 else if ((Body.HealthPercent <= 10 && walk9 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk9 = true;
                 }
 

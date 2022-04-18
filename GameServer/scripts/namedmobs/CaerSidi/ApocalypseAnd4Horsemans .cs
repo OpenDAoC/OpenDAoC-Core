@@ -1833,7 +1833,7 @@ namespace DOL.AI.Brain
                 {
                     if (spawn_swarm == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(SpawnSwarm), Util.Random(40000, 60000));//40s-60s
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSwarm), Util.Random(40000, 60000));//40s-60s
 
                         foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
@@ -1851,7 +1851,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int SpawnSwarm(RegionTimer timer)
+        public int SpawnSwarm(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2538,7 +2538,7 @@ namespace DOL.AI.Brain
                     {
                         if (fly_phase2 == false)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(FlyPhaseStart), 1000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 1000);
                             fly_phase2 = true;
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
@@ -2561,7 +2561,7 @@ namespace DOL.AI.Brain
                 {
                     if (spawn_harbringers == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(SpawnHarbringers), 2000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnHarbringers), 2000);
 
                         foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
@@ -2591,7 +2591,7 @@ namespace DOL.AI.Brain
                     {
                         if(fly_phase1 == false)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(FlyPhaseStart), 1000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 1000);
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
                                 if (player != null)
@@ -2615,17 +2615,17 @@ namespace DOL.AI.Brain
             base.Think();
         }
         #region Boss fly phase timers
-        public int FlyPhaseStart(RegionTimer timer)
+        public int FlyPhaseStart(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
                 apoc_fly_phase = true;
                 Body.MaxSpeedBase = 0;//make sure it will not move until phase ends
-                new RegionTimer(Body, new RegionTimerCallback(FlyPhaseDuration), 30000);//30s duration of phase
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseDuration), 30000);//30s duration of phase
             }
             return 0;
         }
-        public int FlyPhaseDuration(RegionTimer timer)
+        public int FlyPhaseDuration(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2640,7 +2640,7 @@ namespace DOL.AI.Brain
 
         #region Spawn Harbringers
         public static bool spawn_harbringers = false;
-        public int SpawnHarbringers(RegionTimer timer)
+        public int SpawnHarbringers(ECSGameTimer timer)
         {
             if (Apocalypse.KilledEnemys == 4)//he doint it only once, spawning 2 harbringers is killed 4 players
             {
@@ -2987,13 +2987,13 @@ namespace DOL.AI.Brain
                 {
                     GamePlayer ptarget = ((GamePlayer)(ApocPlayerList[Util.Random(1, ApocPlayerList.Count) - 1]));
                     DD_Target = ptarget;
-                    new RegionTimer(Body, new RegionTimerCallback(CastDD), 6000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 6000);
                     cast_dd = true;
                     reset_cast = false;
                 }
             }
         }
-        private int CastDD(RegionTimer timer)
+        private int CastDD(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = DD_Target;
@@ -3004,7 +3004,7 @@ namespace DOL.AI.Brain
                 Body.CastSpell(Apoc_Rain_of_Fire, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 if (reset_cast == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(ResetCast), 25000);//25s recast
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetCast), 25000);//25s recast
                     reset_cast = true;
                 }
             }
@@ -3012,7 +3012,7 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        public int ResetCast(RegionTimer timer)
+        public int ResetCast(ECSGameTimer timer)
         {
             cast_dd = false;
             return 0;

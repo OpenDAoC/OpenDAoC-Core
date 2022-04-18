@@ -102,11 +102,12 @@ public class ECSGameTimer
     public delegate int ECSTimerCallback(ECSGameTimer timer);
 
     public ECSTimerCallback Callback;
-    public long Interval;
+    public int Interval;
     public long StartTick;
     public long NextTick => StartTick + Interval;
 
     public GameObject TimerOwner;
+    public GameTimer.TimeManager GameTimeOwner;
     public bool IsAlive => TimerService.HasActiveTimer(this);
     
     /// <summary>
@@ -124,18 +125,35 @@ public class ECSGameTimer
         TimerOwner = target;
     }
     
-    public ECSGameTimer(GameLiving living, ECSTimerCallback callback, long interval)
+    public ECSGameTimer(GameTimer.TimeManager timer)
+    {
+        GameTimeOwner = timer;
+    }
+    
+    public ECSGameTimer(GameLiving living, ECSTimerCallback callback, int interval)
     {
         TimerOwner = living;
         Callback = callback;
         Interval = interval;
     }
     
-    public ECSGameTimer(GameObject target, ECSTimerCallback callback, long interval)
+    public ECSGameTimer(GameLiving living, ECSTimerCallback callback)
+    {
+        TimerOwner = living;
+        Callback = callback;
+    }
+    
+    public ECSGameTimer(GameObject target, ECSTimerCallback callback, int interval)
     {
         TimerOwner = target;
         Callback = callback;
         Interval = interval;
+    }
+    
+    public ECSGameTimer(GameObject target, ECSTimerCallback callback)
+    {
+        TimerOwner = target;
+        Callback = callback;
     }
 
     public void Start()
@@ -143,7 +161,7 @@ public class ECSGameTimer
         Start(500); //use half-second intervals by default
     }
 
-    public void Start(long interval)
+    public void Start(int interval)
     {
         StartTick = GameLoop.GameLoopTime;
         Interval = interval;
@@ -160,7 +178,7 @@ public class ECSGameTimer
         StartTick = GameLoop.GameLoopTime;
         if (Callback != null)
         {
-            Interval = (long) Callback.Invoke(this);
+            Interval = (int) Callback.Invoke(this);
         }
         
         if(Interval == 0) Stop();

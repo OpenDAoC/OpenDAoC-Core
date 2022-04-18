@@ -227,14 +227,14 @@ namespace DOL.AI.Brain
                 {
                     if (IsTargetTeleported == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
                         IsTargetTeleported = true;
                     }
                 }
             }
             base.Think();
         }
-        public int SpawnSplinder(RegionTimer timer)
+        public int SpawnSplinder(ECSGameTimer timer)
         {
             if (HasAggro && Body.IsAlive)
             {
@@ -245,11 +245,11 @@ namespace DOL.AI.Brain
                 Add.CurrentRegion = Body.CurrentRegion;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
-                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnSplinder), Util.Random(15000,25000));
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnSplinder), Util.Random(15000,25000));
             }
             return 0;
         }
-        public int ResetSpawnSplinder(RegionTimer timer)
+        public int ResetSpawnSplinder(ECSGameTimer timer)
         {
             Spawn_Splinders = false;
             return 0;
@@ -264,7 +264,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         List<GamePlayer> Enemys_To_Mezz = new List<GamePlayer>();
-        public int PickRandomTarget(RegionTimer timer)
+        public int PickRandomTarget(ECSGameTimer timer)
         {
             if (HasAggro)
             {
@@ -287,14 +287,14 @@ namespace DOL.AI.Brain
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_Mezz[Util.Random(0, Enemys_To_Mezz.Count - 1)];//pick random target from list
                         RandomTarget = Target;//set random target to static RandomTarget
-                        new RegionTimer(Body, new RegionTimerCallback(CastMezz), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMezz), 3000);
                         CanCast = true;
                     }
                 }
             }
             return 0;
         }
-        public int CastMezz(RegionTimer timer)
+        public int CastMezz(ECSGameTimer timer)
         {
             if (HasAggro && RandomTarget != null)
             {
@@ -306,11 +306,11 @@ namespace DOL.AI.Brain
                     Body.CastSpell(BossMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
                 if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-                new RegionTimer(Body, new RegionTimerCallback(ResetMezz), 5000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetMezz), 5000);
             }
             return 0;
         }
-        public int ResetMezz(RegionTimer timer)
+        public int ResetMezz(ECSGameTimer timer)
         {
             RandomTarget = null;
             CanCast = false;
@@ -327,7 +327,7 @@ namespace DOL.AI.Brain
             set { teleporttarget = value; }
         }
         List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-        public int PickTeleportPlayer(RegionTimer timer)
+        public int PickTeleportPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {
@@ -360,14 +360,14 @@ namespace DOL.AI.Brain
                         TeleportTarget = Target;
                         if (TeleportTarget.IsAlive && TeleportTarget != null)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(TeleportPlayer), 3000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), 3000);
                         }
                     }
                 }
             }
             return 0;
         }
-        public int TeleportPlayer(RegionTimer timer)
+        public int TeleportPlayer(ECSGameTimer timer)
         {
             if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
             {

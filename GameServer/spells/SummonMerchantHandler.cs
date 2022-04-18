@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
     public class SummonMerchantSpellHandler : SpellHandler
     {
         protected GameMerchant Npc;
-        protected RegionTimer timer;
+        protected ECSGameTimer timer;
 
         public SummonMerchantSpellHandler(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
@@ -88,10 +88,10 @@ namespace DOL.GS.Spells
             }
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
-            timer = new RegionTimer(Npc, new RegionTimerCallback(OnEffectExpires), Spell.Duration);
+            timer = new ECSGameTimer(Npc, new ECSGameTimer.ECSTimerCallback(OnEffectExpires), Spell.Duration);
         }
 
-        public int OnEffectExpires(RegionTimer timer)
+        public int OnEffectExpires(ECSGameTimer timer)
         {
             Npc?.Delete();
             timer.Stop();
