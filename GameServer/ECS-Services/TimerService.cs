@@ -32,12 +32,11 @@ public class TimerService
 
     public static void Tick(long tick)
     {
-        
         Diagnostics.StartPerfCounter(ServiceName);
-        
+
         while (TimerToRemove.Count > 0)
         {
-            if(ActiveTimers.Contains(TimerToRemove.Peek()))
+            if (ActiveTimers.Contains(TimerToRemove.Peek()))
                 ActiveTimers.Remove(TimerToRemove.Pop());
             else
             {
@@ -61,12 +60,12 @@ public class TimerService
             debugTick = tick;
         }*/
 
-        foreach (var timer in ActiveTimers)
+        Parallel.ForEach(ActiveTimers, timer =>
         {
             if (timer != null && timer.NextTick < GameLoop.GameLoopTime)
                 timer.Tick();
-        }
-        
+        });
+
         Diagnostics.StopPerfCounter(ServiceName);
     }
 
@@ -108,7 +107,7 @@ public class ECSGameTimer
 
     public GameLiving TimerOwner;
     public bool IsAlive => TimerService.HasActiveTimer(this);
-    
+
     /// <summary>
     /// Holds properties for this region timer
     /// </summary>
@@ -118,7 +117,7 @@ public class ECSGameTimer
     {
         TimerOwner = living;
     }
-    
+
     public ECSGameTimer(GameLiving living, ECSTimerCallback callback, long interval)
     {
         TimerOwner = living;
@@ -137,7 +136,7 @@ public class ECSGameTimer
         Interval = interval;
         TimerService.AddTimer(this);
     }
-    
+
     public void Stop()
     {
         TimerService.RemoveTimer(this);
@@ -150,8 +149,8 @@ public class ECSGameTimer
         {
             Interval = (long) Callback.Invoke(this);
         }
-        
-        if(Interval == 0) Stop();
+
+        if (Interval == 0) Stop();
     }
 
     /// <summary>
@@ -173,8 +172,8 @@ public class ECSGameTimer
                     }
                 }
             }
+
             return m_properties;
         }
     }
-    
 }
