@@ -367,7 +367,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int WalkSide(ECSGameTimer timer)
+        public long WalkSide(ECSGameTimer timer)
         {
             if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {

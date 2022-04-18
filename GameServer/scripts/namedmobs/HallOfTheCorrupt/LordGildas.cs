@@ -225,7 +225,7 @@ namespace DOL.AI.Brain
         public static bool CanWalk = false;
         public static bool Stage2 = false;
         public static bool Reset_Gildas = false;
-        public int ResetGildas(ECSGameTimer timer)
+        public long ResetGildas(ECSGameTimer timer)
         {
             Reset_Gildas = false;
             return 0;
@@ -356,7 +356,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int WalkBack(ECSGameTimer timer)
+        public long WalkBack(ECSGameTimer timer)
         {
             if (Body.InCombat && HasAggro && Body.TargetObject != null && Stage2==false)
             {

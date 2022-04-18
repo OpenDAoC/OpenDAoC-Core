@@ -382,7 +382,7 @@ namespace DOL.AI.Brain
 			/// </summary>
 			/// <param name="timer">The timer that started this cast.</param>
 			/// <returns></returns>
-			private int CastNearsight(ECSGameTimer timer)
+			private long CastNearsight(ECSGameTimer timer)
 			{
 				// Turn around to the target and cast Nearsight, then go back to the original
 				// target, if one exists.

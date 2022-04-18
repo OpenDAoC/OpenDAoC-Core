@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        protected virtual int PoisonTimer(ECSGameTimer timer)
+        protected virtual long PoisonTimer(ECSGameTimer timer)
         {
             if (Body.TargetObject != null)
             {
@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        protected virtual int AoeTimer(ECSGameTimer timer)//1st timer to spam broadcast before real spell
+        protected virtual long AoeTimer(ECSGameTimer timer)//1st timer to spam broadcast before real spell
         {
             if (Body.TargetObject != null)
             {
@@ -208,7 +208,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        protected virtual int RealAoe(ECSGameTimer timer)//real timer to cast spell and reset check
+        protected virtual long RealAoe(ECSGameTimer timer)//real timer to cast spell and reset check
         {
             if (Body.TargetObject != null)
             {

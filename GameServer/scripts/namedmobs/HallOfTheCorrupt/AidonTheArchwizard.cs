@@ -314,7 +314,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int CastDD(ECSGameTimer Timer)
+        public long CastDD(ECSGameTimer Timer)
         {
             if (Body.IsAlive)
             {

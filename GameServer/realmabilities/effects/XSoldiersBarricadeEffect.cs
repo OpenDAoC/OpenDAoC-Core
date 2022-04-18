@@ -127,7 +127,7 @@ namespace DOL.GS.Effects
 		/// The callback for when the effect expires
 		/// </summary>
 		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int ExpireCallback(ECSGameTimer timer)
+		private long ExpireCallback(ECSGameTimer timer)
 		{
 			Cancel(false);
 
