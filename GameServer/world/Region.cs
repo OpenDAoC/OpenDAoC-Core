@@ -656,7 +656,11 @@ namespace DOL.GS
                 uint hour = cTime / 1000 / 60 / 60;
                 bool pm = false;
                 
-                if (hour == 12)
+                if (hour == 0)
+                {
+                    hour = 12;
+                }
+                else if (hour == 12)
                 {
                     pm = true;
                 }
@@ -664,10 +668,6 @@ namespace DOL.GS
                 {
                     hour -= 12;
                     pm = true;
-                }
-                if (hour == 0)
-                {
-                    pm = false;
                 }
                 m_isPM = pm;
 
@@ -689,7 +689,11 @@ namespace DOL.GS
                 uint hour = cTime / 1000 / 60 / 60;
                 bool pm = false;
                 
-                if (hour == 12)
+                if (hour == 0)
+                {
+                    hour = 12;
+                }
+                else if (hour == 12)
                 {
                     pm = true;
                 }
@@ -698,27 +702,23 @@ namespace DOL.GS
                     hour -= 12;
                     pm = true;
                 }
-                if (hour == 0)
-                {
-                    pm = false;
-                }
 
-                if (pm && hour >= 18)
+                if (pm && hour >= 6)
                     m_isNightTime = true;
 
                 if (pm && hour == 12) //Special Handling for Noon.
                     m_isNightTime = false;
 
-                if (!pm && hour < 6)
+                if (!pm && hour <= 5)
                     m_isNightTime = true;
 
-                if (!pm && hour == 0) //Special Handling for Midnight.
+                if (!pm && hour == 12) //Special Handling for Midnight.
                     m_isNightTime = true;
 
                 if (!pm && hour >= 6)
                     m_isNightTime = false;
 
-                if (pm && hour < 18)
+                if (pm && hour < 6)
                     m_isNightTime = false;
 
                 return m_isNightTime;
