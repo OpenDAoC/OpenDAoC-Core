@@ -61,11 +61,11 @@ public class TimerService
             debugTick = tick;
         }*/
 
-        foreach (var timer in ActiveTimers)
+        Parallel.ForEach(ActiveTimers, timer =>
         {
             if (timer != null && timer.NextTick < GameLoop.GameLoopTime)
                 timer.Tick();
-        }
+        });
         
         Diagnostics.StopPerfCounter(ServiceName);
     }
