@@ -48,10 +48,10 @@ namespace DOL.GS.Commands
 					firstBag = int.TryParse(bags[0], out firstBag) ? firstBag : 0;
 					lastBag = int.TryParse(bags[1], out lastBag) ? lastBag : 0;
 					
-					if (firstBag > lastBag)
-					{
-						(firstBag, lastBag) = (lastBag, firstBag);
-					}
+					// if (firstBag > lastBag)
+					// {
+					// 	(firstBag, lastBag) = (lastBag, firstBag);
+					// }
 
 					switch(firstBag)
 					{

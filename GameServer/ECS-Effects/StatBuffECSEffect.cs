@@ -69,7 +69,7 @@ namespace DOL.GS
             
             // "You feel more dexterous!"
             // "{0} looks more agile!"
-            OnEffectStartsMsg(Owner, true, false, true);
+            OnEffectStartsMsg(Owner, true, true, true);
 
             
             //IsBuffActive = true;

@@ -135,6 +135,7 @@ namespace DOL.GS.Spells
 			if ((target is Keeps.GameKeepComponent) == false && (target is Keeps.GameKeepDoor) == false)
 			{
 				double tmpeffective = effectiveness;
+				/*
 				if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
 				{
 					if (Util.Chance(Caster.SpellCriticalChance))
@@ -142,7 +143,7 @@ namespace DOL.GS.Spells
 						tmpeffective *= 1 + Util.Random(1, 10) * .1;
 						if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name}'s debuff critically hits the enemy for {(tmpeffective-effectiveness) * 100}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 					}
-				}
+				}*/
 				base.ApplyEffectOnTarget(target, tmpeffective);
 			}
 

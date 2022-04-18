@@ -30,14 +30,14 @@ namespace DOL.GS
         public static bool Aroon_spirit = false;
 
         #region Aroon resist damage checks
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
+            Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon_slash == false && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
+                if ((Aroon_slash == false && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
                     Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -63,9 +63,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
+                if ((Aroon_slash == true && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
                     Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -90,9 +90,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == false && Aroon_body == false &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == false && Aroon_body == false &&
                     Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -117,9 +117,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == false &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == false &&
                     Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -143,9 +143,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
                     Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Cold || damageType == eDamageType.Energy ||
                         damageType == eDamageType.Heat
@@ -169,13 +169,12 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
                     Aroon_cold == true && Aroon_energy == false && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                                                         || damageType == eDamageType.Matter ||
-                                                         damageType == eDamageType.Spirit)
+                    || damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -195,9 +194,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
                     Aroon_cold == true && Aroon_energy == true && Aroon_heat == false
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Heat || damageType == eDamageType.Matter ||
                         damageType == eDamageType.Spirit)
@@ -220,9 +219,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
                     Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
-                    && Aroon_matter == false && Aroon_spirit == false)
+                    && Aroon_matter == false && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Matter || damageType == eDamageType.Spirit)
                     {
@@ -244,9 +243,9 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
                     Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
-                    && Aroon_matter == true && Aroon_spirit == false)
+                    && Aroon_matter == true && Aroon_spirit == false) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     if (damageType == eDamageType.Spirit)
                     {
@@ -268,21 +267,15 @@ namespace DOL.GS
                     }
                 }
 
-                if (Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
+                if ((Aroon_slash == true && Aroon_thrust == true && Aroon_crush == true && Aroon_body == true &&
                     Aroon_cold == true && Aroon_energy == true && Aroon_heat == true
-                    && Aroon_matter == true && Aroon_spirit == true)
+                    && Aroon_matter == true && Aroon_spirit == true) || !source.IsWithinRadius(spawn, TetherRange))
                 {
                     base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
             }
         }
-
         #endregion Aroon resist damage checks
-
-        public virtual int COifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
 
         public override double AttackDamage(InventoryItem weapon)
         {
@@ -303,15 +296,15 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 50; // dmg reduction for rest resists
             }
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -319,13 +312,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 700;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.50;
         }
 
         public override bool AddToWorld()
@@ -437,7 +430,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 600;
         }
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -445,14 +437,13 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Aroon.Aroon_slash = false;
                 Aroon.Aroon_thrust = false;
                 Aroon.Aroon_crush = false;
@@ -486,37 +477,23 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
-            if (Body.IsOutOfTetherRange)
-            {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 11);
-                this.Body.Health = this.Body.MaxHealth;
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 11);
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
             if (Body.InCombat && HasAggro)
             {
                 if (spawn_guardians == false)
                 {
+                    BroadcastMessage(String.Format(Body.Name + " summons the Scaths to do his bidding!"));
                     SpawnGuardians();
                     spawn_guardians = true;
                 }
-
                 if (Util.Chance(10))
                 {
                     Body.CastSpell(AroonRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
-
             base.Think();
         }
 
         public static bool spawn_guardians = false;
-
         public void SpawnGuardians()
         {
             CorpScaith Add = new CorpScaith();
@@ -593,7 +570,6 @@ namespace DOL.AI.Brain
         }
 
         private Spell m_AroonRoot;
-
         private Spell AroonRoot
         {
             get
@@ -641,7 +617,16 @@ namespace DOL.GS
         public CorpScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -655,20 +640,21 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
         {
             get { return 15000; }
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override void DropLoot(GameObject killer) //no loot
         {
         }
@@ -681,6 +667,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            CorpScaithBrain.Message1 = false;
             Model = (ushort) Util.Random(889, 890);
             Name = "Corp Scaith";
             RespawnInterval = -1;
@@ -718,7 +705,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -747,9 +740,14 @@ namespace DOL.AI.Brain
 
             return 0;
         }
-
+        public static bool Message1 = false;
         public override void Think()
         {
+            if(Message1==false)
+            {
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message1 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -795,7 +793,18 @@ namespace DOL.GS
         public SpioradScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -809,13 +818,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -867,6 +876,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            SpioradScaithBrain.Message2 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Spiorad Scaith";
             RespawnInterval = -1;
@@ -904,18 +917,21 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
-
         private GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
-
         public int RandomAttackTarget(RegionTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
@@ -930,12 +946,17 @@ namespace DOL.AI.Brain
                 m_aggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
-
             return 0;
         }
-
+        public static bool Message2 = false;
         public override void Think()
         {
+            if(Aroon.Aroon_slash && Message2==false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message2 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -951,7 +972,6 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-
                 if (Util.Chance(15))
                 {
                     if (switch_target == false)
@@ -961,7 +981,6 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.Think();
         }
     }
@@ -981,12 +1000,22 @@ namespace DOL.GS
         public RopadhScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -995,13 +1024,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -1053,6 +1082,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            RopadhScaithBrain.Message3 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Ropadh Scaith";
             RespawnInterval = -1;
@@ -1090,7 +1123,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -1119,9 +1158,15 @@ namespace DOL.AI.Brain
 
             return 0;
         }
-
+        public static bool Message3 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_thrust && Message3 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message3 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -1167,12 +1212,22 @@ namespace DOL.GS
         public DamhnaScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -1181,13 +1236,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -1239,6 +1294,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            DamhnaScaithBrain.Message4 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Damhna Scaith";
             RespawnInterval = -1;
@@ -1276,7 +1335,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -1305,9 +1370,15 @@ namespace DOL.AI.Brain
 
             return 0;
         }
-
+        public static bool Message4 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_crush && Message4 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message4 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -1353,12 +1424,22 @@ namespace DOL.GS
         public FuinneamgScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -1367,13 +1448,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -1426,6 +1507,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            FuinneamgScaithBrain.Message5 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Fuinneamg Scaith";
             Strength = 350;
@@ -1463,7 +1548,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -1493,8 +1584,15 @@ namespace DOL.AI.Brain
             return 0;
         }
 
+        public static bool Message5 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_body && Message5 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message5 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -1540,12 +1638,22 @@ namespace DOL.GS
         public BruScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -1554,13 +1662,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -1613,6 +1721,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            BruScaithBrain.Message6 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Bru Scaith";
             RespawnInterval = -1;
@@ -1650,7 +1762,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -1680,8 +1798,15 @@ namespace DOL.AI.Brain
             return 0;
         }
 
+        public static bool Message6 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_cold && Message6 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message6 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -1727,12 +1852,22 @@ namespace DOL.GS
         public FuarScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -1741,13 +1876,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -1800,6 +1935,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            FuarScaithBrain.Message7 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Fuar Scaith";
             RespawnInterval = -1;
@@ -1837,7 +1976,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -1867,8 +2012,15 @@ namespace DOL.AI.Brain
             return 0;
         }
 
+        public static bool Message7 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_energy && Message7 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message7 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -1914,12 +2066,22 @@ namespace DOL.GS
         public TaesScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -1928,13 +2090,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -1988,6 +2150,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            TaesScaithBrain.Message8 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Taes Scaith";
             RespawnInterval = -1;
@@ -2025,7 +2191,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -2055,8 +2227,15 @@ namespace DOL.AI.Brain
             return 0;
         }
 
+        public static bool Message8 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_heat && Message8 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message8 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
@@ -2102,12 +2281,22 @@ namespace DOL.GS
         public ScorScaith() : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 60; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override int AttackRange
         {
             get { return 350; }
@@ -2116,13 +2305,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 500;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.45;
         }
 
         public override int MaxHealth
@@ -2176,6 +2365,10 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
+            ScorScaithBrain.Message9 = false;
+            Flags ^= eFlags.DONTSHOWNAME;
+            Flags ^= eFlags.CANTTARGET;
+            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Scor Scaith";
             RespawnInterval = -1;
@@ -2213,7 +2406,13 @@ namespace DOL.AI.Brain
             AggroRange = 1500;
             ThinkInterval = 5000;
         }
-
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public static bool switch_target = false;
         private GamePlayer randomtarget = null;
 
@@ -2243,8 +2442,15 @@ namespace DOL.AI.Brain
             return 0;
         }
 
+        public static bool Message9 = false;
         public override void Think()
         {
+            if (Aroon.Aroon_heat && Message9 == false)
+            {
+                Body.Flags = 0;
+                BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
+                Message9 = true;
+            }
             if (Body.InCombat)
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))

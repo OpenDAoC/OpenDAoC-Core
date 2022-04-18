@@ -41,9 +41,10 @@ namespace DOL.GS.PropertyCalc
 			{
 				int af;
 
-				af = living.BaseBuffBonusCategory[(int) property];
+				//base AF buffs are calculated in the item's armor calc since they have the same cap
+				//af = living.BaseBuffBonusCategory[(int) property];
 				// 1.5*1.25 spec line buff cap
-				af += Math.Min((int)(living.Level * 1.875), living.SpecBuffBonusCategory[(int)property]);
+				af = Math.Min((int)(living.Level * 1.875), living.SpecBuffBonusCategory[(int)property]);
 				// debuff
 				af -= Math.Abs(living.DebuffCategory[(int)property]);
 				// TrialsOfAtlantis af bonus
@@ -65,7 +66,11 @@ namespace DOL.GS.PropertyCalc
 				if (living is GameKeepComponent)
 					component = living as GameKeepComponent;
 
-				int amount = component.Keep.BaseLevel * 200;
+				if (component == null) return 1;
+				
+				double keepLevelMod = 1 + component.Keep.Level * .1;
+
+				int amount = (int)(component.Keep.BaseLevel * 4 * keepLevelMod);
 				if (component.Keep is GameKeep)
 					return amount;
 				else return amount / 2;
@@ -73,7 +78,7 @@ namespace DOL.GS.PropertyCalc
 			else if (living is GameEpicNPC epic || living is GameEpicBoss)
 			{
 				GameLiving bossnpc = living;
-				double epicScaleFactor = 7;
+				double epicScaleFactor = 8;
 				int petCap = 16;
 				int petCount = 0;
 

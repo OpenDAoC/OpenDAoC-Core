@@ -1052,7 +1052,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Timer with purpose of follow updating
 		/// </summary>
-		protected RegionTimer m_followTimer;
+		protected ECSGameTimer m_followTimer;
 		/// <summary>
 		/// Property entry on follow timer, wether the follow target is in range
 		/// </summary>
@@ -1664,7 +1664,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Keep following a specific object at a max distance
 		/// </summary>
-		protected virtual int FollowTimerCallback(RegionTimer callingTimer)
+		protected virtual int FollowTimerCallback(ECSGameTimer callingTimer)
 		{
 			if (IsCasting)
 				return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
@@ -3272,8 +3272,8 @@ namespace DOL.GS
 				if (oldRegion != newRegion && newRegion != null)
 				{
 					if (m_followTimer != null) m_followTimer.Stop();
-					m_followTimer = new RegionTimer(this);
-					m_followTimer.Callback = new RegionTimerCallback(FollowTimerCallback);
+					m_followTimer = new ECSGameTimer(this);
+					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
 				}
 			}
 		}
@@ -4501,7 +4501,7 @@ namespace DOL.GS
 		/// <summary>
 		/// A timer that will respawn this mob
 		/// </summary>
-		protected RegionTimer m_respawnTimer;
+		protected ECSGameTimer m_respawnTimer;
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
@@ -4581,6 +4581,12 @@ namespace DOL.GS
 			if (this.Brain is IControlledBrain)
 				return;
 
+			if (m_healthRegenerationTimer != null)
+			{
+				m_healthRegenerationTimer.Stop();
+				m_healthRegenerationTimer = null;
+			}
+
 			int respawnInt = RespawnInterval;
 			int minBound = (int) Math.Floor(respawnInt * .95);
 			int maxBound = (int) Math.Floor(respawnInt * 1.05);
@@ -4591,8 +4597,8 @@ namespace DOL.GS
 				{
 					if (m_respawnTimer == null)
 					{
-						m_respawnTimer = new RegionTimer(this);
-						m_respawnTimer.Callback = new RegionTimerCallback(RespawnTimerCallback);
+						m_respawnTimer = new ECSGameTimer(this);
+						m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback);
 					}
 					else if (m_respawnTimer.IsAlive)
 					{
@@ -4610,7 +4616,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(RegionTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
 			int dummy;
 			// remove Mob from "respawning"
@@ -4662,7 +4668,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="selfRegenerationTimer">the regeneration timer</param>
 		/// <returns>the new interval</returns>
-		protected override int HealthRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+		protected override int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			int period = m_healthRegenerationPeriod;
 			if (!InCombat)
@@ -4986,6 +4992,8 @@ namespace DOL.GS
 
 		#region Spell
 		private List<Spell> m_spells = new List<Spell>(0);
+
+		//public bool SortedSpells = false;
 		/// <summary>
 		/// property of spell array of NPC
 		/// </summary>
@@ -5007,7 +5015,8 @@ namespace DOL.GS
 				else
 				{
 					m_spells = value.Cast<Spell>().ToList();
-					SortSpells();
+					//if(!SortedSpells)
+						SortSpells();
 				}
 			}
 		}
@@ -5167,6 +5176,8 @@ namespace DOL.GS
 					}
 				}
 			} // foreach
+
+			//SortedSpells = true;
 		}
 		#endregion
 

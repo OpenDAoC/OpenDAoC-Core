@@ -51,8 +51,14 @@ namespace DOL.GS
                 m_damageRvRMemory = value;
             }
         }
+        
+        public override short MaxSpeed {
+	        get {
+		        return (Brain as IControlledBrain).Owner.MaxSpeed;
+	        }
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Proc IDs for various pet weapons.
 		/// </summary>
 		private enum Procs
