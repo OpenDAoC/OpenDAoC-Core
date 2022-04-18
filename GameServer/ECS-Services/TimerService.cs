@@ -99,15 +99,15 @@ public class ECSGameTimer
     /// <summary>
     /// This delegate is the callback function for the ECS Timer
     /// </summary>
-    public delegate int ECSTimerCallback(ECSGameTimer timer);
+    public delegate long ECSTimerCallback(ECSGameTimer timer);
 
     public ECSTimerCallback Callback;
-    public int Interval;
+    public long Interval;
     public long StartTick;
     public long NextTick => StartTick + Interval;
 
     public GameObject TimerOwner;
-    public GameTimer.TimeManager GameTimeOwner;
+    //public GameTimer.TimeManager GameTimeOwner;
     public bool IsAlive => TimerService.HasActiveTimer(this);
     
     /// <summary>
@@ -115,32 +115,16 @@ public class ECSGameTimer
     /// </summary>
     private PropertyCollection m_properties;
 
-    public ECSGameTimer(GameLiving living)
-    {
-        TimerOwner = living;
-    }
-    
     public ECSGameTimer(GameObject target)
     {
         TimerOwner = target;
     }
-    
-    public ECSGameTimer(GameTimer.TimeManager timer)
-    {
-        GameTimeOwner = timer;
-    }
-    
+
     public ECSGameTimer(GameLiving living, ECSTimerCallback callback, int interval)
     {
         TimerOwner = living;
         Callback = callback;
         Interval = interval;
-    }
-    
-    public ECSGameTimer(GameLiving living, ECSTimerCallback callback)
-    {
-        TimerOwner = living;
-        Callback = callback;
     }
     
     public ECSGameTimer(GameObject target, ECSTimerCallback callback, int interval)
@@ -158,7 +142,12 @@ public class ECSGameTimer
 
     public void Start()
     {
-        Start(500); //use half-second intervals by default
+        if(Interval <= 0)
+            Start(500); //use half-second intervals by default
+        else
+        {
+            Start((int)Interval);
+        }
     }
 
     public void Start(int interval)
@@ -183,16 +172,12 @@ public class ECSGameTimer
         
         if(Interval == 0) Stop();
     }
-    
+    /*
     /// <summary>
     /// Stores the time where the timer was inserted
     /// </summary>
     private long m_targetTime = -1;
-    
-    /// <summary>
-    /// Stores the time manager used for this timer
-    /// </summary>
-    private readonly GameTimer.TimeManager m_time;
+
     
     /// <summary>
     /// Gets the time left until this timer fires, in milliseconds.
@@ -206,7 +191,7 @@ public class ECSGameTimer
                 return -1;
             return (int)((ulong)ins - (ulong)m_time.CurrentTime);
         }
-    }
+    }*/
 
     /// <summary>
     /// Gets the properties of this timer
