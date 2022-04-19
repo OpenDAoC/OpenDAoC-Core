@@ -37,14 +37,19 @@ namespace DOL.GS
 						else
 							truc = ((source as GamePet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
 				}
 				else//take dmg
 				{
-					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+					if (source is GamePet)
+					{
+						base.TakeDamage(source, damageType, 5, 5);
+					}
+					else
+						base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 				}
 			}
 		}
@@ -191,7 +196,9 @@ namespace DOL.AI.Brain
 			{
 				if(IsCreatingSouls==false)
                 {
-					new RegionTimer(Body, new RegionTimerCallback(DoSpawn), Util.Random(5000, 8000));//every 5-8s it will spawn tortured souls
+					int _doSpawnTime = Util.Random(5000, 8000);
+					ECSGameTimer _DoSpawn = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), _doSpawnTime);//every 5-8s it will spawn tortured souls
+					_DoSpawn.Start(_doSpawnTime);
 					IsCreatingSouls =true;
                 }
 				foreach(GameNPC souls in Body.GetNPCsInRadius(4000))
@@ -207,18 +214,16 @@ namespace DOL.AI.Brain
 			}
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
 			{
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
 		}
-		public int DoSpawn(RegionTimer timer)
+		public int DoSpawn(ECSGameTimer timer)
         {
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
 				if(TorturedSouls.TorturedSoulCount == 0)
-                {
 					SpawnSouls();
-				}
 			}
 			SpawnBigZombie();
 			IsCreatingSouls = false;
@@ -279,7 +284,7 @@ namespace DOL.AI.Brain
 			Point3D point2 = new Point3D(38505, 41211, 16001);
 			Point3D point3 = new Point3D(39180, 40583, 16000);
 			Point3D point4 = new Point3D(39745, 41176, 16001);
-			if (TorturedSouls.TorturedSoulKilled == 50 && ExplodeUndead.ExplodeZombieCount==0)//spawn explode zombie
+			if (TorturedSouls.TorturedSoulKilled == 20 && ExplodeUndead.ExplodeZombieCount==0)//spawn explode zombie
 			{
 				ExplodeUndead add2 = new ExplodeUndead();
 				switch (Util.Random(1, 4))
@@ -383,6 +388,9 @@ namespace DOL.GS
 			++TorturedSoulKilled;
             base.Die(killer);
         }
+        public override void DropLoot(GameObject killer)//dont drop loot
+        {
+        }
         List<string> soul_names = new List<string>()
 		{
 			"Aphryx's Tortured Soul","Arus's Tortured Soul","Briandina's Tortured Soul","Dwuanne's Tortured Soul",
@@ -448,7 +456,9 @@ namespace DOL.AI.Brain
 						if (IsKilled == false)
 						{
 							Body.CastSpell(Zombie_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-							new RegionTimer(Body, new RegionTimerCallback(KillZombie), 500);
+							int _killZombieTime = 500;
+							ECSGameTimer _killZombie = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(KillZombie), _killZombieTime);
+							_killZombie.Start(_killZombieTime);
 							IsKilled = true;
 						}
 					}
@@ -464,7 +474,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public int KillZombie(RegionTimer timer)
+		public int KillZombie(ECSGameTimer timer)
         {
 			Body.Die(Body);
 			return 0;
@@ -551,7 +561,10 @@ namespace DOL.GS
 			RandomTarget = null;
 			base.Die(killer);
 		}
-		public static GamePlayer randomtarget = null;
+        public override void DropLoot(GameObject killer)//dont drop loot
+        {
+        }
+        public static GamePlayer randomtarget = null;
 		public static GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
