@@ -25,7 +25,7 @@ namespace DOL.GS
 		{
 			if (source is GamePlayer || source is GamePet)
 			{
-				if (this.IsOutOfTetherRange)
+				if (IsOutOfTetherRange)
 				{
 					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
 						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
@@ -37,14 +37,19 @@ namespace DOL.GS
 						else
 							truc = ((source as GamePet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
 				}
 				else//take dmg
 				{
-					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+					if(source is GamePet)
+                    {
+						base.TakeDamage(source, damageType, 5, 5);
+					}
+					else
+						base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 				}
 			}
 		}
@@ -177,7 +182,6 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -188,29 +192,23 @@ namespace DOL.AI.Brain
 				RandomTarget = null;
 				CanCast = false;
 				if (Enemys_To_DD.Count > 0)
-				{
 					Enemys_To_DD.Clear();
-				}
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (HasAggro)
 			{
 				if (Body.HealthPercent < 25)
-				{
 					Body.CastSpell(RoesiaHOT, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast HOT
-				}
+
 				if (Body.TargetObject != null)
 				{
 					if(!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn))
-                    {
 						Body.CastSpell(RoesiaDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//Cast DS
-					}
+
 					PickRandomTarget();
 				}
 			}
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
-			{
 				Body.Health = Body.MaxHealth;
-			}
 			base.Think();
 		}
 		public static GamePlayer randomtarget = null;
@@ -230,9 +228,7 @@ namespace DOL.AI.Brain
 					if(player.IsAlive && player.Client.Account.PrivLevel==1)
                     {
 						if(!Enemys_To_DD.Contains(player))
-                        {
 							Enemys_To_DD.Add(player);
-                        }
                     }
                 }
             }
@@ -242,28 +238,30 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new RegionTimer(Body, new RegionTimerCallback(CastDot), 1000);
+					int _castDotTime = Util.Random(1000, 2000);
+					ECSGameTimer _CastDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), _castDotTime);
+					_CastDot.Start(_castDotTime);
 					CanCast = true;
 				}				
 			}
         }
-		public int CastDot(RegionTimer timer)
+		public int CastDot(ECSGameTimer timer)
         {
 			GameLiving oldTarget = (GameLiving)Body.TargetObject;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive)
 			{
-				if (Body.TargetObject != null && Body.TargetObject != RandomTarget)
-					Body.TargetObject = RandomTarget;
-
+				Body.TargetObject = RandomTarget;
 				Body.TurnTo(RandomTarget);
-				Body.StopFollowing();
-				Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			new RegionTimer(Body, new RegionTimerCallback(ResetDot), Util.Random(25000,35000));
+			Body.StartAttack(oldTarget);//start attack old target
+			int _resetDotTime = Util.Random(25000, 35000);
+			ECSGameTimer _ResetDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), _resetDotTime);
+			_ResetDot.Start(_resetDotTime);
 			return 0;
         }
-		public int ResetDot(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again
         {
 			RandomTarget = null;
 			CanCast = false;
@@ -280,7 +278,7 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
-					spell.RecastDelay = 10;
+					spell.RecastDelay = 0;
 					spell.ClientEffect = 585;
 					spell.Icon = 585;
 					spell.TooltipId = 585;
@@ -348,11 +346,11 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
-					spell.RecastDelay = 70;
+					spell.RecastDelay = 300;
 					spell.ClientEffect = 57;
 					spell.Icon = 57;
 					spell.Damage = 80;
-					spell.Duration = 60;
+					spell.Duration = 300;
 					spell.Name = "Roesia Damage Shield";
 					spell.TooltipId = 57;
 					spell.SpellID = 11758;
