@@ -180,7 +180,7 @@ namespace DOL.AI.Brain
 		}
         public override void OnAttackedByEnemy(AttackData ad)
         {
-			if(ad.IsMeleeAttack && ad.IsHit && (ad.Attacker is GamePlayer || ad.Attacker is GamePet))
+			if(ad.Damage > 0 && ad != null)
             {
 				if(Util.Chance(15))//here edit to change teleport chance to happen
                 {
@@ -240,12 +240,14 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new RegionTimer(Body, new RegionTimerCallback(CastBolt), 1000);
+					int _castBoltTime = 1000;
+					ECSGameTimer _CastBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), _castBoltTime);
+					_CastBolt.Start(_castBoltTime);
 					CanCast = true;
 				}
 			}
 		}
-		public int CastBolt(RegionTimer timer)
+		public int CastBolt(ECSGameTimer timer)
 		{
 			GameLiving oldTarget = (GameLiving)Body.TargetObject;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive)
@@ -260,10 +262,12 @@ namespace DOL.AI.Brain
 				Body.CastSpell(CunovindaBolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast bolt
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			new RegionTimer(Body, new RegionTimerCallback(ResetBolt), Util.Random(8000, 12000));//teleport every 8-12s if melee hit got chance to proc teleport
+			int _resetBoltTime = Util.Random(8000, 12000);
+			ECSGameTimer _ResetBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), _resetBoltTime);//teleport every 8-12s if melee hit got chance to proc teleport
+			_ResetBolt.Start(_resetBoltTime);
 			return 0;
 		}
-		public int ResetBolt(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetBolt(ECSGameTimer timer)//reset here so boss can start dot again
 		{
 			RandomTarget = null;
 			CanCast = false;
