@@ -15,9 +15,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 70;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 70;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 70;// dmg reduction for melee dmg
 				default: return 80;// dmg reduction for rest resists
 			}
 		}
@@ -725,12 +725,14 @@ namespace DOL.AI.Brain
 					GamePlayer Target = (GamePlayer)Enemys_To_Port[Util.Random(0, Enemys_To_Port.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
 					RandomTarget.MoveTo(Body.CurrentRegionID, 32091, 39684, 16302, 4094);
-					new RegionTimer(Body, new RegionTimerCallback(ResetPort), Util.Random(10000,20000));//port every 10-20s
+					int _resetPortTime = Util.Random(10000, 20000);
+					ECSGameTimer _ResetPort = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), _resetPortTime);//port every 10-20s
+					_ResetPort.Start(_resetPortTime);
 					CanPort = true;
 				}
 			}
 		}
-		public int ResetPort(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetPort(ECSGameTimer timer)//reset here so boss can start dot again
 		{
 			RandomTarget = null;
 			CanPort = false;
