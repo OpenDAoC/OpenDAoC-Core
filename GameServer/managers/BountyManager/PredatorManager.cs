@@ -55,10 +55,8 @@ public class PredatorManager
     {
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, GreyPlayerKilled);
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, BountyKilled);
-       //GameEventMgr.AddHandler(GameLivingEvent.EnemyKilled, PlayerKilled);
+       GameEventMgr.AddHandler(GameLivingEvent.Dying, PreyKilled);
        
-       //TODO add callbacks on death to award player on killing their prey
-       //                   and then set new prey = FindPreyForTarget
        //TODO add predatorservice tick that calls FindPreyForTarget for all preyless hunters
        //TODO have predatorservice fully reset every X minute interval
        //       add server props for this too
@@ -117,6 +115,24 @@ public class PredatorManager
         }
         
         QueuedPlayers.Clear();
+    }
+
+    public static void TryFillEmptyPrey()
+    {
+        var PreylessHunters = ActivePredators.Where(x => x.Prey == null);
+        List<PredatorBounty> PredatorsToCreate = new List<PredatorBounty>();
+        
+        foreach (var preylessHunter in PreylessHunters)
+        {
+            PredatorBounty newPred = new PredatorBounty(preylessHunter.Predator, FindPreyForPlayer(preylessHunter.Predator));
+            newPred.Reward = PLACEHOLDER_REWARD_VALUE;
+            PredatorsToCreate.Add(newPred);    
+        }
+
+        foreach (var predatorBounty in PredatorsToCreate)
+        {
+            AddOrOverwriteBounty(predatorBounty);
+        }
     }
 
     /*
@@ -358,6 +374,33 @@ public class PredatorManager
                  $"The hairs on the back of your neck make you feel as though you are being watched. \nBe careful, hunter.");
         
         return temp;
+    }
+    
+    private static void PreyKilled(DOLEvent e, object sender, EventArgs args)
+    {
+        GamePlayer killedPlayer = sender as GamePlayer;
+
+        if (killedPlayer == null) return;
+
+        if (e != GameLivingEvent.Dying) return;
+
+        DyingEventArgs eArgs = args as DyingEventArgs;
+
+        GamePlayer killerPlayer = eArgs.Killer as GamePlayer;
+
+        if (killerPlayer == null) return;
+
+        if (killerPlayer.Realm == killedPlayer.Realm) return;
+
+        var predatorBounty = ActivePredators.FirstOrDefault(x => x.Predator == killerPlayer);
+
+        if (predatorBounty is null) return;
+
+        ActivePredators.Remove(predatorBounty);
+        killerPlayer.GainRealmPoints(predatorBounty.Reward);
+        QueuePlayer(killerPlayer);
+        InsertQueuedPlayers();
+        TryFillEmptyPrey();
     }
 }
 
