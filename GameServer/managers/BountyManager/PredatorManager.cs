@@ -50,6 +50,7 @@ public class PredatorManager
     private static int minPredatorReward;
     private static int maxPredatorReward;
     private static double rewardScalar = Properties.PREDATOR_REWARD_MULTIPLIER;
+    private static long OutOfBoundsTimeout = Properties.OUT_OF_BOUNDS_TIMEOUT;
 
     private static string TimeoutTickKey = "TimeoutStartTick";
 
@@ -469,9 +470,7 @@ public class PredatorManager
                      $"\n" +
                      $"Name: {prey.Name}\n" +
                      $"Race: {prey.RaceName}\n" +
-                     $"Realm Title: {prey.RealmTitle}\n" +
                      $"Location: {prey.CurrentZone.Description}\n" +
-                     $"Reward: {activeBounty.Reward}" +
                      $"\n The hairs on the back of your neck make you feel as though you are being watched. Beware, hunter.");
         }
 
@@ -500,9 +499,9 @@ public class PredatorManager
 
         ActivePredators.Remove(predatorBounty);
         killerPlayer.GainRealmPoints(predatorBounty.Reward);
-        QueuePlayer(killerPlayer);
+        QueuePlayer(predatorBounty.Predator);
         InsertQueuedPlayers();
-        TryFillEmptyPrey();
+        //TryFillEmptyPrey();
     }
 
     private static void JoinedGroup(DOLEvent dolEvent, object sender, EventArgs arguments)
@@ -529,7 +528,7 @@ public class PredatorManager
         {
             long TimerStartTime = timer.Properties.getProperty<long>(TimeoutTickKey);
 
-            long secondsleft = 120 - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
+            long secondsleft = OutOfBoundsTimeout - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
             if (secondsleft > 0)
             {
                 if (secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)
