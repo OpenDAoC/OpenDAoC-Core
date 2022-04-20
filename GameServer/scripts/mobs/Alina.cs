@@ -5,11 +5,11 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-    public class DaySpawn : GameNPC
+    public class Alina : GameNPC
     {
         public override bool AddToWorld()
         {
-            DaySpawnBrain sBrain = new DaySpawnBrain();
+            AlinaModelBrain sBrain = new AlinaModelBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
@@ -19,53 +19,44 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             if (log.IsInfoEnabled)
-                log.Info("Day mobs initialising...");
+                log.Info("Alina initialising...");
         }
     }
 }
 
 namespace DOL.AI.Brain
 {
-    public class DaySpawnBrain : StandardMobBrain
+    public class AlinaModelBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        ushort oldModel;
-        GameNPC.eFlags oldFlags;
-        bool changed;
-
+        private bool changed;
+        
         public override void Think()
         {
-            if (Body.CurrentRegion.IsNightTime)
+            if (Body.CurrentRegion.IsNightTime == false)
             {
                 if (changed == false)
                 {
-                    oldFlags = Body.Flags;
-                    Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-                    Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-                    Body.Flags ^= GameNPC.eFlags.PEACE;
-
-                    if (oldModel == 0)
-                    {
-                        oldModel = Body.Model;
-                    }
-
-                    Body.Model = 1;
-
+                    Body.Model = 220;
+                    Body.Name = "Alina";
+                    Body.Level = 19;
+                    Body.LoadEquipmentTemplateFromDatabase("Alina");
                     changed = true;
                 }
             }
-            if (Body.CurrentRegion.IsNightTime == false)
+            if (Body.CurrentRegion.IsNightTime)
             {
                 if (changed)
                 {
-                    Body.Flags = oldFlags;
-                    Body.Model = oldModel;
+                    Body.Model = 395;
+                    Body.Name = "Noble Werewolf Alina";
+                    Body.Level = 22;
+                    Body.LoadEquipmentTemplateFromDatabase("");
                     changed = false;
                 }
             }
-
             base.Think();
         }
     }

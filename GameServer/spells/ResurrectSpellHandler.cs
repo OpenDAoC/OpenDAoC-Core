@@ -103,10 +103,10 @@ namespace DOL.GS.Spells
 		protected virtual void ResurrectResponceHandler(GamePlayer player, byte response)
 		{
 			//DOLConsole.WriteLine("resurrect responce: " + response);
-			GameTimer resurrectExpiredTimer = null;
+			ECSGameTimer resurrectExpiredTimer = null;
 			lock (m_resTimersByLiving.SyncRoot)
 			{
-				resurrectExpiredTimer = (GameTimer)m_resTimersByLiving[player];
+				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[player];
 				m_resTimersByLiving.Remove(player);
 			}
 			if (resurrectExpiredTimer != null)
@@ -189,10 +189,10 @@ namespace DOL.GS.Spells
 
 			living.MoveTo(m_caster.CurrentRegionID, m_caster.X, m_caster.Y, m_caster.Z, m_caster.Heading);
 
-			GameTimer resurrectExpiredTimer = null;
+			ECSGameTimer resurrectExpiredTimer = null;
 			lock (m_resTimersByLiving.SyncRoot)
 			{
-				resurrectExpiredTimer = (GameTimer)m_resTimersByLiving[living];
+				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[living];
 				m_resTimersByLiving.Remove(living);
 			}
 			if (resurrectExpiredTimer != null)
