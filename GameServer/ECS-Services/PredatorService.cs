@@ -8,9 +8,10 @@ public class PredatorService
     private const string ServiceName = "Predator Service";
 
      private static long _updateInterval = 3000; // 3secs
-    //private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
+    private static long _insertInterval = ServerProperties.Properties.QUEUED_PLAYER_INSERT_INTERVAL * 1000;
 
     private static long _lastUpdate;
+    private static long _lastInsert;
 
     static PredatorService()
     {
@@ -25,6 +26,14 @@ public class PredatorService
         {
             _lastUpdate = tick;
             Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
+        }
+        
+        if (tick - _lastInsert > _insertInterval)
+        {
+            _lastInsert = tick;
+            PredatorManager.InsertQueuedPlayers();
+            PredatorManager.TryFillEmptyPrey();
+            Console.WriteLine($"INSERTING Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
         }
 
         Diagnostics.StopPerfCounter(ServiceName);
