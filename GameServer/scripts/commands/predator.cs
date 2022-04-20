@@ -35,22 +35,29 @@ namespace DOL.GS.Scripts
             }
 
             // todo: remove this
-            if (args[1] == "viewprey")
+            if (args[1] == "prey")
             {
                 //if player is in PredatorManager.ActivePlayers, view current target
                 //else return message w/ error
                 if (!PredatorManager.PlayerIsActive(client.Player))
                 {
-                    client.Out.SendMessage("You are not a part of the hunt!", eChatType.CT_Important,
-                        eChatLoc.CL_SystemWindow);
+                    if (PredatorManager.QueuedPlayers.Contains(client.Player))
+                    {
+                        client.Out.SendMessage("You are queued to join the hunt soon!", eChatType.CT_Important,
+                            eChatLoc.CL_SystemWindow);   
+                    }
+                    else
+                    {
+                        client.Out.SendMessage("You are not a part of the hunt!", eChatType.CT_Important,
+                            eChatLoc.CL_SystemWindow);
+                    }
+
                     return;
                 }
 
                 client.Out.SendCustomTextWindow("Your Prey", PredatorManager.GetActivePrey(client.Player));
             }
-            //client.Out.SendCustomTextWindow("Active Bounties", BountyManager.GetTextList(client.Player));
-
-            if (args[1] == "join")
+            else if (args[1] == "join")
             {
                 if (client.Player.Level < 50)
                 {
@@ -62,11 +69,11 @@ namespace DOL.GS.Scripts
                 PredatorManager.QueuePlayer(client.Player);
 
             }
-            else if (args[1] == "reset")
+            else if (args[1] == "reset" && client.Account.PrivLevel > 1)
             {
                 PredatorManager.FullReset();
             }
-            else if (args[1] == "insert")
+            else if (args[1] == "insert" && client.Account.PrivLevel > 1)
             {
                 PredatorManager.InsertQueuedPlayers();  
             }

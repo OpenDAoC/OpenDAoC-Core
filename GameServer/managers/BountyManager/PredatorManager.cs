@@ -145,7 +145,7 @@ public class PredatorManager
         A -> B ->  -> D -> E -> A
         Three players, F, G, and H have queued since the last update, chain is reconstructed to include them
         A -> B -> F -> G -> H -> D -> E -> A
-     */
+     
     private static void SetTargets()
     {
         Dictionary<GamePlayer, GamePlayer> predatorMap = new Dictionary<GamePlayer, GamePlayer>();
@@ -215,7 +215,7 @@ public class PredatorManager
             }
         } while (moreTargets);
         
-    }
+    }*/
 
     private static void ConstructNewList()
     {
@@ -362,17 +362,27 @@ public class PredatorManager
 
         PredatorBounty activeBounty = ActivePredators.First(x => x.Predator == predator);
 
-        GamePlayer prey = activeBounty.Prey;
+        if (activeBounty.Prey == null)
+        {
+            temp.Add($"Your senses sharpen, but your primal instincts do not detect any valid prey.\n" +
+                     $"\n" +
+                     $"Please standby and a new target will be chosen soon.");
+        }
+        else
+        {
+            GamePlayer prey = activeBounty.Prey;
 
-        temp.Add($"Your senses sharpen, and primal instincts guide you to the location of your prey. \n" +
-                 $"\n" +
-                 $"Name: {prey.Name}\n" +
-                 $"Realm Title: {prey.RealmTitle}\n" +
-                 $"Location: {prey.CurrentZone.Description}\n" +
-                 $"Reward: {activeBounty.Reward}"+
-                 $"\n" +
-                 $"The hairs on the back of your neck make you feel as though you are being watched. \nBe careful, hunter.");
-        
+            temp.Add($"Your senses sharpen, and primal instincts guide you to the location of your prey. \n" +
+                     $"\n" +
+                     $"Name: {prey.Name}\n" +
+                     $"Race: {prey.RaceName}" +
+                     $"Realm Title: {prey.RealmTitle}\n" +
+                     $"Location: {prey.CurrentZone.Description}\n" +
+                     $"Reward: {activeBounty.Reward}" +
+                     $"\n" +
+                     $"The hairs on the back of your neck make you feel as though you are being watched. \nBe careful, hunter.");
+        }
+
         return temp;
     }
     
