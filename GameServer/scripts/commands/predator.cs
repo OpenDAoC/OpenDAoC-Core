@@ -77,6 +77,10 @@ namespace DOL.GS.Scripts
             {
                 PredatorManager.InsertQueuedPlayers();  
             }
+            else if (args[1] == "abandon")
+            {
+                PredatorManager.DisqualifyPlayer(client.Player);
+            }
             else
             {
                 DisplaySyntax(client);

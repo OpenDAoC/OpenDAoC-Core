@@ -2708,6 +2708,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("predator", "queued_player_insert_interval", "How long to wait between trying to insert new players into system, in seconds", 10)]
 		public static int QUEUED_PLAYER_INSERT_INTERVAL;
 		
+		[ServerProperty("predator", "predator_abuse_timeout", "Time a player is prevented from rejoining Predator after leaving RvR/joining group, in minutes", 10)]
+		public static int PREDATOR_ABUSE_TIMEOUT;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
