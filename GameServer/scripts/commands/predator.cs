@@ -1,4 +1,6 @@
-﻿using DOL.GS.Commands;
+﻿using System;
+using System.Linq;
+using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 
@@ -62,6 +64,26 @@ namespace DOL.GS.Scripts
                 if (client.Player.Level < 50)
                 {
                     client.Out.SendMessage("You must be level 50 to join the hunt!", eChatType.CT_Important,
+                        eChatLoc.CL_SystemWindow);
+                    return;
+                }
+                
+                if (client.Player.Group != null && client.Player.Group.GetPlayersInTheGroup().Count > 0)
+                {
+                    client.Out.SendMessage("The mightiest predators hunt alone! Leave your group to join the hunt.", eChatType.CT_Important,
+                        eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                AbstractArea area = client.Player.CurrentZone.GetAreasOfSpot(client.Player.X, client.Player.Y, client.Player.Z)
+                    .FirstOrDefault() as AbstractArea;
+
+                //if user is not in an RvR zone, or is in DF
+                if ((!client.Player.CurrentZone.IsRvR 
+                     && ( area == null || (area != null && !area.Description.Equals("Druim Ligen")))) 
+                    || client.Player.CurrentZone.ID == 249)
+                {
+                    client.Out.SendMessage("You must be in an Old Frontiers zone to join the hunt.", eChatType.CT_Important,
                         eChatLoc.CL_SystemWindow);
                     return;
                 }

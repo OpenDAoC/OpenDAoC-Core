@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using ECS.Debug;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DOL.GS;
 
@@ -26,6 +28,26 @@ public class PredatorService
         {
             _lastUpdate = tick;
             Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
+            foreach (var activePreds in PredatorManager.ActivePredators.ToList())
+            {
+                GamePlayer activePlayer = activePreds.Predator;
+                
+                AbstractArea area = activePlayer.CurrentZone.GetAreasOfSpot(activePlayer.X, activePlayer.Y, activePlayer.Z)
+                    .FirstOrDefault() as AbstractArea;
+                
+                //if user is not in an RvR zone, or is in DF
+                if ((!activePlayer.CurrentZone.IsRvR 
+                     && (area == null || (area != null && !area.Description.Equals("Druim Ligen")))) 
+                     || activePlayer.CurrentZone.ID == 249)
+                {
+                    if(!activePlayer.PredatorTimeoutTimer.IsAlive)
+                        PredatorManager.StartTimeoutCountdownFor(activePlayer);
+                }
+                else if(activePlayer.PredatorTimeoutTimer.IsAlive)
+                {
+                    PredatorManager.StopTimeoutCountdownFor(activePlayer);
+                }
+            }
         }
         
         if (tick - _lastInsert > _insertInterval)

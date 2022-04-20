@@ -4,6 +4,7 @@ using System.Linq;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using DOL.Language;
 
 namespace DOL.GS;
 
@@ -50,12 +51,16 @@ public class PredatorManager
     private static int maxPredatorReward;
     private static double rewardScalar = Properties.PREDATOR_REWARD_MULTIPLIER;
 
+    private static string TimeoutTickKey = "TimeoutStartTick";
+
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
     {
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, GreyPlayerKilled);
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, BountyKilled);
         GameEventMgr.AddHandler(GameLivingEvent.Dying, PreyKilled);
+        GameEventMgr.AddHandler(GroupEvent.MemberJoined, JoinedGroup);
+        GameEventMgr.AddHandler(GamePlayerEvent.Quit, StartCooldownOnQuit);
         //GameEventMgr.AddHandler(GameLivingEvent.Moving, PreyKilled);
 
         //TODO add callback for player leaving RVR to DisqualifyPlayer()
@@ -96,11 +101,7 @@ public class PredatorManager
                 eChatLoc.CL_SystemWindow);
             return;
         }
-
-        Console.WriteLine(
-            $"DQ {DisqualifiedPlayers[player]} loop+timeout {GameLoop.GameLoopTime + Properties.PREDATOR_ABUSE_TIMEOUT * 60000}" +
-            $"bigger? {DisqualifiedPlayers[player] >= GameLoop.GameLoopTime + Properties.PREDATOR_ABUSE_TIMEOUT * 60000}");
-
+        
         if (DisqualifiedPlayers.Keys.Contains(player))
         {
             if (DisqualifiedPlayers[player] + Properties.PREDATOR_ABUSE_TIMEOUT * 60000 >=
@@ -137,12 +138,30 @@ public class PredatorManager
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
     }
 
+    public static void StartTimeoutCountdownFor(GamePlayer player)
+    {
+        Console.WriteLine($"Start timeout countdown for {player}");
+        if (player.PredatorTimeoutTimer.IsAlive) return;
+        player.PredatorTimeoutTimer = new ECSGameTimer(player);
+        player.PredatorTimeoutTimer.Properties.setProperty(TimeoutTickKey, GameLoop.GameLoopTime);
+        player.PredatorTimeoutTimer.Callback = new ECSGameTimer.ECSTimerCallback(TimeoutTimerCallback);
+        player.PredatorTimeoutTimer.Start(1000);
+        
+        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in 120 seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+    }
+    
+    public static void StopTimeoutCountdownFor(GamePlayer player)
+    {
+        Console.WriteLine($"STOP timeout countdown for {player}");
+        player.PredatorTimeoutTimer.Stop();
+        player.Out.SendMessage($"You are once again inside a valid hunting zone.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+    }
+
     public static void RemoveActivePlayer(GamePlayer player)
     {
         if (ActivePredators.FirstOrDefault(x => x.Predator == player) != null)
         {
             ActivePredators.Remove(ActivePredators.First(x => x.Predator == player));
-
 
             PredatorBounty PreyBounty = ActivePredators.FirstOrDefault(x => x.Prey == player);
             if (PreyBounty != null)
@@ -314,8 +333,6 @@ public class PredatorManager
         if (validRealms.Count < 2) return; //bail if not enough realms
 
         eRealm loopRealm = validRealms[Util.Random(validRealms.Count - 1)];
-        Console.WriteLine(
-            $"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count}");
 
         GamePlayer LastPredator = null;
 
@@ -324,8 +341,8 @@ public class PredatorManager
             if (AlbPlayers.Count == 0 && validRealms.Contains(eRealm.Albion)) validRealms.Remove(eRealm.Albion);
             if (MidPlayers.Count == 0 && validRealms.Contains(eRealm.Midgard)) validRealms.Remove(eRealm.Midgard);
             if (HibPlayers.Count == 0 && validRealms.Contains(eRealm.Hibernia)) validRealms.Remove(eRealm.Hibernia);
-            Console.WriteLine(
-                $"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count} startrealm {loopRealm}");
+           // Console.WriteLine(
+              //  $"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count} startrealm {loopRealm}");
 
             GamePlayer NextPredator = null;
             List<GamePlayer> PotentialTargets = new List<GamePlayer>();
@@ -381,7 +398,7 @@ public class PredatorManager
         foreach (var bounty in ActivePredators.ToArray())
         {
             predatorMap.Add(bounty.Predator, bounty.Prey);
-            Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
+            //Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
         }
 
         List<GamePlayer> Prey = new List<GamePlayer>();
@@ -392,7 +409,7 @@ public class PredatorManager
             if (!predatorMap.Values.Contains(pred) && pred.Realm != player.Realm) Untargetted.Add(pred);
         }
 
-        Console.WriteLine($"Prey {Untargetted.FirstOrDefault()} found for predator {player}");
+        //Console.WriteLine($"Prey {Untargetted.FirstOrDefault()} found for predator {player}");
         return Untargetted.FirstOrDefault();
     }
 
@@ -482,6 +499,48 @@ public class PredatorManager
         QueuePlayer(killerPlayer);
         InsertQueuedPlayers();
         TryFillEmptyPrey();
+    }
+
+    private static void JoinedGroup(DOLEvent dolEvent, object sender, EventArgs arguments)
+    {
+        if (sender is Group g)
+        {
+            foreach (GamePlayer groupmate in g.GetPlayersInTheGroup())
+            {
+                if(PlayerIsActive(groupmate))
+                    DisqualifyPlayer(groupmate);
+            }
+        }
+    }
+    
+    private static void StartCooldownOnQuit(DOLEvent e, object sender, EventArgs arguments)
+    {
+        if(sender is GamePlayer p && PlayerIsActive(p))
+            DisqualifyPlayer(p);
+    }
+
+    private static int TimeoutTimerCallback(ECSGameTimer timer)
+    {
+        if (timer.TimerOwner is GamePlayer pl)
+        {
+            long TimerStartTime = timer.Properties.getProperty<long>(TimeoutTickKey);
+
+            long secondsleft = 120 - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
+            if (secondsleft > 0)
+            {
+                if (secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)
+                {
+                    pl.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {secondsleft} seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                }
+
+                return 1000;
+            }
+
+            DisqualifyPlayer(pl);
+            return 0;
+        }
+
+        return 0;
     }
 }
 
