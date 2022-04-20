@@ -190,7 +190,7 @@ namespace DOL.GS
                                         }
                                     }
                                 }
-                                else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup || (spellEffect.EffectType == eEffect.ArmorAbsorptionBuff && spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value))
+                                else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
                                 {
                                     addEffect = true;
                                 }
