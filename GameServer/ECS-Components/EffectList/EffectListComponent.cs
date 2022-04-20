@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.AI.Brain;
 using DOL.GS.Effects;
 
 namespace DOL.GS
@@ -110,16 +111,34 @@ namespace DOL.GS
                                 }
                             }
                         }
-                        else if (effect.EffectType == eEffect.SavageBuff)
+                        else if (effect.EffectType == eEffect.SavageBuff || effect.EffectType == eEffect.ArmorAbsorptionBuff)
                         {
+                            if (effect.EffectType == eEffect.ArmorAbsorptionBuff)
+                            {
+                                for (var i = 0; i < existingEffects.Count; i++)
+                                    // Better Effect so disable the current Effect
+                                    if (spellEffect.SpellHandler.Spell.Value >
+                                        existingEffects[i].SpellHandler.Spell.Value)
+                                    {
+                                        EffectService.RequestCancelEffect(existingEffects[i]);
+                                        Effects[spellEffect.EffectType].Add(spellEffect);
+                                        EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                            }
                             // Player doesn't have this buff yet
-                            if (existingEffects.Where(e => e.SpellHandler.Spell.SpellType == spellEffect.SpellHandler.Spell.SpellType).Count() == 0)
+                            else if (existingEffects.Where(e => e.SpellHandler.Spell.SpellType == spellEffect.SpellHandler.Spell.SpellType).Count() == 0)
                             {
                                 Effects[spellEffect.EffectType].Add(spellEffect);
                                 EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
                                 return true;
                             }
-                            return false;
+                            else
+                                return false;
                         }
                         else
                         {                           
@@ -171,7 +190,7 @@ namespace DOL.GS
                                         }
                                     }
                                 }
-                                else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
+                                else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup || (spellEffect.EffectType == eEffect.ArmorAbsorptionBuff && spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value))
                                 {
                                     addEffect = true;
                                 }
