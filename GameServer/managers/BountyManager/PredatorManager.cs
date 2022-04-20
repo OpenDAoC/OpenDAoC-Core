@@ -120,6 +120,7 @@ public class PredatorManager
             DisqualifiedPlayers.Remove(player);
         }
         
+        player.Out.SendMessage($"You tune your senses to the pulse of nature. New prey is sure to arrive soon.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
         QueuedPlayers.Add(player);
     }
 
@@ -498,6 +499,7 @@ public class PredatorManager
         if (predatorBounty is null) return;
 
         ActivePredators.Remove(predatorBounty);
+        predatorBounty.Predator.Out.SendMessage($"You unleash a primal roar as the thrill of the hunt overtakes you. A feast of {predatorBounty.Reward} RPs is awarded.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
         killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
         QueuePlayer(predatorBounty.Predator);
         InsertQueuedPlayers();
