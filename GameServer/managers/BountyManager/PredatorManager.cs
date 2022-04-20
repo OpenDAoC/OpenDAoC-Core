@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS;
@@ -42,8 +43,12 @@ Ideally the loop and queue check/calculation would happen pretty frequently to k
  */
 public class PredatorManager
 {
-    public List<PredatorBounty> ActivePredators;
-    public List<GamePlayer> QueuedPlayers;
+    public static List<PredatorBounty> ActivePredators;
+    public static List<GamePlayer> QueuedPlayers;
+    
+    private static int minPredatorReward;
+    private static int maxPredatorReward;
+    private static int PLACEHOLDER_REWARD_VALUE = 5000;
     
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -53,14 +58,17 @@ public class PredatorManager
        // GameEventMgr.AddHandler(GameLivingEvent.EnemyKilled, PlayerKilled);
     }
 
-    public PredatorManager()
+    static PredatorManager()
     {
         ActivePredators = new List<PredatorBounty>();
         QueuedPlayers = new List<GamePlayer>();
     }
 
-    public void FullReset()
+    public static void FullReset()
     {
+        if (QueuedPlayers == null) QueuedPlayers = new List<GamePlayer>();
+        if (ActivePredators == null) ActivePredators = new List<PredatorBounty>();
+        
         //if anyone is currently hunting, put them back in the queue
         foreach (var active in ActivePredators)
         {
@@ -69,10 +77,28 @@ public class PredatorManager
 
         ActivePredators.Clear();
         InsertQueuedPlayers();
-        SetTargets();
+        ConstructNewList();
+        //SetTargets();
     }
 
-    private void InsertQueuedPlayers()
+    public static void QueuePlayer(GamePlayer player)
+    {
+        if ((QueuedPlayers != null && QueuedPlayers.Contains(player)) || PlayerIsActive(player))
+        {
+            player.Out.SendMessage("You are already registered in the system!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            return;
+        }
+        
+        QueuedPlayers.Add(player);
+    }
+
+    public static bool PlayerIsActive(GamePlayer player)
+    {
+        return (ActivePredators.FirstOrDefault(bounty => bounty.Predator == player) != null ||
+                ActivePredators.FirstOrDefault(bounty => bounty.Prey == player) != null);
+    }
+
+    public static void InsertQueuedPlayers()
     {
         if (QueuedPlayers.Count < 1) return;
 
@@ -83,6 +109,8 @@ public class PredatorManager
             newPred.Reward = 1000;
             AddOrOverwriteBounty(newPred);
         }
+        
+        QueuedPlayers.Clear();
     }
 
     /*
@@ -96,16 +124,18 @@ public class PredatorManager
         Three players, F, G, and H have queued since the last update, chain is reconstructed to include them
         A -> B -> F -> G -> H -> D -> E -> A
      */
-    private void SetTargets()
+    private static void SetTargets()
     {
         Dictionary<GamePlayer, GamePlayer> predatorMap = new Dictionary<GamePlayer, GamePlayer>();
-        foreach (var bounty in ActivePredators)
+        foreach (var bounty in ActivePredators.ToArray())
         {
             predatorMap.Add(bounty.Predator, bounty.Prey);
+            //Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
         }
         
         List<GamePlayer> Prey = predatorMap.Values.Where(x => x != null) as List<GamePlayer>;
         List<GamePlayer> Untargetted;
+        //Console.WriteLine($"PreyList {Prey}");
         if (Prey == null)
         {
             Untargetted = new List<GamePlayer>(predatorMap.Keys);
@@ -115,6 +145,7 @@ public class PredatorManager
             Untargetted = predatorMap.Keys.Where(y => !Prey.Contains(y)) as List<GamePlayer>;    
         }
 
+        //Console.WriteLine($"Untargetted {Untargetted}");
         //should return the only player who is hunted and has no target, if one exists (the left end of a broken chain - player B)
         GamePlayer PreylessHunter = Prey?.FirstOrDefault(x => predatorMap[x] == null);
 
@@ -123,11 +154,13 @@ public class PredatorManager
 
         //find the starting player for our loop, the beginning of our subchain (player F)
         GamePlayer loopPlayer = Untargetted?.FirstOrDefault(x => x.Realm != PreylessHunter?.Realm);
+        
+        //Console.WriteLine($"PreylessHunter {PreylessHunter} HunterlessPrey {HunterlessPrey} loopPlayer {loopPlayer}");
 
         //no valid way to start the subchain, try and relink the existing chain if valid, or send player B into waiting room in worse case
-        if (loopPlayer == null || PreylessHunter == null || HunterlessPrey == null)
+        if (PreylessHunter == null || HunterlessPrey == null)
         {
-            if(PreylessHunter != null && HunterlessPrey != null && PreylessHunter.Realm != HunterlessPrey.Realm) AddOrOverwriteBounty(new PredatorBounty(PreylessHunter, HunterlessPrey));
+            //if(PreylessHunter != null && HunterlessPrey != null && PreylessHunter.Realm != HunterlessPrey.Realm) AddOrOverwriteBounty(new PredatorBounty(PreylessHunter, HunterlessPrey));
             return; //bail method here, anyone without a valid bounty combo sees "waiting for a valid target" and gets picked up with next pass
         }
         
@@ -161,9 +194,127 @@ public class PredatorManager
         } while (moreTargets);
         
     }
-    
 
-    private void AddOrOverwriteBounty(PredatorBounty bounty)
+    private static void ConstructNewList()
+    {
+        Stack<GamePlayer> AlbPlayers = new Stack<GamePlayer>();
+        Stack<GamePlayer> HibPlayers = new Stack<GamePlayer>();
+        Stack<GamePlayer> MidPlayers = new Stack<GamePlayer>();
+        
+        //create a stack of each realms hunters
+        foreach (var bounty in ActivePredators.ToArray())
+        {
+            GamePlayer currentplayer = bounty.Predator;
+            switch (currentplayer.Realm)
+            {
+                case eRealm.Albion:
+                    if(!AlbPlayers.Contains(currentplayer)) AlbPlayers.Push(currentplayer);
+                    //Console.WriteLine($"Mapped {currentplayer.Name} to albion {AlbPlayers.Count}");
+                    break;
+                case eRealm.Hibernia:
+                    if(!HibPlayers.Contains(currentplayer)) HibPlayers.Push(currentplayer);
+                    //Console.WriteLine($"Mapped {currentplayer.Name} to hibernia {HibPlayers.Count}");
+                    break;
+                case eRealm.Midgard:
+                    if(!MidPlayers.Contains(currentplayer)) MidPlayers.Push(currentplayer);
+                    //Console.WriteLine($"Mapped {currentplayer.Name} to midgard {MidPlayers.Count}");
+                    break;
+            }
+        }
+
+        List<eRealm> validRealms = new List<eRealm>();
+        if (HibPlayers.Count > 0) validRealms.Add(eRealm.Hibernia);
+        if (MidPlayers.Count > 0) validRealms.Add(eRealm.Midgard);
+        if (AlbPlayers.Count > 0) validRealms.Add(eRealm.Albion);
+        if (validRealms.Count < 2) return; //bail if not enough realms
+        
+        eRealm loopRealm = validRealms[Util.Random(validRealms.Count - 1)];
+        //Console.WriteLine($"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count}");
+
+        GamePlayer LastPredator = null;
+
+        while (validRealms.Count > 1)
+        {
+            if (AlbPlayers.Count == 0 && validRealms.Contains(eRealm.Albion)) validRealms.Remove(eRealm.Albion);
+            if (MidPlayers.Count == 0 && validRealms.Contains(eRealm.Midgard)) validRealms.Remove(eRealm.Midgard);
+            if (HibPlayers.Count == 0 && validRealms.Contains(eRealm.Hibernia)) validRealms.Remove(eRealm.Hibernia);
+            //Console.WriteLine($"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count} startrealm {loopRealm}");
+
+            GamePlayer NextPredator = null;
+            List<GamePlayer> PotentialTargets = new List<GamePlayer>();
+            switch (loopRealm)
+            {
+                case eRealm.Albion:
+                    NextPredator = AlbPlayers.Pop();
+                    PotentialTargets.AddRange(HibPlayers.ToList());
+                    PotentialTargets.AddRange(MidPlayers.ToList());
+                    break;
+                case eRealm.Hibernia:
+                    NextPredator = HibPlayers.Pop();
+                    PotentialTargets.AddRange(AlbPlayers.ToList());
+                    PotentialTargets.AddRange(MidPlayers.ToList());
+                    break;
+                case eRealm.Midgard:
+                    NextPredator = MidPlayers.Pop();
+                    PotentialTargets.AddRange(HibPlayers.ToList());
+                    PotentialTargets.AddRange(AlbPlayers.ToList());
+                    break;
+            }
+            //Console.WriteLine($"NextPred {NextPredator} PotentialTargs {PotentialTargets?.Count}");
+
+            LastPredator = NextPredator;
+            if (PotentialTargets.Count < 1 || NextPredator == null) break;
+
+            GamePlayer NextPrey = PotentialTargets[Util.Random(PotentialTargets.Count - 1)];
+            loopRealm = NextPrey.Realm;
+            //Console.WriteLine($"NextPrey {NextPrey} nextRealm {loopRealm}");
+
+            PredatorBounty NewBounty = new PredatorBounty(NextPredator, NextPrey);
+            NewBounty.AddReward(PLACEHOLDER_REWARD_VALUE);
+            AddOrOverwriteBounty(NewBounty);
+
+            
+        }
+        
+        //try to find a target for the last player to be iterated on
+        Dictionary<GamePlayer, GamePlayer> predatorMap = new Dictionary<GamePlayer, GamePlayer>();
+        foreach (var bounty in ActivePredators.ToArray())
+        {
+            predatorMap.Add(bounty.Predator, bounty.Prey);
+            //Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
+        }
+
+        List<GamePlayer> Prey = new List<GamePlayer>();
+        List<GamePlayer> Untargetted = new List<GamePlayer>();
+
+        foreach (var pred in predatorMap.Keys)
+        {
+            if(!predatorMap.Values.Contains(pred) && pred.Realm != loopRealm) Untargetted.Add(pred);
+        }
+
+        switch (loopRealm)
+        {
+            case eRealm.Midgard:
+                PredatorBounty NewBounty = new PredatorBounty(LastPredator, Untargetted.First());
+                NewBounty.AddReward(PLACEHOLDER_REWARD_VALUE);
+                AddOrOverwriteBounty(NewBounty);
+                break;
+            case eRealm.Albion:
+                PredatorBounty NewBounty2 = new PredatorBounty(LastPredator, Untargetted.First());
+                NewBounty2.AddReward(PLACEHOLDER_REWARD_VALUE);
+                AddOrOverwriteBounty(NewBounty2);
+                break;
+            case eRealm.Hibernia:
+                PredatorBounty NewBounty3 = new PredatorBounty(LastPredator, Untargetted.First());
+                NewBounty3.AddReward(PLACEHOLDER_REWARD_VALUE);
+                AddOrOverwriteBounty(NewBounty3);
+                break;
+        }
+
+    }
+
+
+    private static void AddOrOverwriteBounty(PredatorBounty bounty)
     {
         List<PredatorBounty> bountyToRemove = new List<PredatorBounty>();
         
@@ -185,8 +336,32 @@ public class PredatorManager
             }
         }
         
+        //Console.WriteLine($"Adding predator {bounty.Predator} prey {bounty.Prey}");
         //insert that shiz
         ActivePredators.Add(bounty);
+    }
+
+    public static IList<string> GetActivePrey(GamePlayer predator)
+    {
+        if (!PlayerIsActive(predator)) return null;
+        
+        List<string> temp = new List<string>();
+        temp.Clear();
+
+        PredatorBounty activeBounty = ActivePredators.First(x => x.Predator == predator);
+
+        GamePlayer prey = activeBounty.Prey;
+
+        temp.Add($"Your senses sharpen, and primal instincts guide you to the location of your prey. \n" +
+                 $"\n" +
+                 $"Name: {prey.Name}\n" +
+                 $"Realm Title: {prey.RealmTitle}\n" +
+                 $"Location: {prey.CurrentZone.Description}\n" +
+                 $"Reward: {activeBounty.Reward}"+
+                 $"\n" +
+                 $"The hairs on the back of your neck make you feel as though you are being watched. \nBe careful, hunter.");
+        
+        return temp;
     }
 }
 
