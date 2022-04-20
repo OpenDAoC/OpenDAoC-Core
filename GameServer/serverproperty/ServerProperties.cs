@@ -2711,6 +2711,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("predator", "predator_abuse_timeout", "Time a player is prevented from rejoining Predator after leaving RvR/joining group, in minutes", 10)]
 		public static int PREDATOR_ABUSE_TIMEOUT;
 		
+		[ServerProperty("predator", "out_of_bounds_timeout", "Time a player is allowed to leave a valid hunting zone before disqualification, in seconds", 180)]
+		public static long OUT_OF_BOUNDS_TIMEOUT;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
