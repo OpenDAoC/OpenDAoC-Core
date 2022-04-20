@@ -3859,6 +3859,8 @@ namespace DOL.GS
         public virtual void StartAttack(GameObject target)
         {
             attackComponent.StartAttack(target);
+            if(m_followTimer != null) m_followTimer.Stop();
+            Follow(target, m_followMinDist, m_followMaxDist);
             FireAmbientSentence(eAmbientTrigger.fighting, target);
             //if (target == null)
             //    return;
