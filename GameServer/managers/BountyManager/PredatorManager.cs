@@ -498,7 +498,7 @@ public class PredatorManager
         if (predatorBounty is null) return;
 
         ActivePredators.Remove(predatorBounty);
-        killerPlayer.GainRealmPoints(predatorBounty.Reward);
+        killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
         QueuePlayer(predatorBounty.Predator);
         InsertQueuedPlayers();
         //TryFillEmptyPrey();
