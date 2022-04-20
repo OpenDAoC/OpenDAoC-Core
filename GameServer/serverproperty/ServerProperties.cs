@@ -2696,6 +2696,21 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("bounty", "bounty_check_interval", "Bounty expire check interval in seconds", 60)]
 		public static int BOUNTY_CHECK_INTERVAL;
 
+		/// <summary>
+		/// Bounty Reward payout rate - enter 1 for 100% (no Realm Tax), default is 0.9 for 10% tax
+		/// </summary>
+		[ServerProperty("predator", "predator_reward_multiplier", "Multiplier applied to normal RP value.", 1.5)]
+		public static double PREDATOR_REWARD_MULTIPLIER;
+		
+		/// <summary>
+		/// Bounty expire check interval in seconds
+		/// </summary>
+		[ServerProperty("predator", "queued_player_insert_interval", "How long to wait between trying to insert new players into system, in seconds", 10)]
+		public static int QUEUED_PLAYER_INSERT_INTERVAL;
+		
+		[ServerProperty("predator", "predator_abuse_timeout", "Time a player is prevented from rejoining Predator after leaving RvR/joining group, in minutes", 10)]
+		public static int PREDATOR_ABUSE_TIMEOUT;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{

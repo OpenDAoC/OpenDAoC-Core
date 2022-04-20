@@ -70,6 +70,17 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+        public ECSGameTimer PredatorTimeoutTimer
+        {
+            get
+            {
+                if (m_predatortimer == null) m_predatortimer = new ECSGameTimer(this);
+                return m_predatortimer;
+            }
+            set { m_predatortimer = value; }
+        }
+        
+        protected ECSGameTimer m_predatortimer;
 
         private PlayerDeck _randomNumberDeck;
 
