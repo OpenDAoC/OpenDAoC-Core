@@ -141,7 +141,7 @@ namespace DOL.GS
 				if (Caster is GamePlayer areaTarget && areaTarget == target)
 					// "{0} looks more agile!"
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
-				else
+				else if (Caster is GamePet || target is GamePet or GamePlayer)
 					// "{0} looks more agile!"
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
@@ -181,7 +181,7 @@ namespace DOL.GS
 				if (Caster is GamePlayer areaTarget && areaTarget == target)
 					// "{0}'s enhanced agility fades."
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
-				else
+				else if (Caster is GamePet || target is GamePet or GamePlayer)
 					// "{0}'s enhanced agility fades."
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
