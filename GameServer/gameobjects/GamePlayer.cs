@@ -819,7 +819,7 @@ namespace DOL.GS
             Out.SendPlayerQuit(false);
             Quit(true);
             SaveIntoDatabase();
-            m_quitTimer.Stop();
+            m_quitTimer?.Stop();
             m_quitTimer = null;
             return 0;
         }
