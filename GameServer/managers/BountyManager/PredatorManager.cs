@@ -55,7 +55,13 @@ public class PredatorManager
     {
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, GreyPlayerKilled);
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, BountyKilled);
-       // GameEventMgr.AddHandler(GameLivingEvent.EnemyKilled, PlayerKilled);
+       //GameEventMgr.AddHandler(GameLivingEvent.EnemyKilled, PlayerKilled);
+       
+       //TODO add callbacks on death to award player on killing their prey
+       //                   and then set new prey = FindPreyForTarget
+       //TODO add predatorservice tick that calls FindPreyForTarget for all preyless hunters
+       //TODO have predatorservice fully reset every X minute interval
+       //       add server props for this too
     }
 
     static PredatorManager()
@@ -105,8 +111,8 @@ public class PredatorManager
         //make a new bounty with no prey for each queued player and add them to main list
         foreach (var queuedPlayer in QueuedPlayers?.ToList())
         {
-            PredatorBounty newPred = new PredatorBounty(queuedPlayer, null);
-            newPred.Reward = 1000;
+            PredatorBounty newPred = new PredatorBounty(queuedPlayer, FindPreyForPlayer(queuedPlayer));
+            newPred.Reward = PLACEHOLDER_REWARD_VALUE;
             AddOrOverwriteBounty(newPred);
         }
         
@@ -229,7 +235,7 @@ public class PredatorManager
         if (validRealms.Count < 2) return; //bail if not enough realms
         
         eRealm loopRealm = validRealms[Util.Random(validRealms.Count - 1)];
-        //Console.WriteLine($"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count}");
+        Console.WriteLine($"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count}");
 
         GamePlayer LastPredator = null;
 
@@ -238,7 +244,7 @@ public class PredatorManager
             if (AlbPlayers.Count == 0 && validRealms.Contains(eRealm.Albion)) validRealms.Remove(eRealm.Albion);
             if (MidPlayers.Count == 0 && validRealms.Contains(eRealm.Midgard)) validRealms.Remove(eRealm.Midgard);
             if (HibPlayers.Count == 0 && validRealms.Contains(eRealm.Hibernia)) validRealms.Remove(eRealm.Hibernia);
-            //Console.WriteLine($"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count} startrealm {loopRealm}");
+            Console.WriteLine($"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count} startrealm {loopRealm}");
 
             GamePlayer NextPredator = null;
             List<GamePlayer> PotentialTargets = new List<GamePlayer>();
@@ -260,14 +266,14 @@ public class PredatorManager
                     PotentialTargets.AddRange(AlbPlayers.ToList());
                     break;
             }
-            //Console.WriteLine($"NextPred {NextPredator} PotentialTargs {PotentialTargets?.Count}");
+            Console.WriteLine($"NextPred {NextPredator} PotentialTargs {PotentialTargets?.Count}");
 
             LastPredator = NextPredator;
             if (PotentialTargets.Count < 1 || NextPredator == null) break;
 
             GamePlayer NextPrey = PotentialTargets[Util.Random(PotentialTargets.Count - 1)];
             loopRealm = NextPrey.Realm;
-            //Console.WriteLine($"NextPrey {NextPrey} nextRealm {loopRealm}");
+            Console.WriteLine($"NextPrey {NextPrey} nextRealm {loopRealm}");
 
             PredatorBounty NewBounty = new PredatorBounty(NextPredator, NextPrey);
             NewBounty.AddReward(PLACEHOLDER_REWARD_VALUE);
@@ -277,11 +283,18 @@ public class PredatorManager
         }
         
         //try to find a target for the last player to be iterated on
+        PredatorBounty lastBounty = new PredatorBounty(LastPredator, FindPreyForPlayer(LastPredator));
+        lastBounty.AddReward(PLACEHOLDER_REWARD_VALUE);
+        AddOrOverwriteBounty(lastBounty);
+    }
+
+    private static GamePlayer FindPreyForPlayer(GamePlayer player)
+    {
         Dictionary<GamePlayer, GamePlayer> predatorMap = new Dictionary<GamePlayer, GamePlayer>();
         foreach (var bounty in ActivePredators.ToArray())
         {
             predatorMap.Add(bounty.Predator, bounty.Prey);
-            //Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
+            Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
         }
 
         List<GamePlayer> Prey = new List<GamePlayer>();
@@ -289,28 +302,11 @@ public class PredatorManager
 
         foreach (var pred in predatorMap.Keys)
         {
-            if(!predatorMap.Values.Contains(pred) && pred.Realm != loopRealm) Untargetted.Add(pred);
+            if (!predatorMap.Values.Contains(pred) && pred.Realm != player.Realm) Untargetted.Add(pred);
         }
 
-        switch (loopRealm)
-        {
-            case eRealm.Midgard:
-                PredatorBounty NewBounty = new PredatorBounty(LastPredator, Untargetted.First());
-                NewBounty.AddReward(PLACEHOLDER_REWARD_VALUE);
-                AddOrOverwriteBounty(NewBounty);
-                break;
-            case eRealm.Albion:
-                PredatorBounty NewBounty2 = new PredatorBounty(LastPredator, Untargetted.First());
-                NewBounty2.AddReward(PLACEHOLDER_REWARD_VALUE);
-                AddOrOverwriteBounty(NewBounty2);
-                break;
-            case eRealm.Hibernia:
-                PredatorBounty NewBounty3 = new PredatorBounty(LastPredator, Untargetted.First());
-                NewBounty3.AddReward(PLACEHOLDER_REWARD_VALUE);
-                AddOrOverwriteBounty(NewBounty3);
-                break;
-        }
-
+        Console.WriteLine($"Prey {Untargetted.FirstOrDefault()} found for predator {player}");
+        return Untargetted.FirstOrDefault();
     }
 
 
@@ -336,7 +332,7 @@ public class PredatorManager
             }
         }
         
-        //Console.WriteLine($"Adding predator {bounty.Predator} prey {bounty.Prey}");
+        Console.WriteLine($"Adding predator {bounty.Predator} prey {bounty.Prey}");
         //insert that shiz
         ActivePredators.Add(bounty);
     }
