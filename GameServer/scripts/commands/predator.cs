@@ -10,7 +10,7 @@ namespace DOL.GS.Scripts
     [CmdAttribute(
         "&predator",
         ePrivLevel.Player,
-        "Join the hunt or view your current prey", "/predator join", "/predator viewprey")]
+        "Join the hunt or view your current prey", "/predator join", "/predator prey", "/predator abandon")]
     public class PredatorCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         private const string KILLEDBY = "KilledBy";

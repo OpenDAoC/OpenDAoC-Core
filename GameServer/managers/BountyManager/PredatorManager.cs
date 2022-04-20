@@ -365,14 +365,14 @@ public class PredatorManager
                     break;
             }
 
-            Console.WriteLine($"NextPred {NextPredator} PotentialTargs {PotentialTargets?.Count}");
+            //Console.WriteLine($"NextPred {NextPredator} PotentialTargs {PotentialTargets?.Count}");
 
             LastPredator = NextPredator;
             if (PotentialTargets.Count < 1 || NextPredator == null) break;
 
             GamePlayer NextPrey = PotentialTargets[Util.Random(PotentialTargets.Count - 1)];
             loopRealm = NextPrey.Realm;
-            Console.WriteLine($"NextPrey {NextPrey} nextRealm {loopRealm}");
+            //Console.WriteLine($"NextPrey {NextPrey} nextRealm {loopRealm}");
 
             PredatorBounty NewBounty = new PredatorBounty(NextPredator, NextPrey);
             NewBounty.AddReward(GetScaledReward(NextPrey));
@@ -436,9 +436,14 @@ public class PredatorManager
             }
         }
 
-        Console.WriteLine($"Adding predator {bounty.Predator} prey {bounty.Prey}");
+        //Console.WriteLine($"Adding predator {bounty.Predator} prey {bounty.Prey}");
         //insert that shiz
         ActivePredators.Add(bounty);
+
+        if (bounty.Predator != null && bounty.Prey != null)
+        {
+            bounty.Predator.Out.SendMessage($"Your primal instincts tingle. New prey has been selected.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        }
     }
 
     public static IList<string> GetActivePrey(GamePlayer predator)
@@ -467,8 +472,7 @@ public class PredatorManager
                      $"Realm Title: {prey.RealmTitle}\n" +
                      $"Location: {prey.CurrentZone.Description}\n" +
                      $"Reward: {activeBounty.Reward}" +
-                     $"\n" +
-                     $"The hairs on the back of your neck make you feel as though you are being watched. \nBe careful, hunter.");
+                     $"\n The hairs on the back of your neck make you feel as though you are being watched. Beware, hunter.");
         }
 
         return temp;

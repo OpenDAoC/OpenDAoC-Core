@@ -27,7 +27,7 @@ public class PredatorService
         if (tick - _lastUpdate > _updateInterval)
         {
             _lastUpdate = tick;
-            Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
+            //Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
             foreach (var activePreds in PredatorManager.ActivePredators.ToList())
             {
                 GamePlayer activePlayer = activePreds.Predator;
@@ -55,7 +55,7 @@ public class PredatorService
             _lastInsert = tick;
             PredatorManager.InsertQueuedPlayers();
             PredatorManager.TryFillEmptyPrey();
-            Console.WriteLine($"INSERTING Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
+            //Console.WriteLine($"INSERTING Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
         }
 
         Diagnostics.StopPerfCounter(ServiceName);
