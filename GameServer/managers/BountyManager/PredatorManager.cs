@@ -500,11 +500,11 @@ public class PredatorManager
         List<string> temp = new List<string>();
         temp.Clear();
         
-        temp.Add($"Active Hunters: {ActiveBounties.Count} | Queued: {QueuedPlayers.Count} | Killed Prey Requeuers: {FreshKillers} \n");
+        temp.Add($"Active Hunters: {ActiveBounties.Count} | Queued: {QueuedPlayers.Count} | Killers: {FreshKillers.Count} \n");
 
         foreach (var activeBounty in ActiveBounties)
         {
-            temp.Add($"Predator {activeBounty.Predator} | Prey {activeBounty.Prey} | Reward {activeBounty.Reward}\n");
+            temp.Add($"Predator: {activeBounty.Predator?.Name} | Prey: {activeBounty.Prey?.Name} | Reward: {activeBounty.Reward}");
         }
 
         return temp;
