@@ -28,7 +28,7 @@ public class PredatorService
         {
             _lastUpdate = tick;
             //Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
-            foreach (var activePreds in PredatorManager.ActivePredators.ToList())
+            foreach (var activePreds in PredatorManager.ActiveBounties.ToList())
             {
                 GamePlayer activePlayer = activePreds.Predator;
                 

@@ -43,7 +43,7 @@ Ideally the loop and queue check/calculation would happen pretty frequently to k
  */
 public class PredatorManager
 {
-    public static List<PredatorBounty> ActivePredators;
+    public static List<PredatorBounty> ActiveBounties;
     public static List<GamePlayer> QueuedPlayers;
     public static Dictionary<GamePlayer, long> DisqualifiedPlayers;
     public static List<GamePlayer> FreshKillers;
@@ -73,7 +73,7 @@ public class PredatorManager
 
     static PredatorManager()
     {
-        ActivePredators = new List<PredatorBounty>();
+        ActiveBounties = new List<PredatorBounty>();
         QueuedPlayers = new List<GamePlayer>();
         DisqualifiedPlayers = new Dictionary<GamePlayer, long>();
         FreshKillers = new List<GamePlayer>();
@@ -82,15 +82,15 @@ public class PredatorManager
     public static void FullReset()
     {
         if (QueuedPlayers == null) QueuedPlayers = new List<GamePlayer>();
-        if (ActivePredators == null) ActivePredators = new List<PredatorBounty>();
+        if (ActiveBounties == null) ActiveBounties = new List<PredatorBounty>();
 
         //if anyone is currently hunting, put them back in the queue
-        foreach (var active in ActivePredators)
+        foreach (var active in ActiveBounties)
         {
             if (!QueuedPlayers.Contains(active.Predator)) QueuedPlayers.Add(active.Predator);
         }
 
-        ActivePredators.Clear();
+        ActiveBounties.Clear();
         InsertQueuedPlayers();
         ConstructNewList();
         //SetTargets();
@@ -163,17 +163,17 @@ public class PredatorManager
 
     public static void RemoveActivePlayer(GamePlayer player)
     {
-        if (ActivePredators.FirstOrDefault(x => x.Predator == player) != null)
+        if (ActiveBounties.FirstOrDefault(x => x.Predator == player) != null)
         {
-            ActivePredators.Remove(ActivePredators.First(x => x.Predator == player));
+            ActiveBounties.Remove(ActiveBounties.First(x => x.Predator == player));
 
-            PredatorBounty PreyBounty = ActivePredators.FirstOrDefault(x => x.Prey == player);
+            PredatorBounty PreyBounty = ActiveBounties.FirstOrDefault(x => x.Prey == player);
             if (PreyBounty != null)
             {
                 PreyBounty.Predator.Out.SendMessage(
                     $"Your prey has abandoned the hunt. A new target will be chosen soon.",
                     eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
-                ActivePredators.Remove(PreyBounty);
+                ActiveBounties.Remove(PreyBounty);
                 QueuedPlayers.Add(PreyBounty.Predator);
                 InsertQueuedPlayers();
                 TryFillEmptyPrey();
@@ -183,8 +183,8 @@ public class PredatorManager
 
     public static bool PlayerIsActive(GamePlayer player)
     {
-        return (ActivePredators.FirstOrDefault(bounty => bounty.Predator == player) != null ||
-                ActivePredators.FirstOrDefault(bounty => bounty.Prey == player) != null);
+        return (ActiveBounties.FirstOrDefault(bounty => bounty.Predator == player) != null ||
+                ActiveBounties.FirstOrDefault(bounty => bounty.Prey == player) != null);
     }
 
     public static void InsertQueuedPlayers()
@@ -219,7 +219,7 @@ public class PredatorManager
 
     public static void TryFillEmptyPrey()
     {
-        var PreylessHunters = ActivePredators.Where(x => x.Prey == null);
+        var PreylessHunters = ActiveBounties.Where(x => x.Prey == null);
         List<PredatorBounty> PredatorsToCreate = new List<PredatorBounty>();
 
         foreach (var preylessHunter in PreylessHunters)
@@ -325,7 +325,7 @@ public class PredatorManager
         Stack<GamePlayer> MidPlayers = new Stack<GamePlayer>();
 
         //create a stack of each realms hunters
-        foreach (var bounty in ActivePredators.ToArray())
+        foreach (var bounty in ActiveBounties.ToArray())
         {
             GamePlayer currentplayer = bounty.Predator;
             switch (currentplayer.Realm)
@@ -414,7 +414,7 @@ public class PredatorManager
     private static GamePlayer FindPreyForPlayer(GamePlayer player)
     {
         Dictionary<GamePlayer, GamePlayer> predatorMap = new Dictionary<GamePlayer, GamePlayer>();
-        foreach (var bounty in ActivePredators.ToArray())
+        foreach (var bounty in ActiveBounties.ToArray())
         {
             predatorMap.Add(bounty.Predator, bounty.Prey);
             //Console.WriteLine($"mapping predator {bounty.Predator} prey {bounty.Prey}");
@@ -438,7 +438,7 @@ public class PredatorManager
         List<PredatorBounty> bountyToRemove = new List<PredatorBounty>();
 
         //find any existing predatorbounty with this player as the hunter
-        foreach (var existingBounty in ActivePredators?.ToList())
+        foreach (var existingBounty in ActiveBounties?.ToList())
         {
             if (existingBounty.Predator == bounty.Predator)
             {
@@ -451,13 +451,13 @@ public class PredatorManager
         {
             foreach (var remover in bountyToRemove)
             {
-                ActivePredators.Remove(remover);
+                ActiveBounties.Remove(remover);
             }
         }
 
         //Console.WriteLine($"Adding predator {bounty.Predator} prey {bounty.Prey}");
         //insert that shiz
-        ActivePredators.Add(bounty);
+        ActiveBounties.Add(bounty);
 
         if (bounty.Predator != null && bounty.Prey != null)
         {
@@ -472,7 +472,7 @@ public class PredatorManager
         List<string> temp = new List<string>();
         temp.Clear();
 
-        PredatorBounty activeBounty = ActivePredators.First(x => x.Predator == predator);
+        PredatorBounty activeBounty = ActiveBounties.First(x => x.Predator == predator);
 
         if (activeBounty.Prey == null)
         {
@@ -494,6 +494,19 @@ public class PredatorManager
 
         return temp;
     }
+    
+    public static IList<string> GetStatus()
+    {
+        List<string> temp = new List<string>();
+        temp.Clear();
+
+        foreach (var activeBounty in ActiveBounties)
+        {
+            temp.Add($"Predator {activeBounty.Predator} | Prey {activeBounty.Prey} | Reward {activeBounty.Reward}");
+        }
+
+        return temp;
+    }
 
     private static void PreyKilled(DOLEvent e, object sender, EventArgs args)
     {
@@ -511,13 +524,13 @@ public class PredatorManager
 
         if (killerPlayer.Realm == killedPlayer.Realm) return;
 
-        var predatorBounty = ActivePredators.FirstOrDefault(x => x.Predator == killerPlayer);
+        var predatorBounty = ActiveBounties.FirstOrDefault(x => x.Predator == killerPlayer);
 
         if (predatorBounty is null || killedPlayer != predatorBounty.Prey) return;
         
         //Console.WriteLine($"bounty {predatorBounty} pred {predatorBounty.Predator} prey {predatorBounty.Prey} ");
 
-        ActivePredators.Remove(predatorBounty);
+        ActiveBounties.Remove(predatorBounty);
         predatorBounty.Predator.Out.SendMessage($"You unleash a primal roar as the thrill of the hunt overtakes you. A feast of {predatorBounty.Reward} RPs is awarded.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
         killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
         FreshKillers.Add(predatorBounty.Predator);

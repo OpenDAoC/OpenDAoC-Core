@@ -99,6 +99,10 @@ namespace DOL.GS.Scripts
             {
                 PredatorManager.InsertQueuedPlayers();  
             }
+            else if (args[1] == "status" && client.Account.PrivLevel > 1)
+            {
+                client.Out.SendCustomTextWindow("Active Hunts", PredatorManager.GetStatus());
+            }
             else if (args[1] == "abandon")
             {
                 PredatorManager.DisqualifyPlayer(client.Player);
