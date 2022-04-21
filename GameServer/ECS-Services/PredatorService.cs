@@ -54,6 +54,7 @@ public class PredatorService
         {
             _lastInsert = tick;
             PredatorManager.InsertQueuedPlayers();
+            PredatorManager.InsertFreshKillers();
             PredatorManager.TryFillEmptyPrey();
             //Console.WriteLine($"INSERTING Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
         }

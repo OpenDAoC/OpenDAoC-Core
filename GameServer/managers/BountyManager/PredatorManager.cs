@@ -46,6 +46,7 @@ public class PredatorManager
     public static List<PredatorBounty> ActivePredators;
     public static List<GamePlayer> QueuedPlayers;
     public static Dictionary<GamePlayer, long> DisqualifiedPlayers;
+    public static List<GamePlayer> FreshKillers;
 
     private static int minPredatorReward;
     private static int maxPredatorReward;
@@ -75,6 +76,7 @@ public class PredatorManager
         ActivePredators = new List<PredatorBounty>();
         QueuedPlayers = new List<GamePlayer>();
         DisqualifiedPlayers = new Dictionary<GamePlayer, long>();
+        FreshKillers = new List<GamePlayer>();
     }
 
     public static void FullReset()
@@ -149,7 +151,7 @@ public class PredatorManager
         player.PredatorTimeoutTimer.Callback = new ECSGameTimer.ECSTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
-        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in 120 seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {Properties.OUT_OF_BOUNDS_TIMEOUT} seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
     }
     
     public static void StopTimeoutCountdownFor(GamePlayer player)
@@ -198,6 +200,21 @@ public class PredatorManager
         }
 
         QueuedPlayers.Clear();
+    }
+    
+    public static void InsertFreshKillers()
+    {
+        if (FreshKillers.Count < 1) return;
+
+        //make a new bounty with no prey for each queued player and add them to main list
+        foreach (var killer in FreshKillers?.ToList())
+        {
+            PredatorBounty newPred = new PredatorBounty(killer, FindPreyForPlayer(killer));
+            newPred.AddReward(GetScaledReward(newPred.Prey));
+            AddOrOverwriteBounty(newPred);
+        }
+
+        FreshKillers.Clear();
     }
 
     public static void TryFillEmptyPrey()
@@ -496,13 +513,16 @@ public class PredatorManager
 
         var predatorBounty = ActivePredators.FirstOrDefault(x => x.Predator == killerPlayer);
 
-        if (predatorBounty is null) return;
+        if (predatorBounty is null || killedPlayer != predatorBounty.Prey) return;
+        
+        //Console.WriteLine($"bounty {predatorBounty} pred {predatorBounty.Predator} prey {predatorBounty.Prey} ");
 
         ActivePredators.Remove(predatorBounty);
         predatorBounty.Predator.Out.SendMessage($"You unleash a primal roar as the thrill of the hunt overtakes you. A feast of {predatorBounty.Reward} RPs is awarded.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
         killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
-        QueuePlayer(predatorBounty.Predator);
-        InsertQueuedPlayers();
+        FreshKillers.Add(predatorBounty.Predator);
+        //QueuePlayer(predatorBounty.Predator);
+        //InsertQueuedPlayers();
         //TryFillEmptyPrey();
     }
 
