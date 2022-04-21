@@ -54,13 +54,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000 * YarDifficulty;
+            return 800 * YarDifficulty;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85 * YarDifficulty;
+            return 0.55 * YarDifficulty;
         }
         
         public override bool AddToWorld()

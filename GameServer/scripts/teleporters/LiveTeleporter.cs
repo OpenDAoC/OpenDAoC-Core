@@ -119,8 +119,8 @@ namespace DOL.GS.Scripts
                               "[Gothwaite Harbor] in the [Shrouded Isles],\n" +
                               "[Camelot] our glorious capital,\n" +
                               "[Entrance] to the areas of [Housing]\n\n" +
-                              "or one of the many [towns] throughout Albion.\n\n" +
-                              "For this event duration, I can send you to [Darkness Falls]";
+                              "or one of the many [towns] throughout Albion.";
+                              //"For this event duration, I can send you to [Darkness Falls]";
                     break;
 
                 case eRealm.Midgard:
@@ -209,6 +209,7 @@ namespace DOL.GS.Scripts
                         return false;
                     }
 
+                    /*
                     if (text.ToLower() == "darkness falls")
                     {
                         IGameLocation location = new GameLocation("df", 249, 249, 23122, 19634, 22897, 3074);
@@ -223,7 +224,7 @@ namespace DOL.GS.Scripts
                         teleport.Heading = location.Heading;
                         OnDestinationPicked(player, teleport);
                         return true;
-                    }
+                    }*/
                     
                     break;
                 

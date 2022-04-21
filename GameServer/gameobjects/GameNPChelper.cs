@@ -40,14 +40,16 @@ namespace DOL.GS
 		public static void CastSpellOnOwnerAndPets(this GameNPC sourceNPC, GamePlayer player, Spell spell, SpellLine line, bool checkLOS)
 		{
 			sourceNPC.TargetObject = player;
-			sourceNPC.CastSpell(spell, line, checkLOS);
+			if (sourceNPC.IsWithinRadius(player, spell.Range))
+				sourceNPC.CastSpell(spell, line, checkLOS);
 			if (player.ControlledBrain != null)
 			{
 				sourceNPC.TargetObject = player.ControlledBrain.Body;
-				sourceNPC.CastSpell(spell, line, checkLOS);
+				if (sourceNPC.IsWithinRadius(player.ControlledBrain.Body, spell.Range))
+					sourceNPC.CastSpell(spell, line, checkLOS);
 				if (player.ControlledBrain.Body.ControlledNpcList != null)
 					foreach (AI.Brain.IControlledBrain subpet in player.ControlledBrain.Body.ControlledNpcList)
-						if (subpet != null)
+						if (subpet != null && sourceNPC.IsWithinRadius(subpet.Body, spell.Range))
 						{
 							sourceNPC.TargetObject = subpet.Body;
 							sourceNPC.CastSpell(spell, line, checkLOS);
