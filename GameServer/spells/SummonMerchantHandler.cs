@@ -88,7 +88,8 @@ namespace DOL.GS.Spells
             }
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
-            timer = new ECSGameTimer(Npc, new ECSGameTimer.ECSTimerCallback(OnEffectExpires), Spell.Duration);
+            timer = new ECSGameTimer(Npc, new ECSGameTimer.ECSTimerCallback(OnEffectExpires), Spell.Duration * 1000);
+            timer.Start();
         }
 
         public int OnEffectExpires(ECSGameTimer timer)
