@@ -120,18 +120,12 @@ public class ECSGameTimer
         TimerOwner = target;
     }
 
-    public ECSGameTimer(GameLiving living, ECSTimerCallback callback, int interval)
-    {
-        TimerOwner = living;
-        Callback = callback;
-        Interval = interval;
-    }
-    
     public ECSGameTimer(GameObject target, ECSTimerCallback callback, int interval)
     {
         TimerOwner = target;
         Callback = callback;
         Interval = interval;
+        this.Start();
     }
     
     public ECSGameTimer(GameObject target, ECSTimerCallback callback)

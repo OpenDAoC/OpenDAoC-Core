@@ -13,6 +13,9 @@ namespace DOL.GS.Spells
         protected GameMerchant Npc;
         protected ECSGameTimer timer;
 
+        //private long SummonedTick;
+        //private long EndTick;
+
         public SummonMerchantSpellHandler(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
         {
@@ -88,13 +91,17 @@ namespace DOL.GS.Spells
             }
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
+           // SummonedTick = GameLoop.GameLoopTime;
+            //EndTick = GameLoop.GameLoopTime + Spell.Duration * 1000;
+            //Console.WriteLine($"Summoned merchant summon {SummonedTick} end {EndTick} duration {Spell.Duration}");
             timer = new ECSGameTimer(Npc, new ECSGameTimer.ECSTimerCallback(OnEffectExpires), Spell.Duration);
+            timer.Start();
         }
 
         public int OnEffectExpires(ECSGameTimer timer)
         {
             Npc?.Delete();
-            timer.Stop();
+            //timer.Stop();
             return 0;
             //return base.OnEffectExpires(effect, noMessages);
         }
