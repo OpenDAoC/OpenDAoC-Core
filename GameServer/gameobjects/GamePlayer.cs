@@ -8276,7 +8276,7 @@ namespace DOL.GS
 			
             CharacterClass.Die(killer);
 
-            bool realmDeath = killer != null && killer.Realm != eRealm.None;
+            bool realmDeath = killer != null && killer.Realm != eRealm.None && killer.Realm != Realm;
 
             TargetObject = null;
             Diving(eWaterBreath.Normal);
