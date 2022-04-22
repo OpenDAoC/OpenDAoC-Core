@@ -5,9 +5,7 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
+using DOL.GS.ServerProperties;
 using Timer = System.Timers.Timer;
 using System.Timers;
 
@@ -77,7 +75,7 @@ namespace DOL.GS
         public void SpawnHostCopy()
         {
             DoRespawnTimer = false;
-            for (Host.HostCount = 0; Host.HostCount < 10; Host.HostCount++)
+            for (Host.HostCount = 0; Host.HostCount < 8; Host.HostCount++)
             {
                 Host Add = new Host();
                 Add.X = this.X;
@@ -86,6 +84,7 @@ namespace DOL.GS
                 Add.CurrentRegion = this.CurrentRegion;
                 Add.Heading = this.Heading;
                 Add.AddToWorld();
+                Add.OrbsReward = 10;
                 Add.PackageID = "HostCopy" + Host.HostCount;
             }
         }
@@ -120,6 +119,7 @@ namespace DOL.GS
                 {
                     GameNPC RealHost = ChooseHost[Util.Random(0, ChooseHost.Count - 1)];
                     RealHost.PackageID = "HostReal";
+                    RealHost.OrbsReward = Properties.EPICBOSS_ORBS;
                     set_realhost = true;
                 }
             }
@@ -159,7 +159,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Host Initializator", 60, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Host Initializator", 60, (eRealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Host Initializator not found, creating it...");
@@ -254,12 +254,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 750;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.75;
+            return 0.55;
         }
 
         public override void Die(GameObject killer)
@@ -293,13 +293,6 @@ namespace DOL.GS
             }
         }
 
-        public override void DropLoot(GameObject killer)
-        {
-            if (PackageID == "HostReal") //give only loot from real host
-            {
-                base.DropLoot(killer);
-            }
-        }
         public override void WalkToSpawn() //dont walk to spawn
         {
             if (IsAlive)
@@ -315,9 +308,8 @@ namespace DOL.GS
             Name = "Host";
             PackageID = "HostCopy";
             RespawnInterval = -1;
-
-            MaxDistance = 6500;
-            TetherRange = 6600;
+            MaxDistance = 0;
+            TetherRange = 0;
             Size = 60;
             Level = 79;
             MaxSpeedBase = 300;
@@ -411,9 +403,8 @@ namespace DOL.AI.Brain
             AggroRange = 400;
             ThinkInterval = 2500;
         }
-
+        public static bool BafHost = false;
         public static bool BafMobs = false;
-        public static bool BafMobs2 = false;
 
         #region path points checks
 
@@ -471,7 +462,6 @@ namespace DOL.AI.Brain
         public static bool walkback = false;
 
         #endregion
-
         public void HostPath()
         {
             #region path glocs
@@ -4013,9 +4003,7 @@ namespace DOL.AI.Brain
                 #endregion
             }
         }
-
         #region Set Baf Mob stats
-
         public void SetMobstats()
         {
             if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.AttackState == true)) //if in combat
@@ -4060,64 +4048,61 @@ namespace DOL.AI.Brain
                 }
             }
         }
-
         #endregion
 
         public override void Think()
         {
             if (!HasAggressionTable())
             {
-                Body.Health = Body.MaxHealth;
+                BafHost = false;
                 BafMobs = false;
-                BafMobs2 = false;
+                Body.Health = Body.MaxHealth;
             }
             if (Body.IsMoving)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
                 {
                     if (player != null)
                     {
-                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1 && !AggroTable.ContainsKey(player))
                         {
                             AddToAggroList(player, 10);
                         }
                     }
-                    if (player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
-                    {
-                        if (AggroTable.Count > 0)
-                        {
-                            ClearAggroList();//clear list if it contain any aggroed players
-                        }
-                    }
                 }
             }
-
-            if (Body.InCombat && HasAggro)
+            if (HasAggro)
             {
-                if (BafMobs == false)
+                if (BafHost == false)//baf all copies to pulled host
                 {
                     foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
-                            if (npc.IsAlive && npc?.Brain is HostBrain)
+                            if (npc.IsAlive && npc.Brain is HostBrain && Body.PackageID != npc.PackageID)
                             {
-                                AddAggroListTo(npc?.Brain as HostBrain);
-                                BafMobs = true;
+                                GameLiving target = Body.TargetObject as GameLiving;
+                                HostBrain brain = (HostBrain)npc.Brain;
+                                if (target != null)
+                                {
+                                    brain.AddToAggroList(target, 10);
+                                    npc.StartAttack(target);
+                                }
+                                BafHost = true;
                             }
                         }
                     }
                 }
-                if (BafMobs2 == false)
+                if (BafMobs == false)//baf linked mobs to boss
                 {
                     foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc2 != null)
                         {
-                            if (npc2.IsAlive && npc2?.PackageID == "HostBaf")
+                            if (npc2.IsAlive && npc2.PackageID == "HostBaf")
                             {
-                                AddAggroListTo(npc2?.Brain as StandardMobBrain);
-                                BafMobs2 = true;
+                                AddAggroListTo(npc2.Brain as StandardMobBrain);
+                                BafMobs = true;
                             }
                         }
                     }

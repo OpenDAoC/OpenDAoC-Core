@@ -246,6 +246,32 @@ namespace DOL.GS
 		}
 		
 		/// <summary>
+		/// Used to send translated spell resist messages
+		/// </summary>
+		/// <param name="target">The client receiving the message (e.g., "client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player" (if no args, then use "null")</param>
+		public static void SendResistMessage(GameClient target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
+		/// Used to send translated spell resist messages
+		/// </summary>
+		/// <param name="target">The player client receiving the message (e.g., "player.Client")</param>
+		/// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+		/// <param name="args">Any argument values to include in the message, such as "client.Player" (if no args, then use "null")</param>
+		public static void SendResistMessage(GamePlayer target, string translationID, params object[] args)
+		{
+			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
+			
+			target.Out.SendMessage(translatedMsg, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+		}
+		
+		/// <summary>
 		/// Used to send translated error/alert messages
 		/// </summary>
 		/// <param name="target">The client receiving the error/alert (e.g., "client")</param>

@@ -32,7 +32,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162133);
@@ -85,13 +94,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 850;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.55;
         }
 
 

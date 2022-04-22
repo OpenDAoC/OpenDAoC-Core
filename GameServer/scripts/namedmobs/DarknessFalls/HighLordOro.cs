@@ -29,7 +29,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 55; // dmg reduction for rest resists
+            }
+        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162132);
@@ -82,13 +91,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 850;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.55;
         }
 
         public override void Die(GameObject killer)
@@ -173,7 +182,16 @@ namespace DOL.GS
             : base()
         {
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 45; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 45; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 45; // dmg reduction for melee dmg
+                default: return 35; // dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
@@ -192,7 +210,7 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 150;
+            return 250;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)

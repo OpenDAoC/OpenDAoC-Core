@@ -18,6 +18,7 @@ namespace DOL.GS
             double baseSpeedDebuff = 0.15;
             double baseStrDebuff = 0.075;
             
+            /*
             if (SpellHandler.Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
             {
                 if (Util.Chance(SpellHandler.Caster.SpellCriticalChance))
@@ -28,7 +29,7 @@ namespace DOL.GS
                     baseSpeedDebuff = modSpeed;
                     baseStrDebuff = modStr;
                 }
-            }
+            }*/
 
             Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, EffectType, 1.0 - baseSpeedDebuff);
             Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, EffectType, 1.0 - baseStrDebuff);

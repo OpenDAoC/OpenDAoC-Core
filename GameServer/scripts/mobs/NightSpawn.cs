@@ -37,9 +37,9 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (!Body.CurrentRegion.IsNightTime)
+            if (Body.CurrentRegion.IsNightTime == false)
             {
-                if (!changed)
+                if (changed == false)
                 {
                     oldFlags = Body.Flags;
                     Body.Flags ^= GameNPC.eFlags.CANTTARGET;
@@ -56,7 +56,7 @@ namespace DOL.AI.Brain
                     changed = true;
                 }
             }
-            else
+            if (Body.CurrentRegion.IsNightTime)
             {
                 if (changed)
                 {

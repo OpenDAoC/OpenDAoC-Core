@@ -66,12 +66,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 1000;
+			return 800;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.85;
+			return 0.55;
 		}
 		public override int MaxHealth
 		{
@@ -464,7 +464,7 @@ namespace DOL.GS
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
 		public override int GetResist(eDamageType damageType)
 		{

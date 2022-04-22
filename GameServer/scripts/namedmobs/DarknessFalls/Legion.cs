@@ -45,6 +45,16 @@ namespace DOL.GS.Scripts
             : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 85; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 85; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 85; // dmg reduction for melee dmg
+                default: return 85; // dmg reduction for rest resists
+            }
+        }
 
         public override bool AddToWorld()
         {
@@ -100,13 +110,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 900;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.65;
         }
 
         public override void Die(GameObject killer)
@@ -338,7 +348,7 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 150;
+            return 250;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
