@@ -24,7 +24,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 40;// dmg reduction for rest resists
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override int AttackRange
