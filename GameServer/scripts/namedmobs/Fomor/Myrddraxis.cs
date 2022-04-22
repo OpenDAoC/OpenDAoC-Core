@@ -143,12 +143,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 900;
+			return 800;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.65;
+			return 0.55;
 		}
 		public override int MaxHealth
 		{
@@ -342,7 +342,7 @@ namespace DOL.AI.Brain
 			set { randomtarget2 = value; }
 		}
 		List<GamePlayer> Enemys_To_DOT = new List<GamePlayer>();
-		public int PickRandomTarget2(RegionTimer timer)
+		public int PickRandomTarget2(ECSGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -365,14 +365,16 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
 						RandomTarget2 = Target;//set random target to static RandomTarget
-						new RegionTimer(Body, new RegionTimerCallback(CastDOT), 2000);
+						int _castDotTime = 2000;
+						ECSGameTimer _CastDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), _castDotTime);
+						_CastDot.Start(_castDotTime);
 						CanCast2 = true;
 					}
 				}
 			}
 			return 0;
 		}
-		public int CastDOT(RegionTimer timer)
+		public int CastDOT(ECSGameTimer timer)
 		{
 			if (HasAggro && RandomTarget2 != null)
 			{
@@ -384,11 +386,13 @@ namespace DOL.AI.Brain
 					Body.CastSpell(Hydra_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				new RegionTimer(Body, new RegionTimerCallback(ResetDOT), 5000);
+				int _resetDotTime = 5000;
+				ECSGameTimer _ResetDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), _resetDotTime);
+				_ResetDot.Start(_resetDotTime);
 			}
 			return 0;
 		}
-		public int ResetDOT(RegionTimer timer)
+		public int ResetDOT(ECSGameTimer timer)
 		{
 			RandomTarget2 = null;
 			CanCast2 = false;
@@ -404,7 +408,7 @@ namespace DOL.AI.Brain
 			set { randomtarget = value; }
 		}
 		List<GamePlayer> Enemys_To_DD = new List<GamePlayer>();
-		public int PickRandomTarget(RegionTimer timer)
+		public int PickRandomTarget(ECSGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -427,7 +431,9 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 						RandomTarget = Target;//set random target to static RandomTarget
-						new RegionTimer(Body, new RegionTimerCallback(CastDD), 5000);
+						int _castDotTime = 5000;
+						ECSGameTimer _CastDD = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), _castDotTime);
+						_CastDD.Start(_castDotTime);
 						BroadcastMessage(String.Format(Body.Name + " taking a big flame breath at " + RandomTarget.Name + "."));
 						CanCast = true;
 					}
@@ -435,7 +441,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDD(RegionTimer timer)
+		public int CastDD(ECSGameTimer timer)
 		{
 			if (HasAggro && RandomTarget != null)
 			{
@@ -447,11 +453,13 @@ namespace DOL.AI.Brain
 					Body.CastSpell(Hydra_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				new RegionTimer(Body, new RegionTimerCallback(ResetDD), 5000);
+				int _resetDDTime = 5000;
+				ECSGameTimer _ResetDD = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 5000);
+				_ResetDD.Start(_resetDDTime);
 			}
 			return 0;
 		}
-		public int ResetDD(RegionTimer timer)
+		public int ResetDD(ECSGameTimer timer)
 		{
 			RandomTarget = null;
 			CanCast = false;
@@ -460,7 +468,7 @@ namespace DOL.AI.Brain
 		}
         #endregion
         #region Hydra Stun
-		public int HydraStun(RegionTimer timer)
+		public int HydraStun(ECSGameTimer timer)
         {
 			if(HasAggro && Body.IsAlive)
             {
@@ -470,7 +478,7 @@ namespace DOL.AI.Brain
         }
 		#endregion
 		#region Hydra PBAOE
-		public int HydraPBAOE(RegionTimer timer)
+		public int HydraPBAOE(ECSGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)
 			{
@@ -502,17 +510,75 @@ namespace DOL.AI.Brain
 				CanCastPBAOE1 = false;
 				CanCastPBAOE2 = false;
 				CanCastPBAOE3 = false;
+				foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
+                {
+					if(npc != null)
+                    {
+						if (MyrddraxisSecondHead.SecondHeadCount == 0)
+                        {
+							MyrddraxisSecondHead Add1 = new MyrddraxisSecondHead();
+							Add1.X = 32384;
+							Add1.Y = 31942;
+							Add1.Z = 15931;
+							Add1.CurrentRegion = Body.CurrentRegion;
+							Add1.Heading = 455;
+							Add1.Flags = GameNPC.eFlags.FLYING;
+							Add1.RespawnInterval = -1;
+							Add1.AddToWorld();
+						}
+						if (MyrddraxisThirdHead.ThirdHeadCount == 0)
+						{
+							MyrddraxisThirdHead Add2 = new MyrddraxisThirdHead();
+							Add2.X = 32187;
+							Add2.Y = 32205;
+							Add2.Z = 15961;
+							Add2.CurrentRegion = Body.CurrentRegion;
+							Add2.Heading = 4095;
+							Add2.Flags = GameNPC.eFlags.FLYING;
+							Add2.RespawnInterval = -1;
+							Add2.AddToWorld();
+						}
+						if (MyrddraxisFourthHead.FourthHeadCount == 0)
+						{
+							MyrddraxisFourthHead Add3 = new MyrddraxisFourthHead();
+							Add3.X = 32371;
+							Add3.Y = 32351;
+							Add3.Z = 15936;
+							Add3.CurrentRegion = Body.CurrentRegion;
+							Add3.Heading = 971;
+							Add3.Flags = GameNPC.eFlags.FLYING;
+							Add3.RespawnInterval = -1;
+							Add3.AddToWorld();
+						}
+						if (MyrddraxisFifthHead.FifthHeadCount == 0)
+						{
+							MyrddraxisFifthHead Add4 = new MyrddraxisFifthHead();
+							Add4.X = 32576;
+							Add4.Y = 32133;
+							Add4.Z = 15936;
+							Add4.CurrentRegion = Body.CurrentRegion;
+							Add4.Heading = 4028;
+							Add4.Flags = GameNPC.eFlags.FLYING;
+							Add4.RespawnInterval = -1;
+							Add4.AddToWorld();
+						}
+					}
+                }
 			}
 			if (Body.IsAlive && HasAggro)
 			{
 				if(StartCastDD==false)
                 {
-					new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(35000,45000));
+					int _pickRandomTargetTime = Util.Random(35000, 45000);
+					ECSGameTimer _PickRandomTarget = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), _pickRandomTargetTime);
+					_PickRandomTarget.Start(_pickRandomTargetTime);
 					StartCastDD = true;
 				}
 				if (StartCastDOT == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget2), Util.Random(35000, 45000));
+					int _pickRandomTargetTime2 = Util.Random(35000, 45000);
+					ECSGameTimer _PickRandomTarget2 = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), _pickRandomTargetTime2);
+					_PickRandomTarget2.Start(_pickRandomTargetTime2);
 					StartCastDOT = true;
 				}
 				if (IsPulled == false)
@@ -567,25 +633,33 @@ namespace DOL.AI.Brain
 				#region Hydra Stun
 				if (Body.HealthPercent <= 80 && CanCastStun1==false)
                 {
-					new RegionTimer(Body, new RegionTimerCallback(HydraStun), 5000);
+					int _hydraStunTime = 5000;
+					ECSGameTimer _HydraStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), _hydraStunTime);
+					_HydraStun.Start(_hydraStunTime);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun1 = true;
                 }
 				else if (Body.HealthPercent <= 60 && CanCastStun2 == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(HydraStun), 5000);
+					int _hydraStunTime = 5000;
+					ECSGameTimer _HydraStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), _hydraStunTime);
+					_HydraStun.Start(_hydraStunTime);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun2 = true;
 				}
 				else if (Body.HealthPercent <= 40 && CanCastStun3 == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(HydraStun), 5000);
+					int _hydraStunTime = 5000;
+					ECSGameTimer _HydraStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), _hydraStunTime);
+					_HydraStun.Start(_hydraStunTime);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun3 = true;
 				}
 				else if (Body.HealthPercent <= 20 && CanCastStun4 == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(HydraStun), 5000);
+					int _hydraStunTime = 5000;
+					ECSGameTimer _HydraStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), _hydraStunTime);
+					_HydraStun.Start(_hydraStunTime);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun4 = true;
 				}
@@ -593,19 +667,25 @@ namespace DOL.AI.Brain
 				#region Hydra PBAOE
 				if (Body.HealthPercent <= 75 && CanCastPBAOE1 == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(HydraPBAOE), 7000);
+					int _hydraPBAOETime = 7000;
+					ECSGameTimer _HydraPBAOE = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraPBAOE), _hydraPBAOETime);
+					_HydraPBAOE.Start(_hydraPBAOETime);
 					BroadcastMessage(String.Format(Body.Name + " taking a massive breath of flames to annihilate enemys."));
 					CanCastPBAOE1 = true;
 				}
 				else if (Body.HealthPercent <= 50 && CanCastPBAOE2 == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(HydraPBAOE), 7000);
+					int _hydraPBAOETime = 7000;
+					ECSGameTimer _HydraPBAOE = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraPBAOE), _hydraPBAOETime);
+					_HydraPBAOE.Start(_hydraPBAOETime);
 					BroadcastMessage(String.Format(Body.Name + " taking a massive breath of flames to annihilate enemys."));
 					CanCastPBAOE2 = true;
 				}
 				else if (Body.HealthPercent <= 25 && CanCastPBAOE3 == false)
 				{
-					new RegionTimer(Body, new RegionTimerCallback(HydraPBAOE), 7000);
+					int _hydraPBAOETime = 7000;
+					ECSGameTimer _HydraPBAOE = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraPBAOE), _hydraPBAOETime);
+					_HydraPBAOE.Start(_hydraPBAOETime);
 					BroadcastMessage(String.Format(Body.Name + " taking a massive breath of flames to annihilate enemys."));
 					CanCastPBAOE3 = true;
 				}
@@ -791,7 +871,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override int AttackRange
@@ -817,10 +897,12 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 20000; }
 		}
+		public static int SecondHeadCount = 0;
 		public override void Die(GameObject killer)
 		{
+			--SecondHeadCount;
 			base.Die(killer);
 		}
         public override void DealDamage(AttackData ad)
@@ -863,8 +945,9 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 			Level = Convert.ToByte(npcTemplate.Level);
 			RespawnInterval = -1;
-			MaxSpeedBase = 0;		
-
+			MaxSpeedBase = 0;
+			++SecondHeadCount;
+			log.Warn("2nd head count = " + SecondHeadCount);
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
@@ -1005,7 +1088,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override int AttackRange
@@ -1031,10 +1114,12 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 20000; }
 		}
+		public static int ThirdHeadCount = 0;
 		public override void Die(GameObject killer)
 		{
+			--ThirdHeadCount;
 			base.Die(killer);
 		}
 		public override void DealDamage(AttackData ad)
@@ -1078,6 +1163,8 @@ namespace DOL.GS
 			Level = Convert.ToByte(npcTemplate.Level);
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
+			++ThirdHeadCount;
+			log.Warn("3th head scout = " + ThirdHeadCount);
 
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
@@ -1219,7 +1306,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override int AttackRange
@@ -1245,10 +1332,12 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 20000; }
 		}
+		public static int FourthHeadCount = 0;
 		public override void Die(GameObject killer)
 		{
+			--FourthHeadCount;
 			base.Die(killer);
 		}
 		public override void DealDamage(AttackData ad)
@@ -1292,6 +1381,8 @@ namespace DOL.GS
 			Level = Convert.ToByte(npcTemplate.Level);
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
+			++FourthHeadCount;
+			log.Warn("4th head count = " + FourthHeadCount);
 
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
@@ -1433,7 +1524,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override int AttackRange
@@ -1459,10 +1550,12 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 20000; }
 		}
+		public static int FifthHeadCount = 0;
 		public override void Die(GameObject killer)
 		{
+			--FifthHeadCount;
 			base.Die(killer);
 		}
 		public override void DealDamage(AttackData ad)
@@ -1506,6 +1599,8 @@ namespace DOL.GS
 			Level = Convert.ToByte(npcTemplate.Level);
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
+			++FifthHeadCount;
+			log.Warn("5th head count = " + FifthHeadCount);
 
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
