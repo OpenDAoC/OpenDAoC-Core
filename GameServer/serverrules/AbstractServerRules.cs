@@ -1692,7 +1692,7 @@ namespace DOL.GS.ServerRules
 
 					// realm points
 					int rpCap = living.RealmPointsValue * 2;
-					int realmPoints = (int)(playerRPValue * damagePercent * 0.5);
+					int realmPoints = (int)(playerRPValue * damagePercent);
 
                     switch (expGainPlayer?.GetConLevel(killedPlayer))
                     {

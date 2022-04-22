@@ -1579,10 +1579,11 @@ namespace DOL.GS
                 {
                     int spec = owner.WeaponSpecLevel(weaponTypeToUse);
 
-                    if (owner.Level < 5 && spec == 1) spec++;
+                    if (owner.Level < 5 && spec < 2) spec = 2;
 
                     //double lowerLimit = spec < owner.Level * 2 / 3 ? 0.25 : 0.75;
                     double lowerLimit = Math.Min(0.75 * (spec - 1) / (ad.Target.EffectiveLevel + 1) + 0.25, 1.0);
+                    if (lowerLimit < 0) lowerLimit = 0.01;
 
                     //good luck to all ye who must read this math
                     //trust in the rust, baby
@@ -1592,13 +1593,13 @@ namespace DOL.GS
                     
                     int varianceRange = (int) (upperLimit * 100 - lowerLimit * 100);
 
-                    double weaponskillCalc =
+                    double weaponskillCalc = 1 + 
                         owner.GetWeaponSkill(weapon); //this provide level * damagetable * stats part of equation
                     double strengthRelicCount =
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double armorMod = ad.Target.GetArmorAF(ad.ArmorHitLocation) /
+                    double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                     //double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
@@ -1646,10 +1647,9 @@ namespace DOL.GS
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
                     int range = upperboundary - lowerboundary;
                     damage *= (lowerboundary + Util.Random(range)) * 0.01;
-                    double weaponskillCalc = (owner.GetWeaponSkill(weapon));
-                    double armorCalc = ((ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20) * (1 +
-                        ad.Target.GetArmorAbsorb(ad.ArmorHitLocation) *
-                        (1 + ad.Target.GetResist(ad.DamageType) * .01)));
+                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + ad.Attacker.Level * 45/50d);
+                    double armorCalc = (ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * 45/50d) * (1 +
+                        ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
                     damage *= DamageMod;

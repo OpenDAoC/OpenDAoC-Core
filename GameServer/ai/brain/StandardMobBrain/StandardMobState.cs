@@ -188,7 +188,7 @@ public class StandardMobState_AGGRO : StandardMobState
     public override void Think()
     {
         // check for returning to home if to far away
-        if (!(_brain is KeepGuardBrain) && _brain.IsBeyondTetherRange() && !_brain.Body.InCombatInLast(15000))
+        if (!(_brain is KeepGuardBrain) && _brain.IsBeyondTetherRange() && !_brain.Body.InCombatInLast(25000))
         {
             _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             return;

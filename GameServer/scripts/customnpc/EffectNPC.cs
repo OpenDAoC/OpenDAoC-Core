@@ -68,7 +68,7 @@ namespace DOL.GS {
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
-            if (t == null || item == null) return false;
+            if (t == null || item == null || item.Template.Name.Equals("token_many")) return false;
             if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
             {
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -74,8 +74,8 @@ namespace DOL.GS.Spells
 			}
 			target.StopCurrentSpellcast(); //stop even if MoC or QC
 			target.rangeAttackComponent.RangeAttackTarget = null;
-			if(target is GamePlayer)
-				target.TargetObject = null;
+			//if(target is GamePlayer)
+				//target.TargetObject = null;
 
             if (target is GamePlayer)
                 MessageToLiving(target, LanguageMgr.GetTranslation((target as GamePlayer).Client, "Amnesia.MessageToTarget"), eChatType.CT_Spell);
