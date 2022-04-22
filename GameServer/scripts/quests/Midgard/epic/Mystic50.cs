@@ -202,7 +202,7 @@ namespace DOL.GS.Quests.Midgard
 				kelics_totem.Name = "Kelic's Totem";
 				kelics_totem.Level = 8;
 				kelics_totem.Item_Type = 0;
-				kelics_totem.Model = 488;
+				kelics_totem.Model = 104;
 				kelics_totem.IsDropable = false;
 				kelics_totem.IsPickable = false;
 				kelics_totem.DPS_AF = 0;
@@ -1347,7 +1347,6 @@ namespace DOL.GS.Quests.Midgard
 							break;
 						case 2:
 							Danica.SayTo(player, "It is good to see you were strong enough to survive Kelic. I can sense you have the controlling totem on you. Give me Kelic's totem now! Hurry!");
-							quest.Step = 3;
 							break;
 						case 3:
 							Danica.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
@@ -1387,6 +1386,17 @@ namespace DOL.GS.Quests.Midgard
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
+					}
+				}
+			}
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+				{
+					if (rArgs.Item.Id_nb == kelics_totem.Id_nb && quest.Step >= 2)
+					{
+						quest.Step = 3;
 					}
 				}
 			}
