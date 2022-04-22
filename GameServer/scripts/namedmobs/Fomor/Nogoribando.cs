@@ -93,7 +93,7 @@ namespace DOL.AI.Brain
 		public static bool IsSmall = false;
 		public static bool IsChangingSize = false;
 		public static bool IsInCombat = false;
-		public int ChangeSizeToBig(RegionTimer timer)
+		public int ChangeSizeToBig(ECSGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)
 			{
@@ -102,11 +102,13 @@ namespace DOL.AI.Brain
 				Body.Size = 200;
 				Body.Empathy = 300;
 				Body.Quickness = 50;
-				new RegionTimer(Body, new RegionTimerCallback(ChangeSizeToSmall), 30000);
+				int _changeSizeToSmallTime = 30000;
+				ECSGameTimer _ChangeSizeToSmall = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToSmall), _changeSizeToSmallTime);
+				_ChangeSizeToSmall.Start(_changeSizeToSmallTime);
 			}
 			return 0;
 		}
-		public int ChangeSizeToSmall(RegionTimer timer)
+		public int ChangeSizeToSmall(ECSGameTimer timer)
         {
 			if (HasAggro && Body.IsAlive)
 			{
@@ -117,7 +119,9 @@ namespace DOL.AI.Brain
 				Body.Size = 100;
 				Body.Empathy = npcTemplate.Empathy;
 				Body.Quickness = npcTemplate.Quickness;
-				new RegionTimer(Body, new RegionTimerCallback(ChangeSizeToBig), 30000);
+				int _changeSizeToBigTime = 30000;
+				ECSGameTimer _ChangeSizeToBig = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), _changeSizeToBigTime);
+				_ChangeSizeToBig.Start(_changeSizeToBigTime);
 			}
 			return 0;
         }
@@ -168,7 +172,9 @@ namespace DOL.AI.Brain
                 }
 				if(IsChangingSize==false)
                 {
-					new RegionTimer(Body, new RegionTimerCallback(ChangeSizeToBig), 5000);
+					int _changeSizeToBigTime = 5000;
+					ECSGameTimer _ChangeSizeToBig = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), _changeSizeToBigTime);
+					_ChangeSizeToBig.Start(_changeSizeToBigTime);
 					IsChangingSize = true;
                 }
 				if(IsSmall)
