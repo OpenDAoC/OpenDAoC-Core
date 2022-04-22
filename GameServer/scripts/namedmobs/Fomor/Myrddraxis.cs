@@ -947,7 +947,6 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
 			++SecondHeadCount;
-			log.Warn("2nd head count = " + SecondHeadCount);
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
@@ -1164,7 +1163,6 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
 			++ThirdHeadCount;
-			log.Warn("3th head scout = " + ThirdHeadCount);
 
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
@@ -1382,7 +1380,6 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
 			++FourthHeadCount;
-			log.Warn("4th head count = " + FourthHeadCount);
 
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
@@ -1600,7 +1597,6 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
 			++FifthHeadCount;
-			log.Warn("5th head count = " + FifthHeadCount);
 
 			Faction = FactionMgr.GetFactionByID(105);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
