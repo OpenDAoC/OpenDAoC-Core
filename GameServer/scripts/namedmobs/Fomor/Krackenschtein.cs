@@ -25,7 +25,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 40;// dmg reduction for rest resists
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -146,11 +146,13 @@ namespace DOL.AI.Brain
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
-				new RegionTimer(Body, new RegionTimerCallback(CastBolt), 1000);
+				int _castBoltTime = 1000;
+				ECSGameTimer _CastBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), _castBoltTime);
+				_CastBolt.Start(_castBoltTime);
 				CanCast = true;
 			}
 		}
-		public int CastBolt(RegionTimer timer)
+		public int CastBolt(ECSGameTimer timer)
 		{
 			GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
@@ -160,10 +162,12 @@ namespace DOL.AI.Brain
 				Body.CastSpell(Boss_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			new RegionTimer(Body, new RegionTimerCallback(ResetBolt), Util.Random(15000, 20000));
+			int _resetBoltTime = Util.Random(15000, 20000);
+			ECSGameTimer _ResetBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), _resetBoltTime);
+			_ResetBolt.Start(_resetBoltTime);
 			return 0;
 		}
-		public int ResetBolt(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetBolt(ECSGameTimer timer)//reset here so boss can start dot again
 		{
 			RandomTarget = null;
 			CanCast = false;
@@ -206,10 +210,12 @@ namespace DOL.AI.Brain
 					case 4: TeleportTarget.MoveTo(180, 32159, 36387, 16465, 3618); break;
 				}
 				CanPort = true;
-				new RegionTimer(Body, new RegionTimerCallback(ResetPort), Util.Random(25000, 35000));
+				int _resetPortTime = Util.Random(25000, 35000);
+				ECSGameTimer _ResetPort = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), _resetPortTime);
+				_ResetPort.Start(_resetPortTime);
 			}
 		}
-		public int ResetPort(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetPort(ECSGameTimer timer)//reset here so boss can start dot again
 		{
 			TeleportTarget = null;
 			CanPort = false;
