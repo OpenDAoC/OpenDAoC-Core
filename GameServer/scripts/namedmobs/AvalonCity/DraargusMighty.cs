@@ -238,30 +238,36 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if(success)
             {
-				new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
+				int _showEffectTime = 500;
+				ECSGameTimer _ShowEffect = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), _showEffectTime);
+				_ShowEffect.Start(_showEffectTime);
 			}
 			return success;
 		}
-		protected int Show_Effect(RegionTimer timer)
+		protected int Show_Effect(ECSGameTimer timer)
 		{
-			if (this.IsAlive)
+			if (IsAlive)
 			{
-				foreach (GamePlayer player in this.GetPlayersInRadius(3000))
+				foreach (GamePlayer player in GetPlayersInRadius(3000))
 				{
 					if (player != null)
 					{
 						player.Out.SendSpellEffectAnimation(this, this, 55, 0, false, 0x01);
 					}
 				}
-				new RegionTimer(this, new RegionTimerCallback(DoCast), 1500);
+				int _doCastTime = 1500;
+				ECSGameTimer _DoCast = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), _doCastTime);
+				_DoCast.Start(_doCastTime);
 			}
 			return 0;
 		}
-		protected int DoCast(RegionTimer timer)
+		protected int DoCast(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				new RegionTimer(this, new RegionTimerCallback(Show_Effect), 1500);
+				int _showEffectTime = 1500;
+				ECSGameTimer _ShowEffect = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), _showEffectTime);
+				_ShowEffect.Start(_showEffectTime);
 			}
 			return 0;
 		}
