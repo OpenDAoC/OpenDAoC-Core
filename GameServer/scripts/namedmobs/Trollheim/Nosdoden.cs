@@ -359,6 +359,7 @@ namespace DOL.AI.Brain
 {
 	public class NosdodenBrain : StandardMobBrain
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public NosdodenBrain()
 			: base()
 		{
@@ -527,7 +528,7 @@ namespace DOL.AI.Brain
             {
 				if (StartCastDOT == false)
 				{
-					int _pickRandomTarget2Time = Util.Random(35000, 45000);					
+					int _pickRandomTarget2Time = Util.Random(20000, 30000);					
 					ECSGameTimer _PickRandomTarget2 = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), _pickRandomTarget2Time);
 					_PickRandomTarget2.Start(_pickRandomTarget2Time);
 					StartCastDOT = true;
@@ -624,13 +625,6 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 100;
 			AggroRange = 1000;
-		}
-		public bool BeenAttackedRecently
-		{
-			get
-			{
-				return GameLoop.GameLoopTime - Body.LastAttackedByEnemyTick < 10 * 1000;
-			}
 		}
 		#region Mob Class Berserker
 		private protected bool CanWalkBerserker = false;
