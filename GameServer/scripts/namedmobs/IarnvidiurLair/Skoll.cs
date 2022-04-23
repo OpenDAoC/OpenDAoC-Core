@@ -168,21 +168,25 @@ namespace DOL.AI.Brain
 					{
 						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
 						{
-							new RegionTimer(Body, new RegionTimerCallback(CastDot), 1000);
+							int _castDotTime = 1000;
+							ECSGameTimer _CastDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), _castDotTime);
+							_CastDot.Start(_castDotTime);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (Skoll_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							new RegionTimer(Body, new RegionTimerCallback(CastHasteDebuff), 1000);
+							int _castHasteDebuffTime = 1000;
+							ECSGameTimer _CastHasteDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), _castHasteDebuffTime);
+							_CastHasteDebuff.Start(_castHasteDebuffTime);
 						}
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastHasteDebuff(RegionTimer timer)
+		public int CastHasteDebuff(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -190,7 +194,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDot(RegionTimer timer)
+		public int CastDot(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
