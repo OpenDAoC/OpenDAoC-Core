@@ -105,7 +105,7 @@ namespace DOL.GS.Scripts
         private DBSpell m_buffSpell;
         private Spell m_portSpell;
 
-        private RegionTimer castTimer;
+        private ECSGameTimer castTimer;
 
         public Spell PortSpell
         {
@@ -129,7 +129,7 @@ namespace DOL.GS.Scripts
         public void StartTeleporting()
         {
             if (castTimer is null)
-                castTimer = new RegionTimer(this);
+                castTimer = new ECSGameTimer(this);
 
             bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             if (GetSkillDisabledDuration(PortSpell) > 0)
@@ -187,7 +187,7 @@ namespace DOL.GS.Scripts
                 }
 
                 castTimer.Interval = PortSpell.CastTime;
-                castTimer.Callback += new RegionTimerCallback(CastTimerCallback);
+                castTimer.Callback += new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
                 castTimer.Start(PortSpell.CastTime);
                 foreach (OFAssistant assi in Assistants)
                 {
@@ -196,9 +196,9 @@ namespace DOL.GS.Scripts
             }
         }
 
-        private int CastTimerCallback(RegionTimer selfRegenerationTimer)
+        private int CastTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
-            castTimer.Callback -= new RegionTimerCallback(CastTimerCallback);
+            castTimer.Callback -= new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
             OnAfterSpellCastSequence(null);
             return 10;
         }

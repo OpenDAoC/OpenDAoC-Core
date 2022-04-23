@@ -263,13 +263,13 @@ namespace DOL.AI.Brain
             }
         }
 
-        public int PortTimer(RegionTimer timer)
+        public int PortTimer(ECSGameTimer timer)
         {
-            new RegionTimer(Body, new RegionTimerCallback(DoPortTimer), 2000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoPortTimer), 2000);
             return 0;
         }
 
-        public int DoPortTimer(RegionTimer timer)
+        public int DoPortTimer(ECSGameTimer timer)
         {
             TeleportPlayer();
             spam_teleport = false;
@@ -319,7 +319,7 @@ namespace DOL.AI.Brain
                 if (spam_teleport == false && Body.TargetObject != null && HakrAdd.IceweaverCount > 0)
                 {
                     int rand = Util.Random(10000, 20000);
-                    new RegionTimer(Body, new RegionTimerCallback(PortTimer), rand);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PortTimer), rand);
                     spam_teleport = true;
                 }
             }

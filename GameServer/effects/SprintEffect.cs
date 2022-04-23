@@ -32,7 +32,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The timer that reduce the endurance every interval
 		/// </summary>
-		RegionTimer m_tickTimer;
+		ECSGameTimer m_tickTimer;
 
 		/// <summary>
 		/// The amount of timer ticks player was not moving
@@ -50,8 +50,8 @@ namespace DOL.GS.Effects
 				m_tickTimer.Stop();
 				m_tickTimer = null;
 			}
-			m_tickTimer = new RegionTimer(target);
-			m_tickTimer.Callback = new RegionTimerCallback(PulseCallback);
+			m_tickTimer = new ECSGameTimer(target);
+			m_tickTimer.Callback = new ECSGameTimer.ECSTimerCallback(PulseCallback);
 			m_tickTimer.Start(1);
             target.StartEnduranceRegeneration();
 		}
@@ -74,7 +74,7 @@ namespace DOL.GS.Effects
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns></returns>
-		public int PulseCallback(RegionTimer callingTimer)
+		public int PulseCallback(ECSGameTimer callingTimer)
 		{
 			int nextInterval;
 

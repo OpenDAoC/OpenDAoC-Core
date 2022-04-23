@@ -15,7 +15,7 @@ namespace DOL.GS.Effects
 		private const String m_delveString = "Increases the effective level of the pet by the listed number (capped at level 70).";
 		private GameNPC m_living;
 		private Int32 m_effectDuration;
-		private RegionTimer m_expireTimer;
+		private ECSGameTimer m_expireTimer;
 		private byte m_value;
 		private int m_growSize = 15;
 		public const int JUGGERNAUT_CAP_EFFECT = 70;
@@ -70,7 +70,7 @@ namespace DOL.GS.Effects
 		private void StartTimers()
 		{
 			StopTimers();
-			m_expireTimer = new RegionTimer(m_living, new RegionTimerCallback(ExpireCallback), m_effectDuration * 1000);
+			m_expireTimer = new ECSGameTimer(m_living, new ECSGameTimer.ECSTimerCallback(ExpireCallback), m_effectDuration * 1000);
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace DOL.GS.Effects
 		/// The callback for when the effect expires
 		/// </summary>
 		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int ExpireCallback(RegionTimer timer)
+		private int ExpireCallback(ECSGameTimer timer)
 		{
 			Cancel(false);
 
@@ -116,7 +116,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				RegionTimer timer = m_expireTimer;
+				ECSGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;

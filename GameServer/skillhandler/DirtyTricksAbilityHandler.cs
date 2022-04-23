@@ -191,7 +191,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The timer that will cancel the effect
 		/// </summary>
-		protected RegionTimer m_expireTimer;
+		protected ECSGameTimer m_expireTimer;
 
 		/// <summary>
 		/// Creates a new berserk effect
@@ -240,7 +240,7 @@ namespace DOL.GS.Effects
 		protected virtual void StartTimers()
 		{
 			StopTimers();
-			m_expireTimer = new RegionTimer(m_player, new RegionTimerCallback(ExpiredCallback), 10000);
+			m_expireTimer = new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(ExpiredCallback), 10000);
 		}
 
 		/// <summary>
@@ -261,7 +261,7 @@ namespace DOL.GS.Effects
 		/// </summary>
 		/// <param name="callingTimer">the regiontimer of the effect</param>
 		/// <returns>the new intervall (0) </returns>
-		protected virtual int ExpiredCallback(RegionTimer callingTimer)
+		protected virtual int ExpiredCallback(ECSGameTimer callingTimer)
 		{
 			Cancel(false);
 			return 0;
@@ -290,7 +290,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				RegionTimer timer = m_expireTimer;
+				ECSGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;

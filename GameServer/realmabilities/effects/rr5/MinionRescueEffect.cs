@@ -44,7 +44,7 @@ namespace DOL.GS.Effects
 
         // Objects
         private GameNPC[] spirits;				// Array containing spirits
-        private RegionTimer[] spiritTimer;			// Array containing spirit timers
+        private ECSGameTimer[] spiritTimer;			// Array containing spirit timers
         private Spell spiritSpell;			// The spell to cast
         private SpellLine spiritSpellLine;	 	// The spell line
         private ISpellHandler stun;					// The spell handler
@@ -55,7 +55,7 @@ namespace DOL.GS.Effects
         {
             // Init NPC & Timer array
             spirits = new GameNPC[spiritCount];
-            spiritTimer = new RegionTimer[spiritCount];
+            spiritTimer = new ECSGameTimer[spiritCount];
 
             // Build spell
             DBSpell tSpell = new DBSpell();
@@ -134,20 +134,20 @@ namespace DOL.GS.Effects
             spirits[spiritId].AddToWorld();
             spirits[spiritId].TargetObject = targetPlayer;
             spirits[spiritId].Follow(targetPlayer, 0, RealmAbilities.MinionRescueAbility.SpellRadius + 100);
-            spiritTimer[spiritId] = new RegionTimer(spirits[spiritId], new RegionTimerCallback(spiritCallBack), 200);
+            spiritTimer[spiritId] = new ECSGameTimer(spirits[spiritId], new ECSGameTimer.ECSTimerCallback(spiritCallBack), 200);
         }
 
         // Check distance between spirit and target
-        private int spiritCallBack(RegionTimer timer)
+        private int spiritCallBack(ECSGameTimer timer)
         {
-            if (timer.Owner == null || !(timer.Owner is GameNPC))
+            if (timer.TimerOwner == null || !(timer.TimerOwner is GameNPC))
             {
                 timer.Stop();
                 timer = null;
                 return 0;
             }
 
-            GameNPC spirit = timer.Owner as GameNPC;
+            GameNPC spirit = timer.TimerOwner as GameNPC;
             GamePlayer targetPlayer = spirit.TargetObject as GamePlayer;
 
             if (targetPlayer == null || !targetPlayer.IsAlive)

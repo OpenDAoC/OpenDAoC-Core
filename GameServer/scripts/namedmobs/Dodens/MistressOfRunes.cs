@@ -212,7 +212,7 @@ namespace DOL.AI.Brain
 							CheckNearsight(player);
 
 							//cast AoE Spears
-							new RegionTimer(Body, new RegionTimerCallback(timer => CastSpear(timer, player)), 4000);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(timer => CastSpear(timer, player)), 4000);
 						}
 					}
 				}
@@ -306,7 +306,7 @@ namespace DOL.AI.Brain
 			/// </summary>
 			/// <param name="timer">The timer that started this cast.</param>
 			/// <returns></returns>
-			private int CastSpear(RegionTimer timer, GameLiving target)
+			private int CastSpear(ECSGameTimer timer, GameLiving target)
 			{
 				if (target == null || !target.IsAlive)
 					return 0;
@@ -374,7 +374,7 @@ namespace DOL.AI.Brain
 				if (NearsightTarget == null) return;
 				Body.TurnTo(NearsightTarget);
 				
-				new RegionTimer(Body, new RegionTimerCallback(CastNearsight), 2000);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastNearsight), 2000);
 			}
 
 			/// <summary>
@@ -382,7 +382,7 @@ namespace DOL.AI.Brain
 			/// </summary>
 			/// <param name="timer">The timer that started this cast.</param>
 			/// <returns></returns>
-			private int CastNearsight(RegionTimer timer)
+			private int CastNearsight(ECSGameTimer timer)
 			{
 				// Turn around to the target and cast Nearsight, then go back to the original
 				// target, if one exists.

@@ -150,7 +150,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
         {
             if (Util.Chance(5) && Body.TargetObject != null)
             {
-                new RegionTimer(Body, new RegionTimerCallback(CastAOEDD), 3000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastAOEDD), 3000);
             }
             foreach (GameNPC copy in Body.GetNPCsInRadius(5000))
             {
@@ -167,7 +167,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
         }
         base.Think();
     }
-    public int CastAOEDD(RegionTimer timer)
+    public int CastAOEDD(ECSGameTimer timer)
     {
         Body.CastSpell(GSCAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
         return 0;

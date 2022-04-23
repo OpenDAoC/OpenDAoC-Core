@@ -146,9 +146,9 @@ namespace DOL.GS
 			}
 
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.Salvaging", item.Name), yield.Count);
-            player.CraftTimer = new RegionTimer(player)
+            player.CraftTimer = new ECSGameTimer(player)
             {
-                Callback = new RegionTimerCallback(Proceed)
+                Callback = new ECSGameTimer.ECSTimerCallback(Proceed)
             };
             player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
 			player.CraftTimer.Properties.setProperty(SALVAGED_ITEM, item);
@@ -229,7 +229,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="timer"></param>
 		/// <returns></returns>
-		protected static int Proceed(RegionTimer timer)
+		protected static int Proceed(ECSGameTimer timer)
 		{
 			GamePlayer player = timer.Properties.getProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
 			InventoryItem itemToSalvage = timer.Properties.getProperty<InventoryItem>(SALVAGED_ITEM, null);

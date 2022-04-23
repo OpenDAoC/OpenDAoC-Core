@@ -47,13 +47,13 @@ namespace DOL.GS
                 if(HorsemanCount == 3 && horseman2==false)
                 {
                     BroadcastMessage(String.Format("Bellum says, 'Prepare yourselves for war. One minute, you are granted.'"));
-                    new RegionTimer(this, new RegionTimerCallback(SpawnHorsemanBellum), 60000);//60s before starting
+                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanBellum), 60000);//60s before starting
                     horseman2 = true;
                 }
                 if(HorsemanCount == 2 && horseman2 == true && horseman3==false)
                 {
                     BroadcastMessage(String.Format("Morbus says, 'Sometimes it is the smallest things that are the most deadly. Be prepared in one minute..'"));
-                    new RegionTimer(this, new RegionTimerCallback(SpawnHorsemanMorbus), 60000);//60s before starting
+                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanMorbus), 60000);//60s before starting
                     horseman3 = true;
                 }
                 if (HorsemanCount == 1 && horseman2 == true && horseman3 == true && horseman4 == false)
@@ -63,13 +63,13 @@ namespace DOL.GS
                     " rush of energy now courses through them. A faint whisper in your mind warns you that mundane attacks on this creature of death" +
                     " would have little effect or even make the situation worse, but it also reassures you that the clerics, a direct conduit between the " +
                     "divine and this world, posses an unexpected advantage over the creature, Funus."));
-                    new RegionTimer(this, new RegionTimerCallback(SpawnHorsemanFunus), 60000);//60s before starting
+                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanFunus), 60000);//60s before starting
                     horseman4 = true;
                 }
                 if (HorsemanCount == 0 && horseman2 == true && horseman3 == true && horseman4 == true && spawn_apoc==false)
                 {
                     BroadcastMessage(String.Format("A thunderous voice echoes off the walls, 'Well done. You have succeeded in besting my harbingers.'"));
-                    new RegionTimer(this, new RegionTimerCallback(SpawnApoc), 5000);
+                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnApoc), 5000);
                     spawn_apoc = true;
                 }
                 StartRespawnEncounter();
@@ -85,61 +85,61 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public int Message_timer(RegionTimer timer)
+        public int Message_timer(ECSGameTimer timer)
         {
             start_respawn_check = false;
             BroadcastMessage(String.Format("Fames says loudly, 'I sense presence of many, the presence of power and ambition...'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer2), 6000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer2), 6000);//60s before starting
             return 0;
         }
-        public int Message_timer2(RegionTimer timer)
+        public int Message_timer2(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Morbus says, 'The presence of those who would challenge fate.'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer3), 6000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer3), 6000);//60s before starting
             return 0;
         }
-        public int Message_timer3(RegionTimer timer)
+        public int Message_timer3(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Bellum says, '...challenge the inevitable.'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer4), 5000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer4), 5000);//60s before starting
             return 0;
         }
-        public int Message_timer4(RegionTimer timer)
+        public int Message_timer4(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Morbus says, 'Fate cannot be changed.'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer5), 5000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer5), 5000);//60s before starting
             return 0;
         }
-        public int Message_timer5(RegionTimer timer)
+        public int Message_timer5(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Funus says with a gravely hiss, 'It is the fate of man to die, to expire like the flame of a candle.'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer6), 8000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer6), 8000);//60s before starting
             return 0;
         }
-        public int Message_timer6(RegionTimer timer)
+        public int Message_timer6(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Bellum says, 'It is the fate of man to know pain and loss.'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer7), 6000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer7), 6000);//60s before starting
             return 0;
         }
-        public int Message_timer7(RegionTimer timer)
+        public int Message_timer7(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Morbus says, '... and misery.'"));
-            new RegionTimer(this, new RegionTimerCallback(Message_timer8), 5000);//60s before starting
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer8), 5000);//60s before starting
             return 0;
         }
         public static bool FamesWaitForText = false;
-        public int Message_timer8(RegionTimer timer)
+        public int Message_timer8(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("Fames asks, 'You, "+RandomTarget.Name+", do you come to challenge fate? Come to me with your answer so that I may see the answer" +
                 " in your eyes as well as hear it your voice"));
-            new RegionTimer(this, new RegionTimerCallback(SpawnHorsemanFames), 1000);
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanFames), 1000);
             return 0;
         }
         #endregion
 
         #region Spawn Boss Timers
-        public int SpawnHorsemanFames(RegionTimer timer)
+        public int SpawnHorsemanFames(ECSGameTimer timer)
         {
             Fames Add = new Fames();
             Add.X = X;
@@ -152,7 +152,7 @@ namespace DOL.GS
             FamesWaitForText = true;
             return 0;
         }
-        public int SpawnHorsemanBellum(RegionTimer timer)
+        public int SpawnHorsemanBellum(ECSGameTimer timer)
         {
             Bellum Add = new Bellum();
             Add.X = X; 
@@ -163,7 +163,7 @@ namespace DOL.GS
             Add.AddToWorld();
             return 0;
         }
-        public int SpawnHorsemanMorbus(RegionTimer timer)
+        public int SpawnHorsemanMorbus(ECSGameTimer timer)
         {
             Morbus Add = new Morbus();
             Add.X = X;
@@ -174,7 +174,7 @@ namespace DOL.GS
             Add.AddToWorld();
             return 0;
         }
-        public int SpawnHorsemanFunus(RegionTimer timer)
+        public int SpawnHorsemanFunus(ECSGameTimer timer)
         {
             Funus Add = new Funus();//inside controller
             Add.X = X;
@@ -185,7 +185,7 @@ namespace DOL.GS
             Add.AddToWorld();
             return 0;
         }
-        public int SpawnApoc(RegionTimer timer)
+        public int SpawnApoc(ECSGameTimer timer)
         {
             Apocalypse Add = new Apocalypse();
             Add.X = X;
@@ -228,7 +228,7 @@ namespace DOL.GS
                 GamePlayer ptarget = ((GamePlayer)(PlayersInRoom[Util.Random(1, PlayersInRoom.Count) - 1]));
                 RandomTarget = ptarget;
 
-                new RegionTimer(this, new RegionTimerCallback(Message_timer), 4000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer), 4000);
                 PickedTarget = true;
             }
         }
@@ -247,13 +247,13 @@ namespace DOL.GS
                     horseman4 = false;
                     PlayersInRoom.Clear();
                     int time = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000miliseconds 
-                    new RegionTimer(this, new RegionTimerCallback(DoRespawnNow), time);
+                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoRespawnNow), time);
                     log.Debug("Starting respawn time for final caer sidi encounter, will respawn in " + time / 60000 + " minutes!");
                     start_respawn_check = true;
                 }
             }
         }
-        public int DoRespawnNow(RegionTimer timer)
+        public int DoRespawnNow(ECSGameTimer timer)
         {
             PickedTarget = false;//we start encounter again here!
             return 0;
@@ -369,7 +369,7 @@ namespace DOL.GS
     public class Fames : GameEpicBoss
     {
         public Fames() : base() { }
-        public int StartFamesTimer(RegionTimer timer)
+        public int StartFamesTimer(ECSGameTimer timer)
         {
             Flags = 0;
             return 0;
@@ -428,7 +428,7 @@ namespace DOL.GS
                                         player.Out.SendMessage("Fames says, 'Done. You are brave " + t.CharacterClass.Name + " ... or foolish. While it is most certain that your" +
                                             " actions will have little chance to alter the course of fate, you and your companions are granted a few grains of time," +
                                             " two minutes in your terms, to prepare.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-                                        new RegionTimer(this, new RegionTimerCallback(StartFamesTimer), 120000);//2min
+                                        new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(StartFamesTimer), 120000);//2min
                                         CanInteract = true;
                                     }
                                 }
@@ -1833,7 +1833,7 @@ namespace DOL.AI.Brain
                 {
                     if (spawn_swarm == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(SpawnSwarm), Util.Random(40000, 60000));//40s-60s
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSwarm), Util.Random(40000, 60000));//40s-60s
 
                         foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
@@ -1851,7 +1851,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int SpawnSwarm(RegionTimer timer)
+        public int SpawnSwarm(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2538,7 +2538,7 @@ namespace DOL.AI.Brain
                     {
                         if (fly_phase2 == false)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(FlyPhaseStart), 1000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 1000);
                             fly_phase2 = true;
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
@@ -2561,7 +2561,7 @@ namespace DOL.AI.Brain
                 {
                     if (spawn_harbringers == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(SpawnHarbringers), 2000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnHarbringers), 2000);
 
                         foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
@@ -2591,7 +2591,7 @@ namespace DOL.AI.Brain
                     {
                         if(fly_phase1 == false)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(FlyPhaseStart), 1000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 1000);
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
                                 if (player != null)
@@ -2615,17 +2615,17 @@ namespace DOL.AI.Brain
             base.Think();
         }
         #region Boss fly phase timers
-        public int FlyPhaseStart(RegionTimer timer)
+        public int FlyPhaseStart(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
                 apoc_fly_phase = true;
                 Body.MaxSpeedBase = 0;//make sure it will not move until phase ends
-                new RegionTimer(Body, new RegionTimerCallback(FlyPhaseDuration), 30000);//30s duration of phase
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseDuration), 30000);//30s duration of phase
             }
             return 0;
         }
-        public int FlyPhaseDuration(RegionTimer timer)
+        public int FlyPhaseDuration(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2640,7 +2640,7 @@ namespace DOL.AI.Brain
 
         #region Spawn Harbringers
         public static bool spawn_harbringers = false;
-        public int SpawnHarbringers(RegionTimer timer)
+        public int SpawnHarbringers(ECSGameTimer timer)
         {
             if (Apocalypse.KilledEnemys == 4)//he doint it only once, spawning 2 harbringers is killed 4 players
             {
@@ -2987,13 +2987,13 @@ namespace DOL.AI.Brain
                 {
                     GamePlayer ptarget = ((GamePlayer)(ApocPlayerList[Util.Random(1, ApocPlayerList.Count) - 1]));
                     DD_Target = ptarget;
-                    new RegionTimer(Body, new RegionTimerCallback(CastDD), 6000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 6000);
                     cast_dd = true;
                     reset_cast = false;
                 }
             }
         }
-        private int CastDD(RegionTimer timer)
+        private int CastDD(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = DD_Target;
@@ -3004,7 +3004,7 @@ namespace DOL.AI.Brain
                 Body.CastSpell(Apoc_Rain_of_Fire, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 if (reset_cast == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(ResetCast), 25000);//25s recast
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetCast), 25000);//25s recast
                     reset_cast = true;
                 }
             }
@@ -3012,7 +3012,7 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        public int ResetCast(RegionTimer timer)
+        public int ResetCast(ECSGameTimer timer)
         {
             cast_dd = false;
             return 0;

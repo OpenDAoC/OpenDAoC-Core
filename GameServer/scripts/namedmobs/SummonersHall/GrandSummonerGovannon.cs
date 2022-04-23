@@ -77,7 +77,7 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
-		public int BleedCast(RegionTimer timer)
+		public int BleedCast(ECSGameTimer timer)
         {
 			
 			return 0;
@@ -725,12 +725,12 @@ namespace DOL.AI.Brain
 					GamePlayer Target = (GamePlayer)Enemys_To_Port[Util.Random(0, Enemys_To_Port.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
 					RandomTarget.MoveTo(Body.CurrentRegionID, 32091, 39684, 16302, 4094);
-					new RegionTimer(Body, new RegionTimerCallback(ResetPort), Util.Random(10000,20000));//port every 10-20s
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), Util.Random(10000,20000));//port every 10-20s
 					CanPort = true;
 				}
 			}
 		}
-		public int ResetPort(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetPort(ECSGameTimer timer)//reset here so boss can start dot again
 		{
 			RandomTarget = null;
 			CanPort = false;

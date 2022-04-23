@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
 			{
 				if(IsCreatingSouls==false)
                 {
-					new RegionTimer(Body, new RegionTimerCallback(DoSpawn), Util.Random(5000, 8000));//every 5-8s it will spawn tortured souls
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(5000, 8000));//every 5-8s it will spawn tortured souls
 					IsCreatingSouls =true;
                 }
 				foreach(GameNPC souls in Body.GetNPCsInRadius(4000))
@@ -222,7 +222,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public int DoSpawn(RegionTimer timer)
+		public int DoSpawn(ECSGameTimer timer)
         {
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
@@ -480,7 +480,7 @@ namespace DOL.AI.Brain
 						if (IsKilled == false)
 						{
 							Body.CastSpell(Zombie_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-							new RegionTimer(Body, new RegionTimerCallback(KillZombie), 500);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(KillZombie), 500);
 							IsKilled = true;
 						}
 					}
@@ -496,7 +496,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public int KillZombie(RegionTimer timer)
+		public int KillZombie(ECSGameTimer timer)
         {
 			Body.Die(Body);
 			return 0;

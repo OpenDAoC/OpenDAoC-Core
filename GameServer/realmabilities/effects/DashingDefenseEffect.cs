@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
     {
 
         //private Int64 m_startTick;
-        private RegionTimer m_expireTimer;
+        private ECSGameTimer m_expireTimer;
         //private GamePlayer m_player;
         private Int32 m_effectDuration;
 
@@ -143,7 +143,7 @@ namespace DOL.GS.Effects
         private void StartTimers()
 		{
 			StopTimers();
-			m_expireTimer = new RegionTimer(GuardSource, new RegionTimerCallback(ExpireCallback), m_effectDuration * 1000);
+			m_expireTimer = new ECSGameTimer(GuardSource, new ECSGameTimer.ECSTimerCallback(ExpireCallback), m_effectDuration * 1000);
 		}
 
 		/// <summary>
@@ -162,7 +162,7 @@ namespace DOL.GS.Effects
         // <summary>
         // Remaining Time of the effect in milliseconds
         // <//summary>
-		private int ExpireCallback(RegionTimer timer)
+		private int ExpireCallback(ECSGameTimer timer)
 		{
 			Cancel(false);
 
@@ -187,7 +187,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				RegionTimer timer = m_expireTimer;
+				ECSGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;

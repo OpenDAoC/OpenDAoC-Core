@@ -18,12 +18,15 @@
  */
 
 using System;
-
+using System.Collections.Generic;
+using System.Linq;
 using DOL.Events;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
+using Newtonsoft.Json.Serialization;
 
 namespace DOL.GS
 {
@@ -59,7 +62,7 @@ namespace DOL.GS
 			Target = target;
 			Started = false;
 		}
-		
+
 		/// <summary>
 		/// Start Duel if is not running.
 		/// </summary>
@@ -85,18 +88,20 @@ namespace DOL.GS
 		{
 			if (!Started)
 				return;
-			
+
+			StopNegativeEffects(Starter, Target);
+			StopNegativeEffects(Target, Starter);
+			if (Caster is GamePet casterPet && (casterPet.Owner == Target || casterPet.Owner == Starter))
+			{
+				StopNegativeEffects(Target, casterPet);
+				StopNegativeEffects(Starter, casterPet);
+			}
+			StopImmunityEffects(Target);
+			StopImmunityEffects(Starter);
+
 			Started = false;
 			Target.DuelStop();
-
-			var target = Target;
 			Target = null;
-			
-			foreach (GameSpellEffect effect in Starter.EffectList.GetAllOfType<GameSpellEffect>())
-			{
-				if (effect.SpellHandler.Caster == target && !effect.SpellHandler.HasPositiveEffect)
-					effect.Cancel(false);
-			}
 
 			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Quit, new DOLEventHandler(DuelOnPlayerQuit));
 			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Linkdeath, new DOLEventHandler(DuelOnPlayerQuit));
@@ -147,12 +152,12 @@ namespace DOL.GS
 				if (brain != null)
 					target = brain.GetPlayerOwner();
 			}
-
+			
 			// Duel should end if players join group and trys to attack
 			if (ad.Attacker.Group != null && ad.Attacker.Group.IsInTheGroup(ad.Target))
 				Stop();
 			
-			if (ad.IsHit && target != Target)
+			if (ad.IsHit && (target != Target && target != Starter ))
 				Stop();
 		}
 
@@ -165,6 +170,50 @@ namespace DOL.GS
 		protected virtual void DuelOnPlayerQuit(DOLEvent e, object sender, EventArgs arguments)
 		{
 			Stop();
+		}
+		
+		public GameLiving Caster;
+		
+		/// <summary>
+		/// Stops a negative effect 
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="Caster"></param>
+		protected virtual void StopNegativeEffects(GamePlayer target, GameLiving Caster)
+		{
+			if (target == null)
+				return;
+			
+			var effects = target.effectListComponent.GetAllEffects();
+			var spelle = target.effectListComponent.GetSpellEffects();
+			foreach (var spellEffect in spelle.Where(spellEffect => spellEffect != null && !spellEffect.HasPositiveEffect && spellEffect.Caster == Caster && spellEffect.Owner == target))
+			{
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(target, spellEffect.EffectType));
+			}
+			foreach (var effect in effects.Where(effect => effect != null && !effect.HasPositiveEffect && effect.Owner == target))
+			{
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(target, effect.EffectType));
+			}
+		}
+		/// <summary>
+		/// Stops any immunity timers 
+		/// </summary>
+		/// <param name="target"></param>
+		protected virtual void StopImmunityEffects(GamePlayer target)
+		{
+			if (target == null)
+				return;
+			
+			var effects = target.effectListComponent.GetAllEffects();
+			var spelle = target.effectListComponent.GetSpellEffects();
+			foreach (var spellEffect in spelle.Where(spellEffect => spellEffect != null && spellEffect is ECSImmunityEffect && spellEffect.Caster != target))
+			{
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetImmunityEffectOnTarget(target, spellEffect.EffectType));
+			}
+			foreach (var effect in effects.Where(effect => effect != null && effect is ECSImmunityEffect && effect.Owner != Caster))
+			{
+				EffectService.RequestImmediateCancelEffect(EffectListService.GetImmunityEffectOnTarget(target, effect.EffectType));
+			}
 		}
 
 	}
