@@ -525,7 +525,7 @@ namespace DOL.AI.Brain
 				RandomTarget.TakeDamage(RandomTarget, eDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 			}
-			ECSGameTimer _ResetPort = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);			
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);			
 			return 0;
         }
         public override void OnAttackedByEnemy(AttackData ad)
@@ -533,7 +533,7 @@ namespace DOL.AI.Brain
 			if(ad != null && Util.Chance(25) && IsTargetPicked==false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
             {
 				RandomTarget = ad.Attacker as GamePlayer;
-				ECSGameTimer _ThrowPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
 				IsTargetPicked = true;
             }
             base.OnAttackedByEnemy(ad);
