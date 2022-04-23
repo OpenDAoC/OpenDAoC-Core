@@ -37,7 +37,7 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
@@ -128,32 +128,35 @@ namespace DOL.AI.Brain
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
-					if (Droom_SC_Debuff.TargetHasEffect(Body.TargetObject) == false &&
-						Body.TargetObject.IsVisibleTo(Body))
+					if (Droom_SC_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						new RegionTimer(Body, new RegionTimerCallback(CastSCDebuff), 3000);
+						int _castSCDebuffTime = 3000;
+						ECSGameTimer _CastSCDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), _castSCDebuffTime);
+						_CastSCDebuff.Start(_castSCDebuffTime);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
-					if (Droom_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false &&
-						Body.TargetObject.IsVisibleTo(Body))
+					if (Droom_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						new RegionTimer(Body, new RegionTimerCallback(CastHasteDebuff), 3000);
+						int _castHasteDebuffTime = 3000;
+						ECSGameTimer _CastHasteDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), _castHasteDebuffTime);
+						_CastHasteDebuff.Start(_castHasteDebuffTime);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
-					if (DroomDisease.TargetHasEffect(Body.TargetObject) == false &&
-						Body.TargetObject.IsVisibleTo(Body))
+					if (DroomDisease.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						new RegionTimer(Body, new RegionTimerCallback(CastDisease), 3000);
+						int _castDiseaseTime = 3000;
+						ECSGameTimer _CastDisease = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), _castDiseaseTime);
+						_CastDisease.Start(_castDiseaseTime);
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastSCDebuff(RegionTimer timer)
+		public int CastSCDebuff(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -161,7 +164,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastHasteDebuff(RegionTimer timer)
+		public int CastHasteDebuff(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -169,7 +172,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDisease(RegionTimer timer)
+		public int CastDisease(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
