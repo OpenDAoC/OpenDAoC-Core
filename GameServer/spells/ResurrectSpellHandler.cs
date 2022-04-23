@@ -65,8 +65,8 @@ namespace DOL.GS.Spells
 			else
 			{
 				targetPlayer.TempProperties.setProperty(RESURRECT_CASTER_PROPERTY, m_caster);
-                RegionTimer resurrectExpiredTimer = new RegionTimer(targetPlayer);
-				resurrectExpiredTimer.Callback = new RegionTimerCallback(ResurrectExpiredCallback);
+				ECSGameTimer resurrectExpiredTimer = new ECSGameTimer(targetPlayer);
+				resurrectExpiredTimer.Callback = new ECSGameTimer.ECSTimerCallback(ResurrectExpiredCallback);
 				resurrectExpiredTimer.Properties.setProperty("targetPlayer", targetPlayer);
 				resurrectExpiredTimer.Start(15000);
 				lock (m_resTimersByLiving.SyncRoot)
@@ -103,10 +103,10 @@ namespace DOL.GS.Spells
 		protected virtual void ResurrectResponceHandler(GamePlayer player, byte response)
 		{
 			//DOLConsole.WriteLine("resurrect responce: " + response);
-			GameTimer resurrectExpiredTimer = null;
+			ECSGameTimer resurrectExpiredTimer = null;
 			lock (m_resTimersByLiving.SyncRoot)
 			{
-				resurrectExpiredTimer = (GameTimer)m_resTimersByLiving[player];
+				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[player];
 				m_resTimersByLiving.Remove(player);
 			}
 			if (resurrectExpiredTimer != null)
@@ -189,10 +189,10 @@ namespace DOL.GS.Spells
 
 			living.MoveTo(m_caster.CurrentRegionID, m_caster.X, m_caster.Y, m_caster.Z, m_caster.Heading);
 
-			GameTimer resurrectExpiredTimer = null;
+			ECSGameTimer resurrectExpiredTimer = null;
 			lock (m_resTimersByLiving.SyncRoot)
 			{
-				resurrectExpiredTimer = (GameTimer)m_resTimersByLiving[living];
+				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[living];
 				m_resTimersByLiving.Remove(living);
 			}
 			if (resurrectExpiredTimer != null)
@@ -246,7 +246,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns></returns>
-		protected virtual int ResurrectExpiredCallback(RegionTimer callingTimer)
+		protected virtual int ResurrectExpiredCallback(ECSGameTimer callingTimer)
 		{
 			GamePlayer player = (GamePlayer)callingTimer.Properties.getProperty<object>("targetPlayer", null);
 			if (player == null) return 0;

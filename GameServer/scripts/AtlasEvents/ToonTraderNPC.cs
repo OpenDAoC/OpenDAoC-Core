@@ -175,6 +175,7 @@ namespace DOL.GS.Scripts
                     }
                     
                     player.Name = "DELETEME" + player.Name;
+                    if (player.Name.Length > 20) player.Name = player.Name.Substring(0, 20);
                     player.Reset();
                     player.Level = 2;
 

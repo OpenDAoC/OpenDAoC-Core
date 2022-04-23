@@ -14,6 +14,7 @@ GamePlayer.CastSpell.CantCastStunned:			You can't cast while stunned!
 GamePlayer.CastSpell.CantCastFumblingWords:		You are fumbling for your words, and cannot cast!
 GamePlayer.StartAttack.SpellCancelled:			Your spell is cancelled!
 GamePlayer.SwitchWeapon.SpellCancelled:			Your spell is cancelled!
+GamePlayer.Caster.Buff.EffectAlreadyActive:             {0} already has that effect. Wait until it expires. Spell failed.
 
 ## Delve Information
 DelveInfo.CastingTime:				Casting time: {0}

@@ -66,11 +66,7 @@ namespace DOL.GS.Commands
 				uint seconds = cTime / 1000 % 60;
 				bool pm = false;
 
-				if (hour == 0)
-				{
-					hour = 12;
-				}
-				else if (hour == 12)
+				if (hour == 12)
 				{
 					pm = true;
 				}
@@ -79,8 +75,12 @@ namespace DOL.GS.Commands
 					hour -= 12;
 					pm = true;
 				}
+				else if (hour == 0)
+				{
+					hour = 12;
+				}
 
-				client.Out.SendMessage("It is " + hour.ToString() + ":" + minute.ToString("00") + ":" + seconds.ToString("00") + (pm ? " pm" : ""),
+				client.Out.SendMessage("It is " + hour.ToString() + ":" + minute.ToString("00") + ":" + seconds.ToString("00") + (pm ? " pm" : " am"),
 									   eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				client.Out.SendMessage("Night time: " + client.Player.CurrentRegion.IsNightTime,
 					eChatType.CT_System, eChatLoc.CL_SystemWindow);

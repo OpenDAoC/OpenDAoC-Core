@@ -15,7 +15,7 @@ namespace DOL.GS
         {
             // "Lashing energy ripples around you."
             // "Dangerous energy surrounds {0}."
-            OnEffectStartsMsg(Owner, true, false, true);
+            OnEffectStartsMsg(Owner, true, true, true);
         }
 
         public override void OnStopEffect()
