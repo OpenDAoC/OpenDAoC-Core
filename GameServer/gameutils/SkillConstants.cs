@@ -179,6 +179,10 @@ namespace DOL.GS
 		/// </summary>
 		public const string Advanced_Evade = "Advanced Evade";
 		/// <summary>
+		/// Advanced Evade Ability
+		/// </summary>
+		public const string Enhanced_Evade = "Advanced Evade";
+		/// <summary>
 		/// Evade Ability
 		/// </summary>
 		public const string Evade = "Evade";
