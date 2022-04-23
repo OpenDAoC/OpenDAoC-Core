@@ -65,7 +65,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 20000; }
 		}
 		public override bool AddToWorld()
 		{
