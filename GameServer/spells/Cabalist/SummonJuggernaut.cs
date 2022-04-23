@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 	/// </summary>
 	/// <author>IST</author>
 	[SpellHandler("SummonJuggernaut")]
-	public class SummonJuggernaut : SummonSpellHandler
+	public class SummonJuggernaut : SummonSimulacrum
 	{
 		public SummonJuggernaut(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line) { }
@@ -28,21 +28,17 @@ namespace DOL.GS.Spells
 		}
 		
 		
-		
+		protected override IControlledBrain GetPetBrain(GameLiving owner)
+		{
+			return new JuggernautBrain(owner);
+		}
+
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			
-			IControlledBrain brain = effect.Owner.ControlledBrain;
-			GameLiving living = brain.Owner;
-			living.SetControlledBrain(null);
-			
-			GameEventMgr.RemoveHandler(living, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
-
-		    RemoveHandlers();
+			RemoveHandlers();
 			effect.Owner.Health = 0; // to send proper remove packet
 			effect.Owner.Delete();
 			return 0;
-
 		}
 		
 	}
