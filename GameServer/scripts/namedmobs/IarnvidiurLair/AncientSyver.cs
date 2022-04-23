@@ -2,7 +2,6 @@
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 
 namespace DOL.GS
@@ -49,7 +48,7 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
@@ -167,28 +166,34 @@ namespace DOL.AI.Brain
 						GameLiving target = Body.TargetObject as GameLiving;
 						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
 						{
-							new RegionTimer(Body, new RegionTimerCallback(CastDisease), 1000);
+							int _castDiseaseTime = 1000;
+							ECSGameTimer _CastDisease =  new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), _castDiseaseTime);
+							_CastDisease.Start(_castDiseaseTime);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (Syver_Str_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							new RegionTimer(Body, new RegionTimerCallback(CastStrengthDebuff), 1000);
+							int _castStrDebuffTime = 1000;
+							ECSGameTimer _CastStrDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStrengthDebuff), _castStrDebuffTime);
+							_CastStrDebuff.Start(_castStrDebuffTime);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteBuff))
 						{
-							new RegionTimer(Body, new RegionTimerCallback(CastHasteBuff), 1000);
+							int _castHasteDebuffTime = 1000;
+							ECSGameTimer _CastHasteDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteBuff), _castHasteDebuffTime);
+							_CastHasteDebuff.Start(_castHasteDebuffTime);
 						}
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastStrengthDebuff(RegionTimer timer)
+		public int CastStrengthDebuff(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -196,7 +201,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDisease(RegionTimer timer)
+		public int CastDisease(ECSGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -204,7 +209,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastHasteBuff(RegionTimer timer)
+		public int CastHasteBuff(ECSGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)
 			{
