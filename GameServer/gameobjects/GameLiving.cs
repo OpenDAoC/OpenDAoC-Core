@@ -3894,7 +3894,7 @@ namespace DOL.GS
 
 				
 			
-				if(lefthand != null)
+				if(lefthand != null && player.HasAbility( Abilities.Shield ))
                 {
 					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
