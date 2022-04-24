@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using DOL.GS;
 using log4net;
 using System.Reflection;
@@ -47,6 +49,100 @@ namespace DOL.AI.Brain
 		public override int ThinkInterval { get { return 1500; } }
 
 		public override void Think() { AttackMostWanted(); }
+		
+		public override void AttackMostWanted()
+		{
+			if (!IsActive || !m_active) return;
+			if (Body.attackComponent == null) { Body.attackComponent = new DOL.GS.AttackComponent(Body); }
+			EntityManager.AddComponent(typeof(AttackComponent), Body);
+			if (Body.castingComponent == null) { Body.castingComponent = new DOL.GS.CastingComponent(Body); }
+			EntityManager.AddComponent(typeof(CastingComponent), Body);
+
+			// if (m_target == null) m_target = (GameLiving)Body.TempProperties.getProperty<object>("target", null);
+			
+			// if (m_target == null || !m_target.IsAlive)
+			
+			m_target = CalculateNextAttackTarget();
+			if (m_target != null)
+			{
+				Body.TempProperties.setProperty("target", m_target);
+				if (Body.IsWithinRadius(m_target, Body.AttackRange) || m_melee)
+				{
+					Body.attackComponent.StartAttack(m_target);
+				}
+			}
+		}
+		
+		public GameLiving CalculateNextAttackTarget()
+		{
+			List<GameLiving> newTargets = new List<GameLiving>();
+			base.CalculateNextAttackTarget();
+			lock((m_aggroTable as ICollection).SyncRoot)
+			{
+				foreach(GameLiving living in m_aggroTable.Keys)
+				{
+					if(!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
+						continue;
+
+					if (living.IsMezzed || living.IsStealthed)
+						continue;
+
+					if (!Body.IsWithinRadius(living, MAX_AGGRO_DISTANCE, true))
+						continue;
+
+					if (!Body.IsWithinRadius(living, m_range, true))
+						continue;
+
+					newTargets.Add(living);
+				}
+			}
+
+			foreach (GamePlayer living in Body.GetPlayersInRadius(m_range, Body.CurrentRegion.IsDungeon ? false : true))
+            {
+                if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+                    continue;
+
+                if (living.IsInvulnerableToAttack)
+                    continue;
+
+                if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
+                    continue;
+
+                if (living.IsMezzed || living.IsStealthed)
+                    continue;
+
+                newTargets.Add(living);
+
+            }
+
+			foreach (GameNPC living in Body.GetNPCsInRadius(m_range, Body.CurrentRegion.IsDungeon ? false : true))
+            {
+                if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+                    continue;
+
+                if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
+                    continue;
+
+                if (living.IsMezzed || living.IsStealthed)
+                    continue;
+
+                if (Body.GetConLevel(living) <= -3)
+	                continue;
+
+                newTargets.Add(living);
+				
+			}
+
+			// always favor previous targets and new targets that have not been attacked first, then re-attack old targets
+
+            if (newTargets.Count > 0)
+			{
+				return newTargets[Util.Random(newTargets.Count - 1)];
+			}
+
+            m_aggroTable.Clear();
+			return null;
+		}
 
 		public void SetAggressionState(eAggressionState state) { }
 		

@@ -33,8 +33,10 @@ namespace DOL.GS.Spells
 		
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			if (target == null)
+				target = (m_pet.Brain as ForestheartAmbusherBrain).CalculateNextAttackTarget();
 			base.ApplyEffectOnTarget(target, effectiveness);
-
+			
 			m_pet.TempProperties.setProperty("target", target);
 			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
 			(m_pet.Brain as ForestheartAmbusherBrain).Think();
