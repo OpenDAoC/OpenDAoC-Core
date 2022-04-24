@@ -14,7 +14,7 @@ namespace DOL.GS
     {
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        RegionTimer m_timer;
+		ECSGameTimer m_timer;
         GamePlayer m_player;
 		GuildBannerItem m_item;
         WorldInventoryItem gameItem;
@@ -72,7 +72,7 @@ namespace DOL.GS
                             m_timer = null;
                         }
 
-                        m_timer = new RegionTimer(m_player, new RegionTimerCallback(TimerTick));
+                        m_timer = new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(TimerTick));
                         m_timer.Start(1);
 
                     }
@@ -112,7 +112,7 @@ namespace DOL.GS
             }
         }
 
-        private int TimerTick(RegionTimer timer)
+        private int TimerTick(ECSGameTimer timer)
         {
             foreach (GamePlayer player in m_player.GetPlayersInRadius(1500))
             {

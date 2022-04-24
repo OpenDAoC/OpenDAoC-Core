@@ -27,7 +27,7 @@ using DOL.Database;
 namespace DOL.GS.Behaviour.Actions
 {
     [ActionAttribute(ActionType = eActionType.CustomTimer)]
-    public class CustomTimerAction : AbstractAction<RegionTimer,int>
+    public class CustomTimerAction : AbstractAction<ECSGameTimer,int>
     {
 
         public CustomTimerAction(GameNPC defaultNPC,  Object p, Object q)
@@ -37,14 +37,14 @@ namespace DOL.GS.Behaviour.Actions
         }
 
 
-        public CustomTimerAction(GameNPC defaultNPC, RegionTimer regionTimer, int delay)
-            : this(defaultNPC, (object) regionTimer,(object) delay) { }
+        public CustomTimerAction(GameNPC defaultNPC, ECSGameTimer gameTimer, int delay)
+            : this(defaultNPC, (object) gameTimer,(object) delay) { }
         
 
 
         public override void Perform(DOLEvent e, object sender, EventArgs args)
         {
-            RegionTimer timer = (RegionTimer)P;
+            var timer = (ECSGameTimer)P;
             timer.Start(Q);
         }
     }

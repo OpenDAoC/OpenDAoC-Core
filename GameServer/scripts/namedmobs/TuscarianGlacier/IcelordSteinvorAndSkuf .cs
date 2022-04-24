@@ -232,7 +232,7 @@ namespace DOL.AI.Brain
             {
                 if (PickedTarget == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(PickPlayer), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), 1000);
                     PickedTarget = true;
                 }
             }
@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
         public static int PlayerY = 0;
         public static int PlayerZ = 0;
 
-        public int PickPlayer(RegionTimer timer)
+        public int PickPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
                         SpawnEffectMob();
                         BroadcastMessage(String.Format(Body.Name + " says, '" + RandomTarget.Name +
                                                        " you are not going anywhere'"));
-                        new RegionTimer(Body, new RegionTimerCallback(EffectTimer), 8000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EffectTimer), 8000);
                     }
                 }
             }
@@ -320,7 +320,7 @@ namespace DOL.AI.Brain
             }
         }
 
-        public int EffectTimer(RegionTimer timer) //pick and remove effect mob
+        public int EffectTimer(ECSGameTimer timer) //pick and remove effect mob
         {
             if (Body.IsAlive)
             {
@@ -335,13 +335,13 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                new RegionTimer(Body, new RegionTimerCallback(RestartEffectTimer), Util.Random(10000, 15000));
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RestartEffectTimer), Util.Random(10000, 15000));
             }
 
             return 0;
         }
 
-        public int RestartEffectTimer(RegionTimer timer) //reset timer so boss can repeat it again
+        public int RestartEffectTimer(ECSGameTimer timer) //reset timer so boss can repeat it again
         {
             if (Body.IsAlive)
             {
@@ -727,7 +727,7 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public int Show_Effect(RegionTimer timer)
+        public int Show_Effect(ECSGameTimer timer)
         {
             if (this.IsAlive)
             {
@@ -739,13 +739,13 @@ namespace DOL.GS
                     }
                 }
 
-                new RegionTimer(this, new RegionTimerCallback(DoCast), 500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 500);
             }
 
             return 0;
         }
 
-        public int DoCast(RegionTimer timer)
+        public int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
             {
@@ -779,7 +779,7 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 3000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 3000);
             }
 
             return success;

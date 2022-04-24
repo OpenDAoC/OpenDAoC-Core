@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        protected virtual int PoisonTimer(RegionTimer timer)
+        protected virtual int PoisonTimer(ECSGameTimer timer)
         {
             if (Body.TargetObject != null)
             {
@@ -196,19 +196,19 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        protected virtual int AoeTimer(RegionTimer timer)//1st timer to spam broadcast before real spell
+        protected virtual int AoeTimer(ECSGameTimer timer)//1st timer to spam broadcast before real spell
         {
             if (Body.TargetObject != null)
             {
                 BroadcastMessage(String.Format(Body.Name + " gathers energy from the water..."));
                 if (spamaoe == true)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(RealAoe), 5000);//5s
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RealAoe), 5000);//5s
                 }
             }
             return 0;
         }
-        protected virtual int RealAoe(RegionTimer timer)//real timer to cast spell and reset check
+        protected virtual int RealAoe(ECSGameTimer timer)//real timer to cast spell and reset check
         {
             if (Body.TargetObject != null)
             {
@@ -264,14 +264,14 @@ namespace DOL.AI.Brain
                         if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
                         {
                             Body.TurnTo(Body.TargetObject);
-                            new RegionTimer(Body, new RegionTimerCallback(PoisonTimer), 5000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PoisonTimer), 5000);
                             spampoison = true;
                         }
                     }
                     if (spamaoe == false)
                     {
                         Body.TurnTo(Body.TargetObject);
-                        new RegionTimer(Body, new RegionTimerCallback(AoeTimer), Util.Random(15000, 20000));//15s to avoid being it too often called
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(AoeTimer), Util.Random(15000, 20000));//15s to avoid being it too often called
                         spamaoe = true;
                     }
                 }

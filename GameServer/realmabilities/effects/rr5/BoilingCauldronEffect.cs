@@ -81,10 +81,10 @@ namespace DOL.GS.Effects
             Cauldron.Z = EffectOwner.Z;
             Cauldron.AddToWorld();
 
-            new RegionTimer(EffectOwner, new RegionTimerCallback(CauldronCallBack), RealmAbilities.BoilingCauldronAbility.DURATION - 1000);
+            new ECSGameTimer(EffectOwner, new ECSGameTimer.ECSTimerCallback(CauldronCallBack), RealmAbilities.BoilingCauldronAbility.DURATION - 1000);
         }
 
-        private int CauldronCallBack(RegionTimer timer)
+        private int CauldronCallBack(ECSGameTimer timer)
         {
             if (Cauldron != null && EffectOwner != null)
             {

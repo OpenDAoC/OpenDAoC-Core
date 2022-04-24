@@ -142,8 +142,8 @@ namespace DOL.GS
 
 		protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
         {
-			player.CraftTimer = new RegionTimer(player);
-			player.CraftTimer.Callback = new RegionTimerCallback(MakeItem);
+			player.CraftTimer = new ECSGameTimer(player);
+			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(MakeItem);
 			player.CraftTimer.Properties.setProperty(PLAYER_CRAFTER, player);
 			player.CraftTimer.Properties.setProperty(RECIPE_BEING_CRAFTED, recipe);
 			player.CraftTimer.Start(craftingTime * 1000);
@@ -193,7 +193,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		protected virtual int MakeItem(RegionTimer timer)
+		protected virtual int MakeItem(ECSGameTimer timer)
 		{
 			GamePlayer player = timer.Properties.getProperty<GamePlayer>(PLAYER_CRAFTER);
 			Recipe recipe = timer.Properties.getProperty<Recipe>(RECIPE_BEING_CRAFTED);

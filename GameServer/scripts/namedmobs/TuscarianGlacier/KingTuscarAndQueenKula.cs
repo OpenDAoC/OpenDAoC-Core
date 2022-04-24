@@ -222,7 +222,7 @@ namespace DOL.AI.Brain
         }
         public static bool IsTargetPicked = false;
         List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-        public int PickPlayer(RegionTimer timer)
+        public int PickPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -359,11 +359,11 @@ namespace DOL.AI.Brain
                 {
                     if (KingTuscar.KingTuscarCount == 1)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(PickPlayer), Util.Random(15000, 25000));//timer to port and pick player
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(15000, 25000));//timer to port and pick player
                     }
                     else if(KingTuscar.KingTuscarCount == 0)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(PickPlayer), Util.Random(8000, 12000));//timer to port and pick player
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(8000, 12000));//timer to port and pick player
                     }
                     IsTargetPicked = true;
                 }

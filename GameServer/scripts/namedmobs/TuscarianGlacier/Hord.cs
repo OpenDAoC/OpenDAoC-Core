@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
                 {
                     if (Util.Chance(3))
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastHeal), 1000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 1000);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace DOL.AI.Brain
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastHeal(RegionTimer timer)
+        private int CastHeal(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format(m_HealAnnounce, Body.Name));
             Body.CastSpell(Heal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));

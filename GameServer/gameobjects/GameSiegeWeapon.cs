@@ -155,7 +155,7 @@ namespace DOL.GS
 			set { m_timesrepaired = value; }
 		}
 
-		protected RegionTimer m_decayTimer;
+		protected ECSGameTimer m_decayTimer;
 		/// <summary>
 		/// The lock object for lazy regen timers initialization
 		/// </summary>
@@ -343,14 +343,14 @@ namespace DOL.GS
 				SetGroundTarget(TargetObject.X, TargetObject.Y, TargetObject.Z);
 			if (GroundTarget == null)
 				return;
-			new RegionTimer(this, new RegionTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
+			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
 			BroadcastFireAnimation(GetActionDelay(SiegeTimer.eAction.Fire));
 			if (Owner != null)
 				Owner.Out.SendMessage("You fire " + GetName(0, false) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			Arm();
 		}
 
-		private int MakeDelayedDamage(RegionTimer callingTimer)
+		private int MakeDelayedDamage(ECSGameTimer callingTimer)
 		{
 			DoDamage();
 			return 0;
@@ -556,8 +556,8 @@ namespace DOL.GS
 			{
 				if (m_decayTimer == null)
 				{
-					m_decayTimer = new RegionTimer(this);
-					m_decayTimer.Callback = new RegionTimerCallback(DecayTimerCallback);
+					m_decayTimer = new ECSGameTimer(this);
+					m_decayTimer.Callback = new ECSGameTimer.ECSTimerCallback(DecayTimerCallback);
 				}
 				else if (m_decayTimer.IsAlive)
 					return;
@@ -576,7 +576,7 @@ namespace DOL.GS
 			}
 		}
 
-		private int DecayTimerCallback(RegionTimer callingTimer)
+		private int DecayTimerCallback(ECSGameTimer callingTimer)
 		{
 			TakeDamage(this, eDamageType.Natural, DeductHp, 0);
 			return DECAYPERIOD;

@@ -42,6 +42,7 @@ namespace DOL.AI.Brain
                     Body.Model = 220;
                     Body.Name = "Alina";
                     Body.Level = 19;
+                    Body.Realm = eRealm.Midgard;
                     Body.LoadEquipmentTemplateFromDatabase("Alina");
                     changed = true;
                 }
@@ -53,6 +54,7 @@ namespace DOL.AI.Brain
                     Body.Model = 395;
                     Body.Name = "Noble Werewolf Alina";
                     Body.Level = 22;
+                    Body.Realm = eRealm.None;
                     Body.LoadEquipmentTemplateFromDatabase("");
                     changed = false;
                 }
