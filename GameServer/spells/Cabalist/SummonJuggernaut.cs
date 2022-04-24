@@ -28,6 +28,17 @@ namespace DOL.GS.Spells
 			return base.CheckEndCast(selectedTarget);
 		}
 		
+		protected override void AddHandlers()
+		{
+			GameEventMgr.AddHandler(m_pet, GameLivingEvent.Dying, OnPetDying);
+			base.AddHandlers();
+		}
+		
+		protected override void RemoveHandlers()
+		{
+			GameEventMgr.RemoveHandler(m_pet, GameLivingEvent.Dying, OnPetDying);
+			base.AddHandlers();
+		}
 		
 		protected override IControlledBrain GetPetBrain(GameLiving owner)
 		{
@@ -56,5 +67,19 @@ namespace DOL.GS.Spells
 			base.OnNpcReleaseCommand(e, sender, arguments);
 		}
 
+		protected void OnPetDying(DOLEvent e, object sender, EventArgs arguments)
+		{
+			if (e != GameLivingEvent.Dying || sender is not GamePet)
+				return;
+			var pet = sender as GamePet;
+			var player = pet?.Owner as GamePlayer;
+			if (player == null)
+				return;
+
+			AtlasOF_JuggernautECSEffect effect = (AtlasOF_JuggernautECSEffect)EffectListService.GetEffectOnTarget(player, eEffect.Juggernaut);
+
+			effect?.Cancel(false);
+			
+		}
 	}
 }
