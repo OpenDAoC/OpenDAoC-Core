@@ -166,27 +166,21 @@ namespace DOL.AI.Brain
 						GameLiving target = Body.TargetObject as GameLiving;
 						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
 						{
-							int _castDiseaseTime = 1000;
-							ECSGameTimer _CastDisease =  new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), _castDiseaseTime);
-							_CastDisease.Start(_castDiseaseTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (Syver_Str_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							int _castStrDebuffTime = 1000;
-							ECSGameTimer _CastStrDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStrengthDebuff), _castStrDebuffTime);
-							_CastStrDebuff.Start(_castStrDebuffTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStrengthDebuff), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteBuff))
 						{
-							int _castHasteDebuffTime = 1000;
-							ECSGameTimer _CastHasteDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteBuff), _castHasteDebuffTime);
-							_CastHasteDebuff.Start(_castHasteDebuffTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteBuff), 1000);
 						}
 					}
 				}
