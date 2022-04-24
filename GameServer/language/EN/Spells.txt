@@ -105,9 +105,9 @@ GamePlayer.Shade.AlreadyShade:				You are already a shade!
 GamePlayer.Shade.NoLongerShade:				You are no longer a shade!
 
 ## Summon Animist FnF Turret
-SummonAnimistFnF.CheckBeginCast.NoGroundTarget:		You can't summon Turret without ground-target !
-SummonAnimistFnF.CheckBeginCast.TurretAreaCap:	You can't summon any more Turrets in this Area!
-SummonAnimistFnF.CheckBeginCast.TurretPlayerCap:	You cannot control any more Turrets!
+SummonAnimistFnF.CheckBeginCast.NoGroundTarget:		You can't summon a turret without ground-target !
+SummonAnimistFnF.CheckBeginCast.TurretAreaCap:	You can't summon any more turrets in this area!
+SummonAnimistFnF.CheckBeginCast.TurretPlayerCap:	You cannot control any more turrets!
 
 ## Summon Animist Pet
 SummonAnimistPet.CheckBeginCast.AlreadyHaveaPet:	You already have a charmed creature, release it first!
