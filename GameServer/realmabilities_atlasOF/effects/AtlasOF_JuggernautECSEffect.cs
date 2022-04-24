@@ -30,12 +30,9 @@ namespace DOL.GS.Effects
 
         public override void OnStopEffect()
         {
-            if (Owner.ControlledBrain != null)
+            if (Owner.ControlledBrain is JuggernautBrain)
             {
-                if (Owner.ControlledBrain is JuggernautBrain)
-                {
-                    Owner.ControlledBrain.Body.Die(null);
-                }
+                Owner.ControlledBrain.Body.TakeDamage(Owner, eDamageType.Natural, 9999,0);
             }
             base.OnStopEffect();
         }
