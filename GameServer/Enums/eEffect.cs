@@ -151,5 +151,6 @@ namespace DOL.GS
         BatteryOfLife,
         RuneOfDecimation,
         MasteryOfConcentration,
+        Juggernaut
     }
 }

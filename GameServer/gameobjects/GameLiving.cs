@@ -3678,6 +3678,7 @@ namespace DOL.GS
 			if( player != null )
 			{
 				if (player.HasAbility(Abilities.Advanced_Evade) ||
+					player.HasAbility(Abilities.Enhanced_Evade) ||
 				    player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
 				    player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
 					evadeChance = GetModified( eProperty.EvadeChance );
