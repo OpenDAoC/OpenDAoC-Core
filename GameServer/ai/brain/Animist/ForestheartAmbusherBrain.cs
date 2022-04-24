@@ -31,17 +31,37 @@ namespace DOL.AI.Brain
 
 		public virtual GameNPC GetNPCOwner()
 		{
-		    return null;
+			if (!(Owner is GameNPC))
+				return null;
+
+			GameNPC owner = Owner as GameNPC;
+
+			int i = 0;
+			while (owner != null)
+			{
+				i++;
+				if (i > 50)
+				{
+					log.Error("Error with GetNPCOwner !");
+					break;
+				}
+				if (owner.Brain is ForestheartAmbusherBrain)
+				{
+					if ((owner.Brain as ForestheartAmbusherBrain).Owner is GamePlayer)
+						return null;
+					else
+						owner = (owner.Brain as ForestheartAmbusherBrain).Owner as GameNPC;
+				}
+				else
+					break;
+			}
+			return owner;
 		}
 		public virtual GameLiving GetLivingOwner()
 		{
 		    GamePlayer player = GetPlayerOwner();
 		    if (player != null)
 				return player;
-
-		    GameNPC npc = GetNPCOwner();
-		    if (npc != null)
-				return npc;
 
 		    return null;
 		}
