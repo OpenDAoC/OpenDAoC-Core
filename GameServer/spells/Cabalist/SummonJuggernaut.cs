@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.Effects;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
@@ -41,5 +42,19 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 		
+		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+		{
+			var pet = sender as GamePet;
+			var player = pet?.Owner as GamePlayer;
+			if (player == null)
+				return;
+
+			AtlasOF_JuggernautECSEffect effect = (AtlasOF_JuggernautECSEffect)EffectListService.GetEffectOnTarget(player, eEffect.Juggernaut);
+
+			effect?.Cancel(false);
+
+			base.OnNpcReleaseCommand(e, sender, arguments);
+		}
+
 	}
 }

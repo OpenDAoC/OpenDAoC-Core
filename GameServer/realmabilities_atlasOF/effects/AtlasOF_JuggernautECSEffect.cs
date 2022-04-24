@@ -10,7 +10,6 @@ namespace DOL.GS.Effects
             EffectType = eEffect.Juggernaut;
             EffectService.RequestStartEffect(this);
         }
-
         public override ushort Icon => 4261;
 
         public override string Name => "Juggernaut";
@@ -21,13 +20,11 @@ namespace DOL.GS.Effects
         {
             SpellLine RAspellLine = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
             Spell Juggernaut = SkillBase.GetSpellByID(90801);
-
-
+            
             if (Juggernaut != null)
             {
                 Owner.CastSpell(Juggernaut, RAspellLine);
             }
-
             base.OnStartEffect();
         }
 
@@ -40,8 +37,14 @@ namespace DOL.GS.Effects
                     Owner.ControlledBrain.Body.Die(null);
                 }
             }
-
             base.OnStopEffect();
         }
+        
+        public void Cancel(bool playerCancel)
+        {
+            EffectService.RequestImmediateCancelEffect(this, playerCancel);
+            OnStopEffect();
+        }
+        
     }
 }
