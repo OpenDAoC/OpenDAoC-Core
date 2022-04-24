@@ -168,18 +168,14 @@ namespace DOL.AI.Brain
 					{
 						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
 						{
-							int _castDotTime = 1000;
-							ECSGameTimer _CastDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), _castDotTime);
-							_CastDot.Start(_castDotTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (Skoll_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							int _castHasteDebuffTime = 1000;
-							ECSGameTimer _CastHasteDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), _castHasteDebuffTime);
-							_CastHasteDebuff.Start(_castHasteDebuffTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 1000);
 						}
 					}
 				}
