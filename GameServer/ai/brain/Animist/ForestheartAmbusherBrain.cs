@@ -53,10 +53,9 @@ namespace DOL.AI.Brain
 		public override void AttackMostWanted()
 		{
 			if (!IsActive || !m_active) return;
-			if (Body.attackComponent == null) { Body.attackComponent = new DOL.GS.AttackComponent(Body); }
+			if (Body.attackComponent.IsAttacking) return;
+			if (Body.attackComponent == null) { Body.attackComponent = new AttackComponent(Body); }
 			EntityManager.AddComponent(typeof(AttackComponent), Body);
-			if (Body.castingComponent == null) { Body.castingComponent = new DOL.GS.CastingComponent(Body); }
-			EntityManager.AddComponent(typeof(CastingComponent), Body);
 
 			// if (m_target == null) m_target = (GameLiving)Body.TempProperties.getProperty<object>("target", null);
 			

@@ -71,7 +71,7 @@ namespace DOL.GS.RealmAbilities
             get
             {
                 var delveInfoList = new List<string>();
-                delveInfoList.Add("Summons a pet of your level (i.e. a 100% pet) that lasts for 4 minutes.");
+                delveInfoList.Add("Summons ground-targetted 100% pet for 3 minutes. Automatically acquires targets that enter its aggression radius.");
                 delveInfoList.Add("Casting time: instant");
                 return delveInfoList;
             }
