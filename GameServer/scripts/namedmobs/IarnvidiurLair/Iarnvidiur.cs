@@ -143,9 +143,7 @@ namespace DOL.AI.Brain
 							Body.TargetObject = TeleportTarget; //set target to randomly picked
 							Body.TurnTo(TeleportTarget);
 							Body.CastSpell(Iarnvidiur_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-							int _TeleportPlayerTime = 3000;
-							ECSGameTimer _TeleportPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), _TeleportPlayerTime);
-							_TeleportPlayer.Start(_TeleportPlayerTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), 3000);
 						}
 					}
 				}
@@ -238,9 +236,7 @@ namespace DOL.AI.Brain
 								case 2: Body.CastSpell(IarnvidiurDD,SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); break; //dd
 							}							
 							if (oldTarget != null) Body.TargetObject = oldTarget; //return to old target
-							int _resetDDTime = 3000;
-							ECSGameTimer _ResetDD = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), _resetDDTime);
-							_ResetDD.Start(_resetDDTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 3000);
 						}
 					}
 				}
@@ -273,18 +269,14 @@ namespace DOL.AI.Brain
 						GameLiving target = Body.TargetObject as GameLiving;
 						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
 						{
-							int _castDiseaseTime = 1000;
-							ECSGameTimer _CastDisease = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), _castDiseaseTime);
-							_CastDisease.Start(_castDiseaseTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (IsTargetPicked==false)
 						{
-							int _pickPlayerToDDTime = Util.Random(15000, 25000);
-							ECSGameTimer _PickPlayerToDD = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayerToDD), _pickPlayerToDDTime);
-							_PickPlayerToDD.Start(_pickPlayerToDDTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayerToDD), Util.Random(15000, 25000));
 							IsTargetPicked = true;
 						}
 					}
@@ -293,9 +285,7 @@ namespace DOL.AI.Brain
                 {
 					if (IsTargetTeleported == false)
 					{
-						int _pickTeleportPlayerTime = Util.Random(25000, 45000);
-						ECSGameTimer _PickTeleportPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), _pickTeleportPlayerTime);
-						_PickTeleportPlayer.Start(_pickTeleportPlayerTime);
+						ECSGameTimer _PickTeleportPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
 						IsTargetTeleported = true;
 					}
 				}
