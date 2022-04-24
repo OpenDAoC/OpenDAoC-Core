@@ -208,6 +208,7 @@ namespace DOL.GS
         SummonSiegeBallista = 202,
         SummonSiegeCatapult = 203,
         SummonSiegeTrebuchet = 204,
-        Null = 205
+        Null = 205,
+        SummonJuggernaut = 206
     }
 }
