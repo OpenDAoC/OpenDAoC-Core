@@ -124,18 +124,14 @@ namespace DOL.AI.Brain
 					{
 						if (Stanga_SC_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							int _castSCDebuffTime = 1000;
-							ECSGameTimer _CastSCDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), _castSCDebuffTime);
-							_CastSCDebuff.Start(_castSCDebuffTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (StangaDisease.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							int _castDiseaseTime = 1000;
-							ECSGameTimer _CastDisease = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), _castDiseaseTime);
-							_CastDisease.Start(_castDiseaseTime);
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
 						}
 					}
 				}
