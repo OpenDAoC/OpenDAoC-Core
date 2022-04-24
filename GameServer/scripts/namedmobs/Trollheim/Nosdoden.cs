@@ -407,9 +407,7 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
 						RandomTarget2 = Target;//set random target to static RandomTarget
-						int _castDotTime = 2000;
-						ECSGameTimer _CastDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), _castDotTime);
-						_CastDot.Start(_castDotTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 2000);
 						CanCast2 = true;
 					}
 				}
@@ -428,9 +426,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(NosdodenDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				int _resetDotTime = 5000;
-				ECSGameTimer _ResetDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), _resetDotTime);
-				_ResetDot.Start(_resetDotTime);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), 5000);
 			}
 			return 0;
 		}
@@ -475,9 +471,7 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 						RandomTarget = Target;//set random target to static RandomTarget
-						int _castDDTime = 5000;
-						ECSGameTimer _CastDD = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), _castDDTime);
-						_CastDD.Start(_castDDTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 5000);
 						BroadcastMessage(String.Format(Body.Name + " starts casting void magic at " + RandomTarget.Name + "."));
 						CanCast = true;
 					}
@@ -497,9 +491,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(NosdodenDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				int _resetDDTime = 5000;
-				ECSGameTimer _ResetDD = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), _resetDDTime);
-				_ResetDD.Start(_resetDDTime);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 5000);
 			}
 			return 0;
 		}
@@ -528,16 +520,12 @@ namespace DOL.AI.Brain
             {
 				if (StartCastDOT == false)
 				{
-					int _pickRandomTarget2Time = Util.Random(20000, 30000);					
-					ECSGameTimer _PickRandomTarget2 = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), _pickRandomTarget2Time);
-					_PickRandomTarget2.Start(_pickRandomTarget2Time);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(20000, 30000));
 					StartCastDOT = true;
 				}
 				if (StartCastDD == false)
 				{
-					int _pickRandomTargetTime = Util.Random(35000, 45000);
-					ECSGameTimer _PickRandomTarget = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), _pickRandomTargetTime);
-					_PickRandomTarget.Start(_pickRandomTargetTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
 					StartCastDD = true;
 				}
 			}
@@ -687,9 +675,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkBerserker == false)
 							{
-								int _walkBackTime = 500;
-								ECSGameTimer _WalkBack = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), _walkBackTime);//if target got stun then start timer to run behind it
-								_WalkBack.Start(_walkBackTime);
+								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkBerserker = true;
 							}
 						}
@@ -797,9 +783,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkWarrior == false)
 							{
-								int _walkBackTime = 500;
-								ECSGameTimer _WalkBack = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), _walkBackTime);//if target got stun then start timer to run behind it
-								_WalkBack.Start(_walkBackTime);
+								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkWarrior = true;
 							}
 						}
@@ -942,7 +926,7 @@ namespace DOL.AI.Brain
 							if (Body.IsMoving)
 								Body.StopFollowing();
 							Body.TurnTo(Body.TargetObject);
-							Body.CastSpell(InstantThaneDD_casting, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+							Body.CastSpell(InstantThaneDD_casting, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
 						}
 
 						if(Util.Chance(15) && Body.IsWithinRadius(Body.TargetObject,Body.AttackRange))
@@ -1000,9 +984,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkThane == false)
 							{
-								int _walkBackTime = 500;
-								ECSGameTimer _WalkBack = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), _walkBackTime);//if target got stun then start timer to run behind it
-								_WalkBack.Start(_walkBackTime);
+								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkThane = true;
 							}
 						}
@@ -1258,9 +1240,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkShadowblade == false)
 							{
-								int _walkBackTime = 500;
-								ECSGameTimer _WalkBack = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), _walkBackTime);//if target got stun then start timer to run behind it
-								_WalkBack.Start(_walkBackTime);
+								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkShadowblade = true;
 							}
 						}
