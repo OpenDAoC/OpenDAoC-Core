@@ -32,7 +32,7 @@ namespace DOL.GS.Effects
         {
             if (Owner.ControlledBrain is JuggernautBrain)
             {
-                Owner.ControlledBrain.Body.TakeDamage(Owner, eDamageType.Natural, 9999,0);
+                Owner.ControlledBrain.Body.TakeDamage(null, eDamageType.Natural, 9999,0);
             }
             base.OnStopEffect();
         }
