@@ -130,27 +130,21 @@ namespace DOL.AI.Brain
 				{
 					if (Droom_SC_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						int _castSCDebuffTime = 3000;
-						ECSGameTimer _CastSCDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), _castSCDebuffTime);
-						_CastSCDebuff.Start(_castSCDebuffTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 3000);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
 					if (Droom_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						int _castHasteDebuffTime = 3000;
-						ECSGameTimer _CastHasteDebuff = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), _castHasteDebuffTime);
-						_CastHasteDebuff.Start(_castHasteDebuffTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 3000);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
 					if (DroomDisease.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						int _castDiseaseTime = 3000;
-						ECSGameTimer _CastDisease = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), _castDiseaseTime);
-						_CastDisease.Start(_castDiseaseTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 3000);
 					}
 				}
 			}
