@@ -186,9 +186,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(RiftDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if (SpawnMoreAdds == false)
 					{
-						int _spawnAddsTime = Util.Random(15000, 20000);
-						ECSGameTimer _SpawnAdds = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), _spawnAddsTime);//15-20s spawn add
-						_SpawnAdds.Start(_spawnAddsTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(15000, 20000));//15-20s spawn add
 						SpawnMoreAdds = true;
 					}
 				}
