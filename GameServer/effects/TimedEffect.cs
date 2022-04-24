@@ -36,7 +36,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The timer that will cancel the effect
 		/// </summary>
-		protected RegionTimer m_expireTimer;
+		protected ECSGameTimer m_expireTimer;
 
 		/// <summary>
 		/// create timed effect that will last the given timespan in milliseconds
@@ -57,7 +57,7 @@ namespace DOL.GS.Effects
 			{
 				if (m_expireTimer == null)
 				{
-					m_expireTimer = new RegionTimer(target, new RegionTimerCallback(ExpiredCallback), m_duration);
+					m_expireTimer = new ECSGameTimer(target, new ECSGameTimer.ECSTimerCallback(ExpiredCallback), m_duration);
 				}
 				base.Start(target);
 			}
@@ -79,7 +79,7 @@ namespace DOL.GS.Effects
 			}
 		}
 
-		private int ExpiredCallback(RegionTimer timer)
+		private int ExpiredCallback(ECSGameTimer timer)
 		{
 			Stop();
 			return 0;
@@ -92,7 +92,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				RegionTimer timer = m_expireTimer;
+				ECSGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;

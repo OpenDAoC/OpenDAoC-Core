@@ -34,7 +34,7 @@ namespace DOL.GS.Effects
 		}
 
 		private GamePlayer owner;
-		private RegionTimer m_timer = null;
+		private ECSGameTimer m_timer = null;
 		private int m_healpulse;
 		private Dictionary<eProperty, int> m_debuffs;
 
@@ -58,11 +58,11 @@ namespace DOL.GS.Effects
 
 			owner.Out.SendCharStatsUpdate();
 			
-			m_timer = new RegionTimer(owner, new RegionTimerCallback(HealPulse));
+			m_timer = new ECSGameTimer(owner, new ECSGameTimer.ECSTimerCallback(HealPulse));
 			m_timer.Start(1);
 		}
 		
-		public int HealPulse(RegionTimer timer)
+		public int HealPulse(ECSGameTimer timer)
 		{
 			if (m_healpulse > 0)
 			{

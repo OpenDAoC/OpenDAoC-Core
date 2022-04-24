@@ -106,7 +106,7 @@ namespace DOL.AI.Brain
                         if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
                         {
                             
-                            new RegionTimer(Body, new RegionTimerCallback(Message1), 5000);//5s to start
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = false;
                         }
                     }
@@ -114,31 +114,31 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int Message1(RegionTimer timer)
+        public int Message1(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have eneteres inner sanctum.'"));
-            new RegionTimer(Body, new RegionTimerCallback(Message2), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message2), 5000);
             return 0;
         }
-        public int Message2(RegionTimer timer)
+        public int Message2(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("A deep booming voice responds; 'P...R...O...T...E...C...T..'"));
-            new RegionTimer(Body, new RegionTimerCallback(Message3), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message3), 5000);
             return 0;
         }
-        public int Message3(RegionTimer timer)
+        public int Message3(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("'I am tired, and yet, there is much left for me to take care of this day'"));
-            new RegionTimer(Body, new RegionTimerCallback(Message4), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message4), 5000);
             return 0;
         }
-        public int Message4(RegionTimer timer)
+        public int Message4(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("The first voice says: 'We shall protect.'"));
-            new RegionTimer(Body, new RegionTimerCallback(SpawnPrimals), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnPrimals), 5000);
             return 0;
         }
-        protected virtual int SpawnPrimals(RegionTimer timer)//real timer to cast spell and reset check
+        protected virtual int SpawnPrimals(ECSGameTimer timer)//real timer to cast spell and reset check
         {
             SpawnAir();
             SpawnWater();
@@ -667,7 +667,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public int PopBoss(RegionTimer timer)
+        public int PopBoss(ECSGameTimer timer)
         {
             if (spawn3 == true)
             {
@@ -703,7 +703,7 @@ namespace DOL.AI.Brain
             Add.Heading = Body.Heading;
             Add.AddToWorld();
         }
-        public int SpawnEffects(RegionTimer timer)
+        public int SpawnEffects(ECSGameTimer timer)
         {
             if (HasAggro && Body.IsAlive)
             {
@@ -718,11 +718,11 @@ namespace DOL.AI.Brain
                     Add.Heading = Body.Heading;
                     Add.AddToWorld();
                 }
-                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnEffect), 2000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnEffect), 2000);
             }
             return 0;
         }
-        public int ResetSpawnEffect(RegionTimer timer)
+        public int ResetSpawnEffect(ECSGameTimer timer)
         {
             spawn_effect = false;
             return 0;
@@ -734,7 +734,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public int WakeUpBoss(RegionTimer timer)
+        public int WakeUpBoss(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("A deep booming voice echoes: 'I am eternal. You and your kind will die.'"));
             foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
@@ -800,7 +800,7 @@ namespace DOL.AI.Brain
                             {
                                 if (OlcasgeanCount < 1)
                                 {
-                                    new RegionTimer(Body, new RegionTimerCallback(PopBoss), 1000);//create copy of himself
+                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PopBoss), 1000);//create copy of himself
                                 }
                             }
                         }
@@ -808,7 +808,7 @@ namespace DOL.AI.Brain
                 }
                 if (AirPrimal.DeadPrimalsCount == 4 && wake_up_boss==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(WakeUpBoss), 25000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WakeUpBoss), 25000);
                     wake_up_boss = true;
                 }
                 Point3D point1 = new Point3D();
@@ -821,7 +821,7 @@ namespace DOL.AI.Brain
                 {
                     if(spawn_effect ==false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(SpawnEffects), 2000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnEffects), 2000);
                         spawn_effect = true;
                     }
 
@@ -925,7 +925,7 @@ namespace DOL.AI.Brain
                     }
                     if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(DoPort), 20000);//do teleport every 20s
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoPort), 20000);//do teleport every 20s
                         teleport_player = true;
                     }
                 }
@@ -934,7 +934,7 @@ namespace DOL.AI.Brain
         }
         #endregion
         #region DOPort
-        public int DoPort(RegionTimer timer)
+        public int DoPort(ECSGameTimer timer)
         {
             if (player_to_port.Count > 0)
             {
@@ -1229,7 +1229,7 @@ namespace DOL.AI.Brain
             }
         }
 
-        private int CastDD(RegionTimer timer)
+        private int CastDD(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
 
@@ -1247,7 +1247,7 @@ namespace DOL.AI.Brain
 
         private void PrepareToDD()
         {
-            new RegionTimer(Body, new RegionTimerCallback(CastDD), 1200);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 1200);
         }
         public static bool path1 = false;
         public static bool path2 = false;
@@ -1661,7 +1661,7 @@ namespace DOL.AI.Brain
             }
             base.AttackMostWanted();
         }
-        public int CanAttack(RegionTimer timer)
+        public int CanAttack(ECSGameTimer timer)
         {
             dontattack = false;
             AggroRange = 1500;
@@ -1678,7 +1678,7 @@ namespace DOL.AI.Brain
                 {
                     Body.CastSpell(WaterEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                     Body.Health += Body.MaxHealth / 6;
-                    new RegionTimer(Body, new RegionTimerCallback(CanAttack), 5000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CanAttack), 5000);
                     lowhealth1 = true;
                 }
                 else
@@ -1701,7 +1701,7 @@ namespace DOL.AI.Brain
                 {
                     if (IsTargetTeleported == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
                         IsTargetTeleported = true;
                     }
                 }
@@ -1728,7 +1728,7 @@ namespace DOL.AI.Brain
             set { teleporttarget = value; }
         }
         List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-        public int PickTeleportPlayer(RegionTimer timer)
+        public int PickTeleportPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {
@@ -1761,14 +1761,14 @@ namespace DOL.AI.Brain
                         TeleportTarget = Target;
                         if (TeleportTarget.IsAlive && TeleportTarget != null)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(TeleportPlayer), 3000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), 3000);
                         }
                     }
                 }
             }
             return 0;
         }
-        public int TeleportPlayer(RegionTimer timer)
+        public int TeleportPlayer(ECSGameTimer timer)
         {
             if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
             {
@@ -1972,7 +1972,7 @@ namespace DOL.AI.Brain
                 }
                 if(CanSpawnFire==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(SpawnFire), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnFire), 1000);
                     CanSpawnFire = true;
                 }
                 if (!Body.IsWithinRadius(point1, 20) && path1 == false)
@@ -2015,7 +2015,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
         public static bool CanSpawnFire = false;
-        public int SpawnFire(RegionTimer timer)
+        public int SpawnFire(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2027,11 +2027,11 @@ namespace DOL.AI.Brain
                 npc.Heading = Body.Heading;
                 npc.CurrentRegion = Body.CurrentRegion;
                 npc.AddToWorld();
-                new RegionTimer(Body, new RegionTimerCallback(ResetSpawnFire), 1000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnFire), 1000);
             }
             return 0;
         }
-        public int ResetSpawnFire(RegionTimer timer)
+        public int ResetSpawnFire(ECSGameTimer timer)
         {
             CanSpawnFire = false;
             return 0;
@@ -2114,7 +2114,7 @@ namespace DOL.GS
                 return 10000;
             }
         }
-        protected int Show_Effect(RegionTimer timer)
+        protected int Show_Effect(ECSGameTimer timer)
         {
             if (IsAlive)
             {
@@ -2123,17 +2123,17 @@ namespace DOL.GS
                     if (player != null)
                         player.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
                 }
-                new RegionTimer(this, new RegionTimerCallback(DoCast), 1000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1000);
             }
             return 0;
         }
-        protected int DoCast(RegionTimer timer)
+        protected int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 1000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
             return 0;
         }
-        public int RemoveFire(RegionTimer timer)
+        public int RemoveFire(ECSGameTimer timer)
         {
             if (IsAlive)
                 RemoveFromWorld();
@@ -2166,8 +2166,8 @@ namespace DOL.GS
             {
                 SetGroundTarget(X, Y, Z);
                 CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
-                new RegionTimer(this, new RegionTimerCallback(RemoveFire), 8000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveFire), 8000);
             }
             return success;
         }
@@ -2388,7 +2388,7 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 1000;
         }
-        public int TargetIsOut(RegionTimer timer)
+        public int TargetIsOut(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -2433,7 +2433,7 @@ namespace DOL.AI.Brain
                         Body.MaxSpeedBase = 0;
                         if(CanSwitchTarget==false)
                         {
-                            new RegionTimer(Body, new RegionTimerCallback(TargetIsOut), 5000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TargetIsOut), 5000);
                             CanSwitchTarget = true;
                         }
                     }
@@ -2605,7 +2605,7 @@ namespace DOL.AI.Brain
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public int CastHeal(RegionTimer timer)
+        public int CastHeal(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = RandomTarget;
@@ -2646,7 +2646,7 @@ namespace DOL.AI.Brain
                                 {
                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                                     RandomTarget = ptarget;
-                                    new RegionTimer(Body, new RegionTimerCallback(CastHeal), 2000);
+                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
                                 }
                             }
                         }
@@ -2810,7 +2810,7 @@ namespace DOL.AI.Brain
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public int CastHeal(RegionTimer timer)
+        public int CastHeal(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = RandomTarget;
@@ -2851,7 +2851,7 @@ namespace DOL.AI.Brain
                                 {
                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                                     RandomTarget = ptarget;
-                                    new RegionTimer(Body, new RegionTimerCallback(CastHeal), 2000);
+                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
                                 }
                             }
                         }
@@ -3012,7 +3012,7 @@ namespace DOL.AI.Brain
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public int CastHeal(RegionTimer timer)
+        public int CastHeal(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = RandomTarget;
@@ -3053,7 +3053,7 @@ namespace DOL.AI.Brain
                                 {
                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                                     RandomTarget = ptarget;
-                                    new RegionTimer(Body, new RegionTimerCallback(CastHeal), 2000);
+                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
                                 }
                             }
                         }
@@ -3214,7 +3214,7 @@ namespace DOL.AI.Brain
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public int CastHeal(RegionTimer timer)
+        public int CastHeal(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = RandomTarget;
@@ -3255,7 +3255,7 @@ namespace DOL.AI.Brain
                                 {
                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
                                     RandomTarget = ptarget;
-                                    new RegionTimer(Body, new RegionTimerCallback(CastHeal), 2000);
+                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
                                 }
                             }
                         }
@@ -3530,11 +3530,11 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);               
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);               
             }
             return success;
         }
-        protected int Show_Effect(RegionTimer timer)
+        protected int Show_Effect(ECSGameTimer timer)
         {
             if (IsAlive)
             {
@@ -3545,11 +3545,11 @@ namespace DOL.GS
                         player.Out.SendSpellEffectAnimation(this, this, 11027, 0, false, 0x01);
                     }
                 }
-                new RegionTimer(this, new RegionTimerCallback(RemoveMob), 3000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveMob), 3000);
             }
             return 0;
         }
-        public int RemoveMob(RegionTimer timer)
+        public int RemoveMob(ECSGameTimer timer)
         {
             if(IsAlive)
                 RemoveFromWorld();

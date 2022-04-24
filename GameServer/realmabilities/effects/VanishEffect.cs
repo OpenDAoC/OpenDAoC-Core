@@ -14,8 +14,8 @@ namespace DOL.GS.RealmAbilities
 
 		double m_speedBonus;
 		int m_countdown;
-		RegionTimer m_countDownTimer = null;
-		RegionTimer m_removeTimer = null;
+		ECSGameTimer m_countDownTimer = null;
+		ECSGameTimer m_removeTimer = null;
 
 		public VanishEffect(int duration, double speedBonus)
 			: base(duration)
@@ -31,16 +31,16 @@ namespace DOL.GS.RealmAbilities
 			player.attackComponent.LivingStopAttack();
 			player.Stealth(true);
 			player.Out.SendUpdateMaxSpeed();
-			m_countDownTimer = new RegionTimer(player, new RegionTimerCallback(CountDown));
+			m_countDownTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CountDown));
 			m_countDownTimer.Start(1);
 			player.TempProperties.setProperty(VANISH_BLOCK_ATTACK_TIME_KEY, player.CurrentRegion.Time + 30000);
-			m_removeTimer = new RegionTimer(player, new RegionTimerCallback(RemoveAttackBlock));
+			m_removeTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(RemoveAttackBlock));
 			m_removeTimer.Start(30000);
 		}
 
-		public int RemoveAttackBlock(RegionTimer timer)
+		public int RemoveAttackBlock(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Owner as GamePlayer;
+			GamePlayer player = timer.TimerOwner as GamePlayer;
 			if (player != null)
 				player.TempProperties.removeProperty(VANISH_BLOCK_ATTACK_TIME_KEY);
 			return 0;
@@ -58,7 +58,7 @@ namespace DOL.GS.RealmAbilities
 			}
 		}
 
-		public int CountDown(RegionTimer timer)
+		public int CountDown(ECSGameTimer timer)
 		{
 			if (m_countdown > 0)
 			{

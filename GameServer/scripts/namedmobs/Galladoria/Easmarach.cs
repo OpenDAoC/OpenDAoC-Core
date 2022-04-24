@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
                     dontattack = false;
                     if(FloatAgain==false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(StartWalk), Util.Random(45000,70000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartWalk), Util.Random(45000,70000));
                         FloatAgain = true;
                     }
                 }
@@ -259,7 +259,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public int StartWalk(RegionTimer timer)
+        public int StartWalk(ECSGameTimer timer)
         {
             restphase = false;
             dontattack = false;

@@ -70,6 +70,7 @@ namespace DOL.GS
             WeeklyQuestService.Tick(GameLoopTime);
             ConquestService.Tick(GameLoopTime);
             BountyService.Tick(GameLoopTime);
+            PredatorService.Tick(GameLoopTime);
             TimerService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)

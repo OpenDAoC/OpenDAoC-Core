@@ -169,14 +169,14 @@ namespace DOL.GS.Commands
 		public void StartRepair(GamePlayer player, GameLiving obj)
 		{
 			player.Out.SendTimerWindow("Repairing: " + obj.Name, workDuration);
-			player.CraftTimer = new RegionTimer(player);
-			player.CraftTimer.Callback = new RegionTimerCallback(Proceed);
+			player.CraftTimer = new ECSGameTimer(player);
+			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(Proceed);
 			player.CraftTimer.Properties.setProperty("repair_player", player);
 			player.CraftTimer.Properties.setProperty("repair_target", obj);
 			player.CraftTimer.Start(workDuration * 1000);
 		}
 
-		protected int Proceed(RegionTimer timer)
+		protected int Proceed(ECSGameTimer timer)
 		{
 			GamePlayer player = (GamePlayer)timer.Properties.getProperty<object>("repair_player", null);
 			GameLiving obj = (GameLiving)timer.Properties.getProperty<object>("repair_target", null);

@@ -460,7 +460,7 @@ namespace DOL.AI.Brain
 
         #region GK Teleport/Walk method
 
-        public int GkTeleport(RegionTimer timer)
+        public int GkTeleport(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -649,47 +649,47 @@ namespace DOL.AI.Brain
 
                 if (Body.HealthPercent <= 90 && walk1 == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk1 = true;
                 }
                 else if ((Body.HealthPercent <= 80 && walk2 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk2 = true;
                 }
                 else if ((Body.HealthPercent <= 70 && walk3 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk3 = true;
                 }
                 else if ((Body.HealthPercent <= 60 && walk4 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk4 = true;
                 }
                 else if ((Body.HealthPercent <= 50 && walk5 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk5 = true;
                 }
                 else if ((Body.HealthPercent <= 40 && walk6 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk6 = true;
                 }
                 else if ((Body.HealthPercent <= 30 && walk7 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk7 = true;
                 }
                 else if ((Body.HealthPercent <= 20 && walk8 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk8 = true;
                 }
                 else if ((Body.HealthPercent <= 10 && walk9 == false))
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(GkTeleport), 1000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
                     walk9 = true;
                 }
 

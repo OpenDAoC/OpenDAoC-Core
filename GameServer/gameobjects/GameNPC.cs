@@ -4679,7 +4679,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="selfRegenerationTimer">the regeneration timer</param>
 		/// <returns>the new interval</returns>
-		protected override int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			int period = m_healthRegenerationPeriod;
 			if (!InCombat)

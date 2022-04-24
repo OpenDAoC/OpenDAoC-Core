@@ -14,7 +14,7 @@ namespace DOL.GS.Effects
 	{
 
 		private GamePlayer m_playerOwner;
-		private RegionTimer m_tickTimer;
+		private ECSGameTimer m_tickTimer;
 
 
 		public RestorativeMindEffect()
@@ -71,7 +71,7 @@ namespace DOL.GS.Effects
 			}
 		}
 
-		private int onTick(RegionTimer timer)
+		private int onTick(ECSGameTimer timer)
 		{
 			healTarget();
 			return 3000;
@@ -79,8 +79,8 @@ namespace DOL.GS.Effects
 
 		private void startTimer()
 		{
-			m_tickTimer = new RegionTimer(m_playerOwner);
-			m_tickTimer.Callback = new RegionTimerCallback(onTick);
+			m_tickTimer = new ECSGameTimer(m_playerOwner);
+			m_tickTimer.Callback = new ECSGameTimer.ECSTimerCallback(onTick);
 			m_tickTimer.Start(3000);
 
 		}
