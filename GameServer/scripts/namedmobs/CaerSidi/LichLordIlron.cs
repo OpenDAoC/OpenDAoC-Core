@@ -213,6 +213,8 @@ namespace DOL.GS
             RespawnInterval = -1;
             MaxDistance = 1500;
             TetherRange = 2000;
+            Faction = FactionMgr.GetFactionByID(64);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             IsWorthReward = false; // worth no reward
             Flags ^= eFlags.GHOST;
             Realm = eRealm.None;
