@@ -32,11 +32,12 @@ public class TimerService
 
     public static void Tick(long tick)
     {
+        
         Diagnostics.StartPerfCounter(ServiceName);
-
+        
         while (TimerToRemove.Count > 0)
         {
-            if (ActiveTimers.Contains(TimerToRemove.Peek()))
+            if(ActiveTimers.Contains(TimerToRemove.Peek()))
                 ActiveTimers.Remove(TimerToRemove.Pop());
             else
             {
@@ -65,7 +66,7 @@ public class TimerService
             if (timer != null && timer.NextTick < GameLoop.GameLoopTime)
                 timer.Tick();
         });
-
+        
         Diagnostics.StopPerfCounter(ServiceName);
     }
 
@@ -101,42 +102,55 @@ public class ECSGameTimer
     public delegate int ECSTimerCallback(ECSGameTimer timer);
 
     public ECSTimerCallback Callback;
-    public long Interval;
+    public int Interval;
     public long StartTick;
     public long NextTick => StartTick + Interval;
 
-    public GameLiving TimerOwner;
+    public GameObject TimerOwner;
+    //public GameTimer.TimeManager GameTimeOwner;
     public bool IsAlive => TimerService.HasActiveTimer(this);
-
+    
     /// <summary>
     /// Holds properties for this region timer
     /// </summary>
     private PropertyCollection m_properties;
 
-    public ECSGameTimer(GameLiving living)
+    public ECSGameTimer(GameObject target)
     {
-        TimerOwner = living;
+        TimerOwner = target;
     }
 
-    public ECSGameTimer(GameLiving living, ECSTimerCallback callback, long interval)
+    public ECSGameTimer(GameObject target, ECSTimerCallback callback, int interval)
     {
-        TimerOwner = living;
+        TimerOwner = target;
         Callback = callback;
         Interval = interval;
+        this.Start();
+    }
+    
+    public ECSGameTimer(GameObject target, ECSTimerCallback callback)
+    {
+        TimerOwner = target;
+        Callback = callback;
     }
 
     public void Start()
     {
-        Start(500); //use half-second intervals by default
+        if(Interval <= 0)
+            Start(500); //use half-second intervals by default
+        else
+        {
+            Start((int)Interval);
+        }
     }
 
-    public void Start(long interval)
+    public void Start(int interval)
     {
         StartTick = GameLoop.GameLoopTime;
         Interval = interval;
         TimerService.AddTimer(this);
     }
-
+    
     public void Stop()
     {
         TimerService.RemoveTimer(this);
@@ -147,10 +161,27 @@ public class ECSGameTimer
         StartTick = GameLoop.GameLoopTime;
         if (Callback != null)
         {
-            Interval = (long) Callback.Invoke(this);
+            Interval = (int) Callback.Invoke(this);
         }
-
-        if (Interval == 0) Stop();
+        
+        if(Interval == 0) Stop();
+    }
+    /*
+    /// <summary>
+    /// Stores the time where the timer was inserted
+    /// </summary>
+    private long m_targetTime = -1;
+    */
+    
+    /// <summary>
+    /// Gets the time left until this timer fires, in milliseconds.
+    /// </summary>
+    public int TimeUntilElapsed
+    {
+        get
+        {
+            return (int)(GameLoop.GameLoopTime - this.StartTick);
+        }
     }
 
     /// <summary>
@@ -172,8 +203,8 @@ public class ECSGameTimer
                     }
                 }
             }
-
             return m_properties;
         }
     }
+    
 }

@@ -240,9 +240,7 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					int _castBoltTime = 1000;
-					ECSGameTimer _CastBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), _castBoltTime);
-					_CastBolt.Start(_castBoltTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), 1000);
 					CanCast = true;
 				}
 			}
@@ -262,9 +260,8 @@ namespace DOL.AI.Brain
 				Body.CastSpell(CunovindaBolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast bolt
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			int _resetBoltTime = Util.Random(8000, 12000);
-			ECSGameTimer _ResetBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), _resetBoltTime);//teleport every 8-12s if melee hit got chance to proc teleport
-			_ResetBolt.Start(_resetBoltTime);
+			Body.StartAttack(oldTarget);//start attack old target
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), Util.Random(8000, 12000));//teleport every 8-12s if melee hit got chance to proc teleport
 			return 0;
 		}
 		public int ResetBolt(ECSGameTimer timer)//reset here so boss can start dot again

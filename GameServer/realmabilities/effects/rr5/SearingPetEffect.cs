@@ -44,7 +44,7 @@ namespace DOL.GS.Effects
         private ISpellHandler pbaoe;					// The Spell handler
         private GamePlayer EffectOwner;			// Owner of the effect
         private GameNPC pet;					// The pet
-        private RegionTimer pulseTimer;				// Pulse timer
+        private ECSGameTimer pulseTimer;				// Pulse timer
         private int currentTick = 0;		// Count ticks
 
         public SearingPetEffect(GamePlayer owner)
@@ -82,7 +82,7 @@ namespace DOL.GS.Effects
             {
                 pet = target as GameNPC;
                 pbaoe = ScriptMgr.CreateSpellHandler(EffectOwner, petSpell, petSpellLine);
-                pulseTimer = new RegionTimer(EffectOwner, new RegionTimerCallback(PulseTimer), 1000);
+                pulseTimer = new ECSGameTimer(EffectOwner, new ECSGameTimer.ECSTimerCallback(PulseTimer), 1000);
                 GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
             }
         }
@@ -94,7 +94,7 @@ namespace DOL.GS.Effects
 
             base.Stop();
         }
-        protected virtual int PulseTimer(RegionTimer timer)
+        protected virtual int PulseTimer(ECSGameTimer timer)
         {
             if (EffectOwner == null || pet == null || pbaoe == null)
             {

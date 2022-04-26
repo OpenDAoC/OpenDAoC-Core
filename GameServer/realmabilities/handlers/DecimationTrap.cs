@@ -18,7 +18,7 @@ namespace DOL.GS.RealmAbilities
 		private int z;*/
 		private Area.Circle traparea;
 		private GameLiving owner;
-		private RegionTimer ticktimer;
+		private ECSGameTimer ticktimer;
 		private const int TICKS = 6;
 		private int effectiveness;
 		private ushort region;
@@ -76,8 +76,8 @@ namespace DOL.GS.RealmAbilities
 			foreach (GamePlayer p in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				p.Out.SendSpellCastAnimation(living, Icon, 20);
 
-			player.RealmAbilityCastTimer = new RegionTimer(player);
-			player.RealmAbilityCastTimer.Callback = new RegionTimerCallback(startSpell);
+			player.RealmAbilityCastTimer = new ECSGameTimer(player);
+			player.RealmAbilityCastTimer.Callback = new ECSGameTimer.ECSTimerCallback(startSpell);
 			player.RealmAbilityCastTimer.Start(2000);
 		}
 
@@ -86,7 +86,7 @@ namespace DOL.GS.RealmAbilities
 			return player.Level >= 40;
 		}
 
-		private int startSpell(RegionTimer timer)
+		private int startSpell(ECSGameTimer timer)
 		{
 			if (!owner.IsAlive)
 				return 0;
@@ -97,8 +97,8 @@ namespace DOL.GS.RealmAbilities
 			region = owner.CurrentRegionID;
 
 			GameEventMgr.AddHandler(traparea, AreaEvent.PlayerEnter, new DOLEventHandler(EventHandler));
-			ticktimer = new RegionTimer(owner);
-			ticktimer.Callback = new RegionTimerCallback(onTick);
+			ticktimer = new ECSGameTimer(owner);
+			ticktimer.Callback = new ECSGameTimer.ECSTimerCallback(onTick);
 			ticktimer.Start(600000);
 			getTargets();
 			DisableSkill(owner);
@@ -106,7 +106,7 @@ namespace DOL.GS.RealmAbilities
 			return 0;
 		}
 
-		private int onTick(RegionTimer timer)
+		private int onTick(ECSGameTimer timer)
 		{
 			removeHandlers();
 			return 0;

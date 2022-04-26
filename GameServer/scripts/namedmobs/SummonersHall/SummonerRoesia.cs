@@ -238,9 +238,7 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					int _castDotTime = Util.Random(1000, 2000);
-					ECSGameTimer _CastDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), _castDotTime);
-					_CastDot.Start(_castDotTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), 1000);
 					CanCast = true;
 				}				
 			}
@@ -256,9 +254,7 @@ namespace DOL.AI.Brain
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
 			Body.StartAttack(oldTarget);//start attack old target
-			int _resetDotTime = Util.Random(25000, 35000);
-			ECSGameTimer _ResetDot = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), _resetDotTime);
-			_ResetDot.Start(_resetDotTime);
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), Util.Random(25000,35000));
 			return 0;
         }
 		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again

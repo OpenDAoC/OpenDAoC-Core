@@ -3678,6 +3678,7 @@ namespace DOL.GS
 			if( player != null )
 			{
 				if (player.HasAbility(Abilities.Advanced_Evade) ||
+					player.HasAbility(Abilities.Enhanced_Evade) ||
 				    player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
 				    player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
 					evadeChance = GetModified( eProperty.EvadeChance );
@@ -3894,7 +3895,7 @@ namespace DOL.GS
 
 				
 			
-				if(lefthand != null)
+				if(lefthand != null && player.HasAbility( Abilities.Shield ))
                 {
 					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)

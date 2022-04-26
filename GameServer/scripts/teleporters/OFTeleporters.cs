@@ -74,6 +74,9 @@ namespace DOL.GS.Scripts
         public const string HadrianID = "hadrian_necklace";
         public const string EmainID = "emain_necklace";
         public const string OdinID = "odin_necklace";
+        public const string VindsaulID = "vindsaul_necklace";
+        public const string CainID = "druimcain_necklace";
+        public const string SnowdoniaID = "snowdonia_necklace";
         public const string HomeID = "home_necklace";
 
         //QoL medallions
@@ -105,7 +108,7 @@ namespace DOL.GS.Scripts
         private DBSpell m_buffSpell;
         private Spell m_portSpell;
 
-        private RegionTimer castTimer;
+        private ECSGameTimer castTimer;
 
         public Spell PortSpell
         {
@@ -129,7 +132,7 @@ namespace DOL.GS.Scripts
         public void StartTeleporting()
         {
             if (castTimer is null)
-                castTimer = new RegionTimer(this);
+                castTimer = new ECSGameTimer(this);
 
             bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             if (GetSkillDisabledDuration(PortSpell) > 0)
@@ -187,7 +190,7 @@ namespace DOL.GS.Scripts
                 }
 
                 castTimer.Interval = PortSpell.CastTime;
-                castTimer.Callback += new RegionTimerCallback(CastTimerCallback);
+                castTimer.Callback += new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
                 castTimer.Start(PortSpell.CastTime);
                 foreach (OFAssistant assi in Assistants)
                 {
@@ -196,9 +199,9 @@ namespace DOL.GS.Scripts
             }
         }
 
-        private int CastTimerCallback(RegionTimer selfRegenerationTimer)
+        private int CastTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
-            castTimer.Callback -= new RegionTimerCallback(CastTimerCallback);
+            castTimer.Callback -= new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
             OnAfterSpellCastSequence(null);
             return 10;
         }
@@ -228,6 +231,9 @@ namespace DOL.GS.Scripts
                                     break;
                                 case EmainID:
                                     PortLocation = new GameLocation("Emain Alb", 200, 475835, 343661, 4080);
+                                    break;
+                                case SnowdoniaID:
+                                    PortLocation = new GameLocation("Snowdonia Alb", 1, 527608, 358918, 3083);
                                     break;
                                 case HomeID:
                                     PortLocation = new GameLocation("Home Alb", 1, 584285, 477200, 2600);
@@ -377,6 +383,9 @@ namespace DOL.GS.Scripts
                                 case EmainID:
                                     PortLocation = new GameLocation("Emain Mid", 200, 474107, 295199, 3871);
                                     break;
+                                case VindsaulID:
+                                    PortLocation = new GameLocation("Vindsaul Faste Mid", 100, 704916, 738544, 5704);
+                                    break;
                                 case HomeID:
                                     PortLocation = new GameLocation("Home Mid", 100, 766811, 669605, 5736);
                                     break;
@@ -522,6 +531,9 @@ namespace DOL.GS.Scripts
                                     break;
                                 case HadrianID:
                                     PortLocation = new GameLocation("Hadrian Hib", 1, 605743, 293676, 4839);
+                                    break;
+                                case CainID:
+                                    PortLocation = new GameLocation("Druim Cain Hib", 200, 421788, 486493, 1824);
                                     break;
                                 case HomeID:
                                     PortLocation = new GameLocation("Home Hib", 200, 334386, 420071, 5184);

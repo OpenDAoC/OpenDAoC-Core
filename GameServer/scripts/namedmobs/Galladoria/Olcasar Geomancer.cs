@@ -242,12 +242,12 @@ namespace DOL.AI.Brain
             {
                 if (StartCastRoot == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget2), Util.Random(25000, 35000));
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(25000, 35000));
                     StartCastRoot = true;
                 }
                 if(spawnadds ==false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastEffectBubble), 25000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastEffectBubble), 25000);
                     spawnadds = true;
                 }
                 if (Util.Chance(15))
@@ -259,7 +259,7 @@ namespace DOL.AI.Brain
                 }
                 if(CanCastAoeSnare == false &&  Body.HealthPercent <= 80)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastAoeSnare), 5000);
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastAoeSnare), 5000);
                     CanCastAoeSnare = true;
                 }
             }
@@ -275,7 +275,7 @@ namespace DOL.AI.Brain
             set { randomtarget2 = value; }
         }
         List<GamePlayer> Enemys_To_Root = new List<GamePlayer>();
-        public int PickRandomTarget2(RegionTimer timer)
+        public int PickRandomTarget2(ECSGameTimer timer)
         {
             if (HasAggro)
             {
@@ -298,14 +298,14 @@ namespace DOL.AI.Brain
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_Root[Util.Random(0, Enemys_To_Root.Count - 1)];//pick random target from list
                         RandomTarget2 = Target;//set random target to static RandomTarget
-                        new RegionTimer(Body, new RegionTimerCallback(CastRoot), 2000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastRoot), 2000);
                         CanCast2 = true;
                     }
                 }
             }
             return 0;
         }
-        public int CastRoot(RegionTimer timer)
+        public int CastRoot(ECSGameTimer timer)
         {
             if (HasAggro && RandomTarget2 != null)
             {
@@ -317,11 +317,11 @@ namespace DOL.AI.Brain
                     Body.CastSpell(OGRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
                 if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-                new RegionTimer(Body, new RegionTimerCallback(ResetRoot), 5000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRoot), 5000);
             }
             return 0;
         }
-        public int ResetRoot(RegionTimer timer)
+        public int ResetRoot(ECSGameTimer timer)
         {
             RandomTarget2 = null;
             CanCast2 = false;
@@ -329,14 +329,14 @@ namespace DOL.AI.Brain
             return 0;
         }
         #endregion
-        public int CastEffectBubble(RegionTimer timer)
+        public int CastEffectBubble(ECSGameTimer timer)
         {
             Body.CastSpell(OGBubbleEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             BroadcastMessage(String.Format("Olcasar tears off a chunk of himself and tosses it to the ground."));
-            new RegionTimer(Body, new RegionTimerCallback(Spawn), 2000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Spawn), 2000);
             return 0;
         }
-        public int Spawn(RegionTimer timer)
+        public int Spawn(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro && Body.TargetObject != null)
             {
@@ -347,27 +347,27 @@ namespace DOL.AI.Brain
                 Add.CurrentRegion = Body.CurrentRegion;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();             
-                new RegionTimer(Body, new RegionTimerCallback(ResetSpawn), Util.Random(45000, 60000));
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawn), Util.Random(45000, 60000));
             }
             return 0;
         }
-        public int ResetSpawn(RegionTimer timer)
+        public int ResetSpawn(ECSGameTimer timer)
         {
             spawnadds = false;
             return 0;
         }
 
         public static bool CanCastAoeSnare = false;
-        public int CastAoeSnare(RegionTimer timer)
+        public int CastAoeSnare(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {
                 Body.CastSpell(OGAoeSnare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                new RegionTimer(Body, new RegionTimerCallback(ResetAoeSnare), Util.Random(45000, 60000));
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetAoeSnare), Util.Random(45000, 60000));
             }
             return 0;
         }
-        public int ResetAoeSnare(RegionTimer timer)
+        public int ResetAoeSnare(ECSGameTimer timer)
         {
             CanCastAoeSnare = false;
             return 0;

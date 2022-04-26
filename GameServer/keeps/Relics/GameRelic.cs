@@ -28,10 +28,10 @@ namespace DOL.GS
 		GamePlayer m_currentCarrier = null;
 		GameRelicPad m_currentRelicPad = null;
 		GameRelicPad m_returnRelicPad = null;
-		RegionTimer m_currentCarrierTimer;
+		ECSGameTimer m_currentCarrierTimer;
 		DBRelic m_dbRelic;
 		eRelicType m_relicType;
-		RegionTimer m_returnRelicTimer;
+		ECSGameTimer m_returnRelicTimer;
 		long m_timeRelicOnGround = 0;
 
 		protected int ReturnRelicInterval
@@ -317,7 +317,7 @@ namespace DOL.GS
 			{
 				// launch the reset timer if this relic is not dropped on a pad
 				m_timeRelicOnGround = CurrentRegion.Time;
-				m_returnRelicTimer = new RegionTimer(this, new RegionTimerCallback(ReturnRelicTick), RelicEffectInterval);
+				m_returnRelicTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ReturnRelicTick), RelicEffectInterval);
 				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
 
 				// update the position of the worldObject Relic
@@ -330,7 +330,7 @@ namespace DOL.GS
 		/// <summary>
 		/// when the relic is lost and ReturnRelicInterval is elapsed
 		/// </summary>
-		protected virtual int ReturnRelicTick(RegionTimer timer)
+		protected virtual int ReturnRelicTick(ECSGameTimer timer)
 		{
 			if (CurrentRegion.Time - m_timeRelicOnGround < ReturnRelicInterval)
 			{
@@ -374,7 +374,7 @@ namespace DOL.GS
 					m_currentCarrierTimer.Stop();
 					m_currentCarrierTimer = null;
 				}
-				m_currentCarrierTimer = new RegionTimer(player, new RegionTimerCallback(CarrierTimerTick));
+				m_currentCarrierTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CarrierTimerTick));
 				m_currentCarrierTimer.Start(RelicEffectInterval);
 
 			}
@@ -394,7 +394,7 @@ namespace DOL.GS
 		/// The callback for the pulsing spelleffect
 		/// </summary>
 		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int CarrierTimerTick(RegionTimer timer)
+		private int CarrierTimerTick(ECSGameTimer timer)
 		{
 			//update the relic position
 			Update();

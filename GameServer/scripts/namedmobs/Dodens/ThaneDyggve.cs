@@ -151,7 +151,7 @@ namespace DOL.GS.Scripts
 				{
 					if (Body.TargetObject != null)
 					{
-						new RegionTimer(Body, new RegionTimerCallback(CastMjollnir), 2000);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMjollnir), 2000);
 						if (Body.IsCasting)
 						{
 							if (castsMjollnir)
@@ -197,7 +197,7 @@ namespace DOL.GS.Scripts
 			/// </summary>
 			/// <param name="timer">The timer that started this cast.</param>
 			/// <returns></returns>
-			private int CastMjollnir(RegionTimer timer)
+			private int CastMjollnir(ECSGameTimer timer)
 			{
 				Body.CastSpell(Mjollnir, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				return 0;

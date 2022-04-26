@@ -308,13 +308,13 @@ namespace DOL.AI.Brain
                 }
                 if (CanCast == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(CastDD), Util.Random(10000, 15000));
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), Util.Random(10000, 15000));
                     CanCast = true;
                 }
             }
             base.Think();
         }
-        public int CastDD(RegionTimer Timer)
+        public int CastDD(ECSGameTimer Timer)
         {
             if (Body.IsAlive)
             {

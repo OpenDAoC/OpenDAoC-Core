@@ -169,7 +169,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
 
-        public int PickPlayer(RegionTimer timer)
+        public int PickPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -306,7 +306,7 @@ namespace DOL.AI.Brain
 
                 if (IsTargetPicked == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(PickPlayer), Util.Random(20000, 35000));
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(20000, 35000));
                     IsTargetPicked = true;
                 }
             }
@@ -642,7 +642,7 @@ namespace DOL.AI.Brain
                         RandomTarget = ptarget;
                     }
 
-                    new RegionTimer(Body, new RegionTimerCallback(SpawnBombTimer),
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBombTimer),
                         Util.Random(35000, 60000)); //spawn frozen bomb every 35s-60s
                     IsBombUp = true;
                 }
@@ -660,18 +660,18 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public int SpawnBombTimer(RegionTimer timer)
+        public int SpawnBombTimer(ECSGameTimer timer)
         {
             if (FrozenBomb.FrozenBombCount == 0)
             {
                 SpawnFrozenBomb();
             }
 
-            new RegionTimer(Body, new RegionTimerCallback(ResetBomb), 5000);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBomb), 5000);
             return 0;
         }
 
-        public int ResetBomb(RegionTimer timer)
+        public int ResetBomb(ECSGameTimer timer)
         {
             RandomTarget = null;
             IsBombUp = false;
@@ -737,7 +737,7 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        protected int Show_Effect(RegionTimer timer)
+        protected int Show_Effect(ECSGameTimer timer)
         {
             if (this.IsAlive)
             {
@@ -749,35 +749,35 @@ namespace DOL.GS
                     }
                 }
 
-                new RegionTimer(this, new RegionTimerCallback(DoCast), 1500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
             }
 
             return 0;
         }
 
-        protected int DoCast(RegionTimer timer)
+        protected int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 1500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
             }
 
             return 0;
         }
 
-        protected int Explode(RegionTimer timer)
+        protected int Explode(ECSGameTimer timer)
         {
             if (IsAlive)
             {
                 SetGroundTarget(X, Y, Z);
                 this.CastSpell(IceSpike_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                new RegionTimer(this, new RegionTimerCallback(KillBomb), 500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 500);
             }
 
             return 0;
         }
 
-        public int KillBomb(RegionTimer timer)
+        public int KillBomb(ECSGameTimer timer)
         {
             if (IsAlive)
             {
@@ -830,8 +830,8 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
-                new RegionTimer(this, new RegionTimerCallback(Explode),
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode),
                     20000); //20 seconds until this will explode and deal heavy cold dmg
             }
 

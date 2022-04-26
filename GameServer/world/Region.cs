@@ -637,7 +637,7 @@ namespace DOL.GS
         {
             get
             {
-                if (IsPM)
+                if (m_isPM)
                     return false;
                 return true;
             }
@@ -654,21 +654,8 @@ namespace DOL.GS
                 uint cTime = GameTime;
 
                 uint hour = cTime / 1000 / 60 / 60;
-                bool pm = false;
+                bool pm = hour >= 12 && hour <= 23;
 
-                if (hour == 0)
-                {
-                    hour = 12;
-                }
-                else if (hour == 12)
-                {
-                    pm = true;
-                }
-                else if (hour > 12)
-                {
-                    hour -= 12;
-                    pm = true;
-                }
                 m_isPM = pm;
 
                 return m_isPM;
@@ -687,40 +674,10 @@ namespace DOL.GS
                 uint cTime = GameTime;
 
                 uint hour = cTime / 1000 / 60 / 60;
-                bool pm = false;
+                bool night = hour is >= 18 or < 6;
 
-                if (hour == 0)
-                {
-                    hour = 12;
-                }
-                else if (hour == 12)
-                {
-                    pm = true;
-                }
-                else if (hour > 12)
-                {
-                    hour -= 12;
-                    pm = true;
-                }
-
-                if (pm && hour >= 6)
-                    m_isNightTime = true;
-
-                if (pm && hour == 12) //Special Handling for Noon.
-                    m_isNightTime = false;
-
-                if (!pm && hour <= 5)
-                    m_isNightTime = true;
-
-                if (!pm && hour == 12) //Special Handling for Midnight.
-                    m_isNightTime = true;
-
-                if (!pm && hour >= 6)
-                    m_isNightTime = false;
-
-                if (pm && hour < 6)
-                    m_isNightTime = false;
-
+                m_isNightTime = night;
+                    
                 return m_isNightTime;
             }
             set { m_isNightTime = value; }

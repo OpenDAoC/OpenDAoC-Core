@@ -223,8 +223,8 @@ namespace DOL.GS
             House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
             if (house == null)
                 return false;
-
-            if (house.HasOwnerPermissions(player))
+            
+            if (house.HasOwnerPermissions(player) && !player.NoHelp)
                 return true;
 
             return false;
@@ -261,7 +261,7 @@ namespace DOL.GS
             if (house == null)
                 return false;
 
-			if (this.CanHandleRequest(player, fromClientSlot, toClientSlot) == false)
+            if (!CanHandleMove(player, fromClientSlot, toClientSlot))
 				return false;
 
 			// let's move it

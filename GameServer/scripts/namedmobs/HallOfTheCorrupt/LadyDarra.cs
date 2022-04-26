@@ -289,7 +289,7 @@ namespace DOL.AI.Brain
                         }
                         LadyDarra darra = new LadyDarra();
                         darra.SpawnPaladins();
-                        new RegionTimer(Body, new RegionTimerCallback(ResetDarra), 7000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDarra), 7000);
                         reset_darra = true;
                     }
                 }
@@ -299,7 +299,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int ResetDarra(RegionTimer timer)
+        public int ResetDarra(ECSGameTimer timer)
         {
             reset_darra = false;
             return 0;

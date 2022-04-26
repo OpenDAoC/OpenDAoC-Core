@@ -105,11 +105,11 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void FollowOwner()
 		{
-			if (!Body.IsCasting && !Body.attackComponent.AttackState)
+			if (Body.IsCasting || Body.attackComponent.AttackState)
 			{
 				Body.StopAttack();
-				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 			}
+			Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 
 		/// <summary>
