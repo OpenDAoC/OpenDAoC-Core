@@ -26,9 +26,9 @@ namespace DOL.GS.RealmAbilities
         public override int GetReUseDelay(int level)
         {
             return 1800; // 30 mins
-        } 
+        }
 
-        public override ushort Icon => 11129; // correct icon should be 4268 but it won't work
+        public override ushort Icon => 4268; // this should be the correct icon but it's the same as Juggernaut? The effect has a temporary animist pet icon instead.
 
         public override void AddDelve(ref MiniDelveWriter w)
         {
