@@ -70,7 +70,13 @@ namespace DOL.GS
 			Intelligence = 200;
 			Charisma = 200;
 			Empathy = 400;
+			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0, 0);
+			Inventory = template.CloseTemplate();
+			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 
+			VisibleActiveWeaponSlots = 34;
+			MeleeDamageType = eDamageType.Crush;
 			MaxSpeedBase = 250;
 			MaxDistance = 3500;
 			TetherRange = 3800;
