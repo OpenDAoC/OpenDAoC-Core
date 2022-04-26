@@ -12,9 +12,9 @@ namespace DOL.GS.RealmAbilities
         {
         }
 
-        public const int duration = 180000; // 180 seconds - 3 minutes
+        // public const int duration = 180000; // 180 seconds - 3 minutes
 
-        // public const int duration = 30000; // 30 seconds
+        public const int duration = 10000; // 10 seconds
 
         public override int MaxLevel => 1;
 

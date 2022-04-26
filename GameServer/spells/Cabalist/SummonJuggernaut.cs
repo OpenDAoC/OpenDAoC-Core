@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
 			base.OnNpcReleaseCommand(e, sender, arguments);
 		}
 
-		protected void OnPetDying(DOLEvent e, object sender, EventArgs arguments)
+		private void OnPetDying(DOLEvent e, object sender, EventArgs arguments)
 		{
 			if (e != GameLivingEvent.Dying || sender is not GamePet)
 				return;

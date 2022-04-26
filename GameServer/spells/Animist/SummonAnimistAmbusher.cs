@@ -14,6 +14,18 @@ namespace DOL.GS.Spells
 	public class SummonAnimistAmbusher : SummonTheurgistPet
 	{
 		public SummonAnimistAmbusher(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		
+		protected override void AddHandlers()
+		{
+			GameEventMgr.AddHandler(m_pet, GameLivingEvent.Dying, OnPetDying);
+			base.AddHandlers();
+		}
+		
+		protected override void RemoveHandlers()
+		{
+			GameEventMgr.RemoveHandler(m_pet, GameLivingEvent.Dying, OnPetDying);
+			base.AddHandlers();
+		}
 
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
@@ -26,13 +38,10 @@ namespace DOL.GS.Spells
 			return false;
 
 		}
-
-		protected override void SetBrainToOwner(IControlledBrain brain)
-		{
-		}
 		
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			
 			if (target == null)
 				target = (m_pet.Brain as ForestheartAmbusherBrain).CalculateNextAttackTarget();
 			base.ApplyEffectOnTarget(target, effectiveness);
@@ -40,6 +49,8 @@ namespace DOL.GS.Spells
 			m_pet.TempProperties.setProperty("target", target);
 			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
 			(m_pet.Brain as ForestheartAmbusherBrain).Think();
+			// SetBrainToOwner(m_pet.Brain as ForestheartAmbusherBrain);
+
 
 			Caster.PetCount++;
 		}
@@ -84,12 +95,34 @@ namespace DOL.GS.Spells
 			return new ForestheartAmbusherBrain(owner);
 		}
 		
+		protected override GamePet GetGamePet(INpcTemplate template)
+		{
+			return new TheurgistPet(template);
+		}
+
 		/// <summary>
 		/// Do not trigger SubSpells
 		/// </summary>
 		/// <param name="target"></param>
 		public override void CastSubSpells(GameLiving target)
 		{
+		}
+
+		private void OnPetDying(DOLEvent e, object sender, EventArgs arguments)
+		{
+			if (e != GameLivingEvent.Dying || sender is not TheurgistPet)
+				return;
+			var pet = sender as TheurgistPet;
+			if (pet.Brain is not  ForestheartAmbusherBrain)
+				return;
+			var player = pet?.Owner as GamePlayer;
+			if (player == null)
+				return;
+
+			AtlasOF_ForestheartAmbusherECSEffect effect = (AtlasOF_ForestheartAmbusherECSEffect)EffectListService.GetEffectOnTarget(player, eEffect.ForestheartAmbusher);
+
+			effect?.Cancel(false);
+			
 		}
 	}
 }

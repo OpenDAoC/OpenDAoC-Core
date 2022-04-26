@@ -1,3 +1,4 @@
+using System;
 using DOL.AI.Brain;
 
 namespace DOL.GS.Effects
@@ -30,10 +31,14 @@ namespace DOL.GS.Effects
 
         public override void OnStopEffect()
         {
-            if (Owner.ControlledBrain is ForestheartAmbusherBrain)
+            foreach (var pet in WorldMgr.GetNPCsByType(typeof(TheurgistPet), Owner.Realm))
             {
-                Owner.ControlledBrain.Body.TakeDamage(null, eDamageType.Natural, 9999,0);
+                var ambusher = pet as TheurgistPet;
+                if (ambusher?.Owner != Owner) continue;
+                if (ambusher?.Brain is not ForestheartAmbusherBrain) continue;
+                ambusher.TakeDamage(null, eDamageType.Natural, 9999, 0);
             }
+
             base.OnStopEffect();
         }
         
