@@ -36,7 +36,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -62,15 +62,11 @@ namespace DOL.GS
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
-                if (npc != null)
+                if (npc == null) continue;
+                if (!npc.IsAlive) continue;
+                if (npc.Brain is OtryggAddBrain)
                 {
-                    if (npc.IsAlive)
-                    {
-                        if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
-                        {
-                            npc.Die(this);
-                        }
-                    }
+                    npc.Die(this);
                 }
             }
 
@@ -139,7 +135,7 @@ namespace DOL.GS
             }
             else
                 log.Warn(
-                    "Council Otrygg exist ingame, remove it and restart server if you want to add by script code.");
+                    "Council Otrygg exist in game, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -165,36 +161,32 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
                 {
-                    if (npc != null)
+                    if (npc == null) continue;
+                    if (!npc.IsAlive) continue;
+                    if (npc.Brain is OtryggAddBrain)
                     {
-                        if (npc.IsAlive)
-                        {
-                            if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
-                            {
-                                npc.Die(Body);
-                            }
-                        }
+                        npc.Die(Body);
                     }
                 }
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            else if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat || HasAggro || Body.AttackState == true)
             {
-                if (OtryggAdd.PetsCount < 15 && OtryggAdd.PetsCount > 0)
+                if (OtryggAdd.PetsCount is < 15 and >= 0)
                 {
                     SpawnPetsMore();
                 }
@@ -227,7 +219,7 @@ namespace DOL.AI.Brain
                 Add.CurrentRegion = Body.CurrentRegion;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
-                ++OtryggAdd.PetsCount;
+                OtryggAdd.PetsCount++;
             }
         }
 
@@ -240,7 +232,7 @@ namespace DOL.AI.Brain
             Add.CurrentRegion = Body.CurrentRegion;
             Add.Heading = Body.Heading;
             Add.AddToWorld();
-            ++OtryggAdd.PetsCount;
+            OtryggAdd.PetsCount++;
         }
     }
 }
@@ -283,7 +275,7 @@ namespace DOL.GS
 
         public override void Die(GameObject killer)
         {
-            --PetsCount;
+            PetsCount--;
             base.Die(killer);
         }
 
@@ -348,15 +340,11 @@ namespace DOL.AI.Brain
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
-                    if (npc != null)
+                    if (npc == null) continue;
+                    if (!npc.IsAlive) continue;
+                    if (npc.Brain is OtryggAddBrain brain)
                     {
-                        if (npc.IsAlive)
-                        {
-                            if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
-                            {
-                                AddAggroListTo(npc.Brain as OtryggAddBrain); //if one pet aggro all will aggro
-                            }
-                        }
+                        AddAggroListTo(brain); //if one pet aggro all will aggro
                     }
                 }
             }

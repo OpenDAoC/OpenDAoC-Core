@@ -3085,7 +3085,7 @@ namespace DOL.GS
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;
-			else if (Mana > 0 && MaxMana > 0)
+			else if (Mana > 0 && MaxMana > 0 && Mana < MaxMana)  //Only start PowerRegen if needed
 				StartPowerRegeneration();
 
 			//If the Mob has a Path assigned he will now walk on it!
@@ -4679,7 +4679,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="selfRegenerationTimer">the regeneration timer</param>
 		/// <returns>the new interval</returns>
-		protected override int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			int period = m_healthRegenerationPeriod;
 			if (!InCombat)

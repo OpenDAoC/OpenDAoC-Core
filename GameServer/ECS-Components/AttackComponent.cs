@@ -1610,7 +1610,7 @@ namespace DOL.GS
                     if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                     {
                         weaponskiller.Out.SendMessage(
-                            $"Calculated WS: {weaponskillCalc.ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
+                            $"Calculated WS: {(weaponskillCalc * specModifier * strengthRelicCount).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);

@@ -48,5 +48,6 @@ namespace DOL.GS.Spells
 			}
 			return base.CheckEndCast(selectedTarget);
 		}
+		
 	}
 }

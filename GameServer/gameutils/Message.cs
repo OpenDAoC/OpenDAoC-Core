@@ -143,24 +143,27 @@ namespace DOL.GS
 		{
 			if (string.IsNullOrEmpty(message)) return; // Don't send blank messages
 
-			foreach (GamePlayer player in centerObject.GetPlayersInRadius(distance)) // Send message to each GamePlayer within the specified distance of the centerObject
+			if (centerObject != null)
 			{
-				var excluded = false;
-
-				if (excludes != null) // If entities are specified for exclusion (i.e., != null), then perform following actions
+				foreach (GamePlayer player in centerObject.GetPlayersInRadius(distance)) // Send message to each GamePlayer within the specified distance of the centerObject
 				{
-					foreach (var obj in excludes) // For each param in excludes, set exclude to true for GamePlayers and don't send message
+					var excluded = false;
+
+					if (excludes != null) // If entities are specified for exclusion (i.e., != null), then perform following actions
 					{
-						if (obj == player)
+						foreach (var obj in excludes) // For each param in excludes, set exclude to true for GamePlayers and don't send message
 						{
-							excluded = true;
-							break;
+							if (obj == player)
+							{
+								excluded = true;
+								break;
+							}
 						}
 					}
-				}
-				if (excluded == false)
-				{
-					player.MessageFromArea(centerObject, message, chatType, chatLoc); // If no excludes are specified (i.e., 'null'), send message to everyone in radius
+					if (excluded == false)
+					{
+						player.MessageFromArea(centerObject, message, chatType, chatLoc); // If no excludes are specified (i.e., 'null'), send message to everyone in radius
+					}
 				}
 			}
 		}
