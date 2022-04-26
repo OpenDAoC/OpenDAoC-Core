@@ -98,6 +98,7 @@ namespace DOL.GS.Commands
                         info.Add(" + Is Pet ");
 						info.Add(" + Pet Owner:   " + targetP.Owner);
 						info.Add(" ");
+						info.Add(" + Pet target:   " + targetP.TargetObject.Name);
 					}
 					
 					if (client.Player.TargetObject is GameMovingObject)
