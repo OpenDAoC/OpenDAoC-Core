@@ -80,6 +80,8 @@ namespace DOL.GS
 		protected bool m_replaceMobValues;
 		protected byte m_visibleActiveWeaponSlot;
 		protected int m_factionid;
+		protected eRealm m_realm;
+		private string m_packageID;
 
 		/// <summary>
 		/// Constructs a new NpcTemplate
@@ -352,6 +354,15 @@ namespace DOL.GS
         {
             get { return m_translationId; }
             set { m_translationId = value; }
+        }
+        
+        /// <summary>
+        /// Gets the Realm
+        /// </summary>
+        public string PackageID
+        {
+	        get { return m_packageID; }
+	        set { m_packageID = value; }
         }
 
 		/// <summary>

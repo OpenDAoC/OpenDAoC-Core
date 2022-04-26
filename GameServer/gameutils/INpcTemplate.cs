@@ -68,11 +68,19 @@ namespace DOL.GS
 		/// List of items sold by this npc
 		/// </summary>
 		string ItemsListTemplateID { get; }
+		
+		string EquipmentTemplateID { get; }
 
 		/// <summary>
 		/// Gets the template combat stats
 		/// </summary>
 		eDamageType MeleeDamageType { get; }
+		
+		
+		/// <summary>
+		/// Gets the Realm
+		/// </summary>
+		public string PackageID { get; }
 		byte ParryChance { get; }
 		byte EvadeChance { get; }
 		byte BlockChance { get; }
