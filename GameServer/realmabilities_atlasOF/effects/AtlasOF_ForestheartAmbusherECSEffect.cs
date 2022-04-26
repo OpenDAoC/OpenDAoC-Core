@@ -1,4 +1,3 @@
-using System;
 using DOL.AI.Brain;
 
 namespace DOL.GS.Effects
@@ -11,7 +10,7 @@ namespace DOL.GS.Effects
             EffectType = eEffect.ForestheartAmbusher;
             EffectService.RequestStartEffect(this);
         }
-        public override ushort Icon => 4268;
+        public override ushort Icon => 11129; // correct icon should be 4268 but it won't work
 
         public override string Name => "Forestheart Ambusher";
 

@@ -12,9 +12,9 @@ namespace DOL.GS.RealmAbilities
         {
         }
 
-        // public const int duration = 180000; // 180 seconds - 3 minutes
+        public const int duration = 180000; // 180 seconds - 3 minutes
 
-        public const int duration = 10000; // 10 seconds
+        // public const int duration = 10000; // 10 seconds
 
         public override int MaxLevel => 1;
 
@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
             return 1800; // 30 mins
         } 
 
-        public override ushort Icon => 4268;
+        public override ushort Icon => 11129; // correct icon should be 4268 but it won't work
 
         public override void AddDelve(ref MiniDelveWriter w)
         {
