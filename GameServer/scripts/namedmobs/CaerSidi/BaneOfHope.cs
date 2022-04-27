@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
                     if (ad.Attacker.IsAlive)
                     {
                         Body.CastSpell(BaneOfHope_Aoe_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                        new RegionTimer(Body, new RegionTimerCallback(TeleportEnemy), 4500);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportEnemy), 4500);
                         CanPoison = true;
                     }                  
                     if (oldTarget != null) Body.TargetObject = oldTarget;
@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-        public int TeleportEnemy(RegionTimer timer)
+        public int TeleportEnemy(ECSGameTimer timer)
         {
             if (TeleportTarget != null)
             {

@@ -79,7 +79,8 @@ namespace DOL.GS.RealmAbilities
         
         protected virtual double GetDamageAddAmount(GameLiving caster)
         {
-            double damage = caster.AttackWeapon.DPS_AF * .1 ;
+            if (caster == null) return 0;
+            double damage = caster.AttackWeapon.DPS_AF * caster.AttackWeapon.SPD_ABS * .1 * .1;
             switch (Level)
             {
                 case 1: return damage * .1;

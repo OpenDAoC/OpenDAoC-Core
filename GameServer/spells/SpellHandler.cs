@@ -2926,7 +2926,7 @@ namespace DOL.GS.Spells
 					Caster.TempProperties.removeProperty(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
 				}
 			}
-
+			
 			foreach (GameLiving t in targets)
 			{
 				
@@ -3502,7 +3502,7 @@ namespace DOL.GS.Spells
 		/// <returns>chance that spell will be resisted for specific target</returns>
 		public virtual int CalculateSpellResistChance(GameLiving target)
 		{
-			if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || HasPositiveEffect)
+			if (HasPositiveEffect)
 			{
 				return 0;
 			}
@@ -4258,6 +4258,7 @@ namespace DOL.GS.Spells
 			{
 				spellLevel = Math.Min(playerCaster.MaxLevel, target.Level);
 			}
+			//Console.WriteLine($"Spell level {spellLevel}");
 
 			int bonustohit = m_caster.GetModified(eProperty.ToHitBonus);
 

@@ -79,12 +79,12 @@ namespace DOL.GS.RealmAbilities
 				m_caster.Out.SendMessage("You cancel your Spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 			}
 
-			m_caster.RealmAbilityCastTimer = new RegionTimer(m_caster);
-			m_caster.RealmAbilityCastTimer.Callback = new RegionTimerCallback(EndCast);
+			m_caster.RealmAbilityCastTimer = new ECSGameTimer(m_caster);
+			m_caster.RealmAbilityCastTimer.Callback = new ECSGameTimer.ECSTimerCallback(EndCast);
 			m_caster.RealmAbilityCastTimer.Start(2000);
 		}
 
-		protected virtual int EndCast(RegionTimer timer)
+		protected virtual int EndCast(ECSGameTimer timer)
 		{
 			if (m_caster.TargetObject == null)
 			{

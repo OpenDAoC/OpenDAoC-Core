@@ -28,20 +28,20 @@ namespace DOL.GS.Keeps
 	{
 		public const int INTERVAL = 360 * 1000;
 
-		protected virtual int Timer(RegionTimer callingTimer)
+		protected virtual int Timer(ECSGameTimer callingTimer)
 		{
 			if (base.IsAlive)
 			{
 				foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
 					player.Out.SendSpellCastAnimation(this, 4321, 30);
-					RegionTimer timer = new RegionTimer(player, new RegionTimerCallback(ShowEffect), 3000);
+					ECSGameTimer timer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(ShowEffect), 3000);
 				}
 			}
 			return INTERVAL;
 		}
 
-		public int ShowEffect(RegionTimer timer)
+		public int ShowEffect(ECSGameTimer timer)
 		{
 			if (base.IsAlive)
 			{
@@ -64,7 +64,7 @@ namespace DOL.GS.Keeps
 		public override bool AddToWorld()
 		{
 			bool success = base.AddToWorld();
-			if (success) new RegionTimer(this, new RegionTimerCallback(Timer), INTERVAL);
+			if (success) new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Timer), INTERVAL);
 			return success;
 		}
 

@@ -194,13 +194,13 @@ namespace DOL.AI.Brain
 
         public static bool spawnfairy = false;
         public static bool nearspawn = false;
-        public int ReturnSpawn(RegionTimer timer)
+        public int ReturnSpawn(ECSGameTimer timer)
         {
             ClearAggroList();
             Evern.Idle = false;
             return 0;
         }
-        public int StartReturnSpawn(RegionTimer timer)
+        public int StartReturnSpawn(ECSGameTimer timer)
         {
             ClearAggroList();
             Evern.Idle = true;
@@ -210,7 +210,7 @@ namespace DOL.AI.Brain
         {
             if(Body.IsNearSpawn() && nearspawn==true)
             {
-                new RegionTimer(Body, new RegionTimerCallback(ReturnSpawn), 1000);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ReturnSpawn), 1000);
                 nearspawn = false;
             }
             if (!HasAggressionTable())
@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
                         {
                             if (Util.Chance(10))
                             {
-                                new RegionTimer(Body, new RegionTimerCallback(DoSpawn), Util.Random(5000, 15000));
+                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(5000, 15000));
                                 spawnfairy = true;
                             }
                         }
@@ -251,7 +251,7 @@ namespace DOL.AI.Brain
             if(Body.IsOutOfTetherRange && nearspawn==false)
             {
                 Body.WalkToSpawn();
-                new RegionTimer(Body, new RegionTimerCallback(StartReturnSpawn), 500);
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartReturnSpawn), 500);
                 nearspawn = true;
             }
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
@@ -274,7 +274,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        private int DoSpawn(RegionTimer timer)
+        private int DoSpawn(ECSGameTimer timer)
         {
             Spawn();
             spawnfairy = false;
@@ -353,7 +353,7 @@ namespace DOL.AI.Brain
             AggroRange = 0;
         }
 
-        private int HealingEffectTimer(RegionTimer timer)
+        private int HealingEffectTimer(ECSGameTimer timer)
         {
             foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -420,7 +420,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        private int CastingHealEffect(RegionTimer timer)
+        private int CastingHealEffect(ECSGameTimer timer)
         {
             foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -432,7 +432,7 @@ namespace DOL.AI.Brain
                         if (evern.HealthPercent < 100)
                         {
                             ppl.Out.SendSpellCastAnimation(Body, 1414, 4); //casting heal effect
-                            new RegionTimer(Body, new RegionTimerCallback(HealingEffectTimer), 3000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HealingEffectTimer), 3000);
                         }
                     }
                 }
@@ -573,7 +573,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck1 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck1 = true;
                     }
                 }
@@ -586,7 +586,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck2 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck2 = true;
                     }
                 }
@@ -599,7 +599,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck3 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck3 = true;
                     }
                 }
@@ -612,7 +612,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck4 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck4 = true;
                     }
                 }
@@ -625,7 +625,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck5 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck5 = true;
                     }
                 }
@@ -638,7 +638,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck6 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck6 = true;
                     }
                 }
@@ -651,7 +651,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck7 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck7 = true;
                     }
                 }
@@ -664,7 +664,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck8 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck8 = true;
                     }
                 }
@@ -677,7 +677,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck9 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck9 = true;
                     }
                 }
@@ -690,7 +690,7 @@ namespace DOL.AI.Brain
                     Body.CancelWalkToSpawn();
                     if (!Body.IsCasting && healcheck10 == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(CastingHealEffect), 3000);
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastingHealEffect), 3000);
                         healcheck10 = true;
                     }
                 }

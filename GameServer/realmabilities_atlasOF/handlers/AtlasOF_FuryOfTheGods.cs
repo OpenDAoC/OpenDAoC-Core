@@ -29,6 +29,6 @@ namespace DOL.GS.RealmAbilities
             list.Add("Casting time: instant");
         }
 
-        protected override double GetDamageAddAmount() { return 7.0; }
+        protected override double GetDamageAddAmount() { return 30.0; }
 	}
 }

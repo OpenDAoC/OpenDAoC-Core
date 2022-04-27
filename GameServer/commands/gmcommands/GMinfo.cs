@@ -98,6 +98,7 @@ namespace DOL.GS.Commands
                         info.Add(" + Is Pet ");
 						info.Add(" + Pet Owner:   " + targetP.Owner);
 						info.Add(" ");
+						info.Add(" + Pet target:   " + targetP.TargetObject.Name);
 					}
 					
 					if (client.Player.TargetObject is GameMovingObject)
@@ -807,6 +808,7 @@ namespace DOL.GS.Commands
 					info.Add(" Region IsRvR: "+ client.Player.CurrentRegion.IsRvR);
 					info.Add(" Region IsFrontier: " + client.Player.CurrentRegion.IsFrontier);
 					info.Add(" Region IsDungeon: " + client.Player.CurrentRegion.IsDungeon);
+					info.Add(" Region IsNight: "+ client.Player.CurrentRegion.IsNightTime);
 					info.Add(" Zone in Region: " + client.Player.CurrentRegion.Zones.Count);
                     info.Add(" Region WaterLevel: " + client.Player.CurrentRegion.WaterLevel);
                     info.Add(" Region HousingEnabled: " + client.Player.CurrentRegion.HousingEnabled);

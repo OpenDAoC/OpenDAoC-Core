@@ -67,12 +67,12 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Timer to remove bounty point and add realm point to guild which own keep
 		/// </summary>
-		protected RegionTimer m_claimTimer;
+		protected ECSGameTimer m_claimTimer;
 
 		/// <summary>
 		/// Timerto upgrade the keep level
 		/// </summary>
-		protected RegionTimer m_changeLevelTimer;
+		protected ECSGameTimer m_changeLevelTimer;
 
 		protected long m_lastAttackedByEnemyTick = 0;
 		public long LastAttackedByEnemyTick
@@ -730,10 +730,10 @@ namespace DOL.GS.Keeps
 
 		protected void InitialiseTimers()
 		{
-			m_changeLevelTimer = new RegionTimer(CurrentRegion.TimeManager);
-			m_changeLevelTimer.Callback = new RegionTimerCallback(ChangeLevelTimerCallback);
-			m_claimTimer = new RegionTimer(CurrentRegion.TimeManager);
-			m_claimTimer.Callback = new RegionTimerCallback(ClaimCallBack);
+			m_changeLevelTimer = new ECSGameTimer(new GameNPC());
+			m_changeLevelTimer.Callback = new ECSGameTimer.ECSTimerCallback(ChangeLevelTimerCallback);
+			m_claimTimer = new ECSGameTimer(new GameNPC());
+			m_claimTimer.Callback = new ECSGameTimer.ECSTimerCallback(ClaimCallBack);
 			m_claimTimer.Interval = CLAIM_CALLBACK_INTERVAL;
 		}
 
@@ -750,12 +750,12 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="timer"></param>
 		/// <returns></returns>
-		public int ClaimCallBack(RegionTimer timer)
+		public int ClaimCallBack(ECSGameTimer timer)
 		{
 			if (Guild == null)
 				return 0;
 
-			int amount = CalculRP();
+			var amount = CalculRP();
 			this.Guild.RealmPoints+=amount;
 
 			return timer.Interval;
@@ -950,11 +950,11 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public void StartChangeLevelTimer()
 		{
-			int newinterval = CalculateTimeToUpgrade();
+			var newinterval = CalculateTimeToUpgrade();
 
 			if (m_changeLevelTimer.IsAlive)
 			{
-				int timeelapsed = m_changeLevelTimer.Interval - m_changeLevelTimer.TimeUntilElapsed;
+				var timeelapsed = m_changeLevelTimer.Interval - m_changeLevelTimer.TimeUntilElapsed;
 				//if timer has run for more then we need, run event instantly
 				if (timeelapsed > m_changeLevelTimer.Interval)
 					newinterval = 1;
@@ -994,7 +994,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="timer"></param>
 		/// <returns></returns>
-		public int ChangeLevelTimerCallback(RegionTimer timer)
+		public int ChangeLevelTimerCallback(ECSGameTimer timer)
 		{
 			if (this is GameKeepTower)
 			{

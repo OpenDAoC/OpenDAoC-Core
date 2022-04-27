@@ -27,7 +27,7 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// The rgion timer
 		/// </summary>
-		RegionTimer m_countDownTimer = null;
+		ECSGameTimer m_countDownTimer = null;
 
 		/// <summary>
 		/// Ameliorating Melodies
@@ -52,7 +52,7 @@ namespace DOL.GS.RealmAbilities
 			if (player == null) return;
 			player.EffectList.Add(this);
 			m_range = (int)(2000 * (player.GetModified(eProperty.SpellRange) * 0.01));
-			m_countDownTimer = new RegionTimer(player, new RegionTimerCallback(CountDown));
+			m_countDownTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CountDown));
 			m_countDownTimer.Start(1);
 		}
 
@@ -74,7 +74,7 @@ namespace DOL.GS.RealmAbilities
 		/// Timer callback
 		/// </summary>
 		/// <param name="timer">The region timer</param>
-		public int CountDown(RegionTimer timer)
+		public int CountDown(ECSGameTimer timer)
 		{
 			if (m_countdown > 0)
 			{

@@ -68,7 +68,7 @@ namespace DOL.GS {
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
-            if (t == null || item == null) return false;
+            if (t == null || item == null || item.Template.Name.Equals("token_many")) return false;
             if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
             {
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1179,7 +1179,7 @@ namespace DOL.GS {
                 return;
             }
 
-            m_timer.Enqueue(new RegionTimer(this, new RegionTimerCallback(Effect), duration));
+            m_timer.Enqueue(new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Effect), duration));
             castplayer.Enqueue(player);
 
             player.Inventory.RemoveItem(item);
@@ -1249,7 +1249,7 @@ namespace DOL.GS {
                 return;
             }
 
-            m_timer.Enqueue(new RegionTimer(this, new RegionTimerCallback(Effect), duration));
+            m_timer.Enqueue(new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Effect), duration));
             castplayer.Enqueue(player);
 
 
@@ -1285,7 +1285,7 @@ namespace DOL.GS {
         }
         #endregion seteffect
 
-        public int Effect(RegionTimer timer)
+        public int Effect(ECSGameTimer timer)
         {
             m_timer.Dequeue();
             GamePlayer player = (GamePlayer)castplayer.Dequeue();

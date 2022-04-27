@@ -265,7 +265,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public int HotTimer(RegionTimer timer)
+		public int HotTimer(ECSGameTimer timer)
         {
 			
 			return 0;
@@ -299,12 +299,12 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new RegionTimer(Body, new RegionTimerCallback(CastDot), 1000);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), 1000);
 					CanCast = true;
 				}				
 			}
         }
-		public int CastDot(RegionTimer timer)
+		public int CastDot(ECSGameTimer timer)
         {
 			GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive)
@@ -316,10 +316,10 @@ namespace DOL.AI.Brain
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
 			Body.StartAttack(oldTarget);//start attack old target
-			new RegionTimer(Body, new RegionTimerCallback(ResetDot), Util.Random(25000,35000));
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), Util.Random(25000,35000));
 			return 0;
         }
-		public int ResetDot(RegionTimer timer)//reset here so boss can start dot again
+		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again
         {
 			RandomTarget = null;
 			CanCast = false;

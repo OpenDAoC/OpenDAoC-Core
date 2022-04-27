@@ -159,7 +159,7 @@ namespace DOL.AI.Brain
 
         public static bool IsBerserker = false;
 
-        public int BerserkerPhase(RegionTimer timer)
+        public int BerserkerPhase(ECSGameTimer timer)
         {
             if (Body.IsAlive && IsBerserker == true && Body.InCombat && HasAggro)
             {
@@ -168,14 +168,14 @@ namespace DOL.AI.Brain
                 Body.Empathy = 340;
                 Body.MaxSpeedBase = 200; //slow under zerk mode
                 Body.Size = 75;
-                new RegionTimer(Body, new RegionTimerCallback(EndBerserkerPhase),
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndBerserkerPhase),
                     Util.Random(10000, 20000)); //10-20s in berserk stance
             }
 
             return 0;
         }
 
-        public int EndBerserkerPhase(RegionTimer timer)
+        public int EndBerserkerPhase(ECSGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -224,7 +224,7 @@ namespace DOL.AI.Brain
 
                 if (IsBerserker == false)
                 {
-                    new RegionTimer(Body, new RegionTimerCallback(BerserkerPhase), Util.Random(20000, 35000));
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BerserkerPhase), Util.Random(20000, 35000));
                     IsBerserker = true;
                 }
 
@@ -557,7 +557,7 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * Strength / 50;
         }
 
-        protected int Show_Effect(RegionTimer timer)
+        protected int Show_Effect(ECSGameTimer timer)
         {
             if (this.IsAlive)
             {
@@ -569,17 +569,17 @@ namespace DOL.GS
                     }
                 }
 
-                new RegionTimer(this, new RegionTimerCallback(DoCast), 1500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
             }
 
             return 0;
         }
 
-        protected int DoCast(RegionTimer timer)
+        protected int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 1500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
             }
 
             return 0;
@@ -623,7 +623,7 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
             }
 
             return success;

@@ -1052,7 +1052,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Timer with purpose of follow updating
 		/// </summary>
-		protected RegionTimer m_followTimer;
+		protected ECSGameTimer m_followTimer;
 		/// <summary>
 		/// Property entry on follow timer, wether the follow target is in range
 		/// </summary>
@@ -1600,7 +1600,8 @@ namespace DOL.GS
 		public virtual void Follow(GameObject target, int minDistance, int maxDistance)
 		{
 			if (m_followTimer.IsAlive)
-				m_followTimer.Stop();
+				return;
+				//m_followTimer.Stop();
 
 			if (target == null || target.ObjectState != eObjectState.Active)
 				return;
@@ -1608,6 +1609,7 @@ namespace DOL.GS
 			m_followMaxDist = maxDistance;
 			m_followMinDist = minDistance;
 			m_followTarget.Target = target;
+			//Console.WriteLine($"starting follow on {target} mindist {minDistance} maxdist {maxDistance}");
 			m_followTimer.Start(100);
 		}
 
@@ -1619,7 +1621,11 @@ namespace DOL.GS
 			lock (m_followTimer)
 			{
 				if (m_followTimer.IsAlive)
+				{
 					m_followTimer.Stop();
+					//Console.WriteLine($"stopping follow");
+				}
+					
 
 				m_followTarget.Target = null;
 				StopMoving();
@@ -1664,7 +1670,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Keep following a specific object at a max distance
 		/// </summary>
-		protected virtual int FollowTimerCallback(RegionTimer callingTimer)
+		protected virtual int FollowTimerCallback(ECSGameTimer callingTimer)
 		{
 			if (IsCasting)
 				return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
@@ -1784,14 +1790,17 @@ namespace DOL.GS
 			newY = (int)(followTarget.Y - diffy);
 			newZ = (int)(followTarget.Z - diffz);
 			
-			if (Brain is ControlledNpcBrain)
+			if (Brain is ControlledNpcBrain controlledNpcBrain)
 			{
 				if (InCombat || Brain is BomberBrain || TargetObject != null)
 					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-				else if (!IsWithinRadius(new Point2D(newX, newY), MaxSpeed))// MaxSpeed < GetDistance(new Point2D(newX, newY)))
-					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);//(short)Math.Min(MaxSpeed, followLiving.CurrentSpeed + 50));
+				else if
+					(!IsWithinRadius(new Point2D(newX, newY),
+						200)) // MaxSpeed < GetDistance(new Point2D(newX, newY)))
+					WalkTo(newX, newY, (ushort) newZ,
+						MaxSpeed); //(short)Math.Min(MaxSpeed, followLiving.CurrentSpeed + 50));
 				else
-					WalkTo(newX, newY, (ushort)newZ, (short)(GetDistance(new Point2D(newX, newY)) + 110));
+					WalkTo(newX, newY, (ushort) newZ, (short)185);//(GetDistance(new Point2D(newX, newY)) + 191));
 			}
 			else
 				WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
@@ -3076,7 +3085,7 @@ namespace DOL.GS
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;
-			else if (Mana > 0 && MaxMana > 0)
+			else if (Mana > 0 && MaxMana > 0 && Mana < MaxMana)  //Only start PowerRegen if needed
 				StartPowerRegeneration();
 
 			//If the Mob has a Path assigned he will now walk on it!
@@ -3272,8 +3281,8 @@ namespace DOL.GS
 				if (oldRegion != newRegion && newRegion != null)
 				{
 					if (m_followTimer != null) m_followTimer.Stop();
-					m_followTimer = new RegionTimer(this);
-					m_followTimer.Callback = new RegionTimerCallback(FollowTimerCallback);
+					m_followTimer = new ECSGameTimer(this);
+					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
 				}
 			}
 		}
@@ -3850,6 +3859,8 @@ namespace DOL.GS
         public virtual void StartAttack(GameObject target)
         {
             attackComponent.StartAttack(target);
+            if(m_followTimer != null) m_followTimer.Stop();
+            Follow(target, m_followMinDist, m_followMaxDist);
             FireAmbientSentence(eAmbientTrigger.fighting, target);
             //if (target == null)
             //    return;
@@ -4668,7 +4679,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="selfRegenerationTimer">the regeneration timer</param>
 		/// <returns>the new interval</returns>
-		protected override int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			int period = m_healthRegenerationPeriod;
 			if (!InCombat)
@@ -4741,7 +4752,8 @@ namespace DOL.GS
         {
 			if(Brain is StandardMobBrain standardMobBrain && Brain is not NecromancerPetBrain)
             {
-				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
+	           // Console.WriteLine($"dmg {ad.Damage} crit {ad.CriticalDamage} mod {Math.Abs(ad.Modifier)}");
+				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier));
 				standardMobBrain.OnAttackedByEnemy(ad);
             }
 
@@ -4992,6 +5004,8 @@ namespace DOL.GS
 
 		#region Spell
 		private List<Spell> m_spells = new List<Spell>(0);
+
+		//public bool SortedSpells = false;
 		/// <summary>
 		/// property of spell array of NPC
 		/// </summary>
@@ -5013,7 +5027,8 @@ namespace DOL.GS
 				else
 				{
 					m_spells = value.Cast<Spell>().ToList();
-					SortSpells();
+					//if(!SortedSpells)
+						SortSpells();
 				}
 			}
 		}
@@ -5173,6 +5188,8 @@ namespace DOL.GS
 					}
 				}
 			} // foreach
+
+			//SortedSpells = true;
 		}
 		#endregion
 

@@ -70,6 +70,17 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+        public ECSGameTimer PredatorTimeoutTimer
+        {
+            get
+            {
+                if (m_predatortimer == null) m_predatortimer = new ECSGameTimer(this);
+                return m_predatortimer;
+            }
+            set { m_predatortimer = value; }
+        }
+        
+        protected ECSGameTimer m_predatortimer;
 
         private PlayerDeck _randomNumberDeck;
 
@@ -819,7 +830,7 @@ namespace DOL.GS
             Out.SendPlayerQuit(false);
             Quit(true);
             SaveIntoDatabase();
-            m_quitTimer.Stop();
+            m_quitTimer?.Stop();
             m_quitTimer = null;
             return 0;
         }
@@ -2558,7 +2569,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
+        protected int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
         {
             // I'm not sure what the point of this is.
             if (Client.ClientState != GameClient.eClientState.Playing)
@@ -2621,7 +2632,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+        protected int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return PowerRegenerationPeriod;
@@ -2635,7 +2646,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+        protected int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
@@ -8265,7 +8276,7 @@ namespace DOL.GS
 			
             CharacterClass.Die(killer);
 
-            bool realmDeath = killer != null && killer.Realm != eRealm.None;
+            bool realmDeath = killer != null && killer.Realm != eRealm.None && killer.Realm != Realm;
 
             TargetObject = null;
             Diving(eWaterBreath.Normal);
@@ -9241,12 +9252,12 @@ namespace DOL.GS
         /// <summary>
         /// This is the timer used to count time when a player casts a RA
         /// </summary>
-        private RegionTimer m_realmAbilityCastTimer;
+        private ECSGameTimer m_realmAbilityCastTimer;
 
         /// <summary>
         /// Get and set the RA cast timer
         /// </summary>
-        public RegionTimer RealmAbilityCastTimer
+        public ECSGameTimer RealmAbilityCastTimer
         {
             get { return m_realmAbilityCastTimer; }
             set { m_realmAbilityCastTimer = value; }
@@ -9645,8 +9656,8 @@ namespace DOL.GS
 									EffectService.RequestImmediateCancelEffect(effect);
 									//effect.Cancel(false);
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-								m_whistleMountTimer = new RegionTimer(this);
-								m_whistleMountTimer.Callback = new RegionTimerCallback(WhistleMountTimerCallback);
+								m_whistleMountTimer = new ECSGameTimer(this);
+								m_whistleMountTimer.Callback = new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback);
 								m_whistleMountTimer.Start(5000);
 							}
 						}
@@ -11572,8 +11583,8 @@ namespace DOL.GS
                 {
                     if (m_lavaBurningTimer == null)
                     {
-                        m_lavaBurningTimer = new RegionTimer(this);
-                        m_lavaBurningTimer.Callback = new RegionTimerCallback(LavaBurnTimerCallback);
+                        m_lavaBurningTimer = new ECSGameTimer(this);
+                        m_lavaBurningTimer.Callback = new ECSGameTimer.ECSTimerCallback(LavaBurnTimerCallback);
                         m_lavaBurningTimer.Interval = 2000;
                         m_lavaBurningTimer.Start(1);
                     }
@@ -11610,7 +11621,7 @@ namespace DOL.GS
         protected long m_beginDrowningTick;
         protected eWaterBreath m_currentWaterBreathState;
 
-        protected int DrowningTimerCallback(RegionTimer callingTimer)
+        protected int DrowningTimerCallback(ECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active)
                 return 0;
@@ -11632,16 +11643,16 @@ namespace DOL.GS
             return 1000;
         }
 
-        protected int HoldingBreathTimerCallback(RegionTimer callingTimer)
+        protected int HoldingBreathTimerCallback(ECSGameTimer callingTimer)
         {
             m_holdBreathTimer = null;
             Diving(eWaterBreath.Drowning);
             return 0;
         }
 
-        protected RegionTimer m_drowningTimer;
-        protected RegionTimer m_holdBreathTimer;
-        protected RegionTimer m_lavaBurningTimer;
+        protected ECSGameTimer m_drowningTimer;
+        protected ECSGameTimer m_holdBreathTimer;
+        protected ECSGameTimer m_lavaBurningTimer;
         /// <summary>
         /// The diving state of this player
         /// </summary>
@@ -11707,8 +11718,8 @@ namespace DOL.GS
                     if (m_holdBreathTimer == null)
                     {
                         Out.SendTimerWindow("Holding Breath", 30);
-                        m_holdBreathTimer = new RegionTimer(this);
-                        m_holdBreathTimer.Callback = new RegionTimerCallback(HoldingBreathTimerCallback);
+                        m_holdBreathTimer = new ECSGameTimer(this);
+                        m_holdBreathTimer.Callback = new ECSGameTimer.ECSTimerCallback(HoldingBreathTimerCallback);
                         m_holdBreathTimer.Start(30001);
                     }
                     break;
@@ -11717,8 +11728,8 @@ namespace DOL.GS
                     if (m_drowningTimer == null)
                     {
                         //Out.SendTimerWindow("Drowning", 5);
-                        m_drowningTimer = new RegionTimer(this);
-                        m_drowningTimer.Callback = new RegionTimerCallback(DrowningTimerCallback);
+                        m_drowningTimer = new ECSGameTimer(this);
+                        m_drowningTimer.Callback = new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback);
                         m_drowningTimer.Start(1);
                     }
                     break;
@@ -11728,7 +11739,7 @@ namespace DOL.GS
             //	Out.SendUpdateMaxSpeed();
         }
 
-        protected int LavaBurnTimerCallback(RegionTimer callingTimer)
+        protected int LavaBurnTimerCallback(ECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active || !IsSwimming)
                 return 0;
@@ -14479,9 +14490,9 @@ namespace DOL.GS
         /// </summary>
         protected List<AbstractQuest> m_questListFinished = new List<AbstractQuest>();
 
-        protected RegionTimer m_questActionTimer = null;
+        protected ECSGameTimer m_questActionTimer = null;
 
-        public RegionTimer QuestActionTimer
+        public ECSGameTimer QuestActionTimer
         {
             get { return m_questActionTimer; }
             set { m_questActionTimer = value; }
@@ -14876,12 +14887,12 @@ namespace DOL.GS
         /// <summary>
         /// This is the timer used to count time when a player craft
         /// </summary>
-        private RegionTimer m_crafttimer;
+        private ECSGameTimer m_crafttimer;
 
         /// <summary>
         /// Get and set the craft timer
         /// </summary>
-        public RegionTimer CraftTimer
+        public ECSGameTimer CraftTimer
         {
             get { return m_crafttimer; }
             set { m_crafttimer = value; }
@@ -15940,7 +15951,7 @@ namespace DOL.GS
 
         #region Controlled Mount
 
-        protected RegionTimer m_whistleMountTimer;
+        protected ECSGameTimer m_whistleMountTimer;
         protected ControlledHorse m_controlledHorse;
 
         public bool HasHorse
@@ -15993,7 +16004,7 @@ namespace DOL.GS
             m_whistleMountTimer = null;
         }
 
-        protected int WhistleMountTimerCallback(RegionTimer callingTimer)
+        protected int WhistleMountTimerCallback(ECSGameTimer callingTimer)
         {
             StopWhistleTimers();
             IsOnHorse = true;
@@ -16905,7 +16916,7 @@ namespace DOL.GS
             //	evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
             ECSGameEffect evade = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
 
-            if (HasAbility(Abilities.Advanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+            if (HasAbility(Abilities.Advanced_Evade) || HasAbility(Abilities.Enhanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
                 evadeChance = GetModified(eProperty.EvadeChance);
             else if (evade != null || HasAbility(Abilities.Evade))
             {

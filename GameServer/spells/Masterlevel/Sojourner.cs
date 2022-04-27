@@ -164,7 +164,7 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("Zephyr")]
     public class FZSpellHandler : MasterlevelHandling
     {
-        protected RegionTimer m_expireTimer;
+        protected ECSGameTimer m_expireTimer;
         protected GameNPC m_npc;
         protected GamePlayer m_target;
 		protected IPoint3D m_loc;
@@ -232,10 +232,10 @@ namespace DOL.GS.Spells
         protected virtual void StartTimer()
         {
             StopTimer();
-            m_expireTimer = new RegionTimer(m_npc, new RegionTimerCallback(ExpiredCallback), 10000);
+            m_expireTimer = new ECSGameTimer(m_npc, new ECSGameTimer.ECSTimerCallback(ExpiredCallback), 10000);
         }
 
-        protected virtual int ExpiredCallback(RegionTimer callingTimer)
+        protected virtual int ExpiredCallback(ECSGameTimer callingTimer)
         {
             m_target.IsStunned = false;
 			m_target.DismountSteed(true);

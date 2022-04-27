@@ -363,6 +363,7 @@ namespace DOL.GS
                             meleerange += 32;
                     }
 
+                    //Console.WriteLine($"melee range: {meleerange} moving? {p.IsMoving} targmoving {livingTarget.IsMoving}");
                     return meleerange;
                 }
                 else
@@ -1454,6 +1455,7 @@ namespace DOL.GS
                 return ad;
             }
 
+            //Console.WriteLine($"AttkRange {AttackRange} AddRange {addRange} targetAttkComp {ad.Target.attackComponent.AttackRange}");
             //We have no attacking distance!
             if (!owner.IsWithinRadius(ad.Target,
                     ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard
@@ -1610,7 +1612,7 @@ namespace DOL.GS
                     if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                     {
                         weaponskiller.Out.SendMessage(
-                            $"Calculated WS: {weaponskillCalc.ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
+                            $"Base WS: {weaponskillCalc} | Calc WS: {(weaponskillCalc * specModifier * strengthRelicCount).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);

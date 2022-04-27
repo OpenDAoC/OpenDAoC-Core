@@ -15,7 +15,7 @@ public class BountyService
 
     static BountyService()
     {
-        EntityManager.AddService(typeof(ConquestService));
+        EntityManager.AddService(typeof(BountyService));
         BountyManager = new BountyManager();
     }
 

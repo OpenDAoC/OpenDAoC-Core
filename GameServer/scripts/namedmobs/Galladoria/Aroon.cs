@@ -723,7 +723,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -768,7 +768,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -932,7 +932,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -976,7 +976,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -1141,7 +1141,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1187,7 +1187,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -1353,7 +1353,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1399,7 +1399,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -1566,7 +1566,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1613,7 +1613,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -1780,7 +1780,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -1827,7 +1827,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -1994,7 +1994,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -2041,7 +2041,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -2209,7 +2209,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -2256,7 +2256,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
@@ -2424,7 +2424,7 @@ namespace DOL.AI.Brain
 
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
 
-        public int RandomAttackTarget(RegionTimer timer)
+        public int RandomAttackTarget(ECSGameTimer timer)
         {
             //IList enemies = new ArrayList(m_aggroTable.Keys);
             if (PlayersToAttack.Count == 0)
@@ -2471,7 +2471,7 @@ namespace DOL.AI.Brain
                 {
                     if (switch_target == false)
                     {
-                        new RegionTimer(Body, new RegionTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RandomAttackTarget), Util.Random(10000, 20000));
                         switch_target = true;
                     }
                 }
