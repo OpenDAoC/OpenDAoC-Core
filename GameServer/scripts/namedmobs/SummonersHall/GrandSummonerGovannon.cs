@@ -15,9 +15,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 90;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 90;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 80;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 80;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
 				default: return 80;// dmg reduction for rest resists
 			}
 		}
@@ -25,7 +25,7 @@ namespace DOL.GS
 		{
 			if (source is GamePlayer || source is GamePet)
 			{
-				if (this.IsOutOfTetherRange)
+				if (IsOutOfTetherRange)
 				{
 					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
 						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
@@ -37,7 +37,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GamePet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -59,7 +59,7 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
@@ -77,11 +77,6 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
-		public int BleedCast(ECSGameTimer timer)
-        {
-			
-			return 0;
-        }
         public override void OnAttackEnemy(AttackData ad)
         {
 			if(ad != null && GrandSummonerGovannonBrain.Stage2==true)
@@ -89,9 +84,7 @@ namespace DOL.GS
 				if(Util.Chance(35))//30% chance to make a bleed
                 {
 					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
-					{
-						this.CastSpell(Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-					}
+						CastSpell(Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
             }
             base.OnAttackEnemy(ad);
@@ -103,9 +96,7 @@ namespace DOL.GS
 				if (npc != null)
 				{
 					if (npc.IsAlive && (npc.Brain is SummonedDemonBrain || npc.Brain is SummonedSacrificeBrain || npc.Brain is ShadeOfAelfgarBrain))
-					{
 						npc.RemoveFromWorld();
-					}
 				}
 			}
 			base.Die(killer);
@@ -260,33 +251,28 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Stage2 = false;
 				SpawnSacrifices1 = false;
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
 					if(npc != null)
                     {
 						if(npc.IsAlive && (npc.Brain is SummonedDemonBrain || npc.Brain is SummonedSacrificeBrain || npc.Brain is ShadeOfAelfgarBrain))
-                        {
 							npc.RemoveFromWorld();
-                        }
                     }
                 }
 			}
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
 				if(Stage2==true)//demon form
-                {
 					Body.CastSpell(GovannonDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				}
+
 				SpawnShadeOfAelfgar();
 				foreach (GameNPC shade in Body.GetNPCsInRadius(4000))
 				{
 					if (shade != null)
 					{
 						if (shade.IsAlive && shade.Brain is ShadeOfAelfgarBrain)
-						{
 							AddAggroListTo(shade.Brain as ShadeOfAelfgarBrain);
-						}
 					}
 				}
 				if (Body.HealthPercent <= 80 && SpawnSacrifices1 == false)
@@ -294,7 +280,7 @@ namespace DOL.AI.Brain
 					if (Stage2 == false)
 					{
 						BroadcastMessage(String.Format(Body.Name + " gathers more strength."));
-						Body.Empathy = 325;
+						Body.Strength = 650;
 						Body.Size = 80;
 					}
 					foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -314,19 +300,19 @@ namespace DOL.AI.Brain
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
 			{
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18801);
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				Body.Model = Convert.ToUInt16(npcTemplate.Model);
 				Body.Size = Convert.ToByte(npcTemplate.Size);
-				Body.Empathy = Convert.ToInt16(npcTemplate.Empathy);
+				Body.Strength = Convert.ToInt16(npcTemplate.Strength);
 			}
 			base.Think();
 		}
 		public void MorphIntoDemon()
         {
-			this.Body.Health = this.Body.MaxHealth;//heal to max hp
+			Body.Health = Body.MaxHealth;//heal to max hp
 			Body.Model = 636;//demon model
 			Body.Size = 170;//bigger size
-			Body.Empathy = 350;//more dmg
+			Body.Strength = 800;//more dmg
 			SpawnSacrifices1 = false;
         }
 		public void SpawnDemonAndSacrifice() // spawn sacrifice and demon
@@ -419,7 +405,7 @@ namespace DOL.GS
 	{
 		public override int MaxHealth
 		{
-			get { return 3000; }
+			get { return 6000; }
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
@@ -505,7 +491,7 @@ namespace DOL.GS
 	{
 		public override int MaxHealth
 		{
-			get { return 3000; }
+			get { return 6000; }
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
@@ -600,16 +586,16 @@ namespace DOL.GS
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.35;
 		}
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 65;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 65;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 65;// dmg reduction for melee dmg
-				default: return 55;// dmg reduction for rest resists
+				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
+				default: return 75;// dmg reduction for rest resists
 			}
 		}
 		public static int ShadeOfAelfgarCount = 0;
@@ -644,9 +630,7 @@ namespace DOL.GS
 		public override void OnAttackEnemy(AttackData ad)
 		{
 			if (Util.Chance(30))//30% chance to make a bleed
-			{
-				this.CastSpell(AelfgarStun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
+				CastSpell(AelfgarStun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			base.OnAttackEnemy(ad);
 		}
 		private Spell m_AelfgarStun;
@@ -712,9 +696,7 @@ namespace DOL.AI.Brain
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
 						if (!Enemys_To_Port.Contains(player))
-						{
 							Enemys_To_Port.Add(player);//add player to list
-						}
 					}
 				}
 			}
@@ -743,16 +725,12 @@ namespace DOL.AI.Brain
 				RandomTarget = null;
 				CanPort = false;
 				if (Enemys_To_Port.Count > 0)
-				{
 					Enemys_To_Port.Clear();//clear list if it reset
-				}
 			}
 			if(Body.IsAlive && Body.InCombat && HasAggro)
             {
 				if(Util.Chance(5))
-                {
 					PickRandomTarget();
-                }
             }
 			base.Think();
 		}

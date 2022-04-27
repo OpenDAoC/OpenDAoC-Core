@@ -15,17 +15,17 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 70;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 70;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 70;// dmg reduction for melee dmg
-				default: return 50;// dmg reduction for rest resists
+				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				default: return 80;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GamePet)
 			{
-				if (this.IsOutOfTetherRange)
+				if (IsOutOfTetherRange)
 				{
 					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
 						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
@@ -37,15 +37,13 @@ namespace DOL.GS
 						else
 							truc = ((source as GamePet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
 				}
 				else//take dmg
-				{
 					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-				}
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -59,14 +57,14 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 800;
+			return 700;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
@@ -91,8 +89,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			SummonerRoesiaBrain.RandomTarget = null;
 			SummonerRoesiaBrain.CanCast = false;
-			SummonerRoesiaBrain.spawn_bows = false;
-			SummonerRoesiaBrain.IsPulled = false;
 			Faction = FactionMgr.GetFactionByID(187);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(206));
 			IsCloakHoodUp = true;
@@ -177,99 +173,71 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 100;
 			AggroRange = 600;
-			ThinkInterval = 1500;
-		}
-		public static bool IsPulled = false;
-		public static bool spawn_bows = false;
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-			if(spawn_bows == false)
-            {
-				SpawnBows();
-				spawn_bows = true;
-            }
-			if (IsPulled == false)
-			{
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-				{
-					if (npc != null)
-					{
-						if (npc.IsAlive && npc.Brain is RoesiaBowsBrain)
-						{
-							AddAggroListTo(npc.Brain as RoesiaBowsBrain);
-							IsPulled = true;
-						}
-					}
-				}
-			}
-			base.OnAttackedByEnemy(ad);
-		}
-		public void SpawnBows()
-		{
-			for (int i = 0; i < Util.Random(4,6); i++)
-			{
-				RoesiaBows Add1 = new RoesiaBows();
-				Add1.X = Body.X + Util.Random(-300, 300);
-				Add1.Y = Body.Y + Util.Random(-300, 300);
-				Add1.Z = Body.Z;
-				Add1.CurrentRegion = Body.CurrentRegion;
-				Add1.Heading = 22;
-				Add1.RespawnInterval = -1;
-				Add1.AddToWorld();
-			}
+			ThinkInterval = 2000;
 		}
 		public override void Think()
-		{
+		{			
 			if (!HasAggressionTable())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-				this.Body.Health = this.Body.MaxHealth;
+				Body.Health = Body.MaxHealth;
 				RandomTarget = null;
 				CanCast = false;
-				IsPulled = false;
-				spawn_bows = false;
 				if (Enemys_To_DD.Count > 0)
-				{
 					Enemys_To_DD.Clear();
-				}
-				foreach(GameNPC bows in Body.GetNPCsInRadius(5000))
-                {
-					if (bows != null)
-                    {
-						if(bows.IsAlive && bows.Brain is RoesiaBowsBrain)
-                        {
-							bows.RemoveFromWorld();
-                        }
-                    }
-                }
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if(Body.IsAlive)
+            {
+				if (!Body.Spells.Contains(RoesiaDot))
+					Body.Spells.Add(RoesiaDot);
+				if (!Body.Spells.Contains(RoesiaDS))
+					Body.Spells.Add(RoesiaDS);
+				if (!Body.Spells.Contains(RoesiaHOT))
+					Body.Spells.Add(RoesiaHOT);
+			}
+			if (HasAggro)
 			{
-				if (Body.HealthPercent < 25)
-				{
-					Body.CastSpell(RoesiaHOT, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast HOT
-				}
+				log.Warn("Disabled duration:" + Body.GetSkillDisabledDuration(RoesiaHOT));
 				if (Body.TargetObject != null)
 				{
-					if(!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn))
-                    {
-						Body.CastSpell(RoesiaDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//Cast DS
+					if (Util.Chance(25))
+					{
+						if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn) && !Body.IsCasting)
+							Body.CastSpell(RoesiaDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//Cast DS
 					}
-					PickRandomTarget();
+					if(Util.Chance(35))
+                    {
+						if (Body.HealthPercent < 25)
+							Body.CastSpell(RoesiaHOT, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast HOT
+					}
+					if (Util.Chance(35))
+					{ 
+						foreach (Spell spells in Body.Spells)
+						{
+							if (spells != null)
+							{
+								if (Body.attackComponent.AttackState && Body.IsCasting)
+									Body.attackComponent.NPCStopAttack();
+								if (Body.IsMoving && Body.TargetObject.IsWithinRadius(Body.TargetObject, spells.Range) && Body.IsCasting)
+									Body.StopFollowing();
+
+								PickRandomTarget();
+								if (RandomTarget != null && RandomTarget.IsAlive && CanCast)
+								{
+									GameLiving oldTarget = Body.TargetObject as GameLiving;
+									Body.TargetObject = RandomTarget;
+									Body.TurnTo(RandomTarget);
+									Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+									if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
+								}
+							}
+						}
+					}
 				}
-			}
-			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
-			{
-				this.Body.Health = this.Body.MaxHealth;
 			}
 			base.Think();
 		}
-		public int HotTimer(ECSGameTimer timer)
-        {
-			
-			return 0;
-        }
 		public static GamePlayer randomtarget = null;
 		public static GamePlayer RandomTarget
 		{
@@ -287,37 +255,21 @@ namespace DOL.AI.Brain
 					if(player.IsAlive && player.Client.Account.PrivLevel==1)
                     {
 						if(!Enemys_To_DD.Contains(player))
-                        {
 							Enemys_To_DD.Add(player);
-                        }
                     }
                 }
             }
 			if(Enemys_To_DD.Count>0)
             {
-				if (CanCast == false)
+				if (CanCast==false)
 				{
-					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
+					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), 1000);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 15000);
+					log.Warn("restarting timer in 15s");
 					CanCast = true;
 				}				
 			}
-        }
-		public int CastDot(ECSGameTimer timer)
-        {
-			GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
-			if (RandomTarget != null && RandomTarget.IsAlive)
-			{
-				Body.TargetObject = RandomTarget;
-				Body.TurnTo(RandomTarget);
-				Body.StopFollowing();
-				Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
-			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			Body.StartAttack(oldTarget);//start attack old target
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), Util.Random(25000,35000));
-			return 0;
         }
 		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again
         {
@@ -327,7 +279,7 @@ namespace DOL.AI.Brain
         }
         #region Roesia Spells
         private Spell m_RoesiaDot;
-		public Spell RoesiaDot
+		private Spell RoesiaDot
 		{
 			get
 			{
@@ -336,7 +288,7 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
-					spell.RecastDelay = 10;
+					spell.RecastDelay = 20;
 					spell.ClientEffect = 585;
 					spell.Icon = 585;
 					spell.TooltipId = 585;
@@ -363,7 +315,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		private Spell m_RoesiaHOT;
-		public Spell RoesiaHOT
+		private Spell RoesiaHOT
 		{
 			get
 			{
@@ -404,11 +356,11 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
-					spell.RecastDelay = 70;
+					spell.RecastDelay = 300;
 					spell.ClientEffect = 57;
 					spell.Icon = 57;
 					spell.Damage = 80;
-					spell.Duration = 60;
+					spell.Duration = 300;
 					spell.Name = "Roesia Damage Shield";
 					spell.TooltipId = 57;
 					spell.SpellID = 11758;
@@ -425,88 +377,4 @@ namespace DOL.AI.Brain
 		}
         #endregion
     }
-}
-/// <summary>
-/// //////////////////////////////////////////////////////////////////Summoned Bows//////////////////////////////////////////////////////////////////
-/// </summary>
-namespace DOL.AI.Brain
-{
-	public class RoesiaBowsBrain : StandardMobBrain
-	{
-		public RoesiaBowsBrain()
-			: base()
-		{
-			AggroLevel = 100;
-			AggroRange = 800;
-		}
-		public override void Think()
-		{
-			if (!HasAggressionTable())
-			{
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-			}
-			base.Think();
-		}
-	}
-}
-namespace DOL.GS
-{
-	public class RoesiaBows : GameNPC
-	{
-		public override int MaxHealth
-		{
-			get { return 3000 * Constitution / 100; }
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 500;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.25;
-		}
-		public override int GetResist(eDamageType damageType)
-		{
-			switch (damageType)
-			{
-				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
-				default: return 25;// dmg reduction for rest resists
-			}
-		}
-		public override double AttackDamage(InventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 70;
-		}
-		public override bool AddToWorld()
-		{
-			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.DistanceWeapon, 132, 0, 0, 0);
-			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.Distance);
-			MeleeDamageType = eDamageType.Thrust;
-			VisibleActiveWeaponSlots = 51;//distance
-
-			Model = 665;
-			Name = "Summoned Bow";
-			Strength = 80;
-			Dexterity = 200;
-			Quickness = 100;
-			Constitution = 100;
-			RespawnInterval = -1;
-			MaxDistance = 2200;
-			TetherRange = 1300;
-			Size = 60;
-			Level = (byte)Util.Random(65, 70);
-			Faction = FactionMgr.GetFactionByID(187);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
-			RoesiaBowsBrain bows = new RoesiaBowsBrain();
-			SetOwnBrain(bows);
-			base.AddToWorld();
-			return true;
-		}
-
-	}
 }
