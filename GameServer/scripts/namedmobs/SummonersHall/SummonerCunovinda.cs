@@ -26,7 +26,7 @@ namespace DOL.GS
 		{
 			if (source is GamePlayer || source is GamePet)
 			{
-				if (this.IsOutOfTetherRange)
+				if (IsOutOfTetherRange)
 				{
 					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
 						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
@@ -38,7 +38,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GamePet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -183,9 +183,7 @@ namespace DOL.AI.Brain
 			if(ad.Damage > 0 && ad != null)
             {
 				if(Util.Chance(15))//here edit to change teleport chance to happen
-                {
 					PickRandomTarget();//start teleport here
-                }
             }
             base.OnAttackedByEnemy(ad);
         }
@@ -199,9 +197,7 @@ namespace DOL.AI.Brain
 				RandomTarget = null;
 				CanCast = false;
 				if (Enemys_To_DD.Count > 0)
-				{
 					Enemys_To_DD.Clear();//clear list if it reset
-				}
 			}
 			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
 			{
@@ -228,9 +224,7 @@ namespace DOL.AI.Brain
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
 						if (!Enemys_To_DD.Contains(player))
-						{
 							Enemys_To_DD.Add(player);//add player to list
-						}
 					}
 				}
 			}
@@ -250,17 +244,16 @@ namespace DOL.AI.Brain
 			GameLiving oldTarget = (GameLiving)Body.TargetObject;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive)
 			{
+				Body.TurnTo(RandomTarget);//turn to randomtarget
+				Body.StopFollowing();//stop follow
+				Body.CastSpell(CunovindaBolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);//cast bolt
+
 				RandomTarget.MoveTo(Body.CurrentRegionID, 24874, 36116, 17060, 3065);//port player to loc
 
 				if(Body.TargetObject != null && Body.TargetObject != RandomTarget)
 					Body.TargetObject = RandomTarget;//set target as randomtarget
-
-				Body.TurnTo(RandomTarget);//turn to randomtarget
-				Body.StopFollowing();//stop follow
-				Body.CastSpell(CunovindaBolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast bolt
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			Body.StartAttack(oldTarget);//start attack old target
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), Util.Random(8000, 12000));//teleport every 8-12s if melee hit got chance to proc teleport
 			return 0;
 		}
@@ -285,10 +278,8 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 2970;
 					spell.Icon = 2970;
 					spell.TooltipId = 2970;
-					spell.Damage = 250;
-					spell.Frequency = 30;
-					spell.Duration = 36;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.Damage = 200;
+					spell.DamageType = (int)eDamageType.Cold;
 					spell.Name = "Summoner Bolt";
 					spell.Range = 1800;
 					spell.SpellID = 11761;
