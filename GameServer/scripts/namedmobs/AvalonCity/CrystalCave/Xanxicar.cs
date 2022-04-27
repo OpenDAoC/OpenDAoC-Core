@@ -17,7 +17,6 @@ namespace DOL.GS
 			m_deathAnnounce = new String[] { "The earth lurches beneath your feet as {0} staggers and topples to the ground.",
 				"A glowing light begins to form on the mound that served as {0}'s lair." };
 		}
-
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -225,9 +224,7 @@ namespace DOL.AI.Brain
 							if (!Port_Enemys.Contains(player))
 							{
 								if (player != Body.TargetObject)
-								{
 									Port_Enemys.Add(player);
-								}
 							}
 						}
 					}
@@ -262,9 +259,7 @@ namespace DOL.AI.Brain
 						if (player.IsAlive && player.Client.Account.PrivLevel == 1 && player.CharacterClass.ID != 12)
 						{
 							if (!DD_Enemys.Contains(player))
-							{
 									DD_Enemys.Add(player);
-							}
 						}
 					}
 				}
@@ -275,9 +270,7 @@ namespace DOL.AI.Brain
 					if (RandomTarget2.IsAlive && RandomTarget2 != null && HasAggro)
 					{
 						BroadcastMessage("Xanxicar preparing glare at "+ RandomTarget2.Name +"!");
-						int _doGlareTime = 5000;
-						ECSGameTimer _DoGlare = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoGlare), _doGlareTime);
-						_DoGlare.Start(_doGlareTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoGlare), 5000);
 					}
 				}
 			}
@@ -289,9 +282,8 @@ namespace DOL.AI.Brain
 			Body.TargetObject = RandomTarget2;
 			Body.TurnTo(RandomTarget2);
 			if (Body.TargetObject != null && RandomTarget2.IsAlive)
-			{
 				Body.CastSpell(XanxicarGlare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
+
 			if (oldTarget != null) Body.TargetObject = oldTarget;
 			RandomTarget2 = null;//reset random target to null
 			IsTargetPicked2 = false;
@@ -336,9 +328,7 @@ namespace DOL.AI.Brain
 					if(npc != null)
                     {
 						if(npc.IsAlive && npc.Brain is XanxicarianChampionBrain)
-                        {
 							npc.RemoveFromWorld();
-                        }
                     }
                 }
 			}
@@ -346,44 +336,32 @@ namespace DOL.AI.Brain
 			{
 				if (IsTargetPicked == false)
 				{
-					int _throwPlayerTimer = Util.Random(20000, 40000);
-					ECSGameTimer _ThrowPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), _throwPlayerTimer);//timer to port and pick player
-					_ThrowPlayer.Start(_throwPlayerTimer);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(20000, 40000));//timer to port and pick player
 					IsTargetPicked = true;
 				}
 				if (IsTargetPicked2 == false)
 				{
-					int _glarePlayerTimer = Util.Random(35000, 45000);
-					ECSGameTimer _GlarePlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GlarePlayer), _glarePlayerTimer);//timer to glare at player
-					_GlarePlayer.Start(_glarePlayerTimer);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GlarePlayer), Util.Random(35000, 45000));//timer to glare at player
 					IsTargetPicked2 = true;
 				}
 				if(Body.HealthPercent <= 80 && Bomb1 == false)
                 {
-					int _bombAnnounceTime = 1000;
-					ECSGameTimer _BombAnnounce = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), _bombAnnounceTime);
-					_BombAnnounce.Start(_bombAnnounceTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
 					Bomb1 = true;
 				}
 				if (Body.HealthPercent <= 60 && Bomb2 == false)
 				{
-					int _bombAnnounceTime = 1000;
-					ECSGameTimer _BombAnnounce = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), _bombAnnounceTime);
-					_BombAnnounce.Start(_bombAnnounceTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
 					Bomb2 = true;
 				}
 				if (Body.HealthPercent <= 40 && Bomb3 == false)
 				{
-					int _bombAnnounceTime = 1000;
-					ECSGameTimer _BombAnnounce = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), _bombAnnounceTime);
-					_BombAnnounce.Start(_bombAnnounceTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
 					Bomb3 = true;
 				}
 				if (Body.HealthPercent <= 20 && Bomb4 == false)
 				{
-					int _bombAnnounceTime = 1000;
-					ECSGameTimer _BombAnnounce = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), _bombAnnounceTime);
-					_BombAnnounce.Start(_bombAnnounceTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
 					Bomb4 = true;
 				}
 				if(Body.HealthPercent<=50)
@@ -395,9 +373,7 @@ namespace DOL.AI.Brain
                     }
 					if(SpawnAddsOnce && CheckForSingleAdd==false && XanxicarianChampion.XanxicarianChampionCount == 0)
                     {
-						int  _spawnMoreAddsTime = Util.Random(25000, 35000);
-						ECSGameTimer _SpawnMoreAdds = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreAdds), _spawnMoreAddsTime);//spawn 1 add every 25-35s
-						_SpawnMoreAdds.Start(_spawnMoreAddsTime);
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreAdds), Util.Random(25000, 35000));//spawn 1 add every 25-35s
 						CheckForSingleAdd = true;
                     }
                 }
