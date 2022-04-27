@@ -298,9 +298,7 @@ namespace DOL.AI.Brain
 			{
 				if (IsTargetPicked == false)
                 {
-					int _throwPlayerTime = Util.Random(10000, 15000);
-					ECSGameTimer _ThrowPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), _throwPlayerTime);//timer to port and pick player
-					_ThrowPlayer.Start(_throwPlayerTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(10000, 15000));//timer to port and pick player
 					IsTargetPicked = true;
                 }
 				if (IsPulled == false)
