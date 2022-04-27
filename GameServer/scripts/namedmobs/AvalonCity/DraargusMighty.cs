@@ -187,7 +187,7 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
@@ -238,9 +238,7 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if(success)
             {
-				int _showEffectTime = 500;
-				ECSGameTimer _ShowEffect = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), _showEffectTime);
-				_ShowEffect.Start(_showEffectTime);
+				 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
@@ -251,24 +249,16 @@ namespace DOL.GS
 				foreach (GamePlayer player in GetPlayersInRadius(3000))
 				{
 					if (player != null)
-					{
 						player.Out.SendSpellEffectAnimation(this, this, 55, 0, false, 0x01);
-					}
 				}
-				int _doCastTime = 1500;
-				ECSGameTimer _DoCast = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), _doCastTime);
-				_DoCast.Start(_doCastTime);
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
 			}
 			return 0;
 		}
 		protected int DoCast(ECSGameTimer timer)
 		{
 			if (IsAlive)
-			{
-				int _showEffectTime = 1500;
-				ECSGameTimer _ShowEffect = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), _showEffectTime);
-				_ShowEffect.Start(_showEffectTime);
-			}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
 			return 0;
 		}
 		public override void StartAttack(GameObject target)
