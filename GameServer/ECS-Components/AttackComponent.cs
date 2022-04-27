@@ -1642,6 +1642,12 @@ namespace DOL.GS
                     // Modified to change the lowest value being 75
                     int lowerboundary = 75;
                     int upperboundary = 125;
+                    if (owner is GameEpicBoss)//Epic Boss 
+                    {
+                        lowerboundary = 95;//min dmg
+                        upperboundary = 105;//max dmg
+                    }
+                    var boss = owner as GameEpicBoss;//Epic Boss
 
                     double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0) : ((100 + spec) / 100.0);
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
@@ -1652,7 +1658,10 @@ namespace DOL.GS
                         ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
-                    damage *= DamageMod;
+                    if (owner is GameEpicBoss)
+                        damage *= DamageMod + (boss.Strength / 200);//only if it's EpicBoss
+                    else
+                        damage *= DamageMod;//normal mobs
 
                     if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                     {
