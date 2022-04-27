@@ -76,7 +76,7 @@ namespace DOL.GS
 			Level = 65;
 			Size = 81;
 			MaxSpeedBase = 250;
-			Strength = 550;
+			Strength = 420;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 100;
@@ -124,7 +124,7 @@ namespace DOL.AI.Brain
 				Body.Level = 65;
 				Body.Size = 81;
 				Body.MaxSpeedBase = 250;
-				Body.Strength = 550;
+				Body.Strength = 420;
 				Body.Dexterity = 150;
 				Body.Constitution = 100;
 				Body.Quickness = 100;
