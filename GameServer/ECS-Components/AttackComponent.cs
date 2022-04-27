@@ -1645,6 +1645,12 @@ namespace DOL.GS
                     int lowerboundary = 75;
                     int upperboundary = 125;
 
+                    if (owner is GameEpicBoss)
+                    {
+                         lowerboundary = 95;  //min
+                         upperboundary = 105; //max
+                    }
+
                     double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0) : ((100 + spec) / 100.0);
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
                     int range = upperboundary - lowerboundary;
