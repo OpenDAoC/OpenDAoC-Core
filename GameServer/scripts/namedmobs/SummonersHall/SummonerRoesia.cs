@@ -43,14 +43,7 @@ namespace DOL.GS
 					}
 				}
 				else//take dmg
-				{
-					if(source is GamePet)
-                    {
-						base.TakeDamage(source, damageType, 5, 5);
-					}
-					else
-						base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-				}
+					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -180,10 +173,10 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 100;
 			AggroRange = 600;
-			ThinkInterval = 1500;
+			ThinkInterval = 2000;
 		}
 		public override void Think()
-		{
+		{			
 			if (!HasAggressionTable())
 			{
 				//set state to RETURN TO SPAWN
@@ -194,21 +187,55 @@ namespace DOL.AI.Brain
 				if (Enemys_To_DD.Count > 0)
 					Enemys_To_DD.Clear();
 			}
+			if(Body.IsAlive)
+            {
+				if (!Body.Spells.Contains(RoesiaDot))
+					Body.Spells.Add(RoesiaDot);
+				if (!Body.Spells.Contains(RoesiaDS))
+					Body.Spells.Add(RoesiaDS);
+				if (!Body.Spells.Contains(RoesiaHOT))
+					Body.Spells.Add(RoesiaHOT);
+			}
 			if (HasAggro)
 			{
-				if (Body.HealthPercent < 25)
-					Body.CastSpell(RoesiaHOT, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast HOT
-
+				log.Warn("Disabled duration:" + Body.GetSkillDisabledDuration(RoesiaHOT));
 				if (Body.TargetObject != null)
 				{
-					if(!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn))
-						Body.CastSpell(RoesiaDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//Cast DS
+					if (Util.Chance(25))
+					{
+						if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn) && !Body.IsCasting)
+							Body.CastSpell(RoesiaDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//Cast DS
+					}
+					if(Util.Chance(35))
+                    {
+						if (Body.HealthPercent < 25)
+							Body.CastSpell(RoesiaHOT, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast HOT
+					}
+					if (Util.Chance(35))
+					{ 
+						foreach (Spell spells in Body.Spells)
+						{
+							if (spells != null)
+							{
+								if (Body.attackComponent.AttackState && Body.IsCasting)
+									Body.attackComponent.NPCStopAttack();
+								if (Body.IsMoving && Body.TargetObject.IsWithinRadius(Body.TargetObject, spells.Range) && Body.IsCasting)
+									Body.StopFollowing();
 
-					PickRandomTarget();
+								PickRandomTarget();
+								if (RandomTarget != null && RandomTarget.IsAlive && CanCast)
+								{
+									GameLiving oldTarget = Body.TargetObject as GameLiving;
+									Body.TargetObject = RandomTarget;
+									Body.TurnTo(RandomTarget);
+									Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+									if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
+								}
+							}
+						}
+					}
 				}
 			}
-			if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
-				Body.Health = Body.MaxHealth;
 			base.Think();
 		}
 		public static GamePlayer randomtarget = null;
@@ -234,28 +261,15 @@ namespace DOL.AI.Brain
             }
 			if(Enemys_To_DD.Count>0)
             {
-				if (CanCast == false)
+				if (CanCast==false)
 				{
-					GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
+					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), 1000);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 15000);
+					log.Warn("restarting timer in 15s");
 					CanCast = true;
 				}				
 			}
-        }
-		public int CastDot(ECSGameTimer timer)
-        {
-			GameLiving oldTarget = (GameLiving)Body.TargetObject;//old target
-			if (RandomTarget != null && RandomTarget.IsAlive)
-			{
-				Body.TargetObject = RandomTarget;
-				Body.TurnTo(RandomTarget);
-				Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-			}
-			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			Body.StartAttack(oldTarget);//start attack old target
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), Util.Random(25000,35000));
-			return 0;
         }
 		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again
         {
@@ -265,7 +279,7 @@ namespace DOL.AI.Brain
         }
         #region Roesia Spells
         private Spell m_RoesiaDot;
-		public Spell RoesiaDot
+		private Spell RoesiaDot
 		{
 			get
 			{
@@ -274,7 +288,7 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
-					spell.RecastDelay = 0;
+					spell.RecastDelay = 20;
 					spell.ClientEffect = 585;
 					spell.Icon = 585;
 					spell.TooltipId = 585;
@@ -301,7 +315,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		private Spell m_RoesiaHOT;
-		public Spell RoesiaHOT
+		private Spell RoesiaHOT
 		{
 			get
 			{
