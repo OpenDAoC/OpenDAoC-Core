@@ -62,7 +62,6 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			Level = Convert.ToByte(npcTemplate.Level);
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(82);
@@ -100,11 +99,9 @@ namespace DOL.AI.Brain
 				IsBig = true;
 				IsSmall = false;
 				Body.Size = 200;
-				Body.Empathy = 300;
+				Body.Strength = 400;
 				Body.Quickness = 50;
-				int _changeSizeToSmallTime = 30000;
-				ECSGameTimer _ChangeSizeToSmall = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToSmall), _changeSizeToSmallTime);
-				_ChangeSizeToSmall.Start(_changeSizeToSmallTime);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToSmall), 30000);
 			}
 			return 0;
 		}
@@ -117,11 +114,9 @@ namespace DOL.AI.Brain
 				IsBig = false;
 				Body.CastSpell(Boss_Haste_Buff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				Body.Size = 100;
-				Body.Empathy = npcTemplate.Empathy;
+				Body.Strength = npcTemplate.Strength;
 				Body.Quickness = npcTemplate.Quickness;
-				int _changeSizeToBigTime = 30000;
-				ECSGameTimer _ChangeSizeToBig = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), _changeSizeToBigTime);
-				_ChangeSizeToBig.Start(_changeSizeToBigTime);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), 30000);
 			}
 			return 0;
         }
@@ -140,7 +135,7 @@ namespace DOL.AI.Brain
 				if (IsInCombat == false)
 				{
 					Body.Size = Convert.ToByte(npcTemplate.Size);
-					Body.Empathy = npcTemplate.Empathy;
+					Body.Strength = npcTemplate.Strength;
 					Body.Quickness = npcTemplate.Quickness;
 					IsInCombat = true;
 				}
@@ -154,9 +149,7 @@ namespace DOL.AI.Brain
 						if (npc != null)
 						{
 							if (npc.IsAlive && npc.PackageID == "NogoribandoBaf")
-							{
 								AddAggroListTo(npc.Brain as StandardMobBrain);
-							}
 						}
 					}
 					IsInCombat = false;
@@ -166,21 +159,15 @@ namespace DOL.AI.Brain
 				if(target != null)
                 {
 					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
-                    {
 						Body.CastSpell(Boss_SC_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-					}
                 }
 				if(IsChangingSize==false)
                 {
-					int _changeSizeToBigTime = 5000;
-					ECSGameTimer _ChangeSizeToBig = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), _changeSizeToBigTime);
-					_ChangeSizeToBig.Start(_changeSizeToBigTime);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), 5000);
 					IsChangingSize = true;
                 }
 				if(IsSmall)
-                {
 					Body.CastSpell(Boss_Haste_Buff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				}
 			}
 			base.Think();
 		}
@@ -245,7 +232,6 @@ namespace DOL.AI.Brain
 				return m_Boss_Haste_Buff;
 			}
 		}
-
 	}
 }
 
