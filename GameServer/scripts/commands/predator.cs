@@ -105,6 +105,12 @@ namespace DOL.GS.Scripts
             }
             else if (args[1] == "abandon")
             {
+                if (!PredatorManager.PlayerIsActive(client.Player))
+                {
+                    client.Out.SendMessage("You are not a part of the hunt.", eChatType.CT_Important,
+                        eChatLoc.CL_SystemWindow);
+                    return;
+                }
                 PredatorManager.DisqualifyPlayer(client.Player);
             }
             else
