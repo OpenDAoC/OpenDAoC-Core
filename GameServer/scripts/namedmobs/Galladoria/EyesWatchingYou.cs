@@ -37,9 +37,7 @@ namespace DOL.GS
                     if (client != null)
                     {
                         if (client.Player.IsAlive && client.Account.PrivLevel == 1 && !PlayersInGalla.Contains(client.Player))
-                        {
                             PlayersInGalla.Add(client.Player);//add players to list from whole galladoria
-                        }
                     }
                 }
                 PickPlayer(); 
@@ -62,9 +60,7 @@ namespace DOL.GS
                         if (ppls != null && ppls.IsAlive  && PlayersInGalla.Contains(ppls))
                         {
                             if (ppls.CurrentRegionID != 191)
-                            {
                                 PlayersInGalla.Remove(ppls);//remove player from list if he leave current zone
-                            }
                         }
                     }
                     GamePlayer ptarget = PlayersInGalla[Util.Random(1, PlayersInGalla.Count) - 1];
@@ -181,26 +177,24 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new RegionTimer(this, new RegionTimerCallback(Show_Effect), 500);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
             }
             return success;
         }
-        protected int Show_Effect(RegionTimer timer)
+        protected int Show_Effect(ECSGameTimer timer)
         {
             if (IsAlive)
             {
                 foreach (GamePlayer player in this.GetPlayersInRadius(8000))
                 {
                     if (player != null)
-                    {
                         player.Out.SendSpellEffectAnimation(this, this, 6177, 0, false, 0x01);
-                    }
                 }
-                new RegionTimer(this, new RegionTimerCallback(RemoveMob), 5000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveMob), 5000);
             }
             return 0;
         }
-        public int RemoveMob(RegionTimer timer)
+        public int RemoveMob(ECSGameTimer timer)
         {
             if (IsAlive)
                 RemoveFromWorld();
