@@ -563,6 +563,8 @@ public class PredatorManager
     {
         if (timer.TimerOwner is GamePlayer pl)
         {
+            if (!PredatorManager.PlayerIsActive(pl)) return 0;
+            
             long TimerStartTime = timer.Properties.getProperty<long>(TimeoutTickKey);
 
             long secondsleft = OutOfBoundsTimeout - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
