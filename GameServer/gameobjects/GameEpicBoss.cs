@@ -14,18 +14,33 @@ namespace DOL.GS {
             
             GamePlayer playerKiller = killer as GamePlayer;
             
-            if (playerKiller?.Group != null)
+            BattleGroup killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            
+            if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
+            {
+                foreach (GamePlayer bgPlayer in killerBG.GetPlayersInTheBattleGroup())
+                {
+                    if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                    {
+                        AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
+                    }
+                }
+            }
+            else if (playerKiller?.Group != null)
             {
                 foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
                 {
-                    AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
+                    if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                    {
+                        AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
+                    }
                 }
             }
             else
             {
                 AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
             }
-            
+
             base.Die(killer);
         }
     }
