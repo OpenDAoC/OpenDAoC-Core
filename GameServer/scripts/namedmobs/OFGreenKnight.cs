@@ -482,7 +482,8 @@ namespace DOL.AI.Brain
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
-                    Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                    if (Util.Chance(100))
+                        Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
                     if (PortPoints.Contains(string1))
                         PortPoints.Remove(string1);
 
@@ -496,7 +497,8 @@ namespace DOL.AI.Brain
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
-                    Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                    if (Util.Chance(100))
+                        Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
                     if (PortPoints.Contains(string2))
                         PortPoints.Remove(string2);
                     PickPortPoint = false;
@@ -509,7 +511,8 @@ namespace DOL.AI.Brain
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
-                    Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                    if (Util.Chance(100))
+                        Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
                     if (PortPoints.Contains(string3))
                         PortPoints.Remove(string3);
                     PickPortPoint = false;
@@ -522,7 +525,8 @@ namespace DOL.AI.Brain
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
-                    Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                    if(Util.Chance(100))
+                        Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
                     if (PortPoints.Contains(string4))
                         PortPoints.Remove(string4);
                     PickPortPoint = false;
