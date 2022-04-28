@@ -2234,10 +2234,12 @@ namespace DOL.GS
                     !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
                     && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active &&
                     inter.InterceptSource.IsAlive
-                    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) &&
-                    Util.Chance(inter.InterceptChance))
+                    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE)) //&&
+                    //Util.Chance(inter.InterceptChance))
                 {
-                    intercept = inter;
+                    int chance = (owner is GamePlayer own) ? own.RandomNumberDeck.GetInt() : Util.Random(100);
+                    if(chance < inter.InterceptChance)
+                        intercept = inter;
                 }
             }
 
