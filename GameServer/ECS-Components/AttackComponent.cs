@@ -3523,13 +3523,13 @@ namespace DOL.GS
                     int randomChance = Util.Random(99);
                     int hitChance = specLevel >> 1;
 
-                    /*
+                    
                     if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
                     {
                         pl.Out.SendMessage(
                             $"Chance for 2 hits: {hitChance}% | 3 hits: {specLevel >> 2}% | 4 hits: {specLevel >> 4}% \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    }*/
+                    }
                     
                     if (randomChance < hitChance)
                         return 1; // 1 hit = spec/2
