@@ -3488,7 +3488,7 @@ namespace DOL.GS
 
                     return 1; // always use left axe
                 }
-
+                
 
                 int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual),
                     owner.GetModifiedSpecLevel(Specs.Dual_Wield));
@@ -3497,15 +3497,14 @@ namespace DOL.GS
                 decimal tmpOffhandChance = (25 + (specLevel - 1) * 68 / 100);
                 tmpOffhandChance += owner.GetModified(eProperty.OffhandChance) +
                                     owner.GetModified(eProperty.OffhandDamageAndChance);
-
-
-                if (owner is GamePlayer p && p.UseDetailedCombatLog)
+                
+                if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(Specs.HandToHand) <= 0)
                 {
                     p.Out.SendMessage(
                         $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n",
                         eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
-
+                
                 if (specLevel > 0)
                 {
                     return Util.Chance((int) tmpOffhandChance) ? 1 : 0;
@@ -3517,25 +3516,36 @@ namespace DOL.GS
                 InventoryItem leftWeapon = (owner.Inventory == null)
                     ? null
                     : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                if (specLevel > 0 && attackWeapon != null && attackWeapon.Object_Type == (int) eObjectType.HandToHand &&
-                    leftWeapon != null && leftWeapon.Object_Type == (int) eObjectType.HandToHand)
+                if (specLevel > 0 && attackWeapon != null && //attackWeapon.Object_Type == (int) eObjectType.HandToHand &&
+                    leftWeapon != null) //&& leftWeapon.Object_Type == (int) eObjectType.HandToHand)
                 {
                     specLevel--;
                     int randomChance = Util.Random(99);
                     int hitChance = specLevel >> 1;
+
+                    /*
+                    if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
+                    {
+                        pl.Out.SendMessage(
+                            $"Chance for 2 hits: {hitChance}% | 3 hits: {specLevel >> 2}% | 4 hits: {specLevel >> 4}% \n",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }*/
+                    
                     if (randomChance < hitChance)
                         return 1; // 1 hit = spec/2
-
+                    
                     hitChance += specLevel >> 2;
                     if (randomChance < hitChance)
                         return 2; // 2 hits = spec/4
-
+                    
                     hitChance += specLevel >> 4;
                     if (randomChance < hitChance)
                         return 3; // 3 hits = spec/16
 
                     return 0;
                 }
+                
+                
             }
 
             return 0;
