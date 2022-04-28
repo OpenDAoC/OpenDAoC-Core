@@ -75,7 +75,7 @@ namespace DOL.GS
 			Name = "Fulafeallan";
 			Size = 150;
 
-			Strength = 700;
+			Strength = 420;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;

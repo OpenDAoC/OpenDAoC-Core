@@ -75,7 +75,7 @@ namespace DOL.GS
 			Name = "Fuladl";
 			Size = 150;
 
-			Strength = 700;
+			Strength = 400;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;

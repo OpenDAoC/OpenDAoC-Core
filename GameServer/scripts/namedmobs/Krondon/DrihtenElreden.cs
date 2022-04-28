@@ -98,7 +98,7 @@ namespace DOL.GS
 			Name = "Drihten Elreden";
 			Size = 120;
 
-			Strength = 700;
+			Strength = 420;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;
