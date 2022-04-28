@@ -1975,9 +1975,6 @@ namespace DOL.GS
 		//	return ad;
 		//}
 
-
-		private RegionAction InterruptTimer { get; set; }
-
 		/// <summary>
 		/// Starts the interrupt timer on this living.
 		/// </summary>
@@ -2014,7 +2011,7 @@ namespace DOL.GS
 			
 			if (Util.Chance((int)chance))
             {
-				if (InterruptTime < GameLoop.GameLoopTime + duration)
+				//if (InterruptTime < GameLoop.GameLoopTime + duration)
 					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
