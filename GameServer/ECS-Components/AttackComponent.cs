@@ -3521,7 +3521,7 @@ namespace DOL.GS
                     ? null
                     : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                 if (specLevel > 0 && attackWeapon != null && //attackWeapon.Object_Type == (int) eObjectType.HandToHand &&
-                    leftWeapon != null) //&& leftWeapon.Object_Type == (int) eObjectType.HandToHand)
+                    leftWeapon != null && leftWeapon.Object_Type == (int) eObjectType.HandToHand)
                 {
                     specLevel--;
                     int randomChance = Util.Random(99);
