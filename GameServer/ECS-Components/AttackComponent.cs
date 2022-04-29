@@ -1603,6 +1603,8 @@ namespace DOL.GS
 
                     double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    if (armorMod <= 0) armorMod = 0.1;
+                    
                     //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                     //double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
                     double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod;
