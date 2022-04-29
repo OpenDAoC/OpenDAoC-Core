@@ -62,7 +62,7 @@ namespace DOL.GS
 			Name = "Lurfos the Herald";
 			Size = 120;
 
-			Strength = 700;
+			Strength = 420;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;

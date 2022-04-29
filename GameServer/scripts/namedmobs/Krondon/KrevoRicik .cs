@@ -6,37 +6,24 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-	public class Fulafeallan : GameEpicBoss
+	public class KrevoRicik : GameEpicBoss
 	{
-		public Fulafeallan() : base() { }
+		public KrevoRicik() : base() { }
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
-				log.Info("Fulafeallan Initializing...");
+				log.Info("Krevo Ricik Initializing...");
 		}
 		public override int GetResist(eDamageType damageType)
 		{
-			if (FulafeallanAdd.PartsCount2 > 0)
+			switch (damageType)
 			{
-				switch (damageType)
-				{
-					case eDamageType.Slash: return 95;// dmg reduction for melee dmg
-					case eDamageType.Crush: return 95;// dmg reduction for melee dmg
-					case eDamageType.Thrust: return 95;// dmg reduction for melee dmg
-					default: return 95;// dmg reduction for rest resists
-				}
-			}
-			else
-			{
-				switch (damageType)
-				{
-					case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-					case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-					case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-					default: return 50;// dmg reduction for rest resists
-				}
+				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -70,10 +57,10 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			Model = 933;
-			Level = 77;
-			Name = "Fulafeallan";
-			Size = 150;
+			Model = 919;
+			Level = (byte)(Util.Random(72, 75));
+			Name = "Krevo Ricik";
+			Size = 120;
 
 			Strength = 420;
 			Dexterity = 150;
@@ -92,79 +79,88 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
-			FulafeallanBrain sbrain = new FulafeallanBrain();
+			KrevoRicikBrain sbrain = new KrevoRicikBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}
-	}
+        public override void Die(GameObject killer)
+        {
+			foreach (GameNPC add in GetNPCsInRadius(4000))
+			{
+				if (add == null) continue;
+				if (add.IsAlive && add.Brain is KrevoAddBrain)
+					add.Die(this);
+			}
+			base.Die(killer);
+        }
+    }
 }
 namespace DOL.AI.Brain
 {
-	public class FulafeallanBrain : StandardMobBrain
+	public class KrevoRicikBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public FulafeallanBrain() : base()
+		public KrevoRicikBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		private bool spawnadds = false;
-		public override void Think()
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+			if(ad != null && ad.Attacker is GamePlayer && ad.Damage > 0)
+            {
+				if(Util.Chance(10))
+					ad.Attacker.MoveTo(Body.CurrentRegionID, Body.X, Body.Y, Body.Z + 400, Body.Heading);
+				if (Util.Chance(15))
+					SpawnGhost();
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        public override void Think()
 		{
 			if (!HasAggressionTable())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
-				spawnadds = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNPC add in Body.GetNPCsInRadius(4000))
 				{
-					if (npc != null)
-					{
-						if (npc.IsAlive && npc.Brain is FulafeallanAddBrain)
-						{
-							npc.RemoveFromWorld();
-							FulafeallanAdd.PartsCount2 = 0;
-						}
-					}
-				}
-			}
-			if (HasAggro)
-			{
-				if (spawnadds == false)
-				{
-					SpawnAdds();
-					spawnadds = true;
+					if (add == null) continue;
+					if (add.IsAlive && add.Brain is KrevoAddBrain)
+						add.Die(Body);
 				}
 			}
 			base.Think();
 		}
-		public void SpawnAdds()
-		{
-			for (int i = 0; i < Util.Random(4, 5); i++)
+		public void SpawnGhost()
+        {
+			foreach (GameNPC add in Body.GetNPCsInRadius(4000))
 			{
-				FulafeallanAdd npc = new FulafeallanAdd();
-				npc.X = Body.X + Util.Random(-100, 100);
-				npc.Y = Body.Y + Util.Random(-100, 100);
-				npc.Z = Body.Z;
-				npc.Heading = Body.Heading;
-				npc.CurrentRegion = Body.CurrentRegion;
-				npc.RespawnInterval = -1;
-				npc.AddToWorld();
+				if (add.Brain is KrevoAddBrain)
+				{
+					return;
+				}
 			}
+			KrevolAdd npc = new KrevolAdd();
+			npc.X = Body.X + Util.Random(-100, 100);
+			npc.Y = Body.Y + Util.Random(-100, 100);
+			npc.Z = Body.Z;
+			npc.Heading = Body.Heading;
+			npc.CurrentRegion = Body.CurrentRegion;
+			npc.RespawnInterval = -1;
+			npc.AddToWorld();
 		}
 	}
 }
-////////////////////////////////////////////////////////////Fuladl adds////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class FulafeallanAdd : GameEpicNPC
+	public class KrevolAdd : GameEpicNPC
 	{
-		public FulafeallanAdd() : base() { }
+		public KrevolAdd() : base() { }
 
 		public override int GetResist(eDamageType damageType)
 		{
@@ -198,41 +194,86 @@ namespace DOL.GS
 		{
 			get { return 5000; }
 		}
-		public static int PartsCount2 = 0;
 		public override void Die(GameObject killer)
 		{
-			--PartsCount2;
 			base.Die(killer);
 		}
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 120; }
 		public override bool AddToWorld()
 		{
-			Model = 933;
-			Level = (byte)(Util.Random(65, 68));
-			Name = "Part of Fulafeallan";
+			Model = 902;
+			Level = (byte)(Util.Random(62, 64));
+			Name = "forgoten ghost";
 			Size = (byte)(Util.Random(50, 70));
-			++PartsCount2;
 			MaxSpeedBase = 250;
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
-			FulafeallanAddBrain sbrain = new FulafeallanAddBrain();
+			KrevoAddBrain sbrain = new KrevoAddBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
-			base.AddToWorld();
-			return true;
+			bool success = base.AddToWorld();
+			if (success)
+			{
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode),30000); //30 seconds until this will explode and deal heavy 
+			}
+			return success;
+		}
+		private int Explode(ECSGameTimer timer)
+		{
+			if (IsAlive)
+			{
+				SetGroundTarget(X, Y, Z);
+				CastSpell(KrevoAddBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 500);
+			}
+			return 0;
+		}
+		private int KillBomb(ECSGameTimer timer)
+		{
+			if (IsAlive)
+				Die(this);
+			return 0;
+		}
+		private Spell m_KrevoAddBomb;
+		private Spell KrevoAddBomb
+		{
+			get
+			{
+				if (m_KrevoAddBomb == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.RecastDelay = 0;
+					spell.ClientEffect = 6159;
+					spell.Icon = 6159;
+					spell.TooltipId = 6159;
+					spell.Damage = 800;
+					spell.Name = "Dark Explosion";
+					spell.Range = 1500;
+					spell.Radius = 700;
+					spell.SpellID = 11890;
+					spell.Target = eSpellTarget.Area.ToString();
+					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)eDamageType.Matter;
+					m_KrevoAddBomb = new Spell(spell, 70);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KrevoAddBomb);
+				}
+				return m_KrevoAddBomb;
+			}
 		}
 	}
 }
 namespace DOL.AI.Brain
 {
-	public class FulafeallanAddBrain : StandardMobBrain
+	public class KrevoAddBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public FulafeallanAddBrain() : base()
+		public KrevoAddBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 1000;

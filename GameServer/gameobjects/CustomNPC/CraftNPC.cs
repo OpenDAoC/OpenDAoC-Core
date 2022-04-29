@@ -45,6 +45,16 @@ namespace DOL.GS
 
 			TurnTo(player, 5000);
 
+			var playerSkills = player.GetCraftingSkillValue(TheCraftingSkill);
+			if (playerSkills >= 1)
+			{
+				player.CraftingPrimarySkill = TheCraftingSkill;
+				SayTo(player, eChatLoc.CL_PopupWindow, "Hello, " + player.CraftTitle.GetDescription(player) + "! Because you are already a member of our order, you do not need to join. I have changed your primary crafting skill to " + player.CraftingPrimarySkill + ". Please speak to myself or another craft master if you wish to change your primary crafting skill again.");
+				player.Out.SendUpdatePlayer();
+				player.Out.SendUpdateCraftingSkills();
+				return true;
+			}
+			
 			// Dunnerholl : Basic Crafting Master does not give the option to rejoin this craft
 			if (InitialEntersentence != null)
 			{
@@ -63,7 +73,10 @@ namespace DOL.GS
 				return true;
 
 			GamePlayer player = (GamePlayer) source;
-
+			var playerSkills = player.GetCraftingSkillValue(TheCraftingSkill);
+			
+			if (playerSkills >= 1 && text == GUILD_ORDER)
+				return false;
             if(text == GUILD_ORDER)
 			{
 				player.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.WhisperReceive.WishToJoin", ACCEPTED_BY_ORDER_NAME), new CustomDialogResponse(CraftNpcDialogResponse));

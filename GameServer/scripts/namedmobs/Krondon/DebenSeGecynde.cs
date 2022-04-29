@@ -62,7 +62,7 @@ namespace DOL.GS
 			Name = "Deben se Gecynde";
 			Size = 120;
 
-			Strength = 700;
+			Strength = 420;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;

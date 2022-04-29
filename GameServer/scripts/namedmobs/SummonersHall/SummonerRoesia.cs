@@ -198,7 +198,6 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro)
 			{
-				log.Warn("Disabled duration:" + Body.GetSkillDisabledDuration(RoesiaHOT));
 				if (Body.TargetObject != null)
 				{
 					if (Util.Chance(25))
@@ -266,7 +265,6 @@ namespace DOL.AI.Brain
 					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 15000);
-					log.Warn("restarting timer in 15s");
 					CanCast = true;
 				}				
 			}
