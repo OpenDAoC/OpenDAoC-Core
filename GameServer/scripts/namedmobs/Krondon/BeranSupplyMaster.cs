@@ -21,10 +21,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override int AttackRange
@@ -41,16 +41,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 60000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -338,7 +338,7 @@ namespace DOL.AI.Brain
 		public BarrelExplosiveBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 600;
+			AggroRange = 2500;
 			ThinkInterval = 1500;
 		}
 		public override void Think()
