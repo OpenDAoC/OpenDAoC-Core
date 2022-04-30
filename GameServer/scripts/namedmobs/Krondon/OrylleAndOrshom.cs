@@ -55,7 +55,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 50000; }
+			get { return 40000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -101,6 +101,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 600;
 			ThinkInterval = 1500;
+			CanBAF = false;
 		}
 		public static bool IsPulled = false;
         #region Throw Player
@@ -233,7 +234,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 40000; }
+			get { return 30000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -279,6 +280,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 600;
 			ThinkInterval = 1500;
+			CanBAF = false;
 		}
 		private bool Spawn_Fire = false;
 		public override void Think()
