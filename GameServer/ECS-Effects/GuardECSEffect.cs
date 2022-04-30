@@ -117,7 +117,7 @@ namespace DOL.GS
 
 		public void Cancel(bool playerCancel)
         {
-			if (m_guardSource is GamePlayer && m_guardTarget is GamePlayer)
+			if (m_guardSource is GamePlayer && m_guardTarget is GamePlayer && m_playerGroup != null)
 			{
 				GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
 				m_playerGroup = null;

@@ -2569,7 +2569,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
+        protected int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
         {
             // I'm not sure what the point of this is.
             if (Client.ClientState != GameClient.eClientState.Playing)
@@ -2632,7 +2632,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+        protected int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return PowerRegenerationPeriod;
@@ -2646,7 +2646,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+        protected int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
@@ -7658,9 +7658,7 @@ namespace DOL.GS
                 return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.Axe);
             // use left axe spec if axe is in the left hand slot
             if (weapon.SlotPosition == Slot.LEFTHAND
-                && (weapon.Object_Type == (int)eObjectType.Axe
-                    || weapon.Object_Type == (int)eObjectType.Sword
-                    || weapon.Object_Type == (int)eObjectType.Hammer))
+                && weapon.Object_Type == (int)eObjectType.Axe)
                 return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.LeftAxe);
             return GameServer.ServerRules.GetObjectSpecLevel(this, (eObjectType)weapon.Object_Type);
         }
@@ -8470,7 +8468,7 @@ namespace DOL.GS
                     xpLossPercent = MaxLevel - 40;
                 }
 
-                if (realmDeath) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
+                if (realmDeath || killer.Realm == Realm) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
                 {
                     int conpenalty = 0;
                     switch (GameServer.Instance.Configuration.ServerType)
@@ -16916,7 +16914,7 @@ namespace DOL.GS
             //	evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
             ECSGameEffect evade = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
 
-            if (HasAbility(Abilities.Advanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+            if (HasAbility(Abilities.Advanced_Evade) || HasAbility(Abilities.Enhanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
                 evadeChance = GetModified(eProperty.EvadeChance);
             else if (evade != null || HasAbility(Abilities.Evade))
             {

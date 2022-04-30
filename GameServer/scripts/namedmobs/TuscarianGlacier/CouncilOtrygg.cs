@@ -11,72 +11,58 @@ namespace DOL.GS
         public Otrygg() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 45; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 45; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 45; // dmg reduction for melee dmg
-                default: return 25; // dmg reduction for rest resists
+                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
+                default: return 65; // dmg reduction for rest resists
             }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 700;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.55;
         }
-
         public override int MaxHealth
         {
             get { return 20000; }
         }
-
-        public override void Die(GameObject killer) //on kill generate orbs
+        public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
-                if (npc != null)
+                if (npc == null) continue;
+                if (!npc.IsAlive) continue;
+                if (npc.Brain is OtryggAddBrain)
                 {
-                    if (npc.IsAlive)
-                    {
-                        if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
-                        {
-                            npc.Die(this);
-                        }
-                    }
+                    npc.Die(this);
                 }
             }
-
             base.Die(killer);
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159451);
@@ -90,8 +76,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             OtryggAdd.PetsCount = 0;
             OtryggBrain sbrain = new OtryggBrain();
@@ -101,7 +86,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
@@ -121,9 +105,7 @@ namespace DOL.GS
                 TG.Size = 70;
                 TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
+                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
@@ -138,8 +120,7 @@ namespace DOL.GS
                 TG.Brain.Start();
             }
             else
-                log.Warn(
-                    "Council Otrygg exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn("Council Otrygg exist in game, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -148,8 +129,7 @@ namespace DOL.AI.Brain
 {
     public class OtryggBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public OtryggBrain()
             : base()
@@ -158,53 +138,34 @@ namespace DOL.AI.Brain
             AggroRange = 400;
             ThinkInterval = 2000;
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
                 {
-                    if (npc != null)
+                    if (npc == null) continue;
+                    if (!npc.IsAlive) continue;
+                    if (npc.Brain is OtryggAddBrain)
                     {
-                        if (npc.IsAlive)
-                        {
-                            if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
-                            {
-                                npc.Die(Body);
-                            }
-                        }
+                        npc.Die(Body);
                     }
                 }
             }
-
-            if (Body.IsOutOfTetherRange)
+            if (HasAggro)
             {
-                this.Body.Health = this.Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
-            if (Body.InCombat || HasAggro || Body.AttackState == true)
-            {
-                if (OtryggAdd.PetsCount < 15 && OtryggAdd.PetsCount > 0)
+                if (OtryggAdd.PetsCount is < 15 and >= 0)
                 {
                     SpawnPetsMore();
                 }
             }
-
             base.Think();
         }
-
         public static bool IsPulled = false;
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -212,10 +173,8 @@ namespace DOL.AI.Brain
                 SpawnPets();
                 IsPulled = true;
             }
-
             base.OnAttackedByEnemy(ad);
         }
-
         public void SpawnPets()
         {
             for (int i = 0; i < 14; i++) // Spawn 15 pets
@@ -227,10 +186,9 @@ namespace DOL.AI.Brain
                 Add.CurrentRegion = Body.CurrentRegion;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
-                ++OtryggAdd.PetsCount;
+                OtryggAdd.PetsCount++;
             }
         }
-
         public void SpawnPetsMore()
         {
             OtryggAdd Add = new OtryggAdd();
@@ -240,11 +198,10 @@ namespace DOL.AI.Brain
             Add.CurrentRegion = Body.CurrentRegion;
             Add.Heading = Body.Heading;
             Add.AddToWorld();
-            ++OtryggAdd.PetsCount;
+            OtryggAdd.PetsCount++;
         }
     }
 }
-
 /////////////////////////////////////////////////////////////Adds//////////////////////////////////////////////////////////
 namespace DOL.GS
 {
@@ -253,46 +210,37 @@ namespace DOL.GS
         public OtryggAdd() : base()
         {
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.65;
         }
-
         public override int MaxHealth
         {
             get { return 6000; }
         }
-
         public override void Die(GameObject killer)
         {
-            --PetsCount;
+            PetsCount--;
             base.Die(killer);
         }
-
         public override void DropLoot(GameObject killer) //no loot
         {
         }
-
         public static int PetsCount = 0;
-
         public override bool AddToWorld()
         {
             Model = 126;
@@ -300,8 +248,6 @@ namespace DOL.GS
             Name = "summoned pet";
             RespawnInterval = -1;
 
-            MaxDistance = 5500;
-            TetherRange = 5800;
             RoamingRange = 120;
             Size = 50;
             Level = 68;
@@ -327,40 +273,33 @@ namespace DOL.GS
         }
     }
 }
-
 namespace DOL.AI.Brain
 {
     public class OtryggAddBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public OtryggAddBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 1600; //big aggro range
         }
-
         public override void Think()
         {
-            if (Body.InCombat || HasAggro)
+            if (HasAggro)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
-                    if (npc != null)
+                    if (npc == null) continue;
+                    if (!npc.IsAlive) continue;
+                    if (npc.Brain is OtryggAddBrain brain)
                     {
-                        if (npc.IsAlive)
-                        {
-                            if (npc.Brain is OtryggAddBrain && npc.RespawnInterval == -1)
-                            {
-                                AddAggroListTo(npc.Brain as OtryggAddBrain); //if one pet aggro all will aggro
-                            }
-                        }
+                        GameLiving target = Body.TargetObject as GameLiving;
+                        if (!brain.HasAggro && Body != npc && target != null && target.IsAlive)
+                            brain.AddToAggroList(target, 10); //if one pet aggro all will aggro
                     }
                 }
             }
-
             base.Think();
         }
     }

@@ -91,7 +91,6 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			Level = Convert.ToByte(npcTemplate.Level);
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(82);
@@ -136,9 +135,7 @@ namespace DOL.AI.Brain
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
 						if (!Enemys_To_DD.Contains(player))
-						{
 							Enemys_To_DD.Add(player);
-						}
 					}
 				}
 			}
@@ -146,9 +143,7 @@ namespace DOL.AI.Brain
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
-				int _castBoltTime = 1000;
-				ECSGameTimer _CastBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), _castBoltTime);
-				_CastBolt.Start(_castBoltTime);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), 1000);
 				CanCast = true;
 			}
 		}
@@ -162,9 +157,7 @@ namespace DOL.AI.Brain
 				Body.CastSpell(Boss_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			int _resetBoltTime = Util.Random(15000, 20000);
-			ECSGameTimer _ResetBolt = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), _resetBoltTime);
-			_ResetBolt.Start(_resetBoltTime);
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), Util.Random(15000, 20000));
 			return 0;
 		}
 		public int ResetBolt(ECSGameTimer timer)//reset here so boss can start dot again
@@ -192,9 +185,7 @@ namespace DOL.AI.Brain
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
 						if (!Enemys_To_Port.Contains(player))
-						{
 							Enemys_To_Port.Add(player);
-						}
 					}
 				}
 			}
@@ -209,10 +200,8 @@ namespace DOL.AI.Brain
 					case 3: TeleportTarget.MoveTo(180, 31727, 37401, 16465, 3225); break;
 					case 4: TeleportTarget.MoveTo(180, 32159, 36387, 16465, 3618); break;
 				}
-				CanPort = true;
-				int _resetPortTime = Util.Random(25000, 35000);
-				ECSGameTimer _ResetPort = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), _resetPortTime);
-				_ResetPort.Start(_resetPortTime);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), Util.Random(25000, 35000));
+				CanPort = true;			
 			}
 		}
 		public int ResetPort(ECSGameTimer timer)//reset here so boss can start dot again
@@ -238,7 +227,6 @@ namespace DOL.AI.Brain
 					Enemys_To_DD.Clear();
                 }
 			}
-
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
@@ -246,15 +234,12 @@ namespace DOL.AI.Brain
 					if (npc != null)
 					{
 						if (npc.IsAlive && npc.PackageID == "KrackenschteinBaf")
-						{
 							AddAggroListTo(npc.Brain as StandardMobBrain);
-						}
 					}
 				}
 				if(!Body.IsCasting)
-                {
 					Body.CastSpell(Boss_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				}
+
 				PickRandomTarget();
 				TeleportRandomTarget();
 			}

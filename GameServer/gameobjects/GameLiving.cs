@@ -1976,9 +1976,6 @@ namespace DOL.GS
 		//	return ad;
 		//}
 
-
-		private RegionAction InterruptTimer { get; set; }
-
 		/// <summary>
 		/// Starts the interrupt timer on this living.
 		/// </summary>
@@ -2015,7 +2012,7 @@ namespace DOL.GS
 			
 			if (Util.Chance((int)chance))
             {
-				if (InterruptTime < GameLoop.GameLoopTime + duration)
+				//if (InterruptTime < GameLoop.GameLoopTime + duration)
 					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
@@ -3679,6 +3676,7 @@ namespace DOL.GS
 			if( player != null )
 			{
 				if (player.HasAbility(Abilities.Advanced_Evade) ||
+					player.HasAbility(Abilities.Enhanced_Evade) ||
 				    player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
 				    player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
 					evadeChance = GetModified( eProperty.EvadeChance );

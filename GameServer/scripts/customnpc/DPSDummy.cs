@@ -217,7 +217,7 @@ namespace DOL.GS {
 
         private void ClearAFAndABSBuffs()
         {
-            Console.WriteLine($"af {GetModified(eProperty.ArmorFactor)} abs {GetModified(eProperty.ArmorAbsorption)} itemB AF {this.ItemBonus[eProperty.ArmorFactor]} itemb ABS {this.ItemBonus[eProperty.ArmorAbsorption]}");
+            //Console.WriteLine($"af {GetModified(eProperty.ArmorFactor)} abs {GetModified(eProperty.ArmorAbsorption)} itemB AF {this.ItemBonus[eProperty.ArmorFactor]} itemb ABS {this.ItemBonus[eProperty.ArmorAbsorption]}");
             if (GetModified(eProperty.ArmorFactor) > 0)
             {
                 ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, ItemBonus[eProperty.ArmorFactor], 1, true);

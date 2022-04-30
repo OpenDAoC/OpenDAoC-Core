@@ -363,6 +363,7 @@ namespace DOL.GS
                             meleerange += 32;
                     }
 
+                    //Console.WriteLine($"melee range: {meleerange} moving? {p.IsMoving} targmoving {livingTarget.IsMoving}");
                     return meleerange;
                 }
                 else
@@ -1454,6 +1455,7 @@ namespace DOL.GS
                 return ad;
             }
 
+            //Console.WriteLine($"AttkRange {AttackRange} AddRange {addRange} targetAttkComp {ad.Target.attackComponent.AttackRange}");
             //We have no attacking distance!
             if (!owner.IsWithinRadius(ad.Target,
                     ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard
@@ -1601,6 +1603,8 @@ namespace DOL.GS
 
                     double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    if (armorMod <= 0) armorMod = 0.1;
+                    
                     //double absBuffReduction = 1 - ad.Target.GetModified(eProperty.ArmorAbsorption) * .01; //this is included in the GetArmorAF method already
                     //double resistReduction = 1 - ad.Target.GetResist(ad.DamageType) * .01;
                     double DamageMod = weaponskillCalc * strengthRelicCount * specModifier / armorMod;
@@ -1610,7 +1614,7 @@ namespace DOL.GS
                     if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                     {
                         weaponskiller.Out.SendMessage(
-                            $"Calculated WS: {weaponskillCalc.ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
+                            $"Base WS: {weaponskillCalc} | Calc WS: {(weaponskillCalc * specModifier * strengthRelicCount).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -1642,6 +1646,18 @@ namespace DOL.GS
                     // Modified to change the lowest value being 75
                     int lowerboundary = 75;
                     int upperboundary = 125;
+                    if (owner is GameEpicBoss)//Epic Boss 
+                    {
+                        lowerboundary = 95;//min dmg
+                        upperboundary = 105;//max dmg
+                    }
+                    var boss = owner as GameEpicBoss;//Epic Boss
+
+                    if (owner is GameEpicBoss)
+                    {
+                         lowerboundary = 95;  //min
+                         upperboundary = 105; //max
+                    }
 
                     double specModifier = styleSpec > 0 ? ((100 + styleSpec) / 100.0) : ((100 + spec) / 100.0);
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
@@ -1652,7 +1668,10 @@ namespace DOL.GS
                         ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
-                    damage *= DamageMod;
+                    if (owner is GameEpicBoss)
+                        damage *= DamageMod + (boss.Strength / 200);//only if it's EpicBoss
+                    else
+                        damage *= DamageMod;//normal mobs
 
                     if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                     {
@@ -2217,10 +2236,12 @@ namespace DOL.GS
                     !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
                     && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active &&
                     inter.InterceptSource.IsAlive
-                    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE) &&
-                    Util.Chance(inter.InterceptChance))
+                    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE)) //&&
+                    //Util.Chance(inter.InterceptChance))
                 {
-                    intercept = inter;
+                    int chance = (owner is GamePlayer own) ? own.RandomNumberDeck.GetInt() : Util.Random(100);
+                    if(chance < inter.InterceptChance)
+                        intercept = inter;
                 }
             }
 
@@ -3471,7 +3492,7 @@ namespace DOL.GS
 
                     return 1; // always use left axe
                 }
-
+                
 
                 int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual),
                     owner.GetModifiedSpecLevel(Specs.Dual_Wield));
@@ -3480,15 +3501,14 @@ namespace DOL.GS
                 decimal tmpOffhandChance = (25 + (specLevel - 1) * 68 / 100);
                 tmpOffhandChance += owner.GetModified(eProperty.OffhandChance) +
                                     owner.GetModified(eProperty.OffhandDamageAndChance);
-
-
-                if (owner is GamePlayer p && p.UseDetailedCombatLog)
+                
+                if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(Specs.HandToHand) <= 0)
                 {
                     p.Out.SendMessage(
                         $"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n",
                         eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
-
+                
                 if (specLevel > 0)
                 {
                     return Util.Chance((int) tmpOffhandChance) ? 1 : 0;
@@ -3500,25 +3520,36 @@ namespace DOL.GS
                 InventoryItem leftWeapon = (owner.Inventory == null)
                     ? null
                     : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                if (specLevel > 0 && attackWeapon != null && attackWeapon.Object_Type == (int) eObjectType.HandToHand &&
+                if (specLevel > 0 && attackWeapon != null && //attackWeapon.Object_Type == (int) eObjectType.HandToHand &&
                     leftWeapon != null && leftWeapon.Object_Type == (int) eObjectType.HandToHand)
                 {
                     specLevel--;
                     int randomChance = Util.Random(99);
                     int hitChance = specLevel >> 1;
+
+                    
+                    if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
+                    {
+                        pl.Out.SendMessage(
+                            $"Chance for 2 hits: {hitChance}% | 3 hits: {specLevel >> 2}% | 4 hits: {specLevel >> 4}% \n",
+                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    }
+                    
                     if (randomChance < hitChance)
                         return 1; // 1 hit = spec/2
-
+                    
                     hitChance += specLevel >> 2;
                     if (randomChance < hitChance)
                         return 2; // 2 hits = spec/4
-
+                    
                     hitChance += specLevel >> 4;
                     if (randomChance < hitChance)
                         return 3; // 3 hits = spec/16
 
                     return 0;
                 }
+                
+                
             }
 
             return 0;

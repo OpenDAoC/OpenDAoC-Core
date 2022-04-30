@@ -280,6 +280,7 @@ namespace DOL.GS.Quests
 				m_questPlayer.QuestListFinished.Add(this);
 
 			m_questPlayer.Out.SendQuestListUpdate();
+			m_questPlayer.SaveIntoDatabase();
 		}
 
 		/// <summary>

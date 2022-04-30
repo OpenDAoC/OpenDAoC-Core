@@ -17,19 +17,41 @@ namespace DOL.GS {
             var baseChance = 80;
             var realmLoyalty = 0;
             
+            BattleGroup killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             
-            if (playerKiller?.Group != null)
+            if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
+            {
+                foreach (GamePlayer bgPlayer in killerBG.GetPlayersInTheBattleGroup())
+                {
+                    if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                    {
+                        int numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
+                        if (numCurrentLoyalDays >= 1)
+                        {
+                            realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                        }
+                        if(Util.Chance(baseChance+realmLoyalty))
+                        {
+                            AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
+                        }
+                    }
+                }
+            }
+            else if (playerKiller?.Group != null)
             {
                 foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
                 {
-                    int numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                    if (numCurrentLoyalDays >= 1)
+                    if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                     {
-                        realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
-                    }
-                    if(Util.Chance(baseChance+realmLoyalty))
-                    {
-                        AtlasROGManager.GenerateOrbAmount(groupPlayer,amount);
+                        int numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
+                        if (numCurrentLoyalDays >= 1)
+                        {
+                            realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                        }
+                        if(Util.Chance(baseChance+realmLoyalty))
+                        {
+                            AtlasROGManager.GenerateOrbAmount(groupPlayer,amount);
+                        }
                     }
                 }
             }
@@ -45,6 +67,7 @@ namespace DOL.GS {
                     AtlasROGManager.GenerateOrbAmount(playerKiller,amount);
                 }
             }
+            
             base.Die(killer);
         }
     }

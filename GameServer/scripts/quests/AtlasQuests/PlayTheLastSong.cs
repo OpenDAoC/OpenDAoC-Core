@@ -905,7 +905,7 @@ namespace DOL.GS.Quests.Midgard
 	public class Freeya : GameNPC{
 		public bool IsSinging = false;
 
-		protected override int RespawnTimerCallback(ECSGameTimer respawnTimer)
+		protected int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
 			IsSinging = false;
 			return base.RespawnTimerCallback(respawnTimer);
