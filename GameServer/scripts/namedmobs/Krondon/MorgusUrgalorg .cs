@@ -54,7 +54,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 60000; }
+			get { return 40000; }
 		}
 		public override void StartAttack(GameObject target)
         {
