@@ -20,9 +20,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -44,16 +44,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 600;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 60000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -62,7 +62,7 @@ namespace DOL.GS
 			Name = "Deben se Gecynde";
 			Size = 120;
 
-			Strength = 420;
+			Strength = 280;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;
@@ -137,7 +137,7 @@ namespace DOL.AI.Brain
                 }
 				if (spawnadds == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(35000, 60000));
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(45000, 70000));
 					spawnadds = true;
 				}
 			}
@@ -187,9 +187,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -204,7 +204,7 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 400;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
@@ -213,7 +213,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 5000; }
+			get { return 3000; }
 		}
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
@@ -272,9 +272,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -289,7 +289,7 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 400;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
@@ -298,7 +298,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 5000; }
+			get { return 2000; }
 		}
         public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
         public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }

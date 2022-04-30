@@ -22,10 +22,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -46,16 +46,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 100000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -65,7 +65,7 @@ namespace DOL.GS
 			Size = 175;
 			ParryChance = 70;
 
-			Strength = 460;
+			Strength = 300;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;
@@ -200,10 +200,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -224,16 +224,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 60000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -243,7 +243,7 @@ namespace DOL.GS
 			Size = 175;
 			ParryChance = 50;
 
-			Strength = 420;
+			Strength = 280;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;
@@ -280,6 +280,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
+		private bool Spawn_Fire = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -287,6 +288,7 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
+				Spawn_Fire = false;
 				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null)
@@ -301,7 +303,11 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro)
 			{
-				SpawnFire();
+				if (Spawn_Fire == false)
+				{
+					SpawnFire();
+					Spawn_Fire = true;
+				}
 				if(Body.HealthPercent <=50)
                 {
 					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
@@ -321,7 +327,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnFire()
 		{
-			foreach (GameNPC mob in Body.GetNPCsInRadius(4000))
+			foreach (GameNPC mob in Body.GetNPCsInRadius(8000))
 			{
 				if (mob.Brain is OrshomFireBrain)
 				{
@@ -356,10 +362,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 50;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 50;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 50;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -397,16 +403,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 200;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 10000; }
 		}
 		public static int FireCount = 0;
         public override void Die(GameObject killer)
@@ -507,7 +513,7 @@ namespace DOL.AI.Brain
 		public OrshomFireBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 600;
+			AggroRange = 2500;
 			ThinkInterval = 1500;
 		}
 		public override void Think()
