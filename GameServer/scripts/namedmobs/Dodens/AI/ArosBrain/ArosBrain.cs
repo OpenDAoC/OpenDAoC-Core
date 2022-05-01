@@ -95,7 +95,6 @@ namespace DOL.AI.Brain
                 Body.AbilityBonus[(int)eProperty.Resist_Thrust] = min_value;
             }
         }
-
         public void ResistsTwo()
         {
             int summonedValue = 1000;
@@ -110,7 +109,6 @@ namespace DOL.AI.Brain
                     summonedGuardian = summonNpc;
                     break;
                 }
-
             }
             if (summonedGuardian != null)
             {
@@ -190,12 +188,10 @@ namespace DOL.AI.Brain
                 else if (e == GameLivingEvent.EnemyHealed)
                 {
                 }
-
             }
         }
 
         #region Tether
-
         /// <summary>
         /// Check whether Aros the Spiritmaster is out of tether range.
         /// </summary>
@@ -206,11 +202,9 @@ namespace DOL.AI.Brain
             if (aros == null) return false;
             return !aros.IsWithinRadius(aros.SpawnPoint, aros.TetherRange);
         }
-
         #endregion
 
         #region Debuff
-
         /// <summary>
         /// Try to find a potential target for Debuff.
         /// </summary>
@@ -237,23 +231,17 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             if (inRangeLiving.Count > 0)
             {
                 return aros.CheckDebuff((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
             }
-
             return false;
         }
-
         #endregion
 
-
         #region Health Check
-
         private int m_stage = 10;
         private int m_stageTwo = 100;
-
         /// <summary>
         /// This keeps track of the stage the encounter is in, so players
         /// don't have to go through all the PBAoE etc. again, just because

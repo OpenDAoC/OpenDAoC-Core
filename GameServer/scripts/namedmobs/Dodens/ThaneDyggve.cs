@@ -3,93 +3,84 @@ Thane Dyggve.
 <author>Kelt</author>
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using System.Reflection;
-using System.Collections;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.DOL.AI.Brain;
 
-
 namespace DOL.GS.Scripts
 {
-
-	public class ThaneDyggve : GameEpicNPC
+	public class ThaneDyggve : GameEpicBoss
 	{
-
 		public ThaneDyggve() : base()
-		{
-			
-		}
+		{ }
 		/// <summary>
 		/// Add Thane Dyggve to World
 		/// </summary>
 		public override bool AddToWorld()
 		{
-			LoadEquipmentTemplateFromDatabase("Thane_Dyggve");
-			Realm = eRealm.None;
-			Model = 202;
-			Size = 50;
-			Level = 66;
-			ParryChance = 15;
-			Health = MaxHealth;
-			MaxDistance = 2500;
-			TetherRange = 3500;
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(9913);
+			LoadTemplate(npcTemplate);
+			Strength = npcTemplate.Strength;
+			Dexterity = npcTemplate.Dexterity;
+			Constitution = npcTemplate.Constitution;
+			Quickness = npcTemplate.Quickness;
+			Piety = npcTemplate.Piety;
+			Intelligence = npcTemplate.Intelligence;
+			Empathy = npcTemplate.Empathy;
+
 			MeleeDamageType = eDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(779);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			
-			Name = "Thane Dyggve";
-
 			ScalingFactor = 60;
 			base.SetOwnBrain(new ThaneDyggveBrain());
-			base.AddToWorld();
-			
+			LoadedFromScript = false; //load from database
+			SaveIntoDatabase();
+			base.AddToWorld();			
 			return true;
-		}
-		
+		}	
 		public override double AttackDamage(InventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int MaxHealth
-		{
-			get
-			{
-				return 20000;
-			}
-		}
 		public override int AttackRange
 		{
 			get
-			{
-				return 350;
-			}
-			set
-			{ }
+			{ return 350;}
+			set{ }
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
 		}
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
+			}
+		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 800;
+			return 350;
 		}
-
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.55;
+			return 0.20;
 		}
-		
+		public override int MaxHealth
+		{
+			get { return 30000; }
+		}
 		/// <summary>
 		/// Return to spawn point, Thane Dyggve can't be attacked while it's
 		/// on it's way.
@@ -99,15 +90,13 @@ namespace DOL.GS.Scripts
 			EvadeChance = 100;
 			WalkToSpawn(MaxSpeed);
 		}
-
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			if (EvadeChance == 100)
 				return;
 
 			base.OnAttackedByEnemy(ad);
-		}
-		
+		}	
 		/// <summary>
 		/// Handle event notifications.
 		/// </summary>
@@ -121,7 +110,6 @@ namespace DOL.GS.Scripts
 			if (e == GameNPCEvent.ArriveAtTarget)
 				EvadeChance = 0;
 		}
-
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -144,7 +132,6 @@ namespace DOL.GS.Scripts
 					"{0} takes another energy drain as he prepares to unleash a raging Mjollnir upon you!"
 				};
 			}
-
 			public override void Think()
 			{
 				if (Body.InCombat && Body.IsAlive && HasAggro)
@@ -167,8 +154,8 @@ namespace DOL.GS.Scripts
 						}
 					}
 				}
-			}
-			
+				base.Think();
+			}		
 			/// <summary>
 			/// Broadcast relevant messages to the raid.
 			/// </summary>
@@ -179,8 +166,7 @@ namespace DOL.GS.Scripts
 				{
 					player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 				}
-			}
-			
+			}	
 			/// <summary>
 			/// Called whenever the Thane Dyggve's body sends something to its brain.
 			/// </summary>
@@ -191,7 +177,6 @@ namespace DOL.GS.Scripts
 			{
 				base.Notify(e, sender, args);
 			}
-
 			/// <summary>
 			/// Cast Mjollnir on the Target
 			/// </summary>
@@ -201,8 +186,7 @@ namespace DOL.GS.Scripts
 			{
 				Body.CastSpell(Mjollnir, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				return 0;
-			}
-			
+			}		
 			#region MjollnirSpell
 			private Spell m_Mjollnir;
 			/// <summary>
@@ -227,12 +211,12 @@ namespace DOL.GS.Scripts
 						spell.Radius = 350;
 						spell.Value = 0;
 						spell.Duration = 0;
-						spell.Damage = 1000;
+						spell.Damage = 500;
 						spell.DamageType = 12;
 						spell.SpellID = 3541;
 						spell.Target = "Enemy";
 						spell.MoveCast = false;
-						spell.Type = eSpellType.DirectDamage.ToString();
+						spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 						m_Mjollnir = new Spell(spell, 50);
 						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mjollnir);
 					}
