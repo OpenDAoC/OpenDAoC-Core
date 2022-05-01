@@ -323,14 +323,20 @@ namespace DOL.AI.Brain
         {
             for (int i = 0; i < amount; i++)
             {
-                var distanceDelta = Util.Random(0, 300);
+                //var distanceDelta = Util.Random(0, 300);
                 var level = Util.Random(52, 58);
 
                 LegionAdd add = new LegionAdd();
-                add.X = target.X + distanceDelta;
+                /*
+                 add.X = target.X + distanceDelta;
                 add.Y = target.Y + distanceDelta;
                 add.Z = target.Z;
                 add.CurrentRegionID = target.CurrentRegionID;
+                */
+                add.X = 45092;
+                add.Y = 51689;
+                add.Z = 15468;
+                add.CurrentRegionID = 249;
                 add.IsWorthReward = false;
                 add.Level = (byte) level;
                 add.AddToWorld();
@@ -419,7 +425,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 800;
+            AggroRange = 1500;
         }
     }
 }
