@@ -217,40 +217,30 @@ namespace DOL.GS.Scripts
                 playerNearby.BroadcastUpdate();
             }
         }
-
+        
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            /*
-            if (Util.Chance(3))
-            {
-                var spawnAmount = Util.Random(15, 20);
-                SpawnAdds((GamePlayer) source, spawnAmount);
-            }*/
-            
             //possible AttackRange
-            int distance = 650;
+            int distance = 400;
             
-            // check to make sure pets and pet casters are in range
-            GamePlayer attacker = null;
-            if (source is GamePlayer)
+            if (source is GamePlayer || source is GamePet)
             {
-                attacker = source as GamePlayer;
-            }
-            else if (source is GameNPC && (source as GameNPC).Brain != null && (source as GameNPC).Brain is IControlledBrain && (((source as GameNPC).Brain as IControlledBrain).Owner) is GamePlayer)
-            {
-                attacker = ((source as GameNPC).Brain as IControlledBrain).Owner as GamePlayer;
-            }
-            if ((attacker != null && IsWithinRadius(attacker, distance) == false) || IsWithinRadius(source, distance) == false)
-            {
-                if (attacker != null)
-                    attacker.Out.SendMessage(this.Name + " is immune to damage from this range", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-        }
+                if (!source.IsWithinRadius(this, distance)) //take no damage from source that is not in radius 400
+                {
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is not attackable from this range and is immune to your damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
 
-       
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
+                }
+            }
+        }
 
         private void ReportNews(GameObject killer)
         {
