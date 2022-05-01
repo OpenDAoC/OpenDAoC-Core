@@ -15235,7 +15235,7 @@ namespace DOL.GS
                 return;
             }
 			
-            if (!IsWithinRadius(TargetObject, 2000))
+            if (!IsWithinRadius(TargetObject, 1500))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.TooFarAwayForPet"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
