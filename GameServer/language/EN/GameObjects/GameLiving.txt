@@ -33,7 +33,7 @@ GameLiving.AttackData.Evaded:			{0} attacks your {1} and is evaded!
 GameLiving.AttackData.HitsForDamage:		{0} hits your {1} for {2}{3} damage.
 GameLiving.AttackData.YourCriticallyHits:	Your {0} critically hits {1} for an additional {2} damage!
 GameLiving.AttackData.YourHits:			Your {0} {1} {2} and hits for {3}{4} damage!
-GamePlayer.CommandNpcAttack.TooFarAwayForPet:		Your target is too far away to attack by your pet!
+GamePlayer.CommandNpcAttack.TooFarAwayForPet:		Your target is too far away to attack with your pet!
 
 ## Attack Data (Attacker)
 GamePlayer.Attack.Blocked:					{0} blocks your attack!
