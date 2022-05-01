@@ -22,10 +22,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -73,16 +73,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 60000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -92,7 +92,7 @@ namespace DOL.GS
 			Size = 125;
 			ParryChance = 70;
 
-			Strength = 420;
+			Strength = 260;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;
@@ -186,9 +186,9 @@ namespace DOL.AI.Brain
 			if (HasAggro)
 			{
 				if ((LyftMihtOne.Orb1Count > 0 || LyftMihtTwo.Orb2Count > 0 || LyftMihtThree.Orb3Count > 0 || LyftMihtFour.Orb4Count > 0))
-					Body.Strength = 800;
+					Body.Strength = 320;
 				else
-					Body.Strength = 500;
+					Body.Strength = 260;
 			}
 			base.Think();
 		}
@@ -206,10 +206,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 50;// dmg reduction for rest resists
 			}
 		}
 		public override bool HasAbility(string keyName)
@@ -221,12 +221,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 250;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
@@ -279,10 +279,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 50;// dmg reduction for rest resists
 			}
 		}
 		public override bool HasAbility(string keyName)
@@ -294,12 +294,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 250;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
@@ -352,10 +352,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 50;// dmg reduction for rest resists
 			}
 		}
 		public override bool HasAbility(string keyName)
@@ -367,12 +367,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 250;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
@@ -425,10 +425,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 50;// dmg reduction for rest resists
 			}
 		}
 		public override bool HasAbility(string keyName)
@@ -440,12 +440,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 250;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
