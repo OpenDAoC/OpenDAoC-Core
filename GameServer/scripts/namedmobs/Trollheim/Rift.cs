@@ -20,11 +20,24 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 70;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 70;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 70;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
 			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 30000; }
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
@@ -41,19 +54,6 @@ namespace DOL.GS
 				return true;
 
 			return base.HasAbility(keyName);
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 600;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.40;
-		}
-		public override int MaxHealth
-		{
-			get { return 20000; }
 		}
         public override void Die(GameObject killer)
         {
@@ -76,7 +76,7 @@ namespace DOL.GS
 			Level = 65;
 			Size = 81;
 			MaxSpeedBase = 250;
-			Strength = 420;
+			Strength = 320;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 100;
@@ -124,7 +124,7 @@ namespace DOL.AI.Brain
 				Body.Level = 65;
 				Body.Size = 81;
 				Body.MaxSpeedBase = 250;
-				Body.Strength = 420;
+				Body.Strength = 320;
 				Body.Dexterity = 150;
 				Body.Constitution = 100;
 				Body.Quickness = 100;
@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
 				Body.Level = 70;
 				Body.Size = 80;
 				Body.MaxSpeedBase = 280;
-				Body.Strength = 650;
+				Body.Strength = 320;
 				Body.Dexterity = 150;
 				Body.Constitution = 100;
 				Body.Quickness = 100;
@@ -186,7 +186,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(RiftDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if (SpawnMoreAdds == false)
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(15000, 20000));//15-20s spawn add
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(10000, 20000));//10-20s spawn add
 						SpawnMoreAdds = true;
 					}
 				}
@@ -278,12 +278,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 600;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
         public override short Strength { get => base.Strength; set => base.Strength = 350; }
         public override int MaxHealth

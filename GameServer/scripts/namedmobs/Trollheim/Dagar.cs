@@ -23,7 +23,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 30;// dmg reduction for rest resists
+				default: return 50;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -37,12 +37,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 500;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
 		public override int MaxHealth
 		{

@@ -99,11 +99,24 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
 			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 200000; }
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
@@ -113,19 +126,6 @@ namespace DOL.GS
 		{
 			get { return 350; }
 			set { }
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 800;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.65;
-		}
-		public override int MaxHealth
-		{
-			get { return 40000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -2432,12 +2432,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 400;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
         public override void Die(GameObject killer)
         {
@@ -2575,7 +2575,7 @@ namespace DOL.GS
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
 		public override void WalkToSpawn()
 		{
@@ -2725,7 +2725,7 @@ namespace DOL.GS
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
 		public override void WalkToSpawn()
 		{
@@ -2856,7 +2856,7 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 300;
+			return 200;
 		}
 		public override void WalkToSpawn()
 		{
@@ -2873,7 +2873,7 @@ namespace DOL.GS
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.15;
 		}
 		public override bool AddToWorld()
 		{
