@@ -220,16 +220,33 @@ namespace DOL.GS.Scripts
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
+            /*
+            if (Util.Chance(3))
+            {
+                var spawnAmount = Util.Random(15, 20);
+                SpawnAdds((GamePlayer) source, spawnAmount);
+            }*/
+            
+            //possible AttackRange
+            int distance = 650;
+            
+            // check to make sure pets and pet casters are in range
+            GamePlayer attacker = null;
             if (source is GamePlayer)
             {
-                /*
-                if (Util.Chance(3))
-                {
-                    var spawnAmount = Util.Random(15, 20);
-                    SpawnAdds((GamePlayer) source, spawnAmount);
-                }*/
+                attacker = source as GamePlayer;
             }
-
+            else if (source is GameNPC && (source as GameNPC).Brain != null && (source as GameNPC).Brain is IControlledBrain && (((source as GameNPC).Brain as IControlledBrain).Owner) is GamePlayer)
+            {
+                attacker = ((source as GameNPC).Brain as IControlledBrain).Owner as GamePlayer;
+            }
+            if ((attacker != null && IsWithinRadius(attacker, distance) == false) || IsWithinRadius(source, distance) == false)
+            {
+                if (attacker != null)
+                    attacker.Out.SendMessage(this.Name + " is immune to damage from this range", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                return;
+            }
+            
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
 
