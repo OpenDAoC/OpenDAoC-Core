@@ -15,13 +15,26 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
 			}
 		}
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 40000; }
+		}
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GamePet)
 			{
@@ -63,19 +76,6 @@ namespace DOL.GS
 				return true;
 
 			return base.HasAbility(keyName);
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 800;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.55;
-		}
-		public override int MaxHealth
-		{
-			get { return 30000; }
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
@@ -366,12 +366,12 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 5;
+					spell.CastTime = 4;
 					spell.RecastDelay = Util.Random(20,35);
 					spell.ClientEffect = 585;
 					spell.Icon = 585;
 					spell.TooltipId = 585;
-					spell.Damage = 150;
+					spell.Damage = 120;
 					spell.Frequency = 20;
 					spell.Duration = 24;
 					spell.DamageType = (int)eDamageType.Matter;
@@ -423,7 +423,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
-				default: return 25;// dmg reduction for rest resists
+				default: return 55;// dmg reduction for rest resists
 			}
 		}
 		public static int SacrificeKilledCount = 0;
@@ -509,7 +509,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
-				default: return 25;// dmg reduction for rest resists
+				default: return 55;// dmg reduction for rest resists
 			}
 		}
 		public static int SummonedDemonCount = 0;
@@ -581,12 +581,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 600;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.35;
+			return 0.25;
 		}
 		public override int GetResist(eDamageType damageType)
 		{
@@ -595,7 +595,7 @@ namespace DOL.GS
 				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
 				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
-				default: return 75;// dmg reduction for rest resists
+				default: return 55;// dmg reduction for rest resists
 			}
 		}
 		public static int ShadeOfAelfgarCount = 0;
