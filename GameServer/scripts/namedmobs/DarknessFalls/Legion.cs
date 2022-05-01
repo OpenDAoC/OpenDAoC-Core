@@ -239,6 +239,10 @@ namespace DOL.GS.Scripts
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
+                else //take dmg
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
             }
         }
 
