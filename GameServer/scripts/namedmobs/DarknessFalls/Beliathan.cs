@@ -156,37 +156,47 @@ namespace DOL.GS
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double AttackDamage(InventoryItem weapon)
         {
-            return 850;
+            return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackSpeed(params InventoryItem[] weapon)
         {
             return base.AttackSpeed(weapon) * 2;
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
+            }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
+        public override int MaxHealth
+        {
+            get { return 30000; }
+        }
         public override short MaxSpeedBase
         {
             get => (short) (191 + (Level * 2));
             set => m_maxSpeedBase = value;
         }
-
-        public override int MaxHealth => 20000;
-
         public override int AttackRange
         {
             get => 180;
             set { }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158351);
@@ -229,7 +239,6 @@ namespace DOL.GS
                 }
             }
         }
-
         private static void PlayerKilledByBeliathan(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
@@ -281,7 +290,6 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.Think();
         }
     }
@@ -293,7 +301,7 @@ namespace DOL.GS
     {
         public override int MaxHealth
         {
-            get { return 450 * Constitution / 100; }
+            get { return 550; }
         }
 
         public override bool AddToWorld()
@@ -323,11 +331,10 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
         public override void DropLoot(GameObject killer) //no loot
         {
         }
-
+        public override long ExperienceValue => 0;
         public override void Die(GameObject killer)
         {
             base.Die(null); // null to not gain experience

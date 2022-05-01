@@ -49,11 +49,24 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 85; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 85; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 85; // dmg reduction for melee dmg
-                default: return 85; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 200000; }
         }
 
         public override bool AddToWorld()
@@ -79,7 +92,7 @@ namespace DOL.GS.Scripts
 
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
-
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
@@ -88,18 +101,11 @@ namespace DOL.GS.Scripts
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
-        }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -107,18 +113,6 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 900;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.65;
-        }
-
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(5000))
@@ -148,7 +142,6 @@ namespace DOL.GS.Scripts
                 ReportNews(killer);
             }
         }
-
         private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
         {
             AreaEventArgs aargs = args as AreaEventArgs;
@@ -195,7 +188,6 @@ namespace DOL.GS.Scripts
                 player.BroadcastUpdate();
             }
         }
-
         private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
@@ -221,7 +213,6 @@ namespace DOL.GS.Scripts
                 playerNearby.BroadcastUpdate();
             }
         }
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
@@ -232,10 +223,8 @@ namespace DOL.GS.Scripts
                     SpawnAdds((GamePlayer) source, spawnAmount);
                 }
             }
-
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
-
         private void SpawnAdds(GamePlayer target, int amount = 1)
         {
             for (int i = 0; i < amount; i++)
@@ -254,7 +243,6 @@ namespace DOL.GS.Scripts
                 add.StartAttack(target);
             }
         }
-
         private void ReportNews(GameObject killer)
         {
             int numPlayers = AwardLegionKillPoint();
@@ -270,7 +258,6 @@ namespace DOL.GS.Scripts
                 }
             }
         }
-
         private int AwardLegionKillPoint()
         {
             int count = 0;
@@ -280,7 +267,6 @@ namespace DOL.GS.Scripts
                 player.RaiseRealmLoyaltyFloor(1);
                 count++;
             }
-
             return count;
         }
     }
@@ -312,7 +298,6 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.Think();
         }
     }
@@ -329,12 +314,10 @@ namespace DOL.GS
             : base()
         {
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
             get { return 1500; }
