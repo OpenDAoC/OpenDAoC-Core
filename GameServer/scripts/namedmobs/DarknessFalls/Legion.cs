@@ -157,8 +157,6 @@ namespace DOL.GS.Scripts
             if (player == null)
                 return;
 
-            Console.Write(player?.Name + " entered Legion's Lair");
-
             var mobsInArea = player.GetNPCsInRadius(2500);
 
             if (mobsInArea == null)
@@ -167,11 +165,9 @@ namespace DOL.GS.Scripts
             foreach (GameNPC mob in mobsInArea)
             {
                 if (mob is not Legion || !mob.InCombat) continue;
-                Console.WriteLine("Legion is alive and in combat");
 
                 if (Util.Chance(33))
                 {
-                    Console.WriteLine("Whops, we got a hit!");
                     foreach (GamePlayer nearbyPlayer in mob.GetPlayersInRadius(2500))
                     {
                         nearbyPlayer.Out.SendMessage("Legion doesn't like enemies in his lair", eChatType.CT_Broadcast,
@@ -221,37 +217,32 @@ namespace DOL.GS.Scripts
                 playerNearby.BroadcastUpdate();
             }
         }
-
+        
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer)
+            //possible AttackRange
+            int distance = 400;
+            
+            if (source is GamePlayer || source is GamePet)
             {
-                if (Util.Chance(3))
+                if (!source.IsWithinRadius(this, distance)) //take no damage from source that is not in radius 400
                 {
-                    var spawnAmount = Util.Random(15, 20);
-                    SpawnAdds((GamePlayer) source, spawnAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is not attackable from this range and is immune to your damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
-            }
-
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-        }
-
-        private void SpawnAdds(GamePlayer target, int amount = 1)
-        {
-            for (int i = 0; i < amount; i++)
-            {
-                var distanceDelta = Util.Random(0, 300);
-                var level = Util.Random(52, 58);
-
-                LegionAdd add = new LegionAdd();
-                add.X = target.X + distanceDelta;
-                add.Y = target.Y + distanceDelta;
-                add.Z = target.Z;
-                add.CurrentRegionID = target.CurrentRegionID;
-                add.IsWorthReward = false;
-                add.Level = (byte) level;
-                add.AddToWorld();
-                add.StartAttack(target);
+                else //take dmg
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                }
             }
         }
 
@@ -291,7 +282,7 @@ namespace DOL.AI.Brain
     public class LegionBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+        private bool IsCreatingSouls = false;
         public LegionBrain()
             : base()
         {
@@ -312,8 +303,56 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+            if (HasAggro)
+            {
+                if(IsCreatingSouls==false)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(25000, 30000));//every 25-30s it will spawn tortured souls
+                    IsCreatingSouls = true;
+                }
+            }
 
             base.Think();
+        }
+        
+        public int DoSpawn(ECSGameTimer timer)
+        {
+
+            if (Body.InCombat && Body.IsAlive && HasAggro)
+            {
+                foreach (GamePlayer playerNearby in Body.GetPlayersInRadius(2000))
+                {
+                    var spawnAmount = Util.Random(15, 20);
+                    SpawnAdds(playerNearby, spawnAmount);
+                }
+            }
+            IsCreatingSouls = false;
+            return 0;
+        }
+        
+        private void SpawnAdds(GamePlayer target, int amount = 1)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                //var distanceDelta = Util.Random(0, 300);
+                var level = Util.Random(52, 58);
+
+                LegionAdd add = new LegionAdd();
+                /*
+                 add.X = target.X + distanceDelta;
+                add.Y = target.Y + distanceDelta;
+                add.Z = target.Z;
+                add.CurrentRegionID = target.CurrentRegionID;
+                */
+                add.X = 45092;
+                add.Y = 51689;
+                add.Z = 15468;
+                add.CurrentRegionID = 249;
+                add.IsWorthReward = false;
+                add.Level = (byte) level;
+                add.AddToWorld();
+                add.StartAttack(target);
+            }
         }
     }
 }
@@ -397,7 +436,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 800;
+            AggroRange = 1500;
         }
     }
 }
