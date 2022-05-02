@@ -32,6 +32,8 @@ public class PredatorService
             {
                 GamePlayer activePlayer = activePreds.Predator;
                 
+                if (activePlayer == null) continue;
+
                 AbstractArea area = activePlayer.CurrentZone.GetAreasOfSpot(activePlayer.X, activePlayer.Y, activePlayer.Z)
                     .FirstOrDefault() as AbstractArea;
                 
