@@ -103,7 +103,8 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
     public override void Exit()
     {
         _brain.ClearAggroList();
-        _brain.Body.StopAttack();
+        if(_brain.Body.IsAttacking)
+            _brain.Body.StopAttack();
         _brain.Body.TargetObject = null;
     }
 
@@ -128,8 +129,9 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         brain.CheckSpells(eCheckSpellType.Offensive);
 
         //handle pet movement
-        if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
-            brain.Follow(brain.Owner);
+        //dont think we need to check to follow owner on every tick, that should be done elsewhere
+        // if (brain.Body.CurrentFollowTarget==null && brain.WalkState == eWalkState.Follow && brain.Owner != null)
+        //     brain.Follow(brain.Owner);
         if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
         {
             brain.Goto(brain.Body.TargetObject);
@@ -170,7 +172,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         if(brain.Body.CurrentSpellHandler != null) return;
         
         //return to defensive if our target(s) are dead
-        if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null)
+        if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null && brain.AggressionState != eAggressionState.Aggressive)
         {
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
         } else
