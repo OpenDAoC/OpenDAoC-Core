@@ -4258,6 +4258,7 @@ namespace DOL.GS
 
 			if (killer != null)
 			{
+				if (killer is GamePet pet) killer = pet.Owner;
 				if (IsWorthReward)
 					DropLoot(killer);
 
