@@ -72,11 +72,18 @@ public class TimerService
 
     public static void AddTimer(ECSGameTimer newTimer)
     {
-        if (!ActiveTimers.Contains(newTimer))
-        {
+      //  if (!ActiveTimers.Contains(newTimer))
+      //  {
             TimerToAdd.Push(newTimer);
             //Console.WriteLine($"added {newTimer.Callback.GetMethodInfo()}");
-        }
+      //  }
+    }
+
+    //Adds timer to the TimerToAdd Stack without checking it already exists. Helpful if the timer is being removed and then added again in same tick.
+    //The Tick() method will still check for duplicate timer in ActiveTimers
+    public static void AddExistingTimer(ECSGameTimer newTimer)
+    {
+            TimerToAdd.Push(newTimer);
     }
 
     public static void RemoveTimer(ECSGameTimer timerToRemove)
@@ -149,6 +156,13 @@ public class ECSGameTimer
         StartTick = GameLoop.GameLoopTime;
         Interval = interval;
         TimerService.AddTimer(this);
+    }
+
+    public void StartExistingTimer(int interval)
+    {
+        StartTick = GameLoop.GameLoopTime;
+        Interval = interval;
+        TimerService.AddExistingTimer(this);
     }
     
     public void Stop()
