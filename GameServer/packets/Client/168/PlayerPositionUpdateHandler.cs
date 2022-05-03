@@ -821,7 +821,11 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
 				if (client.Player.CurrentSpeed == 0 && (client.Player.LastPositionUpdatePoint.X != newPlayerX 
 					|| client.Player.LastPositionUpdatePoint.Y != newPlayerY))
-					client.Player.CurrentSpeed = 1;
+				{
+					if(client.Player.IsSitting)
+						client.Player.Sit(false);
+				}
+				
 				else
 					client.Player.CurrentSpeed = (short)newPlayerSpeed;
 			}
