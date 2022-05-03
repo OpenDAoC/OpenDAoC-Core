@@ -824,8 +824,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if(client.Player.IsSitting)
 						client.Player.Sit(false);
+					client.Player.CurrentSpeed = (short)newPlayerSpeed;
 				}
-				
 				else
 					client.Player.CurrentSpeed = (short)newPlayerSpeed;
 			}
