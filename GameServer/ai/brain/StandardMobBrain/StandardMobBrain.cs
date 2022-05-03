@@ -1547,7 +1547,8 @@ namespace DOL.AI.Brain
 
                 casted = Body.CastSpell(spell, m_mobSpellLine);
 
-                if (casted && spell.CastTime > 0 && Body.IsMoving)
+                // if (casted && spell.CastTime > 0 && Body.IsMoving)
+                if (casted && spell.CastTime > 0)
                     Body.StopFollowing();
             }
             return casted;
