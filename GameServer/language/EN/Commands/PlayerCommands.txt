@@ -278,7 +278,7 @@ Scripts.Players.Duel.YouInDuel:				You are already in a duel.
 Scripts.Players.Duel.YouInGroup:			You are in a group.
 Scripts.Players.Duel.YouSurrender:			You surrender to {0}!
 GamePlayer.Die.DuelDefeated:					{0} was just defeated in a duel by {1}!
-GamePlayer.Die.DuelWinner:				 wins the duel!
+GamePlayer.Duel.Die.KillerWinsDuel:				        {0} wins the duel!
 GamePlayer.DuelStop.DuelEnds:					Your duel ends!
 GamePlayer.Release.CantReleaseDuel:				You can't alter your release on a duel death!
 

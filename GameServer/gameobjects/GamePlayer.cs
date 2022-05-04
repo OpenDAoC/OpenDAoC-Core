@@ -8542,7 +8542,14 @@ namespace DOL.GS
 
             if (m_releaseType == eReleaseType.Duel)
             {
-                Message.SystemToOthers(this, killer.Name + "GamePlayer.Die.DuelWinner", eChatType.CT_Emote);
+                foreach (GamePlayer player in killer.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+                {
+                    if (player != killer)
+                        // Message: {0} wins the duel!
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Duel.Die.KillerWinsDuel", killer.Name), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+                }
+                // Message: {0} wins the duel!
+                //Message.SystemToOthers(Client, LanguageMgr.GetTranslation(this, "GamePlayer.Duel.Die.KillerWinsDuel", killer.Name), eChatType.CT_Emote);
             }
 
             // deal out exp and realm points based on server rules
