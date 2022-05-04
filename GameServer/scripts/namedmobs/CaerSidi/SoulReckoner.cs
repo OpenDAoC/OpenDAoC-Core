@@ -303,7 +303,7 @@ namespace DOL.AI.Brain
                 Spawn_Souls = false;
             }
 
-            if (Body.InCombat || HasAggro || Body.AttackState == true)
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 AwayFromRoom();
 

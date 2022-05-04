@@ -155,7 +155,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
             }
 
-            if (Body.InCombat || HasAggro || Body.AttackState == true)
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 if (Body.TargetObject != null)
                 {

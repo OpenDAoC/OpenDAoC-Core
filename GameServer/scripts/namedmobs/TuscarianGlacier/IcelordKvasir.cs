@@ -212,7 +212,7 @@ namespace DOL.AI.Brain
                 this.Body.Health = this.Body.MaxHealth;
             }
 
-            if (Body.InCombat || HasAggro || Body.AttackState == true)
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 if (Util.Chance(10))
                 {
