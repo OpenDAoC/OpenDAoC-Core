@@ -2,6 +2,12 @@
 GamePlayer.Spell.NotImplemented:			{0} ({1}) not implemented yet on this server.
 
 ## Spell Handler
+SpellHandler.CastSpell.Msg.YouBeginCasting:                     You begin casting a {0} spell!
+SpellHandler.CastSpell.Msg.YouCastSpell:                        You cast a {0} spell!
+SpellHandler.CastSpell.Msg.PetBeginsCasting:                    {0} begins casting a {1} spell!
+SpellHandler.CastSpell.Msg.PetCastSpell:                        {0} cast a {1} spell!
+SpellHandler.CastSpell.Msg.LivingCastsSpell:                    {0} casts a spell!
+SpellHandler.CastSong.Msg.YouBeginPlaying:                      You begin playing {0}!
 SpellHandler.CancelPulsingSpell:	        You stop playing your song.
 SpellHandler.CasterMove:	                        You move and interrupt your spellcast!
 GamePlayer.CastSpell.MustWaitBeforeCast:	You need to wait {0} more seconds before casting a spell!
