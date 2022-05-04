@@ -129,5 +129,13 @@ namespace DOL.GS.RealmAbilities
 
             return player.CalculateSkillLevel(raFirstAid) >= level;
         }
+        public static bool HasLongshotLevel(GamePlayer player, int level)
+        {
+            AtlasOF_Longshot raLongshot = player.GetAbility<AtlasOF_Longshot>();
+            if (raLongshot == null)
+                return false;
+
+            return player.CalculateSkillLevel(raLongshot) >= level;
+        }
     }
 }

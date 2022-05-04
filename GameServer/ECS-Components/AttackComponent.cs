@@ -846,7 +846,10 @@ namespace DOL.GS
                     if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         speed = Math.Max(15, speed / 2);
 
-                    p.Out.SendMessage(
+                    if (p.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
+                    { }
+                    else
+                        p.Out.SendMessage(
                         LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare",
                             typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
@@ -891,12 +894,16 @@ namespace DOL.GS
                     if (owner.rangeAttackComponent?.RangedAttackState != eRangedAttackState.Aim)
                     {
                         owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
-
-                        foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                            player.Out.SendCombatAnimation(owner, null,
-                                (ushort) (AttackWeapon == null ? 0 : AttackWeapon.Model),
-                                0x00, player.Out.BowPrepare, (byte) (speed / 100), 0x00, 0x00);
-
+                        if (owner is GamePlayer && owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
+                        {
+                        }
+                        else
+                        {
+                            foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                player.Out.SendCombatAnimation(owner, null,
+                                    (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
+                                    0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
+                        }
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
                         attackAction.StartTime =
                             (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire)
