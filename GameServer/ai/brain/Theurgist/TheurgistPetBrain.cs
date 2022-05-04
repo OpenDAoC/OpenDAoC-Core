@@ -38,6 +38,8 @@ namespace DOL.AI.Brain
 		private GameLiving m_target;
 		private bool m_melee = false;
 		private bool m_active = true;
+		public static readonly short MIN_ENEMY_FOLLOW_DIST = 90;
+		public static readonly short MAX_ENEMY_FOLLOW_DIST = 5000;
 		public bool Melee { get { return m_melee; } set { m_melee = value; } }
 		public TheurgistPetBrain(GameLiving owner)
 		{
@@ -117,7 +119,19 @@ namespace DOL.AI.Brain
 					if (Body.Name.Contains("air")) CheckSpells(eCheckSpellType.Offensive);
 				}
 				else if (!CheckSpells(eCheckSpellType.Offensive))
-					Body.StartAttack(target);
+				{
+					if(Body.IsWithinRadius(target,Body.attackComponent.AttackRange))
+						Body.StartAttack(target);
+					//Get closer to the target
+					else
+					{
+						if(Body.CurrentFollowTarget!=target)
+						{
+							Body.StopFollowing();
+							Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
+						}
+					}
+				}
 			}
 		}
 

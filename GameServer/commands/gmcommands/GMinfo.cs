@@ -390,7 +390,7 @@ namespace DOL.GS.Commands
 					info.Add("  - AFK Message: " + target.TempProperties.getProperty<string>(GamePlayer.AFK_MESSAGE) + "");
 					info.Add(" ");
                     info.Add("  - Money : " + Money.GetString(target.GetCurrentMoney()) + "\n");
-					info.Add("  - Speed : " + target.MaxSpeedBase);
+					info.Add("  - Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeed);
 					info.Add("  - XPs : " + target.Experience);
 					info.Add("  - RPs : " + target.RealmPoints);
 					info.Add("  - BPs : " + target.BountyPoints);

@@ -355,12 +355,13 @@ namespace DOL.GS {
 
         private void GenerateProc()
         {
+            if (!Util.Chance(1)) return;
             if (this.Object_Type == (int)eObjectType.Magical)
                 return;
 
             this.ProcChance = 10;
 
-            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield) && Util.Chance(25))
+            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield))
             {
                 if (Util.Chance(50))
                 {
@@ -451,7 +452,7 @@ namespace DOL.GS {
                     }
                 }
             }
-            else if(this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO && Util.Chance(25))
+            else if(this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO)
             {
                 if (Util.Chance(50))
                 {

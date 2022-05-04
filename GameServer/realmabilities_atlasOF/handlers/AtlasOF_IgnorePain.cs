@@ -16,7 +16,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override int GetReUseDelay(int level) { return 1800; } // 900 = 15 min / 1800 = 30 min
 
-		public override int CostForUpgrade(int level) { return 14; }
+		public override int CostForUpgrade(int level) { return 8; }
 
 		public override bool CheckRequirement(GamePlayer player) { 
 				return AtlasRAHelpers.HasFirstAidLevel(player, 2);

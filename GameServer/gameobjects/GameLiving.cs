@@ -4253,7 +4253,7 @@ namespace DOL.GS
 
 				attackComponent.AddAttacker( ad.Attacker );
 
-				if (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler)
+				if (ad.SpellHandler == null ||(ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
 					if (ad.Attacker.Realm == 0 || this.Realm == 0)
 					{

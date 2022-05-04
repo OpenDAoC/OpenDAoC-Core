@@ -1564,7 +1564,7 @@ namespace DOL.GS
 		{
 			if (exactMatch)
 			{
-				return GetClientByPlayerNameAndRealm(playerName, 0, activeRequired);
+				return GetClientByPlayerNameAndRealm(playerName, 0, activeRequired).FirstOrDefault();
 			}
 			else
 			{
@@ -1581,8 +1581,9 @@ namespace DOL.GS
 		/// <param name="realmID">search in: 0=all realms or player.Realm</param>
 		/// <param name="activeRequired"></param>
 		/// <returns>The found GameClient or null</returns>
-		public static GameClient GetClientByPlayerNameAndRealm(string playerName, eRealm realm, bool activeRequired)
+		public static List<GameClient> GetClientByPlayerNameAndRealm(string playerName, eRealm realm, bool activeRequired)
 		{
+			List<GameClient> potentialMatches = new List<GameClient>();
 			lock (m_clients.SyncRoot)
 			{
 				foreach (GameClient client in m_clients)
@@ -1591,12 +1592,18 @@ namespace DOL.GS
 					{
 						if (activeRequired && (!client.IsPlaying || client.Player.ObjectState != GameObject.eObjectState.Active))
 							continue;
+						
 						if (0 == string.Compare(client.Player.Name, playerName, true)) // case insensitive comapre
 						{
-							return client;
+							potentialMatches.Add(client);
+							return potentialMatches;
 						}
+						if(client.Player.Name.ToLower().Contains(playerName.ToLower())) potentialMatches.Add(client);
 					}
 				}
+
+				return potentialMatches;
+
 			}
 			return null;
 		}
@@ -1614,7 +1621,7 @@ namespace DOL.GS
 		{
 			// first try exact match in case player with "abcde" name is
 			// before "abc" in list and user typed "abc"
-			GameClient guessedClient = GetClientByPlayerNameAndRealm(playerName, realm, activeRequired);
+			GameClient guessedClient = GetClientByPlayerNameAndRealm(playerName, realm, activeRequired).FirstOrDefault();
 			if (guessedClient != null)
 			{
 				result = 3; // exact match
