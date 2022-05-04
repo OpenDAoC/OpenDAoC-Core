@@ -3778,7 +3778,12 @@ namespace DOL.GS
 					}
 					else if( IsObjectInFront( ad.Attacker, 120 ) )
 					{
-						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (attackComponent.AttackWeapon != null ) )
+						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (attackComponent.AttackWeapon != null 
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.RecurvedBow
+								&& attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Longbow
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.CompositeBow
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Fired))
 							parryChance = GetModified( eProperty.ParryChance );
 					}
 				}
