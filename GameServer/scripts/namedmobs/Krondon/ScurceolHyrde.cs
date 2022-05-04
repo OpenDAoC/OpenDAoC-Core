@@ -82,7 +82,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 60000; }
+			get { return 30000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -123,7 +123,7 @@ namespace DOL.GS
 			{
 				if (npc != null)
 				{
-					if (npc.IsAlive && npc.Brain is LyftMihtBrain)
+					if (npc.IsAlive && (npc.Brain is LyftMihtBrain1 || npc.Brain is LyftMihtBrain2 || npc.Brain is LyftMihtBrain3 || npc.Brain is LyftMihtBrain4))
 					{
 						npc.RemoveFromWorld();
 						LyftMihtOne.Orb1Count = 0;
@@ -252,18 +252,75 @@ namespace DOL.GS
 			Heading = 2560;
 			Size = 20;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;//Util.Random(180000, 480000);
 			Flags = eFlags.FLYING;
 			++Orb1Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
-			LyftMihtBrain sbrain = new LyftMihtBrain();
+			LyftMihtBrain1 sbrain = new LyftMihtBrain1();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			base.AddToWorld();
 			return true;
+		}
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class LyftMihtBrain1 : StandardMobBrain
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public LyftMihtBrain1() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 250;
+			ThinkInterval = 1500;
+		}
+		private protected static bool IsTargetPicked = false;
+		private protected static GamePlayer randomtarget = null;
+		private protected static GamePlayer RandomTarget
+		{
+			get { return randomtarget; }
+			set { randomtarget = value; }
+		}
+		private protected int ResetPort(ECSGameTimer timer)
+		{
+			RandomTarget = null;//reset random target to null
+			IsTargetPicked = false;
+			return 0;
+		}
+		private protected int TeleportPlayer(ECSGameTimer timer)
+		{
+			if (RandomTarget.IsAlive && RandomTarget != null)
+			{
+				switch (Util.Random(1, 4))
+				{
+					case 1: RandomTarget.MoveTo(61, 50986, 20031, 16964, 3091); break;
+					case 2: RandomTarget.MoveTo(61, 51936, 21012, 16964, 2093); break;
+					case 3: RandomTarget.MoveTo(61, 52784, 20019, 16964, 982); break;
+					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
+				}
+				RandomTarget.TakeDamage(RandomTarget, eDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
+				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+			}
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			return 0;
+		}
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
+			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
+			{
+				RandomTarget = ad.Attacker as GamePlayer;
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				IsTargetPicked = true;
+			}
+			base.OnAttackedByEnemy(ad);
+		}
+		public override void Think()
+		{
+			base.Think();
 		}
 	}
 }
@@ -325,18 +382,75 @@ namespace DOL.GS
 			Heading = 1919;
 			Size = 20;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;// Util.Random(180000, 480000);
 			Flags = eFlags.FLYING;
 			++Orb2Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
-			LyftMihtBrain sbrain = new LyftMihtBrain();
+			LyftMihtBrain2 sbrain = new LyftMihtBrain2();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			base.AddToWorld();
 			return true;
+		}
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class LyftMihtBrain2 : StandardMobBrain
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public LyftMihtBrain2() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 250;
+			ThinkInterval = 1500;
+		}
+		private protected static bool IsTargetPicked = false;
+		private protected static GamePlayer randomtarget = null;
+		private protected static GamePlayer RandomTarget
+		{
+			get { return randomtarget; }
+			set { randomtarget = value; }
+		}
+		private protected int ResetPort(ECSGameTimer timer)
+		{
+			RandomTarget = null;//reset random target to null
+			IsTargetPicked = false;
+			return 0;
+		}
+		private protected int TeleportPlayer(ECSGameTimer timer)
+		{
+			if (RandomTarget.IsAlive && RandomTarget != null)
+			{
+				switch (Util.Random(1, 4))
+				{
+					case 1: RandomTarget.MoveTo(61, 50986, 20031, 16964, 3091); break;
+					case 2: RandomTarget.MoveTo(61, 51936, 21012, 16964, 2093); break;
+					case 3: RandomTarget.MoveTo(61, 52784, 20019, 16964, 982); break;
+					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
+				}
+				RandomTarget.TakeDamage(RandomTarget, eDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
+				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+			}
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			return 0;
+		}
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
+			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
+			{
+				RandomTarget = ad.Attacker as GamePlayer;
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				IsTargetPicked = true;
+			}
+			base.OnAttackedByEnemy(ad);
+		}
+		public override void Think()
+		{
+			base.Think();
 		}
 	}
 }
@@ -398,18 +512,75 @@ namespace DOL.GS
 			Heading = 1024;
 			Size = 20;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;// Util.Random(180000, 480000);
 			Flags = eFlags.FLYING;
 			++Orb3Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
-			LyftMihtBrain sbrain = new LyftMihtBrain();
+			LyftMihtBrain3 sbrain = new LyftMihtBrain3();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			base.AddToWorld();
 			return true;
+		}
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class LyftMihtBrain3 : StandardMobBrain
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public LyftMihtBrain3() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 250;
+			ThinkInterval = 1500;
+		}
+		private protected static bool IsTargetPicked = false;
+		private protected static GamePlayer randomtarget = null;
+		private protected static GamePlayer RandomTarget
+		{
+			get { return randomtarget; }
+			set { randomtarget = value; }
+		}
+		private protected int ResetPort(ECSGameTimer timer)
+		{
+			RandomTarget = null;//reset random target to null
+			IsTargetPicked = false;
+			return 0;
+		}
+		private protected int TeleportPlayer(ECSGameTimer timer)
+		{
+			if (RandomTarget.IsAlive && RandomTarget != null)
+			{
+				switch (Util.Random(1, 4))
+				{
+					case 1: RandomTarget.MoveTo(61, 50986, 20031, 16964, 3091); break;
+					case 2: RandomTarget.MoveTo(61, 51936, 21012, 16964, 2093); break;
+					case 3: RandomTarget.MoveTo(61, 52784, 20019, 16964, 982); break;
+					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
+				}
+				RandomTarget.TakeDamage(RandomTarget, eDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
+				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+			}
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			return 0;
+		}
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
+			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
+			{
+				RandomTarget = ad.Attacker as GamePlayer;
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				IsTargetPicked = true;
+			}
+			base.OnAttackedByEnemy(ad);
+		}
+		public override void Think()
+		{
+			base.Think();
 		}
 	}
 }
@@ -472,13 +643,13 @@ namespace DOL.GS
 			Size = 20;
 			Flags = eFlags.FLYING;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;// Util.Random(180000, 480000);
 			++Orb4Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
-			LyftMihtBrain sbrain = new LyftMihtBrain();
+			LyftMihtBrain4 sbrain = new LyftMihtBrain4();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			base.AddToWorld();
@@ -486,13 +657,12 @@ namespace DOL.GS
 		}
 	}
 }
-#endregion
 namespace DOL.AI.Brain
 {
-	public class LyftMihtBrain : StandardMobBrain
+	public class LyftMihtBrain4 : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public LyftMihtBrain() : base()
+		public LyftMihtBrain4() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 250;
@@ -506,13 +676,13 @@ namespace DOL.AI.Brain
 			set { randomtarget = value; }
 		}
 		private protected int ResetPort(ECSGameTimer timer)
-        {
+		{
 			RandomTarget = null;//reset random target to null
 			IsTargetPicked = false;
 			return 0;
-        }
+		}
 		private protected int TeleportPlayer(ECSGameTimer timer)
-        {
+		{
 			if (RandomTarget.IsAlive && RandomTarget != null)
 			{
 				switch (Util.Random(1, 4))
@@ -525,22 +695,23 @@ namespace DOL.AI.Brain
 				RandomTarget.TakeDamage(RandomTarget, eDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);			
+			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
 			return 0;
-        }
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-			if(ad != null && Util.Chance(25) && IsTargetPicked==false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
-            {
+		}
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
+			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
+			{
 				RandomTarget = ad.Attacker as GamePlayer;
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
 				IsTargetPicked = true;
-            }
-            base.OnAttackedByEnemy(ad);
-        }
+			}
+			base.OnAttackedByEnemy(ad);
+		}
 		public override void Think()
-		{			
+		{
 			base.Think();
 		}
 	}
 }
+#endregion

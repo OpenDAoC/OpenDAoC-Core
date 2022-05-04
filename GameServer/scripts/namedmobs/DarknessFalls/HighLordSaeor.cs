@@ -21,13 +21,11 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info("High Lord Saeor initialized..");
         }
-
         [ScriptUnloadedEvent]
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledBySaeor));
         }
-
         public HighLordSaeor()
             : base()
         {
@@ -36,11 +34,24 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
         }
         public override bool AddToWorld()
         {
@@ -63,27 +74,19 @@ namespace DOL.GS
 
             SaeorBrain sBrain = new SaeorBrain();
             SetOwnBrain(sBrain);
-
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
-        }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -91,19 +94,6 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 850;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-
-
         private static void PlayerKilledBySaeor(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
@@ -138,7 +128,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 850;
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -147,7 +136,6 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
-
             base.Think();
         }
     }

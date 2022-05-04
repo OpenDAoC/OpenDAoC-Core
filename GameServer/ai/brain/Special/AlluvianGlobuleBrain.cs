@@ -37,7 +37,7 @@ namespace DOL.AI.Brain
 			}
 			if (!Body.IsReturningHome)
 			{
-				if (!Body.AttackState && AggroRange > 0)
+				if (!Body.attackComponent.AttackState && AggroRange > 0)
 				{
 					var currentPlayersSeen = new List<GamePlayer>();
 					foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
@@ -56,7 +56,7 @@ namespace DOL.AI.Brain
 						}
 					}
 				}
-				if (!Body.AttackState && AggroLevel > 0)
+				if (!Body.attackComponent.AttackState && AggroLevel > 0)
 				{
 					CheckPlayerAggro();
 					CheckNPCAggro();
@@ -68,7 +68,7 @@ namespace DOL.AI.Brain
 				}
 				if (!HasAggro)
 				{
-					if (Body.AttackState)
+					if (Body.attackComponent.AttackState)
 					{
 						Body.StopAttack();
 					}
@@ -76,7 +76,7 @@ namespace DOL.AI.Brain
 					Body.TargetObject = null;
 				}
 			}
-			if (!Body.AttackState && !Body.IsMoving && !Body.InCombat)
+			if (!Body.attackComponent.AttackState && !Body.IsMoving && !Body.InCombat)
 			{
 				// loc range around the lake that Alluvian spanws.
 				Body.WalkTo(544196 + Util.Random(1, 3919), 514980 + Util.Random(1, 3200), 3140 + Util.Random(1, 540), 80);

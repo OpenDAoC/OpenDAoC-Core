@@ -28,13 +28,25 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 85; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 85; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 85; // dmg reduction for melee dmg
-                default: return 85; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
-
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 40000; }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -80,19 +92,6 @@ namespace DOL.GS
                 return true;
 
             return base.HasAbility(keyName);
-        }
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-        public override int MaxHealth
-        {
-            get { return 20000; }
         }
         public static int OakCount = 0;
         public override void Die(GameObject killer)

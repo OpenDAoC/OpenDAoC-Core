@@ -3,21 +3,14 @@ Gudlaugr.
 <author>Kelt</author>
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using System.Reflection;
-using System.Collections;
 using DOL.AI.Brain;
 using DOL.GS.Scripts.DOL.AI.Brain;
 
-
 namespace DOL.GS.Scripts
 {
-
-	public class Gudlaugr : GameEpicNPC
+	public class Gudlaugr : GameEpicBoss
 	{
 		/// <summary>
 		/// Add Gudlaugr to World
@@ -34,18 +27,10 @@ namespace DOL.GS.Scripts
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 
-			Realm = eRealm.None;
-			Model = 650;
-			Size = 40;
-			Level = 64;
-			MaxDistance = 4000;
-			TetherRange = 3500;
 			Faction = FactionMgr.GetFactionByID(779);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			
-			Name = "Gudlaugr";
 			BodyType = 1;
-
 			ScalingFactor = 40;
 			GudlaugrBrain sbrain = new GudlaugrBrain();
 			SetOwnBrain(sbrain);
@@ -58,13 +43,6 @@ namespace DOL.GS.Scripts
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int MaxHealth
-		{
-			get
-			{
-				return 20000;
-			}
-		}
 		public override int AttackRange
 		{
 			get
@@ -76,41 +54,53 @@ namespace DOL.GS.Scripts
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
 		}
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
+			}
+		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 800;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.55;
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 30000; }
 		}
 		public override void OnAttackEnemy(AttackData ad)
 		{
 			GudlaugrBrain brain = new GudlaugrBrain();
-			if (this.TargetObject != null)
+			if (TargetObject != null)
 			{
 				if (ad.Target.IsWithinRadius(this, AttackRange))
 				{
 					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
 					{
-						this.CastSpell(brain.Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+						CastSpell(brain.Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
 					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
 					{
-						this.CastSpell(brain.Snare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+						CastSpell(brain.Snare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
 				}
 			}
 			base.OnAttackEnemy(ad);
-		}
-		
-		
+		}		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -133,8 +123,7 @@ namespace DOL.GS.Scripts
 					if (Body.TargetObject != null)
 					{
 						// Someone hit Gudlaugr. The Wolf starts to change model and Size.
-						RageMode(true);
-						
+						RageMode(true);						
 					}
 				}
 				else if(!Body.InCombat && Body.IsAlive && !HasAggro)
@@ -161,20 +150,19 @@ namespace DOL.GS.Scripts
 			/// <param name="rage"></param>
 			public void RageMode(bool rage)
 			{
-
 				if (!rage)
 				{
 					// transmorph to little white wolf
 					Body.ScalingFactor = 40;
 					Body.Model = 650;
 					Body.Size = 40;
-					Body.Empathy = Body.NPCTemplate.Empathy;
+					Body.Strength = Body.NPCTemplate.Strength;
 				}
 				else
 				{
 					// transmorph to demon wolf
 					Body.ScalingFactor = 60;
-					Body.Empathy = 330;
+					Body.Strength = 330;
 					Body.Model = 649;
 					Body.Size = 110;
 					
@@ -222,7 +210,6 @@ namespace DOL.GS.Scripts
 					return m_Snare;
 				}
 			}
-
 			#endregion
 			
 			#region StyleBleed
@@ -264,7 +251,6 @@ namespace DOL.GS.Scripts
 					return m_Bleed;
 				}
 			}
-
 			#endregion
 		}
 	}

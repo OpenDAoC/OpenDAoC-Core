@@ -18,12 +18,11 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info("Black Lady initialized..");
         }
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (this.IsOutOfTetherRange)
+                if (IsOutOfTetherRange)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -53,18 +52,11 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
-        }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -72,29 +64,29 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70;
-                case eDamageType.Crush: return 70;
-                case eDamageType.Thrust: return 70; 
-                default: return 55; 
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
-
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
+        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8817);
@@ -154,7 +146,7 @@ namespace DOL.GS
         public override void Die(GameObject killer)
         {
             base.Die(killer);
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc.Brain is OgressBrain)
                 {
@@ -162,7 +154,7 @@ namespace DOL.GS
                     Ogress.OgressCount = 0;
                 }
             }
-            foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
+            foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc2.Brain is AncientBlackOakBrain)
                 {
@@ -184,7 +176,6 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 2000;
         }
-
         public override void Think()
         {
             if(!HasAggressionTable())
@@ -303,16 +294,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.25;
         }
         public override int MaxHealth
         {
-            get { return 2000; }
+            get { return 2500; }
         }
         public static int OgressCount = 0;
         public override void Die(GameObject killer)
@@ -357,7 +348,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 1200;
         }
-
         public override void Think()
         {
             foreach(GamePlayer player in Body.GetPlayersInRadius(2000))
