@@ -25,7 +25,7 @@ namespace DOL.GS.Effects
         private int nbShoot = 0;                                    //arrows to shot
         private const int VOLLEY_SHOT_ENDURANCE = 15;               //Endurance
         private GamePlayer m_player;                                // Effect owner
-        public override ushort Icon { get { return 3083; } }        //3083,7080,3079(icons)
+        public override ushort Icon { get { return 4281; } }        //3083,7080,3079(icons)
         public override string Name { get { return "Volley"; } }
         public override bool HasPositiveEffect { get { return true; } }
 
@@ -44,17 +44,17 @@ namespace DOL.GS.Effects
                 m_player.StopCurrentSpellcast();                //stop all casts
 
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-                GameEventMgr.AddHandler(m_player, GamePlayerEvent.Moving, new DOLEventHandler(PlayerMoving));
+                GameEventMgr.AddHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-                GameEventMgr.AddHandler(m_player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(AttackedByEnemy));
+                GameEventMgr.AddHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
             }
         }
         public override void OnStopEffect()
         {
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Moving, new DOLEventHandler(PlayerMoving));
-            GameEventMgr.RemoveHandler(m_player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(AttackedByEnemy));
+            GameEventMgr.RemoveHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
+            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
             base.OnStopEffect();
         }
         public void Cancel(bool playerCancel)
@@ -97,10 +97,6 @@ namespace DOL.GS.Effects
                 Cancel(false);
                 AtlasOF_Volley volle = m_player.GetAbility<AtlasOF_Volley>();
                 m_player.DisableSkill(volle, AtlasOF_Volley.DISABLE_DURATION);
-                GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-                GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Moving, new DOLEventHandler(PlayerMoving));
-                GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-                GameEventMgr.RemoveHandler(m_player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(AttackedByEnemy));
             }
         }
         public void LaunchVolley(GamePlayer player, int slot, int type)
@@ -114,23 +110,18 @@ namespace DOL.GS.Effects
             m_player.StopCurrentSpellcast();
             if (ammo == null)
             {
-                player.Out.SendMessage("You need to be equiped with a arrows for use this ability!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You need to be equipped with a arrows for use this ability!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return;
             }
-            if (m_player.AttackWeapon == null)
+            if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
             {
-                m_player.Out.SendMessage("You need to be equiped with a weapon for use this ability!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            if (!GlobalConstants.IsBowWeapon((eObjectType)m_player.AttackWeapon.Object_Type))
-            {
-                m_player.Out.SendMessage("You need to be equiped with a bow for use this ability!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
             }
             // Check if selected ammo is compatible for ranged attack
             if (!player.rangeAttackComponent.CheckRangedAmmoCompatibilityWithActiveWeapon())
             {
-                player.Out.SendMessage("You need to be equiped with a arrows for use this ability!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You need to be equipped with a arrows for use this ability!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 return;
             }
             if (sol == null)
@@ -342,11 +333,17 @@ namespace DOL.GS.Effects
         private void AttackedByEnemy(DOLEvent e, object sender, EventArgs arguments)
         {
             GamePlayer player = sender as GamePlayer;
-            if (player == null) return;
-            if (e == GameLivingEvent.AttackedByEnemy)
+            if (player == null) return; 
+            if (e == GamePlayerEvent.TakeDamage)
             {
-                player.Out.SendMessage("You have been attacked!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                //should cancel here volley effect... TODO
+                Cancel(false);
+                AtlasOF_Volley volle = m_player.GetAbility<AtlasOF_Volley>();
+                m_player.DisableSkill(volle, AtlasOF_Volley.DISABLE_DURATION);
+                player.Out.SendMessage("You have been attacked and your " + Name + " is interrupted!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                foreach (GamePlayer i_player in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    i_player.Out.SendInterruptAnimation(player);
+                }
             }
         }
     }

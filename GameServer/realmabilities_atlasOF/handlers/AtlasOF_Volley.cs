@@ -1,15 +1,10 @@
-﻿using System;
-using DOL.Database;
+﻿using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using System.Collections.Generic;
-using DOL.Language;
-using DOL.GS.Spells;
-using DOL.AI.Brain;
 
 namespace DOL.GS.RealmAbilities
 {
-    [SkillHandler(Abilities.Volley)]
     public class AtlasOF_Volley : TimedRealmAbility
     {
         public override int MaxLevel { get { return 1; } }
@@ -19,9 +14,10 @@ namespace DOL.GS.RealmAbilities
         {
             return AtlasRAHelpers.HasLongshotLevel(player, 1);
         }
-
+        public override ushort Icon => 4281;
+        
         private GamePlayer m_player;
-        public const int DISABLE_DURATION = 15000;              //15s to use again ability
+        public const int DISABLE_DURATION = 15000; //15s to use again ability
         public override void Execute(GameLiving living)
 		{
             m_player = living as GamePlayer;
@@ -33,6 +29,11 @@ namespace DOL.GS.RealmAbilities
             if (CheckPreconditions(m_player, DEAD | SITTING | MEZZED | STUNNED))
                 return;
 
+            if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+            {
+                m_player.Out.SendMessage("You need to be equipped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
             if (m_player.AttackWeapon == null)
             {
                 m_player.Out.SendMessage("You need weapon to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -40,18 +41,7 @@ namespace DOL.GS.RealmAbilities
             }
             if (ammo == null)
             {
-                m_player.Out.SendMessage("You need to be equiped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            // Check if selected ammo is compatible for ranged attack
-            if (!m_player.rangeAttackComponent.CheckRangedAmmoCompatibilityWithActiveWeapon())
-            {
-                m_player.Out.SendMessage("You need to be equiped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            if (!GlobalConstants.IsBowWeapon((eObjectType)m_player.AttackWeapon.Object_Type))
-            {
-                m_player.Out.SendMessage("You need to be equiped with a bow for use this ability.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);   
+                m_player.Out.SendMessage("You need to be equipped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -100,7 +90,7 @@ namespace DOL.GS.RealmAbilities
             }
 
             new AtlasOF_VolleyECSEffect(new ECSGameEffectInitParams(m_player, 0, 1));
-            //DisableSkill(living);
+            DisableSkill(living);
 		}
         public override IList<string> DelveInfo
         {
