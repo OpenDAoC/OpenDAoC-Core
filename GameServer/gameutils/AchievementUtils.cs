@@ -27,8 +27,7 @@ public class AchievementUtils
         public const string Alb_Players_Killed = "Albion Players Killed";
         public const string Hib_Players_Killed = "Hibernia Players Killed";
         public const string Mid_Players_Killed = "Midgard Players Killed";
-
-        public const string Deathblows = "Deathblows";
+        
         public const string Alb_Deathblows = "Albion Deathblows";
         public const string Mid_Deathblows = "Midgard Deathblows";
         public const string Hib_Deathblows = "Hibernia Deathblows";
@@ -59,13 +58,27 @@ public class AchievementUtils
         //pve
         achievements.Add(AchievementNames.Dragon_Kills);
         achievements.Add(AchievementNames.Epic_Boss_Kills);
+        achievements.Add(AchievementNames.Legion_Kills);
         
         //rvr
-        achievements.Add(AchievementNames.Keeps_Taken);
-        achievements.Add(AchievementNames.Players_Killed);
-        achievements.Add(AchievementNames.Solo_Kills);
         achievements.Add(AchievementNames.Realm_Rank);
+        achievements.Add(AchievementNames.Relic_Captures);
+        achievements.Add(AchievementNames.Keeps_Taken);
         
+        achievements.Add(AchievementNames.Players_Killed);
+        achievements.Add(AchievementNames.Alb_Players_Killed);
+        achievements.Add(AchievementNames.Hib_Players_Killed);
+        achievements.Add(AchievementNames.Mid_Players_Killed);
+        
+        achievements.Add(AchievementNames.Alb_Deathblows);
+        achievements.Add(AchievementNames.Hib_Deathblows);
+        achievements.Add(AchievementNames.Mid_Deathblows);
+        
+        achievements.Add(AchievementNames.Solo_Kills);
+        achievements.Add(AchievementNames.Alb_Solo_Kills);
+        achievements.Add(AchievementNames.Hib_Solo_Kills);
+        achievements.Add(AchievementNames.Mid_Solo_Kills);
+
         //crafting
         achievements.Add(AchievementNames.Mastered_Crafts);
 
