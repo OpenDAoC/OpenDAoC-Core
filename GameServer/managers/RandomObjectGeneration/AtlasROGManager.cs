@@ -75,7 +75,7 @@ namespace DOL.GS {
                 maxcount *= REMOVE_ME_BETA_SCALAR;
                 int orbBonus = (int) Math.Floor((decimal) ((maxcount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, maxcount * orbBonus);
+                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, maxcount + orbBonus);
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 player.Out.SendMessage("You gained an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
@@ -97,7 +97,7 @@ namespace DOL.GS {
                 amount *= REMOVE_ME_BETA_SCALAR;
                 int orbBonus = (int) Math.Floor((decimal) ((amount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, amount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, amount * orbBonus);
+                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, amount + orbBonus);
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 if (orbBonus > 0)
