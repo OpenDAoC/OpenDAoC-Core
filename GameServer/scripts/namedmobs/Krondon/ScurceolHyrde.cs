@@ -252,7 +252,7 @@ namespace DOL.GS
 			Heading = 2560;
 			Size = 20;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;//Util.Random(180000, 480000);
 			Flags = eFlags.FLYING;
 			++Orb1Count;
 
@@ -382,7 +382,7 @@ namespace DOL.GS
 			Heading = 1919;
 			Size = 20;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;// Util.Random(180000, 480000);
 			Flags = eFlags.FLYING;
 			++Orb2Count;
 
@@ -512,7 +512,7 @@ namespace DOL.GS
 			Heading = 1024;
 			Size = 20;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;// Util.Random(180000, 480000);
 			Flags = eFlags.FLYING;
 			++Orb3Count;
 
@@ -643,7 +643,7 @@ namespace DOL.GS
 			Size = 20;
 			Flags = eFlags.FLYING;
 			MaxSpeedBase = 0;
-			RespawnInterval = Util.Random(180000, 480000);
+			RespawnInterval = -1;// Util.Random(180000, 480000);
 			++Orb4Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
