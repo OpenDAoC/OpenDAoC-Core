@@ -15733,6 +15733,31 @@ namespace DOL.GS
         }
 
         #endregion
+        
+        #region Achievements
+
+        public void Achieve(string achievementName, int count = 1)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = count;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count += count;
+            GameServer.Database.SaveObject(achievement);
+        }
+        
+        #endregion
 
         #region Statistics
 
