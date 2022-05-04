@@ -15740,7 +15740,7 @@ namespace DOL.GS
         {
             //DOL.Database.Achievement
             Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
-                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
             {
