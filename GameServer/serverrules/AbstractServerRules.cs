@@ -1911,7 +1911,7 @@ namespace DOL.GS.ServerRules
 									if ((float) de.Value == totalDamage)
 									{
 										expGainPlayer.KillsMidgardSolo++;
-										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
 									}
 										
 								}
