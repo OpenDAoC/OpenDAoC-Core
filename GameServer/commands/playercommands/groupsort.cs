@@ -16,6 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using DOL.Database;
 using DOL.Language;
 using DOL.GS.PacketHandler;
 
@@ -25,21 +31,15 @@ namespace DOL.GS.Commands
 		 ePrivLevel.Player,
 		 "Sort players in the group by classes.",
 		 "/groupsort manual classnames - sorts the group in the order of classes entered.",
+		 "Example: /groupsort manual bard druid druid hero",
 		 "/groupsort switch # # - switches two group members.")]
 	public class GroupSortCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			// If they are not in a group, then this command should not work at all
 			if (client.Player.Group == null)
 			{
-				string display = string.Empty;
-				display += "Sort players in the group by classes.\n";
-				display += "/groupsort manual classnames - sorts the group in the order of classes entered.\n";
-				display += "Example: /groupsort manual bard druid druid hero\n";
-				display += "/groupsort switch # # - switches two group members.\n";
-
-				DisplayMessage(client, display);
+				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Groupsort.InGroup"));
 				return;
 			}
 
@@ -50,6 +50,9 @@ namespace DOL.GS.Commands
 			}
 
 			string command = args[1].ToLower();
+
+			string switchX = string.Empty;
+			string switchY = string.Empty;
 
 			// /groupsort for leaders -- Make sue it is the group leader using this command, if it is, execute it.
 			if (command == "manual" || command == "switch")
@@ -64,13 +67,49 @@ namespace DOL.GS.Commands
 				{
 					case "manual":
 						{
-							DisplayMessage(client, "lineup - bard - warden - druid - druid -.....");
+							ArrayList currentGroup = new ArrayList();
+							foreach (GameLiving player in client.Player.Group.GetMembersInTheGroup())
+							{
+								if (player.Group != null && player.Group.MemberCount > 1)
+								{
+									currentGroup.Add(player);
+									Console.WriteLine("Group List: ... "+currentGroup);
+								}
+							}
+							ArrayList playerList = new ArrayList();
+							string text = string.Empty;
+							foreach (GamePlayer grouped in currentGroup)
+							{
+								text += grouped.Group.GroupMemberString(grouped);
+								client.Out.SendMessage("Grouped List: "+ text, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+								foreach (GamePlayer gpl in grouped.Group.GetPlayersInTheGroup())
+								{
+									playerList.Add(gpl);
+									Console.WriteLine("Player List: ... "+playerList);
+								}
+							}
+							
 							break;
 						}
 
 					case "switch":
 						{
-							DisplayMessage(client, "switch #playerX with #playerY in Group");
+							if (args.Length >= 4)
+							{
+								switchX = args[2];
+								switchY = args[3];
+							}
+							if (switchX == string.Empty || switchY == string.Empty)
+							{
+								DisplayMessage(client, "/groupsort switch # # - switches two group members.");
+								return;
+							}
+							else
+							{
+								// get position/slot in group and exchange the spots + update group
+								
+							}
+								
 							break;
 						}
 				}
