@@ -250,19 +250,163 @@ namespace DOL.GS
 				return;
 			
 			Mob mob = dbMob;
+			if (dbMob != null)
+			    NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
+			
+			double regular = 1.5; // Based on (GameNPC)ScaleFactor = 15
+			double epic = 6; // Based on (GameEpicNPC)ScaleFactor = 60
+			
+			// Base stat multiplier for mobs
+			double mobScale = regular;
 
+			// Stat multiplier for epic mobs (not bosses)
+			if (dbMob != null && NPCTemplate.ClassType == "DOL.GS.GameEpicNPC" || ClassType == "DOL.GS.GameEpicNPC")
+			{ 
+				mobScale = epic;
+			}
 			// We have to check both the DB and template values to account for mobs changing levels.
 			// Otherwise, high level mobs retain their stats when their level is lowered by a GM.
-			if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
+			if (dbMob != null && NPCTemplate != null && NPCTemplate.ReplaceMobValues)
 			{
-				Strength = NPCTemplate.Strength;
+				/*Strength = NPCTemplate.Strength;
 				Constitution = NPCTemplate.Constitution;
 				Quickness = NPCTemplate.Quickness;
 				Dexterity = NPCTemplate.Dexterity;
 				Intelligence = NPCTemplate.Intelligence;
 				Empathy = NPCTemplate.Empathy;
 				Piety = NPCTemplate.Piety;
-				Charisma = NPCTemplate.Strength;
+				Charisma = NPCTemplate.Strength;*/
+
+				string minLevel = NPCTemplate.Level;
+				
+				if (NPCTemplate.Level.Contains(';') || NPCTemplate.Level.Contains('-'))
+				{
+					// Create a list of each level entry, remove any separators
+					var split = Util.SplitCSV(NPCTemplate.Level, true);
+					// Grab the lowest value
+					minLevel = split.AsQueryable().Min();
+				}
+				
+				// This determines how to handle stat scaling for regular and epic NPCs with existing NPCTemplates.
+				// Stats are scaled based on the lowest level parsed from NPCTemplate.Level rather than assuming level 1.
+				// For example, mob.Level is "12-15;20-25". AutoSetStats would then treat the current stats for the
+				// NPCTemplate as the base values for the lowest level in the range, which is 12. It then uses the
+				// multiplier to increase the stat based on the mob's level, if it is above the base level (12).
+				// A level 13 mob with this template would have the multiplier applied once (1 x mulitplier), whereas a level 25 mob
+				// would have it applied 13 times (13 x mulitplier).
+				if (minLevel != null)
+				{
+					// Convert string to short
+					short.TryParse(minLevel, out var baseLevel);
+
+					// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
+					if (dbMob.Strength < NPCTemplate.Strength)
+					{
+						Strength = NPCTemplate.Strength;
+						if (NPCTemplate.Strength <= 1 || NPCTemplate.Strength == 30)
+						{
+							Strength += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Strength = dbMob.Strength;
+					if (dbMob.Constitution < NPCTemplate.Constitution)
+					{
+						Constitution = NPCTemplate.Constitution;
+						if (NPCTemplate.Constitution <= 1 || NPCTemplate.Constitution == 30)
+						{
+							Constitution += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Constitution = dbMob.Constitution;
+					if (dbMob.Dexterity < NPCTemplate.Dexterity)
+					{
+						Dexterity = NPCTemplate.Dexterity;
+						if (NPCTemplate.Dexterity <= 1 || NPCTemplate.Dexterity == 30)
+						{
+							Dexterity += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Dexterity = dbMob.Dexterity;
+					if (dbMob.Quickness < NPCTemplate.Quickness)
+					{
+						Quickness = NPCTemplate.Quickness;
+						if (NPCTemplate.Quickness <= 1 || NPCTemplate.Quickness == 30)
+						{
+							Quickness += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Quickness = dbMob.Quickness;
+					if (dbMob.Empathy < NPCTemplate.Empathy)
+					{
+						Empathy = NPCTemplate.Empathy;
+						if (NPCTemplate.Empathy <= 1 || NPCTemplate.Empathy == 30)
+						{
+							Empathy += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Empathy = dbMob.Empathy;
+					if (dbMob.Intelligence < NPCTemplate.Intelligence)
+					{
+						Intelligence = NPCTemplate.Quickness;
+						if (NPCTemplate.Intelligence <= 1 || NPCTemplate.Intelligence == 30)
+						{
+							Intelligence += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Intelligence = dbMob.Intelligence;
+					if (dbMob.Charisma < NPCTemplate.Charisma)
+					{
+						Charisma = NPCTemplate.Charisma;
+						if (NPCTemplate.Charisma <= 1 || NPCTemplate.Charisma == 30)
+						{
+							Charisma += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Charisma = dbMob.Charisma;
+					if (dbMob.Piety < NPCTemplate.Piety)
+					{
+						Piety = NPCTemplate.Piety;
+						if (NPCTemplate.Piety <= 1 || NPCTemplate.Piety == 30)
+						{
+							Piety += (short) (baseLevel * mobScale);
+						}
+					}
+					else
+						Piety = dbMob.Piety;
+
+					if (Level > baseLevel && baseLevel >= 0)
+					{
+						var difference = Level - baseLevel;
+						
+						// If mob.Level is one or more levels higher than the base level, apply the multiplier
+						if (difference >= 1)
+						{
+							if (NPCTemplate.Strength > 1)
+								Strength += (short)(difference * mobScale);
+							if (NPCTemplate.Constitution > 1)
+								Constitution += (short)(difference * mobScale);
+							if (NPCTemplate.Dexterity > 1)
+								Dexterity += (short)(difference * mobScale);
+							if (NPCTemplate.Quickness > 1)
+								Quickness += (short)(difference * mobScale);
+							if (NPCTemplate.Empathy > 1)
+								Empathy += (short)(difference * mobScale);
+							if (NPCTemplate.Intelligence > 1)
+								Intelligence += (short)(difference * mobScale);
+							if (NPCTemplate.Charisma > 1)
+								Charisma += (short)(difference * mobScale);
+							if (NPCTemplate.Piety > 1)
+								Piety += (short)(difference * mobScale);
+						}
+					}
+				}
 			}
 			else
 			{
@@ -294,157 +438,45 @@ namespace DOL.GS
 					Piety = 0;
 					Charisma = 0;
 				}
+
+				// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
+				if (Strength <= 1 || Strength == 30)
+					Strength += (short)(Level * mobScale);
+				if (Constitution <= 1 || Constitution == 30)
+					Constitution += (short)(Level * mobScale);
+				if (Dexterity <= 1 || Dexterity == 30)
+					Dexterity += (short)(Level * mobScale);
+				if (Quickness <= 1 || Quickness == 30)
+					Quickness += (short)(Level * mobScale);
+				if (Empathy <= 1 || Empathy == 30)
+					Empathy += (short)(Level * mobScale);
+				if (Intelligence <= 1 || Intelligence == 30)
+					Intelligence += (short)(Level * mobScale);
+				if (Charisma <= 1 || Charisma == 30)
+					Charisma += (short)(Level * mobScale);
+				if (Piety <= 1 || Piety == 30)
+					Piety += (short)(Level * mobScale);
 			}
 			
-			// This determines how to handle stat scaling for regular and epic NPCs with existing NPCTemplates.
-			// Stats are scaled based on the lowest level parsed from NPCTemplate.Level rather than assuming level 1.
-			// For example, mob.Level is "12-15;20-25". AutoSetStats would then treat the current stats for the
-			// NPCTemplate as the base values for the lowest level in the range, which is 12. It then uses the
-			// multiplier to increase the stat based on the mob's level, if it is above the base level (12).
-			// A level 13 mob with this template would have the multiplier applied once (1 x mulitplier), whereas a level 25 mob
-			// would have it applied 13 times (13 x mulitplier).
-			if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
-			{
-				double regular = 1.5; // Based on (GameNPC)ScaleFactor = 15
-				double epic = 6; // Based on (GameEpicNPC)ScaleFactor = 60
-				// Stats for GameEpicBoss and GameDragon templates are not adjusted
-				if (NPCTemplate.ClassType != "DOL.GS.GameEpicNPC" && NPCTemplate.ClassType != "DOL.GS.GameDragon")
-				{
-					// Base stat multiplier for mobs
-					double strMultiplier = regular;
-					double conMultiplier = regular;
-					double dexMultiplier = regular;
-					double quiMultiplier = regular;
-					double empMultiplier = regular;
-					double intMultiplier = regular;
-					double chaMultiplier = regular;
-					double pieMultiplier = regular;
-
-					// Stat multiplier for epic mobs (not bosses)
-					if (NPCTemplate.ClassType is "DOL.GS.GameEpicNPC")
-					{ 
-						strMultiplier = epic;
-						conMultiplier = epic;
-						dexMultiplier = epic;
-						quiMultiplier = epic;
-						empMultiplier = epic;
-						intMultiplier = epic;
-						chaMultiplier = epic;
-						pieMultiplier = epic;
-					}
-					
-					// Identify the lowest level in NPCTemplate.Level to use as base level
-					if (!string.IsNullOrEmpty(NPCTemplate.Level))
-					{
-						if (NPCTemplate.Level.Contains(';') || NPCTemplate.Level.Contains('-'))
-						{
-							// Create a list of each level entry, remove any separators
-							var split = Util.SplitCSV(NPCTemplate.Level, true);
-							// Grab the lowest value
-							string minLevel = split.AsQueryable().Min();
-							
-							if (minLevel != null)
-							{
-								// Convert string to short
-								short.TryParse(minLevel, out var baseLevel);
-
-								// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
-								if (Strength <= 1 || Strength == 30)
-									Strength += (short)(baseLevel * strMultiplier);
-								if (Constitution <= 1 || Constitution == 30)
-									Constitution += (short)(baseLevel * conMultiplier);
-								if (Dexterity <= 1 || Dexterity == 30)
-									Dexterity += (short)(baseLevel * dexMultiplier);
-								if (Quickness <= 1 || Quickness == 30)
-									Quickness += (short)(baseLevel * quiMultiplier);
-								if (Empathy <= 1 || Empathy == 30)
-									Empathy += (short)(baseLevel * empMultiplier);
-								if (Intelligence <= 1 || Intelligence == 30)
-									Intelligence += (short)(baseLevel * intMultiplier);
-								if (Charisma <= 1 || Charisma == 30)
-									Charisma += (short)(baseLevel * chaMultiplier);
-								if (Piety <= 1 || Piety == 30)
-									Piety += (short)(baseLevel * pieMultiplier);
-								
-								if (Level > baseLevel)
-								{
-									// Count level difference between mob's randomly-selected level and the base level
-									for (short levelDiff = 0; levelDiff < (Level - baseLevel); levelDiff++)
-									{
-										// If mob.Level is one or more levels higher than the base level, apply the multiplier
-										if (levelDiff >= 1)
-										{
-											//Strength = (NPCTemplate.Strength > 0) ? NPCTemplate.Strength : (short) 1;
-											Strength += (short)(levelDiff * strMultiplier);
-											//Constitution = (NPCTemplate.Constitution > 0) ? NPCTemplate.Constitution : (short) 1;
-											Constitution += (short)(levelDiff * conMultiplier);
-											//Dexterity = (NPCTemplate.Dexterity > 0) ? NPCTemplate.Dexterity : (short) 1;
-											Dexterity += (short)(levelDiff * dexMultiplier);
-											//Quickness = (NPCTemplate.Quickness > 0) ? NPCTemplate.Quickness : (short) 1;
-											Quickness += (short)(levelDiff * quiMultiplier);
-											//Empathy = (NPCTemplate.Empathy > 0) ? NPCTemplate.Empathy : (short) 1;
-											Empathy += (short)(levelDiff * empMultiplier);
-											//Intelligence = (NPCTemplate.Intelligence > 0) ? NPCTemplate.Intelligence : (short) 1;
-											Intelligence += (short)(levelDiff * intMultiplier);
-											//Charisma = (NPCTemplate.Charisma > 0) ? NPCTemplate.Charisma : (short) 1;
-											Charisma += (short)(levelDiff * chaMultiplier);
-											//Piety = (NPCTemplate.Piety > 0) ? NPCTemplate.Piety : (short) 1;
-											Piety += (short)(levelDiff * pieMultiplier);
-										}
-									}
-								}
-							}
-						}
-						// If only one level is specified
-						else
-						{
-							// Convert string to short
-							short.TryParse(NPCTemplate.Level, out var baseLevel);
-
-							// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
-							if (Strength <= 1)
-								Strength += (short)(baseLevel * strMultiplier);
-							if (Constitution <= 1)
-								Constitution += (short)(baseLevel * conMultiplier);
-							if (Dexterity <= 1)
-								Dexterity += (short)(baseLevel * dexMultiplier);
-							if (Quickness <= 1)
-								Quickness += (short)(baseLevel * quiMultiplier);
-							if (Empathy <= 1)
-								Empathy += (short)(baseLevel * empMultiplier);
-							if (Intelligence <= 1)
-								Intelligence += (short)(baseLevel * intMultiplier);
-							if (Charisma <= 1)
-								Charisma += (short)(baseLevel * chaMultiplier);
-							if (Piety <= 1)
-								Piety += (short)(baseLevel * pieMultiplier);
-						}
-					}
-				}
-			}
-			// If no NPCTemplate can be found or is assigned, use the original formula on the mob
-			else
-			{
-				// Base for all stats is 30 and multiplier is 1
-				Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
-				if (Level > 1)
-					Strength += (byte) ((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
-				Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
-				if (Level > 1)
-					Constitution += (byte) ((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
-				Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short) 1;
-				if (Level > 1)
-					Quickness += (byte) ((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
-				Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short) 1;
-				if (Level > 1)
-					Dexterity += (byte) ((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
-				Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short) 1;
-				if (Level > 1)
-					Intelligence += (byte) ((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
-				Empathy = (short) (29 + Level);
-				Piety = (short) (29 + Level);
-				Charisma = (short) (29 + Level);
-			}
+			// Base for all stats is 30 and multiplier is 1
+			/*Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
+			if (Level > 1)
+				Strength += (byte) ((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+			Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
+			if (Level > 1)
+				Constitution += (byte) ((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+			Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short) 1;
+			if (Level > 1)
+				Quickness += (byte) ((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+			Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short) 1;
+			if (Level > 1)
+				Dexterity += (byte) ((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+			Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short) 1;
+			if (Level > 1)
+				Intelligence += (byte) ((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+			Empathy = (short) (29 + Level);
+			Piety = (short) (29 + Level);
+			Charisma = (short) (29 + Level);*/
 		}
 
 		/// <summary>
