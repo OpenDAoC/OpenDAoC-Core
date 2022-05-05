@@ -97,6 +97,7 @@ public class AchievementUtils
 
         if (achievements == null) return temp;
 
+        //need to do this to avoid displaying realm as _FirstRealm or _LastRealm
         Dictionary<int, string> realmDict = new Dictionary<int, string>();
         realmDict.Add(1, "Albion");
         realmDict.Add(2, "Midgard");
