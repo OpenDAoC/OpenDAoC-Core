@@ -349,6 +349,13 @@ namespace DOL.GS.Commands
 				{
 					var target = client.Player.TargetObject as GamePlayer;
 					
+					// info.Add("TEMP PROPERTIES:");
+					// foreach (var property in target.TempProperties.getAllProperties())
+					// {
+					// 	info.Add(property + ": " + target.TempProperties.getProperty(property, false));
+					// }
+					// info.Add("");
+					
 					info.Add("ENDURANCE INFORMATION");
 					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
 					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
