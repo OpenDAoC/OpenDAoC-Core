@@ -159,6 +159,9 @@ namespace DOL.GS
 
 		protected virtual bool CanPlayerStartToCraftItem(GamePlayer player, Recipe recipe)
 		{
+			
+			player.TempProperties.setProperty("RecipeToCraft", recipe);
+			
 			if (!GameServer.ServerRules.IsAllowedToCraft(player, recipe.Product))
 			{
 				return false;
