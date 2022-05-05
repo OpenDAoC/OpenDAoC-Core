@@ -14994,14 +14994,6 @@ namespace DOL.GS
                 GameServer.Database.AddObject(newCrafting);
                 CraftingForRealm = newCrafting;
             }
-
-            if (CraftingForRealm.SerializedCraftingSkills == "")
-            {
-                AddCraftingSkill(eCraftingSkill.BasicCrafting, 1);
-                SaveCraftingSkills();
-                Out.SendUpdateCraftingSkills();
-                return;
-            }
             try
             {
                 CraftingPrimarySkill = (eCraftingSkill)CraftingForRealm.CraftingPrimarySkill;

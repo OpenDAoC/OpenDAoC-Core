@@ -13,7 +13,7 @@ namespace DOL.Database
 		private int m_accountxcrafting_ID;
 		private string m_account_id;
 		private int m_Realm;
-		private string m_craftingSkills = string.Empty;// crafting skills
+		private string m_craftingSkills = "1|1;2|1;3|1;4|1;6|1;7|1;8|1;9|1;10|1;11|1;12|1;13|1;14|1;15|1";// crafting skills
 		private int m_primaryCraftingSkill = 0;// primary crafting skill
 		private DateTime m_lastModifiedTime;
 		
