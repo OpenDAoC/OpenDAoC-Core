@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using DOL.Database;
 
 namespace DOL.GS;
 
@@ -48,7 +50,7 @@ public class AchievementUtils
     }
 
 
-    public List<string> GetAchievementNames()
+    public static List<string> GetAchievementNames()
     {
         List<string> achievements = new List<string>();
         
@@ -83,5 +85,76 @@ public class AchievementUtils
         achievements.Add(AchievementNames.Mastered_Crafts);
 
         return achievements;
+    }
+
+    public static IList<string> GetAchievementInfoForPlayer(GamePlayer player)
+    {
+        List<string> temp = new List<string>();
+        temp.Clear();
+
+        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+            .IsEqualTo(player.Client.Account.ObjectId));
+
+        if (achievements == null) return temp;
+
+        Dictionary<int, string> realmDict = new Dictionary<int, string>();
+        realmDict.Add(1, "Albion");
+        realmDict.Add(2, "Midgard");
+        realmDict.Add(3, "Hibernia");
+
+        List<Achievement> HibAchievements = new List<Achievement>();
+        List<Achievement> MidAchievements= new List<Achievement>();
+        List<Achievement> AlbAchievements = new List<Achievement>();
+        
+        foreach (var achievement in achievements)
+        {
+            switch (achievement.Realm)
+            {
+                case 1:
+                    AlbAchievements.Add(achievement);
+                    break;
+                case 2:
+                    MidAchievements.Add(achievement);
+                    break;
+                case 3:
+                    HibAchievements.Add(achievement);
+                    break;
+            }
+        }
+
+        if (HibAchievements.Count > 0)
+        {
+            temp.Add("Hibernia: ");
+            foreach (var hibAchievement in HibAchievements)
+            {
+                temp.Add($"{hibAchievement.AchievementName} | {hibAchievement.Count}");
+            }
+        }
+        
+        temp.Add($"");
+
+        if (AlbAchievements.Count > 0)
+        {
+            temp.Add("Albion: ");
+            foreach (var albAchievement in AlbAchievements)
+            {
+                temp.Add($"{albAchievement.AchievementName} | {albAchievement.Count}");
+            }
+        }
+        
+        temp.Add($"");
+        
+        if (MidAchievements.Count > 0)
+        {
+            temp.Add("Midgard: ");
+            foreach (var midAchievement in MidAchievements)
+            {
+                temp.Add($"{midAchievement.AchievementName} | {midAchievement.Count}");
+            }
+        }
+        
+        temp.Add($"");
+
+        return temp;
     }
 }

@@ -15741,8 +15741,7 @@ namespace DOL.GS
         public void Achieve(string achievementName, int count = 1)
         {
             //DOL.Database.Achievement
-            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
-                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
             {
@@ -15757,6 +15756,17 @@ namespace DOL.GS
 
             achievement.Count += count;
             GameServer.Database.SaveObject(achievement);
+        }
+
+        public int GetAchievementProgress(string achievementName)
+        {
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+                return 0;
+            else
+                return achievement.Count;
         }
         
         #endregion
