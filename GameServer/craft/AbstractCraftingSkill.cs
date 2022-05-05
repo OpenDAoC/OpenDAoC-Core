@@ -35,6 +35,7 @@ namespace DOL.GS
 	{
 		protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+		private bool finishedCraft = false; 
 		#region Declaration
 		/// <summary>
 		/// the maximum possible range within a player has to be to a forge , lathe ect to craft an item
@@ -197,12 +198,19 @@ namespace DOL.GS
 		{
 			GamePlayer player = timer.Properties.getProperty<GamePlayer>(PLAYER_CRAFTER);
 			Recipe recipe = timer.Properties.getProperty<Recipe>(RECIPE_BEING_CRAFTED);
+			var queue = player.TempProperties.getProperty<int>("CraftQueueLength");
+			var remainingToCraft = player.TempProperties.getProperty<int>("CraftQueueRemaining");
 
 			if (player == null || recipe == null)
 			{
 				if (player != null) player.Out.SendMessage("Could not find recipe or item to craft!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				log.Error("Crafting.MakeItem: Could not retrieve player, recipe, or raw materials to craft from CraftTimer.");
 				return 0;
+			}
+
+			if (queue > 0 && remainingToCraft == 0 && finishedCraft)
+			{
+				remainingToCraft = queue - 1;
 			}
 
 			player.CraftTimer.Stop();
@@ -226,6 +234,19 @@ namespace DOL.GS
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				player.Out.SendPlaySound(eSoundType.Craft, 0x02);
 			}
+
+			if (remainingToCraft >= 1)
+			{
+				player.TempProperties.setProperty("CraftQueueRemaining", --remainingToCraft);
+				StartCraftingTimerAndSetCallBackMethod(player, recipe, GetCraftingTime(player, recipe));
+				player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), GetCraftingTime(player, recipe));
+				finishedCraft = false;
+			}
+			else
+			{
+				finishedCraft = true;
+			}
+
 			return 0;
 		}
 
