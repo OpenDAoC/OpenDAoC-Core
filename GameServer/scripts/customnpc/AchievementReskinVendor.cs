@@ -86,9 +86,33 @@ public class AchievementReskinVendor : GameNPC
             case Slot.HELM:
                 DisplayHelmOption(t, item);
                 break;
+            case Slot.TORSO:
+                DisplayTorsoOption(t, item);
+                break;
+            case Slot.ARMS:
+                DisplayArmsOption(t, item);
+                break;
+            case Slot.LEGS:
+                DisplayPantsOption(t, item);
+                break;
+            case Slot.HANDS:
+                DisplayGloveOption(t, item);
+                break;
+            case Slot.FEET:
+                DisplayBootsOption(t, item);
+                break;
+            case Slot.CLOAK:
+                DisplayCloakOption(t, item);
+                break;
         }
 
-        return base.ReceiveItem(source, item);
+        SendReply(t, "When you are finished browsing, let me know and I will [confirm model]."
+        );
+        var tmp = (InventoryItem) item.Clone();
+        t.TempProperties.setProperty(TempProperty, item);
+        t.TempProperties.setProperty(DisplayedItem, tmp);
+            
+        return false;
     }
 
     private void DisplayHelmOption(GamePlayer player, InventoryItem item)
@@ -250,7 +274,7 @@ public class AchievementReskinVendor : GameNPC
                       "[Good Inconnu Breastplate](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
         }
 
-        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        sb.Append("\nI can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
         
         SendReply(player, sb.ToString());
 
@@ -335,8 +359,6 @@ public class AchievementReskinVendor : GameNPC
                       "[Good Inconnu Sleeves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
         }
 
-        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
-        
         SendReply(player, sb.ToString());
 
     }
@@ -420,8 +442,6 @@ public class AchievementReskinVendor : GameNPC
                       "[Good Inconnu Pants](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
         }
 
-        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
-        
         SendReply(player, sb.ToString());
 
     }
@@ -505,7 +525,7 @@ public class AchievementReskinVendor : GameNPC
                       "[Good Inconnu Gloves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
         }
 
-        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        sb.Append("\nI can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
         
         SendReply(player, sb.ToString());
 
@@ -590,8 +610,69 @@ public class AchievementReskinVendor : GameNPC
                       "[Good Inconnu Boots](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
         }
 
-        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        sb.Append("\nI can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
         
+        SendReply(player, sb.ToString());
+
+    }
+    
+    public void DisplayCloakOption(GamePlayer player, InventoryItem item)
+    {
+        StringBuilder sb = new StringBuilder();
+        int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
+
+        sb.Append($"Free\n" +
+                  $"[Basic Cloak] ({freebie} {currencyName})\n");
+        sb.Append($"[Hooded Cloak] ({freebie} {currencyName})\n");
+        sb.Append($"[Bordered Cloak] ({freebie} {currencyName})\n");
+        
+        if (RR > 1)
+        {
+            sb.Append($"Realm Rank 2\n" +
+                      $"[Mage Cloak 2] ({lowbie} {currencyName})\n");
+            sb.Append($"[Mage Cloak 3] ({lowbie} {currencyName})\n");
+            sb.Append($"[Embossed Cloak] ({lowbie} {currencyName})\n");
+            sb.Append($"[Collared Cloak] ({lowbie} {currencyName})\n");
+        }
+        
+        if (RR > 3)
+        {
+            sb.Append("Realm Rank 4\n" +
+                      "[Oceanus Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                      "[Magma Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                      "[Stygian Cloak] (" + cloakmedium + " " + currencyName + ")\n");
+        }
+
+        if (RR > 4)
+        {
+            sb.Append($"Realm Rank 5\n" +
+                      "[Realm Cloak] (" + cloakexpensive + " " + currencyName + ")\n");
+        }
+
+        if (RR > 5)
+        {
+            sb.Append("Realm Rank 6\n" +
+                      "[Cloudsong] (" + cloakmedium + " " + currencyName + ")\n" +
+                      "[Shades of Mist] (" + cloakmedium + " " + currencyName + ")\n" +
+                      "[Harpy Feather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                      "[Feathered Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
+                      "[Healer's Embrace] (" + cloakmedium + " " + currencyName + ")\n");
+        }
+
+        int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
+
+        if (dragon > 9)
+        {
+            sb.Append($"10 Dragon Kills\n" +
+                      "[Dragonsworn Cloak] (" + cloakmedium + " " + currencyName + ")\n");
+        }
+
+        if (dragon > 24)
+        {
+            sb.Append($"25 Dragon Kills\n" +
+                      "[Dragonslayer Cloak] (" + cloakexpensive + " " + currencyName + ")\n");
+        }
+
         SendReply(player, sb.ToString());
 
     }
