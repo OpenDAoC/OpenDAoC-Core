@@ -4936,6 +4936,11 @@ public class AchievementReskinVendor : GameNPC
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakexpensive;
                     switch ((eRealm)player.Realm)
                     {
@@ -4950,11 +4955,15 @@ public class AchievementReskinVendor : GameNPC
                             break;
                     }
                     break;
-
                 case "dragonslayer cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
+                        break;
+                    }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+                    {
+                        SendNotQualifiedMessage(player);
                         break;
                     }
                     price = cloakexpensive;
@@ -4971,17 +4980,20 @@ public class AchievementReskinVendor : GameNPC
                             break;
                     }
                     break;
-
                 case "dragonsworn cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 10)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 3790;
                     break;
-
                 case "valentines cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
@@ -4991,7 +5003,6 @@ public class AchievementReskinVendor : GameNPC
                     price = cloakmedium;
                     modelIDToAssign = 3752;
                     break;
-
                 case "winter cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
@@ -5001,7 +5012,6 @@ public class AchievementReskinVendor : GameNPC
                     price = cloakmedium;
                     modelIDToAssign = 4115;
                     break;
-
                 case "clean leather cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
@@ -5011,7 +5021,6 @@ public class AchievementReskinVendor : GameNPC
                     price = cloakmedium;
                     modelIDToAssign = 3637;
                     break;
-
                 case "corrupt leather cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
@@ -5021,91 +5030,126 @@ public class AchievementReskinVendor : GameNPC
                     price = cloakmedium;
                     modelIDToAssign = 3634;
                     break;
-
                 case "cloudsong":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1727;
                     break;
-
                 case "shades of mist":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1726;
                     break;
-
                 case "magma cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1725;
                     break;
-
                 case "stygian cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
+                    }if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
                     }
                     price = cloakmedium;
                     modelIDToAssign = 1724;
                     break;
-
-                case "aerus cloak":
+                case "feathered cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1720;
                     break;
-
                 case "oceanus cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1722;
                     break;
-
                 case "harpy feather cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1721;
                     break;
-
                 case "healer's embrace":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
                         break;
                     }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                    {
+                        SendNotQualifiedMessage(player);
+                        break;
+                    }
                     price = cloakmedium;
                     modelIDToAssign = 1723;
                     break;
-
                 case "collared cloak":
                     if (item.Item_Type != Slot.CLOAK)
                     {
                         SendNotValidMessage(player);
+                        break;
+                    }
+                    if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                    {
+                        SendNotQualifiedMessage(player);
                         break;
                     }
                     price = cloakcheap;
