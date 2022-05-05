@@ -4560,6 +4560,12 @@ namespace DOL.GS
                     NewsMgr.CreateNews(newsmessage, this.Realm, eNewsType.RvRLocal, true);
                 }
             }
+
+            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < Math.Ceiling((RealmLevel+10) / 10d))
+            {
+                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int)Math.Ceiling((RealmLevel + 10) / 10d));
+            }
+            
             Out.SendUpdatePoints();
         }
 
@@ -15734,6 +15740,61 @@ namespace DOL.GS
             }
         }
 
+        #endregion
+        
+        #region Achievements
+
+        public void Achieve(string achievementName, int count = 1)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = count;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count += count;
+            GameServer.Database.SaveObject(achievement);
+        }
+
+        public void SetAchievementTo(string achievementName, int value)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = value;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count = value;
+            GameServer.Database.SaveObject(achievement);
+        }
+
+        public int GetAchievementProgress(string achievementName)
+        {
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+                return 0;
+            else
+                return achievement.Count;
+        }
+        
         #endregion
 
         #region Statistics
