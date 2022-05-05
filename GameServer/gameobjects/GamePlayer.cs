@@ -6318,6 +6318,8 @@ namespace DOL.GS
                 //Send new weapon stats
                 Out.SendUpdateWeaponAndArmorStats();
             }
+
+            attackComponent.attackAction = null;
         }
 
         ///// <summary>
