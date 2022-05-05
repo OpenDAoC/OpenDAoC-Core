@@ -46,7 +46,7 @@ namespace DOL.AI.Brain
 		//4000 - rough guess, needs to be confirmed
 		public static readonly short MAX_OWNER_FOLLOW_DIST = 5000; // setting this to max stick distance
 		public static readonly short MIN_ENEMY_FOLLOW_DIST = 90;
-		public static readonly short MAX_ENEMY_FOLLOW_DIST = 512;
+		public static readonly short MAX_ENEMY_FOLLOW_DIST = 5000;
 
 		protected int m_tempX = 0;
 		protected int m_tempY = 0;
@@ -357,7 +357,9 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void FollowOwner()
 		{
-			Body.StopAttack();
+			if (Body.IsAttacking)
+				Body.StopAttack();
+				
 			if (Owner is GamePlayer
 			    && IsMainPet
 			    && ((GamePlayer)Owner).CharacterClass.ID != (int)eCharacterClass.Animist
@@ -531,8 +533,8 @@ namespace DOL.AI.Brain
 							break;
 						}
 			}
-
-			return casted || Body.IsCasting;
+			bool checkingSpellLOS = Body.TempProperties.getProperty<Spell>("LOSCURRENTSPELL", null) != null; //Check if pet is checking for spell LoS
+			return casted || Body.IsCasting || checkingSpellLOS;
 		}
 
 		
@@ -893,7 +895,7 @@ namespace DOL.AI.Brain
 				return false;
 
 			// Make sure we're currently able to cast the spell
-			if (spell.CastTime > 0 && Body.IsBeingInterrupted && !spell.Uninterruptible)
+			if (spell.CastTime > 0 && Body.IsBeingInterrupted && !spell.Uninterruptible )
 				return false;
 
 			// Make sure the spell isn't disabled
@@ -901,6 +903,10 @@ namespace DOL.AI.Brain
 				return false;
 
 			if (!Body.IsWithinRadius(Body.TargetObject, spell.Range))
+				return false;
+
+			//Don't allow casting of non-instant Offsensive spells if already in attackstate and cant cast this spell in combat
+			if(spell.CastTime > 0 && Body.attackComponent.AttackState && !Body.CanCastInCombat(spell))
 				return false;
 
 			return base.CheckOffensiveSpells(spell);
@@ -1092,7 +1098,21 @@ namespace DOL.AI.Brain
 
 				if (!CheckSpells(eCheckSpellType.Offensive))
 				{
-					Body.StartAttack(target);
+					//StartAttack if already in AttackState or currently interrupted or have a distance weapon
+					if(Body.attackComponent.AttackState || Body.IsBeingInterrupted || Body.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+						Body.StartAttack(target);
+					//StartAttack if within AttackRange
+					else if(Body.IsWithinRadius(target,Body.attackComponent.AttackRange))
+						Body.StartAttack(target);
+					//Get closer to the target
+					else
+					{
+						if(Body.CurrentFollowTarget!=target)
+						{
+							Body.StopFollowing();
+							Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
+						}
+					}
 				}
 			}
 			else

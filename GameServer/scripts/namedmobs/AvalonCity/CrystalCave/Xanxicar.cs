@@ -27,11 +27,24 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
 			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 200000; }
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
@@ -44,23 +57,10 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
 
 			return base.HasAbility(keyName);
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 800;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.55;
-		}
-		public override int MaxHealth
-		{
-			get { return 40000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -373,7 +373,7 @@ namespace DOL.AI.Brain
                     }
 					if(SpawnAddsOnce && CheckForSingleAdd==false && XanxicarianChampion.XanxicarianChampionCount == 0)
                     {
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreAdds), Util.Random(25000, 35000));//spawn 1 add every 25-35s
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreAdds), Util.Random(15000, 25000));//spawn 1 add every 25-35s
 						CheckForSingleAdd = true;
                     }
                 }
@@ -491,10 +491,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 40;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -503,12 +503,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.25;
 		}
 		public override int MaxHealth
 		{

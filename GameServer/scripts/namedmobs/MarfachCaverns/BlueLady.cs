@@ -18,17 +18,15 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info("Blue Lady initialized..");
         }
-
         public BlueLady()
             : base()
         {
         }
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (this.IsOutOfTetherRange)
+                if (IsOutOfTetherRange)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -58,18 +56,11 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
-        }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -77,26 +68,28 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70;
-                case eDamageType.Crush: return 70;
-                case eDamageType.Thrust: return 70;
-                default: return 55;
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
         }
         public override bool AddToWorld()
         {
@@ -133,7 +126,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
@@ -161,7 +153,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -186,7 +177,6 @@ namespace DOL.AI.Brain
             }         
             base.Think();
         }
-
         public void SpawnAdds()
         {
             for (int i = 0; i < 15; i++)
@@ -249,7 +239,6 @@ namespace DOL.AI.Brain
         }
     }
 }
-
 namespace DOL.GS
 {
     public class BlueLadySwordAdd : GameNPC
@@ -261,28 +250,23 @@ namespace DOL.GS
             : base()
         {
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 200;
         }
-
         public override int MaxHealth
         {
             get { return 700; }
         }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 400;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
@@ -294,6 +278,7 @@ namespace DOL.GS
             --SwordCount;
             base.Die(killer);
         }
+        public override long ExperienceValue => 0;
         public override void DropLoot(GameObject killer) //no loot
         {
         }
@@ -334,7 +319,6 @@ namespace DOL.GS
             return true;
         }
     }
-
     public class BlueLadyAxeAdd : GameNPC
     {
         private static readonly log4net.ILog log =
@@ -344,32 +328,27 @@ namespace DOL.GS
             : base()
         {
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 200;
         }
-
         public override int MaxHealth
         {
             get { return 700; }
         }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 500;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.35;
         }
         public static int AxeCount = 0;
         public override void Die(GameObject killer)
@@ -377,10 +356,10 @@ namespace DOL.GS
             --AxeCount;
             base.Die(killer);
         }
+        public override long ExperienceValue => 0;
         public override void DropLoot(GameObject killer) //no loot
         {
         }
-
         public override bool AddToWorld()
         {
             BlueLadyAxeAdd blueLady = new BlueLadyAxeAdd();
@@ -419,7 +398,6 @@ namespace DOL.GS
         }
     }
 }
-
 namespace DOL.AI.Brain
 {
     public class BlueLadyAddBrain : StandardMobBrain

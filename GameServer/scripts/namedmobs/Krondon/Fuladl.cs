@@ -66,7 +66,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 60000; }
+			get { return 30000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////Fuladl adds////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class FuladlAdd : GameEpicNPC
+	public class FuladlAdd : GameNPC
 	{
 		public FuladlAdd() : base() { }
 
@@ -205,7 +205,7 @@ namespace DOL.GS
             base.Die(killer);
         }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
-        public override short Strength { get => base.Strength; set => base.Strength = 120; }		
+        public override short Strength { get => base.Strength; set => base.Strength = 150; }		
         public override bool AddToWorld()
 		{
 			Model = 930;

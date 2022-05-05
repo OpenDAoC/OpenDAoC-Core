@@ -13,11 +13,11 @@ namespace DOL.GS
         {
         }
         public static int TauntID = 66;
-        public static int TauntClassID = 1; //pala
+        public static int TauntClassID = 2;
         public static Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
 
         public static int SlamID = 228;
-        public static int SlamClassID = 1;
+        public static int SlamClassID = 2;
         public static Style slam = SkillBase.GetStyleByID(SlamID, SlamClassID);
 
         public static int BackStyleID = 113;
@@ -31,6 +31,10 @@ namespace DOL.GS
         public static int PoleAnytimerID = 93;
         public static int PoleAnytimerClassID = 2;
         public static Style PoleAnytimer = SkillBase.GetStyleByID(PoleAnytimerID, PoleAnytimerClassID);
+
+        public static int Taunt2hID = 103;
+        public static int Taunt2hClassID = 2;
+        public static Style Taunt2h = SkillBase.GetStyleByID(Taunt2hID, Taunt2hClassID);
         public override void OnAttackedByEnemy(AttackData ad) // on Boss actions
         {
             base.OnAttackedByEnemy(ad);
@@ -43,17 +47,30 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 50; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (this.IsOutOfTetherRange)
+                if (IsOutOfTetherRange)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -90,23 +107,10 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
-        }
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-        public override int MaxHealth
-        {
-            get { return 20000; }
         }
         public override bool AddToWorld()
         {
@@ -136,30 +140,21 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
-            if (!Styles.Contains(taunt))
-            {
-                Styles.Add(taunt);
-            }
-            if (!Styles.Contains(slam))
-            {
-                Styles.Add(slam);
-            }
-            if (!Styles.Contains(BackStyle))
-            {
-                Styles.Add(BackStyle);
-            }
-            if (!Styles.Contains(AfterStyle))
-            {
-                Styles.Add(AfterStyle);
-            }
-            if (!Styles.Contains(PoleAnytimer))
-            {
-                Styles.Add(PoleAnytimer);
-            }
             LordGildasBrain.Stage2 = false;
             LordGildasBrain.CanWalk = false;
             LordGildasBrain.Reset_Gildas = false;
-
+            if (!Styles.Contains(taunt))
+                Styles.Add(taunt);
+            if (!Styles.Contains(slam))
+                Styles.Add(slam);
+            if (!Styles.Contains(BackStyle))
+                Styles.Add(BackStyle);
+            if (!Styles.Contains(AfterStyle))
+                Styles.Add(AfterStyle);
+            if (!Styles.Contains(PoleAnytimer))
+                Styles.Add(PoleAnytimer);
+            if (!Styles.Contains(Taunt2h))
+                Styles.Add(Taunt2h);
             VisibleActiveWeaponSlots = 16;
             MeleeDamageType = eDamageType.Slash;
             LordGildasBrain sbrain = new LordGildasBrain();
@@ -231,7 +226,7 @@ namespace DOL.AI.Brain
             return 0;
         }
         public override void Think()
-        {           
+        {       
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
@@ -240,11 +235,11 @@ namespace DOL.AI.Brain
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 if (Reset_Gildas == false)
                 {
                     INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(7719);
@@ -261,11 +256,15 @@ namespace DOL.AI.Brain
                     Body.Inventory = template.CloseTemplate();
                     Body.SwitchWeapon(eActiveWeaponSlot.Standard);
                     Body.VisibleActiveWeaponSlots = 16;
-                    Body.Styles.Add(LordGildas.slam);
-                    Body.Styles.Add(LordGildas.taunt);
-                    Body.Styles.Add(LordGildas.BackStyle);
-                    Body.Empathy = npcTemplate.Empathy;
-                    Body.Quickness = npcTemplate.Quickness;
+                    if (!Body.Styles.Contains(LordGildas.slam))
+                        Body.Styles.Add(LordGildas.slam);
+                    if (!Body.Styles.Contains(LordGildas.taunt))
+                        Body.Styles.Add(LordGildas.taunt);
+                    if (!Body.Styles.Contains(LordGildas.BackStyle))
+                        Body.Styles.Add(LordGildas.BackStyle);
+                    if (!Body.Styles.Contains(LordGildas.Taunt2h))
+                        Body.Styles.Remove(LordGildas.Taunt2h);
+                    Body.Strength = npcTemplate.Strength;
                     Body.ParryChance = npcTemplate.ParryChance;
                     Body.BlockChance = npcTemplate.BlockChance;
                     Stage2 = false;
@@ -274,7 +273,7 @@ namespace DOL.AI.Brain
                     Reset_Gildas = true;
                 }
             }
-            if (Body.InCombat && HasAggro)
+            if (HasAggro)
             {
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Body.TargetObject != null)
@@ -285,16 +284,17 @@ namespace DOL.AI.Brain
                         float angle = Body.TargetObject.GetAngle(Body);
                         if (angle >= 160 && angle <= 200)
                         {
-                            Body.Empathy = (short)(npcTemplate.Empathy + 70);
+                            Body.Strength = 400;
                             Body.ParryChance = 60;
                             Body.BlockChance = 0;
                             Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
                             Body.VisibleActiveWeaponSlots = 34;
+                            Body.styleComponent.NextCombatBackupStyle = LordGildas.Taunt2h;
                             Body.styleComponent.NextCombatStyle = LordGildas.BackStyle;//do backstyle when angle allow it
                         }
                         else
                         {
-                            Body.Empathy = npcTemplate.Empathy;
+                            Body.Strength = npcTemplate.Strength;
                             Body.ParryChance = 25;
                             Body.BlockChance = 75;
                             Body.SwitchWeapon(eActiveWeaponSlot.Standard);
@@ -303,7 +303,7 @@ namespace DOL.AI.Brain
                         }
                         if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
                         {
-                            Body.Empathy = npcTemplate.Empathy;
+                            Body.Strength = npcTemplate.Strength;
                             Body.SwitchWeapon(eActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.ParryChance = 25;
@@ -335,18 +335,21 @@ namespace DOL.AI.Brain
                     template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
                     template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 70, 0, 0);
                     Body.Inventory = template.CloseTemplate();
-                    Body.Styles.Remove(LordGildas.slam);
-                    Body.Styles.Remove(LordGildas.taunt);
-                    Body.Styles.Remove(LordGildas.BackStyle);
+                    if(Body.Styles.Contains(LordGildas.slam))
+                        Body.Styles.Remove(LordGildas.slam);
+                    if (Body.Styles.Contains(LordGildas.taunt))
+                        Body.Styles.Remove(LordGildas.taunt);
+                    if (Body.Styles.Contains(LordGildas.BackStyle))
+                        Body.Styles.Remove(LordGildas.BackStyle);
+                    if (Body.Styles.Contains(LordGildas.Taunt2h))
+                        Body.Styles.Remove(LordGildas.Taunt2h);
                     Stage2 = true;
                 }
                 if(Stage2 == true)
                 {
                     Body.styleComponent.NextCombatBackupStyle = LordGildas.PoleAnytimer;
                     Body.styleComponent.NextCombatStyle = LordGildas.AfterStyle;
-                    INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(7719);
-                    Body.Empathy = (short)(npcTemplate.Empathy+50);
-                    Body.Quickness = (short)(npcTemplate.Quickness -50);
+                    Body.Strength = 340;
                     Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
                     Body.MeleeDamageType = eDamageType.Crush;
                     Body.VisibleActiveWeaponSlots = 34;

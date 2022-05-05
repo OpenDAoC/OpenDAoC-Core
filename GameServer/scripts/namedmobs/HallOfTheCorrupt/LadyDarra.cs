@@ -27,13 +27,13 @@ namespace DOL.GS
         {
             if (ad != null && ad.AttackResult == eAttackResult.Blocked)
             {
-                this.styleComponent.NextCombatBackupStyle = taunt;
-                this.styleComponent.NextCombatStyle = after_block; 
+                styleComponent.NextCombatBackupStyle = taunt;
+                styleComponent.NextCombatStyle = after_block; 
             }
             if (ad != null && ad.AttackResult == eAttackResult.Parried)
             {
-                this.styleComponent.NextCombatBackupStyle = taunt; 
-                this.styleComponent.NextCombatStyle = after_parry; 
+                styleComponent.NextCombatBackupStyle = taunt; 
+                styleComponent.NextCombatStyle = after_parry; 
             }
             base.OnAttackedByEnemy(ad);
         }
@@ -41,7 +41,7 @@ namespace DOL.GS
         {
             if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
             {
-                this.styleComponent.NextCombatStyle = taunt; //boss hit unstyled/styled so taunt
+                styleComponent.NextCombatStyle = taunt; //boss hit unstyled/styled so taunt
             }
             base.OnAttackEnemy(ad);
         }
@@ -49,18 +49,30 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
-                default: return 25; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
-
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (this.IsOutOfTetherRange)
+                if (IsOutOfTetherRange)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -97,23 +109,10 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
-        }
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-        public override int MaxHealth
-        {
-            get { return 20000; }
         }
         public override bool AddToWorld()
         {
@@ -142,11 +141,13 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 0, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
-            Styles.Add(taunt);
-            Styles.Add(after_block);
+            if(!Styles.Contains(taunt))
+                Styles.Add(taunt);
+            if(!Styles.Contains(after_block))
+                Styles.Add(after_block);
             LadyDarraBrain.reset_darra = false;
             spawn_palas = false;
-
+            
             VisibleActiveWeaponSlots = 16;
             MeleeDamageType = eDamageType.Slash;
             LadyDarraBrain sbrain = new LadyDarraBrain();
@@ -241,14 +242,12 @@ namespace DOL.GS
         }
     }
 }
-
 namespace DOL.AI.Brain
 {
     public class LadyDarraBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public LadyDarraBrain()
             : base()
         {
@@ -263,15 +262,15 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;              
+                Body.Health = Body.MaxHealth;              
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 if (reset_darra == false)
                 {
                     if (SpectralPaladin.paladins_count <= 3)
@@ -335,12 +334,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.15;
         }
         public override int MaxHealth
         {

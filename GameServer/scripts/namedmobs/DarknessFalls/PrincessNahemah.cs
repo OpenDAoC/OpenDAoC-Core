@@ -23,37 +23,35 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
+        public override int MaxHealth
+        {
+            get { return 30000; }
+        }
         public override short MaxSpeedBase
         {
             get => (short) (191 + (Level * 2));
             set => m_maxSpeedBase = value;
         }
-
-        public override int MaxHealth => 20000;
-
         public override int AttackRange
         {
             get => 180;
             set { }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165038);
@@ -72,11 +70,10 @@ namespace DOL.GS
 
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
-
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
-
         public override void Die(GameObject killer)
         {
             base.Die(killer);
@@ -116,10 +113,8 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.Think();
         }
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (spawnMinions)
@@ -135,10 +130,8 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.OnAttackedByEnemy(ad);
         }
-
         private void Spawn()
         {
             foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
@@ -148,9 +141,7 @@ namespace DOL.AI.Brain
                     return;
                 }
             }
-
             var amount = Util.Random(5, 10);
-
             for (int i = 0; i < amount; i++) // Spawn x minions
             {
                 NahemahMinion Add = new NahemahMinion();
@@ -162,7 +153,6 @@ namespace DOL.AI.Brain
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
             }
-
             spawnMinions = false;
         }
     }
@@ -174,9 +164,8 @@ namespace DOL.GS
     {
         public override int MaxHealth
         {
-            get { return 450 * Constitution / 100; }
+            get { return 550; }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162189);
@@ -200,26 +189,21 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
         public override void DropLoot(GameObject killer) //no loot
         {
         }
-
         public override void Die(GameObject killer)
         {
             base.Die(null); // null to not gain experience
         }
-
         public override void OnAttackEnemy(AttackData ad)
         {
             if (Util.Chance(10))
             {
                 CastSpell(FireDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-
             base.OnAttackEnemy(ad);
         }
-
         #region fire aoe dd
 
         /// <summary>

@@ -7,37 +7,31 @@ using System.Collections.Generic;
 using System.Text;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using System.Reflection;
-using System.Collections;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.DOL.AI.Brain;
 
 namespace DOL.GS.Scripts
 {
-	public class Hamar : GameEpicNPC
+	public class Hamar : GameEpicBoss
 	{
 		public Hamar() : base()
-		{ }
-		
+		{ }		
 		/// <summary>
 		/// Add Hamar to World
 		/// </summary>
 		public override bool AddToWorld()
 		{
-			Realm = eRealm.None;
-			Model = 461;
-			Size = 60;
-			Level = 60;
-			ParryChance = 15;
-			EvadeChance = 15;
-			Strength = 120;
-			
-			Health = MaxHealth;
-			MaxDistance = 2500;
-			TetherRange = 3500;
-			
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(9910);
+			LoadTemplate(npcTemplate);
+			Strength = npcTemplate.Strength;
+			Dexterity = npcTemplate.Dexterity;
+			Constitution = npcTemplate.Constitution;
+			Quickness = npcTemplate.Quickness;
+			Piety = npcTemplate.Piety;
+			Intelligence = npcTemplate.Intelligence;
+			Empathy = npcTemplate.Empathy;
+		
 			// 1h Axe, left + main
 			GameNpcInventoryTemplate hamarTemp = new GameNpcInventoryTemplate();
 			hamarTemp.AddNPCEquipment(eInventorySlot.RightHandWeapon, 319);
@@ -48,7 +42,6 @@ namespace DOL.GS.Scripts
 			BodyType = 11;
 			MeleeDamageType = eDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(779);
-			Name = "Hamar";
 			
 			Flags |= eFlags.GHOST;
 			// double-wielded
@@ -56,6 +49,8 @@ namespace DOL.GS.Scripts
 			
 			ScalingFactor = 40;
 			base.SetOwnBrain(new HamarBrain());
+			LoadedFromScript = false; //load from database
+			SaveIntoDatabase();
 			base.AddToWorld();
 			
 			return true;
@@ -65,12 +60,28 @@ namespace DOL.GS.Scripts
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
+			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
 		public override int MaxHealth
 		{
-			get
-			{
-				return 20000;
-			}
+			get { return 30000; }
 		}
 		public override int AttackRange
 		{
@@ -87,16 +98,6 @@ namespace DOL.GS.Scripts
 				return true;
 
 			return base.HasAbility(keyName);
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 800;
-		}
-
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.45;
 		}
 		
 		/// <summary>

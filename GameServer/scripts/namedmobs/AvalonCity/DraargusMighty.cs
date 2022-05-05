@@ -21,11 +21,24 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 40;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
 			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 30000; }
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
@@ -45,24 +58,11 @@ namespace DOL.GS
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
-			if (DraugynSphere.SphereCount > 0 && IsAlive && keyName == DOL.GS.Abilities.DamageImmunity)
+			if (DraugynSphere.SphereCount > 0 && IsAlive && keyName == GS.Abilities.DamageImmunity)
 				return true;
 			return base.HasAbility(keyName);
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 700;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.45;
-		}
-		public override int MaxHealth
-		{
-			get { return 15000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -179,10 +179,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 50;// dmg reduction for rest resists
 			}
 		}
 		public override bool HasAbility(string keyName)
@@ -194,12 +194,12 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 700;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
@@ -290,7 +290,7 @@ namespace DOL.AI.Brain
 				Body.SetGroundTarget(Body.X, Body.Y, Body.Z);
 				Body.CastSpell(Sphere_pbaoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
-				foreach(GamePlayer player in Body.GetPlayersInRadius(800))
+				foreach(GamePlayer player in Body.GetPlayersInRadius(300))
                 {
 					if(player != null)
                     {
@@ -316,11 +316,11 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
-					spell.RecastDelay = 3;
+					spell.RecastDelay = 4;
 					spell.ClientEffect = 368;
 					spell.Icon = 368;
 					spell.TooltipId = 368;
-					spell.Damage = 450;
+					spell.Damage = 300;
 					spell.Name = "Sphere Explosion";
 					spell.Range = 500;
 					spell.Radius = 500;

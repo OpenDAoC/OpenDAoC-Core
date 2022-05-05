@@ -639,9 +639,18 @@ namespace DOL.GS.Spells
 			if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
 			{
 				if (Spell.InstrumentRequirement == 0)
-					MessageToCaster("You begin casting a " + Spell.Name + " spell!", eChatType.CT_Spell);
+				{
+					if (Caster is GamePlayer playerCaster)
+						// Message: You begin casting a {0} spell!
+						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCasting", Spell.Name), eChatType.CT_Spell);
+					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
+						// Message: {0} begins casting a {1} spell!
+						casterOwner.Out.SendMessage(LanguageMgr.GetTranslation(casterOwner.Client.Account.Language, "SpellHandler.CastSpell.Msg.PetBeginsCasting", Caster.GetName(0, true), Spell.Name), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				}
 				else
-					MessageToCaster("You begin playing " + Spell.Name + "!", eChatType.CT_Spell);
+					if (Caster is GamePlayer songCaster)
+						// Message: You begin playing {0}!
+						MessageToCaster(LanguageMgr.GetTranslation(songCaster.Client, "SpellHandler.CastSong.Msg.YouBeginPlaying", Spell.Name), eChatType.CT_Spell);
 			}
 		}
 
@@ -805,7 +814,8 @@ namespace DOL.GS.Spells
 			{
 				if (m_caster.CanCastInCombat(Spell) == false)
 				{
-					m_caster.attackComponent.LivingStopAttack();
+					if(!(m_caster is GamePet))
+						m_caster.attackComponent.LivingStopAttack(); //dont stop melee for pet (probaby look at stopping attack just for game player)
 					return false;
 				}
 			}
@@ -2210,11 +2220,17 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
 				{
-					MessageToCaster("You cast a " + m_spell.Name + " spell!", eChatType.CT_Spell);
+					if (Caster is GamePlayer playerCaster)
+						// Message: You cast a {0} spell!
+						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouCastSpell", Spell.Name), eChatType.CT_Spell);
+					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
+						// Message: {0} cast a {1} spell!
+						casterOwner.Out.SendMessage(LanguageMgr.GetTranslation(casterOwner.Client.Account.Language, "SpellHandler.CastSpell.Msg.PetCastSpell", Caster.GetName(0, true), Spell.Name), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 					foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 					{
 						if (player != m_caster)
-							player.MessageFromArea(m_caster, m_caster.GetName(0, true) + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+							// Message: {0} casts a spell!
+							player.MessageFromArea(m_caster, LanguageMgr.GetTranslation(player.Client, "SpellHandler.CastSpell.Msg.LivingCastsSpell", Caster.GetName(0, true)), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 					}
 				}
 			}

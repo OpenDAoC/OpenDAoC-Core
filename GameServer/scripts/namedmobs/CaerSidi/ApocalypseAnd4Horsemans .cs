@@ -556,7 +556,7 @@ namespace DOL.AI.Brain
             {
                 this.Body.Health = this.Body.MaxHealth;
             }
-            if (Body.InCombat || HasAggro || Body.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
             {
                 StartedFames = true;
                 if (spawn_fate == false)
@@ -1793,7 +1793,7 @@ namespace DOL.AI.Brain
                 IsBug = false;
                 ClearAggroList();
             }
-            if (Body.InCombat || HasAggro || Body.AttackState == true)
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 StartedMorbus = true;
                 if(Morbus.Morbus_Swarm_count > 0)
@@ -2259,7 +2259,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (Body.InCombat || HasAggro || Body.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
             {
                 StartedFunus = true;
                 if (BafMobs4 == false)
@@ -2521,7 +2521,7 @@ namespace DOL.AI.Brain
             }
             #endregion
             #region Boss combat
-            if (Body.InCombat || HasAggro || Body.AttackState == true)//bring mobs from rooms if mobs got set PackageID="ApocBaf"
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)//bring mobs from rooms if mobs got set PackageID="ApocBaf"
             {
                 StartedApoc = true;
                 if (ApocAggro == false && Body.HealthPercent <=99)//1st time apoc fly to celling
