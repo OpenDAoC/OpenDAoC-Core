@@ -3899,10 +3899,18 @@ namespace DOL.GS
 			// TODO: correct aggro strings
 			string aggroLevelString = "";
 			int aggroLevel;
-			if (Faction != null)
+			IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
+			//Calculate Faction aggro - base AggroLevel needs to be greater tha 0 for Faction aggro calc to work.
+			if (Faction != null && aggroBrain != null && aggroBrain.AggroLevel > 0)
 			{
 				aggroLevel = Faction.GetAggroToFaction(player);
-				if (aggroLevel > 75)
+				
+				if (GameServer.ServerRules.IsSameRealm(this, player, true))
+				{
+					if (firstLetterUppercase) aggroLevelString = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetAggroLevelString.Friendly2");
+					else aggroLevelString = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetAggroLevelString.Friendly1");
+				}
+				else if (aggroLevel > 75)
 					aggroLevelString = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetAggroLevelString.Aggressive1");
 				else if (aggroLevel > 50)
 					aggroLevelString = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetAggroLevelString.Hostile1");
@@ -3913,7 +3921,6 @@ namespace DOL.GS
 			}
 			else
 			{
-				IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
 				if (GameServer.ServerRules.IsSameRealm(this, player, true))
 				{
 					if (firstLetterUppercase) aggroLevelString = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetAggroLevelString.Friendly2");

@@ -4560,6 +4560,12 @@ namespace DOL.GS
                     NewsMgr.CreateNews(newsmessage, this.Realm, eNewsType.RvRLocal, true);
                 }
             }
+
+            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < Math.Ceiling((RealmLevel+10) / 10d))
+            {
+                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int)Math.Ceiling((RealmLevel + 10) / 10d));
+            }
+            
             Out.SendUpdatePoints();
         }
 
@@ -14945,8 +14951,9 @@ namespace DOL.GS
         {
             if (DBCharacter == null)
                 return;
-			
-            DBCharacter.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
+            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            
+            CraftingForRealm.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
 
             string cs = "";
 
@@ -14963,7 +14970,9 @@ namespace DOL.GS
                 }
             }
 
-            DBCharacter.SerializedCraftingSkills = cs;
+            CraftingForRealm.SerializedCraftingSkills = cs;
+            
+            GameServer.Database.SaveObject(CraftingForRealm); 
         }
 
         /// <summary>
@@ -14973,21 +14982,25 @@ namespace DOL.GS
         {
             if (DBCharacter == null)
                 return;
+            
+            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
-            if (DBCharacter.SerializedCraftingSkills == "" || DBCharacter.CraftingPrimarySkill == 0)
+            if (CraftingForRealm == null)
             {
-                AddCraftingSkill(eCraftingSkill.BasicCrafting, 1);
-                SaveCraftingSkills();
-                Out.SendUpdateCraftingSkills();
-                return;
+                AccountXCrafting newCrafting = new AccountXCrafting();
+                newCrafting.AccountId = this.AccountName;
+                newCrafting.Realm = (int)this.Realm;
+                newCrafting.CraftingPrimarySkill = 15;
+                GameServer.Database.AddObject(newCrafting);
+                CraftingForRealm = newCrafting;
             }
             try
             {
-                CraftingPrimarySkill = (eCraftingSkill)DBCharacter.CraftingPrimarySkill;
+                CraftingPrimarySkill = (eCraftingSkill)CraftingForRealm.CraftingPrimarySkill;
 
                 lock (CraftingLock)
                 {
-                    foreach (string skill in Util.SplitCSV(DBCharacter.SerializedCraftingSkills))
+                    foreach (string skill in Util.SplitCSV(CraftingForRealm.SerializedCraftingSkills))
                     {
                         string[] values = skill.Split('|');
                         //Load by crafting skill name
@@ -15734,6 +15747,61 @@ namespace DOL.GS
             }
         }
 
+        #endregion
+        
+        #region Achievements
+
+        public void Achieve(string achievementName, int count = 1)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = count;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count += count;
+            GameServer.Database.SaveObject(achievement);
+        }
+
+        public void SetAchievementTo(string achievementName, int value)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = value;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count = value;
+            GameServer.Database.SaveObject(achievement);
+        }
+
+        public int GetAchievementProgress(string achievementName)
+        {
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+                return 0;
+            else
+                return achievement.Count;
+        }
+        
         #endregion
 
         #region Statistics

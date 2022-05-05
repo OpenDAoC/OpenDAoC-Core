@@ -2347,11 +2347,26 @@ namespace DOL.GS
                 }
             }
             BroadcastMessage(String.Format("Apocalypse shouts, 'Your end is at hand!'"));
-            
+
+            AwardEpicEncounterKillPoint();
+           
             --ApocInitializator.ApocCount;
             ApocalypseBrain.StartedApoc = false;
             base.Die(killer);
         }      
+        
+        protected int AwardEpicEncounterKillPoint()
+        {
+            int count = 0;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.KillsEpicBoss++;
+                player.Achieve(AchievementUtils.AchievementNames.Epic_Boss_Kills);
+                count++;
+            }
+            return count;
+        }
+
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();

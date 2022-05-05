@@ -1872,31 +1872,48 @@ namespace DOL.GS.ServerRules
 						{
 							case eRealm.Albion:
 								expGainPlayer.KillsAlbionPlayers++;
+								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
 								if (expGainPlayer == killer)
 								{
 									expGainPlayer.KillsAlbionDeathBlows++;
-									if ((float)de.Value == totalDamage)
+									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
+									if ((float) de.Value == totalDamage)
+									{
 										expGainPlayer.KillsAlbionSolo++;
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
+									}
+										
 								}
 								break;
 
 							case eRealm.Hibernia:
 								expGainPlayer.KillsHiberniaPlayers++;
+								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
 								if (expGainPlayer == killer)
 								{
 									expGainPlayer.KillsHiberniaDeathBlows++;
-									if ((float)de.Value == totalDamage)
+									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
+									if ((float) de.Value == totalDamage)
+									{
 										expGainPlayer.KillsHiberniaSolo++;
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
+									}
 								}
 								break;
 
 							case eRealm.Midgard:
 								expGainPlayer.KillsMidgardPlayers++;
+								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
 								if (expGainPlayer == killer)
 								{
 									expGainPlayer.KillsMidgardDeathBlows++;
-									if ((float)de.Value == totalDamage)
+									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
+									if ((float) de.Value == totalDamage)
+									{
 										expGainPlayer.KillsMidgardSolo++;
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
+									}
+										
 								}
 								break;
 						}

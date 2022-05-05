@@ -284,7 +284,11 @@ namespace DOL.GS.Keeps
 					{
 						GamePlayer player = obj as GamePlayer;
 						if (lord.Component.Keep != null && lord.Component.Keep is GameKeep)
+						{
 							player.CapturedKeeps++;
+							player.Achieve(AchievementUtils.AchievementNames.Keeps_Taken);
+						}
+							
 						else player.CapturedTowers++;
 						
 						if(player.CapturedKeeps % 25 == 0)
