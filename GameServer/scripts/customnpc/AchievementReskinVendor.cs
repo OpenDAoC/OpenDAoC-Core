@@ -23,7 +23,7 @@ public class AchievementReskinVendor : GameNPC
     //20k champion
     private int freebie = 0;
     private int lowbie = 1000;
-    private int festive = 1000;
+    private int festive = 2000;
     private int toageneric = 5000;
     private int armorpads = 2500;
     private int artifact = 10000;
@@ -128,18 +128,17 @@ public class AchievementReskinVendor : GameNPC
         }
 
         int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
-        Console.WriteLine($"Dragon kills: {dragon}");
 
         if (dragon > 9)
         {
             sb.Append($"10 Dragon Kills\n" +
-                      $"[Dragonsworn Helm] (" + dragonCost + " " + currencyName + ")\n");
+                      $"[Dragonsworn Helm] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
         }
 
         if (dragon > 24)
         {
             sb.Append($"25 Dragon Kills\n" +
-                      $"[Dragonslayer Helm] (" + dragonCost * 2 + " " + currencyName + ")\n");
+                      $"[Dragonslayer Helm] (" + dragonCost * 2 + " " + currencyName + ") | Catacombs Models Only\n");
         }
         
         sb.Append("\nAdditionally, I have some realm specific headgear available: \n");
@@ -168,6 +167,93 @@ public class AchievementReskinVendor : GameNPC
             sb.Append("[Wizard Hat] (" + epic + " " + currencyName + ")\n");
 
         SendReply(player, sb.ToString());
+    }
+
+    public void DisplayTorsoOption(GamePlayer player, InventoryItem item)
+    {
+        StringBuilder sb = new StringBuilder();
+        int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
+
+        //add all basic options
+        sb.Append($"Free\n" +
+                  $"[Crafted 1] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 2] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 3] ({freebie} {currencyName})\n");
+
+        if (RR > 1)
+        {
+            sb.Append($"Realm Rank 2+\n" +
+                      $"[Crafted 4] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 5] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 6] ({lowbie} {currencyName})\n");
+        }
+
+        if (RR > 3)
+        {
+            sb.Append("Realm Rank 4+\n" +
+                      "[Oceanus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Stygia Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Volcanus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Aerus Breastplate] (" + toageneric + " " + currencyName + ")\n");
+        }
+
+        if (RR > 4)
+        {
+            sb.Append("Realm Rank 5+\n" +
+                      "[Class Epic Chestpiece](" + epic + " " + currencyName + ")\n");
+        }
+
+        if (RR > 5)
+        {
+            sb.Append("Realm Rank 6+\n" +
+                      "[Eirene's Chest](" + artifact + " " + currencyName + ")\n" +
+                      "[Naliah's Robe](" + artifact + " " + currencyName + ")\n" +
+                      "[Guard of Valor](" + artifact + " " + currencyName + ")\n" +
+                      "[Golden Scarab Vest](" + artifact + " " + currencyName + ")\n");
+        }
+
+        int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
+
+        if (dragon > 9)
+        {
+            sb.Append($"10 Dragon Kills\n" +
+                      $"[Dragonsworn Breastplate] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (dragon > 24)
+        {
+            sb.Append($"25 Dragon Kills\n" +
+                      $"[Dragonslayer Breastplate] (" + dragonCost * 1.5 + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Epic_Boss_Kills) >= 10)
+        {
+            sb.Append("10 Epic Boss Kills\n" +
+                      "[Possessed Realm Breastplate](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Mastered_Crafts) >= 3)
+        {
+            sb.Append("3 Crafts Above 1000\n" +
+                      "[Good Realm Breastplate](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 100000)
+        {
+            sb.Append("100k Orbs Earned\n" +
+                      "[Good Shar Breastplate](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+        
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 250000)
+        {
+            sb.Append("250k Orbs Earned\n" +
+                      "[Good Inconnu Breastplate](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        
+        SendReply(player, sb.ToString());
+
     }
 
     public bool SetModel(GamePlayer player, int number, int price)
