@@ -511,7 +511,90 @@ public class AchievementReskinVendor : GameNPC
 
     }
     
-    
+    public void DisplayBootsOption(GamePlayer player, InventoryItem item)
+    {
+        StringBuilder sb = new StringBuilder();
+        int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
+
+        //add all basic options
+        sb.Append($"Free\n" +
+                  $"[Crafted 1] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 2] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 3] ({freebie} {currencyName})\n");
+
+        if (RR > 1)
+        {
+            sb.Append($"Realm Rank 2+\n" +
+                      $"[Crafted 4] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 5] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 6] ({lowbie} {currencyName})\n");
+        }
+
+        if (RR > 3)
+        {
+            sb.Append("Realm Rank 4+\n" +
+                      "[Oceanus Boots] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Stygia Boots] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Volcanus Boots] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Aerus Boots] (" + toageneric + " " + currencyName + ")\n");
+        }
+
+        if (RR > 4)
+        {
+            sb.Append("Realm Rank 5+\n" +
+                      "[Class Epic Gloves](" + epic + " " + currencyName + ")\n");
+        }
+
+        if (RR > 5)
+        {
+            sb.Append("Realm Rank 6+\n" +
+                      "[Enyalio's Boots] (" + artifact + " " + currencyName + ")\n" +
+                      "[Flamedancer's Boots] (" + artifact + " " + currencyName + ")\n");
+        }
+
+        int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
+
+        if (dragon > 0)
+        {
+            sb.Append($"1 Dragon Kill\n" +
+                      $"[Dragonsworn Boots] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (dragon > 24)
+        {
+            sb.Append($"25 Dragon Kills\n" +
+                      $"[Dragonslayer Boots] (" + dragonCost * 1.5 + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Epic_Boss_Kills) >= 1)
+        {
+            sb.Append("1 Epic Boss Kill\n" +
+                      "[Possessed Realm Boots](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Mastered_Crafts) >= 1)
+        {
+            sb.Append("1 Craft Above 1000\n" +
+                      "[Good Realm Boots](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 100000)
+        {
+            sb.Append("100k Orbs Earned\n" +
+                      "[Good Shar Boots](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+        
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 250000)
+        {
+            sb.Append("250k Orbs Earned\n" +
+                      "[Good Inconnu Boots](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        
+        SendReply(player, sb.ToString());
+
+    }
 
     public bool SetModel(GamePlayer player, int number, int price)
     {
