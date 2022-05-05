@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -247,6 +246,10 @@ namespace DOL.GS
 			// Don't set stats for mobs until their level is set
 			if (Level < 1)
 				return;
+			if (LoadedFromScript)
+				return;
+			
+			Mob mob = dbMob;
 
 			// We have to check both the DB and template values to account for mobs changing levels.
 			// Otherwise, high level mobs retain their stats when their level is lowered by a GM.
@@ -263,8 +266,6 @@ namespace DOL.GS
 			}
 			else
 			{
-				Mob mob = dbMob;
-
 				if (mob == null && !string.IsNullOrEmpty(InternalID))
 					// This should only happen when a GM command changes level on a mob with no npcTemplate,
 					mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
@@ -283,7 +284,7 @@ namespace DOL.GS
 				else
 				{
 					// This is usually a mob about to be loaded from its DB entry,
-					//	but it could also be a new mob created by a GM command, so we need to assign stats.
+					// but it could also be a new mob created by a GM command, so we need to assign stats.
 					Strength = 0;
 					Constitution = 0;
 					Quickness = 0;
@@ -295,39 +296,155 @@ namespace DOL.GS
 				}
 			}
 			
-			// STR
-			Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
-			if (Level > 1)
-				Strength += (byte)((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
-			
-			// CON
-			Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
-			if (Level > 1)
-				Constitution += (byte)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
-			
-			// QUI
-			Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short) 1;
-			if (Level > 1)
-				Quickness += (byte)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
-			
-			// DEX
-			Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short) 1;
-			if (Level > 1)
-				Dexterity += (byte)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
-			
-			// INT
-			Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short) 1;
-			if (Level > 1)
-				Intelligence += (byte)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
-			
-			// EMP
-			Empathy = (short)(29 + Level);
-			
-			// PIE
-			Piety = (short)(29 + Level);
-			
-			// CHA
-			Charisma = (short)(29 + Level);
+			// This determines how to handle stat scaling for regular and epic NPCs with existing NPCTemplates.
+			// Stats are scaled based on the lowest level parsed from NPCTemplate.Level rather than assuming level 1.
+			// For example, mob.Level is "12-15;20-25". AutoSetStats would then treat the current stats for the
+			// NPCTemplate as the base values for the lowest level in the range, which is 12. It then uses the
+			// multiplier to increase the stat based on the mob's level, if it is above the base level (12).
+			// A level 13 mob with this template would have the multiplier applied once (1 x mulitplier), whereas a level 25 mob
+			// would have it applied 13 times (13 x mulitplier).
+			if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
+			{
+				double regular = 1.5; // Based on (GameNPC)ScaleFactor = 15
+				double epic = 6; // Based on (GameEpicNPC)ScaleFactor = 60
+				// Stats for GameEpicBoss and GameDragon templates are not adjusted
+				if (NPCTemplate.ClassType != "DOL.GS.GameEpicNPC" && NPCTemplate.ClassType != "DOL.GS.GameDragon")
+				{
+					// Base stat multiplier for mobs
+					double strMultiplier = regular;
+					double conMultiplier = regular;
+					double dexMultiplier = regular;
+					double quiMultiplier = regular;
+					double empMultiplier = regular;
+					double intMultiplier = regular;
+					double chaMultiplier = regular;
+					double pieMultiplier = regular;
+
+					// Stat multiplier for epic mobs (not bosses)
+					if (NPCTemplate.ClassType is "DOL.GS.GameEpicNPC")
+					{ 
+						strMultiplier = epic;
+						conMultiplier = epic;
+						dexMultiplier = epic;
+						quiMultiplier = epic;
+						empMultiplier = epic;
+						intMultiplier = epic;
+						chaMultiplier = epic;
+						pieMultiplier = epic;
+					}
+					
+					// Identify the lowest level in NPCTemplate.Level to use as base level
+					if (!string.IsNullOrEmpty(NPCTemplate.Level))
+					{
+						if (NPCTemplate.Level.Contains(';') || NPCTemplate.Level.Contains('-'))
+						{
+							// Create a list of each level entry, remove any separators
+							var split = Util.SplitCSV(NPCTemplate.Level, true);
+							// Grab the lowest value
+							string minLevel = split.AsQueryable().Min();
+							
+							if (minLevel != null)
+							{
+								// Convert string to short
+								short.TryParse(minLevel, out var baseLevel);
+
+								// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
+								if (Strength <= 1 || Strength == 30)
+									Strength += (short)(baseLevel * strMultiplier);
+								if (Constitution <= 1 || Constitution == 30)
+									Constitution += (short)(baseLevel * conMultiplier);
+								if (Dexterity <= 1 || Dexterity == 30)
+									Dexterity += (short)(baseLevel * dexMultiplier);
+								if (Quickness <= 1 || Quickness == 30)
+									Quickness += (short)(baseLevel * quiMultiplier);
+								if (Empathy <= 1 || Empathy == 30)
+									Empathy += (short)(baseLevel * empMultiplier);
+								if (Intelligence <= 1 || Intelligence == 30)
+									Intelligence += (short)(baseLevel * intMultiplier);
+								if (Charisma <= 1 || Charisma == 30)
+									Charisma += (short)(baseLevel * chaMultiplier);
+								if (Piety <= 1 || Piety == 30)
+									Piety += (short)(baseLevel * pieMultiplier);
+								
+								if (Level > baseLevel)
+								{
+									// Count level difference between mob's randomly-selected level and the base level
+									for (short levelDiff = 0; levelDiff < (Level - baseLevel); levelDiff++)
+									{
+										// If mob.Level is one or more levels higher than the base level, apply the multiplier
+										if (levelDiff >= 1)
+										{
+											//Strength = (NPCTemplate.Strength > 0) ? NPCTemplate.Strength : (short) 1;
+											Strength += (short)(levelDiff * strMultiplier);
+											//Constitution = (NPCTemplate.Constitution > 0) ? NPCTemplate.Constitution : (short) 1;
+											Constitution += (short)(levelDiff * conMultiplier);
+											//Dexterity = (NPCTemplate.Dexterity > 0) ? NPCTemplate.Dexterity : (short) 1;
+											Dexterity += (short)(levelDiff * dexMultiplier);
+											//Quickness = (NPCTemplate.Quickness > 0) ? NPCTemplate.Quickness : (short) 1;
+											Quickness += (short)(levelDiff * quiMultiplier);
+											//Empathy = (NPCTemplate.Empathy > 0) ? NPCTemplate.Empathy : (short) 1;
+											Empathy += (short)(levelDiff * empMultiplier);
+											//Intelligence = (NPCTemplate.Intelligence > 0) ? NPCTemplate.Intelligence : (short) 1;
+											Intelligence += (short)(levelDiff * intMultiplier);
+											//Charisma = (NPCTemplate.Charisma > 0) ? NPCTemplate.Charisma : (short) 1;
+											Charisma += (short)(levelDiff * chaMultiplier);
+											//Piety = (NPCTemplate.Piety > 0) ? NPCTemplate.Piety : (short) 1;
+											Piety += (short)(levelDiff * pieMultiplier);
+										}
+									}
+								}
+							}
+						}
+						// If only one level is specified
+						else
+						{
+							// Convert string to short
+							short.TryParse(NPCTemplate.Level, out var baseLevel);
+
+							// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
+							if (Strength <= 1)
+								Strength += (short)(baseLevel * strMultiplier);
+							if (Constitution <= 1)
+								Constitution += (short)(baseLevel * conMultiplier);
+							if (Dexterity <= 1)
+								Dexterity += (short)(baseLevel * dexMultiplier);
+							if (Quickness <= 1)
+								Quickness += (short)(baseLevel * quiMultiplier);
+							if (Empathy <= 1)
+								Empathy += (short)(baseLevel * empMultiplier);
+							if (Intelligence <= 1)
+								Intelligence += (short)(baseLevel * intMultiplier);
+							if (Charisma <= 1)
+								Charisma += (short)(baseLevel * chaMultiplier);
+							if (Piety <= 1)
+								Piety += (short)(baseLevel * pieMultiplier);
+						}
+					}
+				}
+			}
+			// If no NPCTemplate can be found or is assigned, use the original formula on the mob
+			else
+			{
+				// Base for all stats is 30 and multiplier is 1
+				Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
+				if (Level > 1)
+					Strength += (byte) ((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+				Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
+				if (Level > 1)
+					Constitution += (byte) ((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+				Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short) 1;
+				if (Level > 1)
+					Quickness += (byte) ((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+				Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short) 1;
+				if (Level > 1)
+					Dexterity += (byte) ((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+				Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short) 1;
+				if (Level > 1)
+					Intelligence += (byte) ((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+				Empathy = (short) (29 + Level);
+				Piety = (short) (29 + Level);
+				Charisma = (short) (29 + Level);
+			}
 		}
 
 		/// <summary>
@@ -2011,7 +2128,8 @@ namespace DOL.GS
 		}
 		#endregion
 
-		#region Inventory/LoadfromDB
+		#region Inventory
+		
 		private NpcTemplate m_npcTemplate = null;
 		/// <summary>
 		/// The NPC's template
@@ -2042,7 +2160,7 @@ namespace DOL.GS
 					if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
 						SwitchWeapon(eActiveWeaponSlot.Distance);
 					else
-					{
+                    {
 						InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
 						InventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 
@@ -2062,6 +2180,122 @@ namespace DOL.GS
 			}
 		}
 
+		/// <summary>
+		/// Loads the equipment template of this npc
+		/// </summary>
+		/// <param name="template">The template ID</param>
+		public virtual void LoadEquipmentTemplateFromDatabase(INpcTemplate template)
+		{
+			var templatedInventory = new List<string>();
+			
+			// Try to reach the NPCEquipment table and load that
+			if (!Util.IsEmpty(template.Inventory))
+			{
+				bool equipHasItems = false;
+				GameNpcInventoryTemplate inventoryTemp = new GameNpcInventoryTemplate();
+				
+				// Use a ';' split to allow NPCTemplates to support multiple equipment IDs
+				var equipIDs = Util.SplitCSV(template.Inventory);
+				if (!template.Inventory.Contains(':'))
+				{
+					foreach (var str in equipIDs)
+					{
+						templatedInventory.Add(str);
+					}
+
+					var equipid = "";
+
+					if (templatedInventory.Count >= 0)
+					{
+						if (templatedInventory.Count <= 1)
+							equipid = template.Inventory;
+						else
+							equipid = templatedInventory[Util.Random(templatedInventory.Count - 1)];
+					}
+					if (inventoryTemp.LoadFromDatabase(equipid))
+						equipHasItems = true;
+				}
+
+				#region Manually Adding Equipment
+				// If nothing is found in the NPCEquipment table, manually parse the data
+				// This is considered "legacy code"
+				if (!equipHasItems && template.Inventory.Contains(':'))
+				{
+					// Create a list to store equipment models
+					var tempModels = new List<int>();
+
+					// Go through each slot separated by ';'
+					foreach (var str in equipIDs)
+					{
+						// Clean out the previous entry, if any exists
+						tempModels.Clear();
+						// Split the equipment into slot and model(s)
+						var slotXModels = str.Split(':');
+						
+						// Each entry should consist of SLOT : MODELS
+						if (slotXModels.Length == 2)
+						{
+							// Identify the slots associated with each entry
+							if (int.TryParse(slotXModels[0], out var slot))
+							{
+								// Add models to the list
+								var models = slotXModels[1].Split('|');
+								
+								foreach (var strModel in models)
+								{
+									// Add items to the list if successfully parsed
+									if (int.TryParse(strModel, out var model))
+										tempModels.Add(model);
+								}
+
+								// If some models are found, randomly pick one and add it the NPC's equipment
+								if (tempModels.Count > 0)
+									equipHasItems |= inventoryTemp.AddNPCEquipment((eInventorySlot)slot, tempModels[Util.Random(tempModels.Count - 1)]);
+							}
+						}
+					}
+				}
+				#endregion Manually Adding Equipment
+
+				// Items added, make it into a new inventory
+				if (equipHasItems)
+				{
+					Inventory = new GameNPCInventory(inventoryTemp);
+					var twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+					var onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+					var lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+					var distance = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+					
+					// Default to ranged attacks, if a weapon is available
+					if (distance != null)
+						SwitchWeapon(eActiveWeaponSlot.Distance);
+					// Switch to melee weapons
+					else
+                    {
+	                    if (twohand != null && onehand != null)
+						{
+								// Let's pick a weapon at random
+								SwitchWeapon(Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
+						}
+						else if (twohand != null)
+							// If right-hand weapon is maybe null for some reason
+							SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+						else if (onehand != null && lefthand != null)
+							// If there's a left-hand weapon, let's use it
+							SwitchWeapon(eActiveWeaponSlot.Standard);
+						else if (onehand != null)
+							// Let's just default to things here
+							SwitchWeapon(eActiveWeaponSlot.Standard);
+                    }
+				}
+
+				if (template.VisibleActiveWeaponSlot > 0)
+					VisibleActiveWeaponSlots = template.VisibleActiveWeaponSlot;
+			}
+		}
+		
+		#endregion Inventory
+
 		private bool m_loadedFromScript = true;
 		public bool LoadedFromScript
 		{
@@ -2069,7 +2303,9 @@ namespace DOL.GS
 			set { m_loadedFromScript = value; }
 		}
 
+		#region Load/Delete/SaveFromDatabase
 
+		#region LoadFromDatabase
 		/// <summary>
 		/// Load a npc from the npc template
 		/// </summary>
@@ -2132,46 +2368,16 @@ namespace DOL.GS
 				Spells = m_spells;
 				Styles = m_styles;
 				RespawnInterval = dbMob.RespawnInterval;
-				
-				if (Level >= 65)
-				{
-					if (dbMob.Strength > Strength)
-						Strength = dbMob.Strength;
-					if (dbMob.Constitution > Constitution)
-						Constitution = dbMob.Constitution;
-					if (dbMob.Dexterity > Dexterity)
-						Dexterity = dbMob.Dexterity;
-					if (dbMob.Quickness > Quickness)
-						Quickness = dbMob.Quickness;
-					if (dbMob.Intelligence > Intelligence)
-						Intelligence = dbMob.Intelligence;
-					if (dbMob.Empathy > Empathy)
-						Empathy = dbMob.Empathy;
-					if (dbMob.Charisma > Charisma)
-						Charisma = dbMob.Charisma;
-					if (dbMob.Piety > Piety)
-						Piety = dbMob.Piety;
-				}
-				else
-				{
-					if (dbMob.Strength > Strength && dbMob.Strength < 225)
-						Strength = dbMob.Strength;
-					if (dbMob.Constitution > Constitution && dbMob.Constitution < 225)
-						Constitution = dbMob.Constitution;
-					if (dbMob.Dexterity > Dexterity && dbMob.Dexterity < 225)
-						Dexterity = dbMob.Dexterity;
-					if (dbMob.Quickness > Quickness && dbMob.Quickness < 225)
-						Quickness = dbMob.Quickness;
-					if (dbMob.Intelligence > Intelligence && dbMob.Intelligence < 225)
-						Intelligence = dbMob.Intelligence;
-					if (dbMob.Empathy > Empathy && dbMob.Empathy < 225)
-						Empathy = dbMob.Empathy;
-					if (dbMob.Charisma > Charisma && dbMob.Charisma < 225)
-						Charisma = dbMob.Charisma;
-					if (dbMob.Piety > Piety && dbMob.Piety < 225)
-						Piety = dbMob.Piety;
-				}
-				
+
+				Strength = dbMob.Strength;
+				Constitution = dbMob.Constitution; 
+				Dexterity = dbMob.Dexterity;
+				Quickness = dbMob.Quickness;
+				Intelligence = dbMob.Intelligence;
+				Empathy = dbMob.Empathy;
+				Charisma = dbMob.Charisma;
+				Piety = dbMob.Piety;
+
 				AggroLevel = dbMob.AggroLevel;
 				AggroRange = dbMob.AggroRange;
 				Race = (short)dbMob.Race;
@@ -2276,7 +2482,7 @@ namespace DOL.GS
 							SwitchWeapon(ActiveWeaponSlot);
 			*/
 		}
-		#endregion Inventory/LoadfromDB
+		#endregion LoadFromDatabase
 
 		/// <summary>
 		/// Deletes the mob from the database
@@ -2296,6 +2502,7 @@ namespace DOL.GS
 			}
 		}
 
+		#region SaveIntoDatabase
 		/// <summary>
 		/// Saves a mob into the db if it exists, it is
 		/// updated, else it creates a new object in the DB
@@ -2410,7 +2617,12 @@ namespace DOL.GS
 				GameServer.Database.SaveObject(mob);
 			}
 		}
+		#endregion SaveIntoDatabase
+		
+		#endregion Load/Delete/SaveFromDatabase
 
+		#region LoadTemplate
+		
 		/// <summary>
 		/// Load a NPC template onto this NPC
 		/// </summary>
@@ -2432,13 +2644,46 @@ namespace DOL.GS
 			BlockChance = template.BlockChance;
 			LeftHandSwingChance = template.LeftHandSwingChance;
 
-			// We need level set before assigning spells to scale pet spells
+			#region Preliminary ReplaceMobValues
+			// We need to set the stats first, followed by level, before assigning spells
+			// so that both stats (Str,Dex,Con) and spells are scaled correctly
 			if (template.ReplaceMobValues && LoadedFromScript == false)
 			{
-				// Select Level randomly
+				// Set the class type as stat autoscaling has conditions pertaining to this
+				ClassType = template.ClassType;
+				
+				#region Stats
+				// Stats must be assigned/defined first for the purposes of AutoSetStats().
+				
+				// Overrides for stats so that not all mobs are broken if NPC template is outdated/incomplete.
+				// Override conditions:
+				//	1) If the NPC template stats are set to <= 1
+				//	2) The mob's stats exceed the NPC template values
+				// If either condition is met, then the NPC template stat values will be ignored.
+				if (template.Strength > 1 && template.Strength > Strength)
+					Strength = template.Strength;
+				if (template.Constitution > 1 && template.Constitution > Constitution)
+					Constitution = template.Constitution;
+				if (template.Dexterity > 1 && template.Dexterity > Dexterity)
+					Dexterity = template.Dexterity;
+				if (template.Quickness > 1 && template.Quickness > Quickness)
+					Quickness = template.Quickness;
+				if (template.Intelligence > 1 && template.Intelligence > Intelligence)
+					Intelligence = template.Intelligence;
+				if (template.Empathy > 1 && template.Empathy > Empathy)
+					Empathy = template.Empathy;
+				if (template.Charisma > 1 && template.Charisma > Charisma)
+					Charisma = template.Charisma;
+				if (template.Piety > 1 && template.Piety > Piety)
+					Piety = template.Piety;
+				#endregion Stats
+				
+				#region Level
+				// Now that the stat sources are determined, apply the level so that autoscaling correctly occurs
+				// Select Level randomly based on ranges in field (e.g., '40-45;47;49')
 				if (!string.IsNullOrEmpty(template.Level))
 				{
-					if (template.Level.Contains(";") || template.Level.Contains('-'))
+					if (template.Level.Contains(';') || template.Level.Contains('-'))
 					{
 						var split = Util.SplitCSV(template.Level, true);
 
@@ -2459,9 +2704,21 @@ namespace DOL.GS
 						Level = chosenLevel;
 					}
 				}
-
+				#endregion Level
+				
+				// Add any magical bonuses to stats
+				BuffBonusCategory4[(int)eStat.STR] += template.Strength;
+				BuffBonusCategory4[(int)eStat.DEX] += template.Dexterity;
+				BuffBonusCategory4[(int)eStat.CON] += template.Constitution;
+				BuffBonusCategory4[(int)eStat.QUI] += template.Quickness;
+				BuffBonusCategory4[(int)eStat.INT] += template.Intelligence;
+				BuffBonusCategory4[(int)eStat.PIE] += template.Piety;
+				BuffBonusCategory4[(int)eStat.EMP] += template.Empathy;
+				BuffBonusCategory4[(int)eStat.CHR] += template.Charisma;
 			}
+			#endregion Preliminary ReplaceMobValues
 
+			// Add all spells and scale based on the mob's level
 			if (template.Spells != null) Spells = template.Spells;
 			if (template.Styles != null) Styles = template.Styles;
 			if (template.Abilities != null)
@@ -2473,11 +2730,13 @@ namespace DOL.GS
 				}
 			}
 			
-			// Replace mob values with everything below this point, as it is already in the mob table
+			#region All Other ReplaceMobValues
+			// Replace mob values with everything below this point,
+			// as these parameters already exist on the mob table.
 			if (!template.ReplaceMobValues || LoadedFromScript)
 				return;
 			
-			ClassType = template.ClassType;
+			var m_templatedInventory = new List<string>();
 			TranslationId = template.TranslationId;
 			Name = template.Name;
 			Suffix = template.Suffix;
@@ -2485,11 +2744,28 @@ namespace DOL.GS
 			ExamineArticle = template.ExamineArticle;
 			MessageArticle = template.MessageArticle;
 			Faction = FactionMgr.GetFactionByID(template.FactionId);
+			MaxDistance = template.MaxDistance;
+			Race = (short)template.Race;
+			BodyType = template.BodyType;
+			MaxSpeedBase = template.MaxSpeed;
+			Flags = (eFlags)template.Flags;
+			MeleeDamageType = template.MeleeDamageType;
+			PackageID = template.PackageID;
+			if (MeleeDamageType == 0)
+			{
+				MeleeDamageType = eDamageType.Slash;
+			}
+			m_ownBrain = new StandardMobBrain
+			{
+				Body = this,
+				AggroLevel = template.AggroLevel,
+				AggroRange = template.AggroRange
+			};
 
 			#region Models, Sizes, Gender
 			
 			// Select Model randomly
-			if (!string.IsNullOrEmpty(template.Model) && (template.Model.Contains(";") || template.Model.Contains('-')))
+			if (!string.IsNullOrEmpty(template.Model) && (template.Model.Contains(';') || template.Model.Contains('-')))
 			{
 				var split = Util.SplitCSV(template.Model, true);
 					
@@ -2511,7 +2787,7 @@ namespace DOL.GS
 			}
 			
 			// Select Size randomly
-			if (!string.IsNullOrEmpty(template.Size) && (template.Size.Contains(";") || template.Size.Contains('-')))
+			if (!string.IsNullOrEmpty(template.Size) && (template.Size.Contains(';') || template.Size.Contains('-')))
 			{
 				var split = Util.SplitCSV(template.Size, true);
 					
@@ -2532,6 +2808,8 @@ namespace DOL.GS
 				Size = chosenSize;
 			}
 			
+			#region Gender
+			
 			// Set default Gender based on Model
 			if (Model != 0 && Model != 1)
 			{
@@ -2540,10 +2818,61 @@ namespace DOL.GS
 				{
 					switch (Model)
 					{
-						case 8 or 9 or 10 or 14 or 16 or 17 or 18 or 20 or 27 or 28 or 32 or 33 or 34 or 39 or 40 or 41 or 42 or 48 or 49 or 50 or 51 or 61 or 62 or 63 or 64 or 73 or 74 or 78 or 79 or 80 or 84 or 85 or 86 or 90 or 91 or 92 or 137 or 138 or 139 or 140 or 141 or 142 or 143 or 144 or 153 or 154 or 155 or 156 or 157 or 158 or 159 or 160 or 169 or 170 or 171 or 172 or 173 or 174 or 175 or 176 or 185 or 186 or 187 or 188 or 189 or 190 or 191 or 192 or 201 or 202 or 203 or 204 or 205 or 212 or 213 or 214 or 215 or 221 or 222 or 223 or 224 or 225 or 231 or 232 or 233 or 234 or 235 or 254 or 255 or 256 or 257 or 262 or 263 or 264 or 265 or 270 or 271 or 272 or 273 or 278 or 279 or 280 or 281 or 286 or 287 or 288 or 289 or 290 or 291 or 292 or 293 or 302 or 303 or 304 or 305 or 306 or 307 or 308 or 309 or 318 or 319 or 320 or 321 or 322 or 323 or 324 or 325 or 334 or 335 or 336 or 337 or 338 or 339 or 340 or 341 or 350 or 351 or 352 or 353 or 354 or 360 or 361 or 362 or 363 or 364 or 370 or 371 or 372 or 373 or 374 or 380 or 381 or 382 or 383 or 384 or 390 or 415 or 416 or 417 or 418 or 419 or 420 or 421 or 422 or 423 or 424 or 471 or 472 or 473 or 474 or 479 or 480 or 481 or 482 or 487 or 488 or 489 or 490 or 495 or 496 or 497 or 488 or 503 or 504 or 505 or 506 or 511 or 512 or 513 or 514 or 515 or 529 or 520 or 521 or 522 or 527 or 528 or 529 or 530 or 535 or 536 or 537 or 538 or 543 or 544 or 545 or 546 or 551 or 552 or 553 or 554 or 559 or 560 or 561 or 562 or 621 or 645 or 652 or 674 or 675 or 676 or 677 or 680 or 683 or 700 or 701 or 702 or 703 or 704 or 705 or 706 or 707 or 716 or 717 or 718 or 719 or 720 or 721 or 722 or 723 or 732 or 733 or 734 or 735 or 736 or 737 or 738 or 739 or 748 or 749 or 750 or 751 or 752 or 753 or 754 or 755 or 773 or 774 or 775 or 776 or 777 or 778 or 779 or 780 or 789 or 790 or 791 or 792 or 793 or 794 or 795 or 796 or 805 or 806 or 807 or 808 or 832 or 833 or 834 or 835 or 840 or 849 or 850 or 851 or 852 or 868 or 867 or 868 or 870 or 872 or 874 or 889 or 918 or 954 or 956 or 958 or 960 or 962 or 964 or 1210 or 1211 or 1265 or 1270 or 1271 or 1272 or 1273 or 1274 or 1741 or 1742 or 1743 or 1744 or 1976 or 1982 or 1984 or 2022 or 2078 or 2080 or 2082 or 2084 or 2086 or 2088 or 2090 or 2092 or 2094 or 2096 or 2098 or 2100 or 2102 or 2104 or 2106 or 2108 or 2110 or 2119 or 2133 or 2186 or 2211 or 2215 or 2310 or 2312 or 2314 or 2316 or 2347 or 2348 or 2349 or 2350 or 2364 or 2370:
+						case 8 or 9 or 10 or 14 or 16 or 17 or 18 or 20 or 27 or 28 or 32 or 33 or 34 or 39 or 40
+							or 41 or 42 or 48 or 49 or 50 or 51 or 61 or 62 or 63 or 64 or 73 or 74 or 78 or 79 or 80
+							or 84 or 85 or 86 or 90 or 91 or 92 or 137 or 138 or 139 or 140 or 141 or 142 or 143 or 144
+							or 153 or 154 or 155 or 156 or 157 or 158 or 159 or 160 or 169 or 170 or 171 or 172 or 173
+							or 174 or 175 or 176 or 185 or 186 or 187 or 188 or 189 or 190 or 191 or 192 or 201 or 202
+							or 203 or 204 or 205 or 212 or 213 or 214 or 215 or 221 or 222 or 223 or 224 or 225 or 231
+							or 232 or 233 or 234 or 235 or 254 or 255 or 256 or 257 or 262 or 263 or 264 or 265 or 270
+							or 271 or 272 or 273 or 278 or 279 or 280 or 281 or 286 or 287 or 288 or 289 or 290 or 291
+							or 292 or 293 or 302 or 303 or 304 or 305 or 306 or 307 or 308 or 309 or 318 or 319 or 320
+							or 321 or 322 or 323 or 324 or 325 or 334 or 335 or 336 or 337 or 338 or 339 or 340 or 341
+							or 350 or 351 or 352 or 353 or 354 or 360 or 361 or 362 or 363 or 364 or 370 or 371 or 372
+							or 373 or 374 or 380 or 381 or 382 or 383 or 384 or 390 or 415 or 416 or 417 or 418 or 419
+							or 420 or 421 or 422 or 423 or 424 or 471 or 472 or 473 or 474 or 479 or 480 or 481 or 482
+							or 487 or 488 or 489 or 490 or 495 or 496 or 497 or 488 or 503 or 504 or 505 or 506 or 511
+							or 512 or 513 or 514 or 515 or 529 or 520 or 521 or 522 or 527 or 528 or 529 or 530 or 535
+							or 536 or 537 or 538 or 543 or 544 or 545 or 546 or 551 or 552 or 553 or 554 or 559 or 560
+							or 561 or 562 or 621 or 645 or 652 or 674 or 675 or 676 or 677 or 680 or 683 or 700 or 701
+							or 702 or 703 or 704 or 705 or 706 or 707 or 716 or 717 or 718 or 719 or 720 or 721 or 722
+							or 723 or 732 or 733 or 734 or 735 or 736 or 737 or 738 or 739 or 748 or 749 or 750 or 751
+							or 752 or 753 or 754 or 755 or 773 or 774 or 775 or 776 or 777 or 778 or 779 or 780 or 789
+							or 790 or 791 or 792 or 793 or 794 or 795 or 796 or 805 or 806 or 807 or 808 or 832 or 833
+							or 834 or 835 or 840 or 849 or 850 or 851 or 852 or 868 or 867 or 868 or 870 or 872 or 874
+							or 889 or 918 or 954 or 956 or 958 or 960 or 962 or 964 or 1210 or 1211 or 1265 or 1270
+							or 1271 or 1272 or 1273 or 1274 or 1741 or 1742 or 1743 or 1744 or 1976 or 1982 or 1984
+							or 2022 or 2078 or 2080 or 2082 or 2084 or 2086 or 2088 or 2090 or 2092 or 2094 or 2096
+							or 2098 or 2100 or 2102 or 2104 or 2106 or 2108 or 2110 or 2119 or 2133 or 2186 or 2211
+							or 2215 or 2310 or 2312 or 2314 or 2316 or 2347 or 2348 or 2349 or 2350 or 2364 or 2370:
 							chosenGender = eGender.Male;
 							break;
-						case 5 or 6 or 7 or 19 or 35 or 36 or 37 or 38 or 43 or 44 or 45 or 46 or 52 or 53 or 54 or 55 or 65 or 66 or 67 or 68 or 75 or 76 or 77 or 81 or 82 or 83 or 87 or 88 or 89 or 145 or 146 or 147 or 148 or 149 or 150 or 151 or 152 or 161 or 162 or 163 or 164 or 165 or 166 or 167 or 168 or 177 or 178 or 179 or 180 or 181 or 182 or 183 or 184 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 200 or 206 or 207 or 208 or 209 or 210 or 211 or 214 or 216 or 217 or 218 or 219 or 220 or 226 or 227 or 228 or 229 or 230 or 236 or 237 or 238 or 239 or 240 or 244 or 258 or 259 or 260 or 261 or 266 or 267 or 268 or 269 or 274 or 275 or 276 or 277 or 282 or 283 or 284 or 285 or 294 or 295 or 296 or 297 or 298 or 299 or 300 or 301 or 310 or 311 or 312 or 313 or 314 or 315 or 316 or 317 or 326 or 327 or 328 or 329 or 330 or 331 or 332 or 333 or 342 or 343 or 344 or 345 or 346 or 347 or 348 or 349 or 355 or 356 or 357 or 358 or 359 or 365 or 366 or 367 or 368 or 369 or 375 or 376 or 377 or 378 or 379 or 385 or 386 or 387 or 388 or 389 or 425 or 426 or 427 or 428 or 429 or 430 or 431 or 432 or 433 or 434 or 435 or 436 or 437 or 438 or 439 or 475 or 476 or 477 or 478 or 483 or 484 or 845 or 486 or 491 or 492 or 493 or 494 or 499 or 500 or 501 or 502 or 507 or 508 or 509 or 510 or 516 or 517 or 518 or 523 or 524 or 525 or 526 or 531 or 532 or 533 or 534 or 539 or 540 or 541 or 542 or 547 or 548 or 549 or 550 or 555 or 556 or 557 or 558 or 563 or 564 or 565 or 566 or 622 or 631 or 638 or 644 or 646 or 681 or 682 or 708 or 709 or 710 or 711 or 712 or 713 or 714 or 715 or 724 or 725 or 726 or 727 or 728 or 729 or 730 or 731 or 740 or 741 or 742 or 743 or 744 or 745 or 746 or 747 or 756 or 757 or 758 or 759 or 760 or 761 or 762 or 763 or 781 or 782 or 783 or 784 or 785 or 786 or 787 or 788 or 797 or 798 or 799 or 800 or 801 or 802 or 803 or 804 or 809 or 810 or 811 or 812 or 836 or 837 or 838 or 839 or 841 or 845 or 853 or 854 or 855 or 856 or 861 or 864 or 865 or 869 or 871 or 873 or 875 or 890 or 945 or 955 or 957 or 959 or 961 or 963 or 965 or 1015 or 1018 or 1020 or 1030 or 1883 or 1983 or 1985 or 2023 or 2079 or 2081 or 2083 or 2085 or 2087 or 2089 or 2091 or 2093 or 2095 or 2097 or 2099 or 2101 or 2103 or 2105 or 2107 or 2109 or 2111 or 2120 or 2169 or 2170 or 2212 or 2216 or 2311 or 2313 or 2315 or 2317 or 2365:
+						case 5 or 6 or 7 or 19 or 35 or 36 or 37 or 38 or 43 or 44 or 45 or 46 or 52 or 53 or 54 or 55
+							or 65 or 66 or 67 or 68 or 75 or 76 or 77 or 81 or 82 or 83 or 87 or 88 or 89 or 145 or 146
+							or 147 or 148 or 149 or 150 or 151 or 152 or 161 or 162 or 163 or 164 or 165 or 166 or 167
+							or 168 or 177 or 178 or 179 or 180 or 181 or 182 or 183 or 184 or 193 or 194 or 195 or 196
+							or 197 or 198 or 199 or 200 or 206 or 207 or 208 or 209 or 210 or 211 or 214 or 216 or 217
+							or 218 or 219 or 220 or 226 or 227 or 228 or 229 or 230 or 236 or 237 or 238 or 239 or 240
+							or 244 or 258 or 259 or 260 or 261 or 266 or 267 or 268 or 269 or 274 or 275 or 276 or 277
+							or 282 or 283 or 284 or 285 or 294 or 295 or 296 or 297 or 298 or 299 or 300 or 301 or 310
+							or 311 or 312 or 313 or 314 or 315 or 316 or 317 or 326 or 327 or 328 or 329 or 330 or 331
+							or 332 or 333 or 342 or 343 or 344 or 345 or 346 or 347 or 348 or 349 or 355 or 356 or 357
+							or 358 or 359 or 365 or 366 or 367 or 368 or 369 or 375 or 376 or 377 or 378 or 379 or 385
+							or 386 or 387 or 388 or 389 or 425 or 426 or 427 or 428 or 429 or 430 or 431 or 432 or 433
+							or 434 or 435 or 436 or 437 or 438 or 439 or 475 or 476 or 477 or 478 or 483 or 484 or 845
+							or 486 or 491 or 492 or 493 or 494 or 499 or 500 or 501 or 502 or 507 or 508 or 509 or 510
+							or 516 or 517 or 518 or 523 or 524 or 525 or 526 or 531 or 532 or 533 or 534 or 539 or 540
+							or 541 or 542 or 547 or 548 or 549 or 550 or 555 or 556 or 557 or 558 or 563 or 564 or 565
+							or 566 or 622 or 631 or 638 or 644 or 646 or 681 or 682 or 708 or 709 or 710 or 711 or 712
+							or 713 or 714 or 715 or 724 or 725 or 726 or 727 or 728 or 729 or 730 or 731 or 740 or 741
+							or 742 or 743 or 744 or 745 or 746 or 747 or 756 or 757 or 758 or 759 or 760 or 761 or 762
+							or 763 or 781 or 782 or 783 or 784 or 785 or 786 or 787 or 788 or 797 or 798 or 799 or 800
+							or 801 or 802 or 803 or 804 or 809 or 810 or 811 or 812 or 836 or 837 or 838 or 839 or 841
+							or 845 or 853 or 854 or 855 or 856 or 861 or 864 or 865 or 869 or 871 or 873 or 875 or 890
+							or 945 or 955 or 957 or 959 or 961 or 963 or 965 or 1015 or 1018 or 1020 or 1030 or 1883
+							or 1983 or 1985 or 2023 or 2079 or 2081 or 2083 or 2085 or 2087 or 2089 or 2091 or 2093
+							or 2095 or 2097 or 2099 or 2101 or 2103 or 2105 or 2107 or 2109 or 2111 or 2120 or 2169
+							or 2170 or 2212 or 2216 or 2311 or 2313 or 2315 or 2317 or 2365:
 							chosenGender = eGender.Female;
 							break;
 						default:
@@ -2554,180 +2883,23 @@ namespace DOL.GS
 				Gender = chosenGender;
 			}
 			
-			#endregion
+			#endregion Gender
 			
-			MaxDistance = template.MaxDistance;
-			Race = (short)template.Race;
-			BodyType = (ushort)template.BodyType;
-			MaxSpeedBase = template.MaxSpeed;
-			Flags = (eFlags)template.Flags;
-			MeleeDamageType = template.MeleeDamageType;
-			PackageID = template.PackageID;
-			if (MeleeDamageType == 0)
-			{
-				MeleeDamageType = eDamageType.Slash;
-			}
+			#endregion Models, Sizes, Gender
 
 			#region Inventory
-			
-			LoadEquipmentTemplateFromDatabase(template.EquipmentTemplateID);
-			if (string.IsNullOrEmpty(template.Inventory))
-				LoadEquipmentTemplateFromDatabase(EquipmentTemplateID);
-			
-			//Ok lets start loading the npc equipment - only if there is a value!
-			if (!string.IsNullOrEmpty(template.EquipmentTemplateID))
+			LoadEquipmentTemplateFromDatabase(template);
+			/*if (!string.IsNullOrEmpty(template.EquipmentTemplateID))
 			{
-				/*bool equipHasItems = false;
-				GameNpcInventoryTemplate equip = template.Inventory;
-				//First let's try to reach the npcequipment table and load that!
-				//We use a ';' split to allow npctemplates to support more than one equipmentIDs
-				var equipIDs = Util.SplitCSV(template.Inventory);
-				if (!template.Inventory.Contains(":"))
-					Inventory = template.Inventory;
-				if (template.Inventory.Contains(";"))
-				{
-					foreach (string str in equipIDs)
-					{
-						m_templatedInventory.Add(str);
-					}
-
-					string equipid = "";
-
-					if (m_templatedInventory.Count > 0)
-					{
-						if (m_templatedInventory.Count == 1)
-							equipid = template.Inventory;
-						else
-							equipid = m_templatedInventory[Util.Random(m_templatedInventory.Count - 1)];
-					}
-					if (equip.LoadFromDatabase(equipid))
-						equipHasItems = true;
-				}
-
-				#region Legacy Equipment Code
-				//Nope, nothing in the npcequipment table, lets do the crappy parsing
-				//This is legacy code
-				if (!equipHasItems && template.Inventory.Contains(":"))
-				{
-					//Temp list to store our models
-					List<int> tempModels = new List<int>();
-
-					//Let's go through all of our ';' seperated slots
-					foreach (string str in equipIDs)
-					{
-						tempModels.Clear();
-						//Split the equipment into slot and model(s)
-						string[] slotXModels = str.Split(':');
-						//It should only be two in length SLOT : MODELS
-						if (slotXModels.Length == 2)
-						{
-							int slot;
-							//Let's try to get our slot
-							if (Int32.TryParse(slotXModels[0], out slot))
-							{
-								//Now lets go through and add all the models to the list
-								string[] models = slotXModels[1].Split('|');
-								foreach (string strModel in models)
-								{
-									//We'll add it to the list if we successfully parse it!
-									int model;
-									if (Int32.TryParse(strModel, out model))
-										tempModels.Add(model);
-								}
-
-								//If we found some models let's randomly pick one and add it the equipment
-								if (tempModels.Count > 0)
-									equipHasItems |= equip.AddNPCEquipment((eInventorySlot)slot, tempModels[Util.Random(tempModels.Count - 1)]);
-							}
-						}
-					}
-				}*/
-
-				//We added some items - let's make it the new inventory
-				/*if (equipHasItems)
-				{
-					this.Inventory = new GameNPCInventory(equip);
-					if (this.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-						this.SwitchWeapon(eActiveWeaponSlot.Distance);
-					else
-                    {
-						InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						InventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-
-						if (twohand != null && onehand != null)
-							//Let's add some random chance
-							SwitchWeapon(Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
-						else if (twohand != null)
-							//Hmm our right hand weapon may have been null
-							SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-						else if (onehand != null)
-							//Hmm twohand was null lets default down here
-							SwitchWeapon(eActiveWeaponSlot.Standard);
-
-					}
-				}
-
-				if (template.VisibleActiveWeaponSlot > 0)
-					VisibleActiveWeaponSlots = template.VisibleActiveWeaponSlot;*/
-			}
-			
-			#endregion
-
-			if (Level > 65)
-			{
-				if (template.Strength != 0 && template.Strength > Strength)
-					Strength = template.Strength;
-				if (template.Constitution != 0 && template.Constitution > Constitution)
-					Constitution = template.Constitution;
-				if (template.Dexterity != 0 && template.Dexterity > Dexterity)
-					Dexterity = template.Dexterity;
-				if (template.Quickness != 0 && template.Quickness > Quickness)
-					Quickness = template.Quickness;
-				if (template.Intelligence != 0 && template.Intelligence > Intelligence)
-					Intelligence = template.Intelligence;
-				if (template.Empathy != 0 && template.Empathy > Empathy)
-					Empathy = template.Empathy;
-				if (template.Charisma != 0 && template.Charisma > Charisma)
-					Charisma = template.Charisma;
-				if (template.Piety != 0 && template.Piety > Piety)
-					Piety = template.Piety;
-			}
-			else
-			{
-				if (template.Strength > Strength && template.Strength < 225)
-					Strength = template.Strength;
-				if (template.Constitution > Constitution && template.Constitution < 225)
-					Constitution = template.Constitution;
-				if (template.Dexterity > Dexterity && template.Dexterity < 225)
-					Dexterity = template.Dexterity;
-				if (template.Quickness > Quickness && template.Quickness < 225)
-					Quickness = template.Quickness;
-				if (template.Intelligence > Intelligence && template.Intelligence < 225)
-					Intelligence = template.Intelligence;
-				if (template.Empathy > Empathy && template.Empathy < 225)
-					Empathy = template.Empathy;
-				if (template.Charisma > Charisma && template.Charisma < 225)
-					Charisma = template.Charisma;
-				if (template.Piety > Piety && template.Piety < 225)
-					Piety = template.Piety;
-			}
-			
-			BuffBonusCategory4[(int)eStat.STR] += template.Strength;
-			BuffBonusCategory4[(int)eStat.DEX] += template.Dexterity;
-			BuffBonusCategory4[(int)eStat.CON] += template.Constitution;
-			BuffBonusCategory4[(int)eStat.QUI] += template.Quickness;
-			BuffBonusCategory4[(int)eStat.INT] += template.Intelligence;
-			BuffBonusCategory4[(int)eStat.PIE] += template.Piety;
-			BuffBonusCategory4[(int)eStat.EMP] += template.Empathy;
-			BuffBonusCategory4[(int)eStat.CHR] += template.Charisma;
-
-			m_ownBrain = new StandardMobBrain
-			{
-				Body = this,
-				AggroLevel = template.AggroLevel,
-				AggroRange = template.AggroRange
-			};
+				LoadEquipmentTemplateFromDatabase(template);
+				//if (string.IsNullOrEmpty(template.Inventory))
+				//	LoadEquipmentTemplateFromDatabase(EquipmentTemplateID);
+			}*/
+			#endregion Inventory
+			#endregion All Other ReplaceMobValues
 		}
+		
+		#endregion LoadTemplate
 
 		/// <summary>
 		/// Switches the active weapon to another one

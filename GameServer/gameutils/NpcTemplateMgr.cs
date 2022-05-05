@@ -194,7 +194,7 @@ namespace DOL.GS
 				}
 				if (entry == null)
 				{
-					log.Error("No NPCTemplate with the ID " + templateId + " exists.");
+					log.Error("No NPCTemplateID " + templateId + " exists.");
 					return null;
 				}
 				return (NpcTemplate)entry;
