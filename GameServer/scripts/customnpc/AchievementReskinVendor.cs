@@ -256,6 +256,176 @@ public class AchievementReskinVendor : GameNPC
 
     }
     
+    public void DisplayArmsOption(GamePlayer player, InventoryItem item)
+    {
+        StringBuilder sb = new StringBuilder();
+        int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
+
+        //add all basic options
+        sb.Append($"Free\n" +
+                  $"[Crafted 1] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 2] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 3] ({freebie} {currencyName})\n");
+
+        if (RR > 1)
+        {
+            sb.Append($"Realm Rank 2+\n" +
+                      $"[Crafted 4] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 5] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 6] ({lowbie} {currencyName})\n");
+        }
+
+        if (RR > 3)
+        {
+            sb.Append("Realm Rank 4+\n" +
+                      "[Oceanus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Stygia Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Volcanus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Aerus Sleeves] (" + toageneric + " " + currencyName + ")\n");
+        }
+
+        if (RR > 4)
+        {
+            sb.Append("Realm Rank 5+\n" +
+                      "[Class Epic Sleeves](" + epic + " " + currencyName + ")\n");
+        }
+
+        if (RR > 5)
+        {
+            sb.Append("Realm Rank 6+\n" +
+                      "[Foppish Sleeves] (" + artifact + " " + currencyName + ")\n" +
+                      "[Arms of the Wind] (" + artifact + " " + currencyName + ")\n");
+        }
+
+        int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
+
+        if (dragon > 4)
+        {
+            sb.Append($"5 Dragon Kills\n" +
+                      $"[Dragonsworn Sleeves] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (dragon > 24)
+        {
+            sb.Append($"25 Dragon Kills\n" +
+                      $"[Dragonslayer Sleeves] (" + dragonCost * 1.5 + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Epic_Boss_Kills) >= 5)
+        {
+            sb.Append("5 Epic Boss Kills\n" +
+                      "[Possessed Realm Sleeves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Mastered_Crafts) >= 2)
+        {
+            sb.Append("2 Crafts Above 1000\n" +
+                      "[Good Realm Sleeves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 100000)
+        {
+            sb.Append("100k Orbs Earned\n" +
+                      "[Good Shar Sleeves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+        
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 250000)
+        {
+            sb.Append("250k Orbs Earned\n" +
+                      "[Good Inconnu Sleeves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        
+        SendReply(player, sb.ToString());
+
+    }
+    
+    public void DisplayPantsOption(GamePlayer player, InventoryItem item)
+    {
+        StringBuilder sb = new StringBuilder();
+        int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
+
+        //add all basic options
+        sb.Append($"Free\n" +
+                  $"[Crafted 1] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 2] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted 3] ({freebie} {currencyName})\n");
+
+        if (RR > 1)
+        {
+            sb.Append($"Realm Rank 2+\n" +
+                      $"[Crafted 4] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 5] ({lowbie} {currencyName})\n" +
+                      $"[Crafted 6] ({lowbie} {currencyName})\n");
+        }
+
+        if (RR > 3)
+        {
+            sb.Append("Realm Rank 4+\n" +
+                      "[Oceanus Pants] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Stygia Pants] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Volcanus Pants] (" + toageneric + " " + currencyName + ")\n" +
+                      "[Aerus Pants] (" + toageneric + " " + currencyName + ")\n");
+        }
+
+        if (RR > 4)
+        {
+            sb.Append("Realm Rank 5+\n" +
+                      "[Class Epic Pants](" + epic + " " + currencyName + ")\n");
+        }
+
+        if (RR > 5)
+        {
+            sb.Append("Realm Rank 6+\n" +
+                      "[Wings Dive] (" + artifact + " " + currencyName + ")\n" +
+                      "[Alvarus' Leggings] (" + artifact + " " + currencyName + ")\n");
+        }
+
+        int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
+
+        if (dragon > 4)
+        {
+            sb.Append($"5 Dragon Kills\n" +
+                      $"[Dragonsworn Pants] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (dragon > 24)
+        {
+            sb.Append($"25 Dragon Kills\n" +
+                      $"[Dragonslayer Pants] (" + dragonCost * 1.5 + " " + currencyName + ") | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Epic_Boss_Kills) >= 5)
+        {
+            sb.Append("5 Epic Boss Kills\n" +
+                      "[Possessed Realm Pants](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Mastered_Crafts) >= 2)
+        {
+            sb.Append("2 Crafts Above 1000\n" +
+                      "[Good Realm Pants](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 100000)
+        {
+            sb.Append("100k Orbs Earned\n" +
+                      "[Good Shar Pants](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+        
+        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 250000)
+        {
+            sb.Append("250k Orbs Earned\n" +
+                      "[Good Inconnu Pants](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
+        }
+
+        sb.Append("I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        
+        SendReply(player, sb.ToString());
+
+    }
+    
     public void DisplayGloveOption(GamePlayer player, InventoryItem item)
     {
         StringBuilder sb = new StringBuilder();
@@ -301,7 +471,7 @@ public class AchievementReskinVendor : GameNPC
 
         if (dragon > 0)
         {
-            sb.Append($"11 Dragon Kills\n" +
+            sb.Append($"1 Dragon Kill\n" +
                       $"[Dragonsworn Gloves] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
         }
 
@@ -340,6 +510,8 @@ public class AchievementReskinVendor : GameNPC
         SendReply(player, sb.ToString());
 
     }
+    
+    
 
     public bool SetModel(GamePlayer player, int number, int price)
     {
