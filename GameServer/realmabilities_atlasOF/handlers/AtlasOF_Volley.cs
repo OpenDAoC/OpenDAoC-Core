@@ -44,7 +44,6 @@ namespace DOL.GS.RealmAbilities
                 m_player.Out.SendMessage("You need to be equipped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-
             if (rgn == null || rgn.GetZone(m_player.GroundTarget.X, m_player.GroundTarget.Y) == null)
             {
                 m_player.Out.SendMessage("You need a ground target for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);     
@@ -65,7 +64,6 @@ namespace DOL.GS.RealmAbilities
             {
                return;
             }
-
             TrueshotEffect trueShot = (TrueshotEffect)m_player.EffectList.GetOfType(typeof(TrueshotEffect));
             if (trueShot != null)
             {
@@ -88,26 +86,16 @@ namespace DOL.GS.RealmAbilities
                 m_player.Out.SendMessage("You can't use Volley while Longshot is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-
             new AtlasOF_VolleyECSEffect(new ECSGameEffectInitParams(m_player, 0, 1));
-            DisableSkill(living);
+            //DisableSkill(living);
 		}
-        public override IList<string> DelveInfo
-        {
-            get
-            {
-                var delveInfoList = new List<string>();
-                delveInfoList.Add("Ground-targetted archery attack that fires successive arrows at a various targets in a given area. To use this ability, choose a ground target. This target must be at least 66% of your bow's normal max range away from you.\n Once you are ready to fire, you can fire up to 5 arrows by hitting your bow button in succession.");
-                delveInfoList.Add("Casting time: instant");
-
-                return delveInfoList;
-            }
-        }
-
         public override void AddEffectsInfo(IList<string> list)
         {
-            list.Add("Ground-targetted archery attack that fires successive arrows at a various targets in a given area. To use this ability, choose a ground target. This target must be at least 66% of your bow's normal max range away from you.\n Once you are ready to fire, you can fire up to 5 arrows by hitting your bow button in succession.");
-            list.Add("Casting time: instant");
+            list.Add("Ground-targetted archery attack that fires successive arrows at a various targets in a given area. To use this ability, choose a ground target. This target must be at least 66% of your bow's normal max range away from you.");
+            list.Add("Once you are ready to fire, you can fire up to 5 arrows by hitting your bow button in succession.");
+            list.Add("\nCasting time: 2.2 seconds");
+            list.Add("Target: Ground");
+            list.Add("Range: Minimum 66% of player range.");
         }
         public AtlasOF_Volley(DBAbility ability, int level) : base(ability, level)
         {
