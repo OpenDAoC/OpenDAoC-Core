@@ -24,12 +24,12 @@ public class AchievementReskinVendor : GameNPC
     private int freebie = 0;
     private int lowbie = 1000;
     private int festive = 2000;
-    private int toageneric = 5000;
+    private int toageneric = 7500;
     private int armorpads = 2500;
-    private int artifact = 10000;
+    private int artifact = 15000;
     private int epic = 10000;
     private int dragonCost = 10000;
-    private int champion = 20000;
+    private int champion = 35000;
     private int cloakcheap = 10000;
     private int cloakmedium = 18000;
     private int cloakexpensive = 35000;
