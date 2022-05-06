@@ -559,7 +559,7 @@ public class AchievementReskinVendor : GameNPC
         if (RR > 4)
         {
             sb.Append("Realm Rank 5+\n" +
-                      "[Class Epic Gloves](" + epic + " " + currencyName + ")\n");
+                      "[Class Epic Boots](" + epic + " " + currencyName + ")\n");
         }
 
         if (RR > 5)
@@ -5847,6 +5847,147 @@ public class AchievementReskinVendor : GameNPC
                 }
 
                 break;
+            case "class epic pants":
+                if (item.Item_Type != Slot.ARMS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
+
+                price = epic;
+                switch ((eCharacterClass) player.CharacterClass.ID)
+                {
+                    //alb
+                    case eCharacterClass.Armsman:
+                        modelIDToAssign = 689;
+                        break;
+                    case eCharacterClass.Cabalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Cleric:
+                        modelIDToAssign = 714;
+                        break;
+                    case eCharacterClass.Friar:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Infiltrator:
+                        modelIDToAssign = 793;
+                        break;
+                    case eCharacterClass.Mercenary:
+                        modelIDToAssign = 719;
+                        break;
+                    case eCharacterClass.Minstrel:
+                        modelIDToAssign = 724;
+                        break;
+                    case eCharacterClass.Necromancer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Paladin:
+                        modelIDToAssign = 694;
+                        break;
+                    case eCharacterClass.Reaver:
+                        modelIDToAssign = 1268;
+                        break;
+                    case eCharacterClass.Scout:
+                        modelIDToAssign = 729;
+                        break;
+                    case eCharacterClass.Sorcerer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Theurgist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Wizard:
+                        modelIDToAssign = 0;
+                        break;
+
+                    //mid
+                    case eCharacterClass.Berserker:
+                        modelIDToAssign = 752;
+                        break;
+                    case eCharacterClass.Bonedancer:
+                        modelIDToAssign = 1188;
+                        break;
+                    case eCharacterClass.Healer:
+                        modelIDToAssign = 699;
+                        break;
+                    case eCharacterClass.Hunter:
+                        modelIDToAssign = 757;
+                        break;
+                    case eCharacterClass.Runemaster:
+                        modelIDToAssign = 704;
+                        break;
+                    case eCharacterClass.Savage:
+                        modelIDToAssign = 1193;
+                        break;
+                    case eCharacterClass.Shadowblade:
+                        modelIDToAssign = 762;
+                        break;
+                    case eCharacterClass.Shaman:
+                        modelIDToAssign = 767;
+                        break;
+                    case eCharacterClass.Skald:
+                        modelIDToAssign = 772;
+                        break;
+                    case eCharacterClass.Spiritmaster:
+                        modelIDToAssign = 800;
+                        break;
+                    case eCharacterClass.Thane:
+                        modelIDToAssign = 3371;
+                        break;
+                    case eCharacterClass.Warrior:
+                        modelIDToAssign = 777;
+                        break;
+
+                    //hib
+                    case eCharacterClass.Animist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Bard:
+                        modelIDToAssign = 735;
+                        break;
+                    case eCharacterClass.Blademaster:
+                        modelIDToAssign = 783;
+                        break;
+                    case eCharacterClass.Champion:
+                        modelIDToAssign = 811;
+                        break;
+                    case eCharacterClass.Druid:
+                        modelIDToAssign = 740;
+                        break;
+                    case eCharacterClass.Eldritch:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Enchanter:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Hero:
+                        modelIDToAssign = 709;
+                        break;
+                    case eCharacterClass.Mentalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Nightshade:
+                        modelIDToAssign = 747;
+                        break;
+                    case eCharacterClass.Ranger:
+                        modelIDToAssign = 816;
+                        break;
+                    case eCharacterClass.Valewalker:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Warden:
+                        modelIDToAssign = 807;
+                        break;
+                }
+
+                break;
 
             #endregion
 
@@ -6455,6 +6596,147 @@ public class AchievementReskinVendor : GameNPC
                 }
 
                 break;
+            case "class epic boots":
+                if (item.Item_Type != Slot.ARMS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
+
+                price = epic;
+                switch ((eCharacterClass) player.CharacterClass.ID)
+                {
+                    //alb
+                    case eCharacterClass.Armsman:
+                        modelIDToAssign = 692;
+                        break;
+                    case eCharacterClass.Cabalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Cleric:
+                        modelIDToAssign = 717;
+                        break;
+                    case eCharacterClass.Friar:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Infiltrator:
+                        modelIDToAssign = 796;
+                        break;
+                    case eCharacterClass.Mercenary:
+                        modelIDToAssign = 722;
+                        break;
+                    case eCharacterClass.Minstrel:
+                        modelIDToAssign = 727;
+                        break;
+                    case eCharacterClass.Necromancer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Paladin:
+                        modelIDToAssign = 697;
+                        break;
+                    case eCharacterClass.Reaver:
+                        modelIDToAssign = 1270;
+                        break;
+                    case eCharacterClass.Scout:
+                        modelIDToAssign = 731;
+                        break;
+                    case eCharacterClass.Sorcerer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Theurgist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Wizard:
+                        modelIDToAssign = 0;
+                        break;
+
+                    //mid
+                    case eCharacterClass.Berserker:
+                        modelIDToAssign = 755;
+                        break;
+                    case eCharacterClass.Bonedancer:
+                        modelIDToAssign = 1190;
+                        break;
+                    case eCharacterClass.Healer:
+                        modelIDToAssign = 702;
+                        break;
+                    case eCharacterClass.Hunter:
+                        modelIDToAssign = 760;
+                        break;
+                    case eCharacterClass.Runemaster:
+                        modelIDToAssign = 707;
+                        break;
+                    case eCharacterClass.Savage:
+                        modelIDToAssign = 1196;
+                        break;
+                    case eCharacterClass.Shadowblade:
+                        modelIDToAssign = 765;
+                        break;
+                    case eCharacterClass.Shaman:
+                        modelIDToAssign = 770;
+                        break;
+                    case eCharacterClass.Skald:
+                        modelIDToAssign = 775;
+                        break;
+                    case eCharacterClass.Spiritmaster:
+                        modelIDToAssign = 803;
+                        break;
+                    case eCharacterClass.Thane:
+                        modelIDToAssign = 3374;
+                        break;
+                    case eCharacterClass.Warrior:
+                        modelIDToAssign = 780;
+                        break;
+
+                    //hib
+                    case eCharacterClass.Animist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Bard:
+                        modelIDToAssign = 738;
+                        break;
+                    case eCharacterClass.Blademaster:
+                        modelIDToAssign = 786;
+                        break;
+                    case eCharacterClass.Champion:
+                        modelIDToAssign = 814;
+                        break;
+                    case eCharacterClass.Druid:
+                        modelIDToAssign = 743;
+                        break;
+                    case eCharacterClass.Eldritch:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Enchanter:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Hero:
+                        modelIDToAssign = 712;
+                        break;
+                    case eCharacterClass.Mentalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Nightshade:
+                        modelIDToAssign = 750;
+                        break;
+                    case eCharacterClass.Ranger:
+                        modelIDToAssign = 819;
+                        break;
+                    case eCharacterClass.Valewalker:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Warden:
+                        modelIDToAssign = 809;
+                        break;
+                }
+
+                break;
 
             #endregion
 
@@ -7059,6 +7341,147 @@ public class AchievementReskinVendor : GameNPC
                         break;
                     case eObjectType.Plate:
                         modelIDToAssign = 1690;
+                        break;
+                }
+
+                break;
+            case "class epic gloves":
+                if (item.Item_Type != Slot.ARMS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
+
+                price = epic;
+                switch ((eCharacterClass) player.CharacterClass.ID)
+                {
+                    //alb
+                    case eCharacterClass.Armsman:
+                        modelIDToAssign = 691;
+                        break;
+                    case eCharacterClass.Cabalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Cleric:
+                        modelIDToAssign = 716;
+                        break;
+                    case eCharacterClass.Friar:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Infiltrator:
+                        modelIDToAssign = 795;
+                        break;
+                    case eCharacterClass.Mercenary:
+                        modelIDToAssign = 721;
+                        break;
+                    case eCharacterClass.Minstrel:
+                        modelIDToAssign = 726;
+                        break;
+                    case eCharacterClass.Necromancer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Paladin:
+                        modelIDToAssign = 696;
+                        break;
+                    case eCharacterClass.Reaver:
+                        modelIDToAssign = 1271;
+                        break;
+                    case eCharacterClass.Scout:
+                        modelIDToAssign = 732;
+                        break;
+                    case eCharacterClass.Sorcerer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Theurgist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Wizard:
+                        modelIDToAssign = 0;
+                        break;
+
+                    //mid
+                    case eCharacterClass.Berserker:
+                        modelIDToAssign = 754;
+                        break;
+                    case eCharacterClass.Bonedancer:
+                        modelIDToAssign = 1191;
+                        break;
+                    case eCharacterClass.Healer:
+                        modelIDToAssign = 701;
+                        break;
+                    case eCharacterClass.Hunter:
+                        modelIDToAssign = 759;
+                        break;
+                    case eCharacterClass.Runemaster:
+                        modelIDToAssign = 706;
+                        break;
+                    case eCharacterClass.Savage:
+                        modelIDToAssign = 1195;
+                        break;
+                    case eCharacterClass.Shadowblade:
+                        modelIDToAssign = 764;
+                        break;
+                    case eCharacterClass.Shaman:
+                        modelIDToAssign = 768;
+                        break;
+                    case eCharacterClass.Skald:
+                        modelIDToAssign = 774;
+                        break;
+                    case eCharacterClass.Spiritmaster:
+                        modelIDToAssign = 802;
+                        break;
+                    case eCharacterClass.Thane:
+                        modelIDToAssign = 3373;
+                        break;
+                    case eCharacterClass.Warrior:
+                        modelIDToAssign = 779;
+                        break;
+
+                    //hib
+                    case eCharacterClass.Animist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Bard:
+                        modelIDToAssign = 737;
+                        break;
+                    case eCharacterClass.Blademaster:
+                        modelIDToAssign = 785;
+                        break;
+                    case eCharacterClass.Champion:
+                        modelIDToAssign = 813;
+                        break;
+                    case eCharacterClass.Druid:
+                        modelIDToAssign = 742;
+                        break;
+                    case eCharacterClass.Eldritch:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Enchanter:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Hero:
+                        modelIDToAssign = 711;
+                        break;
+                    case eCharacterClass.Mentalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Nightshade:
+                        modelIDToAssign = 749;
+                        break;
+                    case eCharacterClass.Ranger:
+                        modelIDToAssign = 818;
+                        break;
+                    case eCharacterClass.Valewalker:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Warden:
+                        modelIDToAssign = 808;
                         break;
                 }
 
