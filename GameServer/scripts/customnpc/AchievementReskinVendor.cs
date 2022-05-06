@@ -9900,6 +9900,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1663;
@@ -9910,7 +9915,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
-
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 price = artifact;
                 modelIDToAssign = 1664;
                 break;
@@ -9918,6 +9928,11 @@ public class AchievementReskinVendor : GameNPC
                 if (item.Object_Type != (int) eObjectType.Shield)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -9928,6 +9943,11 @@ public class AchievementReskinVendor : GameNPC
                 if (item.Object_Type != (int) eObjectType.Shield)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -9946,11 +9966,15 @@ public class AchievementReskinVendor : GameNPC
                 }
 
                 break;
-
             case "aerus shield":
                 if (item.Object_Type != (int) eObjectType.Shield)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -9969,11 +9993,15 @@ public class AchievementReskinVendor : GameNPC
                 }
 
                 break;
-
             case "magma shield":
                 if (item.Object_Type != (int) eObjectType.Shield)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -9992,11 +10020,15 @@ public class AchievementReskinVendor : GameNPC
                 }
 
                 break;
-
             case "minotaur shield":
                 if (item.Object_Type != (int) eObjectType.Shield)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -10014,6 +10046,11 @@ public class AchievementReskinVendor : GameNPC
                 if (item.Object_Type != (int) eObjectType.Instrument)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -10038,6 +10075,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 10)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = toageneric;
                 modelIDToAssign = 3688;
@@ -10049,6 +10091,11 @@ public class AchievementReskinVendor : GameNPC
                    )
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -10081,6 +10128,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1666;
@@ -10095,6 +10147,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1667;
@@ -10107,6 +10165,11 @@ public class AchievementReskinVendor : GameNPC
                    )
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 10)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
