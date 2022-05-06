@@ -10605,6 +10605,11 @@ public class AchievementReskinVendor : GameNPC
             #region Armor Pads
 
             case "armor pad":
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 SendReply(player, "I can offer the following pad types: \n\n" +
                                   "[Type 1] \n" +
                                   "[Type 2] \n" +
@@ -10615,22 +10620,47 @@ public class AchievementReskinVendor : GameNPC
                 return true;
 
             case "type 1":
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 price = armorpads;
                 modelIDToAssign = 1;
                 break;
             case "type 2":
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 price = armorpads;
                 modelIDToAssign = 2;
                 break;
             case "type 3":
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 price = armorpads;
                 modelIDToAssign = 3;
                 break;
             case "type 4":
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 price = armorpads;
                 modelIDToAssign = 4;
                 break;
             case "type 5":
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
                 price = armorpads;
                 modelIDToAssign = 5;
                 break;
