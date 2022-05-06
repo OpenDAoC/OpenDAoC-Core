@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System.Linq;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -69,7 +71,19 @@ namespace DOL.GS.Commands
 			}
 			else
 			{ // Inviting by name
-				GameClient targetClient = WorldMgr.GetClientByPlayerNameAndRealm(targetName, 0, true);
+				var matchingClients = WorldMgr.GetClientByPlayerNameAndRealm(targetName, 0, true);
+				GameClient targetClient = null;
+
+				if (matchingClients != null)
+				{
+					if (matchingClients.Count == 1) targetClient = matchingClients.First();
+					else
+					{
+						client.Out.SendMessage("More than one online player matches that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+				}
+
 				if (targetClient == null)
 					target = null;
 				else

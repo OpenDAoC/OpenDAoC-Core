@@ -49,11 +49,24 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 85; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 85; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 85; // dmg reduction for melee dmg
-                default: return 85; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 200000; }
         }
 
         public override bool AddToWorld()
@@ -79,7 +92,7 @@ namespace DOL.GS.Scripts
 
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
-
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
@@ -88,18 +101,11 @@ namespace DOL.GS.Scripts
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
-        }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -107,18 +113,6 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 900;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.65;
-        }
-
         public override void Die(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(5000))
@@ -148,7 +142,6 @@ namespace DOL.GS.Scripts
                 ReportNews(killer);
             }
         }
-
         private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
         {
             AreaEventArgs aargs = args as AreaEventArgs;
@@ -156,8 +149,6 @@ namespace DOL.GS.Scripts
 
             if (player == null)
                 return;
-
-            Console.Write(player?.Name + " entered Legion's Lair");
 
             var mobsInArea = player.GetNPCsInRadius(2500);
 
@@ -167,11 +158,9 @@ namespace DOL.GS.Scripts
             foreach (GameNPC mob in mobsInArea)
             {
                 if (mob is not Legion || !mob.InCombat) continue;
-                Console.WriteLine("Legion is alive and in combat");
 
                 if (Util.Chance(33))
                 {
-                    Console.WriteLine("Whops, we got a hit!");
                     foreach (GamePlayer nearbyPlayer in mob.GetPlayersInRadius(2500))
                     {
                         nearbyPlayer.Out.SendMessage("Legion doesn't like enemies in his lair", eChatType.CT_Broadcast,
@@ -195,7 +184,6 @@ namespace DOL.GS.Scripts
                 player.BroadcastUpdate();
             }
         }
-
         private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
@@ -221,40 +209,32 @@ namespace DOL.GS.Scripts
                 playerNearby.BroadcastUpdate();
             }
         }
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer)
+            //possible AttackRange
+            int distance = 400;
+            
+            if (source is GamePlayer || source is GamePet)
             {
-                if (Util.Chance(3))
+                if (!source.IsWithinRadius(this, distance)) //take no damage from source that is not in radius 400
                 {
-                    var spawnAmount = Util.Random(15, 20);
-                    SpawnAdds((GamePlayer) source, spawnAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is not attackable from this range and is immune to your damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                }
+                else //take dmg
+                {
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
             }
-
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
-
-        private void SpawnAdds(GamePlayer target, int amount = 1)
-        {
-            for (int i = 0; i < amount; i++)
-            {
-                var distanceDelta = Util.Random(0, 300);
-                var level = Util.Random(52, 58);
-
-                LegionAdd add = new LegionAdd();
-                add.X = target.X + distanceDelta;
-                add.Y = target.Y + distanceDelta;
-                add.Z = target.Z;
-                add.CurrentRegionID = target.CurrentRegionID;
-                add.IsWorthReward = false;
-                add.Level = (byte) level;
-                add.AddToWorld();
-                add.StartAttack(target);
-            }
-        }
-
         private void ReportNews(GameObject killer)
         {
             int numPlayers = AwardLegionKillPoint();
@@ -270,17 +250,16 @@ namespace DOL.GS.Scripts
                 }
             }
         }
-
         private int AwardLegionKillPoint()
         {
             int count = 0;
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsLegion++;
+                player.Achieve(AchievementUtils.AchievementNames.Legion_Kills);
                 player.RaiseRealmLoyaltyFloor(1);
                 count++;
             }
-
             return count;
         }
     }
@@ -291,7 +270,7 @@ namespace DOL.AI.Brain
     public class LegionBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+        private bool IsCreatingSouls = false;
         public LegionBrain()
             : base()
         {
@@ -312,8 +291,56 @@ namespace DOL.AI.Brain
                     }
                 }
             }
+            if (HasAggro)
+            {
+                if(IsCreatingSouls==false)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(25000, 30000));//every 25-30s it will spawn tortured souls
+                    IsCreatingSouls = true;
+                }
+            }
 
             base.Think();
+        }
+        
+        public int DoSpawn(ECSGameTimer timer)
+        {
+
+            if (Body.InCombat && Body.IsAlive && HasAggro)
+            {
+                foreach (GamePlayer playerNearby in Body.GetPlayersInRadius(2000))
+                {
+                    var spawnAmount = Util.Random(15, 20);
+                    SpawnAdds(playerNearby, spawnAmount);
+                }
+            }
+            IsCreatingSouls = false;
+            return 0;
+        }
+        
+        private void SpawnAdds(GamePlayer target, int amount = 1)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                //var distanceDelta = Util.Random(0, 300);
+                var level = Util.Random(52, 58);
+
+                LegionAdd add = new LegionAdd();
+                /*
+                 add.X = target.X + distanceDelta;
+                add.Y = target.Y + distanceDelta;
+                add.Z = target.Z;
+                add.CurrentRegionID = target.CurrentRegionID;
+                */
+                add.X = 45092;
+                add.Y = 51689;
+                add.Z = 15468;
+                add.CurrentRegionID = 249;
+                add.IsWorthReward = false;
+                add.Level = (byte) level;
+                add.AddToWorld();
+                add.StartAttack(target);
+            }
         }
     }
 }
@@ -329,12 +356,10 @@ namespace DOL.GS
             : base()
         {
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
             get { return 1500; }
@@ -397,7 +422,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 800;
+            AggroRange = 1500;
         }
     }
 }

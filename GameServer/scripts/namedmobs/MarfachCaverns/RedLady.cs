@@ -22,7 +22,7 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (this.IsOutOfTetherRange)
+                if (IsOutOfTetherRange)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -48,15 +48,6 @@ namespace DOL.GS
                 }
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -64,16 +55,28 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override int MaxHealth => 20000;
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70;
-                case eDamageType.Crush: return 70;
-                case eDamageType.Thrust: return 70;
-                default: return 99;
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
         }
         public override bool AddToWorld()
         {
@@ -110,12 +113,11 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
         public override void Die(GameObject killer)
         {
             base.Die(killer);
 
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc.Brain is SpecialInnocentBrain)
                 {
@@ -235,7 +237,6 @@ namespace DOL.AI.Brain
                     m_RedLady_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RedLady_DD);
                 }
-
                 return m_RedLady_DD;
             }
         }
@@ -257,7 +258,7 @@ namespace DOL.GS
             {
                 if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
                 {
-                    this.CastSpell(Innocent_Disease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    CastSpell(Innocent_Disease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
             base.OnAttackEnemy(ad);
@@ -292,13 +293,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
-
+        public override long ExperienceValue => 0;
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public override int GetResist(eDamageType damageType)
         {
@@ -341,7 +342,6 @@ namespace DOL.GS
                     m_Innocent_Disease = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Innocent_Disease);
                 }
-
                 return m_Innocent_Disease;
             }
         }
@@ -357,10 +357,8 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 700;
         }
-
         public override void Think()
         {
-
             base.Think();
         }
     }

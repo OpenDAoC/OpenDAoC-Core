@@ -4006,7 +4006,7 @@ namespace DOL.AI.Brain
         #region Set Baf Mob stats
         public void SetMobstats()
         {
-            if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.AttackState == true)) //if in combat
+            if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)) //if in combat
             {
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {

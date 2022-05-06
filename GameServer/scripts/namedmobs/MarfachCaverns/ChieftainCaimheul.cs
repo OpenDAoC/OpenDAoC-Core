@@ -47,18 +47,30 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 65; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
-
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (this.IsOutOfTetherRange)
+                if (IsOutOfTetherRange)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
                         damageType == eDamageType.Energy || damageType == eDamageType.Heat
@@ -95,23 +107,10 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
-        }
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800;
-        }
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-        public override int MaxHealth
-        {
-            get { return 18000; }
         }
         public override bool AddToWorld()
         {
@@ -142,30 +141,19 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 475, 0, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
-            if (!this.Styles.Contains(Taunt))
-            {
+            if (!Styles.Contains(Taunt))
                 Styles.Add(Taunt);
-            }
-            if (!this.Styles.Contains(taunt2h))
-            {
+            if (!Styles.Contains(taunt2h))
                 Styles.Add(taunt2h);
-            }
-            if (!this.Styles.Contains(SideStyle))
-            {
+            if (!Styles.Contains(SideStyle))
                 Styles.Add(SideStyle);
-            }
-            if (!this.Styles.Contains(SideFollowUp))
-            {
+            if (!Styles.Contains(SideFollowUp))
                 Styles.Add(SideFollowUp);
-            }
-            if (!this.Styles.Contains(slam))
-            {
+            if (!Styles.Contains(slam))
                 Styles.Add(slam);
-            }
-            if (!this.Styles.Contains(AfterParry))
-            {
+            if (!Styles.Contains(AfterParry))
                 Styles.Add(AfterParry);
-            }
+
             ChieftainCaimheulBrain.Phase2 = false;
             ChieftainCaimheulBrain.CanWalk = false;
             ChieftainCaimheulBrain.IsPulled = false;
@@ -240,23 +228,18 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8821);
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Phase2 = false;
                 CanWalk = false;
                 IsPulled = false;
-                Body.Empathy = npcTemplate.Empathy;
-                Body.Quickness = npcTemplate.Quickness;
+                Body.Strength = npcTemplate.Strength;
                 Body.SwitchWeapon(eActiveWeaponSlot.Standard);
                 Body.MeleeDamageType = eDamageType.Slash;
                 Body.VisibleActiveWeaponSlots = 16;
                 if (!Body.Styles.Contains(ChieftainCaimheul.Taunt))
-                {
                     Body.Styles.Add(ChieftainCaimheul.Taunt);
-                }
                 if (!Body.Styles.Contains(ChieftainCaimheul.slam))
-                {
                     Body.Styles.Add(ChieftainCaimheul.slam); 
-                }
             }
             if (Body.InCombat && HasAggro)
             {
@@ -287,8 +270,7 @@ namespace DOL.AI.Brain
                     {
                         if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
                         {
-                            Body.Empathy = npcTemplate.Empathy;
-                            Body.Quickness = npcTemplate.Quickness;
+                            Body.Strength = npcTemplate.Strength;
                             Body.SwitchWeapon(eActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.styleComponent.NextCombatStyle = ChieftainCaimheul.slam;//check if target has stun or immunity if not slam
@@ -306,8 +288,7 @@ namespace DOL.AI.Brain
                         }
                         if ((angle >= 45 && angle < 150) || (angle >= 210 && angle < 315))//side
                         {
-                            Body.Empathy = (short)(npcTemplate.Empathy + 80);
-                            Body.Quickness = (short)(npcTemplate.Quickness - 20);
+                            Body.Strength = 400;
                             Body.BlockChance = 0;
                             Body.ParryChance = 50;
                             Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
@@ -318,8 +299,7 @@ namespace DOL.AI.Brain
                         }
                         else if(!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
                         {
-                            Body.Empathy = npcTemplate.Empathy;
-                            Body.Quickness = npcTemplate.Quickness;
+                            Body.Strength = npcTemplate.Strength;
                             Body.SwitchWeapon(eActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.styleComponent.NextCombatStyle = ChieftainCaimheul.Taunt;
@@ -334,14 +314,15 @@ namespace DOL.AI.Brain
                     }
                     if(Phase2)
                     {
-                        Body.Empathy = (short)(npcTemplate.Empathy + 80);
-                        Body.Quickness = (short)(npcTemplate.Quickness - 20);
+                        Body.Strength = 400;
                         Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
                         Body.VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.TwoHanded;
                         Body.BlockChance = 0;
                         Body.ParryChance = 50;
-                        Body.Styles.Remove(ChieftainCaimheul.slam);
-                        Body.Styles.Remove(ChieftainCaimheul.Taunt);
+                        if(Body.Styles.Contains(ChieftainCaimheul.slam))
+                            Body.Styles.Remove(ChieftainCaimheul.slam);
+                        if(Body.Styles.Contains(ChieftainCaimheul.Taunt))
+                            Body.Styles.Remove(ChieftainCaimheul.Taunt);
                         Body.MeleeDamageType = eDamageType.Thrust;
 
                         if (living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))

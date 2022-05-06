@@ -35,7 +35,7 @@ namespace DOL.GS
 					case eDamageType.Slash: return 40;// dmg reduction for melee dmg
 					case eDamageType.Crush: return 40;// dmg reduction for melee dmg
 					case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-					default: return 50;// dmg reduction for rest resists
+					default: return 70;// dmg reduction for rest resists
 				}
 			}
 		}
@@ -57,16 +57,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 600;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 30000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -75,7 +75,7 @@ namespace DOL.GS
 			Name = "Fuladl";
 			Size = 150;
 
-			Strength = 700;
+			Strength = 280;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;
@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////Fuladl adds////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class FuladlAdd : GameEpicNPC
+	public class FuladlAdd : GameNPC
 	{
 		public FuladlAdd() : base() { }
 
@@ -187,16 +187,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 400;
+			return 300;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.25;
+			return 0.15;
 		}
 		public override int MaxHealth
 		{
-			get { return 5000; }
+			get { return 3000; }
 		}
 		public static int PartsCount = 0;
         public override void Die(GameObject killer)
@@ -205,7 +205,7 @@ namespace DOL.GS
             base.Die(killer);
         }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
-        public override short Strength { get => base.Strength; set => base.Strength = 120; }		
+        public override short Strength { get => base.Strength; set => base.Strength = 150; }		
         public override bool AddToWorld()
 		{
 			Model = 930;

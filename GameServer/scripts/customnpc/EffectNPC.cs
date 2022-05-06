@@ -92,6 +92,7 @@ namespace DOL.GS {
             GamePlayer player = source as GamePlayer;
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
 
+            if (item == null) return false;
 
             switch (str)
             {

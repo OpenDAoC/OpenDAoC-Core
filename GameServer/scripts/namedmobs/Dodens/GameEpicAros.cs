@@ -1,7 +1,6 @@
 /*
 <author>Kelt</author>
  */
-
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -10,10 +9,9 @@ using DOL.GS.PacketHandler;
 using System;
 using System.Reflection;
 
-
 namespace DOL.GS.Scripts
 {
-    public abstract class GameEpicAros : GameNPC
+    public abstract class GameEpicAros : GameEpicBoss
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -26,7 +24,6 @@ namespace DOL.GS.Scripts
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-
         /// <summary>
         /// Announcements for Bomb, BigBomb, Debuff and Death.
         /// </summary>
@@ -68,41 +65,24 @@ namespace DOL.GS.Scripts
             TetherRange = 3500;
             SetOwnBrain(new ArosBrain());
         }
-
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800 * ArosDifficulty / 100;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55 * ArosDifficulty / 100;
+            return 0.20;
         }
-
-        public override short MaxSpeedBase
-        {
-            get { return (short) (191 + (Level * 2)); }
-            set { m_maxSpeedBase = value; }
-        }
-
         public override int MaxHealth
         {
-            get { return 20000 * ArosDifficulty / 100; }
+            get { return 40000; }
         }
-
-        public override short Strength
-        {
-            get { return (short) (base.Strength * ArosDifficulty / 100); }
-        }
-
         public override int AttackRange
         {
-            get { return 180; }
+            get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsReturningHome && keyName == GS.Abilities.CCImmunity)
@@ -110,22 +90,10 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-
-        public double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * 2.0 * ArosDifficulty / 100;
+            return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int RespawnInterval
-        {
-            get
-            {
-                //25min Respawn
-                int result = (25 * 600) * 100;
-                return result;
-            }
-        }
-
         /// <summary>
         /// Invoked when Aros the Spiritmaster dies.
         /// </summary>
@@ -139,12 +107,10 @@ namespace DOL.GS.Scripts
             base.StopCurrentSpellcast();
             base.Die(killer);
 
-
             foreach (String message in m_DeathAnnounce)
             {
                 BroadcastMessage(String.Format(message, Name));
             }
-
             foreach (GameNPC npc in this.GetNPCsInRadius(4000))
             {
                 if (npc.Name.Contains("Guardian of Aros"))
@@ -193,7 +159,6 @@ namespace DOL.GS.Scripts
 
         #endregion
 
-
         /// <summary>
         /// Return to spawn point, Aros the Spiritmaster can't be attacked while it's
         /// on it's way.
@@ -203,7 +168,6 @@ namespace DOL.GS.Scripts
             EvadeChance = 100;
             WalkToSpawn(MaxSpeed);
         }
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (EvadeChance == 100)
@@ -211,7 +175,6 @@ namespace DOL.GS.Scripts
 
             base.OnAttackedByEnemy(ad);
         }
-
         /// <summary>
         /// Handle event notifications.
         /// </summary>
@@ -281,7 +244,6 @@ namespace DOL.GS.Scripts
             summonedGuard.AddToWorld();
             summonedGuard.StartAttack(enemy);
         }
-
         public void SetVariables(GameNPC summonedGuardian)
         {
             summonedGuardian.LoadEquipmentTemplateFromDatabase("Summoned_Guardian");
@@ -344,25 +306,20 @@ namespace DOL.GS.Scripts
         }
 
         #region Bomb & Resist Debuff
-
         protected Spell m_BombSpell;
         protected Spell m_BigBombSpell;
-
         /// <summary>
         /// The Bomb spell. Override this property in your Aros Epic summonedGuard implementation
         /// and assign the spell to m_breathSpell.
         /// </summary>
         protected abstract Spell Bomb { get; }
-
         /// <summary>
         /// The Bomb spell. Override this property in your Aros Epic summonedGuard implementation
         /// and assign the spell to m_breathSpell.
         /// </summary>
         protected abstract Spell BigBomb { get; }
-
         private const int m_BombChance = 3;
         private GameLiving m_BombTarget;
-
         /// <summary>
         /// Chance to cast Summon when a potential target has been detected.
         /// </summary>
@@ -370,7 +327,6 @@ namespace DOL.GS.Scripts
         {
             get { return m_BombChance; }
         }
-
         /// <summary>
         /// The target for the next Summon attack.
         /// </summary>
@@ -383,8 +339,6 @@ namespace DOL.GS.Scripts
                 PrepareToBombChance();
             }
         }
-
-
         /// <summary>
         /// Check whether or not to cast Bomb.
         /// </summary>
@@ -396,7 +350,6 @@ namespace DOL.GS.Scripts
                 BombTarget = target;
             return success; // Has a 3% chance to cast.
         }
-
         /// <summary>
         /// Announce the Debuff and start the 1 second timer.
         /// </summary>
@@ -409,7 +362,6 @@ namespace DOL.GS.Scripts
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBomb), 5000);
         }
-
         /// <summary>
         /// Check whether or not to cast Bomb.
         /// </summary>
@@ -418,7 +370,6 @@ namespace DOL.GS.Scripts
             PrepareToBomb(); // Has a 100% chance to cast.
             return true;
         }
-
         /// <summary>
         /// Check whether or not to cast the Big Bomb.
         /// </summary>
@@ -427,7 +378,6 @@ namespace DOL.GS.Scripts
             PrepareToBigBomb();
             return false;
         }
-
         /// <summary>
         /// Announce the Bomb attack and start the 4 second timer.
         /// </summary>
@@ -439,8 +389,6 @@ namespace DOL.GS.Scripts
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBomb), 5000);
         }
-
-
         /// <summary>
         /// Announce the Big Bomb and start the 5 second timer.
         /// </summary>
@@ -450,7 +398,6 @@ namespace DOL.GS.Scripts
             BroadcastMessage(String.Format(m_BigBombAnnounce, Name));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBigBomb), 5000);
         }
-
         /// <summary>
         /// Cast Breath on the raid (AoE damage and AoE resist debuff).
         /// </summary>
@@ -461,7 +408,6 @@ namespace DOL.GS.Scripts
             CastSpell(Bomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
-
         /// <summary>
         /// Cast Bomb on the raid (AoE damage and AoE resist debuff).
         /// </summary>
@@ -472,21 +418,16 @@ namespace DOL.GS.Scripts
             CastSpell(BigBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
-
         #endregion
 
         #region Debuff
-
         protected Spell m_DebuffSpell;
-
         /// <summary>
         /// The Debuff spell. Override this property in your Aros the Spiritmaster implementation
         /// and assign the spell to m_DebuffSpell.
         /// </summary>
         protected abstract Spell Debuff { get; }
-
         private const int m_DebuffChance = 3;
-
         /// <summary>
         /// Chance to cast Debuff when a potential target has been detected.
         /// </summary>
@@ -494,9 +435,7 @@ namespace DOL.GS.Scripts
         {
             get { return m_DebuffChance; }
         }
-
         private GameLiving m_DebuffTarget;
-
         /// <summary>
         /// The target for the next Debuff attack.
         /// </summary>
@@ -509,7 +448,6 @@ namespace DOL.GS.Scripts
                 PrepareToDebuff();
             }
         }
-
         /// <summary>
         /// Check whether or not to Debuff at this target.
         /// </summary>
@@ -523,7 +461,6 @@ namespace DOL.GS.Scripts
                 DebuffTarget = target;
             return success;
         }
-
         /// <summary>
         /// Announce the Debuff and start the 1 second timer.
         /// </summary>
@@ -534,7 +471,6 @@ namespace DOL.GS.Scripts
             BroadcastMessage(String.Format(m_DebuffAnnounce, Name, DebuffTarget.Name));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastDebuff), 1000);
         }
-
         /// <summary>
         /// Cast Debuff on the target.
         /// </summary>
@@ -544,7 +480,6 @@ namespace DOL.GS.Scripts
         {
             // Turn around to the target and cast Debuff, then go back to the original
             // target, if one exists.
-
             GameObject oldTarget = TargetObject;
             TargetObject = DebuffTarget;
             Z = SpawnPoint.Z; // this is a fix to correct Z errors that sometimes happen during Aros fights
@@ -554,21 +489,16 @@ namespace DOL.GS.Scripts
             if (oldTarget != null) TargetObject = oldTarget;
             return 0;
         }
-
         #endregion
 
         #region Pet
-
         protected Spell m_SummonSpell;
-
         /// <summary>
         /// The Debuff spell. Override this property in your Aros the Spiritmaster implementation
         /// and assign the spell to m_SummonSpell.
         /// </summary>
         protected abstract Spell Summon { get; }
-
         private const int m_SummonChance = 100;
-
         /// <summary>
         /// Chance to cast Summon when a potential target has been detected.
         /// </summary>
@@ -576,9 +506,7 @@ namespace DOL.GS.Scripts
         {
             get { return m_SummonChance; }
         }
-
         private GameLiving m_SummonTarget;
-
         /// <summary>
         /// The target for the next Summon attack.
         /// </summary>
@@ -591,7 +519,6 @@ namespace DOL.GS.Scripts
                 PrepareToSummon();
             }
         }
-
         /// <summary>
         /// Check whether or not to Summon the Pet.
         /// </summary>
@@ -602,7 +529,6 @@ namespace DOL.GS.Scripts
             PrepareToSummon();
             return true;
         }
-
         /// <summary>
         /// Announce the Summon and start the 2 second timer.
         /// </summary>
@@ -612,7 +538,6 @@ namespace DOL.GS.Scripts
             BroadcastMessage(String.Format(m_SummonAnnounce, Name));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastSummon), 2000);
         }
-
         /// <summary>
         /// Cast Summon.
         /// </summary>
@@ -636,7 +561,6 @@ namespace DOL.GS.Scripts
                             target = player;
                             break;
                         }
-
                         isSummoning = false;
                     }
                     else
@@ -644,14 +568,11 @@ namespace DOL.GS.Scripts
                         isSummoning = true;
                     }
                 }
-
                 if (target == null || Summon == null)
                     return 1;
             }
-
             return 0;
         }
-
         #endregion
     }
 }

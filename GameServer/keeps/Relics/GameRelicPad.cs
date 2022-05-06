@@ -170,6 +170,7 @@ namespace DOL.GS
 				{
 					target.CapturedRelics++;
 					target.RaiseRealmLoyaltyFloor(2);
+					target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
 				}
 
 				Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));

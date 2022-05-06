@@ -15,11 +15,24 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
-				default: return 80;// dmg reduction for rest resists
+				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				default: return 70; // dmg reduction for rest resists
 			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 30000; }
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
@@ -61,19 +74,6 @@ namespace DOL.GS
 				return true;
 
 			return base.HasAbility(keyName);
-		}
-		public override double GetArmorAF(eArmorSlot slot)
-		{
-			return 700;
-		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
-		{
-			// 85% ABS is cap.
-			return 0.55;
-		}
-		public override int MaxHealth
-		{
-			get { return 20000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -198,7 +198,6 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro)
 			{
-				log.Warn("Disabled duration:" + Body.GetSkillDisabledDuration(RoesiaHOT));
 				if (Body.TargetObject != null)
 				{
 					if (Util.Chance(25))
@@ -266,7 +265,6 @@ namespace DOL.AI.Brain
 					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 15000);
-					log.Warn("restarting timer in 15s");
 					CanCast = true;
 				}				
 			}

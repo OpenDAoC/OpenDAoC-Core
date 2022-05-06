@@ -4560,6 +4560,12 @@ namespace DOL.GS
                     NewsMgr.CreateNews(newsmessage, this.Realm, eNewsType.RvRLocal, true);
                 }
             }
+
+            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < Math.Ceiling((RealmLevel+10) / 10d))
+            {
+                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int)Math.Ceiling((RealmLevel + 10) / 10d));
+            }
+            
             Out.SendUpdatePoints();
         }
 
@@ -7658,9 +7664,7 @@ namespace DOL.GS
                 return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.Axe);
             // use left axe spec if axe is in the left hand slot
             if (weapon.SlotPosition == Slot.LEFTHAND
-                && (weapon.Object_Type == (int)eObjectType.Axe
-                    || weapon.Object_Type == (int)eObjectType.Sword
-                    || weapon.Object_Type == (int)eObjectType.Hammer))
+                && weapon.Object_Type == (int)eObjectType.Axe)
                 return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.LeftAxe);
             return GameServer.ServerRules.GetObjectSpecLevel(this, (eObjectType)weapon.Object_Type);
         }
@@ -8544,7 +8548,14 @@ namespace DOL.GS
 
             if (m_releaseType == eReleaseType.Duel)
             {
-                Message.SystemToOthers(this, killer.Name + "GamePlayer.Die.DuelWinner", eChatType.CT_Emote);
+                foreach (GamePlayer player in killer.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+                {
+                    if (player != killer)
+                        // Message: {0} wins the duel!
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Duel.Die.KillerWinsDuel", killer.Name), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+                }
+                // Message: {0} wins the duel!
+                //Message.SystemToOthers(Client, LanguageMgr.GetTranslation(this, "GamePlayer.Duel.Die.KillerWinsDuel", killer.Name), eChatType.CT_Emote);
             }
 
             // deal out exp and realm points based on server rules
@@ -12378,6 +12389,12 @@ namespace DOL.GS
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.RightHandFree", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                 }
             }
+            
+            if(item.Item_Type == Slot.RANGED && (rangeAttackComponent.RangedAttackState == eRangedAttackState.Aim
+               || rangeAttackComponent.RangedAttackState == eRangedAttackState.AimFire ||
+               rangeAttackComponent.RangedAttackState == eRangedAttackState.AimFireReload ||
+               rangeAttackComponent.RangedAttackState == eRangedAttackState.ReadyToFire
+               )) attackComponent.attackAction = null;
 
             if (prevSlot == Slot.MYTHICAL && item.Item_Type == (int)eInventorySlot.Mythical && item is GameMythirian)
             {
@@ -14938,8 +14955,9 @@ namespace DOL.GS
         {
             if (DBCharacter == null)
                 return;
-			
-            DBCharacter.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
+            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            
+            CraftingForRealm.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
 
             string cs = "";
 
@@ -14956,7 +14974,9 @@ namespace DOL.GS
                 }
             }
 
-            DBCharacter.SerializedCraftingSkills = cs;
+            CraftingForRealm.SerializedCraftingSkills = cs;
+            
+            GameServer.Database.SaveObject(CraftingForRealm); 
         }
 
         /// <summary>
@@ -14966,21 +14986,25 @@ namespace DOL.GS
         {
             if (DBCharacter == null)
                 return;
+            
+            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
-            if (DBCharacter.SerializedCraftingSkills == "" || DBCharacter.CraftingPrimarySkill == 0)
+            if (CraftingForRealm == null)
             {
-                AddCraftingSkill(eCraftingSkill.BasicCrafting, 1);
-                SaveCraftingSkills();
-                Out.SendUpdateCraftingSkills();
-                return;
+                AccountXCrafting newCrafting = new AccountXCrafting();
+                newCrafting.AccountId = this.AccountName;
+                newCrafting.Realm = (int)this.Realm;
+                newCrafting.CraftingPrimarySkill = 15;
+                GameServer.Database.AddObject(newCrafting);
+                CraftingForRealm = newCrafting;
             }
             try
             {
-                CraftingPrimarySkill = (eCraftingSkill)DBCharacter.CraftingPrimarySkill;
+                CraftingPrimarySkill = (eCraftingSkill)CraftingForRealm.CraftingPrimarySkill;
 
                 lock (CraftingLock)
                 {
-                    foreach (string skill in Util.SplitCSV(DBCharacter.SerializedCraftingSkills))
+                    foreach (string skill in Util.SplitCSV(CraftingForRealm.SerializedCraftingSkills))
                     {
                         string[] values = skill.Split('|');
                         //Load by crafting skill name
@@ -15237,7 +15261,7 @@ namespace DOL.GS
                 return;
             }
 			
-            if (!IsWithinRadius(TargetObject, 2000))
+            if (!IsWithinRadius(TargetObject, 1500))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.TooFarAwayForPet"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -15329,6 +15353,12 @@ namespace DOL.GS
             if (target == null)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcGoTarget.MustSelectDestination"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+            
+            if (GetDistance(new Point2D(target.X, target.Y)) > 1250)
+            {
+                Out.SendMessage("Your target is too far away for your pet to reach!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 			
@@ -15721,6 +15751,61 @@ namespace DOL.GS
             }
         }
 
+        #endregion
+        
+        #region Achievements
+
+        public void Achieve(string achievementName, int count = 1)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = count;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count += count;
+            GameServer.Database.SaveObject(achievement);
+        }
+
+        public void SetAchievementTo(string achievementName, int value)
+        {
+            //DOL.Database.Achievement
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+            {
+                achievement = new Achievement();
+                achievement.AccountId = this.Client.Account.ObjectId;
+                achievement.AchievementName = achievementName;
+                achievement.Realm = (int) this.Realm;
+                achievement.Count = value;
+                GameServer.Database.AddObject(achievement);
+                return;
+            }
+
+            achievement.Count = value;
+            GameServer.Database.SaveObject(achievement);
+        }
+
+        public int GetAchievementProgress(string achievementName)
+        {
+            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+                return 0;
+            else
+                return achievement.Count;
+        }
+        
         #endregion
 
         #region Statistics

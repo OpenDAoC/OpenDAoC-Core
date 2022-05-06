@@ -382,9 +382,18 @@ namespace DOL.GS
                     var p = owner as GamePlayer;
                     if (p != null && p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
-                        if (p != null && p.InterruptTime > GameLoop.GameLoopTime && p.attackComponent.Attackers.Count > 0)
+                        if (p != null && p.InterruptTime > GameLoop.GameLoopTime && p.attackComponent.Attackers.Count > 0 )
                         {
                             var attacker = p.attackComponent.Attackers.Last();
+                            double mod = p.GetConLevel(attacker);
+                            double chance = 65;
+                            chance += mod != null ? mod * 10 : 0;
+                            chance = Math.Max(1, chance);
+                            chance = Math.Min(99, chance);
+                            if (attacker is GamePlayer) chance = 100;
+
+                            if (!Util.Chance((int) chance)) return;
+                            
                             string attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Type.Shot");
                             if (p.attackComponent.AttackWeapon != null && p.attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown)
                                 attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Type.Throw");

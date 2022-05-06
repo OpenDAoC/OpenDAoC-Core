@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.Housing;
 
@@ -55,7 +57,7 @@ namespace DOL.GS.Commands
 						if (client.Player.Name == args[2])
 							return;
 
-						GameClient targetClient = WorldMgr.GetClientByPlayerNameAndRealm(args[2], 0, true);
+						GameClient targetClient = WorldMgr.GetClientByPlayerNameAndRealm(args[2], 0, true).FirstOrDefault();
 						if (targetClient == null)
 						{
 							client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -77,7 +79,7 @@ namespace DOL.GS.Commands
                         if (client.Player.Name == args[2])
                             return;
 
-                        GameClient targetClient = WorldMgr.GetClientByPlayerNameAndRealm(args[2], 0, true);
+                        GameClient targetClient = WorldMgr.GetClientByPlayerNameAndRealm(args[2], 0, true).FirstOrDefault();
                         if (targetClient == null)
                         {
                             client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

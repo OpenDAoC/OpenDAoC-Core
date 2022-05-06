@@ -282,7 +282,7 @@ namespace DOL.AI.Brain
 
         public void SetMobstats()
         {
-            if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.AttackState == true)) //if in combat
+            if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)) //if in combat
             {
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
@@ -365,7 +365,7 @@ namespace DOL.AI.Brain
             }
 
             if (Body.InCombat || HasAggro ||
-                Body.AttackState == true) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
+                Body.attackComponent.AttackState == true) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
             {
                 if (BafMobs == false)
                 {

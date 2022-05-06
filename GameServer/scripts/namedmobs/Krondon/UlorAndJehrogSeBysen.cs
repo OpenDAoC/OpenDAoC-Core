@@ -20,9 +20,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -44,20 +44,20 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 600;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
-        public override void StartAttack(GameObject target)
+		public override int MaxHealth
+		{
+			get { return 30000; }
+		}
+		public override void StartAttack(GameObject target)
         {
         }
-        public override int MaxHealth
-		{
-			get { return 20000; }
-		}
 		public override bool AddToWorld()
 		{
 			Model = 919;
@@ -287,9 +287,9 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 60;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 60;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 60;// dmg reduction for melee dmg
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -311,16 +311,16 @@ namespace DOL.GS
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 600;
+			return 350;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.45;
+			return 0.20;
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 30000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -329,7 +329,7 @@ namespace DOL.GS
 			Name = "Jehrog se Bysen";
 			Size = 120;
 
-			Strength = 700;
+			Strength = 280;
 			Dexterity = 150;
 			Constitution = 100;
 			Quickness = 80;

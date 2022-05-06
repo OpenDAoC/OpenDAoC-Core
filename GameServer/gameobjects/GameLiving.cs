@@ -1975,9 +1975,6 @@ namespace DOL.GS
 		//	return ad;
 		//}
 
-
-		private RegionAction InterruptTimer { get; set; }
-
 		/// <summary>
 		/// Starts the interrupt timer on this living.
 		/// </summary>
@@ -2014,7 +2011,7 @@ namespace DOL.GS
 			
 			if (Util.Chance((int)chance))
             {
-				if (InterruptTime < GameLoop.GameLoopTime + duration)
+				//if (InterruptTime < GameLoop.GameLoopTime + duration)
 					InterruptTime = GameLoop.GameLoopTime + duration;
 			}
 
@@ -3781,7 +3778,12 @@ namespace DOL.GS
 					}
 					else if( IsObjectInFront( ad.Attacker, 120 ) )
 					{
-						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (attackComponent.AttackWeapon != null ) )
+						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (attackComponent.AttackWeapon != null 
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.RecurvedBow
+								&& attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Longbow
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.CompositeBow
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow
+							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Fired))
 							parryChance = GetModified( eProperty.ParryChance );
 					}
 				}
@@ -4256,7 +4258,7 @@ namespace DOL.GS
 
 				attackComponent.AddAttacker( ad.Attacker );
 
-				if (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler)
+				if (ad.SpellHandler == null ||(ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
 					if (ad.Attacker.Realm == 0 || this.Realm == 0)
 					{

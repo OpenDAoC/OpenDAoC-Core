@@ -8,7 +8,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class Yar : GameNPC
+    public class Yar : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -16,23 +16,36 @@ namespace DOL.GS
             : base()
         {
         }
-
         public virtual int YarDifficulty
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS / 100; }
         }
-
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
+            }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
-        }
-
-        public override int MaxHealth
-        {
-            get
-            {
-                return 20000 * YarDifficulty;
-            }
         }
 
         public override int AttackRange
@@ -47,22 +60,11 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
-        }
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 800 * YarDifficulty;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55 * YarDifficulty;
-        }
-        
+        }      
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60168093);
@@ -249,13 +251,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 300;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.25;
         }
         public override bool AddToWorld()
         {
@@ -324,13 +326,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 300;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.25;
         }
         public override bool AddToWorld()
         {
@@ -399,13 +401,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 1000;
+            return 300;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.85;
+            return 0.25;
         }
         public override bool AddToWorld()
         {

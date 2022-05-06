@@ -349,6 +349,13 @@ namespace DOL.GS.Commands
 				{
 					var target = client.Player.TargetObject as GamePlayer;
 					
+					// info.Add("TEMP PROPERTIES:");
+					// foreach (var property in target.TempProperties.getAllProperties())
+					// {
+					// 	info.Add(property + ": " + target.TempProperties.getProperty(property, false));
+					// }
+					// info.Add("");
+					
 					info.Add("ENDURANCE INFORMATION");
 					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
 					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
@@ -390,7 +397,7 @@ namespace DOL.GS.Commands
 					info.Add("  - AFK Message: " + target.TempProperties.getProperty<string>(GamePlayer.AFK_MESSAGE) + "");
 					info.Add(" ");
                     info.Add("  - Money : " + Money.GetString(target.GetCurrentMoney()) + "\n");
-					info.Add("  - Speed : " + target.MaxSpeedBase);
+					info.Add("  - Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeed);
 					info.Add("  - XPs : " + target.Experience);
 					info.Add("  - RPs : " + target.RealmPoints);
 					info.Add("  - BPs : " + target.BountyPoints);

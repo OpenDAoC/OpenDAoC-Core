@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
                 }
             }
 
-            if (Body.InCombat || HasAggro || Body.AttackState == true)
+            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 if (spam_teleport == false && Body.TargetObject != null)
                 {

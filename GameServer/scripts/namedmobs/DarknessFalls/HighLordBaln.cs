@@ -27,11 +27,24 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override int MaxHealth
+        {
+            get { return 30000; }
         }
         public override bool AddToWorld()
         {
@@ -48,33 +61,25 @@ namespace DOL.GS
 
             // demon
             BodyType = 2;
-
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
             BaelerdothBrain sBrain = new BaelerdothBrain();
             SetOwnBrain(sBrain);
-
+            LoadedFromScript = false;
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
-        public override int MaxHealth
-        {
-            get { return 20000; }
-        }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -82,18 +87,6 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-
-        public override double GetArmorAF(eArmorSlot slot)
-        {
-            return 850;
-        }
-
-        public override double GetArmorAbsorb(eArmorSlot slot)
-        {
-            // 85% ABS is cap.
-            return 0.55;
-        }
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (!InCombat)
@@ -107,10 +100,8 @@ namespace DOL.GS
                     }
                 }
             }
-
             base.OnAttackedByEnemy(ad);
         }
-
         public override void OnAttackEnemy(AttackData ad)
         {
             foreach (GamePlayer player in GetPlayersInRadius(2000))
@@ -127,7 +118,6 @@ namespace DOL.GS
                     sMinion.StartAttack(player);
                 }
             }
-
             base.OnAttackEnemy(ad);
         }
     }
@@ -138,14 +128,12 @@ namespace DOL.AI.Brain
     public class BalnBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         public BalnBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 850;
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -154,21 +142,18 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
-
             base.Think();
         }
     }
 }
-
 namespace DOL.GS
 {
     public class BalnMinion : GameNPC
     {
         public override int MaxHealth
         {
-            get { return 450 * Constitution / 100; }
+            get { return 550; }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162130);
@@ -196,18 +181,16 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
         public override void DropLoot(GameObject killer) //no loot
         {
         }
-
+        public override long ExperienceValue => 0;
         public override void Die(GameObject killer)
         {
             base.Die(null); // null to not gain experience
         }
     }
 }
-
 namespace DOL.AI.Brain
 {
     public class BalnMinionBrain : StandardMobBrain
