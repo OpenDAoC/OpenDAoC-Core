@@ -124,12 +124,12 @@ public class AchievementReskinVendor : GameNPC
         sb.Append($"Free\n" +
                   $"[Crafted Helm 1] ({freebie} {currencyName})\n");
         sb.Append($"[Crafted Helm 2] ({freebie} {currencyName})\n");
+        sb.Append($"[Crafted Helm 3] ({freebie} {currencyName})\n");
         
 
         if (RR > 1)
         {
             sb.Append($"Realm Rank 2+\n" +
-                      $"[Crafted Helm 3] ({lowbie} {currencyName})\n" +
                       $"[Crafted Helm 4] ({lowbie} {currencyName})\n" +
                       $"[Crafted Helm 5] ({lowbie} {currencyName})\n");
         }
@@ -460,8 +460,7 @@ public class AchievementReskinVendor : GameNPC
         {
             sb.Append($"Realm Rank 2+\n" +
                       $"[Crafted Gloves 4] ({lowbie} {currencyName})\n" +
-                      $"[Crafted Gloves 5] ({lowbie} {currencyName})\n" +
-                      $"[Crafted Gloves 6] ({lowbie} {currencyName})\n");
+                      $"[Crafted Gloves 5] ({lowbie} {currencyName})\n");
         }
 
         if (RR > 3)
@@ -545,8 +544,7 @@ public class AchievementReskinVendor : GameNPC
         {
             sb.Append($"Realm Rank 2+\n" +
                       $"[Crafted Boots 4] ({lowbie} {currencyName})\n" +
-                      $"[Crafted Boots 5] ({lowbie} {currencyName})\n" +
-                      $"[Crafted Boots 6] ({lowbie} {currencyName})\n");
+                      $"[Crafted Boots 5] ({lowbie} {currencyName})\n");
         }
 
         if (RR > 3)
@@ -2321,6 +2319,284 @@ public class AchievementReskinVendor : GameNPC
                         break;
                     case eObjectType.Plate:
                         modelIDToAssign = 215;
+                        break;
+                }
+
+                break;
+            
+            case "crafted gloves 1":
+                if (item.Item_Type != Slot.HANDS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                price = freebie;
+                switch ((eObjectType) item.Object_Type)
+                {
+                    case eObjectType.Cloth:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 142;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 248;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 361;
+                        break;
+
+                    case eObjectType.Leather:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 34;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 243;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 376;
+                        break;
+
+                    case eObjectType.Studded:
+                    case eObjectType.Reinforced:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 80;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 233;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 366;
+                        break;
+
+                    case eObjectType.Chain:
+                        switch (source.Realm)
+                        {
+                            case eRealm.Albion:
+                                modelIDToAssign = 44;
+                                break;
+                            case eRealm.Midgard:
+                                modelIDToAssign = 238;
+                                break;
+                            default:
+                                modelIDToAssign = 0;
+                                break;
+                        }
+
+                        break;
+                    case eObjectType.Scale:
+                        modelIDToAssign = 371;
+                        break;
+                    case eObjectType.Plate:
+                        modelIDToAssign = 49;
+                        break;
+                }
+
+                break;
+            case "crafted gloves 2":
+                if (item.Item_Type != Slot.HANDS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                price = freebie;
+                switch ((eObjectType) item.Object_Type)
+                {
+                    case eObjectType.Cloth:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 142;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 268;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 381;
+                        break;
+
+                    case eObjectType.Leather:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 39;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 263;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 396;
+                        break;
+
+                    case eObjectType.Studded:
+                    case eObjectType.Reinforced:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 85;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 253;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 386;
+                        break;
+
+                    case eObjectType.Chain:
+                        switch (source.Realm)
+                        {
+                            case eRealm.Albion:
+                                modelIDToAssign = 184;
+                                break;
+                            case eRealm.Midgard:
+                                modelIDToAssign = 258;
+                                break;
+                            default:
+                                modelIDToAssign = 0;
+                                break;
+                        }
+
+                        break;
+                    case eObjectType.Scale:
+                        modelIDToAssign = 391;
+                        break;
+                    case eObjectType.Plate:
+                        modelIDToAssign = 89;
+                        break;
+                }
+
+                break;
+            case "crafted gloves 3":
+                if (item.Item_Type != Slot.HANDS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                price = freebie;
+                switch ((eObjectType) item.Object_Type)
+                {
+                    case eObjectType.Cloth:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 143;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 288;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 401;
+                        break;
+
+                    case eObjectType.Leather:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 77;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 283;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 416;
+                        break;
+
+                    case eObjectType.Studded:
+                    case eObjectType.Reinforced:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 159;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 273;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 406;
+                        break;
+
+                    case eObjectType.Chain:
+                        switch (source.Realm)
+                        {
+                            case eRealm.Albion:
+                                modelIDToAssign = 189;
+                                break;
+                            case eRealm.Midgard:
+                                modelIDToAssign = 278;
+                                break;
+                            default:
+                                modelIDToAssign = 0;
+                                break;
+                        }
+
+                        break;
+                    case eObjectType.Scale:
+                        modelIDToAssign = 411;
+                        break;
+                    case eObjectType.Plate:
+                        modelIDToAssign = 204;
+                        break;
+                }
+
+                break;
+            case "crafted gloves 4":
+                if (item.Item_Type != Slot.HANDS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
+
+                price = freebie;
+                switch ((eObjectType) item.Object_Type)
+                {
+                    case eObjectType.Cloth:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 142;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 308;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 341;
+                        break;
+
+                    case eObjectType.Leather:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 138;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 303;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 436;
+                        break;
+
+                    case eObjectType.Studded:
+                    case eObjectType.Reinforced:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 219;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 293;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 426;
+                        break;
+
+                    case eObjectType.Chain:
+                        switch (source.Realm)
+                        {
+                            case eRealm.Albion:
+                                modelIDToAssign = 194;
+                                break;
+                            case eRealm.Midgard:
+                                modelIDToAssign = 1000;
+                                break;
+                            default:
+                                modelIDToAssign = 0;
+                                break;
+                        }
+
+                        break;
+                    case eObjectType.Scale:
+                        modelIDToAssign = 431;
+                        break;
+                    case eObjectType.Plate:
+                        modelIDToAssign = 209;
+                        break;
+                }
+
+                break;
+            case "crafted gloves 5":
+                if (item.Item_Type != Slot.HANDS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
+
+                price = freebie;
+                switch ((eObjectType) item.Object_Type)
+                {
+                    case eObjectType.Cloth:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 142;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 986;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 341;
+                        break;
+
+                    case eObjectType.Leather:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 179;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 179;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 436;
+                        break;
+
+                    case eObjectType.Studded:
+                    case eObjectType.Reinforced:
+                        if (player.Realm == eRealm.Albion) modelIDToAssign = 224;
+                        if (player.Realm == eRealm.Midgard) modelIDToAssign = 224;
+                        if (player.Realm == eRealm.Hibernia) modelIDToAssign = 1259;
+                        break;
+
+                    case eObjectType.Chain:
+                        switch (source.Realm)
+                        {
+                            case eRealm.Albion:
+                                modelIDToAssign = 1249;
+                                break;
+                            case eRealm.Midgard:
+                                modelIDToAssign = 1263;
+                                break;
+                            default:
+                                modelIDToAssign = 0;
+                                break;
+                        }
+
+                        break;
+                    case eObjectType.Scale:
+                        modelIDToAssign = 351;
+                        break;
+                    case eObjectType.Plate:
+                        modelIDToAssign = 214;
                         break;
                 }
 
