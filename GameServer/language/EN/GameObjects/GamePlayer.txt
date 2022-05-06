@@ -197,6 +197,7 @@ GamePlayer.StartAttack.TargetInRange:			, target is in range
 GamePlayer.StartAttack.TargetOutOfRange:		, target is out of range
 GamePlayer.StartAttack.TiredShot:				You're too tired to perform a critical shot!
 GamePlayer.StartAttack.TiredUse:				You're too tired to use your {0}!
+GamePlayer.StartAttack.YouPrepare.Volley:		You prepare your {0} ({1}.{2}s to fire)
 GamePlayer.SwitchQuiver.NoMoreAmmo:				You have no more ammo in your quiver!
 GamePlayer.SwitchQuiver.NotUseQuiver:			You will not use your quiver.
 GamePlayer.SwitchQuiver.ShootWith:				You will shoot with: {0}.

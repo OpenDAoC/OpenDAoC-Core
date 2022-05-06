@@ -341,11 +341,15 @@ namespace DOL.GS
                         int speed = owner.attackComponent.AttackSpeed(attackWeapon);
                         byte attackSpeed = (byte)(speed / 100);
                         int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-                        foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        if (owner is GamePlayer && owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
+                        { }
+                        else
                         {
-                            player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
+                            foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            {
+                                player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
+                            }
                         }
-
                         if (owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         {
                             speed /= 2; // can start fire at the middle of the normal time
