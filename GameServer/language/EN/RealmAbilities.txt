@@ -45,12 +45,12 @@ DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type
 DashingDefenseAbility.Execute.MustInGroup:		You must be in a group to use this ability!
 
 ## First Aid
-FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 30%
-FirstAidAbility.AddEffectsInfo.Info2:			Level 2: Value: 60%
-FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 90%
+FirstAidAbility.AddEffectsInfo.Info1:			Level 1: Value: 300HP
+FirstAidAbility.AddEffectsInfo.Info2:			Level 2: Value: 600HP
+FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 900HP
 FirstAidAbility.AddEffectsInfo.Info4:			Target: Self
 FirstAidAbility.AddEffectsInfo.Info5:			Casting time: instant
-FirstAidAbility.AddEffectsInfo.Info6:			
+FirstAidAbility.AddEffectsInfo.Info6:			 
 FirstAidAbility.Execute.FullyHealed:			You are fully healed.
 FirstAidAbility.Execute.HealYourself:			You heal yourself for {0} hit points.
 
