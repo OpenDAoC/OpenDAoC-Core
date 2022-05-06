@@ -4297,6 +4297,147 @@ public class AchievementReskinVendor : GameNPC
                 }
 
                 break;
+            case "class epic sleeves":
+                if (item.Item_Type != Slot.ARMS)
+                {
+                    SendNotValidMessage(player);
+                    break;
+                }
+
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 5)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
+
+                price = epic;
+                switch ((eCharacterClass) player.CharacterClass.ID)
+                {
+                    //alb
+                    case eCharacterClass.Armsman:
+                        modelIDToAssign = 690;
+                        break;
+                    case eCharacterClass.Cabalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Cleric:
+                        modelIDToAssign = 715;
+                        break;
+                    case eCharacterClass.Friar:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Infiltrator:
+                        modelIDToAssign = 794;
+                        break;
+                    case eCharacterClass.Mercenary:
+                        modelIDToAssign = 720;
+                        break;
+                    case eCharacterClass.Minstrel:
+                        modelIDToAssign = 725;
+                        break;
+                    case eCharacterClass.Necromancer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Paladin:
+                        modelIDToAssign = 695;
+                        break;
+                    case eCharacterClass.Reaver:
+                        modelIDToAssign = 1269;
+                        break;
+                    case eCharacterClass.Scout:
+                        modelIDToAssign = 730;
+                        break;
+                    case eCharacterClass.Sorcerer:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Theurgist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Wizard:
+                        modelIDToAssign = 0;
+                        break;
+
+                    //mid
+                    case eCharacterClass.Berserker:
+                        modelIDToAssign = 753;
+                        break;
+                    case eCharacterClass.Bonedancer:
+                        modelIDToAssign = 1189;
+                        break;
+                    case eCharacterClass.Healer:
+                        modelIDToAssign = 700;
+                        break;
+                    case eCharacterClass.Hunter:
+                        modelIDToAssign = 758;
+                        break;
+                    case eCharacterClass.Runemaster:
+                        modelIDToAssign = 705;
+                        break;
+                    case eCharacterClass.Savage:
+                        modelIDToAssign = 1194;
+                        break;
+                    case eCharacterClass.Shadowblade:
+                        modelIDToAssign = 763;
+                        break;
+                    case eCharacterClass.Shaman:
+                        modelIDToAssign = 768;
+                        break;
+                    case eCharacterClass.Skald:
+                        modelIDToAssign = 773;
+                        break;
+                    case eCharacterClass.Spiritmaster:
+                        modelIDToAssign = 801;
+                        break;
+                    case eCharacterClass.Thane:
+                        modelIDToAssign = 3372;
+                        break;
+                    case eCharacterClass.Warrior:
+                        modelIDToAssign = 778;
+                        break;
+
+                    //hib
+                    case eCharacterClass.Animist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Bard:
+                        modelIDToAssign = 736;
+                        break;
+                    case eCharacterClass.Blademaster:
+                        modelIDToAssign = 784;
+                        break;
+                    case eCharacterClass.Champion:
+                        modelIDToAssign = 812;
+                        break;
+                    case eCharacterClass.Druid:
+                        modelIDToAssign = 741;
+                        break;
+                    case eCharacterClass.Eldritch:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Enchanter:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Hero:
+                        modelIDToAssign = 710;
+                        break;
+                    case eCharacterClass.Mentalist:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Nightshade:
+                        modelIDToAssign = 748;
+                        break;
+                    case eCharacterClass.Ranger:
+                        modelIDToAssign = 817;
+                        break;
+                    case eCharacterClass.Valewalker:
+                        modelIDToAssign = 0;
+                        break;
+                    case eCharacterClass.Warden:
+                        modelIDToAssign = 807;
+                        break;
+                }
+
+                break;
             case "foppish sleeves":
                 if (item.Item_Type != Slot.ARMS)
                 {
@@ -6593,6 +6734,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1668;
@@ -6603,6 +6750,12 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Slash)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6617,6 +6770,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1669;
@@ -6627,6 +6786,12 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Slash)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6641,6 +6806,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1807;
@@ -6651,6 +6822,12 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Slash)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6665,6 +6842,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 3447;
@@ -6675,6 +6858,12 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Crush)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6689,6 +6878,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 3453;
@@ -6699,6 +6894,12 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Slash)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6713,6 +6914,12 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 1672;
@@ -6723,6 +6930,11 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage == (int) eDamageType.Crush)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 8)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6749,6 +6961,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 10)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = epic;
                 modelIDToAssign = 3458;
@@ -6760,6 +6977,12 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Slash)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 4)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6774,6 +6997,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 8)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = champion;
                 modelIDToAssign = 3454;
@@ -6784,6 +7012,11 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Slash)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6798,6 +7031,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = epic;
                 modelIDToAssign = 2195;
@@ -6808,6 +7046,11 @@ public class AchievementReskinVendor : GameNPC
                     item.Type_Damage != (int) eDamageType.Crush)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
@@ -6834,6 +7077,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 8)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = champion;
                 modelIDToAssign = 2984;
@@ -6846,6 +7094,11 @@ public class AchievementReskinVendor : GameNPC
                     SendNotValidMessage(player);
                     break;
                 }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 6)
+                {
+                    SendNotQualifiedMessage(player);
+                    break;
+                }
 
                 price = artifact;
                 modelIDToAssign = 2469;
@@ -6855,6 +7108,11 @@ public class AchievementReskinVendor : GameNPC
                 if (item.Object_Type != (int) eObjectType.HandToHand)
                 {
                     SendNotValidMessage(player);
+                    break;
+                }
+                if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+                {
+                    SendNotQualifiedMessage(player);
                     break;
                 }
 
