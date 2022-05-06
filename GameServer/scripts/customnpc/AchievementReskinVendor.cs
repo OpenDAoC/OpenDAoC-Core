@@ -5848,7 +5848,7 @@ public class AchievementReskinVendor : GameNPC
 
                 break;
             case "class epic pants":
-                if (item.Item_Type != Slot.ARMS)
+                if (item.Item_Type != Slot.LEGS)
                 {
                     SendNotValidMessage(player);
                     break;
@@ -6597,7 +6597,7 @@ public class AchievementReskinVendor : GameNPC
 
                 break;
             case "class epic boots":
-                if (item.Item_Type != Slot.ARMS)
+                if (item.Item_Type != Slot.FEET)
                 {
                     SendNotValidMessage(player);
                     break;
@@ -7346,7 +7346,7 @@ public class AchievementReskinVendor : GameNPC
 
                 break;
             case "class epic gloves":
-                if (item.Item_Type != Slot.ARMS)
+                if (item.Item_Type != Slot.HANDS)
                 {
                     SendNotValidMessage(player);
                     break;
