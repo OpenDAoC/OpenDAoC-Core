@@ -6324,8 +6324,6 @@ namespace DOL.GS
                 //Send new weapon stats
                 Out.SendUpdateWeaponAndArmorStats();
             }
-
-            attackComponent.attackAction = null;
         }
 
         ///// <summary>
@@ -12391,6 +12389,8 @@ namespace DOL.GS
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.RightHandFree", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                 }
             }
+            
+            if(item.Item_Type == Slot.RANGED) attackComponent.attackAction = null;
 
             if (prevSlot == Slot.MYTHICAL && item.Item_Type == (int)eInventorySlot.Mythical && item is GameMythirian)
             {
