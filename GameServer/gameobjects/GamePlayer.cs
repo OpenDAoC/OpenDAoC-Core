@@ -12390,7 +12390,11 @@ namespace DOL.GS
                 }
             }
             
-            if(item.Item_Type == Slot.RANGED) attackComponent.attackAction = null;
+            if(item.Item_Type == Slot.RANGED && (rangeAttackComponent.RangedAttackState == eRangedAttackState.Aim
+               || rangeAttackComponent.RangedAttackState == eRangedAttackState.AimFire ||
+               rangeAttackComponent.RangedAttackState == eRangedAttackState.AimFireReload ||
+               rangeAttackComponent.RangedAttackState == eRangedAttackState.ReadyToFire
+               )) attackComponent.attackAction = null;
 
             if (prevSlot == Slot.MYTHICAL && item.Item_Type == (int)eInventorySlot.Mythical && item is GameMythirian)
             {
