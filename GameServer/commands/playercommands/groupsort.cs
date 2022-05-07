@@ -24,6 +24,7 @@ using System.Linq;
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.PacketHandler;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace DOL.GS.Commands
 {
@@ -70,16 +71,22 @@ namespace DOL.GS.Commands
 							ArrayList currentGroup = new ArrayList();
 							foreach (GameLiving player in client.Player.Group.GetMembersInTheGroup())
 							{
+								if (player.Group == null) return;
 								if (player.Group != null && player.Group.MemberCount > 1)
 								{
 									currentGroup.Add(player);
 									Console.WriteLine("Group List: ... "+currentGroup);
+									Console.WriteLine("Group List Count: ... "+currentGroup.Count);
+									
+									
 								}
 							}
+							/*
 							ArrayList playerList = new ArrayList();
 							string text = string.Empty;
 							foreach (GamePlayer grouped in currentGroup)
 							{
+								if (grouped.Group == null) return;
 								text += grouped.Group.GroupMemberString(grouped);
 								client.Out.SendMessage("Grouped List: "+ text, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 								foreach (GamePlayer gpl in grouped.Group.GetPlayersInTheGroup())
@@ -88,6 +95,7 @@ namespace DOL.GS.Commands
 									Console.WriteLine("Player List: ... "+playerList);
 								}
 							}
+							*/
 							
 							break;
 						}
@@ -106,8 +114,76 @@ namespace DOL.GS.Commands
 							}
 							else
 							{
-								// get position/slot in group and exchange the spots + update group
+								ArrayList currentGroup = new ArrayList();
+								foreach (GameLiving player in client.Player.Group.GetMembersInTheGroup())
+								{
+									if (player.Group == null) return;
+									if (player.Group != null && player.Group.MemberCount > 1)
+									{
+										currentGroup.Add(player);
+										//Console.WriteLine("Group List: ... "+currentGroup);
+										//Console.WriteLine("Group List Count: ... "+currentGroup.Count);
+									}
+
+									
+								}
 								
+								var grpPos = new List<int>{1, 2, 3, 4, 5, 6, 7, 8};
+								
+								int targetX = Int32.Parse(switchX);
+								int targetY = Int32.Parse(switchY);
+								if (!grpPos.Contains(targetX) || !grpPos.Contains(targetY))
+								{
+									client.Out.SendMessage("Be sure to use values between 1 and 8.",eChatType.CT_Important,eChatLoc.CL_SystemWindow);
+									return;
+								}
+
+								/*if (currentGroup.Count <= targetY || currentGroup.Count <= targetX)
+								{
+									client.Out.SendMessage("You cant swap with non existing group members.",eChatType.CT_Important,eChatLoc.CL_SystemWindow);
+									return;
+								}*/
+								/*if(targetX is < 1 or > 8 || targetY is < 1 or > 8)
+								{ // Invalid number
+									client.Out.SendMessage("Use values between 1 and 8.",eChatType.CT_Important,eChatLoc.CL_SystemWindow);
+									return;
+								}*/
+								if(targetX == 1 && targetY == 1)
+								{
+									client.Out.SendMessage("You can\'t swap with yourself!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+									return;
+								}
+								if(targetX == targetY)
+								{
+									client.Out.SendMessage("You can\'t swap with the same position!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+									return;
+								}
+								/*if (targetX == 1 && targetY > 1)
+								{
+									//client.Player.Group.MakeLeader(currentGroup[targetY]);
+								}
+								else if(targetY == 1 && targetX > 1)
+								{
+									//client.Player.Group.MakeLeader(currentGroup[targetX]);
+								}*/
+								else
+								{
+									try
+									{
+										int pos1 = currentGroup.IndexOf(targetX - 1);
+										int pos2 = currentGroup.IndexOf(targetY - 1);
+										foreach(GamePlayer str in currentGroup)
+										{
+											Console.WriteLine("\n"+str);
+										}
+										Swap(pos1, pos2, currentGroup);
+									}
+									catch (FormatException e)
+									{
+										Console.WriteLine(e.Message);
+									}
+									client.Player.Group.UpdateGroupWindow();
+								}
 							}
 								
 							break;
@@ -118,6 +194,14 @@ namespace DOL.GS.Commands
 
 			//if nothing matched, then they tried to invent thier own commands -- show syntax
 			DisplaySyntax(client);
+		}
+		public static bool Swap(int x, int y, ArrayList array)
+		{
+			if (array.Count <= y || array.Count <= x) return false;
+
+			(array[x], array[y]) = (array[y], array[x]);
+
+			return true;
 		}
 	}
 }
