@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
                 SpawnCopies();
                 spawn_copies = true;
             }
-            if (IsPulled == false)
+            if (Body.IsAlive)
             {
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
@@ -208,26 +208,25 @@ namespace DOL.AI.Brain
 
                             if (npc.Brain is AidonCopyEarthBrain)
                                 AddAggroListTo(npc.Brain as AidonCopyEarthBrain);
-
-                            IsPulled = true;
                         }                      
                     }
                 }
             }
-
             base.OnAttackedByEnemy(ad);
         }
         public static bool CanCast = false;
+        public bool SpawnCopiesAgain = false;
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 spawn_copies = false;
                 CanCast = false;
+                SpawnCopiesAgain = false;
                 AidonCopyFire.CopyCountFire = 0;
                 AidonCopyIce.CopyCountIce = 0;
                 AidonCopyAir.CopyCountAir = 0;
@@ -237,62 +236,18 @@ namespace DOL.AI.Brain
                     if (npc != null)
                     {
                         if (npc.IsAlive && (npc.Brain is AidonCopyFireBrain || npc.Brain is AidonCopyAirBrain || npc.Brain is AidonCopyIceBrain || npc.Brain is AidonCopyEarthBrain))
-                        {
                             npc.RemoveFromWorld();
-                        }
                     }
                 }
             }
             if (Body.IsOutOfTetherRange)
-            {
                 Body.Health = Body.MaxHealth;
-            }
+
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
                 Body.Health = Body.MaxHealth;
-            }
+
             if (Body.InCombat && HasAggro)
             {
-                if (AidonCopyAir.CopyCountAir == 0)
-                {
-                    AidonCopyAir Add3 = new AidonCopyAir();
-                    Add3.X = 31080;
-                    Add3.Y = 37974;
-                    Add3.Z = 14866;
-                    Add3.CurrentRegionID = 277;
-                    Add3.Heading = 3059;
-                    Add3.AddToWorld();
-                }
-                else if (AidonCopyFire.CopyCountFire == 0)
-                {
-                    AidonCopyFire Add1 = new AidonCopyFire();
-                    Add1.X = 31649;
-                    Add1.Y = 37316;
-                    Add1.Z = 14866;
-                    Add1.CurrentRegionID = 277;
-                    Add1.Heading = 1015;
-                    Add1.AddToWorld();
-                }
-                else if (AidonCopyEarth.CopyCountEarth == 0)
-                {
-                    AidonCopyEarth Add4 = new AidonCopyEarth();
-                    Add4.X = 31637;
-                    Add4.Y = 37968;
-                    Add4.Z = 14869;
-                    Add4.CurrentRegionID = 277;
-                    Add4.Heading = 1019;
-                    Add4.AddToWorld();
-                }
-                else if (AidonCopyIce.CopyCountIce == 0)
-                {
-                    AidonCopyIce Add2 = new AidonCopyIce();
-                    Add2.X = 31083;
-                    Add2.Y = 37323;
-                    Add2.Z = 14869;
-                    Add2.CurrentRegionID = 277;
-                    Add2.Heading = 3008;
-                    Add2.AddToWorld();
-                }
                 if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn))
                 {
                     GameLiving oldTarget = Body.TargetObject as GameLiving;
@@ -310,16 +265,67 @@ namespace DOL.AI.Brain
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), Util.Random(10000, 15000));
                     CanCast = true;
                 }
+                if (SpawnCopiesAgain == false)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreCopies), Util.Random(30000, 45000));
+                    SpawnCopiesAgain = true;
+                }
             }
             base.Think();
         }
         public int CastDD(ECSGameTimer Timer)
         {
             if (Body.IsAlive)
-            {
                 Body.CastSpell(AidonBoss_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
+
             CanCast = false;
+            return 0;
+        }
+        private int SpawnMoreCopies(ECSGameTimer timer)
+        {
+            if (HasAggro && AidonCopyFire.CopyCountFire == 0 && AidonCopyIce.CopyCountIce == 0 && AidonCopyAir.CopyCountAir == 0 && AidonCopyEarth.CopyCountEarth == 0)
+            {
+                switch (Util.Random(1, 4))
+                {
+                    case 1:
+                        AidonCopyAir Add3 = new AidonCopyAir();
+                        Add3.X = 31080;
+                        Add3.Y = 37974;
+                        Add3.Z = 14866;
+                        Add3.CurrentRegionID = 277;
+                        Add3.Heading = 3059;
+                        Add3.AddToWorld();
+                        break;
+                    case 2:
+                        AidonCopyFire Add1 = new AidonCopyFire();
+                        Add1.X = 31649;
+                        Add1.Y = 37316;
+                        Add1.Z = 14866;
+                        Add1.CurrentRegionID = 277;
+                        Add1.Heading = 1015;
+                        Add1.AddToWorld();
+                        break;
+                    case 3:
+                        AidonCopyEarth Add4 = new AidonCopyEarth();
+                        Add4.X = 31637;
+                        Add4.Y = 37968;
+                        Add4.Z = 14869;
+                        Add4.CurrentRegionID = 277;
+                        Add4.Heading = 1019;
+                        Add4.AddToWorld();
+                        break;
+                    case 4:
+                        AidonCopyIce Add2 = new AidonCopyIce();
+                        Add2.X = 31083;
+                        Add2.Y = 37323;
+                        Add2.Z = 14869;
+                        Add2.CurrentRegionID = 277;
+                        Add2.Heading = 3008;
+                        Add2.AddToWorld();
+                        break;
+                }
+            }
+            SpawnCopiesAgain = false;
             return 0;
         }
         public void SpawnCopies()
@@ -379,7 +385,7 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 360;
                     spell.Icon = 360;
                     spell.TooltipId = 360;
-                    spell.Damage = 1000;
+                    spell.Damage = 500;
                     spell.Name = "Aidons's Fire";
                     spell.Radius = 350;
                     spell.Range = 1800;
@@ -392,7 +398,6 @@ namespace DOL.AI.Brain
                     m_AidonBoss_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AidonBoss_DD);
                 }
-
                 return m_AidonBoss_DD;
             }
         }
@@ -446,16 +451,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 300;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.20;
+            return 0.15;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 5000; }
         }
         public static int CopyCountFire = 0;
         public override void Die(GameObject killer)
@@ -463,6 +468,11 @@ namespace DOL.GS
             --CopyCountFire;
             base.Die(killer);
         }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
         {
             Model = 61;
@@ -493,14 +503,6 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
             Realm = eRealm.None;
-
-            Strength = 100;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
-
             AidonCopyFireBrain adds = new AidonCopyFireBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -516,25 +518,20 @@ namespace DOL.AI.Brain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public AidonCopyFireBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 800;
         }
-
         public override void Think()
         {
             if (Body.InCombat || HasAggro)
-            {
-                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
+                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
 
             base.Think();
         }
         private Spell m_Aidon_DD;
-
         private Spell Aidon_DD
         {
             get
@@ -548,10 +545,10 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 360;
                     spell.Icon = 360;
                     spell.TooltipId = 360;
-                    spell.Damage = 500;
+                    spell.Damage = 300;
                     spell.Name = "Aidons's Fire";
                     spell.Radius = 350;
-                    spell.Range = 1800;
+                    spell.Range = 2500;
                     spell.SpellID = 11766;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -561,7 +558,6 @@ namespace DOL.AI.Brain
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
-
                 return m_Aidon_DD;
             }
         }
@@ -588,16 +584,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 300;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.20;
+            return 0.15;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 5000; }
         }
         public static int CopyCountIce = 0;
         public override void Die(GameObject killer)
@@ -605,6 +601,11 @@ namespace DOL.GS
             --CopyCountIce;
             base.Die(killer);
         }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
         {
             Model = 61;
@@ -635,14 +636,6 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
             Realm = eRealm.None;
-
-            Strength = 100;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
-
             AidonCopyIceBrain adds = new AidonCopyIceBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -658,25 +651,20 @@ namespace DOL.AI.Brain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public AidonCopyIceBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 800;
         }
-
         public override void Think()
         {
             if (Body.InCombat || HasAggro)
-            {
-                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
+                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
 
             base.Think();
         }
         private Spell m_Aidon_DD;
-
         private Spell Aidon_DD
         {
             get
@@ -690,12 +678,12 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 161;
                     spell.Icon = 161;
                     spell.TooltipId = 360;
-                    spell.Damage = 500;
+                    spell.Damage = 300;
                     spell.Value = 45;
                     spell.Duration = 20;
                     spell.Name = "Aidons's Ice";
                     spell.Radius = 350;
-                    spell.Range = 1800;
+                    spell.Range = 2500;
                     spell.SpellID = 11767;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
@@ -705,7 +693,6 @@ namespace DOL.AI.Brain
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
-
                 return m_Aidon_DD;
             }
         }
@@ -730,16 +717,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 300;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.20;
+            return 0.15;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 5000; }
         }
         public static int CopyCountAir = 0;
         public override void Die(GameObject killer)
@@ -747,6 +734,11 @@ namespace DOL.GS
             --CopyCountAir;
             base.Die(killer);
         }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
         {
             Model = 61;
@@ -777,14 +769,6 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
             Realm = eRealm.None;
-
-            Strength = 100;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
-
             AidonCopyAirBrain adds = new AidonCopyAirBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -800,25 +784,20 @@ namespace DOL.AI.Brain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public AidonCopyAirBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 800;
         }
-
         public override void Think()
         {
             if (Body.InCombat || HasAggro)
-            {
-                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
+                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
 
             base.Think();
         }
         private Spell m_Aidon_DD;
-
         private Spell Aidon_DD
         {
             get
@@ -832,10 +811,10 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 479;
                     spell.Icon = 479;
                     spell.TooltipId = 360;
-                    spell.Damage = 500;
+                    spell.Damage = 300;
                     spell.Name = "Aidons's Air";
                     spell.Radius = 350;
-                    spell.Range = 1800;
+                    spell.Range = 2500;
                     spell.SpellID = 11768;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -845,7 +824,6 @@ namespace DOL.AI.Brain
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
-
                 return m_Aidon_DD;
             }
         }
@@ -870,16 +848,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 300;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.20;
+            return 0.15;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 5000; }
         }
         public static int CopyCountEarth = 0;
         public override void Die(GameObject killer)
@@ -887,6 +865,11 @@ namespace DOL.GS
             --CopyCountEarth;
             base.Die(killer);
         }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
         {
             Model = 61;
@@ -917,14 +900,6 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
             Realm = eRealm.None;
-
-            Strength = 100;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
-
             AidonCopyEarthBrain adds = new AidonCopyEarthBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -940,25 +915,19 @@ namespace DOL.AI.Brain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public AidonCopyEarthBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 800;
         }
-
         public override void Think()
         {
             if (Body.InCombat || HasAggro)
-            {
-                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
-
+                Body.CastSpell(Aidon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
             base.Think();
         }
         private Spell m_Aidon_DD;
-
         private Spell Aidon_DD
         {
             get
@@ -972,10 +941,10 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 219;
                     spell.Icon = 219;
                     spell.TooltipId = 360;
-                    spell.Damage = 500;
+                    spell.Damage = 300;
                     spell.Name = "Aidons's Earth";
                     spell.Radius = 350;
-                    spell.Range = 1800;
+                    spell.Range = 2500;
                     spell.SpellID = 11769;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -985,7 +954,6 @@ namespace DOL.AI.Brain
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
-
                 return m_Aidon_DD;
             }
         }
