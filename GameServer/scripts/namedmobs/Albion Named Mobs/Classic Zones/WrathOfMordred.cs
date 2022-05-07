@@ -147,7 +147,7 @@ namespace DOL.GS
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)eDamageType.Heat;
 					m_HeatProc = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatProc);
 				}
