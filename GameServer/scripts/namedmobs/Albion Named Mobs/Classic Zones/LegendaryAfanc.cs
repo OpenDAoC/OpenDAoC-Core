@@ -28,6 +28,10 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			return base.AttackDamage(weapon) * Strength / 100;
+		}
 		public override int AttackRange
 		{
 			get { return 350; }
