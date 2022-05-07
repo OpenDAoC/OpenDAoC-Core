@@ -134,7 +134,7 @@ namespace DOL.GS
                 {
                     npc.RemoveFromWorld();
                 }
-            }            
+            }
             base.Die(killer);
         }
     }
@@ -153,11 +153,13 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        private bool CanSpawnAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 Body.Health = Body.MaxHealth;
+                CanSpawnAdds = false;
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
@@ -170,18 +172,19 @@ namespace DOL.AI.Brain
             if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
                 Body.CastSpell(BlueLady_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                if(BlueLadySwordAdd.SwordCount <15 || BlueLadyAxeAdd.AxeCount <15)
+                if ((BlueLadySwordAdd.SwordCount < 10 || BlueLadyAxeAdd.AxeCount < 10) && CanSpawnAdds == false)
                 {
-                    SpawnAdds();
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(25000, 45000));
+                    CanSpawnAdds = true;
                 }
-            }         
+            }
             base.Think();
         }
-        public void SpawnAdds()
+        private int SpawnAdds(ECSGameTimer timer)
         {
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 10; i++)
             {
-                if (BlueLadySwordAdd.SwordCount < 15)
+                if (BlueLadySwordAdd.SwordCount < 10)
                 {
                     BlueLadySwordAdd add = new BlueLadySwordAdd();
                     add.X = Body.X + Util.Random(-100, 100);
@@ -192,9 +195,9 @@ namespace DOL.AI.Brain
                     add.AddToWorld();
                 }
             }
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 10; i++)
             {
-                if (BlueLadyAxeAdd.AxeCount < 15)
+                if (BlueLadyAxeAdd.AxeCount < 10)
                 {
                     BlueLadyAxeAdd add2 = new BlueLadyAxeAdd();
                     add2.X = Body.X + Util.Random(-100, 100);
@@ -204,7 +207,9 @@ namespace DOL.AI.Brain
                     add2.Heading = Body.Heading;
                     add2.AddToWorld();
                 }
-            }         
+            }
+            CanSpawnAdds = false;
+            return 0;
         }
         public Spell m_BlueLady_DD;
         public Spell BlueLady_DD
@@ -256,7 +261,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 700; }
+            get { return 500; }
         }
         public override int AttackRange
         {
@@ -265,12 +270,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public static int SwordCount = 0;
         public override void Die(GameObject killer)
@@ -282,22 +287,18 @@ namespace DOL.GS
         public override void DropLoot(GameObject killer) //no loot
         {
         }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 125; }
+        public override short Strength { get => base.Strength; set => base.Strength = 50; }
         public override bool AddToWorld()
         {
             BlueLadySwordAdd blueLady = new BlueLadySwordAdd();
             Model = 665;
             Name = "summoned sword";
             Size = 60;
-            Level = (byte)Util.Random(50,55);
+            Level = (byte)Util.Random(50, 55);
             Realm = 0;
 
             ++SwordCount;
-            Strength = 50;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            Quickness = 125;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -308,7 +309,7 @@ namespace DOL.GS
             GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
             templateHib.AddNPCEquipment(eInventorySlot.RightHandWeapon, 5);
             Inventory = templateHib.CloseTemplate();
-            VisibleActiveWeaponSlots = (byte) eActiveWeaponSlot.Standard;
+            VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.Standard;
 
             BodyType = 6;
             BlueLadyAddBrain sBrain = new BlueLadyAddBrain();
@@ -334,7 +335,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 700; }
+            get { return 500; }
         }
         public override int AttackRange
         {
@@ -343,12 +344,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.15;
         }
         public static int AxeCount = 0;
         public override void Die(GameObject killer)
@@ -360,6 +361,8 @@ namespace DOL.GS
         public override void DropLoot(GameObject killer) //no loot
         {
         }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 125; }
+        public override short Strength { get => base.Strength; set => base.Strength = 50; }
         public override bool AddToWorld()
         {
             BlueLadyAxeAdd blueLady = new BlueLadyAxeAdd();
@@ -372,15 +375,9 @@ namespace DOL.GS
             GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
             templateHib.AddNPCEquipment(eInventorySlot.RightHandWeapon, 316);
             Inventory = templateHib.CloseTemplate();
-            VisibleActiveWeaponSlots = (byte) eActiveWeaponSlot.Standard;
+            VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.Standard;
 
             ++AxeCount;
-            Strength = 50;
-            Intelligence = 150;
-            Piety = 150;
-            Dexterity = 200;
-            Constitution = 200;
-            Quickness = 125;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
