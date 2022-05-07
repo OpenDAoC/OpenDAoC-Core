@@ -21,7 +21,7 @@ public class AchievementReskinVendor : GameNPC
     //4k high toa
     //10k dragonsworn
     //20k champion
-    private int freebie = 0;
+    private int freebie = 1;
     private int lowbie = 1000;
     private int festive = 2000;
     private int toageneric = 7500;
@@ -741,7 +741,7 @@ public class AchievementReskinVendor : GameNPC
                                       "[Mace 1h](" + lowbie + " " + currencyName + ")\n");
                             break;
                         case eRealm.Hibernia:
-                            sb.Append("[Club 1h](" + lowbie + " " + currencyName + ")\n" +
+                            sb.Append("[Celtic Club 1h](" + lowbie + " " + currencyName + ")\n" +
                                       "[Celtic Mace 1h](" + lowbie + " " + currencyName + ")\n");
                             break;
                         case eRealm.Midgard:
@@ -890,7 +890,7 @@ public class AchievementReskinVendor : GameNPC
             sb.Append("Realm Rank 4\n");
             if ((eObjectType) item.Object_Type == eObjectType.Scythe)
             {
-                sb.Append("[Magma Scythe](" + freebie + " " + currencyName + ")\n" +
+                sb.Append("[Magma Scythe](" + toageneric + " " + currencyName + ")\n" +
                           "");
             }
             else if ((eObjectType) item.Object_Type != eObjectType.HandToHand &&
@@ -902,20 +902,20 @@ public class AchievementReskinVendor : GameNPC
                         switch (player.Realm)
                         {
                             case eRealm.Albion:
-                                sb.Append("[Duelists Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Duelists Rapier 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Parrying Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Parrying Rapier 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Duelists Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Duelists Rapier 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Parrying Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Parrying Rapier 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                             case eRealm.Hibernia:
-                                sb.Append("[Elven Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Firbolg Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Leaf Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Adze 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Barbed Adze 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Firbolg Adze 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[War Adze 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Elven Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Firbolg Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Leaf Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Adze 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Barbed Adze 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Firbolg Adze 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[War Adze 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                             case eRealm.Midgard:
@@ -928,28 +928,28 @@ public class AchievementReskinVendor : GameNPC
                         switch (player.Realm)
                         {
                             case eRealm.Albion:
-                                sb.Append("[Bishops Mace 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Coffin Hammer Mace 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Coffin Mace 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Bishops Mace 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Coffin Hammer Mace 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Coffin Mace 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                             case eRealm.Hibernia:
-                                sb.Append("[Celtic Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Celtic Mace 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Dire Mace 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Firbolg Hammer 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Celt Hammer 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Celtic Mace 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Dire Mace 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Firbolg Hammer 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                             case eRealm.Midgard:
-                                sb.Append("[Troll Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Troll War Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold Sap 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold War Club 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Troll Hammer 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Troll War Hammer 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold Sap 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold War Club 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                         }
-                        sb.Append("[Magma Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                  "[Aerus Hammer 1h](" + artifact + " " + currencyName + ")\n");
+                        sb.Append("[Magma Hammer 1h](" + toageneric + " " + currencyName + ")\n" +
+                                  "[Aerus Hammer 1h](" + toageneric + " " + currencyName + ")\n");
 
                         break;
 
@@ -957,36 +957,36 @@ public class AchievementReskinVendor : GameNPC
                         switch (player.Realm)
                         {
                             case eRealm.Albion:
-                                sb.Append("[Coffin Axe 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Coffin Axe 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                             case eRealm.Hibernia:
-                                sb.Append("[Elven Short Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Elven Longsword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Firbolg Short Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Firbolg Longsword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Leaf Short Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Leaf Longsword 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Elven Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Elven Longsword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Firbolg Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Firbolg Longsword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Leaf Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Leaf Longsword 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                             case eRealm.Midgard:
-                                sb.Append("[Troll Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Troll Short Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Troll Long Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold Short Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold Long Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Troll Hand Axe 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Troll War Axe 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold Hand Axe 1h](" + artifact + " " + currencyName + ")\n" +
-                                          "[Kobold War Axe 1h](" + artifact + " " + currencyName + ")\n" +
+                                sb.Append("[Troll Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Troll Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Troll Long Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold Long Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Troll Hand Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Troll War Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold Hand Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Kobold War Axe 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
                                 break;
                         }
                         
-                        sb.Append("[Khopesh 1h](" + artifact + " " + currencyName + ")\n" +
-                                  "[Aerus Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                  "[Magma Axe 1h](" + artifact + " " + currencyName + ")\n");
+                        sb.Append("[Khopesh 1h](" + toageneric + " " + currencyName + ")\n" +
+                                  "[Aerus Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                  "[Magma Axe 1h](" + toageneric + " " + currencyName + ")\n");
 
                         break;
                 }
@@ -8127,6 +8127,1239 @@ public override bool WhisperReceive(GameLiving source, string str)
 
         #region 1h wep
 
+        #region crafted skins
+
+        case "bladed claw greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 959;
+            break;
+        case "bladed fang greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 960;
+            break;
+        case "bladed moon claw":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 961;
+            break;
+        case "bladed moon fang":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 962;
+            break;
+        case "claw greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 963;
+            break;
+        case "fang greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 964;
+            break;
+        case "flex chain":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 857;
+            break;
+        case "flex whip":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 859;
+            break;
+        case "flex flail":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 861;
+            break;
+        case "flex dagger flail":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 860;
+            break;
+        case "flex morning star":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 862;
+            break;
+        case "flex pick flail":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 863;
+            break;
+        case "firbolg scythe":   
+            if (item.Object_Type != (int) eObjectType.Scythe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 927;
+            break;
+        case "harvest scythe":   
+            if (item.Object_Type != (int) eObjectType.Scythe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 929;
+            break;
+        case "war scythe":   
+            if (item.Object_Type != (int) eObjectType.Scythe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 932;
+            break;
+        case "dirk 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 21;
+            break;
+        case "rapier 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 22;
+            break;
+        case "main gauche 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 25;
+            break;
+        case "celtic dirk 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 454;
+            break;
+        case "celtic rapier 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 455;
+            break;
+        case "celtic stiletto 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 456;
+            break;
+        case "club 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 11;
+            break;
+        case "hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 12;
+            break;
+        case "mace 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 13;
+            break;
+        case "celtic club 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 449;
+            break;
+        case "celtic mace 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 450;
+            break;
+        case "small hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 320;
+            break;
+        case "pick hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 323;
+            break;
+        case "norse hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 321;
+            break;
+        case "short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 3;
+            break;
+        case "longsword 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 4;
+            break;
+        case "handaxe 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 2;
+            break;
+        case "scimitar 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 8;
+            break;
+        case "celtic short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 445;
+            break;
+        case "celtic longsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 446;
+            break;
+        case "celtic broadsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 447;
+            break;
+        case "norse short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 311;
+            break;
+        case "norse longsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 310;
+            break;
+        case "norse broadsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 312;
+            break;
+        case "norse spiked axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 315;
+            break;
+        case "great bladed claw greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 965;
+            break;
+        case "great bladed fang greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 966;
+            break;
+        case "great bladed moon claw":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 967;
+            break;
+        case "great bladed moon fang":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 968;
+            break;
+        case "great claw greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 969;
+            break;
+        case "great fang greave":   
+            if (item.Object_Type != (int) eObjectType.HandToHand)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 970;
+            break;
+        case "flex spiked flail":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 864;
+            break;
+        case "flex spiked whip":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 865;
+            break;
+        case "flex war chain":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 866;
+            break;
+        case "flex whip dagger":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 868;
+            break;
+        case "flex whip mace":   
+            if (item.Object_Type != (int) eObjectType.Flexible)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 869;
+            break;
+        case "firbolg great scythe":   
+            if (item.Object_Type != (int) eObjectType.Scythe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 926;
+            break;
+        case "great war scythe":   
+            if (item.Object_Type != (int) eObjectType.Scythe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 928;
+            break;
+        case "martial scythe":   
+            if (item.Object_Type != (int) eObjectType.Scythe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 930;
+            break;
+        case "gladius 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 30;
+            break;
+        case "toothpick 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 876;
+            break;
+        case "highlander dirk 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 889;
+            break;
+        case "foil 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 29;
+            break;
+        case "guarded rapier 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 653;
+            break;
+        case "curved dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 457;
+            break;
+        case "celtic guarded rapier 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 643;
+            break;
+        case "lurikeen dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 943;
+            break;
+        case "spiked mace 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 20;
+            break;
+        case "war hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 15;
+            break;
+        case "flanged mace 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 14;
+            break;
+        case "spiked club 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 452;
+            break;
+        case "celtic spiked mace 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 451;
+            break;
+        case "celtic hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 461;
+            break;
+        case "great hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 324;
+            break;
+        case "spiked hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 656;
+            break;
+        case "jambiya 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 651;
+            break;
+        case "cinquedea 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 877;
+            break;
+        case "falchion 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 879;
+            break;
+        case "coffin axe 1h":   
+            if (item.Object_Type != (int) eObjectType.SlashingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 878;
+            break;
+        case "celtic sickle 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 453;
+            break;
+        case "celtic hooked sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 460;
+            break;
+        case "falcata 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 444;
+            break;
+        case "dwarven short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 655;
+            break;
+        case "norse cleaver 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 654;
+            break;
+        case "double axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 573;
+            break;
+        case "norse bearded axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 316;
+            break;
+        case "duelists dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 885;
+            break;
+        case "duelists rapier 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 886;
+            break;
+        case "parrying dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 887;
+            break;
+        case "parrying rapier 1h":   
+            if (item.Object_Type != (int) eObjectType.ThrustWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 888;
+            break;
+        case "elven dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 895;
+            break;
+        case "firbolg dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 898;
+            break;
+        case "leaf dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 902;
+            break;
+        case "adze 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 940;
+            break;
+        case "barbed adze 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 941;
+            break;
+        case "firbolg adze 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 942;
+            break;
+        case "war adze 1h":   
+            if (item.Object_Type != (int) eObjectType.Piercing)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 947;
+            break;
+        case "bishops mace 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 854;
+            break;
+        case "coffin hammer mace 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 855;
+            break;
+        case "coffin mace 1h":   
+            if (item.Object_Type != (int) eObjectType.CrushingWeapon)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 856;
+            break;
+        case "celt hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 913;
+            break;
+        case "dire mace 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 915;
+            break;
+        case "firbolg hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Blunt)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 916;
+            break;
+        case "troll hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 950;
+            break;
+        case "troll war hammer 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 954;
+            break;
+        case "kobold sap 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1016;
+            break;
+        case "kobold war club 1h":   
+            if (item.Object_Type != (int) eObjectType.Hammer)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1019;
+            break;
+        case "magma hammer 1h":   
+            if (item.Type_Damage != (int) eDamageType.Crush)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 2214;
+            break;
+        case "aerus hammer 1h":   
+            if (item.Type_Damage != (int) eDamageType.Crush)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 2205;
+            break;
+        case "aerus sword 1h":   
+            if (item.Type_Damage != (int) eDamageType.Slash)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 2203;
+            break;
+        case "magma axe 1h":   
+            if (item.Type_Damage != (int) eDamageType.Slash)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 2216;
+            break;
+        
+        case "elven short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 897;
+            break;
+        case "elven longsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 896;
+            break;
+        case "firbolg short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 900;
+            break;
+        case "firbolg longsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 899;
+            break;
+        case "leaf short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 903;
+            break;
+        case "leaf longsword 1h":   
+            if (item.Object_Type != (int) eObjectType.Blades)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 901;
+            break;
+        case "troll dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 949;
+            break;
+        case "troll short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 952;
+            break;
+        case "troll long sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 948;
+            break;
+        case "kobold dagger 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1013;
+            break;
+        case "kobold short sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1017;
+            break;
+        case "kobold long sword 1h":   
+            if (item.Object_Type != (int) eObjectType.Sword)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1015;
+            break;
+        case "troll hand axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1023;
+            break;
+        case "troll war axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1025;
+            break;
+        case "kobold hand axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1014;
+            break;
+        case "kobold war axe 1h":   
+            if (item.Object_Type != (int) eObjectType.Axe &&
+                item.Object_Type != (int) eObjectType.LeftAxe)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1018;
+            break;
+
+        #endregion
+
         case "traitor's dagger 1h":
             if ((item.Item_Type != Slot.RIGHTHAND &&
                  item.Item_Type != Slot.LEFTHAND) &&
@@ -8428,7 +9661,7 @@ public override bool WhisperReceive(GameLiving source, string str)
             price = epic;
             modelIDToAssign = 654;
             break;
-        case "khopesh":
+        case "khopesh 1h":
             if ((item.Item_Type != Slot.RIGHTHAND &&
                  item.Item_Type != Slot.LEFTHAND) &&
                 item.Type_Damage != (int) eDamageType.Slash)
