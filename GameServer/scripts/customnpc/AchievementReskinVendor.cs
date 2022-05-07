@@ -105,6 +105,7 @@ public class AchievementReskinVendor : GameNPC
                 DisplayCloakOption(t, item);
                 break;
             case Slot.RIGHTHAND:
+            case Slot.LEFTHAND:
                 DisplayOneHandWeaponOption(t, item);
                 break;
         }
@@ -817,8 +818,7 @@ public class AchievementReskinVendor : GameNPC
                         switch (player.Realm)
                         {
                             case eRealm.Albion:
-                                sb.Append("[Gladius 1h](" + lowbie + " " + currencyName + ")\n" +
-                                          "[Toothpick 1h](" + lowbie + " " + currencyName + ")\n" +
+                                sb.Append("[Toothpick 1h](" + lowbie + " " + currencyName + ")\n" +
                                           "[Highlander Dirk 1h](" + lowbie + " " + currencyName + ")\n" +
                                           "[Foil 1h](" + lowbie + " " + currencyName + ")\n" +
                                           "[Guarded Rapier 1h](" + lowbie + " " + currencyName + ")\n");
@@ -8668,17 +8668,7 @@ public override bool WhisperReceive(GameLiving source, string str)
 
             price = lowbie;
             modelIDToAssign = 930;
-            break;
-        case "gladius 1h":   
-            if (item.Object_Type != (int) eObjectType.Piercing)
-            {
-                SendNotValidMessage(player);
-                break;
-            }
-
-            price = lowbie;
-            modelIDToAssign = 30;
-            break;
+            break;       
         case "toothpick 1h":   
             if (item.Object_Type != (int) eObjectType.ThrustWeapon)
             {
