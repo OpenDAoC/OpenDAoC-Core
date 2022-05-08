@@ -319,8 +319,10 @@ namespace DOL.GS
 			if (controlledBrain == null)
 			{
 				Player.Out.SendPetWindow(null, ePetWindowAction.Close, 0, 0);
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.SetControlledNpc.ReleaseTarget2", Player.ControlledBrain.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.SetControlledNpc.ReleaseTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: You lose control of {0}!
+				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouLoseControl", Player.ControlledBrain.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: You release control of your controlled target.
+				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouReleaseControl"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			else
 			{
