@@ -4212,16 +4212,15 @@ namespace DOL.GS.Spells
 						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + 200) / 275.0);
 					else
 						spellDamage *= ((pet.Intelligence + 200) / 275.0);
-				}
 
-				if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
+				}
+				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
 					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
 					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 200) / 275;
 				}
-
-				if (player.CharacterClass.ManaStat != eStat.UNDEFINED
+				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
 				    && m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons
 				    && SpellLine.KeyName != GlobalSpellsLines.Item_Effects
@@ -4395,7 +4394,7 @@ namespace DOL.GS.Spells
 
 			double minVariance;
 			double maxVariance;
-
+			
 			CalculateDamageVariance(target, out minVariance, out maxVariance);
 			double spellDamage = CalculateDamageBase(target);
 
