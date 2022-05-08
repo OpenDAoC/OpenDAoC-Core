@@ -236,6 +236,8 @@ GamePlayer.GainCraftingSkill.ReachedSkill:		{0} reached 1000 skill in {1}
 GamePlayer.OnLevelUp.Reached:				{0} reached level {1} in {2}!
 
 ## Targeting/Line of Sight
+GamePlayer.Target.Fail.IsDead:                      {0} is dead!
+GamePlayer.Target.Spell.SelectATarget:              You must select a target for this spell!
 GamePlayer.Attack.CantBeAttacked:			This can't be attacked!
 GamePlayer.Attack.CantSeeTarget:			You can't see your target!
 System.MustSelectTarget:					You must select a target!
