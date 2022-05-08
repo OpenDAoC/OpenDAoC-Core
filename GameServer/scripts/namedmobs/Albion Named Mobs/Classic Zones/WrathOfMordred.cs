@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
 		}
 		private int WalkSide(ECSGameTimer timer)
 		{
-			if (HasAggro && Body.TargetObject != null)
+			if (HasAggro && Body.TargetObject != null && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
 			{
 				if (Body.TargetObject is GameLiving)
 				{
