@@ -8474,7 +8474,7 @@ namespace DOL.GS
                     xpLossPercent = MaxLevel - 40;
                 }
 
-                if (realmDeath || killer.Realm == Realm) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
+                if (realmDeath || killer?.Realm == Realm) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
                 {
                     int conpenalty = 0;
                     switch (GameServer.Instance.Configuration.ServerType)
@@ -11638,19 +11638,13 @@ namespace DOL.GS
                 return 0;
             if (this.Client.Account.PrivLevel == 1)
             {
-                //Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                //Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                //if (CurrentRegion.Time - m_beginDrowningTick > 1000) // 15 sec
-                //{
-                //TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
-                //Out.SendCloseTimerWindow();
-                MoveTo(CurrentRegion.ID, X, Y, Z + 1, Heading);
-                //IsDiving = false;
+                // MoveTo(CurrentRegion.ID, X, Y, Z + 5, Heading);
+                Out.SendCloseTimerWindow();
+                IsDiving = false;
+
                 return 0;
-                //}
-                //else
-                //	TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
-            }
+                }
+        
             return 1000;
         }
 
@@ -11677,7 +11671,15 @@ namespace DOL.GS
             set
             {
                 if (m_diving != value)
+                {
+                    MoveTo(CurrentRegion.ID, X, Y, Z + 1, Heading);
+
+                    // in case we need to go aggressive
+                    // Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                    // TakeDamage(null, eDamageType.Natural, (int)(MaxHealth * 0.05), 0);
                     Diving(eWaterBreath.Drowning);
+                }
+                    
                 //if (value && !CanBreathUnderWater)
                 //{
                 //    Diving(waterBreath.Holding);
