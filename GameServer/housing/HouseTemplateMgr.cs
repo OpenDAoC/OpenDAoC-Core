@@ -176,6 +176,9 @@ namespace DOL.GS.Housing
             CheckItemTemplate("Grandmaster Merchant", "housing_mid_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 18, 0, 0);
             CheckItemTemplate("Grandmaster Merchant", "housing_alb_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 19, 0, 0);
             CheckItemTemplate("Grandmaster Merchant", "housing_hib_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 20, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_mid_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 21, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_alb_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 22, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_hib_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 23, 0, 0);
             
             //indoor craft
             CheckItemTemplate("alchemy table", "housing_alchemy_table", 1494, (int)eObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
@@ -237,21 +240,21 @@ namespace DOL.GS.Housing
             //hookpoints
             var indoorNpcBaseMid = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_apprentice_merchant",
-                "housing_mid_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_potion_tincture_enchantment_supplies",
+                "housing_mid_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_mid_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
                 "housing_dye_supply_master"
             };
             //hookpoints
             var indoorNpcBaseAlb = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_apprentice_merchant",
-                "housing_alb_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_potion_tincture_enchantment_supplies",
+                "housing_alb_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_alb_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
                 "housing_dye_supply_master"
             };
             //hookpoints
             var indoorNpcBaseHib = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_apprentice_merchant",
-                "housing_hib_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_potion_tincture_enchantment_supplies",
+                "housing_hib_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_hib_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
                 "housing_dye_supply_master"
             };
@@ -368,6 +371,9 @@ namespace DOL.GS.Housing
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 18, "DOL.GS.GameMerchant", "Grandmaster Merchant", "Merchant", "0", "", "housing_mid_grandmaster");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 19, "DOL.GS.GameMerchant", "Grandmaster Merchant", "Merchant", "0", "", "housing_alb_grandmaster");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 20, "DOL.GS.GameMerchant", "Grandmaster Merchant", "Merchant", "0", "", "housing_hib_grandmaster");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 21, "DOL.GS.GameMerchant", "Potion, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_mid_potion_tincture_enchantment");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 22, "DOL.GS.GameMerchant", "Potion, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_alb_potion_tincture_enchantment");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 23, "DOL.GS.GameMerchant", "Potion, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_hib_potion_tincture_enchantment");
         }
 
         private static void CheckNPCTemplate(int templateID, string classType, string name, string guild, string model, string inventory, string merchantListID)
