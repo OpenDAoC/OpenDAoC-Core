@@ -194,11 +194,13 @@ namespace DOL.AI.Brain
 {
 	public class BalorEyeBrain : StandardMobBrain
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BalorEyeBrain()
 			: base()
 		{
-			AggroLevel = 100;
-			AggroRange = 800;
+			AggroLevel = 0;
+			AggroRange = 1500;
+			ThinkInterval = 500;
 		}
 		public static bool PickTarget = false;
 		public static bool Cancast = false;
@@ -211,29 +213,18 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			foreach(GamePlayer player in Body.GetPlayersInRadius(2500))
-            {
-				if(player != null)
-                {
-					if(player.IsAlive || player.Client.Account.PrivLevel == 1)
-                    {
-						if(!AggroTable.ContainsKey(player))
-                        {
-							AddToAggroList(player, 10);//make sure it will cast spell
-                        }
-                    }
-                }
-            }
-			if(PickTarget==false)
-            {
-				PickRandomTarget();
-				PickTarget = true;
-            }
-			if (Cancast && Body.IsAlive && RandomTarget != null && RandomTarget.IsAlive)
+			if (Body.IsAlive)
 			{
-				Body.TargetObject = RandomTarget;
-				Body.TurnTo(RandomTarget);
-				Body.CastSpell(EyeDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				if (PickTarget == false)
+				{
+					PickRandomTarget();
+					PickTarget = true;
+				}
+				if (HasAggro && Cancast) //&& RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
+				{
+					Body.TargetObject = RandomTarget;
+					Body.CastSpell(EyeDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				}
 			}
 			base.Think();
 		}
@@ -246,15 +237,16 @@ namespace DOL.AI.Brain
 		List<GamePlayer> Enemys_To_DD = new List<GamePlayer>();
 		public void PickRandomTarget()
 		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
+			foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
 			{
 				if (player != null)
 				{
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
-						if (!Enemys_To_DD.Contains(player))
+						if (!Enemys_To_DD.Contains(player) && !AggroTable.ContainsKey(player))
 						{
 							Enemys_To_DD.Add(player);
+							AddToAggroList(player, 10);//make sure it will cast spell
 						}
 					}
 				}
@@ -263,8 +255,7 @@ namespace DOL.AI.Brain
 			{
 				GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
-				BroadcastMessage(String.Format("Balor prepares magic beam from his eye on "+RandomTarget.Name+"."));
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartCast), 5000);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartCast), 3000);
 			}
 		}
 		public int StartCast(ECSGameTimer timer)
@@ -281,7 +272,7 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 5;
+					spell.CastTime = 4;
 					spell.RecastDelay = 0;
 					spell.ClientEffect = 4111;
 					spell.Icon = 4111;
@@ -309,7 +300,7 @@ namespace DOL.GS
 	{
 		public override int MaxHealth
 		{
-			get { return 3000; }
+			get { return 5000; }
 		}
         public override void StartAttack(GameObject target)
         {
@@ -333,7 +324,7 @@ namespace DOL.GS
 			Flags ^= eFlags.FLYING;
 			Flags ^= eFlags.CANTTARGET;
 			Flags ^= eFlags.DONTSHOWNAME;
-			Flags ^= eFlags.STATUE;
+			//Flags ^= eFlags.STATUE;
 
 			BalorEyeBrain.PickTarget = false;
 			BalorEyeBrain.RandomTarget = null;
@@ -345,10 +336,11 @@ namespace DOL.GS
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));//minions of balor
 			BalorEyeBrain eye = new BalorEyeBrain();
 			SetOwnBrain(eye);
+			eye.Start();
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveEye),15200); //mob will be removed after this time
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveEye),18200); //mob will be removed after this time
 			}
 			return success;
 		}
