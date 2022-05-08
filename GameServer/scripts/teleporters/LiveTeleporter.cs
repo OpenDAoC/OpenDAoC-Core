@@ -296,6 +296,8 @@ namespace DOL.GS.Scripts
 
             // Another special case is personal house, as there is no location
             // that will work for every player.
+            if (text == "Entrance") text = text.ToLower();
+            
             if (text.ToLower() == "personal")
             {
                 House house = HouseMgr.GetHouseByPlayer(player);
