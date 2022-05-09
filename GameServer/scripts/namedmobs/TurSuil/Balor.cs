@@ -222,7 +222,8 @@ namespace DOL.AI.Brain
 				}
 				if (HasAggro && Cancast) //&& RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
 				{
-					Body.TargetObject = RandomTarget;
+					if(Body.TargetObject != RandomTarget)
+						Body.TargetObject = RandomTarget;
 					Body.CastSpell(EyeDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 			}

@@ -90,10 +90,10 @@ namespace DOL.GS
 			Size = 180;
 			ParryChance = 50;
 
-			Strength = 300;
+			Strength = 550;
 			Dexterity = 200;
 			Constitution = 100;
-			Quickness = 100;
+			Quickness = 180;
 			Piety = 200;
 			Intelligence = 200;
 			Empathy = 400;
@@ -237,10 +237,10 @@ namespace DOL.GS
 			Size = 160;
 			EvadeChance = 50;
 
-			Strength = 300;
+			Strength = 550;
 			Dexterity = 200;
 			Constitution = 100;
-			Quickness = 100;
+			Quickness = 180;
 			Piety = 200;
 			Intelligence = 200;
 			Empathy = 400;
