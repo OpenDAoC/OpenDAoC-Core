@@ -362,7 +362,7 @@ namespace DOL.GS.Housing
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 7, "DOL.GS.GameMerchant", "Apprentice Merchant", "Merchant", "0", "", "housing_apprentice");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 8, "DOL.GS.GameMerchant", "Grandmaster Merchant", "Merchant", "0", "", "housing_grandmaster");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 9, "DOL.GS.GameMerchant", "Incantation Merchant", "Merchant", "0", "", "housing_incantation");
-            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 10, "DOL.GS.GameMerchant", "Poison and Dye Supplies", "Merchant", "0", "", "housing_poison_dye");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 10, "DOL.GS.GameMerchant", "Bane Merchant", "Merchant", "0", "", "housing_poison_dye");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 11, "DOL.GS.GameMerchant", "Potion, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_potion_tincture_enchantment");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 12, "DOL.GS.GameMerchant", "Poison and Potion Supplies", "Merchant", "0", "", "housing_poison_potion");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 13, "DOL.GS.GameMerchant", "Dye, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_dye_tincture_enchantment");
