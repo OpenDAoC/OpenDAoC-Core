@@ -236,7 +236,7 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 2619;
 					spell.Radius = 450;
 					spell.Range = 1500;
-					spell.SpellID = 975;
+					spell.SpellID = 18914;
 					spell.Target = "Enemy";
 					spell.Type = "Mesmerize";
 					spell.Uninterruptible = true;

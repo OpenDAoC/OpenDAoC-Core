@@ -102,7 +102,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(3500))
 				{
 					if (npc != null && npc.IsAlive && npc.PackageID == "DurosBaf")
 						AddAggroListTo(npc.Brain as StandardMobBrain);

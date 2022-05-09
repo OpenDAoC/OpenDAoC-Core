@@ -184,6 +184,7 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
+				CanSpawnAdds = false;
 				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is AmphiptereAddsBrain)
