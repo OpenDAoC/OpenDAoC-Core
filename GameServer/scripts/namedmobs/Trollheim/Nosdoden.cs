@@ -7,6 +7,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using System.Collections.Generic;
 using DOL.GS.Styles;
+using System.Text.RegularExpressions;
 
 namespace DOL.GS
 {
@@ -87,6 +88,11 @@ namespace DOL.GS
 			{
 				ReportNews(killer);
 			}
+			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			{
+				if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
+					npc.Die(this);
+			}
 		}
 		#endregion
 		[ScriptLoadedEvent]
@@ -148,7 +154,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void EnemyKilled(GameLiving enemy)
+		public override void EnemyKilled(GameLiving enemy)
         {
 			GamePlayer player = enemy as GamePlayer;
 			if (enemy is GamePlayer)
@@ -348,8 +354,9 @@ namespace DOL.GS
 					#endregion
 					add.PackageID = "NosdodenGhost" + player.CharacterClass.Name;
 					add.AddToWorld();
+					BroadcastMessage(String.Format("Life essense of " + enemy.Name + " has turned into spirit."));
 				}
-			}
+			}		
             base.EnemyKilled(enemy);
         }
     }
@@ -431,6 +438,7 @@ namespace DOL.AI.Brain
 		}
 		public int ResetDOT(ECSGameTimer timer)
 		{
+			Enemys_To_DOT.Clear();
 			RandomTarget2 = null;
 			CanCast2 = false;
 			StartCastDOT = false;
@@ -496,6 +504,7 @@ namespace DOL.AI.Brain
 		}
 		public int ResetDD(ECSGameTimer timer)
 		{
+			Enemys_To_DD.Clear();
 			RandomTarget = null;
 			CanCast = false;
 			StartCastDD = false;
@@ -514,9 +523,18 @@ namespace DOL.AI.Brain
 				CanCast = false;
 				RandomTarget = null;
 				RandomTarget2 = null;
-            }
+				if (Enemys_To_DD.Count > 0)
+					Enemys_To_DD.Clear();
+				if (Enemys_To_DOT.Count > 0)
+					Enemys_To_DOT.Clear();
+				foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
+                {
+					if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
+						npc.Die(Body);
+                }
+			}
 			if (Body.IsAlive && HasAggro)
-            {
+			{
 				if (StartCastDOT == false)
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(20000, 30000));
@@ -526,6 +544,24 @@ namespace DOL.AI.Brain
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
 					StartCastDD = true;
+				}
+
+				foreach (GamePlayer player in Body.GetPlayersInRadius(5000))
+				{
+					if (player != null && player.IsAlive)
+					{
+						foreach (GameNPC ghosts in Body.GetNPCsInRadius(5000))
+						{
+							if (ghosts != null && ghosts.IsAlive && ghosts.Brain is NosdodenGhostAddBrain)
+							{
+								if (Regex.IsMatch(ghosts.Name, string.Format(@"\b{0}\b", player.Name)))//check if spirit name contains exact player name
+								{
+									ghosts.Die(Body);
+									BroadcastMessage(String.Format("Life essense returned back to " + player.Name + "."));
+								}
+							}
+						}
+					}
 				}
 			}
 			base.Think();
@@ -584,8 +620,8 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 4568;
 					spell.Name = "Call of Void";
 					spell.Damage = 1100;
-					spell.Range = 1500;
-					spell.Radius = 350;
+					spell.Range = 1800;
+					spell.Radius = 550;
 					spell.SpellID = 11857;
 					spell.Target = eSpellTarget.Enemy.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -2342,10 +2378,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
-				default: return 55; // dmg reduction for rest resists
+				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				default: return 20; // dmg reduction for rest resists
 			}
 		}
         public override double AttackDamage(InventoryItem weapon)
@@ -2432,12 +2468,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 300;
+			return 250;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.25;
+			return 0.20;
 		}
         public override void Die(GameObject killer)
         {
