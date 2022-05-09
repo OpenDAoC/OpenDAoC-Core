@@ -248,21 +248,21 @@ namespace DOL.GS.Housing
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_mid_apprentice_merchant",
                 "housing_mid_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_mid_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
-                "housing_dye_supply_master", "housing_mid_dye_tincture_enchantment"
+                "housing_dye_supply_master", "housing_mid_dye_tincture_enchantment_supplies"
             };
             //hookpoints
             var indoorNpcBaseAlb = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_alb_apprentice_merchant",
                 "housing_alb_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_alb_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
-                "housing_dye_supply_master", "housing_alb_dye_tincture_enchantment"
+                "housing_dye_supply_master", "housing_alb_dye_tincture_enchantment_supplies"
             };
             //hookpoints
             var indoorNpcBaseHib = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_hib_apprentice_merchant",
                 "housing_hib_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_hib_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
-                "housing_dye_supply_master", "housing_hib_dye_tincture_enchantment"
+                "housing_dye_supply_master", "housing_hib_dye_tincture_enchantment_supplies"
             };
 
             var indoorNpc = new List<string>(indoorNpcBase);
