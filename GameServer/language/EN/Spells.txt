@@ -21,6 +21,7 @@ GamePlayer.CastSpell.CantCastFumblingWords:		You are fumbling for your words, an
 GamePlayer.StartAttack.SpellCancelled:			Your spell is cancelled!
 GamePlayer.SwitchWeapon.SpellCancelled:			Your spell is cancelled!
 GamePlayer.Caster.Buff.EffectAlreadyActive:             {0} already has that effect. Wait until it expires. Spell failed.
+GamePlayer.StartCharm.Fail.Resist:              {0} resists the charm! ({1}%)
 
 ## Delve Information
 DelveInfo.CastingTime:				Casting time: {0}
@@ -64,7 +65,23 @@ GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed:		Your strike was absorbed 
 
 ## Charm
 CharmSpellHandler.DelveInfo.Function:			Function: {0}
-Summon.CheckBeginCast.AlreadyHaveaPet:	You already have a charmed creature, release it first!
+CharmSpell.DelveInfo.Desc.HumanoidAnimalInsectMagicalUndead:     Attempts to bring the target monster under the caster's control. Spell only works on animals, elemental, humanoids, insects, magical, plant, reptile, and undead monster types. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.HumanoidAnimalInsectMagical:           Attempts to bring the target monster under the caster's control. Spell only works on animals, elemental, humanoids, insects, magical, plant, and reptile monster types. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.HumanoidAnimalInsect:                  Attempts to bring the target monster under the caster's control. Spell only works on animals, humanoids, insects, and reptiles. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.HumanoidAnimal:                        Attempts to bring the target monster under the caster's control. Spell only works on animals and humanoids. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.Animal:                                Attempts to bring the target monster under the caster's control. Spell only works on animals. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.Humanoid:                              Attempts to bring the target monster under the caster's control. Spell only works on humanoids. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.Insect:                                Attempts to bring the target monster under the caster's control. Spell only works on insects. Cannot charm named or epic monsters.
+CharmSpell.DelveInfo.Desc.AllMonsterTypes:                       Attempts to bring the target monster under the caster's control. Spell works on all monster types. Cannot charm named or epic monsters.
+Summon.CheckBeginCast.AlreadyHaveaPet:	    You already have a charmed creature, release it first!
+CharmSpell.StartSpell.Fail.Resist:                               {0} resists the charm! ({1}%)
+CharmSpell.EndCast.Fail.WrongTarget:                           You can't charm that target!
+CharmSpell.EndCast.Fail.WrongType:                               This spell does not charm that type of monster!
+CharmSpell.EffectExpire.Fail.WorthNoXP:                          This monster has been charmed recently and is worth no experience.
+CharmSpell.EndCast.Fail.TooStrong:                               {0} is too strong for you to charm!
+CharmSpell.EndCast.Fail.CurrentlyControlled:                     {0} is currently being controlled.
+CharmSpell.EndCast.Fail.AlreadyOwnCharmed:                       You already have a charmed creature, release it first!
+CharmSpell.EndCast.Fail.InCombat:                               You can't charm {0} while {1} is in combat!
 
 ## Damage Add & Damage Shield
 DamageAddAndShield.EventHandlerDA.DamageToYou:		{0} does {1} extra damage to you!

@@ -4212,16 +4212,15 @@ namespace DOL.GS.Spells
 						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + 200) / 275.0);
 					else
 						spellDamage *= ((pet.Intelligence + 200) / 275.0);
-				}
 
-				if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
+				}
+				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
 					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
 					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 200) / 275;
 				}
-
-				if (player.CharacterClass.ManaStat != eStat.UNDEFINED
+				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
 				    && m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons
 				    && SpellLine.KeyName != GlobalSpellsLines.Item_Effects
@@ -4395,7 +4394,7 @@ namespace DOL.GS.Spells
 
 			double minVariance;
 			double maxVariance;
-
+			
 			CalculateDamageVariance(target, out minVariance, out maxVariance);
 			double spellDamage = CalculateDamageBase(target);
 
@@ -5170,35 +5169,40 @@ namespace DOL.GS.Spells
 				case eSpellType.Charm:
 					dw.AddKeyValuePair("power_level", Spell.Value);
 
-					var baseMessage = "Attempts to bring the target monster under the caster's control.";
+					// var baseMessage = "Attempts to bring the target monster under the caster's control.";
 					switch ((CharmSpellHandler.eCharmType)Spell.AmnesiaChance)
 					{
 						case CharmSpellHandler.eCharmType.All:
-							dw.AddKeyValuePair("delve_string", baseMessage);
+							// Message: Attempts to bring the target monster under the caster's control. Spell works on all monster types. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.AllMonsterTypes"));
 							break;
 						case CharmSpellHandler.eCharmType.Animal:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on animals.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.Animal"));
 							break;
 						case CharmSpellHandler.eCharmType.Humanoid:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on humanoids. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.Humanoid"));
 							break;
 						case CharmSpellHandler.eCharmType.Insect:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on insects.");
-							break;
-						case CharmSpellHandler.eCharmType.Reptile:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on reptiles.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on insects. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.Insect"));
 							break;
 						case CharmSpellHandler.eCharmType.HumanoidAnimal:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids and animals.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals and humanoids. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimal"));
 							break;
 						case CharmSpellHandler.eCharmType.HumanoidAnimalInsect:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids, insects, and animals.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals, humanoids, insects, and reptiles. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimalInsect"));
 							break;
 						case CharmSpellHandler.eCharmType.HumanoidAnimalInsectMagical:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids, insects, magical, and animals.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals, elemental, humanoids, insects, magical, plant, and reptile monster types. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimalInsectMagical"));
 							break;
 						case CharmSpellHandler.eCharmType.HumanoidAnimalInsectMagicalUndead:
-							dw.AddKeyValuePair("delve_string", $"{baseMessage} Spell works on humanoids, insects, magical, undead, and animals.");
+							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals, elemental, humanoids, insects, magical, plant, reptile, and undead monster types. Cannot charm named or epic monsters.
+							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimalInsectMagicalUndead"));
 							break;
 					}
 					break;
