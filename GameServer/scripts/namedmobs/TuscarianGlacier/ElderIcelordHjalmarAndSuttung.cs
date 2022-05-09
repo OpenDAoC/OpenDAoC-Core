@@ -227,46 +227,42 @@ namespace DOL.AI.Brain
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BerserkerPhase), Util.Random(20000, 35000));
                     IsBerserker = true;
                 }
-
-                if (Util.Chance(15))
-                {
-                    Body.CastSpell(Icelord_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                }
             }
-
+            if(HasAggro && Body.TargetObject != null)
+            {
+                if (Util.Chance(55))
+                    Body.CastSpell(IcelordHjalmar_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+            }
             base.Think();
         }
-
-        private Spell m_Icelord_aoe;
-
-        private Spell Icelord_aoe
+        private Spell m_IcelordHjalmar_aoe;
+        private Spell IcelordHjalmar_aoe
         {
             get
             {
-                if (m_Icelord_aoe == null)
+                if (m_IcelordHjalmar_aoe == null)
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(15, 25);
+                    spell.RecastDelay = 15;
                     spell.ClientEffect = 208;
                     spell.Icon = 208;
                     spell.TooltipId = 208;
                     spell.Damage = 450;
-                    spell.Name = "Ice Blast";
-                    spell.Radius = 400;
+                    spell.Name = "Hjalmar's Ice Blast";
                     spell.Range = 0;
-                    spell.SpellID = 11748;
+                    spell.Radius = 440;
+                    spell.SpellID = 11901;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
-                    m_Icelord_aoe = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_aoe);
+                    m_IcelordHjalmar_aoe = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IcelordHjalmar_aoe);
                 }
-
-                return m_Icelord_aoe;
+                return m_IcelordHjalmar_aoe;
             }
         }
     }
