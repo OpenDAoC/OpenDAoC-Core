@@ -182,6 +182,10 @@ namespace DOL.GS.Housing
             CheckItemTemplate("Apprentice Merchant", "housing_mid_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 36, 0, 0);
             CheckItemTemplate("Apprentice Merchant", "housing_alb_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 37, 0, 0);
             CheckItemTemplate("Apprentice Merchant", "housing_hib_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 38, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_mid_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 39, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_alb_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 40, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_hib_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 41, 0, 0);
+
             //indoor craft
             CheckItemTemplate("alchemy table", "housing_alchemy_table", 1494, (int)eObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
             CheckItemTemplate("forge", "housing_forge", 1495, (int)eObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
@@ -244,21 +248,21 @@ namespace DOL.GS.Housing
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_mid_apprentice_merchant",
                 "housing_mid_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_mid_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
-                "housing_dye_supply_master"
+                "housing_dye_supply_master", "housing_mid_dye_tincture_enchantment"
             };
             //hookpoints
             var indoorNpcBaseAlb = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_alb_apprentice_merchant",
                 "housing_alb_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_alb_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
-                "housing_dye_supply_master"
+                "housing_dye_supply_master", "housing_alb_dye_tincture_enchantment"
             };
             //hookpoints
             var indoorNpcBaseHib = new List<string> {
                 "housing_hastener", "housing_smith", "housing_enchanter", "housing_emblemer", "housing_healer", "housing_recharger", "housing_hib_apprentice_merchant",
                 "housing_hib_grandmaster_merchant", "housing_incantation_merchant", "housing_poison_dye_supplies", "housing_hib_potion_tincture_enchantment_supplies",
                 "housing_poison_potion_supplies", "housing_taxidermy_supplies", "housing_siegecraft_supplies", "housing_vault_keeper",
-                "housing_dye_supply_master"
+                "housing_dye_supply_master", "housing_hib_dye_tincture_enchantment"
             };
 
             var indoorNpc = new List<string>(indoorNpcBase);
@@ -379,6 +383,9 @@ namespace DOL.GS.Housing
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 36, "DOL.GS.GameMerchant", "Apprentice Merchant", "Merchant", "0", "", "housing_mid_apprentice");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 37, "DOL.GS.GameMerchant", "Apprentice Merchant", "Merchant", "0", "", "housing_alb_apprentice");
             CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 38, "DOL.GS.GameMerchant", "Apprentice Merchant", "Merchant", "0", "", "housing_hib_apprentice");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 39, "DOL.GS.GameMerchant", "Dye, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_mid_dye_tincture_enchantment");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 40, "DOL.GS.GameMerchant", "Dye, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_alb_dye_tincture_enchantment");
+            CheckNPCTemplate(Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 41, "DOL.GS.GameMerchant", "Dye, Tincture, and Enchantment Supplies", "Merchant", "0", "", "housing_hib_dye_tincture_enchantment");
         }
 
         private static void CheckNPCTemplate(int templateID, string classType, string name, string guild, string model, string inventory, string merchantListID)
