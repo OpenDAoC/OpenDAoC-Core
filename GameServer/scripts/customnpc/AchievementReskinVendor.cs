@@ -9890,6 +9890,613 @@ public override bool WhisperReceive(GameLiving source, string str)
 
         #region 2h wep
 
+            #region Crafted Skins
+        case "battle axe 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 9;
+            break;
+        case "war mattock 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 16;
+            break;
+        case "albion great hammer 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 17;
+            break;
+        case "albion greataxe 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 72;
+            break;
+        case "albion war axe 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 73;
+            break;
+        case "norse sword 2h":
+            if (item.Object_Type != (int) eObjectType.Sword
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 314;
+            break;
+        case "norse great axe 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 317;
+            break;
+        case "norse large axe 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 318;
+            break;
+        case "celtic greatsword 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 448;
+            break;
+        case "celtic sword 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 459;
+            break;
+        case "celtic great hammer 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 462;
+            break;
+        case "celtic spiked mace 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 463;
+            break;
+        case "celtic shillelagh 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = freebie;
+            modelIDToAssign = 474;
+            break;
+        case "norse greatsword 2h":
+            if (item.Object_Type != (int) eObjectType.Sword
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 572;
+            break;
+        case "norse hammer 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 574;
+            break;
+        case "norse warhammer 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 575;
+            break;
+        case "norse greathammer 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 576;
+            break;
+        case "norse battleaxe 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 577;
+            break;
+        case "celtic great falcata 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 639;
+            break;
+        case "celtic sledgehammer 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 640;
+            break;
+        case "briton arch mace 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 640;
+            break;
+        case "briton scimitar 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 645;
+            break;
+        case "briton war pick 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Thrust
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = lowbie;
+            modelIDToAssign = 646;
+            break;
+        case "dwarven sword 2h":
+            if (item.Object_Type != (int) eObjectType.Sword
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 658;
+            break;
+        case "war cleaver 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 660;
+            break;
+        case "spiked hammer 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 659;
+            break;
+        case "zweihander 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 841;
+            break;
+        case "claymore 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 843;
+            break;
+        case "great mace 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 842;
+            break;
+        case "dire hammer 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 844;
+            break;
+        case "dire axe 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 845;
+            break;
+        case "great mattock 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Thrust
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 846;
+            break;
+        case "great scimitar 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 847;
+            break;
+        case "celtic hammer 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 904;
+            break;
+        case "celtic great mace 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 905;
+            break;
+        case "celtic dire club 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 906;
+            break;
+        case "elven greatsword 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 907;
+            break;
+        case "firbolg hammer 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 908;
+            break;
+        case "firbolg mace 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 909;
+            break;
+        case "firbolg trollsplitter 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 910;
+            break;
+        case "leaf point 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 911;
+            break;
+        case "shod shillelagh 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 912;
+            break;
+        case "troll greatsword 2h":
+            if (item.Object_Type != (int) eObjectType.Sword
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 957;
+            break;
+        case "dwarven greataxe 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1027;
+            break;
+        case "dwarven great hammer 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1028;
+            break;
+        case "kobold greataxe 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1030;
+            break;
+        case "kobold great club 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1031;
+            break;
+        case "kobold great sword 2h":
+            if (item.Object_Type != (int) eObjectType.Sword
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = toageneric;
+            modelIDToAssign = 1032;
+            break;
+
+        #endregion
+
         case "pickaxe":
             if (item.Item_Type != Slot.TWOHAND ||
                 item.Object_Type == (int) eObjectType.PolearmWeapon)
