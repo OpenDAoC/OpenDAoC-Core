@@ -922,6 +922,8 @@ public class AchievementReskinVendor : GameNPC
                                 break;
                         }
 
+                        sb.Append($"[Wakazashi 1h]({toageneric} {currencyName})");
+
                         break;
 
                     case eDamageType.Crush:
@@ -959,6 +961,9 @@ public class AchievementReskinVendor : GameNPC
                             case eRealm.Albion:
                                 sb.Append("[Coffin Axe 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
+                                sb.Append("[Khopesh 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Aerus Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Magma Axe 1h](" + toageneric + " " + currencyName + ")\n");
                                 break;
                             case eRealm.Hibernia:
                                 sb.Append("[Elven Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
@@ -968,19 +973,34 @@ public class AchievementReskinVendor : GameNPC
                                           "[Leaf Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "[Leaf Longsword 1h](" + toageneric + " " + currencyName + ")\n" +
                                           "");
+                                sb.Append("[Khopesh 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Aerus Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                          "[Magma Axe 1h](" + toageneric + " " + currencyName + ")\n");
                                 break;
                             case eRealm.Midgard:
-                                sb.Append("[Troll Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Troll Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Troll Long Sword 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Kobold Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Kobold Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Kobold Long Sword 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Troll Hand Axe 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Troll War Axe 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Kobold Hand Axe 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "[Kobold War Axe 1h](" + toageneric + " " + currencyName + ")\n" +
-                                          "");
+                                if (item.Object_Type == (int) eObjectType.Sword)
+                                {
+                                    sb.Append("[Troll Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Troll Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Troll Long Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Kobold Dagger 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Kobold Short Sword 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Kobold Long Sword 1h](" + toageneric + " " + currencyName + ")\n");
+                                    sb.Append("[Khopesh 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Aerus Sword 1h](" + toageneric + " " + currencyName + ")\n");
+                                }
+
+                                if (item.Object_Type == (int) eObjectType.Axe ||
+                                    item.Object_Type == (int) eObjectType.LeftAxe)
+                                {
+                                    sb.Append("[Troll Hand Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Troll War Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Kobold Hand Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "[Kobold War Axe 1h](" + toageneric + " " + currencyName + ")\n" +
+                                              "");
+                                    sb.Append("[Magma Axe 1h](" + toageneric + " " + currencyName + ")\n");
+                                }
+                                
                                 break;
                         }
                         
