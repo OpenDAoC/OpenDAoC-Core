@@ -2338,7 +2338,11 @@ namespace DOL.GS
 				RoamingRange = dbMob.RoamingRange;
 				IsCloakHoodUp = dbMob.IsCloakHoodUp;
 				OwnerID = dbMob.OwnerID;
-				RespawnInterval = dbMob.RespawnInterval;
+				RespawnInterval = dbMob.RespawnInterval * 1000;
+				if (RespawnInterval <= 0)
+				{
+					RespawnInterval = 60 * 1000;
+				}
 			}
 			else
 			{
@@ -2370,7 +2374,11 @@ namespace DOL.GS
 				LeftHandSwingChance = m_leftHandSwingChance;
 				Spells = m_spells;
 				Styles = m_styles;
-				RespawnInterval = dbMob.RespawnInterval;
+				RespawnInterval = dbMob.RespawnInterval * 1000;
+				if (RespawnInterval / 1000 <= 0)
+				{
+					RespawnInterval = 80 * 1000;
+				}
 
 				/* Set with AutoSetStats
 				Strength = dbMob.Strength;
