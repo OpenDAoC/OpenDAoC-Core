@@ -302,21 +302,27 @@ namespace DOL.GS
 				if (m_npcEquipmentCache.ContainsKey(templateID))
 					npcEquip = m_npcEquipmentCache[templateID];
 				else
-					npcEquip = DOLDB<NPCEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+					npcEquip = DOLDB<NPCEquipment>.SelectObjects(DB.Column("TemplateID").IsEqualTo(templateID));
 
-				if (npcEquip == null || npcEquip.Count == 0)
+				if (npcEquip == null)
 				{
-					if (log.IsWarnEnabled)
-						log.Warn(string.Format("Failed loading NPC inventory template: {0}", templateID));
+					//if (log.IsWarnEnabled)
+					//	log.Warn(string.Format("Failed loading NULL NPC inventory template: {0}", templateID));
+					return false;
+				}
+				if (npcEquip.Count == 0)
+				{
+					//if (log.IsWarnEnabled)
+					//	log.Warn(string.Format("Failed loading EMPTY NPC inventory template: {0}", templateID));
 					return false;
 				}
 				
 				foreach (NPCEquipment npcItem in npcEquip)
 				{
-					if (!AddNPCEquipment((eInventorySlot)npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
+					if (!AddNPCEquipment((eInventorySlot) npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
 					{
-						if (log.IsWarnEnabled)
-							log.Warn("Error adding NPC equipment for templateID " + templateID + ", ModelID=" + npcItem.Model + ", slot=" + npcItem.Slot);
+						//if (log.IsWarnEnabled) 
+						//	log.Warn("Error adding NPC equipment for Template=" + templateID + "; ModelID=" + npcItem.Model + "; Slot=" + npcItem.Slot);
 					}
 				}
 			}
